@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "101337609697",
+    "firebase_url": "https://universal-code-135522.firebaseio.com",
+    "project_id": "universal-code-135522",
+    "storage_bucket": "universal-code-135522.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101337609697:android:903ef7f516ff8cc2d5cea0",
+        "android_client_info": {
+          "package_name": "com.kaitechcorp.travelcrew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101337609697-33k7vbptptve1eg810q1900n1abea2bn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpQOTDO9MDmn4Gbkmd9boDlp63s_GaNoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101337609697-33k7vbptptve1eg810q1900n1abea2bn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "101337609697-7fvme5csavkvqik1jck4fhkl15koccg2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.randamproductions.Travel-Crew"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
