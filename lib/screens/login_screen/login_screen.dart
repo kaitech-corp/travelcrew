@@ -15,14 +15,13 @@ class LoginPage extends StatefulWidget {
 
   final AuthService _auth = AuthService();
   bool loading = false;
-
   String error = '';
   String email = '';
   String password = '';
 //TODO: Add form and validator and return errors
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
       ),
@@ -62,16 +61,18 @@ class LoginPage extends StatefulWidget {
                     vertical: 30.0, horizontal: 30.0),
                 child: RaisedButton(
                   onPressed: () async{
-                    setState(() => loading = true);
-                    print(email);
-                    print(password);
-                   dynamic result = _auth.signInCredentials(email, password);
-                   if (result == null){
-                     print('Error logging in');
-                   } else {
-                     setState(() => loading = false);
-                     print('Logged in.');
-                   }
+                      setState(() => loading = true);
+                      dynamic result = await _auth.signInCredentials(email, password);
+                      if (result == null) {
+                        setState(() {
+                          error = result;
+                        });
+                      } else {
+                        setState(() => loading = false);
+                        print('Logged in.');
+                        error = result;
+                      }
+
                   },
                   color: Colors.lightBlue,
                   child: const Text(

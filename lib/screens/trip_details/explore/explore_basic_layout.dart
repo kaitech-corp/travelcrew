@@ -88,7 +88,7 @@ class ExploreBasicLayout extends StatelessWidget{
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent)
                   ),
-                  child: Text('A short desription of the trip will be shown here. This box will only be editable by trip creator.', textScaleFactor: 1.25,),
+                  child: Text(tripdetails.comment, textScaleFactor: 1.25,),
                 ),
               ],
             ),

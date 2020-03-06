@@ -23,7 +23,7 @@ class Explore extends StatelessWidget {
 
     final user = Provider.of<User>(context);
     final chatNotifications = Provider.of<List<ChatData>>(context);
-    print(chatNotifications.length);
+//    print(chatNotifications.length);
     List<String> tabs = [
       'Explore',
       'Flights',

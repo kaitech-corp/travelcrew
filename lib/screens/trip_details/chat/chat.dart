@@ -24,6 +24,7 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProfile>(context);
+    DatabaseService(tripDocID: widget.trip.documentId, uid: user.uid).clearChatNotifications();
     String displayName = user.displayName;
     String uid = user.uid;
     String urlToImage = user.urlToImage;
@@ -62,10 +63,15 @@ class _ChatState extends State<Chat> {
                         child: new IconButton(
                           icon: new Icon(Icons.send),
                           onPressed: () async {
-                            String message = _chatController.text;
-                            var status = createStatus();
-                            _chatController.clear();
-                            await DatabaseService(tripDocID: widget.trip.documentId).addNewChatMessage(displayName, message, uid, status);
+                            if (_chatController.text != '') {
+                              String message = _chatController.text;
+                              var status = createStatus();
+                              _chatController.clear();
+                              await DatabaseService(
+                                  tripDocID: widget.trip.documentId)
+                                  .addNewChatMessage(
+                                  displayName, message, uid, status);
+                            }
                           },
                         ),
                       )
@@ -82,10 +88,10 @@ class _ChatState extends State<Chat> {
   }
   createStatus() {
     final user = Provider.of<UserProfile>(context, listen: false);
-    List status = [];
+    Map<String, bool> status = {};
     var users = widget.trip.accessUsers.where((f) => f != user.uid);
 
-    users.forEach((f) => status.add({'uid': f, 'read': false}));
+    users.forEach((f) => status[f] = false);
 //    print(status.toList());
     return status;
   }

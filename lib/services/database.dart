@@ -166,7 +166,7 @@ class DatabaseService {
 
   // Add new chat message
 
-  Future addNewChatMessage(String displayName, String message, String uid, List status) async {
+  Future addNewChatMessage(String displayName, String message, String uid, Map status) async {
     var key = chatCollection.document().documentID;
     print('Adding new chat message.');
 
@@ -178,6 +178,14 @@ class DatabaseService {
       'timestamp': FieldValue.serverTimestamp(),
       'uid': uid,
     });
+  }
+// Clear chat notifications.
+  Future clearChatNotifications() async {
+    var db = await chatCollection.document(tripDocID).collection('messages').where('status.${uid}' ,isEqualTo: false);
+    QuerySnapshot snapshot = await db.getDocuments();
+    for(var i =0; i< snapshot.documents.length;i++) {
+      chatCollection.document(tripDocID).collection('messages').document(snapshot.documents[i].documentID).updateData({'status.${uid}': true});
+    }
   }
 
   // Add new trip
@@ -310,8 +318,6 @@ class DatabaseService {
   }
 
   //Get all users
-
-
   List<UserProfile> _userListFromSnapshot(QuerySnapshot snapshot){
     return snapshot.documents.map((doc){
       return UserProfile(
@@ -573,7 +579,6 @@ class DatabaseService {
       return ChatData(
         displayName: doc.data['displayName'] ?? '',
         message: doc.data['message'] ?? '',
-        status: doc.data['status'].map<Status>((item) {return Status.fromMap(item);}).toList() ?? null,
         timestamp: doc.data['timestamp'] ?? '',
         uid: doc.data['uid'] ?? '',
       );
@@ -581,10 +586,12 @@ class DatabaseService {
   }
 
   Stream<List<ChatData>> get chatList {
-    return chatCollection.document(tripDocID).collection('messages').snapshots().map(_chatListFromSnapshot);
+    return chatCollection.document(tripDocID).collection('messages')
+    .orderBy('timestamp', descending: true)
+        .snapshots().map(_chatListFromSnapshot);
   }
   Stream<List<ChatData>> get chatListNotification {
-    return chatCollection.document(tripDocID).collection('messages').where('status' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
+    return chatCollection.document(tripDocID).collection('messages').where('status.${uid}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
   }
 
 }

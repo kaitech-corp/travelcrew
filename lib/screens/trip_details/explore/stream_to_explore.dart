@@ -12,10 +12,10 @@ class Stream_to_Explore extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-
+    final user = Provider.of<User>(context);
 
     return StreamProvider<List<ChatData>>.value(
-      value: DatabaseService(tripDocID: trip.documentId).chatListNotification,
+      value: DatabaseService(tripDocID: trip.documentId, uid: user.uid).chatListNotification,
       child: Container (
         child: Explore(trip: trip,),
       ),
