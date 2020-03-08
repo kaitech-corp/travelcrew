@@ -20,15 +20,15 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.16.1
-  image_picker: 0.6.3+1
+  image_picker: ^0.6.3
   webview_flutter: ^0.3.19+8
   cloud_firestore: ^0.13.3
-  firebase_core: ^0.4.4
+  firebase_core: 0.4.4
   firebase_analytics: ^5.0.11
-  firebase_auth: ^0.15.3+1
+  firebase_auth: 0.15.3
   firebase_database: ^3.1.1
-  firebase_messaging: ^6.0.9
-  firebase_user_stream: ^0.1.0+4
+#  firebase_messaging: ^6.0.9
+#  firebase_user_stream: ^0.1.0+4
   firebase_storage: ^3.1.1
   floating_search_bar: ^0.3.0
   flutter_spinkit: ^4.1.2

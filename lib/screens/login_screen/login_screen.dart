@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/screens/loading.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'image_banner.dart';

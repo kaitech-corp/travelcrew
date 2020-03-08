@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_message_layout.dart';
 
-import '../../loading.dart';
-
 
 class ChatList extends StatefulWidget {
 
@@ -21,16 +19,6 @@ class _ChatListState extends State<ChatList> {
 
     final chatList = Provider.of<List<ChatData>>(context);
 
-    bool loading = true;
-
-    createList() async {
-      if(chatList != null) {
-        setState(() {
-          loading = false;
-        });
-        }
-      }
-      var createList2 = createList();
 
     return ListView.builder(
         padding: new EdgeInsets.all(8.0),

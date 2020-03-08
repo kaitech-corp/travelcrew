@@ -48,7 +48,6 @@ class AuthService {
           return 'Error logging in with provided credentials.';
         }
       }
-      return e.toString();
     }
   }
 

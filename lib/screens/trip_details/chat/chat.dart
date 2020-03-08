@@ -27,8 +27,6 @@ class _ChatState extends State<Chat> {
     DatabaseService(tripDocID: widget.trip.documentId, uid: user.uid).clearChatNotifications();
     String displayName = user.displayName;
     String uid = user.uid;
-    String urlToImage = user.urlToImage;
-    var test = createStatus();
 
     return StreamProvider.value(
       value: DatabaseService(tripDocID: widget.trip.documentId).chatList,
