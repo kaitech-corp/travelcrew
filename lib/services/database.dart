@@ -67,9 +67,6 @@ class DatabaseService {
      await tripsCollectionUnordered.document(tripDocID).updateData({
        'accessUsers': FieldValue.arrayUnion([uid]),
      });
-     await userCollection.document(uid).updateData({
-       'accessTrips': FieldValue.arrayUnion([tripDocID]),
-     });
      await userPublicProfileCollection.document(uid).updateData({
        "tripsJoined": FieldValue.increment(1),
      });
@@ -210,7 +207,6 @@ class DatabaseService {
       'urlToImage': '',
     });
 
-     await userCollection.document(ownerID).updateData({'accessTrips': addTripRef.documentID});
      await lodgingCollection.document(addTripRef.documentID).setData({});
      await flightCollection.document(addTripRef.documentID).setData({});
      await activitiesCollection.document(addTripRef.documentID).setData({});
@@ -288,9 +284,8 @@ class DatabaseService {
       });
     }
   }
+
 // Get all trips
-
-
   List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot){
     return snapshot.documents.map((doc){
       return Trip(
@@ -335,8 +330,8 @@ class DatabaseService {
     return allUsersCollection.snapshots()
         .map(_userListFromSnapshot);
   }
-  // Get current user public profile
 
+  // Get current user public profile
   UserProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
     var data = snapshot.data;
       return UserProfile(
@@ -349,6 +344,7 @@ class DatabaseService {
       );
 
   }
+
   // get current use public profile
   Stream<UserProfile> get currentUserPublicProfile {
     return userPublicProfileCollection.document(uid).snapshots()

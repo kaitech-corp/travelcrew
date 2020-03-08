@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
+import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/services/database.dart';
-//import 'package:webview_flutter/webview_flutter.dart';
 
 class ActivityItemLayout extends StatelessWidget {
 
@@ -16,6 +17,7 @@ class ActivityItemLayout extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
+
 
     return Center(
       child: Card(
@@ -40,11 +42,11 @@ class ActivityItemLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Text('${activity.activityType}'),
+                      Text('${activity.activityType}', style: TextStyle(fontSize: 20),),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
-                      Text('Comment: ${activity.comment}'),
+                      Text('Comment: ${activity.comment}', style: TextStyle(fontSize: 16),),
                       Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
                       ),
@@ -82,9 +84,53 @@ class ActivityItemLayout extends StatelessWidget {
                         }
                       }
                     ),
-                    FlatButton(
-                      child: const Text('View'),
-                      onPressed: () { /* ... */ },
+                    PopupMenuButton<String>(
+                      onSelected: (value){
+                        switch (value){
+                          case "Edit": {
+
+                          }
+                          break;
+                          case "View": {
+//                            if (activity.link.isNotEmpty) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    WebViewScreen(activity.link, key)),
+                              );
+//                            }
+                          }
+                          break;
+                          default: {
+                            print(value);
+                          }
+                          break;
+                        }
+                      },
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context) =>[
+                        const PopupMenuItem(
+                          value: 'Edit',
+                          child: ListTile(
+                            leading: Icon(Icons.edit),
+                            title: Text('Edit'),
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'View',
+                          child: ListTile(
+                            leading: Icon(Icons.people),
+                            title: Text('View Link'),
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'Delete',
+                          child: ListTile(
+                            leading: Icon(Icons.exit_to_app),
+                            title: Text('Delete Trip'),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -102,4 +148,6 @@ class ActivityItemLayout extends StatelessWidget {
       return Icon(Icons.favorite_border);
     }
   }
+
+
 }

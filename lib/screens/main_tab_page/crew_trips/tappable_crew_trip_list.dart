@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/explore/stream_to_explore.dart';
-import 'package:travelcrew/services/badge_icon.dart';
 
 
 class TappableCrewTripCard extends StatelessWidget {
@@ -36,11 +34,7 @@ class TappableCrewTripCard extends StatelessWidget {
                 title: Text(trip.location != '' ? trip.location : 'Trip Name'),
                 subtitle: Text("Travel Type: ${trip.travelType}",
                   textAlign: TextAlign.start,),
-                trailing: BadgeIcon(
-                  icon: Icon(Icons.message),
-                  badgeCount: 9,
-                ),
-
+                trailing: Icon(Icons.message),
               ),
               Container(
                   padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),

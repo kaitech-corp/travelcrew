@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/main_tab_page/crew_trips/crew_trips.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
 import 'package:travelcrew/screens/main_tab_page/users/users.dart';
+import 'package:travelcrew/screens/profile_page/profile_page.dart';
 
 import 'package:travelcrew/services/auth.dart';
 
@@ -44,10 +45,10 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           onSelected: (value){
             switch (value){
               case "profile": {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(builder: (context) => Loading()),
-//                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               }
               break;
               case "signout": {

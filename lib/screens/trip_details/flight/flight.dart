@@ -4,6 +4,8 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/flight/flight_list.dart';
 import 'package:travelcrew/services/database.dart';
 
+import 'add_new_flight.dart';
+
 class Flight extends StatefulWidget {
 
   final String tripDocID;
@@ -29,7 +31,11 @@ class _FlightState extends State<Flight> {
         floatingActionButton: FloatingActionButton(
 
           onPressed: () {
-            print('Floating action button pressed');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddNewFlight()),
+            );
+
           },
           child: Icon(Icons.add),
         ),

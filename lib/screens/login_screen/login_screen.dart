@@ -37,7 +37,7 @@ class LoginPage extends StatefulWidget {
               TextFormField(
                 enableInteractiveSelection: true,
                 onChanged: (val){
-                  setState(() => email = val);
+                  setState(() => email = val.trim());
                 },
                 obscureText: false,
                 decoration: InputDecoration(
@@ -68,9 +68,8 @@ class LoginPage extends StatefulWidget {
                           error = result;
                         });
                       } else {
-                        setState(() => loading = false);
+//                        setState(() => loading = false);
                         print('Logged in.');
-                        error = result;
                       }
 
                   },
@@ -106,8 +105,9 @@ class LoginPage extends StatefulWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(error,
+                  Text(error != null ? error : '',
                     style: TextStyle(color: Colors.red, fontSize: 16.0),),
                 ],
               )

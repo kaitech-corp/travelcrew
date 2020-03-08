@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat.dart';
-
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/flight/flight.dart';
@@ -23,17 +23,9 @@ class Explore extends StatelessWidget {
 
     final user = Provider.of<User>(context);
     final chatNotifications = Provider.of<List<ChatData>>(context);
-//    print(chatNotifications.length);
-    List<String> tabs = [
-      'Explore',
-      'Flights',
-      'Lodging',
-      'Activities',
-      'Chat'
-    ];
-
+    String uid = user.uid;
     return DefaultTabController(
-      length: tabs.length,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -43,7 +35,10 @@ class Explore extends StatelessWidget {
                 _auth.logOut();
                 print(value);
               }else{
-                print(value);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               }
             },
             padding: EdgeInsets.zero,
@@ -79,7 +74,7 @@ class Explore extends StatelessWidget {
             tabs: [
               Tab(text: 'Explore',
               icon: Icon(Icons.assignment),),
-              Tab(text: 'Flights',
+              Tab(text: 'Travel',
                 icon: Icon(Icons.airplanemode_active),),
               Tab(text: 'Lodging',
                 icon: Icon(Icons.hotel),),
@@ -88,14 +83,14 @@ class Explore extends StatelessWidget {
               Tab(text: 'Chat',
                 icon: BadgeIcon(
                   icon: Icon(Icons.chat),
-                  badgeCount: chatNotifications.length,
+                  badgeCount: chatNotifications !=null ? chatNotifications.length : 0,
                 ),),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            checkOwner(user.uid),
+            checkOwner(uid),
             Flight(tripDocID: trip.documentId,),
             Lodging(tripDocID: trip.documentId,),
             Activity(tripDocID: trip.documentId,),

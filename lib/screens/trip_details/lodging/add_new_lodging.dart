@@ -46,111 +46,113 @@ class _AddNewLodgingState extends State<AddNewLodging> {
       appBar: AppBar(
         title: Text('Add Lodging'),
       ),
-      body: Builder(
-        builder: (context) => Form(
-          key: _formKey,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-              Container(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-            ),
-            TextFormField(
-              onChanged: (val){
-                setState(() => lodgingType = val);
-              },
-              enableInteractiveSelection: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Hotel, Airbnb, etc",
-              ),
-              // ignore: missing_return
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a lodging type.';
-                }
-              },
-            ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                ),
-
-            TextFormField(
-              onChanged: (val){
-                setState(() => link = val);
-              },
-              enableInteractiveSelection: true,
-              maxLines: 2,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Link",
-              ),
-              // ignore: missing_return
-              validator: (value) {
-                if ( value.isNotEmpty && !value.startsWith('https')){
-                  return 'Please enter a valide link with including https.';
-                } 
-              },
-            ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                ),
-            TextFormField(
-              onChanged: (val){
-                setState(() => comment = val);
-              },
-              enableInteractiveSelection: true,
-              obscureText: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Description",
-              ),
-            ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                ),
+      body: SingleChildScrollView(
+        child: Builder(
+          builder: (context) => Form(
+            key: _formKey,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
                 Container(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  child: _image == null
-                      ? Text('No image selected.')
-                      : Image.file(_image),
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width,
-                    maxHeight: 300,
-                  ),
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              ),
+              TextFormField(
+                onChanged: (val){
+                  setState(() => lodgingType = val);
+                },
+                enableInteractiveSelection: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Hotel, Airbnb, etc",
                 ),
-                RaisedButton(
-                  onPressed: () {
-                    getImage();
-                  },
-//                              tooltip: 'Pick Image',
-                  child: Icon(Icons.add_a_photo),
-                ),
-            const SizedBox(height: 30),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 30.0, horizontal: 30.0),
-              child: RaisedButton(
-                onPressed: () async{
-                  final form = _formKey.currentState;
-                  if (form.validate()) {
-                    String displayName = user.displayName;
-                    String documentID = widget.tripDocID;
-                    String uid = user.uid;
-                    await DatabaseService().addNewLodgingData(comment, displayName, documentID, link, lodgingType, uid, urlToImage);
-                    Navigator.pop(context);
+                // ignore: missing_return
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a lodging type.';
                   }
                 },
-                color: Colors.lightBlue,
-                child: const Text(
-                    'Add',
-                    style: TextStyle(color: Colors.white, fontSize: 20)
+              ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  ),
+
+              TextFormField(
+                onChanged: (val){
+                  setState(() => link = val);
+                },
+                enableInteractiveSelection: true,
+                maxLines: 2,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Link",
+                ),
+                // ignore: missing_return
+                validator: (value) {
+                  if ( value.isNotEmpty && !value.startsWith('https')){
+                    return 'Please enter a valide link with including https.';
+                  } 
+                },
+              ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  ),
+              TextFormField(
+                onChanged: (val){
+                  setState(() => comment = val);
+                },
+                enableInteractiveSelection: true,
+                obscureText: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Description",
                 ),
               ),
-            ),
-        ]
-        ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    child: _image == null
+                        ? Text('No image selected.')
+                        : Image.file(_image),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width,
+                      maxHeight: 300,
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      getImage();
+                    },
+//                              tooltip: 'Pick Image',
+                    child: Icon(Icons.add_a_photo),
+                  ),
+              const SizedBox(height: 30),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 30.0, horizontal: 30.0),
+                child: RaisedButton(
+                  onPressed: () async{
+                    final form = _formKey.currentState;
+                    if (form.validate()) {
+                      String displayName = user.displayName;
+                      String documentID = widget.tripDocID;
+                      String uid = user.uid;
+                      await DatabaseService().addNewLodgingData(comment, displayName, documentID, link, lodgingType, uid, urlToImage);
+                      Navigator.pop(context);
+                    }
+                  },
+                  color: Colors.lightBlue,
+                  child: const Text(
+                      'Add',
+                      style: TextStyle(color: Colors.white, fontSize: 20)
+                  ),
+                ),
+              ),
+          ]
+          ),
+          ),
         ),
       )
     );

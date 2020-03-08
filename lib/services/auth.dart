@@ -39,7 +39,16 @@ class AuthService {
      return _userFromFirebase(user);
     } catch(e){
       print(e.toString());
-      return null;
+      if (e.toString().contains('ERROR_WRONG_PASSWORD')){
+        return 'The password provided is invalid or the username is incorrect.';
+      } else {
+        if (e.toString().contains('ERROR_USER_NOT_FOUND')){
+          return 'There is no user record corresponding to this identifier.';
+        }else {
+          return 'Error logging in with provided credentials.';
+        }
+      }
+      return e.toString();
     }
   }
 
