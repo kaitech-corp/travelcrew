@@ -29,10 +29,10 @@ class TappableCrewTripCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ImageLayout(trip.urlToImage != "" ? trip.urlToImage : "assests/images/barcelona.jpg"),
+              ImageLayout(trip.urlToImage != "" ? trip.urlToImage : "assests/images/travelPics.png"),
               ListTile(
-                title: Text(trip.location != '' ? trip.location : 'Trip Name'),
-                subtitle: Text("Travel Type: ${trip.travelType}",
+                title: Text(trip.location != null ? trip.location : 'Trip Name'),
+                subtitle: Text(trip.travelType != null ? "Travel Type: ${trip.travelType}" : "Travel Type:",
                   textAlign: TextAlign.start,),
                 trailing: Icon(Icons.message),
               ),
@@ -42,7 +42,7 @@ class TappableCrewTripCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Owner: ${ownerName(user.uid)}'),
-                      Text('${trip.startDate} to ${trip.endDate}')
+                      Text(trip.startDate != null ? '${trip.startDate} to ${trip.endDate}' : 'Dates')
                     ],
                   )
               )

@@ -54,10 +54,18 @@ class TappableTripCard extends StatelessWidget {
                           child: favorite(user.uid),
                           onPressed: () {
                             if (trip.favorite.contains(user.uid)){
-                              return DatabaseService(tripDocID: trip.documentId).removeFavoriteFromTrip(user.uid);
+                               try {
+                                 return DatabaseService(tripDocID: trip.documentId).removeFavoriteFromTrip(user.uid);
+                               } catch (e) {
+                                 print('Error removing favorite. ${e.toString()}');
+                               }
                             } else {
-                              return DatabaseService(tripDocID: trip.documentId)
-                                  .addFavoriteToTrip(user.uid);
+                              try {
+                                return DatabaseService(tripDocID: trip.documentId)
+                                    .addFavoriteToTrip(user.uid);
+                              } catch (e) {
+                                 print('Error adding favorite. ${e.toString()}');
+                              }
                             }
                             /* ... */ },
                         ),

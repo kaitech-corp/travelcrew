@@ -191,12 +191,13 @@ class DatabaseService {
       String startDate, String travelType, File urlToImage)
 
   async {
-     var addTripRef = await tripsCollectionUnordered.add({
+    var key = chatCollection.document().documentID;
+     var addTripRef = await tripsCollectionUnordered.document(key).setData({
       'favorite': [],
       'accessUsers' : accessUsers,
        'comment': comment,
        'displayName': displayName,
-      'documentId': '',
+      'documentId': key,
       'endDate': endDate,
       'endDateTimeStamp': endDateTimeStamp,
       'ispublic' : ispublic,
@@ -207,25 +208,76 @@ class DatabaseService {
       'urlToImage': '',
     });
 
-     await lodgingCollection.document(addTripRef.documentID).setData({});
-     await flightCollection.document(addTripRef.documentID).setData({});
-     await activitiesCollection.document(addTripRef.documentID).setData({});
-     await chatCollection.document(addTripRef.documentID).setData({});
+    try {
+      await lodgingCollection.document(key).setData({});
+    }catch (e) {
+      print('Error adding Lodging: ${e.toString()}');
+    }
+    try {
+      await flightCollection.document(key).setData({});
+    }catch (e) {
+      print('Error adding Flight: ${e.toString()}');
+    }
+    try {
+      await activitiesCollection.document(key).setData({});
+    }catch (e) {
+      print('Error adding Activity: ${e.toString()}');
+    }
 
-      await addTripRef.updateData({"documentId": addTripRef.documentID});
+     try {
+       await userCollection.document(ownerID).updateData({'trips': FieldValue.arrayUnion([key])});
+     }catch (e) {
+       print('Error adding new trip to user document: ${e.toString()}');
+     }
+//     await addTripRef.updateData({"documentId": addTripRef.documentID});
 
-      String urlforImage;
-     StorageReference storageReference = FirebaseStorage.instance
-         .ref()
-         .child('trips/${addTripRef.documentID}');
-     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-     await uploadTask.onComplete;
-     print('File Uploaded');
+      if (urlToImage != null) {
+        try {
+          String urlforImage;
+               StorageReference storageReference = FirebaseStorage.instance
+             .ref()
+             .child('trips/${key}');
+               StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+               await uploadTask.onComplete;
+               print('File Uploaded');
+        
+               return await tripsCollectionUnordered.document(key).updateData({"urlToImage":  await storageReference.getDownloadURL().then((fileURL) {
+          urlforImage = fileURL;
+          return urlforImage;
+               })});
+        }catch (e) {
+          print('Error storing image and updating image path: ${e.toString()}');
+        }
+      }
+  }
 
-     return await addTripRef.updateData({"urlToImage":  await storageReference.getDownloadURL().then((fileURL) {
-      urlforImage = fileURL;
-      return urlforImage;
-     })});
+  Future deleteTrip() async {
+
+    try {
+      await lodgingCollection.document(tripDocID).delete();
+    }catch (e) {
+      print('Error deleting Lodging: ${e.toString()}');
+    }
+    try {
+      await flightCollection.document(tripDocID).delete();
+    }catch (e) {
+      print('Error deleting Flight: ${e.toString()}');
+    }
+    try {
+      await activitiesCollection.document(tripDocID).delete();
+    }catch (e) {
+      print('Error deleting Activity: ${e.toString()}');
+    }
+    try {
+      await chatCollection.document(tripDocID).delete();
+    }catch (e) {
+      print('Error deleting Chat: ${e.toString()}');
+    }
+    try {
+      await tripsCollectionUnordered.document(tripDocID).delete();
+    }catch (e) {
+      print('Error deleting Trip: ${e.toString()}');
+    }
   }
 
   // Add new notification
@@ -344,6 +396,16 @@ class DatabaseService {
       );
 
   }
+  Future getUserDisplayName () async {
+    try {
+      var userRef = userPublicProfileCollection.document(uid);
+      DocumentSnapshot snapshot = await userRef.get();
+      return snapshot.data['displayName'];
+    } catch (e) {
+      print('Error retrieving displaynames: ${e.toString()}');
+    }
+
+  }
 
   // get current use public profile
   Stream<UserProfile> get currentUserPublicProfile {
@@ -354,32 +416,42 @@ class DatabaseService {
   // Get flights
   List<FlightData> _flightListFromSnapshot(DocumentSnapshot snapshot){
 
-    var list2 = List();
-    List<FlightData> listOfFlights = List();
+    try {
+      var list2 = List();
+      List<FlightData> listOfFlights = List();
 
-    snapshot.data.forEach((k,v) => list2.add(v));
+      if (snapshot.exists) {
+        snapshot.data.forEach((k,v) => list2.add(v));
+        
+         for (var i =0; i< list2.length;i++) {
+           listOfFlights.add(FlightData(
+             airline: list2[i]['airline'] ?? '',
+             departureDate: list2[i]['departureDate'] ?? '',
+             departureDateArrivalTime: list2[i]['departureDateArrivalTime'] ?? '',
+             departureDateDepartTime: list2[i]['departureDateDepartTime'] ?? '',
+             displayName: list2[i]['displayName'] ?? '',
+             flightNumber: list2[i]['flightNumber'] ?? '',
+             returnDate: list2[i]['returnDate'] ?? '',
+             returnDateArrivalTime: list2[i]['returnDateArrivalTime'] ?? '',
+             returnDateDepartTime: list2[i]['returnDateDepartTime'] ?? '',
+           ));
+         }
+      }
 
-     for (var i =0; i< list2.length;i++) {
-       listOfFlights.add(FlightData(
-         airline: list2[i]['airline'] ?? '',
-         departureDate: list2[i]['departureDate'] ?? '',
-         departureDateArrivalTime: list2[i]['departureDateArrivalTime'] ?? '',
-         departureDateDepartTime: list2[i]['departureDateDepartTime'] ?? '',
-         displayName: list2[i]['displayName'] ?? '',
-         flightNumber: list2[i]['flightNumber'] ?? '',
-         returnDate: list2[i]['returnDate'] ?? '',
-         returnDateArrivalTime: list2[i]['returnDateArrivalTime'] ?? '',
-         returnDateDepartTime: list2[i]['returnDateDepartTime'] ?? '',
-       ));
-     }
-
-      return listOfFlights;
+        return listOfFlights;
+    } catch (e) {
+      print('Error retrieving flight data. ${e.toString()}');
+    }
 
 
   }
 
   Stream<List<FlightData>> get flightList {
-    return flightCollection.document(tripDocID).snapshots().map(_flightListFromSnapshot);
+    try {
+      return flightCollection.document(tripDocID).snapshots().map(_flightListFromSnapshot);
+    } catch (e) {
+      print('Error Streaming Flights. ${e.toString()}');
+    }
   }
 
   //Get Lodging items
@@ -476,62 +548,104 @@ class DatabaseService {
   }
 
 
-
+// Add Favorite Trip
   Future addFavoriteToTrip(String uid) async {
-    return await tripsCollectionUnordered.document(tripDocID).updateData({
-      'favorite': FieldValue.arrayUnion([uid]),
-    });
+    try {
+      return await tripsCollectionUnordered.document(tripDocID).updateData({
+        'favorite': FieldValue.arrayUnion([uid]),
+      });
+    } catch (e) {
+      print('Error adding favorite. ${e.toString()}');
+    }
+
   }
+  //Remove Favorite Trip
   Future removeFavoriteFromTrip(String uid) async {
-    return await tripsCollectionUnordered.document(tripDocID).updateData({
-      'favorite': FieldValue.arrayRemove([uid]),
-    });
+    try {
+      return await tripsCollectionUnordered.document(tripDocID).updateData({
+        'favorite': FieldValue.arrayRemove([uid]),
+      });
+    } catch (e) {
+      print('Error removing favorite. ${e.toString()}');
+    }
   }
 
   //Add and Remove vote for activity
   Future addVoteToActivity(String uid, String fieldID) async {
-    await activitiesCollection.document(tripDocID).updateData({
-      '$fieldID.vote':
-      FieldValue.increment(1),
-    });
-    return await activitiesCollection.document(tripDocID).updateData({
-      '$fieldID.voters':
-      FieldValue.arrayUnion([uid]),
-    });
+    try {
+      await activitiesCollection.document(tripDocID).updateData({
+        '$fieldID.vote':
+        FieldValue.increment(1),
+      });
+    } catch (e) {
+      print('Error updating vote count. ${e.toString()}');
+    }
+    try {
+      return await activitiesCollection.document(tripDocID).updateData({
+        '$fieldID.voters':
+        FieldValue.arrayUnion([uid]),
+      });
+    } catch (e) {
+      print('Error updating voters. ${e.toString()}');
+    }
   }
   Future removeVoteFromActivity(String uid, String fieldID) async {
-    await activitiesCollection.document(tripDocID).updateData({
-      '$fieldID.vote':
-      FieldValue.increment(-1),
-    });
-    return await activitiesCollection.document(tripDocID).updateData({
-      '$fieldID.voters':
-      FieldValue.arrayRemove([uid]),
-    });
+    try {
+      await activitiesCollection.document(tripDocID).updateData({
+        '$fieldID.vote':
+        FieldValue.increment(-1),
+      });
+    } catch (e) {
+      print('Error updating vote count. ${e.toString()}');
+    }
+    try {
+      return await activitiesCollection.document(tripDocID).updateData({
+        '$fieldID.voters':
+        FieldValue.arrayRemove([uid]),
+      });
+    } catch (e) {
+      print('Error updating voters. ${e.toString()}');
+    }
   }
 // Store Images
 
 
   //Add and Remove vote for lodging
   Future addVoteToLodging(String uid, String fieldID) async {
-    await lodgingCollection.document(tripDocID).updateData({
-      '$fieldID.vote':
-      FieldValue.increment(1),
-    });
-    return await lodgingCollection.document(tripDocID).updateData({
-      '$fieldID.voters':
-      FieldValue.arrayUnion([uid]),
-    });
+    try {
+      await lodgingCollection.document(tripDocID).updateData({
+        '$fieldID.vote':
+        FieldValue.increment(1),
+      });
+    } catch (e) {
+      print('Error updating vote count. ${e.toString()}');
+    }
+    try {
+      return await lodgingCollection.document(tripDocID).updateData({
+        '$fieldID.voters':
+        FieldValue.arrayUnion([uid]),
+      });
+    } catch (e) {
+      print('Error updating voters. ${e.toString()}');
+    }
   }
   Future removeVoteFromLodging(String uid, String fieldID) async {
-    await lodgingCollection.document(tripDocID).updateData({
-      '$fieldID.vote':
-      FieldValue.increment(-1),
-    });
-    return await lodgingCollection.document(tripDocID).updateData({
-      '$fieldID.voters':
-      FieldValue.arrayRemove([uid]),
-    });
+    try {
+      await lodgingCollection.document(tripDocID).updateData({
+        '$fieldID.vote':
+        FieldValue.increment(-1),
+      });
+    } catch (e) {
+      print('Error updating vote count. ${e.toString()}');
+    }
+    try {
+      return await lodgingCollection.document(tripDocID).updateData({
+        '$fieldID.voters':
+        FieldValue.arrayRemove([uid]),
+      });
+    } catch (e) {
+      print('Error updating voters. ${e.toString()}');
+    }
   }
 
 
@@ -582,12 +696,20 @@ class DatabaseService {
   }
 
   Stream<List<ChatData>> get chatList {
-    return chatCollection.document(tripDocID).collection('messages')
-    .orderBy('timestamp', descending: true)
-        .snapshots().map(_chatListFromSnapshot);
+    try {
+      return chatCollection.document(tripDocID).collection('messages')
+      .orderBy('timestamp', descending: true)
+          .snapshots().map(_chatListFromSnapshot);
+    }catch (e) {
+      print("Could not load chat: ${e.toString()}");
+    }
   }
   Stream<List<ChatData>> get chatListNotification {
-    return chatCollection.document(tripDocID).collection('messages').where('status.${uid}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
+    try {
+      return chatCollection.document(tripDocID).collection('messages').where('status.${uid}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
+    }catch (e) {
+      print("Could not load chat notification list: ${e.toString()}");
+    }
   }
 
 }

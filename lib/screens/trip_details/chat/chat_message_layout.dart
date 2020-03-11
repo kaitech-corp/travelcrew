@@ -32,12 +32,12 @@ class ChatMessageLayout extends StatelessWidget {
             new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Text(message.displayName, textScaleFactor: .9),
+                new Text(message.displayName ?? '', textScaleFactor: .9),
                 new Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(message.message, textScaleFactor: 1.2,),
+                  child: new Text(message.message ?? '', textScaleFactor: 1.2,),
                 ),
-                Text(readTimestamp(message.timestamp.millisecondsSinceEpoch), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
+                Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
               ],
             )
           ],
@@ -61,12 +61,12 @@ class ChatMessageLayout extends StatelessWidget {
             new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Text(message.displayName, textScaleFactor: .9),
+                new Text(message.displayName ?? '', textScaleFactor: .9),
                 new Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(message.message, textScaleFactor: 1.2,),
+                  child: new Text(message.message ?? '', textScaleFactor: 1.2,),
                 ),
-                Text(readTimestamp(message.timestamp.millisecondsSinceEpoch), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
+                Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
               ],
             )
           ],

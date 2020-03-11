@@ -15,6 +15,7 @@ class TravelCrew extends StatelessWidget{
     return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
+          debugShowCheckedModeBanner: false,
         home: Wrapper(),
       ),
     );

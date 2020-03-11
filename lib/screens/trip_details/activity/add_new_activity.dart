@@ -139,6 +139,7 @@ class _AddNewActivityState extends State<AddNewActivity> {
                             String uid = user.uid;
                             setState(() => loading =true);
                             await DatabaseService().addNewActivityData(comment, displayName, documentID, link, activityType, uid, urlToImage);
+
                             setState(() {
                               loading = false;
                             });

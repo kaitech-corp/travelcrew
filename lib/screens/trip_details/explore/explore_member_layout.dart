@@ -16,7 +16,7 @@ class ExploreMemberLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout("assests/images/barcelona.jpg"),
+                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assests/images/travelPics.png"),
                 ListTile(
                   title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(

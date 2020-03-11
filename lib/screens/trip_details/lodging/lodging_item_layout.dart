@@ -60,8 +60,8 @@ class LodgingItemLayout extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          if (lodging.link.isNotEmpty) Text('Link attached'),
-                          if (lodging.urlToImage.isNotEmpty) ImageLayout(lodging.urlToImage),
+                          if (lodging.link != "") Text('Link attached'),
+                          if (lodging.urlToImage != '') ImageLayout(lodging.urlToImage),
                         ],
                       )
                     ],
@@ -124,7 +124,7 @@ class LodgingItemLayout extends StatelessWidget {
                           value: 'Delete',
                           child: ListTile(
                             leading: Icon(Icons.exit_to_app),
-                            title: Text('Delete Trip'),
+                            title: Text('Delete Lodging'),
                           ),
                         ),
                       ],
@@ -138,7 +138,7 @@ class LodgingItemLayout extends StatelessWidget {
     );
   }
   favorite(String uid){
-    if (lodging.voters.contains(uid)){
+    if (lodging?.voters?.contains(uid)){
       return Icon(Icons.favorite);
     } else {
       return Icon(Icons.favorite_border);

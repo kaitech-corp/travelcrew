@@ -29,29 +29,35 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: true,
         title: Text('Profile'),
           ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
-            Text('${user.firstname} ${user.lastname}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
-            Text('Email: ${user.email}'),
-            Container(
-              child: user.urlToImage != null ? Image.network(user.urlToImage) : _image == null
-                  ? Text('No image selected.')
-                  : Image.file(_image),
-            ),
-            RaisedButton(
-              onPressed: () {
-                getImage();
-              },
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
+              Text('${user.firstname} ${user.lastname}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
+              Text('Email: ${user.email}'),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
+                    child: user.urlToImage != null ? Image.network(user.urlToImage) : _image == null
+                        ? Text('No image selected.')
+                        : Image.file(_image),
+                ),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  getImage();
+                },
 //                              tooltip: 'Pick Image',
-              child: Icon(Icons.add_a_photo),
-            ),
-          ],
+                child: Icon(Icons.add_a_photo),
+              ),
+            ],
+          ),
         ),
       ),
     );

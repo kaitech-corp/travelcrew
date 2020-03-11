@@ -28,10 +28,13 @@ class UsersTextSection extends StatelessWidget{
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                    borderRadius: BorderRadius.circular(25.0),
                     color: Colors.blue,
                   ),
-                  child: Image.network(allUsers.urlToImage,height: 75, width: 75,fit: BoxFit.fill,),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: allUsers.urlToImage != null ? Image.network(allUsers.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
+                  ),
                 ),
                 title: Text('${allUsers.firstname} ${allUsers.lastname}'),
                 subtitle: Text("${allUsers.displayName}",

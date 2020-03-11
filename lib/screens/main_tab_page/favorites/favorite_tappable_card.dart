@@ -27,7 +27,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
             children: <Widget>[
 //              ImageLayout("assests/images/barcelona.jpg"),
               ListTile(
-                title: Text((trip.location != '' ? trip.location : 'Trip Name').toUpperCase(), textScaleFactor: 1.25,),
+                title: Text((trip.location != '' ? (trip.location).toUpperCase() : 'Trip Name'), textScaleFactor: 1.25,),
                 subtitle: Text("Travel Type: ${trip.travelType}",
                   textAlign: TextAlign.start,),
 //              isThreeLine: true,

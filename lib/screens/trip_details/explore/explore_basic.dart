@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic_layout.dart';
 import 'package:travelcrew/services/auth.dart';
 
@@ -26,7 +27,10 @@ class ExploreBasic extends StatelessWidget {
                   _auth.logOut();
                   print(value);
                 }else{
-                  print(value);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
                 }
               },
               padding: EdgeInsets.zero,

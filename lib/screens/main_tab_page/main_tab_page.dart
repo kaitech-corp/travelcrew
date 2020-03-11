@@ -6,9 +6,11 @@ import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
 import 'package:travelcrew/screens/main_tab_page/users/users.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
-
+import 'package:travelcrew/screens/push_notifications.dart';
 import 'package:travelcrew/services/auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class MainTabPage extends StatefulWidget {
   MainTabPage({Key key}) : super(key: key);

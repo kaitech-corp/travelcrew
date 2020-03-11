@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/tappable_trip_card.dart';
-
 import '../../loading.dart';
 
 class TripList extends StatefulWidget {

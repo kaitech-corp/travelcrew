@@ -62,8 +62,8 @@ class ActivityItemLayout extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          if (activity.link.isNotEmpty) Text('Link attached'),
-                          if (activity.urlToImage.isNotEmpty) ImageLayout(activity.urlToImage),
+                          if (activity.link?.isNotEmpty) Text('Link attached'),
+                          if (activity.urlToImage?.isNotEmpty) ImageLayout(activity.urlToImage),
                         ],
                       )
                     ],
@@ -126,7 +126,7 @@ class ActivityItemLayout extends StatelessWidget {
                           value: 'Delete',
                           child: ListTile(
                             leading: Icon(Icons.exit_to_app),
-                            title: Text('Delete Trip'),
+                            title: Text('Delete Activity'),
                           ),
                         ),
                       ],
@@ -141,11 +141,11 @@ class ActivityItemLayout extends StatelessWidget {
     );
   }
   favorite(String uid){
-    if (activity.voters.contains(uid)){
-      return Icon(Icons.favorite);
-    } else {
-      return Icon(Icons.favorite_border);
-    }
+      if (activity.voters.contains(uid)) {
+        return Icon(Icons.favorite);
+      } else {
+        return Icon(Icons.favorite_border);
+      }
   }
 
 
