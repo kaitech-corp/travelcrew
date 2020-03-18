@@ -43,6 +43,8 @@ class _HomeMaterialState extends State<HomeMaterial> {
     if (picked != null && picked != _fromDateDepart) {
       setState(() {
         _fromDateDepart = picked;
+        _fromDateReturn = picked;
+
       });
     }
   }

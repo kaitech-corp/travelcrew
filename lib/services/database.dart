@@ -28,8 +28,8 @@ class DatabaseService {
 
   Future updateUserData(String firstname, String lastName, String email, String uid) async {
     return await userCollection.document(uid).setData({
-      'firstName': firstname,
-      'lastName' : lastName,
+      'firstname': firstname,
+      'lastname' : lastName,
       'email': email,
       'uid': uid
     });
@@ -41,14 +41,37 @@ class DatabaseService {
     return await userPublicProfileCollection.document(uid).setData({
       'displayName': displayName,
       'email': email,
-      'firstName': firstname,
-      'lastName' : lastName,
+      'firstname': firstname,
+      'lastname' : lastName,
       'tripsCreated': tripsCreated,
       'tripsJoined': tripsJoined,
       'uid': uid,
       'urlToImage': urlToImage
     });
   }
+
+  // Save new profile pic
+//  Future saveProfilePicture(File urlToImage) async{
+//    if (urlToImage != null) {
+//      try {
+//        String urlforImage;
+//        StorageReference storageReference = FirebaseStorage.instance
+//            .ref()
+//            .child('trips/${key}');
+//        StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+//        await uploadTask.onComplete;
+//        print('File Uploaded');
+//
+//        return await tripsCollectionUnordered.document(key).updateData({"urlToImage":  await storageReference.getDownloadURL().then((fileURL) {
+//          urlforImage = fileURL;
+//          return urlforImage;
+//        })});
+//      }catch (e) {
+//        print('Error storing image and updating image path: ${e.toString()}');
+//      }
+//    }
+//  }
+
 // Get user display name.
   Future<String> retrieveUserDisplayName(String uid) async {
      var ref = await userPublicProfileCollection.document(uid).get();
@@ -87,7 +110,7 @@ class DatabaseService {
 
   // Add new lodging
 
-  Future addNewLodgingData(String comment, String displayName, String documentID, String link, String lodgingType, String uid, File urlToImage) async {
+  Future addNewLodgingData(String comment, String displayName, String documentID, String link, String lodgingType, String uid, File urlToImage, String tripName) async {
 
     var key = lodgingCollection.document().documentID;
     print(documentID);
@@ -99,11 +122,16 @@ class DatabaseService {
         'fieldID': key,
         'link': link,
         'lodgingType' : lodgingType,
+        'tripName': tripName,
         'uid': uid,
         'urlToImage': '',
         'vote': 0,
         'voters': [],}
     });
+    String trip = documentID;
+    String message = 'A new lodging has been added to $tripName.';
+    String type = 'lodging';
+
     if (urlToImage != null) {
       String urlforImage;
       StorageReference storageReference = FirebaseStorage.instance
@@ -121,9 +149,19 @@ class DatabaseService {
       });
     }
   }
+
+  // Remove Lodging
+  Future removeLodging(String fieldID){
+    try {
+      return lodgingCollection.document(tripDocID).updateData({fieldID:FieldValue.delete()});
+    } catch (e) {
+      print('Error deleting activity: ${e.toString()}');
+    }
+  }
+
 // Add new activity
   Future addNewActivityData(String comment, String displayName, String documentID,
-      String link, String activityType, String uid, File urlToImage) async {
+      String link, String activityType, String uid, File urlToImage, String tripName) async {
     var key = activitiesCollection.document().documentID;
     print(documentID);
 
@@ -134,15 +172,16 @@ class DatabaseService {
       'fieldID': key,
       'link': link,
       'activityType' : activityType,
+      'tripName': tripName,
       'uid': uid,
       'urlToImage': '',
       'vote': 0,
       'voters': [],}
     });
     String trip = documentID;
-    String message = 'A new activity has been added.';
-    String type = 'Addition';
-    addNewNotificationData(message, trip, type, uid);
+    String message = 'A new activity has been added to $tripName.';
+    String type = 'activity';
+
     if (urlToImage != null) {
       String urlforImage;
       StorageReference storageReference = FirebaseStorage.instance
@@ -158,6 +197,15 @@ class DatabaseService {
           return urlforImage;
         })
       });
+    }
+  }
+
+  // Remove Activity
+  Future removeActivity(String fieldID){
+    try {
+      return activitiesCollection.document(tripDocID).updateData({fieldID:FieldValue.delete()});
+    } catch (e) {
+      print('Error deleting activity: ${e.toString()}');
     }
   }
 
@@ -283,23 +331,23 @@ class DatabaseService {
   // Add new notification
   Future addNewNotificationData(String message, String documentID, String type, String ownerID) async {
     var key = notificationCollection.document().documentID;
-    return await notificationCollection.document(ownerID).setData({
-      key: {
-        'fieldID': key,
-        'message': message,
-        'timestamp': FieldValue.serverTimestamp(),
-        'documentID': documentID,
-        'type': type,
-        'uid': uid,
-        }
+    try {
+      return await notificationCollection.document(ownerID).collection('notifications').document(key).setData({
+          'fieldID': key,
+          'message': message,
+          'timestamp': FieldValue.serverTimestamp(),
+          'documentID': documentID,
+          'type': type,
+          'uid': uid,
 
-    });
+      });
+    } catch (e) {
+      print('Error writing notification: ${e.toString()}');
+    }
     }
   // Remove notification
   Future removeNotificationData(String fieldID) async {
-    return await notificationCollection.document(uid).updateData({
-      '$fieldID': FieldValue.delete()
-    });
+    return await notificationCollection.document(uid).collection('notifications').document(fieldID).delete();
   }
 
   // Edit Trip
@@ -649,36 +697,28 @@ class DatabaseService {
   }
 
 
-  // Notifications
-// Notification types:
-// You joined a new group
-// A trip has been edited
-// You are now following...
-// ... is xxxnow following you.
-  List<NotificationData> _notificationListFromSnapshot(DocumentSnapshot snapshot){
+  // Get all Notifications
 
-    var _list = List();
-    List<NotificationData> listOfNotifications = List();
+  List<NotificationData> _notificationListFromSnapshot(QuerySnapshot snapshot){
 
-    snapshot.data.forEach((k,v) => _list.add(v));
-
-    for (var i =0; i< _list.length;i++) {
-      listOfNotifications.add(NotificationData(
-        fieldID: _list[i]['fieldID'] ?? '',
-        message: _list[i]['message'] ?? '',
-        timestamp: _list[i]['timestamp'] ?? '',
-        documentID: _list[i]['documentID'] ?? '',
-        type: _list[i]['type'] ?? '',
-        uid: _list[i]['uid'] ?? '',
-      ));
+    try {
+      return snapshot.documents.map((doc){
+        return NotificationData(
+          documentID: doc.data['documentID'] ?? '',
+          fieldID: doc.data['fieldID'] ?? '',
+          message: doc.data['message'] ?? '',
+          timestamp: doc.data['timestamp'] ?? Timestamp.now(),
+          type: doc.data['type'] ?? '',
+          uid: doc.data['uid'] ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      print('Error retrieving notifications: ${e.toString()}');
     }
-    listOfNotifications.sort((a,b) => b.timestamp.compareTo(a.timestamp));
-    print(listOfNotifications);
-    return listOfNotifications;
   }
 
   Stream<List<NotificationData>> get notificationList {
-    return notificationCollection.document(uid).snapshots().map(_notificationListFromSnapshot);
+    return notificationCollection.document(uid).collection('notifications').snapshots().map(_notificationListFromSnapshot);
   }
 
   // Get all chat messages

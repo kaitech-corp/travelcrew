@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
+import 'package:travelcrew/services/database.dart';
 
 class ExploreMemberLayout extends StatelessWidget{
 
@@ -10,6 +12,7 @@ class ExploreMemberLayout extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
         body: Container(
           child: SingleChildScrollView(
@@ -21,7 +24,28 @@ class ExploreMemberLayout extends StatelessWidget{
                   title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(
                     onSelected: (value){
-                      print(value);
+                      switch (value) {
+                        case "Members":
+                          {
+                            userAlertDialog(context);
+                          }
+                          break;
+                        case "Add":
+                          {
+                            _addAlertDialog(context);
+                          }
+                          break;
+                        case "Leave":
+                          {
+                            DatabaseService(tripDocID: tripdetails.documentId, uid: user.uid).leaveTrip();
+                          }
+                          break;
+                        default:
+                          {
+                            print(value);
+                          }
+                          break;
+                      }
                     },
                     padding: EdgeInsets.zero,
                     itemBuilder: (context) =>[
@@ -93,6 +117,51 @@ class ExploreMemberLayout extends StatelessWidget{
             ),
           ),
         )
+    );
+  }
+  void _addAlertDialog(BuildContext context) {
+
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Currently under development.'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text('Thank you for you patience.'),
+              ),
+            ],
+          );
+        }
+    );
+  }
+
+  Future<void> userAlertDialog(BuildContext context) async {
+
+    await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Members'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text('${tripdetails.accessUsers.length} Member(s)'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text(''),
+              ),
+            ],
+          );
+        }
     );
   }
 }

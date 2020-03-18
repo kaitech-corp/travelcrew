@@ -8,8 +8,8 @@ import 'add_new_lodging.dart';
 
 class Lodging extends StatefulWidget {
 
-  final String tripDocID;
-  Lodging({this.tripDocID});
+  final Trip trip;
+  Lodging({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,17 +22,17 @@ class _LodgingState extends State<Lodging> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider.value(
-      value: DatabaseService(tripDocID: widget.tripDocID).lodgingList,
+      value: DatabaseService(tripDocID: widget.trip.documentId).lodgingList,
       child: Scaffold(
         body: Container(
-          child: LodgingList(tripDocID: widget.tripDocID,),
+          child: LodgingList(tripDocID: widget.trip.documentId,),
         ),
         floatingActionButton: FloatingActionButton(
 
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddNewLodging(tripDocID: widget.tripDocID,)),
+              MaterialPageRoute(builder: (context) => AddNewLodging(trip: widget.trip,)),
             );
           },
           child: Icon(Icons.add),

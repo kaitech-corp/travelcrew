@@ -14,9 +14,20 @@ class Notifications extends StatelessWidget{
 
     return StreamProvider<List<NotificationData>>.value(
       value: DatabaseService(uid: user.uid).notificationList,
-      child: Container (
-        child: NotificationList(),
+      child: Scaffold(
+        body: Container (
+          child: NotificationList(),
+        ),
+//        floatingActionButton: FloatingActionButton(
+//          onPressed: () {
+//
+//          },
+//          child: Text('Clear All',textAlign: TextAlign.center,),
+//
+//        ),
+//        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
+
     );
   }
 }

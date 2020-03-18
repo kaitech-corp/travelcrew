@@ -91,9 +91,9 @@ class Explore extends StatelessWidget {
         body: TabBarView(
           children: [
             checkOwner(uid),
-            Flight(tripDocID: trip.documentId,),
-            Lodging(tripDocID: trip.documentId,),
-            Activity(tripDocID: trip.documentId,),
+            Flight(trip: trip,),
+            Lodging(trip: trip,),
+            Activity(trip: trip,),
             Chat(trip: trip,),
           ],
         )

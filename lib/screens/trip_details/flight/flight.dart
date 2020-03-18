@@ -8,8 +8,8 @@ import 'add_new_flight.dart';
 
 class Flight extends StatefulWidget {
 
-  final String tripDocID;
-  Flight({this.tripDocID});
+  final Trip trip;
+  Flight({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +23,7 @@ class _FlightState extends State<Flight> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<FlightData>>.value(
-      value: DatabaseService(tripDocID: widget.tripDocID).flightList,
+      value: DatabaseService(tripDocID: widget.trip.documentId).flightList,
       child: Scaffold(
         body: Container(
           child: FlightList()
@@ -31,16 +31,35 @@ class _FlightState extends State<Flight> {
         floatingActionButton: FloatingActionButton(
 
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddNewFlight()),
-            );
-
+//            Navigator.push(
+//              context,
+//              MaterialPageRoute(builder: (context) => AddNewFlight()),
+//            );
+            userAlertDialog(context);
           },
           child: Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
+    );
+  }
+  void userAlertDialog(BuildContext context) {
+
+     showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Currently under development.'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text('Thank you for you patience.'),
+              ),
+            ],
+          );
+        }
     );
   }
 }

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/crew_trips.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
+import 'package:travelcrew/screens/main_tab_page/notifications/notification_list.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
 import 'package:travelcrew/screens/main_tab_page/users/users.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
-import 'package:travelcrew/screens/push_notifications.dart';
 import 'package:travelcrew/services/auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:travelcrew/services/badge_icon.dart';
+import 'package:travelcrew/services/database.dart';
 
-final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class MainTabPage extends StatefulWidget {
   MainTabPage({Key key}) : super(key: key);
@@ -38,8 +41,11 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    final notifications = Provider.of<List<NotificationData>>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -91,15 +97,15 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                 MaterialPageRoute(builder: (context) => AddTrip()),
               );
             },
-          )
+          ),
         ],
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
       bottomNavigationBar: BottomNavigationBar(
 
-        items: const <BottomNavigationBarItem>[
+        items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.group),
             title: Text('My Crew'),
@@ -116,7 +122,10 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
+            icon: BadgeIcon(
+              icon: Icon(Icons.notifications_active),
+              badgeCount: notifications != null ? notifications.length : 0,
+            ),
             title: Text('Notifications'),
             backgroundColor: Colors.grey,
           ),
@@ -132,4 +141,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       ),
     );
   }
+
+
+
 }

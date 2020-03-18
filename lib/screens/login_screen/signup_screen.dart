@@ -4,10 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
+import 'package:travelcrew/screens/login_screen/privacy_page.dart';
+
 import 'package:travelcrew/services/auth.dart';
-
-
-
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -24,6 +23,8 @@ class _SignupScreenState extends State {
   String email = '';
   String password = '';
   String error = '';
+
+  Key get key => null;
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -133,7 +134,9 @@ class _SignupScreenState extends State {
                                     onPressed: (){
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => SignupScreen()),
+                                        MaterialPageRoute(builder: (context) =>
+                                      PrivacyPolicy(),
+                                        )
                                       );
                                     },
                                   )

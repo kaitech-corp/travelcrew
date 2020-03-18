@@ -17,7 +17,18 @@ class ProfileStream extends StatelessWidget{
     return StreamProvider<UserProfile>.value(
       value: DatabaseService(uid: user.uid).currentUserPublicProfile,
       child: MaterialApp(
-        home: MainTabPage(),
+        home: build2(context),
+      ),
+    );
+  }
+
+  Widget build2(BuildContext context) {
+    final user = Provider.of<User>(context);
+
+    return StreamProvider<List<NotificationData>>.value(
+      value: DatabaseService(uid: user.uid).notificationList,
+      child: Container (
+        child: MainTabPage(),
       ),
     );
   }

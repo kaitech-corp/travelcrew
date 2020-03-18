@@ -10,8 +10,8 @@ import 'package:travelcrew/services/database.dart';
 
 class AddNewActivity extends StatefulWidget {
 
-  final String tripDocID;
-  AddNewActivity({this.tripDocID});
+  final Trip trip;
+  AddNewActivity({this.trip});
 
   @override
   _AddNewActivityState createState() => _AddNewActivityState();
@@ -135,10 +135,14 @@ class _AddNewActivityState extends State<AddNewActivity> {
                           final form = _formKey.currentState;
                           if (form.validate()) {
                             String displayName = user.displayName;
-                            String documentID = widget.tripDocID;
+                            String documentID = widget.trip.documentId;
                             String uid = user.uid;
+                            String tripName = widget.trip.location;
                             setState(() => loading =true);
-                            await DatabaseService().addNewActivityData(comment, displayName, documentID, link, activityType, uid, urlToImage);
+                            String message = 'A new activity has been added to ${widget.trip.location}';
+
+                            await DatabaseService().addNewActivityData(comment, displayName, documentID, link, activityType, uid, urlToImage, tripName);
+                            widget.trip.accessUsers.forEach((f) async => await DatabaseService(uid: user.uid).addNewNotificationData(message, documentID, 'Activity', f));
 
                             setState(() {
                               loading = false;

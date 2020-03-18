@@ -12,8 +12,8 @@ import '../../loading.dart';
 
 class AddNewLodging extends StatefulWidget {
 
-  final String tripDocID;
-  AddNewLodging({this.tripDocID});
+  final Trip trip;
+  AddNewLodging({this.trip});
   bool loading = false;
   @override
   _AddNewLodgingState createState() => _AddNewLodgingState();
@@ -137,9 +137,12 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     final form = _formKey.currentState;
                     if (form.validate()) {
                       String displayName = user.displayName;
-                      String documentID = widget.tripDocID;
+                      String documentID = widget.trip.documentId;
                       String uid = user.uid;
-                      await DatabaseService().addNewLodgingData(comment, displayName, documentID, link, lodgingType, uid, urlToImage);
+                      String tripName = widget.trip.location;
+                      String message = 'A new lodging has been added to ${widget.trip.location}';
+                      await DatabaseService().addNewLodgingData(comment, displayName, documentID, link, lodgingType, uid, urlToImage, tripName);
+                      widget.trip.accessUsers.forEach((f) async => await DatabaseService(uid: user.uid).addNewNotificationData(message, documentID, 'Activity', f));
                       Navigator.pop(context);
                     }
                   },

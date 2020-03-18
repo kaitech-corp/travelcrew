@@ -32,10 +32,11 @@ class ChatMessageLayout extends StatelessWidget {
             new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Text(message.displayName ?? '', textScaleFactor: .9),
+                new Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold)),
                 new Container(
-                  margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(message.message ?? '', textScaleFactor: 1.2,),
+                  width: MediaQuery.of(context).size.width*0.8,
+                  margin: const EdgeInsets.all(5.0),
+                  child: Text(message.message ?? '', textScaleFactor: 1.2,),
                 ),
                 Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
               ],
@@ -61,7 +62,7 @@ class ChatMessageLayout extends StatelessWidget {
             new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Text(message.displayName ?? '', textScaleFactor: .9),
+                new Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
                 new Container(
                   margin: const EdgeInsets.only(top: 5.0),
                   child: new Text(message.message ?? '', textScaleFactor: 1.2,),

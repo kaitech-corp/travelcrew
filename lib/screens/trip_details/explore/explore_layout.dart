@@ -52,6 +52,11 @@ class ExploreLayout extends StatelessWidget {
                             _deleteAlert(context);
                           }
                           break;
+                        case "Add":
+                          {
+                            _addAlertDialog(context);
+                          }
+                          break;
                         default:
                           {
                             print(value);
@@ -142,6 +147,25 @@ class ExploreLayout extends StatelessWidget {
     );
   }
 
+  void _addAlertDialog(BuildContext context) {
+
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Currently under development.'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text('Thank you for you patience.'),
+              ),
+            ],
+          );
+        }
+    );
+  }
   Future<void> userAlertDialog(BuildContext context) async {
 
     await showDialog<String>(

@@ -23,40 +23,24 @@ class ExploreBasicLayout extends StatelessWidget{
                 ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assests/images/travelPics.png"),
                 ListTile(
                   title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value){
-                      switch (value){
-                        case "Join":
-                          {
-                            String message = '${user.displayName} has requested to join your trip ${tripdetails.location}.';
-                            String trip = tripdetails.documentId;
-                            String type = 'joinRequest';
-                            String ownerID = tripdetails.ownerID;
-                              DatabaseService(tripDocID: tripdetails.documentId, uid: user.uid)
-                                  .addNewNotificationData(message, trip, type, ownerID);
-//
-                              _showDialog(context);
-                          }
-                        break;
-                        default: {
-                          print(value);
-                        }
-                        break;
-                      }
-                    },
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context) =>[
-                      const PopupMenuItem(
-                        value: 'Join',
-                        child: ListTile(
-                          leading: Icon(Icons.add),
-                          title: Text('Request to Join'),
-                        ),
-                      ),
-                    ],
-                  ),
                   subtitle: Text('Owner', style: TextStyle(fontSize: 12.0),),
                 ),
+                RaisedButton(
+                    shape: Border.all(width: 1, color: Colors.blue),
+                  child: Text('Request to Join'),
+                    onPressed: ()
+                      {
+                        String message = '${user.displayName} has requested to join your trip ${tripdetails.location}.';
+                        String trip = tripdetails.documentId;
+                        String type = 'joinRequest';
+                        String ownerID = tripdetails.ownerID;
+
+                        DatabaseService(tripDocID: tripdetails.documentId, uid: user.uid)
+                            .addNewNotificationData(message, trip, type, ownerID);
+//
+                        _showDialog(context);
+                      }
+                  ),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
                     child: Column(
@@ -97,7 +81,7 @@ class ExploreBasicLayout extends StatelessWidget{
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Request Submitted')));
+        .showSnackBar(SnackBar(content: Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
   }
 }
 

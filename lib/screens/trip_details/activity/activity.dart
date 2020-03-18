@@ -7,8 +7,8 @@ import 'package:travelcrew/services/database.dart';
 
 class Activity extends StatefulWidget {
 
-  final String tripDocID;
-  Activity({this.tripDocID});
+  final Trip trip;
+  Activity({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -21,17 +21,17 @@ class Activity extends StatefulWidget {
     @override
     Widget build(BuildContext context) {
       return StreamProvider.value(
-        value: DatabaseService(tripDocID: widget.tripDocID).activityList,
+        value: DatabaseService(tripDocID: widget.trip.documentId).activityList,
         child: Scaffold(
           body: Container(
-            child: ActivityList(tripDocID: widget.tripDocID,),
+            child: ActivityList(tripDocID: widget.trip.documentId,),
           ),
             floatingActionButton: FloatingActionButton(
 
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddNewActivity(tripDocID: widget.tripDocID,)),
+                  MaterialPageRoute(builder: (context) => AddNewActivity(trip: widget.trip,)),
                 );
               },
               child: Icon(Icons.add),

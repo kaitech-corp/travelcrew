@@ -35,7 +35,7 @@ class LodgingItemLayout extends StatelessWidget {
 //                        title: Text('Lodging Type'),
 //                        subtitle: Text('Description'),
 //                      ),
-                      Text('${lodging.lodgingType}'),
+                      Text('${lodging.lodgingType}', style: TextStyle(fontWeight: FontWeight.bold), textScaleFactor: 1.25,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
@@ -45,7 +45,7 @@ class LodgingItemLayout extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('${lodging.displayName}'),
+                        Text('${lodging.displayName}', style: TextStyle(fontSize: 16)),
                         Text('Likes: ${lodging.vote}'),
                       ],
                     ),
@@ -81,21 +81,23 @@ class LodgingItemLayout extends StatelessWidget {
                           }
                         }
                     ),
-                    PopupMenuButton<String>(
+                    lodging.uid == user.uid ? PopupMenuButton<String>(
                       onSelected: (value){
                         switch (value){
                           case "Edit": {
-
+                            userAlertDialog(context);
                           }
                           break;
                           case "View": {
-//                            if (activity.link.isNotEmpty) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
                                   WebViewScreen(lodging.link, key)),
                             );
-//                            }
+                          }
+                          break;
+                          case "Delete": {
+                            DatabaseService(tripDocID: tripDocID).removeLodging(lodging.fieldID);
                           }
                           break;
                           default: {
@@ -128,6 +130,36 @@ class LodgingItemLayout extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ):
+                    PopupMenuButton<String>(
+                      onSelected: (value){
+                        switch (value){
+                          case "View": {
+//                            if (activity.link.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  WebViewScreen(lodging.link, key)),
+                            );
+//                            }
+                          }
+                          break;
+                          default: {
+                            print(value);
+                          }
+                          break;
+                        }
+                      },
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context) =>[
+                        const PopupMenuItem(
+                          value: 'View',
+                          child: ListTile(
+                            leading: Icon(Icons.people),
+                            title: Text('View Link'),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -143,5 +175,24 @@ class LodgingItemLayout extends StatelessWidget {
     } else {
       return Icon(Icons.favorite_border);
     }
+  }
+  void userAlertDialog(BuildContext context) {
+
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Currently under development.'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text('Thank you for you patience.'),
+              ),
+            ],
+          );
+        }
+    );
   }
 }

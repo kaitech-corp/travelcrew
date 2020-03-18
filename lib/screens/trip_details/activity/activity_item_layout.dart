@@ -23,10 +23,6 @@ class ActivityItemLayout extends StatelessWidget {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Explore()),
-            );
             print('Card tapped.');
           },
           child: Container(
@@ -41,7 +37,7 @@ class ActivityItemLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Text('${activity.activityType}', style: TextStyle(fontSize: 20),),
+                      Text('${activity.activityType}', style: TextStyle(fontWeight: FontWeight.bold), textScaleFactor: 1.25,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
@@ -69,7 +65,7 @@ class ActivityItemLayout extends StatelessWidget {
                     ],
                   ),
                 ),
-                ButtonBar(
+                activity.uid == user.uid ? ButtonBar(
                   children: <Widget>[
                     FlatButton(
                       child: favorite(user.uid),
@@ -87,7 +83,7 @@ class ActivityItemLayout extends StatelessWidget {
                       onSelected: (value){
                         switch (value){
                           case "Edit": {
-
+                            userAlertDialog(context);
                           }
                           break;
                           case "View": {
@@ -100,8 +96,12 @@ class ActivityItemLayout extends StatelessWidget {
 //                            }
                           }
                           break;
+                          case "Delete": {
+                            DatabaseService(tripDocID: tripDocID).removeActivity(activity.fieldID);
+                          }
+                          break;
                           default: {
-                            print(value);
+
                           }
                           break;
                         }
@@ -132,6 +132,49 @@ class ActivityItemLayout extends StatelessWidget {
                       ],
                     ),
                   ],
+                ):
+                ButtonBar(
+                  children: <Widget>[
+                    FlatButton(
+                        child: favorite(user.uid),
+                        onPressed: () {
+                          String fieldID = activity.fieldID;
+                          String uid = user.uid;
+                          if (!activity.voters.contains(user.uid)) {
+                            return DatabaseService(tripDocID: tripDocID).addVoteToActivity(uid, fieldID);
+                          } else {
+                            return DatabaseService(tripDocID: tripDocID).removeVoteFromActivity(uid, fieldID);
+                          }
+                        }
+                    ),
+                    PopupMenuButton<String>(
+                      onSelected: (value){
+                        switch (value){
+                          case "View": {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  WebViewScreen(activity.link, key)),
+                            );
+                          }
+                          break;
+                          default: {
+                          }
+                          break;
+                        }
+                      },
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context) =>[
+                        const PopupMenuItem(
+                          value: 'View',
+                          child: ListTile(
+                            leading: Icon(Icons.people),
+                            title: Text('View Link'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -147,6 +190,24 @@ class ActivityItemLayout extends StatelessWidget {
         return Icon(Icons.favorite_border);
       }
   }
+  void userAlertDialog(BuildContext context) {
 
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Currently under development.'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Text('Thank you for you patience.'),
+              ),
+            ],
+          );
+        }
+    );
+  }
 
 }

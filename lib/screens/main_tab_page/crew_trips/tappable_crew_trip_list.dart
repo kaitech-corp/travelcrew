@@ -34,7 +34,7 @@ class TappableCrewTripCard extends StatelessWidget {
                 title: Text(trip.location != null ? trip.location : 'Trip Name'),
                 subtitle: Text(trip.travelType != null ? "Travel Type: ${trip.travelType}" : "Travel Type:",
                   textAlign: TextAlign.start,),
-                trailing: Icon(Icons.message),
+
               ),
               Container(
                   padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),
