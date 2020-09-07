@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget{
   @override
@@ -28,6 +29,19 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Profile'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      EditProfilePage(),
+                  )
+              );
+            },
+          )
+        ],
           ),
       body: SingleChildScrollView(
         child: Container(
@@ -38,8 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
-              Text('${user.firstname} ${user.lastname}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
-              Text('Email: ${user.email}'),
+              Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
+              user.email.isEmpty ? Padding(padding: EdgeInsets.only(top: 2),) : Text('Email: ${user.email}'),
               Container(
                 padding: EdgeInsets.all(10),
                 child: ClipRRect(
@@ -55,6 +69,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
 //                              tooltip: 'Pick Image',
                 child: Icon(Icons.add_a_photo),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0),
               ),
             ],
           ),

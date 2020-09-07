@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/database.dart';
 
 
 
@@ -213,7 +212,6 @@ class _AddNewFlightState extends State<AddNewFlight> {
                                       onPressed: () {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
-                                          DatabaseService().addNewTripData(accessUsers, comment, displayName, endDate, endDateTimeStamp, ispublic, location, ownerID, startDate, travelType, urlToImage);
                                           _showDialog(context);
 //                                      print(_image.path);
 //                                          print(displayName);

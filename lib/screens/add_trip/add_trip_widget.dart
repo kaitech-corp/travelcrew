@@ -16,7 +16,8 @@ class HomeMaterial extends StatefulWidget {
 }
 class _HomeMaterialState extends State<HomeMaterial> {
   final _formKey = GlobalKey<FormState>();
-  File _image;
+  PickedFile _image;
+  final ImagePicker _picker = ImagePicker();
 
 
   DateTime _fromDateDepart = DateTime.now();
@@ -66,6 +67,8 @@ class _HomeMaterialState extends State<HomeMaterial> {
   String displayName = '';
   String documentId = '';
   String endDate = '';
+  String firstname = '';
+  String lastname = '';
   Timestamp startDateTimeStamp;
   Timestamp endDateTimeStamp;
   bool ispublic = true;
@@ -75,12 +78,14 @@ class _HomeMaterialState extends State<HomeMaterial> {
   String travelType = '';
   File urlToImage;
 
+
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+
 
     setState(() {
       _image = image;
-      urlToImage = _image;
+      urlToImage = File(_image.path);
     });
   }
 
@@ -91,6 +96,11 @@ class _HomeMaterialState extends State<HomeMaterial> {
     ownerID = user.uid;
     List<String> accessUsers = [user.uid];
     displayName = user.displayName;
+    firstname = user.firstName;
+    lastname = user.lastName;
+
+
+
 
     return Scaffold(
         appBar: AppBar(title: Text('Create a Trip!')),
@@ -145,8 +155,11 @@ class _HomeMaterialState extends State<HomeMaterial> {
                                     ButtonTheme(
                                       minWidth: 150,
                                       child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
                                         child: Text(
-                                          'Departure Date',
+                                          'Start Date',
                                         ),
                                         onPressed: () async {
                                           _showDatePickerDepart();
@@ -165,8 +178,11 @@ class _HomeMaterialState extends State<HomeMaterial> {
                                     ButtonTheme(
                                       minWidth: 150,
                                       child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
                                         child: Text(
-                                          'Return Date',
+                                          'End Date',
                                         ),
                                         onPressed: () {
                                           _showDatePickerReturn();
@@ -177,19 +193,22 @@ class _HomeMaterialState extends State<HomeMaterial> {
                                 ),
                               ),
                               SwitchListTile(
-                                  title: const Text('Private Trip'),
-                                  value: false,
+                                  title: Text('Public'),
+                                  value: true,
                                   onChanged: (bool val) =>
                                   {
-                                    ispublic = val,
+                                      ispublic = val,
                                   }
                               ),
                               Container(
                                 child: _image == null
                                     ? Text('No image selected.')
-                                    : Image.file(_image),
+                                    : Image.network(_image.path),
                               ),
                               RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 onPressed: () {
                                   getImage();
                                 },
@@ -217,10 +236,28 @@ class _HomeMaterialState extends State<HomeMaterial> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
                                   child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
                                       onPressed: () {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
-                                      DatabaseService().addNewTripData(accessUsers, comment, displayName, endDate, endDateTimeStamp, ispublic, location, ownerID, startDate, travelType, urlToImage);
+                                            DatabaseService().addNewTripData(
+                                                accessUsers,
+                                                comment,
+                                                displayName,
+                                                endDate,
+                                                firstname,
+                                                lastname,
+                                                endDateTimeStamp,
+                                                startDateTimeStamp,
+                                                ispublic,
+                                                location,
+                                                ownerID,
+                                                startDate,
+                                                travelType,
+                                                urlToImage);
+
                                       _showDialog(context);
                                       Navigator.pop(context);
                                         }

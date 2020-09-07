@@ -25,7 +25,14 @@ class _FavoriteTripState extends State<FavoriteTripList> {
           var item = trips[index];
           return Dismissible(
             // Show a red background as the item is swiped away.
-            background: Container(color: Colors.red),
+            background: Container(color: Colors.red,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Icon(Icons.delete, color: Colors.white,),
+                  Icon(Icons.delete, color: Colors.white,)
+                ],
+              ),),
             key: Key(item.documentId),
             onDismissed: (direction) {
               setState(() {

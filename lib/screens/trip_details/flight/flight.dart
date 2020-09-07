@@ -4,7 +4,6 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/flight/flight_list.dart';
 import 'package:travelcrew/services/database.dart';
 
-import 'add_new_flight.dart';
 
 class Flight extends StatefulWidget {
 
@@ -53,7 +52,7 @@ class _FlightState extends State<Flight> {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text('Thank you for you patience.'),
               ),

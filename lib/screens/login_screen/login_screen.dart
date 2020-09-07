@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
 import 'package:travelcrew/services/auth.dart';
+import 'package:travelcrew/services/google_auth.dart';
 import 'image_banner.dart';
 
 
@@ -35,7 +36,7 @@ class LoginPage extends StatefulWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  ImageBanner("assests/images/travelPics.png"),
+                  ImageBanner("assets/images/travelPics.png"),
                   Container(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                   ),
@@ -48,6 +49,7 @@ class LoginPage extends StatefulWidget {
                     },
                     onChanged: (val){
                       setState(() => email = val.trim());
+                      setState(() =>error = '');
                     },
                     obscureText: false,
                     decoration: InputDecoration(
@@ -58,6 +60,7 @@ class LoginPage extends StatefulWidget {
                   TextFormField(
                     onChanged: (val){
                       setState(() => password = val);
+                      setState(() =>error = '');
                     },
                     validator: (value) {
                       if (value.isEmpty) {
@@ -70,11 +73,12 @@ class LoginPage extends StatefulWidget {
                       labelText: "Password",
                     ),
                   ),
-                  const SizedBox(height: 30),
+//                  const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 30.0, horizontal: 30.0),
+                        vertical: 30.0, horizontal: 50.0),
                     child: RaisedButton(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                       onPressed: () async{
                         final form = _formKey.currentState;
                         if (form.validate()){
@@ -96,8 +100,9 @@ class LoginPage extends StatefulWidget {
                       ),
                     ),
                   ),
+                  _signInButton(),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -110,10 +115,10 @@ class LoginPage extends StatefulWidget {
                           onPressed: (){
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SignupScreen()),
+                              MaterialPageRoute(builder: (context) => SignUpScreen()),
                             );
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -134,4 +139,36 @@ class LoginPage extends StatefulWidget {
       ),
     );
   }
+
+    Widget _signInButton() {
+      return OutlineButton(
+        splashColor: Colors.grey,
+        onPressed: () {
+          GoogleAuthService().signInWithGoogle();
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+        highlightElevation: 0,
+        borderSide: BorderSide(color: Colors.grey),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(image: AssetImage("assets/images/google_logo.png"), height: 25.0),
+//              Padding(
+//                padding: const EdgeInsets.only(left: 10),
+//                child: Text(
+//                  'Sign in with Google',
+//                  style: TextStyle(
+//                    fontSize: 20,
+//                    color: Colors.grey,
+//                  ),
+//                ),
+//              )
+            ],
+          ),
+        ),
+      );
+    }
 }

@@ -18,7 +18,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
           );
-          print('Card tapped.');
+
         },
         child: Container(
           child: Column(

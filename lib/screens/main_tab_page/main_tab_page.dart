@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
+import 'package:travelcrew/screens/app_bar/app_bar.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/crew_trips.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
-import 'package:travelcrew/screens/main_tab_page/notifications/notification_list.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
-import 'package:travelcrew/screens/main_tab_page/users/users.dart';
+import 'package:travelcrew/screens/menu_screens/users/users.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/badge_icon.dart';
-import 'package:travelcrew/services/database.dart';
+import 'crew_trips/crew_trips.dart';
+import 'crew_trips/private_trips.dart';
+import 'explore_main/explore_main.dart';
 
 
 class MainTabPage extends StatefulWidget {
@@ -27,12 +27,17 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
   int _selectedIndex = 0;
   final AuthService _auth = AuthService();
   final List<Widget> _widgetOptions = <Widget>[
-    CrewTrips(),
+    TabBarView(
+      children: [
+        CrewTrips(type: 0),
+        CrewTrips(type: 1),
+        PrivateTripList(),
+      ],
+    ),
     AllTripsPage(),
+    ExploreMain(),
     Favorites(),
-    Notifications(),
-    Users()
-  ];
+    Notifications(),];
 
 
   void _onItemTapped(int index) {
@@ -46,7 +51,52 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
   @override
   Widget build(BuildContext context) {
     final notifications = Provider.of<List<NotificationData>>(context);
-    return Scaffold(
+    return _selectedIndex == 0 ? DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: TravelCrewAppBar(bottomTabBar: true,),
+        body: Center(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+        bottomNavigationBar: BottomNavigationBar(
+
+          items:  <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.group),
+              title: Text('My Crew'),
+              backgroundColor: Colors.grey,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment),
+              title: Text('All Trips'),
+              backgroundColor: Colors.grey,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              title: Text('Explore'),
+              backgroundColor: Colors.grey,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              title: Text('Favorites'),
+              backgroundColor: Colors.grey,
+            ),
+            BottomNavigationBarItem(
+              icon: BadgeIcon(
+                icon: Icon(Icons.notifications_active),
+                badgeCount: notifications != null ? notifications.length : 0,
+              ),
+              title: Text('Notifications'),
+              backgroundColor: Colors.grey,
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.lightBlue[100],
+          onTap: _onItemTapped,
+        ),
+      ),
+    ):
+    Scaffold(
       appBar: AppBar(
         centerTitle: true,
         leading: PopupMenuButton<String>(
@@ -59,12 +109,19 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                 );
               }
               break;
+              case "users": {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Users()),
+                );
+              }
+              break;
               case "signout": {
                 _auth.logOut();
               }
               break;
               default: {
-                print(value);
+
               }
               break;
             }
@@ -76,6 +133,13 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               child: ListTile(
                 leading: Icon(Icons.account_circle),
                 title: Text('Profile'),
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'users',
+              child: ListTile(
+                leading: Icon(Icons.account_circle),
+                title: Text('Users'),
               ),
             ),
             const PopupMenuItem(
@@ -101,8 +165,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
         ],
       ),
       body: Center(
-            child: _widgetOptions.elementAt(_selectedIndex),
-          ),
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
       bottomNavigationBar: BottomNavigationBar(
 
         items:  <BottomNavigationBarItem>[
@@ -117,6 +181,11 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            title: Text('Explore'),
+            backgroundColor: Colors.grey,
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             title: Text('Favorites'),
             backgroundColor: Colors.grey,
@@ -127,11 +196,6 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               badgeCount: notifications != null ? notifications.length : 0,
             ),
             title: Text('Notifications'),
-            backgroundColor: Colors.grey,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            title: Text('Users'),
             backgroundColor: Colors.grey,
           ),
         ],

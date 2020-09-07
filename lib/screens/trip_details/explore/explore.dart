@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/profile_page/profile_page.dart';
+import 'package:travelcrew/screens/app_bar/popup_menu.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
@@ -9,7 +9,7 @@ import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/flight/flight.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/badge_icon.dart';
-import 'explore_layout.dart';
+import 'explore_owner_layout.dart';
 
 class Explore extends StatelessWidget {
 
@@ -29,36 +29,7 @@ class Explore extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          leading: PopupMenuButton<String>(
-            onSelected: (value){
-              if (value == 'signout'){
-                _auth.logOut();
-                print(value);
-              }else{
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              }
-            },
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) =>[
-              const PopupMenuItem(
-                value: 'profile',
-                child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text('Profile'),
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'signout',
-                child: ListTile(
-                  leading: Icon(Icons.exit_to_app),
-                  title: Text('Signout'),
-                ),
-              ),
-            ],
-          ),
+          leading: PopupMenuButtons(),
           title: Text('${trip.location}'.toUpperCase()),
           actions: <Widget>[
             IconButton(

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
+import 'package:travelcrew/screens/menu_screens/users/users_search_page.dart';
 import 'package:travelcrew/services/database.dart';
+
+import 'layout_widgets.dart';
+import 'lists/item_lists.dart';
 
 class ExploreMemberLayout extends StatelessWidget{
 
@@ -19,7 +24,7 @@ class ExploreMemberLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assests/images/travelPics.png"),
+                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assets/images/travelPics.png"),
                 ListTile(
                   title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(
@@ -32,17 +37,20 @@ class ExploreMemberLayout extends StatelessWidget{
                           break;
                         case "Add":
                           {
-                            _addAlertDialog(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UsersSearchPage()),
+                            );
                           }
                           break;
                         case "Leave":
                           {
-                            DatabaseService(tripDocID: tripdetails.documentId, uid: user.uid).leaveTrip();
+                            _leaveTripAlert(context, user.uid);
                           }
                           break;
                         default:
                           {
-                            print(value);
+
                           }
                           break;
                       }
@@ -72,7 +80,7 @@ class ExploreMemberLayout extends StatelessWidget{
                       ),
                     ],
                   ),
-                  subtitle: Text('Owner', style: TextStyle(fontSize: 12.0),),
+                  subtitle: Text('Owner: ${tripdetails.displayName}', style: TextStyle(fontSize: 12.0),),
                 ),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
@@ -80,7 +88,8 @@ class ExploreMemberLayout extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Trip: ${tripdetails.travelType}'.toUpperCase()),
+                        Text('Trip: ${tripdetails.travelType}'),
+                        tripdetails.ispublic ? Text('Public') : Text('Private'),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,13 +115,8 @@ class ExploreMemberLayout extends StatelessWidget{
                   ),
                   child: Text(tripdetails.comment, textScaleFactor: 1.25,),
                 ),
-//              TextField(
-//                cursorColor: Colors.grey,
-//                decoration: InputDecoration(
-//                    border: OutlineInputBorder(),
-//                    hintText: 'A short desription of the trip will be shown here. This box will also be editable.'),
-//                maxLines: 4,
-//              ),
+                ListWidget(tripDetails: tripdetails,),
+                BringListToDisplay(documentID: tripdetails.documentId,),
               ],
             ),
           ),
@@ -129,7 +133,7 @@ class ExploreMemberLayout extends StatelessWidget{
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text('Thank you for you patience.'),
               ),
@@ -149,19 +153,52 @@ class ExploreMemberLayout extends StatelessWidget{
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text('${tripdetails.accessUsers.length} Member(s)'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text(''),
               ),
             ],
           );
         }
+    );
+  }
+
+  Future<void> _leaveTripAlert(BuildContext context, String uid) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+              'Are you sure you want to leave this Trip?'),
+          content: Text('You will no longer have access to this Trip'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                DatabaseService(tripDocID: tripdetails.documentId, uid: uid).leaveTrip();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      Wrapper(),
+                  ),
+                );
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/main_tab_page/users/user_list.dart';
-import 'package:travelcrew/screens/main_tab_page/users/users_text_section.dart';
 import 'package:travelcrew/services/database.dart';
+import 'user_list.dart';
 
 class Users extends StatelessWidget{
 
@@ -19,5 +18,3 @@ class Users extends StatelessWidget{
     );
   }
 }
-
-//UserProfile(uid: "",urlToImage: "",lastname: "",displayName: "",email: "",firstname: "",tripsCreated: 0,tripsJoined: 0)

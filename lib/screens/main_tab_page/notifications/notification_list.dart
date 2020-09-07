@@ -39,19 +39,18 @@ class _NotificationListState extends State<NotificationList> {
                     color: Colors.white,),
                 ],
               )),
-            key: Key(item.documentID),
+            key: UniqueKey(),
             onDismissed: (direction) {
               setState(() {
                 notifications.removeAt(index);
                 DatabaseService(uid: user.uid).removeNotificationData(item.fieldID);
               });
-
               Scaffold
                   .of(context)
                   .showSnackBar(SnackBar(content: Text("Notification removed.")));
             },
 
-            child: build_section(context, notifications[index]),
+            child: buildSection(context, notifications[index]),
           );
         });
   }
@@ -68,19 +67,17 @@ class _NotificationCountState extends State<NotificationCount> {
   @override
   Widget build(BuildContext context) {
     final notifications = Provider.of<List<NotificationData>>(context);
-    final user = Provider.of<UserProfile>(context);
 
     return ListView.builder(
         itemCount: notifications != null ? notifications.length : 0,
         itemBuilder: (context, index) {
-          var item = notifications[index];
           return NotificationsTextSection(notification: notifications[index]);
         });
   }
 
 }
 
-Widget build_section(BuildContext context, NotificationData notification) {
+Widget buildSection(BuildContext context, NotificationData notification) {
   final user = Provider.of<UserProfile>(context);
 
   return notification.type != 'joinRequest' ? Card(
@@ -100,7 +97,7 @@ Widget build_section(BuildContext context, NotificationData notification) {
           DatabaseService(tripDocID: notification.documentID, uid: notification.uid).joinTrip();
           DatabaseService(uid: user.uid).removeNotificationData(fieldID);
           _showDialog(context);
-          print('Pressed');
+
         },
       ),
     ),
@@ -112,22 +109,22 @@ Widget build_section(BuildContext context, NotificationData notification) {
 String readTimestamp(int timestamp) {
   var now = new DateTime.now();
   var format = new DateFormat('HH:mm a');
-  var date = new DateTime.fromMicrosecondsSinceEpoch(timestamp * 1000);
+  var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
   var diff = date.difference(now);
   var time = '';
-
-  if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
+  if (diff.inDays == 0) {
     time = format.format(date);
   } else {
-    if (diff.inDays == 1) {
-      time = diff.inDays.toString() + 'DAY AGO';
+    if ((diff.inDays).abs() == 1) {
+      time = '1 DAY AGO';
     } else {
-      time = diff.inDays.toString() + 'DAYS AGO';
+      time = (diff.inDays).abs().toString() + ' DAYS AGO';
     }
   }
 
   return time;
 }
+
 _showDialog(BuildContext context) {
   Scaffold.of(context)
       .showSnackBar(SnackBar(content: Text('Request accepted.')));

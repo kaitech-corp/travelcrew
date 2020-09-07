@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/database.dart';
@@ -12,15 +13,6 @@ class AuthService {
     return user != null ? User(uid: user.uid) : null;
   }
 
-//  var subscription = FirebaseUserReloader.onUserReloaded.listen((user) {
-//    // A new user will be printed each time there's a reload
-//    print(user);
-//
-//  });
-//  FirebaseUserReloader.reloadCurrentUser();
-//  subscription.cancel();
-// This will trigger a reload and the reloaded user will be emitted by onUserReloaded
-
   // auth change user stream
 
   Stream<User> get user {
@@ -33,7 +25,6 @@ class AuthService {
      AuthResult result =  await _auth.signInWithEmailAndPassword(email: email, password: password);
 //    AuthResult result = await _auth.signInAnonymously();
     FirebaseUser user = result.user;
-    print(user.uid);
 
 
      return _userFromFirebase(user);
@@ -43,7 +34,7 @@ class AuthService {
         return 'The password provided is invalid or the username is incorrect.';
       } else {
         if (e.toString().contains('ERROR_USER_NOT_FOUND')){
-          return 'There is no user record corresponding to this identifier.';
+          return 'There is no user record corresponding to this email.';
         }else {
           return 'Error logging in with provided credentials.';
         }
@@ -65,12 +56,12 @@ class AuthService {
     }
   }
 
-  Future signUpWithEmailAndPassword(String email, String password, String firstname, String lastName, String displayName) async {
+  Future signUpWithEmailAndPassword(String email, String password, String firstname, String lastName, String displayName, File urlToImage) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
       await DatabaseService(uid: user.uid).updateUserData(firstname, lastName, email, user.uid);
-      await DatabaseService(uid: user.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, 0, 0, user.uid, '');
+      await DatabaseService(uid: user.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, 0, 0, user.uid, urlToImage);
 
       return _userFromFirebase(user);
     } catch(e) {

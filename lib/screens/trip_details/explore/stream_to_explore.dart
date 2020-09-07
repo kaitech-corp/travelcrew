@@ -5,9 +5,9 @@ import 'package:travelcrew/services/database.dart';
 
 import 'explore.dart';
 
-class Stream_to_Explore extends StatelessWidget{
+class StreamToExplore extends StatelessWidget{
   final Trip trip;
-  Stream_to_Explore({this.trip});
+  StreamToExplore({this.trip});
 
   @override
   Widget build(BuildContext context) {

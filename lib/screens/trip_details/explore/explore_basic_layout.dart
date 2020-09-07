@@ -20,10 +20,10 @@ class ExploreBasicLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assests/images/travelPics.png"),
+                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assets/images/travelPics.png"),
                 ListTile(
                   title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
-                  subtitle: Text('Owner', style: TextStyle(fontSize: 12.0),),
+                  subtitle: Text('Owner: ${tripdetails.displayName}', style: TextStyle(fontSize: 12.0),),
                 ),
                 RaisedButton(
                     shape: Border.all(width: 1, color: Colors.blue),

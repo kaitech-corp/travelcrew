@@ -25,7 +25,7 @@ class _LodgingState extends State<Lodging> {
       value: DatabaseService(tripDocID: widget.trip.documentId).lodgingList,
       child: Scaffold(
         body: Container(
-          child: LodgingList(tripDocID: widget.trip.documentId,),
+          child: LodgingList(trip: widget.trip,),
         ),
         floatingActionButton: FloatingActionButton(
 
@@ -42,29 +42,3 @@ class _LodgingState extends State<Lodging> {
     );
   }
 }
-
-// Code to add Dismissable action
-//Dismissible(
-//onDismissed: (DismissDirection direction) {
-//setState(() {
-//lodging.removeAt(index);
-//});
-//},
-//secondaryBackground: Container(
-//child: Column(
-//mainAxisSize: MainAxisSize.min,
-//crossAxisAlignment: CrossAxisAlignment.end,
-//mainAxisAlignment: MainAxisAlignment.center,
-//children: <Widget>[
-//Text('Delete',
-//style: TextStyle(color: Colors.white), textScaleFactor: 1.5,)
-//],
-//),
-//color: Colors.red,
-//
-//),
-//background: Container(),
-//child: lodging[index],
-//key: UniqueKey(),
-//direction: DismissDirection.endToStart,
-//);

@@ -16,8 +16,21 @@ class Favorites extends StatelessWidget{
     return StreamProvider<List<Trip>>.value(
       value: DatabaseService(uid: user.uid).favoriteTrips,
       child: Container (
-        child: FavoriteTripList(),
-      ),
+          child: FavoriteTripList(),
+        ),
     );
   }
+
+//     callAPI() {
+//     return FutureBuilder(
+//       builder: (context, snapshot) {
+//         if (snapshot.hasData) {
+//           return snapshot.data;
+//         } else {
+//           return Text('no data');
+//         }
+//       },
+//       future: TestFunctions().function_1(),
+//     );
+// }
 }

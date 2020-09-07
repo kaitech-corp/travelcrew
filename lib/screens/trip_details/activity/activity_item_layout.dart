@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
+import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/services/database.dart';
 
 class ActivityItemLayout extends StatelessWidget {
 
   final ActivityData activity;
-  final String tripDocID;
-  ActivityItemLayout({this.activity, this.tripDocID});
+  final Trip trip;
+  ActivityItemLayout({this.activity, this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ActivityItemLayout extends StatelessWidget {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            print('Card tapped.');
+
           },
           child: Container(
             child: Column(
@@ -73,9 +73,9 @@ class ActivityItemLayout extends StatelessWidget {
                         String fieldID = activity.fieldID;
                         String uid = user.uid;
                         if (!activity.voters.contains(user.uid)) {
-                      return DatabaseService(tripDocID: tripDocID).addVoteToActivity(uid, fieldID);
+                      return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                         } else {
-                      return DatabaseService(tripDocID: tripDocID).removeVoteFromActivity(uid, fieldID);
+                      return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                         }
                       }
                     ),
@@ -83,21 +83,23 @@ class ActivityItemLayout extends StatelessWidget {
                       onSelected: (value){
                         switch (value){
                           case "Edit": {
-                            userAlertDialog(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  EditActivity(activity: activity, trip: trip,)),
+                            );
                           }
                           break;
                           case "View": {
-//                            if (activity.link.isNotEmpty) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
                                     WebViewScreen(activity.link, key)),
                               );
-//                            }
                           }
                           break;
                           case "Delete": {
-                            DatabaseService(tripDocID: tripDocID).removeActivity(activity.fieldID);
+                            DatabaseService(tripDocID: trip.documentId).removeActivity(activity.fieldID);
                           }
                           break;
                           default: {
@@ -141,9 +143,9 @@ class ActivityItemLayout extends StatelessWidget {
                           String fieldID = activity.fieldID;
                           String uid = user.uid;
                           if (!activity.voters.contains(user.uid)) {
-                            return DatabaseService(tripDocID: tripDocID).addVoteToActivity(uid, fieldID);
+                            return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                           } else {
-                            return DatabaseService(tripDocID: tripDocID).removeVoteFromActivity(uid, fieldID);
+                            return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                           }
                         }
                     ),
@@ -200,7 +202,7 @@ class ActivityItemLayout extends StatelessWidget {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text('Thank you for you patience.'),
               ),

@@ -43,7 +43,7 @@ class _AddNewActivityState extends State<AddNewActivity> {
 
     return loading ? Loading() : Scaffold(
         appBar: AppBar(
-          title: Text('Add Lodging'),
+          title: Text('Add Activity'),
         ),
         body: SingleChildScrollView(
           child: Builder(
@@ -120,6 +120,9 @@ class _AddNewActivityState extends State<AddNewActivity> {
                       ),
                     ),
                     RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       onPressed: () {
                         getImage();
                       },
@@ -131,6 +134,9 @@ class _AddNewActivityState extends State<AddNewActivity> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 30.0, horizontal: 30.0),
                       child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         onPressed: () async{
                           final form = _formKey.currentState;
                           if (form.validate()) {

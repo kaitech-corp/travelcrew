@@ -9,52 +9,89 @@ class NotificationsTextSection extends StatelessWidget{
 
   NotificationsTextSection({this.notification});
 
+
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProfile>(context);
 
-    return notification.type != 'joinRequest' ? Card(
+    var notificationType = {
+      'joinRequest': notificationType1(),
+      'Activity' : notificationType2(context),
+      'Lodging' : notificationType2(context),
+      'Follow' : notificationType3(context),
+    };
+
+    return notificationType[notification.type];
+  }
+
+  Widget notificationType1(){
+    return Card(
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
       ),
-    ):
-    Card(
+    );
+  }
+
+  Widget notificationType2(BuildContext context) {
+    final user = Provider.of<UserProfile>(context);
+    return Card(
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
         trailing: IconButton(
-         icon: Icon(Icons.add_circle),
+          icon: Icon(Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
             DatabaseService(tripDocID: notification.documentID, uid: notification.uid).joinTrip();
             DatabaseService(uid: user.uid).removeNotificationData(fieldID);
             _showDialog(context);
-          print('Pressed');
           },
         ),
       ),
     );
   }
+
+  Widget notificationType3(BuildContext context) {
+    final user = Provider.of<UserProfile>(context);
+    return Card(
+      child: ListTile(
+        title: Text('${notification.message}'),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        trailing: IconButton(
+          icon: Icon(Icons.add_circle),
+          onPressed: () async{
+            String fieldID = notification.fieldID;
+            DatabaseService(uid: user.uid).followUser(notification.documentID);
+            DatabaseService(uid: user.uid).removeNotificationData(fieldID);
+            _showDialog(context);
+          },
+        ),
+      ),
+    );
+  }
+
+
   String readTimestamp(int timestamp) {
     var now = new DateTime.now();
-    var format = new DateFormat('HH:mm a');
-    var date = new DateTime.fromMicrosecondsSinceEpoch(timestamp * 1000);
+    var format = new DateFormat('MMM d HH:mm a');
+    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
     var diff = date.difference(now);
     var time = '';
-
-    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
+    if (diff.inDays == 0) {
       time = format.format(date);
     } else {
-      if (diff.inDays == 1) {
-        time = diff.inDays.toString() + 'DAY AGO';
+      if ((diff.inDays).abs() == 1) {
+        time = '1 DAY AGO';
       } else {
-        time = diff.inDays.toString() + 'DAYS AGO';
+        time = (diff.inDays).abs().toString() + ' DAYS AGO';
       }
     }
 
     return time;
   }
+
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('Request accepted.')));

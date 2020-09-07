@@ -125,7 +125,7 @@ class PrivacyPolicy extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(bottom: 10),
               ),
-              Text("We do not use the Application to knowingly solicit data from or market to children under the age of 13. If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us at Kaitech2020@gmail.com. We will delete such information from our files within a reasonable time.",textAlign: TextAlign.justify,),
+              Text("We do not use this application to knowingly solicit data from or market to children under the age of 13. If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us at Kaitech2020@gmail.com. We will delete such information from our files within a reasonable time.",textAlign: TextAlign.justify,),
               Padding(
                 padding: EdgeInsets.only(bottom: 10),
               ),

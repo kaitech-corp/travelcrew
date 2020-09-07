@@ -18,16 +18,43 @@ class Notifications extends StatelessWidget{
         body: Container (
           child: NotificationList(),
         ),
-//        floatingActionButton: FloatingActionButton(
-//          onPressed: () {
-//
-//          },
-//          child: Text('Clear All',textAlign: TextAlign.center,),
-//
-//        ),
-//        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            deleteAlert(context, user.uid);
+          },
+          child: Text('Clear All',textAlign: TextAlign.center,),
+
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
 
+    );
+  }
+  deleteAlert(BuildContext context, String uid) {
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure you want to clear all notifications?'),
+          content: const Text('Join requests and follow requests will also be removed.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                DatabaseService(uid: uid).removeAllNotificationData();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

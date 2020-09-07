@@ -12,7 +12,7 @@ class ImageLayout extends StatelessWidget{
           height: 200.0,
         ),
         decoration: BoxDecoration(color: Colors.white),
-        child: _assestPath?.contains("https") ? Image.network(_assestPath, fit: BoxFit.fill,) : Image.asset(_assestPath,
+        child: _assestPath.contains("https") ? Image.network(_assestPath, fit: BoxFit.fill,) : Image.asset(_assestPath,
           fit: BoxFit.fill,
         ));
   }

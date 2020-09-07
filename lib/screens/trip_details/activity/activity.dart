@@ -24,7 +24,7 @@ class Activity extends StatefulWidget {
         value: DatabaseService(tripDocID: widget.trip.documentId).activityList,
         child: Scaffold(
           body: Container(
-            child: ActivityList(tripDocID: widget.trip.documentId,),
+            child: ActivityList(trip: widget.trip,),
           ),
             floatingActionButton: FloatingActionButton(
 

@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
         msg: "Notification Clicked",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
+        timeInSecForIosWeb: 1,
         backgroundColor: Colors.black54,
         textColor: Colors.white,
         fontSize: 16.0
@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   msg: "Notification Clicked",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
+                  timeInSecForIosWeb: 1,
                   backgroundColor: Colors.black54,
                   textColor: Colors.white,
                   fontSize: 16.0
@@ -202,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),

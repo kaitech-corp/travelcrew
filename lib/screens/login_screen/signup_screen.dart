@@ -8,7 +8,9 @@ import 'package:travelcrew/screens/login_screen/privacy_page.dart';
 
 import 'package:travelcrew/services/auth.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
+
+
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
@@ -19,6 +21,7 @@ class _SignupScreenState extends State {
   final _formKey = GlobalKey<FormState>();
   final _user = UserSignUp();
   File _image;
+  final picker = ImagePicker();
 
   String email = '';
   String password = '';
@@ -27,10 +30,10 @@ class _SignupScreenState extends State {
   Key get key => null;
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 
@@ -38,7 +41,7 @@ class _SignupScreenState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Create a Trip!')),
+        appBar: AppBar(title: Text('Sign Up!')),
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -98,7 +101,7 @@ class _SignupScreenState extends State {
                             ),
                             TextFormField(
                                 decoration:
-                                InputDecoration(labelText: 'Password)'),
+                                InputDecoration(labelText: 'Password'),
                                 // ignore: missing_return
                                 validator: (value) {
                                   if (value.length < 8) {
@@ -152,7 +155,7 @@ class _SignupScreenState extends State {
                                     if (form.validate()) {
                                       form.save();
                                       _showDialog(context);
-                                      dynamic result = await _auth.signUpWithEmailAndPassword(_user.email, password, _user.firstname, _user.lastname, _user.displayName);
+                                      dynamic result = await _auth.signUpWithEmailAndPassword(_user.email, password, _user.firstname, _user.lastname, _user.displayName, _image);
                                       if (result == null){
                                         setState(() => error = 'Sign in credentials are not valid!');
                                       }

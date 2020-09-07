@@ -5,8 +5,8 @@ import 'activity_item_layout.dart';
 
 class ActivityList extends StatefulWidget {
 
-  final String tripDocID;
-  ActivityList({this.tripDocID});
+  final Trip trip;
+  ActivityList({this.trip});
 
 
   @override
@@ -24,7 +24,7 @@ class _ActivityListState extends State<ActivityList> {
     return ListView.builder(
         itemCount: activityList != null ? activityList.length : 0,
         itemBuilder: (context, index){
-          return ActivityItemLayout(activity: activityList[index],tripDocID: widget.tripDocID,);
+          return ActivityItemLayout(activity: activityList[index],trip: widget.trip,);
         });
   }
 }

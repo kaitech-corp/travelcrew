@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
+import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/services/database.dart';
 
 class LodgingItemLayout extends StatelessWidget {
 
   final LodgingData lodging;
-  final String tripDocID;
-  LodgingItemLayout({this.lodging, this.tripDocID});
+  final Trip trip;
+  LodgingItemLayout({this.lodging, this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,6 @@ class LodgingItemLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-//                ImageLayout(_text ?? "assests/images/barcelona.jpg"),
                  Container(
                    padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
                   child: Column(
@@ -31,16 +31,10 @@ class LodgingItemLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-//                      ListTile(
-//                        title: Text('Lodging Type'),
-//                        subtitle: Text('Description'),
-//                      ),
                       Text('${lodging.lodgingType}', style: TextStyle(fontWeight: FontWeight.bold), textScaleFactor: 1.25,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
-
-
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,8 +54,8 @@ class LodgingItemLayout extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          if (lodging.link != "") Text('Link attached'),
-                          if (lodging.urlToImage != '') ImageLayout(lodging.urlToImage),
+                           if (lodging.link.isNotEmpty ) Text('Link attached'),
+                          if (lodging.urlToImage.isNotEmpty) ImageLayout(lodging.urlToImage),
                         ],
                       )
                     ],
@@ -75,9 +69,9 @@ class LodgingItemLayout extends StatelessWidget {
                           String fieldID = lodging.fieldID;
                           String uid = user.uid;
                           if (!lodging.voters.contains(user.uid)) {
-                            return DatabaseService(tripDocID: tripDocID).addVoteToLodging(uid, fieldID);
+                            return DatabaseService(tripDocID: trip.documentId).addVoteToLodging(uid, fieldID);
                           } else {
-                            return DatabaseService(tripDocID: tripDocID).removeVoteFromLodging(uid, fieldID);
+                            return DatabaseService(tripDocID: trip.documentId).removeVoteFromLodging(uid, fieldID);
                           }
                         }
                     ),
@@ -85,7 +79,11 @@ class LodgingItemLayout extends StatelessWidget {
                       onSelected: (value){
                         switch (value){
                           case "Edit": {
-                            userAlertDialog(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  EditLodging(lodging: lodging, trip: trip,)),
+                            );
                           }
                           break;
                           case "View": {
@@ -97,11 +95,11 @@ class LodgingItemLayout extends StatelessWidget {
                           }
                           break;
                           case "Delete": {
-                            DatabaseService(tripDocID: tripDocID).removeLodging(lodging.fieldID);
+                            DatabaseService(tripDocID: trip.documentId).removeLodging(lodging.fieldID);
                           }
                           break;
                           default: {
-                            print(value);
+
                           }
                           break;
                         }
@@ -145,7 +143,7 @@ class LodgingItemLayout extends StatelessWidget {
                           }
                           break;
                           default: {
-                            print(value);
+
                           }
                           break;
                         }
@@ -186,7 +184,7 @@ class LodgingItemLayout extends StatelessWidget {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text('Thank you for you patience.'),
               ),

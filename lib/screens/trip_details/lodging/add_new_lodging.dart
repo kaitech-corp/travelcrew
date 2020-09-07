@@ -122,6 +122,9 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     ),
                   ),
                   RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     onPressed: () {
                       getImage();
                     },
@@ -133,6 +136,9 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 padding: const EdgeInsets.symmetric(
                     vertical: 30.0, horizontal: 30.0),
                 child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   onPressed: () async{
                     final form = _formKey.currentState;
                     if (form.validate()) {

@@ -59,13 +59,13 @@ class ChatMessageLayout extends StatelessWidget {
 //                child: new Image.network(message.urlToImage != null ? message.urlToImage : "http://res.cloudinary.com/kennyy/image/upload/v1531317427/avatar_z1rc6f.png"),
 //              ),
             ),
-            new Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
-                new Container(
-                  margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(message.message ?? '', textScaleFactor: 1.2,),
+                 Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
+                 Container(
+                  margin: const EdgeInsets.all(5.0),
+                  child:  Text(message.message ?? '', textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
                 ),
                 Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
               ],

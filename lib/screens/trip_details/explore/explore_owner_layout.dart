@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
-import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/crew_trips.dart';
-import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
+import 'package:travelcrew/screens/menu_screens/users/users_search_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/edit_trip.dart';
+import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
+import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
+import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
 import 'package:travelcrew/services/database.dart';
 
-class ExploreLayout extends StatelessWidget {
+
+
+class ExploreLayout extends StatefulWidget {
 
   final Trip tripdetails;
 
   ExploreLayout({this.tripdetails});
 
   @override
+  _ExploreLayoutState createState() => _ExploreLayoutState();
+}
+
+class _ExploreLayoutState extends State<ExploreLayout> {
+
+  @override
   Widget build(BuildContext context) {
-    var members = getMemberNames();
-    print(members);
 
     return Scaffold(
         body: Container(
@@ -24,11 +31,13 @@ class ExploreLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripdetails.urlToImage != ""
-                    ? tripdetails.urlToImage
-                    : "assests/images/travelPics.png"),
+                FadeInImage.assetNetwork(
+                  placeholder: 'assets/images/travelPics.png',
+                  image: widget.tripdetails.urlToImage,
+
+                ),
                 ListTile(
-                  title: Text('${tripdetails.location}'.toUpperCase(),
+                  title: Text('${widget.tripdetails.location}'.toUpperCase(),
                       style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(
                     onSelected: (value) {
@@ -38,13 +47,17 @@ class ExploreLayout extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
-                                  EditTripData(tripdetails: tripdetails,)),
+                                  EditTripData(tripdetails: widget.tripdetails,)),
                             );
                           }
                           break;
                         case "Members":
                           {
-                            userAlertDialog(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  MembersLayout(tripdetails: widget.tripdetails,)),
+                            );
                           }
                           break;
                         case "Delete":
@@ -54,12 +67,20 @@ class ExploreLayout extends StatelessWidget {
                           break;
                         case "Add":
                           {
-                            _addAlertDialog(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UsersSearchPage(tripDetails: widget.tripdetails,)),
+                            );
+                          }
+                          break;
+                        case "Convert":
+                          {
+                            _convertAlert(context, widget.tripdetails.ispublic);
                           }
                           break;
                         default:
                           {
-                            print(value);
+
                           }
                           break;
                       }
@@ -88,6 +109,17 @@ class ExploreLayout extends StatelessWidget {
                           title: Text('Add Member'),
                         ),
                       ),
+                      PopupMenuItem(
+                        value: 'Convert',
+                        child: ListTile(
+                          leading: widget.tripdetails.ispublic ? Icon(Icons
+                              .do_not_disturb_on) : Icon(Icons
+                              .do_not_disturb_off),
+                          title: widget.tripdetails.ispublic
+                              ? Text('Make Private')
+                              : Text('Make Public'),
+                        ),
+                      ),
                       const PopupMenuItem(
                         value: 'Delete',
                         child: ListTile(
@@ -97,7 +129,8 @@ class ExploreLayout extends StatelessWidget {
                       ),
                     ],
                   ),
-                  subtitle: Text('Owner', style: TextStyle(fontSize: 12.0),),
+                  subtitle: Text('Owner: ${widget.tripdetails.displayName}',
+                    style: TextStyle(fontSize: 12.0),),
                 ),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
@@ -105,13 +138,14 @@ class ExploreLayout extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Trip: ${tripdetails.travelType}'.toUpperCase()),
+                        Text('Trip: ${widget.tripdetails.travelType}'),
+                        widget.tripdetails.ispublic ? Text('Public') : Text('Private'),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('Start: ${tripdetails.startDate}'),
-                            Text('End: ${tripdetails.endDate}')
+                            Text('Start: ${widget.tripdetails.startDate}'),
+                            Text('End: ${widget.tripdetails.endDate}')
                           ],
                         )
 
@@ -129,17 +163,13 @@ class ExploreLayout extends StatelessWidget {
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent)
                   ),
-                  child: Text(tripdetails.comment != null
-                      ? tripdetails.comment
+                  child: Text(widget.tripdetails.comment != null
+                      ? widget.tripdetails.comment
                       : "No description provided", textScaleFactor: 1.25,),
                 ),
-//              TextField(
-//                cursorColor: Colors.grey,
-//                decoration: InputDecoration(
-//                    border: OutlineInputBorder(),
-//                    hintText: 'A short desription of the trip will be shown here. This box will also be editable.'),
-//                maxLines: 4,
-//              ),
+                ListWidget(tripDetails: widget.tripdetails,),
+                BringListToDisplay(documentID: widget.tripdetails.documentId,),
+
               ],
             ),
           ),
@@ -148,7 +178,6 @@ class ExploreLayout extends StatelessWidget {
   }
 
   void _addAlertDialog(BuildContext context) {
-
     showDialog<String>(
         context: context,
         builder: (BuildContext context) {
@@ -157,7 +186,7 @@ class ExploreLayout extends StatelessWidget {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text('Thank you for you patience.'),
               ),
@@ -166,8 +195,8 @@ class ExploreLayout extends StatelessWidget {
         }
     );
   }
-  Future<void> userAlertDialog(BuildContext context) async {
 
+  Future<void> userAlertDialog(BuildContext context) async {
     await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
@@ -176,13 +205,13 @@ class ExploreLayout extends StatelessWidget {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
-                child: Text('${tripdetails.accessUsers.length} Member(s)'),
+                child: Text('${widget.tripdetails.accessUsers.length} Member(s)'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  print('pressed');
+
                 },
                 child: Text(''),
               ),
@@ -191,44 +220,78 @@ class ExploreLayout extends StatelessWidget {
         }
     );
   }
+
   Future<void> _deleteAlert(BuildContext context) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Are you sure you want to delete this trip?'),
-          content: const Text('All data associated with this trip will be deleted.'),
+          content: const Text(
+              'All data associated with this trip will be deleted.'),
           actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                DatabaseService(tripDocID: widget.tripdetails.documentId)
+                    .deleteTrip();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      Wrapper(),
+                  ),
+                );
+              },
+            ),
             FlatButton(
               child: Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
+
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _convertAlert(BuildContext context, bool ispublic) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: ispublic
+              ? Text(
+              'Are you sure you want to convert this into a Private Trip?')
+              : Text(
+              'Are you sure you want to convert this into a Public Trip?'),
+          content: ispublic
+              ? Text('This trip will only be visible to members.')
+              : Text('Trip will be become public for followers to see.'),
+          actions: <Widget>[
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                DatabaseService(tripDocID: tripdetails.documentId)
-                    .deleteTrip();
+                DatabaseService().convertTrip(widget.tripdetails);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>
                       Wrapper(),
-                ),
+                  ),
                 );
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
           ],
         );
       },
     );
-  }
-  
- Future<List<String>> getMemberNames ()  async {
-    List<String> members = [];
-    
-    tripdetails.accessUsers.forEach((f) async => members.add(await DatabaseService(uid: f).getUserDisplayName()));
-  return await members;
   }
 }
 
