@@ -16,7 +16,7 @@ class TappableCrewTripTile extends StatelessWidget {
 
     final user = Provider.of<User>(context);
     return Container(
-      height: size.height*.15,
+      height: size.height*.2,
       width: double.infinity,
       margin: EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 10),
       decoration: BoxDecoration(
@@ -30,14 +30,6 @@ class TappableCrewTripTile extends StatelessWidget {
           )
           ]),
       child: Container(
-//        decoration: BoxDecoration(
-//            image: DecorationImage(
-//              image: AssetImage('assets/images/travelPics.png'),
-//              alignment: Alignment.topRight,
-//            ),
-//            borderRadius: BorderRadius.only(topRight: Radius.circular(30),bottomRight: Radius.circular(30))
-//        ),
-
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
