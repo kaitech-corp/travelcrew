@@ -20,11 +20,15 @@ class _ChatState extends State<Chat> {
 
   final TextEditingController _chatController = new TextEditingController();
 
+  Future<void> clearChat(String uid) async {
+    await DatabaseService(tripDocID: widget.trip.documentId, uid: uid).clearChatNotifications();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProfile>(context);
-    DatabaseService(tripDocID: widget.trip.documentId, uid: user.uid).clearChatNotifications();
+    clearChat(user.uid);
     String displayName = user.displayName;
     String uid = user.uid;
 

@@ -8,13 +8,15 @@ import 'package:travelcrew/services/database.dart';
 
 class AllTripsNewDesign extends StatefulWidget{
 
-  bool pressed = true;
 
   @override
   _AllTripsNewDesignState createState() => _AllTripsNewDesignState();
 }
 
 class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
+
+  bool pressed = true;
+
   @override
   Widget build(BuildContext context) {
 
@@ -43,7 +45,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                 children: <Widget>[
                   TileCard(country: 'Nature Park', text: 'Bike Ride',),
                   TileCard(country: 'Hiking Trails',text: 'Hike',),
-                  TileCard(country: 'Riverbed',text: 'Canoe',),
+                  TileCard(country: 'Riverbed',text: 'Rent a Canoe',),
                   TileCard(country: 'Park', text: 'Have a picnic',)
                 ],
               ),
@@ -58,20 +60,20 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                   text: TextSpan(
                       style: Theme.of(context).textTheme.headline6,
                       children: [
-                        TextSpan(text: widget.pressed ? 'Departing' : "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purpleAccent)),
-                        TextSpan(text: widget.pressed ? ' Soon' : " New", style: TextStyle(fontSize: 18)),
+                        TextSpan(text: pressed ? 'Coming' : "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purpleAccent)),
+                        TextSpan(text: pressed ? ' Up' : " New", style: TextStyle(fontSize: 18)),
                       ]
                   ),
                 ),
                 IconButton(icon: Icon(Icons.swap_horiz),
                 onPressed: (){
                   setState(() {
-                    widget.pressed = !widget.pressed;
+                    pressed = !pressed;
                   });
                 }),
               ],
             ),
-            SliverGridList(pressed: widget.pressed,),
+            SliverGridList(pressed: pressed,),
             Padding(
               padding: EdgeInsets.only(top: 0, bottom: 10),
             ),
@@ -191,13 +193,6 @@ Widget TripCard3(BuildContext context, Trip trip) {
       return Icon(Icons.favorite);
     } else {
       return Icon(Icons.favorite_border);
-    }
-  }
-  ownerName(String uid, Trip trip){
-    if (trip.ownerID == uid){
-      return 'You';
-    }else {
-      return trip.displayName;
     }
   }
 

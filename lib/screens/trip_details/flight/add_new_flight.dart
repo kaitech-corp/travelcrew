@@ -16,7 +16,7 @@ class AddNewFlight extends StatefulWidget {
 class _AddNewFlightState extends State<AddNewFlight> {
   final _formKey = GlobalKey<FormState>();
   File _image;
-
+  final ImagePicker _picker = ImagePicker();
 
   DateTime _fromDateDepart = DateTime.now();
   DateTime _fromDateReturn = DateTime.now();
@@ -73,10 +73,10 @@ class _AddNewFlightState extends State<AddNewFlight> {
   File urlToImage;
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
       urlToImage = _image;
     });
   }

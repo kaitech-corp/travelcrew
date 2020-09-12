@@ -168,7 +168,7 @@ class LodgingItemLayout extends StatelessWidget {
     );
   }
   favorite(String uid){
-    if (lodging?.voters?.contains(uid)){
+    if (lodging.voters.contains(uid)){
       return Icon(Icons.favorite);
     } else {
       return Icon(Icons.favorite_border);

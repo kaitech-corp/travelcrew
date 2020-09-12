@@ -3,7 +3,7 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import '../../loading.dart';
+import '../../../loading.dart';
 import 'users_text_section.dart';
 
 

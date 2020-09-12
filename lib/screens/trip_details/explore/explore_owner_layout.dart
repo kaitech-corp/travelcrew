@@ -12,9 +12,9 @@ import 'package:travelcrew/services/database.dart';
 
 class ExploreLayout extends StatefulWidget {
 
-  final Trip tripdetails;
+  final Trip tripDetails;
 
-  ExploreLayout({this.tripdetails});
+  ExploreLayout({this.tripDetails});
 
   @override
   _ExploreLayoutState createState() => _ExploreLayoutState();
@@ -33,11 +33,11 @@ class _ExploreLayoutState extends State<ExploreLayout> {
               children: <Widget>[
                 FadeInImage.assetNetwork(
                   placeholder: 'assets/images/travelPics.png',
-                  image: widget.tripdetails.urlToImage,
+                  image: widget.tripDetails.urlToImage,
 
                 ),
                 ListTile(
-                  title: Text('${widget.tripdetails.location}'.toUpperCase(),
+                  title: Text('${widget.tripDetails.location}'.toUpperCase(),
                       style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(
                     onSelected: (value) {
@@ -47,7 +47,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
-                                  EditTripData(tripdetails: widget.tripdetails,)),
+                                  EditTripData(tripDetails: widget.tripDetails,)),
                             );
                           }
                           break;
@@ -56,7 +56,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
-                                  MembersLayout(tripdetails: widget.tripdetails,)),
+                                  MembersLayout(tripDetails: widget.tripDetails,)),
                             );
                           }
                           break;
@@ -69,13 +69,13 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                           {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => UsersSearchPage(tripDetails: widget.tripdetails,)),
+                              MaterialPageRoute(builder: (context) => UsersSearchPage(tripDetails: widget.tripDetails,)),
                             );
                           }
                           break;
                         case "Convert":
                           {
-                            _convertAlert(context, widget.tripdetails.ispublic);
+                            _convertAlert(context, widget.tripDetails.ispublic);
                           }
                           break;
                         default:
@@ -112,10 +112,10 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       PopupMenuItem(
                         value: 'Convert',
                         child: ListTile(
-                          leading: widget.tripdetails.ispublic ? Icon(Icons
+                          leading: widget.tripDetails.ispublic ? Icon(Icons
                               .do_not_disturb_on) : Icon(Icons
                               .do_not_disturb_off),
-                          title: widget.tripdetails.ispublic
+                          title: widget.tripDetails.ispublic
                               ? Text('Make Private')
                               : Text('Make Public'),
                         ),
@@ -129,7 +129,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       ),
                     ],
                   ),
-                  subtitle: Text('Owner: ${widget.tripdetails.displayName}',
+                  subtitle: Text('Owner: ${widget.tripDetails.displayName}',
                     style: TextStyle(fontSize: 12.0),),
                 ),
                 Container(
@@ -138,14 +138,14 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Trip: ${widget.tripdetails.travelType}'),
-                        widget.tripdetails.ispublic ? Text('Public') : Text('Private'),
+                        Text('Trip: ${widget.tripDetails.travelType}'),
+                        widget.tripDetails.ispublic ? Text('Public') : Text('Private'),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('Start: ${widget.tripdetails.startDate}'),
-                            Text('End: ${widget.tripdetails.endDate}')
+                            Text('Start: ${widget.tripDetails.startDate}'),
+                            Text('End: ${widget.tripDetails.endDate}')
                           ],
                         )
 
@@ -163,36 +163,17 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent)
                   ),
-                  child: Text(widget.tripdetails.comment != null
-                      ? widget.tripdetails.comment
+                  child: Text(widget.tripDetails.comment != null
+                      ? widget.tripDetails.comment
                       : "No description provided", textScaleFactor: 1.25,),
                 ),
-                ListWidget(tripDetails: widget.tripdetails,),
-                BringListToDisplay(documentID: widget.tripdetails.documentId,),
+                ListWidget(tripDetails: widget.tripDetails,),
+                BringListToDisplay(documentID: widget.tripDetails.documentId,),
 
               ],
             ),
           ),
         )
-    );
-  }
-
-  void _addAlertDialog(BuildContext context) {
-    showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Currently under development.'),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-
-                },
-                child: Text('Thank you for you patience.'),
-              ),
-            ],
-          );
-        }
     );
   }
 
@@ -207,7 +188,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                 onPressed: () {
 
                 },
-                child: Text('${widget.tripdetails.accessUsers.length} Member(s)'),
+                child: Text('${widget.tripDetails.accessUsers.length} Member(s)'),
               ),
               SimpleDialogOption(
                 onPressed: () {
@@ -233,7 +214,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                DatabaseService(tripDocID: widget.tripdetails.documentId)
+                DatabaseService(tripDocID: widget.tripDetails.documentId)
                     .deleteTrip();
                 Navigator.push(
                   context,
@@ -273,7 +254,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                DatabaseService().convertTrip(widget.tripdetails);
+                DatabaseService().convertTrip(widget.tripDetails);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>

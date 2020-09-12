@@ -18,16 +18,16 @@ class _SignupScreenState extends State {
   final _formKey = GlobalKey<FormState>();
   final _user = UserSignUp();
   File _image;
-
+  final ImagePicker _picker = ImagePicker();
   String error = '';
 
   Key get key => null;
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 
@@ -61,7 +61,7 @@ class _SignupScreenState extends State {
                                   }
                                 },
                                 onSaved: (val) =>
-                                    setState(() => _user.firstname = val)),
+                                    setState(() => _user.firstName = val)),
                             TextFormField(
                               decoration:
                               InputDecoration(labelText: 'Last Name'),
@@ -74,7 +74,7 @@ class _SignupScreenState extends State {
                                 }
                               },
                               onSaved: (val) =>
-                                  setState(() => _user.lastname = val),
+                                  setState(() => _user.lastName = val),
                             ),
                             TextFormField(
                                 initialValue: displayName,
@@ -102,28 +102,37 @@ class _SignupScreenState extends State {
                                   ? Image.network(user.urlToImage)
                                   : Image.file(_image),
                             ),
-                            RaisedButton(
-                              onPressed: () {
-                                getImage();
-                              },
+                            Container(
+                              width: 30,
+                              child: RaisedButton(
+                                shape: CircleBorder(
+                                ),
+                                onPressed: () {
+                                  getImage();
+                                },
 //                              tooltip: 'Pick Image',
-                              child: Icon(Icons.add_a_photo),
+                                child: Icon(Icons.add_a_photo),
+                              ),
                             ),
                             Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 30.0, horizontal: 30.0),
+                                width: 30,
                                 child: RaisedButton(
+                                  shape: RoundedRectangleBorder(),
                                     onPressed: () async {
                                       final form = _formKey.currentState;
                                       if (form.validate()) {
                                         form.save();
 
-                                        DatabaseService(uid: user.uid).editPublicProfileData(_user.displayName, _user.firstname, _user.lastname, _image);
+                                        DatabaseService(uid: user.uid).editPublicProfileData(_user.displayName, _user.firstName, _user.lastName, _image);
                                         _showDialog(context);
                                       }
 
                                     },
-                                    child: Text('Save'))),
+                                    child: Text('Save'))
+                            ),
+
                             SizedBox(height: 10,),
                             Column(
                               mainAxisSize: MainAxisSize.min,

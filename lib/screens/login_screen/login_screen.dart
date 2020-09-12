@@ -40,37 +40,48 @@ class LoginPage extends StatefulWidget {
                   Container(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                   ),
-                  TextFormField(
-                    enableInteractiveSelection: true,
-                    validator: (value) {
-                      if (value.isEmpty || !value.contains('.com')) {
-                        return 'Please enter valid email address.';
-                      }
-                    },
-                    onChanged: (val){
-                      setState(() => email = val.trim());
-                      setState(() =>error = '');
-                    },
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Email",
-                    ),
-                  ),
-                  TextFormField(
-                    onChanged: (val){
-                      setState(() => password = val);
-                      setState(() =>error = '');
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter password.';
-                      }
-                    },
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Password",
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          enableInteractiveSelection: true,
+                          validator: (value) {
+                            if (value.isEmpty || !value.contains('.com')) {
+                              return 'Please enter valid email address.';
+                            } else {
+                            return null;
+                            }
+                          },
+                          onChanged: (val){
+                            setState(() => email = val.trim());
+                            setState(() =>error = '');
+                          },
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Email",
+                          ),
+                        ),
+                        TextFormField(
+                          onChanged: (val){
+                            setState(() => password = val);
+                            setState(() =>error = '');
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter password.';
+                            } else {
+                              return null;
+                            }
+                          },
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Password",
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 //                  const SizedBox(height: 20),
@@ -146,7 +157,7 @@ class LoginPage extends StatefulWidget {
         onPressed: () {
           GoogleAuthService().signInWithGoogle();
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+        shape: CircleBorder(),
         highlightElevation: 0,
         borderSide: BorderSide(color: Colors.grey),
         child: Padding(

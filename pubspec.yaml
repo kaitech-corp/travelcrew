@@ -11,7 +11,7 @@ description: First Flutter App
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.2+4
+version: 1.2.2+5
 
 dependencies:
   flutter:
@@ -19,19 +19,20 @@ dependencies:
   intl: ^0.16.1
   image_picker: ^0.6.7+4
   webview_flutter: ^0.3.22+1
-  cloud_firestore: ^0.13.7
-  firebase_core: ^0.4.5
-  firebase_analytics: ^5.0.16
-  firebase_auth: ^0.16.1
-  firebase_database: ^3.1.6
-  firebase_messaging: ^6.0.16
-  firebase_storage: ^3.1.6
+  cloud_firestore: ^0.14.0+2
+  cloud_functions: ^0.6.0
+  firebase_core: ^0.5.0
+  firebase_analytics: ^6.0.0
+  firebase_auth: ^0.18.0+1
+  firebase_messaging: ^7.0.0
+  firebase_storage: ^4.0.0
   floating_search_bar: ^0.3.0
   fluttertoast: ^7.0.1
   flutter_local_notifications: ^1.4.4+2
   flutter_spinkit: ^4.1.2+1
-  google_sign_in: ^4.5.1
-  provider: ^4.3.1
+  get_it: ^4.0.4
+  google_sign_in: ^4.5.3
+  provider: ^4.3.2+2
   http: ^0.12.2
   draggable_scrollbar: ^0.0.4
   flappy_search_bar: ^1.7.2
@@ -39,7 +40,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.0
 
 
 dev_dependencies:

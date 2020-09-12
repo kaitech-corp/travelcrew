@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-// import 'package:firebase_database/firebase_database.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
+import 'analytics_service.dart';
 
 
 class DatabaseService {
@@ -11,52 +11,54 @@ class DatabaseService {
   final String uid;
   var tripDocID;
   DatabaseService({this.tripDocID, this.uid});
-  var analytics = FirebaseAnalytics();
+  final AnalyticsService _analyticsService = AnalyticsService();
 
   //  All collection references
 
-  final CollectionReference userCollection = Firestore.instance.collection("users");
-  final CollectionReference userPublicProfileCollection = Firestore.instance.collection("userPublicProfile");
-  final Query allUsersCollection = Firestore.instance.collection("userPublicProfile").orderBy('lastname').orderBy('firstname');
-  final Query tripCollection = Firestore.instance.collection("trips").orderBy('endDateTimeStamp').where('ispublic', isEqualTo: true);
-  final Query privateTripCollection = Firestore.instance.collection("privateTrips").orderBy('endDateTimeStamp');
-  final CollectionReference tripsCollectionUnordered = Firestore.instance.collection("trips");
-  final CollectionReference privateTripsCollectionUnordered = Firestore.instance.collection("privateTrips");
-  final CollectionReference flightCollection =  Firestore.instance.collection("flights");
-  final CollectionReference lodgingCollection =  Firestore.instance.collection("lodging");
-  final CollectionReference activitiesCollection =  Firestore.instance.collection("activities");
-  final CollectionReference chatCollection =  Firestore.instance.collection("chat");
-  final CollectionReference notificationCollection = Firestore.instance.collection('notifications');
-  final CollectionReference bringListCollection = Firestore.instance.collection('bringList');
-  final CollectionReference needListCollection = Firestore.instance.collection('needList');
+  final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
+  final CollectionReference userPublicProfileCollection = FirebaseFirestore.instance.collection("userPublicProfile");
+  final Query allUsersCollection = FirebaseFirestore.instance.collection("userPublicProfile").orderBy('lastname').orderBy('firstname');
+  final Query tripCollection = FirebaseFirestore.instance.collection("trips").orderBy('endDateTimeStamp').where('ispublic', isEqualTo: true);
+  final Query privateTripCollection = FirebaseFirestore.instance.collection("privateTrips").orderBy('endDateTimeStamp');
+  final CollectionReference tripsCollectionUnordered = FirebaseFirestore.instance.collection("trips");
+  final CollectionReference privateTripsCollectionUnordered = FirebaseFirestore.instance.collection("privateTrips");
+  final CollectionReference flightCollection =  FirebaseFirestore.instance.collection("flights");
+  final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");
+  final CollectionReference activitiesCollection =  FirebaseFirestore.instance.collection("activities");
+  final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
+  final CollectionReference notificationCollection = FirebaseFirestore.instance.collection('notifications');
+  final CollectionReference bringListCollection = FirebaseFirestore.instance.collection('bringList');
+  final CollectionReference needListCollection = FirebaseFirestore.instance.collection('needList');
 
 
 
-  Future updateUserData(String firstname, String lastname, String email, String uid) async {
-    return await userCollection.document(uid).setData({
-      'firstname': firstname,
-      'lastname' : lastname,
+  Future updateUserData(String firstName, String lastName, String email, String uid) async {
+    return await userCollection.doc(uid).set({
+      'firstName': firstName,
+      'lastName' : lastName,
       'email': email,
       'uid': uid
     });
   }
 
   Future<bool> checkUserHasProfile() async {
-    var ref = userCollection.document(uid);
+    var ref = userCollection.doc(uid);
     var refSnapshot = await ref.get();
 
     return refSnapshot.exists;
     }
 
 
-  Future updateUserPublicProfileData(String displayName, String firstname, String lastname, String email, int tripsCreated, int tripsJoined, String uid, File urlToImage) async {
-    var ref = userPublicProfileCollection.document(uid);
+  Future updateUserPublicProfileData(String displayName, String firstName, String lastName, String email, int tripsCreated, int tripsJoined, String uid, File urlToImage) async {
+    var ref = userPublicProfileCollection.doc(uid);
      try {
-       await ref.setData({
+       await ref.set({
         'displayName': displayName,
         'email': email,
-        'firstname': firstname,
-        'lastname' : lastname,
+         'followers': [],
+         'following': [],
+        'firstName': firstName,
+        'lastName' : lastName,
         'tripsCreated': tripsCreated,
         'tripsJoined': tripsJoined,
         'uid': uid,
@@ -64,10 +66,7 @@ class DatabaseService {
            });
      } catch (e) {
        print('Error creating Public: ${e.toString()}');
-       analytics.logEvent(name: 'write_error',parameters:
-         {'name': 'updateUserPublicProfileData',
-         'description': e.toString(),
-       });
+       _analyticsService.writeError('Error creating Public: ${e.toString()}');
      }
      if (urlToImage != null) {
        String urlforImage;
@@ -80,7 +79,7 @@ class DatabaseService {
          await uploadTask.onComplete;
          print('File Uploaded');
          
-         return await ref.updateData({
+         return await ref.update({
            'urlToImage': await storageReference.getDownloadURL().then((fileURL) {
              urlforImage = fileURL;
              return urlforImage;
@@ -88,25 +87,23 @@ class DatabaseService {
          });
        } catch (e) {
         print('Error updating with image url: ${e.toString()}');
+        _analyticsService.writeError('Error updating public profile with image url: ${e.toString()}');
        }
      }
   }
 
   // Edit Public Profile page
-  Future editPublicProfileData(String displayName, String firstname, String lastname, File urlToImage) async {
-    var ref = userPublicProfileCollection.document(uid);
+  Future editPublicProfileData(String displayName, String firstName, String lastName, File urlToImage) async {
+    var ref = userPublicProfileCollection.doc(uid);
     try {
-      await ref.updateData({
+      await ref.update({
         'displayName': displayName,
-        'firstname': firstname,
-        'lastname' : lastname,
+        'firstName': firstName,
+        'lastName' : lastName,
       });
     } catch (e) {
       print('Error editing Public Profile: ${e.toString()}');
-      analytics.logEvent(name: 'write_error',parameters:
-      {'name': 'editPublicProfileData',
-        'description': e.toString(),
-      });
+      _analyticsService.writeError('Error editing Public Profile: ${e.toString()}');
     }
     if (urlToImage != null) {
       String urlforImage;
@@ -119,7 +116,7 @@ class DatabaseService {
         await uploadTask.onComplete;
         print('File Uploaded');
 
-        return await ref.updateData({
+        return await ref.update({
           'urlToImage': await storageReference.getDownloadURL().then((fileURL) {
             urlforImage = fileURL;
             return urlforImage;
@@ -127,50 +124,49 @@ class DatabaseService {
         });
       } catch (e) {
         print('Error updating with image url: ${e.toString()}');
-        analytics.logEvent(name: 'write_error',parameters:
-        {'name': 'editPublicProfileData',
-          'description': e.toString(),
-        });
+        _analyticsService.writeError('Error editing Public Profile with image url: ${e.toString()}');
       }
     }
   }
 
 // Get user display name.
   Future<UserPublicProfile> retrieveUserPublicProfile(String uid) async {
-     var ref = await userPublicProfileCollection.document(uid).get();
+     var ref = await userPublicProfileCollection.doc(uid).get();
      if(ref.exists){
+       Map<String, dynamic> data = ref.data();
        return UserPublicProfile(
-         displayName: ref.data['displayName'],
-         firstname: ref.data['firstname'],
-         lastname: ref.data['lastname'],
-         urlToImage: ref.data['urlToImage'],
+         displayName: data['displayName'],
+         firstName: data['firstName'],
+         lastName: data['lastName'],
+         urlToImage: data['urlToImage'],
        );
      } else {
        return null;
      }
   }
   Future<String> retrieveUserPic(String uid) async {
-    var ref = await userPublicProfileCollection.document(uid).get();
-    String profilePic = await ref.data['urlToImage'];
+    var ref = await userPublicProfileCollection.doc(uid).get();
+    Map<String, dynamic> data = ref.data();
+    String profilePic = await data['urlToImage'];
     return profilePic;
   }
 
   //Follow a user
   Future followUser(String userUID) async {
-     userPublicProfileCollection.document(uid).updateData({
-      'following': FieldValue.arrayUnion([userUID]),
+     userPublicProfileCollection.doc(userUID).update({
+      'following': FieldValue.arrayUnion([uid]),
     });
-     userPublicProfileCollection.document(userUID).updateData({
-       'followers': FieldValue.arrayUnion([uid]),
+     userPublicProfileCollection.doc(uid).update({
+       'followers': FieldValue.arrayUnion([userUID]),
      });
   }
 
   //Un-Follow a user
   Future unFollowUser(String userUID) async {
-    userPublicProfileCollection.document(uid).updateData({
+    userPublicProfileCollection.doc(uid).update({
       'following': FieldValue.arrayRemove([userUID]),
     });
-    userPublicProfileCollection.document(userUID).updateData({
+    userPublicProfileCollection.doc(userUID).update({
       'followers': FieldValue.arrayRemove([uid]),
     });
   }
@@ -180,10 +176,10 @@ class DatabaseService {
     List<UserProfile> followingList;
     UserProfile followingListUID;
     try {
-      await userPublicProfileCollection.document(uid).get().then((value) => {
+      await userPublicProfileCollection.doc(uid).get().then((value) => {
         if(value.exists) {
           followingListUID = UserProfile(
-            following: List<String>.from(value.data['following']) ?? [''],
+            following: List<String>.from(value.data()['following']) ?? [''],
             // firstName: value.data['firstName'] ?? '',
           ),
         }
@@ -207,29 +203,31 @@ class DatabaseService {
   Future joinTrip() async {
 
     try {
-      await tripsCollectionUnordered.document(tripDocID).updateData({
+      await tripsCollectionUnordered.doc(tripDocID).update({
         'accessUsers': FieldValue.arrayUnion([uid]),
       }).then((value) =>
       {
         retrieveUserPublicProfile(uid).then((value) =>
         {
-          tripsCollectionUnordered.document(tripDocID)
+          tripsCollectionUnordered.doc(tripDocID)
               .collection('Members')
-              .document(uid)
-              .setData({
+              .doc(uid)
+              .set({
             'displayName': value.displayName ?? '',
-            'firstname': value.firstname ?? '',
-            'lastname': value.lastname ?? '',
+            'firstName': value.firstName ?? '',
+            'lastName': value.lastName ?? '',
             'uid': uid,
             'urlToImage': value.urlToImage ?? '',
           })
         })
       });
+      
     } catch(e){
       print('Error joining trip: ${e.toString()}');
+      _analyticsService.writeError('Error joining trip:  ${e.toString()}');
     }
 
-     await userPublicProfileCollection.document(uid).updateData({
+     await userPublicProfileCollection.doc(uid).update({
        "tripsJoined": FieldValue.increment(1),
      });
 
@@ -239,29 +237,29 @@ class DatabaseService {
   // Leave Trip
   Future leaveTrip() async {
 
-     tripsCollectionUnordered.document(tripDocID).updateData({
+     tripsCollectionUnordered.doc(tripDocID).update({
       'accessUsers': FieldValue.arrayRemove([uid]),
     });
-     tripsCollectionUnordered.document(tripDocID).collection('Members').document(uid).delete();
+     tripsCollectionUnordered.doc(tripDocID).collection('Members').doc(uid).delete();
 
-     userCollection.document(uid).updateData({
+     userCollection.doc(uid).update({
       'accessTrips': FieldValue.arrayRemove([tripDocID]),
     });
-     userPublicProfileCollection.document(uid).updateData({
+     userPublicProfileCollection.doc(uid).update({
       "tripsJoined": FieldValue.increment(-1),
     });
   }
   // Add new trip
   Future addNewTripData(List<String> accessUsers, String comment, String displayName,
-      String endDate, String firstname, String lastname, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location, String ownerID,
+      String endDate, String firstName, String lastName, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location, String ownerID,
       String startDate, String travelType, File urlToImage)
 
   async {
-    var key = tripsCollectionUnordered.document().documentID;
+    var key = tripsCollectionUnordered.doc().id;
     if (ispublic) {
-      var addTripRef =  tripsCollectionUnordered.document(key);
+      var addTripRef =  tripsCollectionUnordered.doc(key);
       try {
-         addTripRef.setData(
+         addTripRef.set(
             {
               'favorite': [],
               'accessUsers': accessUsers,
@@ -280,14 +278,16 @@ class DatabaseService {
               'urlToImage': '',
             });
 
+         _analyticsService.createTrip(true);
       } catch (e){
         print("Error saving trip: ${e.toString()}");
+        _analyticsService.writeError('Error saving new public trip:  ${e.toString()}');
       }
       try {
-         addTripRef.collection('Members').document(ownerID).setData({
+         addTripRef.collection('Members').doc(ownerID).set({
            'displayName' : displayName,
-           'firstname': firstname,
-           'lastname' : lastname,
+           'firstName': firstName,
+           'lastname' : lastName,
            'uid' : ownerID,
            'urlToImage' : '',
          });
@@ -296,9 +296,9 @@ class DatabaseService {
       }
 
     } else {
-      var addTripRef = privateTripsCollectionUnordered.document(key);
+      var addTripRef = privateTripsCollectionUnordered.doc(key);
       try {
-         addTripRef.setData({
+         addTripRef.set({
           'favorite': [],
           'accessUsers': accessUsers,
           'comment': comment,
@@ -315,15 +315,17 @@ class DatabaseService {
           'travelType': travelType,
           'urlToImage': '',
         });
+         _analyticsService.createPrivateTrip(true);
       }
       catch (e) {
         print("Error saving private trip: ${e.toString()}");
+        _analyticsService.writeError('Error saving new private trip:  ${e.toString()}');
       }
       try {
-        addTripRef.collection('Members').document(ownerID).setData({
+        addTripRef.collection('Members').doc(ownerID).set({
           'displayName' : displayName,
-          'firstname': firstname,
-          'lastname' : lastname,
+          'firstName': firstName,
+          'lastName' : lastName,
           'uid' : ownerID,
           'urlToImage' : '',
         });
@@ -333,17 +335,17 @@ class DatabaseService {
     }
 
     try {
-      await flightCollection.document(key).setData({});
+      await flightCollection.doc(key).set({});
     }catch (e) {
       print('Error adding Flight: ${e.toString()}');
     }
 
     try {
-      await userCollection.document(ownerID).updateData({'trips': FieldValue.arrayUnion([key])});
+      await userCollection.doc(ownerID).update({'trips': FieldValue.arrayUnion([key])});
     }catch (e) {
       print('Error adding new trip to user document: ${e.toString()}');
     }
-//     await addTripRef.updateData({"documentId": addTripRef.documentID});
+//     await addTripRef.update({"documentId": addTripRef.id});
 
     if (urlToImage != null) {
       if(ispublic) {
@@ -356,7 +358,7 @@ class DatabaseService {
           await uploadTask.onComplete;
           print('File Uploaded');
 
-          return await tripsCollectionUnordered.document(key).updateData({
+          return await tripsCollectionUnordered.doc(key).update({
             "urlToImage": await storageReference.getDownloadURL().then((
                 fileURL) {
               urlforImage = fileURL;
@@ -376,7 +378,7 @@ class DatabaseService {
           await uploadTask.onComplete;
           print('File Uploaded');
 
-          return await privateTripsCollectionUnordered.document(key).updateData({
+          return await privateTripsCollectionUnordered.doc(key).update({
             "urlToImage": await storageReference.getDownloadURL().then((
                 fileURL) {
               urlforImage = fileURL;
@@ -394,7 +396,7 @@ class DatabaseService {
   async {
     if (!trip.ispublic) {
       try {
-        var addTripRef = await tripsCollectionUnordered.document(trip.documentId).setData(
+        await tripsCollectionUnordered.doc(trip.documentId).set(
             {
               'favorite': trip.favorite,
               'accessUsers': trip.accessUsers,
@@ -413,17 +415,18 @@ class DatabaseService {
               'urlToImage': trip.urlToImage,
             });
         try {
-           privateTripsCollectionUnordered.document(trip.documentId).delete();
+           privateTripsCollectionUnordered.doc(trip.documentId).delete();
         } catch (e){
           print("Error deleting private trip: ${e.toString()}");
         }
       } catch (e) {
         print("Error saving trip: ${e.toString()}");
+        _analyticsService.writeError('Error converting to public trip:  ${e.toString()}');
       }
     } else {
       try {
-        var addTripRef = await privateTripsCollectionUnordered.document(trip.documentId)
-            .setData({
+        await privateTripsCollectionUnordered.doc(trip.documentId)
+            .set({
           'favorite': trip.favorite,
           'accessUsers': trip.accessUsers,
           'comment': trip.comment,
@@ -441,13 +444,14 @@ class DatabaseService {
           'urlToImage': trip.urlToImage,
         });
         try {
-           tripsCollectionUnordered.document(trip.documentId).delete();
+           tripsCollectionUnordered.doc(trip.documentId).delete();
         } catch (e){
           print("Error deleting public trip: ${e.toString()}");
         }
       }
       catch (e) {
         print("Error saving private trip: ${e.toString()}");
+        _analyticsService.writeError('Error converting to private trip:  ${e.toString()}');
       }
     }
   }
@@ -455,40 +459,40 @@ class DatabaseService {
   Future deleteTrip() async {
 
     try {
-      await lodgingCollection.document(tripDocID).delete();
+      await lodgingCollection.doc(tripDocID).delete();
     }catch (e) {
       print('Error deleting Lodging: ${e.toString()}');
     }
     try {
-      await flightCollection.document(tripDocID).delete();
+      await flightCollection.doc(tripDocID).delete();
     }catch (e) {
       print('Error deleting Flight: ${e.toString()}');
     }
     try {
-      await activitiesCollection.document(tripDocID).delete();
+      await activitiesCollection.doc(tripDocID).delete();
     }catch (e) {
       print('Error deleting Activity: ${e.toString()}');
     }
     try {
-      await chatCollection.document(tripDocID).delete();
+      await chatCollection.doc(tripDocID).delete();
     }catch (e) {
       print('Error deleting Chat: ${e.toString()}');
     }
     try {
-      await tripsCollectionUnordered.document(tripDocID).delete();
+      await tripsCollectionUnordered.doc(tripDocID).delete();
     }catch (e) {
       print('Error deleting Trip: ${e.toString()}');
     }
     try {
-      await privateTripsCollectionUnordered.document(tripDocID).delete();
+      await privateTripsCollectionUnordered.doc(tripDocID).delete();
     }catch (e) {
       print('Error deleting Trip: ${e.toString()}');
     }
   }
   // Update trip with new field
   Future updateTrip(String documentID) async {
-    var updateTripRef = tripsCollectionUnordered.document(documentID);
-    await updateTripRef.updateData({
+    var updateTripRef = tripsCollectionUnordered.doc(documentID);
+    await updateTripRef.update({
       'dateCreatedTimeStamp': FieldValue.serverTimestamp()
     });
   }
@@ -499,10 +503,10 @@ class DatabaseService {
       bool ispublic, String location, String startDate, String travelType, File urlToImage)
 
   async {
-    var addTripRef = ispublic ? tripsCollectionUnordered.document(documentID) : privateTripsCollectionUnordered.document(documentID);
+    var addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
 
 
-    await addTripRef.updateData({
+    await addTripRef.update({
       "comment": comment,
       'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
       "endDate": endDate,
@@ -516,12 +520,12 @@ class DatabaseService {
       String urlforImage;
       StorageReference storageReference = FirebaseStorage.instance
           .ref()
-          .child('trips/${addTripRef.documentID}');
+          .child('trips/${addTripRef.id}');
       StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
       await uploadTask.onComplete;
       print('File Uploaded');
 
-      return await addTripRef.updateData({
+      return await addTripRef.update({
         "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
           urlforImage = fileURL;
           return urlforImage;
@@ -532,11 +536,11 @@ class DatabaseService {
 
   //Add items the user is Bringing
   Future addItemToBringingList(String tripDocID, String item, String displayName) async {
-    String key = bringListCollection.document().documentID;
+    String key = bringListCollection.doc().id;
     try {
-      var ref = bringListCollection.document(tripDocID).collection('Items')
-          .document(key);
-      ref.setData({
+      var ref = bringListCollection.doc(tripDocID).collection('Items')
+          .doc(key);
+      ref.set({
         'item': item,
         'displayName': displayName,
         'documentID': key
@@ -547,23 +551,24 @@ class DatabaseService {
   }
 
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
-        return snapshot.documents.map((doc) {
+        return snapshot.docs.map((doc) {
+          Map<String, dynamic> data = doc.data();
             return Bringing(
-            displayName: doc.data['displayName'] ?? '',
-            item: doc.data['item'] ?? '',
-            documentID: doc.data['documentID'] ?? ''
+            displayName: data['displayName'] ?? '',
+            item: data['item'] ?? '',
+            documentID: data['documentID'] ?? ''
         );
       }).toList();
   }
   Stream<List<Bringing>> getBringingList(String docID){
-    return bringListCollection.document(docID).collection('Items').snapshots().map(_retrieveBringingItems);
+    return bringListCollection.doc(docID).collection('Items').snapshots().map(_retrieveBringingItems);
   }
 
   //Remove item from Bring list
   Future removeItemFromBringingList(String tripDocID, String documentID) async {
     try {
-      var ref = bringListCollection.document(tripDocID).collection('Items')
-          .document(documentID);
+      var ref = bringListCollection.doc(tripDocID).collection('Items')
+          .doc(documentID);
       ref.delete();
     } catch (e) {
       print('Error deleting item from Bringing collection: ${e.toString()}');
@@ -572,11 +577,11 @@ class DatabaseService {
 
   //Create a list of items user wants others to bring
   Future addItemToNeedList(String docID, String item, String displayName) async {
-    String key = needListCollection.document().documentID;
+    String key = needListCollection.doc().id;
     try {
-      var ref = needListCollection.document(docID).collection('Items')
-          .document(key);
-      ref.setData({
+      var ref = needListCollection.doc(docID).collection('Items')
+          .doc(key);
+      ref.set({
         'item': item,
         'displayName': displayName,
         'documentID': key
@@ -587,23 +592,24 @@ class DatabaseService {
   }
 
   List<Need> _retrieveNeedItems(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {
+    return snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data();
       return Need(
-          displayName: doc.data['displayName'] ?? '',
-          item: doc.data['item'] ?? '',
-          documentID: doc.data['documentID'] ?? ''
+          displayName: data['displayName'] ?? '',
+          item: data['item'] ?? '',
+          documentID: data['documentID'] ?? ''
       );
     }).toList();
   }
   Stream<List<Need>> getNeedList(String docID){
-    return needListCollection.document(docID).collection('Items').snapshots().map(_retrieveNeedItems);
+    return needListCollection.doc(docID).collection('Items').snapshots().map(_retrieveNeedItems);
   }
 
   //Remove item from Need list
   Future removeItemFromNeedList(String tripDocID, String documentID) async {
     try {
-      var ref = needListCollection.document(tripDocID).collection('Items')
-          .document(documentID);
+      var ref = needListCollection.doc(tripDocID).collection('Items')
+          .doc(documentID);
       ref.delete();
     } catch (e) {
       print('Error deleting item from Bringing collection: ${e.toString()}');
@@ -615,17 +621,18 @@ class DatabaseService {
   Future<List<Members>> retrieveMembers(String docID, bool pubic) async {
     if(pubic) {
       try {
-        var ref = await tripsCollectionUnordered.document(docID).collection(
-            'Members').getDocuments();
-        List<Members> memberList = ref.documents.map((doc) {
+        var ref = await tripsCollectionUnordered.doc(docID).collection(
+            'Members').get();
+        List<Members> memberList = ref.docs.map((doc) {
+          Map<String, dynamic> data = doc.data();
           return Members(
-            displayName: doc.data['displayName'] ?? '',
-            firstname: doc.data['firstname'] ?? '',
-            lastname: doc.data['lastname'] ?? '',
-            urlToImage: doc.data['urlToImage'] ?? '',
+            displayName: data['displayName'] ?? '',
+            firstName: data['firstName'] ?? '',
+            lastName: data['lastName'] ?? '',
+            urlToImage: data['urlToImage'] ?? '',
           );
         }).toList();
-        memberList.sort((a, b) => a.lastname.compareTo(b.lastname));
+        memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         print(e.toString());
@@ -633,17 +640,18 @@ class DatabaseService {
       }
     } else {
       try {
-        var ref = await privateTripsCollectionUnordered.document(docID).collection(
-            'Members').getDocuments();
-        List<Members> memberList = ref.documents.map((doc) {
+        var ref = await privateTripsCollectionUnordered.doc(docID).collection(
+            'Members').get();
+        List<Members> memberList = ref.docs.map((doc) {
+          Map<String, dynamic> data = doc.data();
           return Members(
-            displayName: doc.data['displayName'] ?? '',
-            firstname: doc.data['firstname'] ?? '',
-            lastname: doc.data['lastname'] ?? '',
-            urlToImage: doc.data['urlToImage'] ?? '',
+            displayName: data['displayName'] ?? '',
+            firstName: data['firstName'] ?? '',
+            lastName: data['lastName'] ?? '',
+            urlToImage: data['urlToImage'] ?? '',
           );
         }).toList();
-        memberList.sort((a, b) => a.lastname.compareTo(b.lastname));
+        memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         print(e.toString());
@@ -657,22 +665,23 @@ class DatabaseService {
 // Get all trips
   List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
 
-    return snapshot.documents.map((doc) {
+    return snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data();
         return Trip(
-          accessUsers: List<String>.from(doc.data['accessUsers']) ?? null,
-          comment: doc.data['comment'] ?? '',
-          dateCreatedTimeStamp: doc.data['dateCreatedTimeStamp'],
-          displayName: doc.data['displayName'] ?? '',
-          documentId: doc.data['documentId'] ?? '',
-          endDate: doc.data['endDate'] ?? '',
-          endDateTimeStamp: doc.data['endDateTimeStamp'],
-          favorite: List<String>.from(doc.data['favorite']) ?? [''],
-          ispublic: doc.data['ispublic'] ?? null,
-          location: doc.data['location'] ?? '',
-          ownerID: doc.data['ownerID'] ?? '',
-          startDate: doc.data['startDate'] ?? '',
-          travelType: doc.data['travelType'] ?? '',
-          urlToImage: doc.data['urlToImage'] ?? '',
+          accessUsers: List<String>.from(data['accessUsers']) ?? null,
+          comment: data['comment'] ?? '',
+          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
+          displayName: data['displayName'] ?? '',
+          documentId: data['documentId'] ?? '',
+          endDate: data['endDate'] ?? '',
+          endDateTimeStamp: data['endDateTimeStamp'],
+          favorite: List<String>.from(data['favorite']) ?? [''],
+          ispublic: data['ispublic'] ?? null,
+          location: data['location'] ?? '',
+          ownerID: data['ownerID'] ?? '',
+          startDate: data['startDate'] ?? '',
+          travelType: data['travelType'] ?? '',
+          urlToImage: data['urlToImage'] ?? '',
         );
     }).toList();
   }
@@ -686,23 +695,24 @@ class DatabaseService {
 
   Future<List<Trip>> privateTripList() async {
     var ref = await privateTripCollection.where(
-        'accessUsers', arrayContainsAny: [uid]).getDocuments();
-    return ref.documents.map((doc) {
+        'accessUsers', arrayContainsAny: [uid]).get();
+    return ref.docs.map((doc) {
+      Map<String, dynamic> data = doc.data();
         return Trip(
-          accessUsers: List<String>.from(doc.data['accessUsers']) ?? null,
-          comment: doc.data['comment'] ?? '',
-          dateCreatedTimeStamp: doc.data['dateCreatedTimeStamp'],
-          displayName: doc.data['displayName'] ?? '',
-          documentId: doc.data['documentId'] ?? '',
-          endDate: doc.data['endDate'] ?? '',
-          endDateTimeStamp: doc.data['endDateTimeStamp'],
-          favorite: List<String>.from(doc.data['favorite']) ?? [''],
-          ispublic: doc.data['ispublic'] ?? null,
-          location: doc.data['location'] ?? '',
-          ownerID: doc.data['ownerID'] ?? '',
-          startDate: doc.data['startDate'] ?? '',
-          travelType: doc.data['travelType'] ?? '',
-          urlToImage: doc.data['urlToImage'] ?? '',
+          accessUsers: List<String>.from(data['accessUsers']) ?? null,
+          comment: data['comment'] ?? '',
+          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
+          displayName: data['displayName'] ?? '',
+          documentId: data['documentId'] ?? '',
+          endDate: data['endDate'] ?? '',
+          endDateTimeStamp: data['endDateTimeStamp'],
+          favorite: List<String>.from(data['favorite']) ?? [''],
+          ispublic: data['ispublic'] ?? null,
+          location: data['location'] ?? '',
+          ownerID: data['ownerID'] ?? '',
+          startDate: data['startDate'] ?? '',
+          travelType: data['travelType'] ?? '',
+          urlToImage: data['urlToImage'] ?? '',
         );
       }).toList();
   }
@@ -711,11 +721,11 @@ class DatabaseService {
 
   Future addNewLodgingData(String comment, String displayName, String documentID, String link, String lodgingType, String uid, File urlToImage, String tripName) async {
 
-    var key = lodgingCollection.document().documentID;
+    var key = lodgingCollection.doc().id;
     print(documentID);
 
-    var addNewLodgingRef = lodgingCollection.document(documentID).collection('lodging').document(key);
-    addNewLodgingRef.setData(
+    var addNewLodgingRef = lodgingCollection.doc(documentID).collection('lodging').doc(key);
+    addNewLodgingRef.set(
       {'comment': comment,
         'displayName': displayName,
         'fieldID': key,
@@ -737,7 +747,7 @@ class DatabaseService {
       await uploadTask.onComplete;
       print('File Uploaded');
 
-      return await addNewLodgingRef.updateData({
+      return await addNewLodgingRef.update({
         "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
           urlforImage = fileURL;
           return urlforImage;
@@ -750,10 +760,10 @@ class DatabaseService {
   Future editLodgingData(String comment, String displayName, String documentID,
       String link, String lodgingType, File urlToImage, String fieldID) async {
 
-    var editLodgingRef = lodgingCollection.document(documentID).collection('lodging').document(fieldID);
+    var editLodgingRef = lodgingCollection.doc(documentID).collection('lodging').doc(fieldID);
 
     try {
-      editLodgingRef.updateData(
+      editLodgingRef.update(
           {'comment': comment,
             'displayName': displayName,
             'link': link,
@@ -764,6 +774,7 @@ class DatabaseService {
           });
     } catch (e) {
       print('Error editing lodging: ${e.toString()}');
+      _analyticsService.writeError('Error editing lodging:  ${e.toString()}');
     }
 
     try {
@@ -776,7 +787,7 @@ class DatabaseService {
         await uploadTask.onComplete;
         print('File Uploaded');
 
-        return await editLodgingRef.updateData({
+        return await editLodgingRef.update({
           "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
             urlforImage = fileURL;
             return urlforImage;
@@ -790,23 +801,24 @@ class DatabaseService {
 
 
   // Remove Lodging
-  Future removeLodging(String fieldID){
+   removeLodging(String fieldID){
     try {
-      return lodgingCollection.document(tripDocID).collection('lodging').document(fieldID).delete();
+      return lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).delete();
     } catch (e) {
-      print('Error deleting activity: ${e.toString()}');
+      print('Error deleting lodging: ${e.toString()}');
+      _analyticsService.writeError('Error deleting lodging:  ${e.toString()}');
     }
   }
 
 // Add new activity
   Future addNewActivityData(String comment, String displayName, String documentID,
       String link, String activityType, String uid, File urlToImage, String tripName) async {
-    var key = activitiesCollection.document().documentID;
+    var key = activitiesCollection.doc().id;
 
-    var addNewActivityRef = activitiesCollection.document(documentID).collection('activity').document(key);
+    var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(key);
 
     try {
-      addNewActivityRef.setData(
+      addNewActivityRef.set(
       {'comment': comment,
         'displayName': displayName,
         'fieldID': key,
@@ -820,6 +832,7 @@ class DatabaseService {
       });
     } catch (e) {
       print('Error adding new activity: ${e.toString()}');
+      _analyticsService.writeError('Error adding new activity:  ${e.toString()}');
     }
 
     try {
@@ -832,7 +845,7 @@ class DatabaseService {
         await uploadTask.onComplete;
         print('File Uploaded');
 
-        return await addNewActivityRef.updateData({
+        return await addNewActivityRef.update({
           "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
             urlforImage = fileURL;
             return urlforImage;
@@ -848,10 +861,10 @@ class DatabaseService {
   Future editActivityData(String comment, String displayName, String documentID,
       String link, String activityType, File urlToImage, String fieldID) async {
 
-    var addNewActivityRef = activitiesCollection.document(documentID).collection('activity').document(fieldID);
+    var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(fieldID);
 
     try {
-      addNewActivityRef.updateData(
+      addNewActivityRef.update(
       {'comment': comment,
         'displayName': displayName,
         'link': link,
@@ -862,6 +875,7 @@ class DatabaseService {
       });
     } catch (e) {
       print('Error editing activity: ${e.toString()}');
+      _analyticsService.writeError('Error editing activity:  ${e.toString()}');
     }
 
     try {
@@ -874,7 +888,7 @@ class DatabaseService {
         await uploadTask.onComplete;
         print('File Uploaded');
 
-        return await addNewActivityRef.updateData({
+        return await addNewActivityRef.update({
           "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
             urlforImage = fileURL;
             return urlforImage;
@@ -887,30 +901,32 @@ class DatabaseService {
   }
 
   // Remove Activity
-  Future removeActivity(String fieldID){
+   removeActivity(String fieldID){
     try {
-      return activitiesCollection.document(tripDocID).collection('activity').document(fieldID).delete();
+      return activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).delete();
     } catch (e) {
       print('Error deleting activity: ${e.toString()}');
+      _analyticsService.writeError('Error removing activity:  ${e.toString()}');
     }
   }
   //Get Activity List
   Stream<List<LodgingData>> get lodgingList {
-    return lodgingCollection.document(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
+    return lodgingCollection.doc(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
   }
 
   List<ActivityData> _activitiesListFromSnapshot(QuerySnapshot snapshot){
-    List<ActivityData> activitiesList = snapshot.documents.map((doc){
+    List<ActivityData> activitiesList = snapshot.docs.map((doc){
+      Map<String, dynamic> data = doc.data();
       return ActivityData(
-        comment: doc.data['comment'] ?? '',
-        activityType: doc.data['activityType'] ?? '',
-        displayName: doc.data['displayName'] ?? '',
-        fieldID: doc.data['fieldID'] ?? '',
-        link: doc.data['link'] ?? '',
-        uid: doc.data['uid'] ?? '',
-        urlToImage: doc.data['urlToImage'] ?? '',
-        vote: doc.data['vote'] ?? 0,
-        voters: List<String>.from(doc.data['voters']) ?? [''],
+        comment: data['comment'] ?? '',
+        activityType: data['activityType'] ?? '',
+        displayName: data['displayName'] ?? '',
+        fieldID: data['fieldID'] ?? '',
+        link: data['link'] ?? '',
+        uid: data['uid'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
+        vote: data['vote'] ?? 0,
+        voters: List<String>.from(data['voters']) ?? [''],
       );
     }).toList();
     activitiesList.sort((a,b) => b.vote.compareTo(a.vote));
@@ -918,21 +934,23 @@ class DatabaseService {
   }
 
   Stream<List<ActivityData>> get activityList {
-    return activitiesCollection.document(tripDocID).collection('activity').snapshots().map(_activitiesListFromSnapshot);
+    return activitiesCollection.doc(tripDocID).collection('activity').snapshots().map(_activitiesListFromSnapshot);
   }
 
   //Get all users
   List<UserProfile> _userListFromSnapshot(QuerySnapshot snapshot){
-    List<UserProfile> userList =  snapshot.documents.map((doc){
+
+    List<UserProfile> userList =  snapshot.docs.map((doc){
+      Map<String, dynamic> data = doc.data();
       return UserProfile(
-        displayName: doc.data['displayName'] ?? '',
-        email: doc.data['email'] ?? '',
-        following: List<String>.from(doc.data['following']) ?? [''],
-        followers: List<String>.from(doc.data['followers']) ?? [''],
-        firstName: doc.data['firstName'] ?? '',
-        lastName: doc.data['lastName'] ?? '',
-        uid: doc.data['uid'] ?? '',
-        urlToImage: doc.data['urlToImage'] ?? '',
+        displayName: data['displayName'] ?? '',
+        email: data['email'] ?? '',
+        following: List<String>.from(data['following']) ?? [''],
+        followers: List<String>.from(data['followers']) ?? [''],
+        firstName: data['firstName'] ?? '',
+        lastName: data['lastName'] ?? '',
+        uid: data['uid'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
       );
     }).toList();
     userList.sort((a,b) => a.firstName.compareTo(b.firstName));
@@ -946,17 +964,18 @@ class DatabaseService {
   //Get all users Future Builder
   Future<List<UserProfile>> usersList() async {
     try {
-      var ref = await userPublicProfileCollection.getDocuments();
-      List<UserProfile> userList = ref.documents.map((doc) {
+      var ref = await userPublicProfileCollection.get();
+      List<UserProfile> userList = ref.docs.map((doc) {
+        Map<String, dynamic> data = doc.data();
         return UserProfile(
-          displayName: doc.data['displayName'] ?? '',
-          email: doc.data['email'] ?? '',
-          following: List<String>.from(doc.data['following']) ?? [''],
-          followers: List<String>.from(doc.data['followers']) ?? [''],
-          firstName: doc.data['firstName'] ?? '',
-          lastName: doc.data['lastName'] ?? '',
-          uid: doc.data['uid'] ?? '',
-          urlToImage: doc.data['urlToImage'] ?? '',
+          displayName: data['displayName'] ?? '',
+          email: data['email'] ?? '',
+          following: List<String>.from(data['following']) ?? [''],
+          followers: List<String>.from(data['followers']) ?? [''],
+          firstName: data['firstName'] ?? '',
+          lastName: data['lastName'] ?? '',
+          uid: data['uid'] ?? '',
+          urlToImage: data['urlToImage'] ?? '',
         );
       }).toList();
       userList.sort((a,b) => a.firstName.compareTo(b.firstName));
@@ -969,7 +988,7 @@ class DatabaseService {
 
   // Get current user public profile
   UserProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
-    var data = snapshot.data;
+    Map<String, dynamic> data = snapshot.data();
       return UserProfile(
         displayName: data['displayName'] ?? '',
         email: data['email'] ?? '',
@@ -980,20 +999,10 @@ class DatabaseService {
       );
 
   }
-  Future getUserDisplayName () async {
-    try {
-      var userRef = userPublicProfileCollection.document(uid);
-      DocumentSnapshot snapshot = await userRef.get();
-      return snapshot.data['displayName'];
-    } catch (e) {
-      print('Error retrieving displaynames: ${e.toString()}');
-    }
-
-  }
 
   // get current use public profile
   Stream<UserProfile> get currentUserPublicProfile {
-    return userPublicProfileCollection.document(uid).snapshots()
+    return userPublicProfileCollection.doc(uid).snapshots()
         .map(_userPublicProfileSnapshot);
   }
 
@@ -1005,7 +1014,8 @@ class DatabaseService {
       List<FlightData> listOfFlights = List();
 
       if (snapshot.exists) {
-        snapshot.data.forEach((k,v) => list2.add(v));
+        Map<String, dynamic> data = snapshot.data();
+        data.forEach((k,v) => list2.add(v));
         
          for (var i =0; i< list2.length;i++) {
            listOfFlights.add(FlightData(
@@ -1032,7 +1042,7 @@ class DatabaseService {
 
   Stream<List<FlightData>> get flightList {
     try {
-      return flightCollection.document(tripDocID).snapshots().map(_flightListFromSnapshot);
+      return flightCollection.doc(tripDocID).snapshots().map(_flightListFromSnapshot);
     } catch (e) {
       print('Error Streaming Flights. ${e.toString()}');
     }
@@ -1040,17 +1050,18 @@ class DatabaseService {
 
   //Get Lodging items
   List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
-    List<LodgingData> lodgingList = snapshot.documents.map((doc){
+    List<LodgingData> lodgingList = snapshot.docs.map((doc){
+      Map<String, dynamic> data = doc.data();
       return LodgingData(
-        comment: doc.data['comment'] ?? '',
-        lodgingType: doc.data['lodgingType'] ?? '',
-        displayName: doc.data['displayName'] ?? '',
-        fieldID: doc.data['fieldID'] ?? '',
-        link: doc.data['link'] ?? '',
-        uid: doc.data['uid'] ?? '',
-        urlToImage: doc.data['urlToImage'] ?? '',
-        vote: doc.data['vote'] ?? 0,
-        voters: List<String>.from(doc.data['voters']) ?? [''],
+        comment: data['comment'] ?? '',
+        lodgingType: data['lodgingType'] ?? '',
+        displayName: data['displayName'] ?? '',
+        fieldID: data['fieldID'] ?? '',
+        link: data['link'] ?? '',
+        uid: data['uid'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
+        vote: data['vote'] ?? 0,
+        voters: List<String>.from(data['voters']) ?? [''],
       );
     }).toList();
     lodgingList.sort((a,b) => b.vote.compareTo(a.vote));
@@ -1063,21 +1074,22 @@ class DatabaseService {
   //Query for My Crew Trips
   List<Trip> _crewTripListFromSnapshot(QuerySnapshot snapshot){
     try {
-      return snapshot.documents.map((doc) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data();
         return Trip(
-          accessUsers: List<String>.from(doc.data['accessUsers']) ?? null,
-          comment: doc.data['comment'] ?? '',
-          displayName: doc.data['displayName'] ?? '',
-          documentId: doc.data['documentId'] ?? '',
-          endDate: doc.data['endDate'] ?? '',
-          endDateTimeStamp: doc.data['endDateTimeStamp'],
-          favorite: List<String>.from(doc.data['favorite']) ?? [''],
-          ispublic: doc.data['ispublic'] ?? null,
-          location: doc.data['location'] ?? '',
-          ownerID: doc.data['ownerID'] ?? '',
-          startDate: doc.data['startDate'] ?? '',
-          travelType: doc.data['travelType'] ?? '',
-          urlToImage: doc.data['urlToImage'] ?? '',
+          accessUsers: List<String>.from(data['accessUsers']) ?? null,
+          comment: data['comment'] ?? '',
+          displayName: data['displayName'] ?? '',
+          documentId: data['documentId'] ?? '',
+          endDate: data['endDate'] ?? '',
+          endDateTimeStamp: data['endDateTimeStamp'],
+          favorite: List<String>.from(data['favorite']) ?? [''],
+          ispublic: data['ispublic'] ?? null,
+          location: data['location'] ?? '',
+          ownerID: data['ownerID'] ?? '',
+          startDate: data['startDate'] ?? '',
+          travelType: data['travelType'] ?? '',
+          urlToImage: data['urlToImage'] ?? '',
         );
       }).toList();
     } catch (e){
@@ -1085,7 +1097,7 @@ class DatabaseService {
     }
   }
 //  endDateTimeStamp: DateFormat.yMd()
-//      .format(doc.data['endDateTimeStamp'].toDate()).toString(),
+//      .format(data['endDateTimeStamp'].toDate()).toString(),
   // get trips
   Stream<List<Trip>> get crewTrips {
     return tripCollection.where('accessUsers', arrayContainsAny: [uid]).snapshots()
@@ -1101,7 +1113,7 @@ class DatabaseService {
 // Add Favorite Trip
   Future addFavoriteToTrip(String uid) async {
     try {
-      return await tripsCollectionUnordered.document(tripDocID).updateData({
+      return await tripsCollectionUnordered.doc(tripDocID).update({
         'favorite': FieldValue.arrayUnion([uid]),
       });
     } catch (e) {
@@ -1112,7 +1124,7 @@ class DatabaseService {
   //Remove Favorite Trip
   Future removeFavoriteFromTrip(String uid) async {
     try {
-      return await tripsCollectionUnordered.document(tripDocID).updateData({
+      return await tripsCollectionUnordered.doc(tripDocID).update({
         'favorite': FieldValue.arrayRemove([uid]),
       });
     } catch (e) {
@@ -1123,7 +1135,7 @@ class DatabaseService {
   //Add and Remove vote for activity
   Future addVoteToActivity(String uid, String fieldID) async {
     try {
-      await activitiesCollection.document(tripDocID).collection('activity').document(fieldID).updateData({
+      await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
         'vote':
         FieldValue.increment(1),
       });
@@ -1131,7 +1143,7 @@ class DatabaseService {
       print('Error updating vote count. ${e.toString()}');
     }
     try {
-      return await activitiesCollection.document(tripDocID).collection('activity').document(fieldID).updateData({
+      return await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
         'voters':
         FieldValue.arrayUnion([uid]),
       });
@@ -1141,7 +1153,7 @@ class DatabaseService {
   }
   Future removeVoteFromActivity(String uid, String fieldID) async {
     try {
-      await activitiesCollection.document(tripDocID).collection('activity').document(fieldID).updateData({
+      await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
         'vote':
         FieldValue.increment(-1),
       });
@@ -1149,7 +1161,7 @@ class DatabaseService {
       print('Error updating vote count. ${e.toString()}');
     }
     try {
-      return await activitiesCollection.document(tripDocID).collection('activity').document(fieldID).updateData({
+      return await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
         'voters':
         FieldValue.arrayRemove([uid]),
       });
@@ -1163,7 +1175,7 @@ class DatabaseService {
   //Add and Remove vote for lodging
   Future addVoteToLodging(String uid, String fieldID) async {
     try {
-      await lodgingCollection.document(tripDocID).collection('lodging').document(fieldID).updateData({
+      await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
         'vote':
         FieldValue.increment(1),
       });
@@ -1171,7 +1183,7 @@ class DatabaseService {
       print('Error updating vote count. ${e.toString()}');
     }
     try {
-      return await lodgingCollection.document(tripDocID).collection('lodging').document(fieldID).updateData({
+      return await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
         'voters':
         FieldValue.arrayUnion([uid]),
       });
@@ -1181,7 +1193,7 @@ class DatabaseService {
   }
   Future removeVoteFromLodging(String uid, String fieldID) async {
     try {
-      await lodgingCollection.document(tripDocID).collection('lodging').document(fieldID).updateData({
+      await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
         'vote':
         FieldValue.increment(-1),
       });
@@ -1189,7 +1201,7 @@ class DatabaseService {
       print('Error updating vote count. ${e.toString()}');
     }
     try {
-      return await lodgingCollection.document(tripDocID).collection('lodging').document(fieldID).updateData({
+      return await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
         'voters':
         FieldValue.arrayRemove([uid]),
       });
@@ -1200,9 +1212,9 @@ class DatabaseService {
 
   // Add new notification
   Future addNewNotificationData(String message, String documentID, String type, String ownerID) async {
-    var key = notificationCollection.document().documentID;
+    var key = notificationCollection.doc().id;
     try {
-      return await notificationCollection.document(ownerID).collection('notifications').document(key).setData({
+      return await notificationCollection.doc(ownerID).collection('notifications').doc(key).set({
         'fieldID': key,
         'message': message,
         'timestamp': FieldValue.serverTimestamp(),
@@ -1213,22 +1225,24 @@ class DatabaseService {
       });
     } catch (e) {
       print('Error writing notification: ${e.toString()}');
+      _analyticsService.writeError('Error writing notification:  ${e.toString()}');
     }
   }
   // Remove notification
   Future removeNotificationData(String fieldID) async {
-    return await notificationCollection.document(uid).collection('notifications').document(fieldID).delete();
+    return await notificationCollection.doc(uid).collection('notifications').doc(fieldID).delete();
   }
   // Clear all notifications
   Future removeAllNotificationData() async {
     try {
-      return await notificationCollection.document(uid).collection('notifications').getDocuments().then((QuerySnapshot val) => {
-        val.documents.forEach((val) => {
-          notificationCollection.document(uid).collection('notifications').document(val.documentID).delete()
+      return await notificationCollection.doc(uid).collection('notifications').get().then((QuerySnapshot val) => {
+        val.docs.forEach((val) => {
+          notificationCollection.doc(uid).collection('notifications').doc(val.id).delete()
         })
       });
     } catch (e) {
       print('Error deleting all notificatons: ${e.toString()}');
+      _analyticsService.writeError('Error deleting all notifications:  ${e.toString()}');
     }
   }
   // Get all Notifications
@@ -1236,14 +1250,15 @@ class DatabaseService {
   List<NotificationData> _notificationListFromSnapshot(QuerySnapshot snapshot){
 
     try {
-      return snapshot.documents.map((doc){
+      return snapshot.docs.map((doc){
+        Map<String, dynamic> data = doc.data();
         return NotificationData(
-          documentID: doc.data['documentID'] ?? '',
-          fieldID: doc.data['fieldID'] ?? '',
-          message: doc.data['message'] ?? '',
-          timestamp: doc.data['timestamp'] ?? Timestamp.now(),
-          type: doc.data['type'] ?? '',
-          uid: doc.data['uid'] ?? '',
+          documentID: data['documentID'] ?? '',
+          fieldID: data['fieldID'] ?? '',
+          message: data['message'] ?? '',
+          timestamp: data['timestamp'] ?? Timestamp.now(),
+          type: data['type'] ?? '',
+          uid: data['uid'] ?? '',
         );
       }).toList();
     } catch (e) {
@@ -1252,49 +1267,53 @@ class DatabaseService {
   }
 
   Stream<List<NotificationData>> get notificationList {
-    return notificationCollection.document(uid).collection('notifications').orderBy('timestamp', descending: true).snapshots().map(_notificationListFromSnapshot);
+    return notificationCollection.doc(uid).collection('notifications').orderBy('timestamp', descending: true).snapshots().map(_notificationListFromSnapshot);
   }
 
 
   // Add new chat message
   Future addNewChatMessage(String displayName, String message, String uid, Map status) async {
-    var key = chatCollection.document().documentID;
+    var key = chatCollection.doc().id;
 
-    return await chatCollection.document(tripDocID).collection('messages').document(key).setData(
-        {
-          'displayName': displayName,
-          'message': message,
-          'status': status,
-          'timestamp': FieldValue.serverTimestamp(),
-          'uid': uid,
-        });
+    try {
+      return await chatCollection.doc(tripDocID).collection('messages').doc(key).set(
+          {
+            'displayName': displayName,
+            'message': message,
+            'status': status,
+            'timestamp': FieldValue.serverTimestamp(),
+            'uid': uid,
+          });
+    } catch (e) {
+      _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
+    }
   }
 // Clear chat notifications.
   Future clearChatNotifications() async {
-    var db = chatCollection.document(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false);
-    QuerySnapshot snapshot = await db.getDocuments();
-    for(var i =0; i< snapshot.documents.length;i++) {
-      chatCollection.document(tripDocID).collection('messages').document(snapshot.documents[i].documentID).updateData({'status.$uid': true});
+    var db = chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false);
+    QuerySnapshot snapshot = await db.get();
+    for(var i =0; i< snapshot.docs.length;i++) {
+      chatCollection.doc(tripDocID).collection('messages').doc(snapshot.docs[i].id).update({'status.$uid': true});
     }
   }
 
   // Get all chat messages
   List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
 
-    return snapshot.documents.map((doc){
-
+    return snapshot.docs.map((doc){
+      Map<String, dynamic> data = doc.data();
       return ChatData(
-        displayName: doc.data['displayName'] ?? '',
-        message: doc.data['message'] ?? '',
-        timestamp: doc.data['timestamp'] ?? Timestamp.now(),
-        uid: doc.data['uid'] ?? '',
+        displayName: data['displayName'] ?? '',
+        message: data['message'] ?? '',
+        timestamp: data['timestamp'] ?? Timestamp.now(),
+        uid: data['uid'] ?? '',
       );
     }).toList();
   }
 
   Stream<List<ChatData>> get chatList {
     try {
-      return chatCollection.document(tripDocID).collection('messages')
+      return chatCollection.doc(tripDocID).collection('messages')
       .orderBy('timestamp', descending: true)
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
@@ -1303,7 +1322,7 @@ class DatabaseService {
   }
   Stream<List<ChatData>> get chatListNotification {
     try {
-      return chatCollection.document(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
+      return chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       print("Could not load chat notification list: ${e.toString()}");
     }

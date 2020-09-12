@@ -46,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         child: Container(
           color: Colors.white,
-          padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
+          padding: EdgeInsets.fromLTRB(15, 50, 0, 50),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,20 +55,27 @@ class _ProfilePageState extends State<ProfilePage> {
               Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
               user.email.isEmpty ? Padding(padding: EdgeInsets.only(top: 2),) : Text('Email: ${user.email}'),
               Container(
+                width: 250,
+                alignment: Alignment.center,
                 padding: EdgeInsets.all(10),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
-                    child: user.urlToImage != null ? Image.network(user.urlToImage) : _image == null
+                  borderRadius: BorderRadius.circular(20),
+                    child: user.urlToImage != null ? Image.network(user.urlToImage, height: 250, width: 250, fit: BoxFit.cover,) : _image == null
                         ? Text('No image selected.')
                         : Image.file(_image),
                 ),
               ),
-              RaisedButton(
-                onPressed: () {
-                  getImage();
-                },
+              Container(
+                width: 30,
+                child: RaisedButton(
+                  shape: CircleBorder(
+                  ),
+                  onPressed: () {
+                    getImage();
+                  },
 //                              tooltip: 'Pick Image',
-                child: Icon(Icons.add_a_photo),
+                  child: Icon(Icons.add_a_photo),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 20.0),

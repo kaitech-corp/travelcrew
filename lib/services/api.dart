@@ -52,8 +52,8 @@ class Covid19API {
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
-//      print(response.body);
-//    print(result['countries_stat']);
+     // print(response.body);
+   // print(result['countries_stat']);
       Iterable list = result['countries_stat'];
 //      print(list.map((stat) => Covid19.fromJSON(stat)).toList());
       return list.map((stat) => Covid19.fromJSON(stat)).toList();
@@ -102,7 +102,7 @@ class PublicHolidayAPI {
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
-//      print(response.body);
+     print(response.body);
 //    print(result['countries_stat']);
       Iterable list = result;
       return list.map((stat) => Holiday.fromJSON(stat)).toList();
@@ -235,19 +235,19 @@ class Covid19StatsByCountry {
     "x-rapidapi-key": _api_key,
   };
 
+
   // Base API request to get response
-  Future<List<Covid19_2>> getStats(String country) async {
+  Future<Covid19_2> getStats(String country) async {
+
+    // country = 'Colombia';
 
     final response = await http.get(_baseUrl + country, headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
-      // print(result);
-     print(Covid19_2.fromJSON(result).countryName);
-//    print(result['countries_stat']);
-      Iterable list = result;
-      // print(list.map((stat) => Covid19_2.fromJSON(stat)).toList());
-      return list.map((stat) => Covid19_2.fromJSON(stat)).toList();
+      return Covid19_2.fromJSON(result);
+      // print(statistic.length);
+      // return statistic;
     } else {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load json data: ${response.statusCode}');

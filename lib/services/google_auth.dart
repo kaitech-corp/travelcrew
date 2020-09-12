@@ -1,20 +1,23 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:travelcrew/models/custom_objects.dart';
+
+import 'analytics_service.dart';
 
 
 class GoogleAuthService {
 
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  final AnalyticsService _analyticsService = AnalyticsService();
 
   //Create user object based on Firebase user
-  User _userFromFirebase(FirebaseUser user){
+  User _userFromFirebase(auth.User user){
     return user != null ? User(uid: user.uid) : null;
   }
   Stream<User> get user {
-    return _auth.onAuthStateChanged
+    return _auth.authStateChanges()
         .map(_userFromFirebase);
   }
 
@@ -25,21 +28,22 @@ class GoogleAuthService {
       final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
+      final auth.GoogleAuthCredential credential = auth.GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
 
-      final AuthResult authResult = await _auth.signInWithCredential(
+      final auth.UserCredential authResult = await _auth.signInWithCredential(
           credential);
-      final FirebaseUser user = authResult.user;
+      final auth.User user = authResult.user;
 
 
       assert(!user.isAnonymous);
       assert(await user.getIdToken() != null);
 
-      final FirebaseUser currentUser = await _auth.currentUser();
+      final auth.User currentUser =  _auth.currentUser;
       assert(user.uid == currentUser.uid);
+      await _analyticsService.logLoginGoogle();
 
       return 'signInWithGoogle succeeded: $user';
     } catch (e){

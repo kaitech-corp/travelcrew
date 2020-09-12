@@ -11,15 +11,15 @@ import 'package:travelcrew/services/database.dart';
 
 
 class EditTripData extends StatefulWidget {
-  final Trip tripdetails;
-  EditTripData({this.tripdetails});
+  final Trip tripDetails;
+  EditTripData({this.tripDetails});
   @override
   _EditTripDataState createState() => _EditTripDataState();
 }
 class _EditTripDataState extends State<EditTripData> {
   final _formKey = GlobalKey<FormState>();
   File _image;
-
+  final ImagePicker _picker = ImagePicker();
   String startDate;
   String endDate;
   Timestamp startDateTimeStamp;
@@ -75,10 +75,10 @@ class _EditTripDataState extends State<EditTripData> {
   File urlToImage;
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
       urlToImage = _image;
     });
   }
@@ -86,11 +86,11 @@ class _EditTripDataState extends State<EditTripData> {
 
   @override
   Widget build(BuildContext context) {
-    String documentID = widget.tripdetails.documentId;
-    String comment = widget.tripdetails.comment;
-    bool ispublic = widget.tripdetails.ispublic;
-    String location = widget.tripdetails.location;
-    String travelType = widget.tripdetails.travelType;
+    String documentID = widget.tripDetails.documentId;
+    String comment = widget.tripDetails.comment;
+    bool ispublic = widget.tripDetails.ispublic;
+    String location = widget.tripDetails.location;
+    String travelType = widget.tripDetails.travelType;
 
 
 
@@ -187,8 +187,8 @@ class _EditTripDataState extends State<EditTripData> {
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Text('Departure Date: ${widget.tripdetails.startDate}',style: TextStyle(fontSize: 15),),
-                                  Text('Return Date: ${widget.tripdetails.endDate}',style: TextStyle(fontSize: 15)),
+                                  Text('Departure Date: ${widget.tripDetails.startDate}',style: TextStyle(fontSize: 15),),
+                                  Text('Return Date: ${widget.tripDetails.endDate}',style: TextStyle(fontSize: 15)),
                                   RaisedButton(
                                     color: Colors.blue[300],
                                     child: Text('Edit Dates'),
@@ -235,13 +235,13 @@ class _EditTripDataState extends State<EditTripData> {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
                                           if (endDateTimeStamp == null) {
-                                          endDateTimeStamp = widget.tripdetails.endDateTimeStamp;
+                                          endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
                                           }
                                           if (endDate == null) {
-                                            endDate = widget.tripdetails.endDate;
+                                            endDate = widget.tripDetails.endDate;
                                           }
                                           if (startDate == null) {
-                                            startDate = widget.tripdetails.startDate;
+                                            startDate = widget.tripDetails.startDate;
                                           }
                                           DatabaseService().editTripData(comment, documentID, endDate, endDateTimeStamp, ispublic, location, startDate, travelType, urlToImage);
                                           _showDialog(context);

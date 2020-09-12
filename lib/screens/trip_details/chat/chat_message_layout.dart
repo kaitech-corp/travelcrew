@@ -12,9 +12,10 @@ class ChatMessageLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProfile>(context);
-
+    
 
     return message.uid == user.uid ? Container(
+      
         decoration: BoxDecoration(
           color: Colors.lightBlue[100],
         ),
@@ -24,22 +25,19 @@ class ChatMessageLayout extends StatelessWidget {
           children: <Widget>[
              Container(
               margin: const EdgeInsets.only(right: 16.0),
-
-//              child: new CircleAvatar(
-//                child: new Image.network(message.urlToImage != null ? message.urlToImage : "http://res.cloudinary.com/kennyy/image/upload/v1531317427/avatar_z1rc6f.png"),
-//              ),
             ),
-            new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold)),
-                new Container(
-                  width: MediaQuery.of(context).size.width*0.8,
-                  margin: const EdgeInsets.all(5.0),
-                  child: Text(message.message ?? '', textScaleFactor: 1.2,),
-                ),
-                Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
+                  Container(
+                    margin: const EdgeInsets.all(5.0),
+                    child:  Text(message.message ?? '', textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
+                  ),
+                  Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
+                ],
+              ),
             )
           ],
         )
@@ -54,21 +52,19 @@ class ChatMessageLayout extends StatelessWidget {
           children: <Widget>[
             Container(
               margin: const EdgeInsets.only(right: 16.0),
-
-//              child: new CircleAvatar(
-//                child: new Image.network(message.urlToImage != null ? message.urlToImage : "http://res.cloudinary.com/kennyy/image/upload/v1531317427/avatar_z1rc6f.png"),
-//              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                 Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
-                 Container(
-                  margin: const EdgeInsets.all(5.0),
-                  child:  Text(message.message ?? '', textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
-                ),
-                Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                   Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
+                   Container(
+                    margin: const EdgeInsets.all(5.0),
+                    child:  Text(message.message ?? '', textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
+                  ),
+                  Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
+                ],
+              ),
             )
           ],
         )

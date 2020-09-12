@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/database.dart';
 
-import '../../../loading.dart';
+import '../../../../loading.dart';
 
 class MembersLayout extends StatelessWidget{
 
   final List<Members> members;
-  final Trip tripdetails;
+  final Trip tripDetails;
 
   final ScrollController controller = ScrollController();
-  bool _isSearching = false;
 
-  MembersLayout({Key key, this.members, this.tripdetails}) : super(key: key);
+
+  MembersLayout({Key key, this.members, this.tripDetails}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ return Scaffold(
           return Loading();
         }
       },
-      future: DatabaseService().retrieveMembers(tripdetails.documentId, tripdetails.ispublic),
+      future: DatabaseService().retrieveMembers(tripDetails.documentId, tripDetails.ispublic),
     );
   }
 
@@ -71,7 +71,7 @@ return Scaffold(
                   child: member.urlToImage != null ? Image.network(member.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
                 ),
               ),
-              title: Text('${member.firstname} ${member.lastname}'),
+              title: Text('${member.firstName} ${member.lastName}'),
               subtitle: Text("${member.displayName}",
                 textAlign: TextAlign.start,),
               trailing: IconButton(

@@ -1,9 +1,8 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/loading.dart';
+import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/services/api.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 
@@ -14,39 +13,33 @@ class ExploreMain extends StatefulWidget {
 }
 
 class _ExploreMainState extends State<ExploreMain> {
-  final SearchBarController _searchBarController = SearchBarController();
   bool searching = false;
   bool _showPopup = false;
   var _countryName;
 
   @override
   Widget build(BuildContext context) {
-//    var countries = APIService().getCountries();
 
-    // TODO: implement build
-  //   return Container(
-  //     child: SearchBar(
-  //       placeHolder: listCountries(),
-  //       onSearch: RestCountries().getCountry,
-  //       onItemFound: (Countries country, int index) {
-  //         return ListTile(
-  //           title: Text(country.name),
-  //           subtitle: Text(country.currencies[0]),
-  //         );
-  //       }),
-  //   );
-  // }
     return Stack(
       children: <Widget>[
         Container(
           child: SearchBar(
+            hintText: 'Covid19 statistics by country',
               placeHolder: listCountries(),
               onSearch: RestCountries().getCountry,
               onItemFound: (Countries country, int index) {
-                return ListTile(
-                  title: Text(country.name),
-                  subtitle: Text('Capital: ${country.capital}'),
+                return GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      _showPopup = true;
+                      _countryName = country.name;
+                    });
+                  },
 
+                  child: ListTile(
+                    title: Text(country.name),
+                    subtitle: Text('Capital: ${country.capital}'),
+                  ),
                 );
               }),
         ),
@@ -62,12 +55,17 @@ class _ExploreMainState extends State<ExploreMain> {
               ),
             ),
             Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(top: 100),
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'assets/images/travelPics.png',
-                    height: 300,
+                  child: Container(
+                    child: Card(
+                      color: Colors.blueAccent[200],
+                      child: covidStatsByCountry(_countryName),
+                    ),
+                    height: 200,
                     width: 300,
                   ),
                 ),
@@ -96,24 +94,20 @@ class _ExploreMainState extends State<ExploreMain> {
                 itemBuilder: (context, index) {
                   Countries country = countries.data[index];
                   return GestureDetector(
-                    onLongPress: (){
+                    onTap: (){
                       setState(() {
                         _showPopup = true;
                         _countryName = country.name;
-
-                      });
-                    },
-                    onLongPressEnd: (details){
-                      setState(() {
-                        _showPopup = false;
-
                       });
                     },
                     child: ListTile(
                       title: Text(country.name),
                       subtitle: Text('Capital: ${country.capital}'),
                       onTap: (){
-                        // Covid19StatsByCountry().getStats(country.name);
+                        setState(() {
+                          _showPopup = true;
+                          _countryName = country.name;
+                        });
                       },
                     ),
                   );
@@ -129,54 +123,38 @@ class _ExploreMainState extends State<ExploreMain> {
     );
   }
 
-  Widget covid19Stats() {
+  Widget covidStatsByCountry(String country) {
     return FutureBuilder(
       builder: (context, stats) {
-        return ListView.builder(
-          itemCount: stats.data.length,
-          itemBuilder: (context, index) {
-            Covid19 stat = stats.data[index];
-            return Column(
-              children: <Widget>[
-                // Widget to display the list of project
-                Text('${stat.countryName}', style: TextStyle(fontSize: 16),),
-                Text('Number of active cases: ${stat.activeCases}'),
-                Text('New deaths: ${stat.newDeaths}')
-              ],
-            );
-          },
-        );
-      },
-      future: Covid19API().getStats(),
-    );
-  }
-
-  Widget holidayList() {
-    return FutureBuilder(
-      builder: (context, holidays) {
-        if (holidays.hasData) {
-          return ListView.builder(
-            itemCount: holidays.data.length,
-            itemBuilder: (context, index) {
-              Holiday holiday = holidays.data[index];
-              return Column(
-                children: <Widget>[
-                  // Widget to display the list of project
-                  Text('${holiday.name}', style: TextStyle(fontSize: 16),),
-                  Text('Local Name: ${holiday.localName}'),
-                  Text('Date: ${holiday.date}')
-                ],
+        if(stats.hasData) {
+              Covid19_2 stat = stats.data;
+              return InkWell(
+                splashColor: Colors.blueAccent,
+                onTap: (){
+                  setState(() {
+                    _showPopup = false;
+                  });
+                },
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text('${stat.countryName}', style: TextStyle(fontSize: 24, color: Colors.white),),
+                      subtitle: Text('Last Updated: ${stat.lastUpdate}', style: TextStyle(fontSize: 12, color: Colors.white),),
+                    ),
+                    Text('Number of active cases: ${stat.activeCases}', style: TextStyle(fontSize: 16, color: Colors.white),textAlign: TextAlign.left),
+                    Text('Total cases: ${stat.totalCases}', style: TextStyle(fontSize: 16, color: Colors.white),textAlign: TextAlign.left),
+                    Text('Total Recovered: ${stat.totalRecovered}', style: TextStyle(fontSize: 16, color: Colors.white),textAlign: TextAlign.left),
+                    Text('Total Deaths: ${stat.totalDeaths}', style: TextStyle(fontSize: 16, color: Colors.white),textAlign: TextAlign.left),
+                  ],
+                ),
               );
-            },
-          );
         } else {
           return Loading();
         }
       },
-      future: PublicHolidayAPI().getHolidays('US'),
+      future: Covid19StatsByCountry().getStats(country),
     );
   }
-
 
 }
 

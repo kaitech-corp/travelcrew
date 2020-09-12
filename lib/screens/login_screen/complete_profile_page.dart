@@ -60,7 +60,7 @@ class _CompleteProfileState extends State {
                                   }
                                 },
                                 onSaved: (val) =>
-                                    setState(() => _user.firstname = val)),
+                                    setState(() => _user.firstName = val)),
                             TextFormField(
                               decoration:
                               InputDecoration(labelText: 'Last Name'),
@@ -72,7 +72,7 @@ class _CompleteProfileState extends State {
                                 }
                               },
                               onSaved: (val) =>
-                                  setState(() => _user.lastname = val),
+                                  setState(() => _user.lastName = val),
                             ),
                             TextFormField(
                                 decoration:
@@ -130,8 +130,9 @@ class _CompleteProfileState extends State {
                                       if (form.validate()) {
                                         form.save();
                                         _showDialog(context);
-                                        DatabaseService().updateUserData(_user.firstname, _user.lastname, _user.email, user.uid);
-                                        DatabaseService().updateUserPublicProfileData(_user.displayName, _user.firstname, _user.lastname, _user.email, 0, 0, user.uid, _image);
+                                        DatabaseService().updateUserData(_user.
+                                            firstName, _user.lastName, _user.email, user.uid);
+                                        DatabaseService().updateUserPublicProfileData(_user.displayName, _user.firstName, _user.lastName, _user.email, 0, 0, user.uid, _image);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => Wrapper()),

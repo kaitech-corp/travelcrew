@@ -3,45 +3,45 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class User {
   final String displayName;
   final String email;
-  final String firstname;
-  final String lastname;
+  final String firstName;
+  final String lastName;
   final String uid;
 
-  User({this.displayName, this.email, this.firstname, this.lastname, this.uid});
+  User({this.displayName, this.email, this.firstName, this.lastName, this.uid});
 
 }
 class UserSignUp {
    String displayName;
    String email;
-   String firstname;
-   String lastname;
+   String firstName;
+   String lastName;
    String uid;
 
-   UserSignUp({this.displayName, this.email, this.firstname, this.lastname, this.uid});
+   UserSignUp({this.displayName, this.email, this.firstName, this.lastName, this.uid});
 
 }
 class UserPublicProfile {
   String displayName;
   String email;
-  String firstname;
+  String firstName;
   List<String> following;
   List<String> followers;
-  String lastname;
+  String lastName;
   String uid;
   String urlToImage;
 
-  UserPublicProfile({this.displayName, this.email, this.following, this.followers, this.firstname, this.lastname, this.uid, this.urlToImage});
+  UserPublicProfile({this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
 
 }
 
 class Members {
    String uid;
    String displayName;
-   String firstname;
-   String lastname;
+   String firstName;
+   String lastName;
    String urlToImage;
 
-   Members({this.displayName, this.firstname, this.lastname, this.uid, this.urlToImage});
+   Members({this.displayName, this.firstName, this.lastName, this.uid, this.urlToImage});
 }
 
 class Bringing {
@@ -233,7 +233,7 @@ class Covid19 {
         deaths = jsonMap['deaths'],
         totalRecovered = jsonMap['total_recovered'],
         newDeaths = jsonMap['new_deaths'],
-        newCases = jsonMap['canew_casespital'],
+        newCases = jsonMap['new_cases'],
         seriousCritical = jsonMap['serious_critical'],
         activeCases = jsonMap['active_cases'],
         totalCasesPer1mPopulation = jsonMap['total_cases_per_1m_population'];
@@ -252,7 +252,7 @@ class Covid19_2 {
 
   Covid19_2({this.activeCases, this.countryName, this.lastUpdate, this.totalRecovered, this.newDeaths, this.newCases, this.totalDeaths, this.totalCases,});
 
-  Covid19_2.fromJSON(Map<String, String> jsonMap):
+  Covid19_2.fromJSON(Map<String, dynamic> jsonMap):
         activeCases = jsonMap['Active Cases_text'],
         countryName = jsonMap['Country_text'],
         lastUpdate = jsonMap['Last Update'],
@@ -261,7 +261,6 @@ class Covid19_2 {
         newCases = jsonMap['Total Cases_text'],
         totalDeaths = jsonMap['Total Deaths_text'],
         totalCases = jsonMap['Total Cases_text'];
-
 }
 
 class Holiday {

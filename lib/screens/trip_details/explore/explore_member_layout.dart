@@ -8,12 +8,13 @@ import 'package:travelcrew/services/database.dart';
 
 import 'layout_widgets.dart';
 import 'lists/item_lists.dart';
+import 'members/members_layout.dart';
 
 class ExploreMemberLayout extends StatelessWidget{
 
-  final Trip tripdetails;
+  final Trip tripDetails;
 
-  ExploreMemberLayout({this.tripdetails});
+  ExploreMemberLayout({this.tripDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -24,22 +25,26 @@ class ExploreMemberLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assets/images/travelPics.png"),
+                ImageLayout(tripDetails.urlToImage != "" ? tripDetails.urlToImage : "assets/images/travelPics.png"),
                 ListTile(
-                  title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
+                  title: Text('${tripDetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(
                     onSelected: (value){
                       switch (value) {
                         case "Members":
                           {
-                            userAlertDialog(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  MembersLayout(tripDetails: tripDetails,)),
+                            );
                           }
                           break;
                         case "Add":
                           {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => UsersSearchPage()),
+                              MaterialPageRoute(builder: (context) => UsersSearchPage(tripDetails: tripDetails,)),
                             );
                           }
                           break;
@@ -80,7 +85,7 @@ class ExploreMemberLayout extends StatelessWidget{
                       ),
                     ],
                   ),
-                  subtitle: Text('Owner: ${tripdetails.displayName}', style: TextStyle(fontSize: 12.0),),
+                  subtitle: Text('Owner: ${tripDetails.displayName}', style: TextStyle(fontSize: 12.0),),
                 ),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
@@ -88,14 +93,14 @@ class ExploreMemberLayout extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Trip: ${tripdetails.travelType}'),
-                        tripdetails.ispublic ? Text('Public') : Text('Private'),
+                        Text('Trip: ${tripDetails.travelType}'),
+                        tripDetails.ispublic ? Text('Public') : Text('Private'),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('Start: ${tripdetails.startDate}'),
-                            Text('End: ${tripdetails.endDate}')
+                            Text('Start: ${tripDetails.startDate}'),
+                            Text('End: ${tripDetails.endDate}')
                           ],
                         )
 
@@ -113,33 +118,14 @@ class ExploreMemberLayout extends StatelessWidget{
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent)
                   ),
-                  child: Text(tripdetails.comment, textScaleFactor: 1.25,),
+                  child: Text(tripDetails.comment, textScaleFactor: 1.25,),
                 ),
-                ListWidget(tripDetails: tripdetails,),
-                BringListToDisplay(documentID: tripdetails.documentId,),
+                ListWidget(tripDetails: tripDetails,),
+                BringListToDisplay(documentID: tripDetails.documentId,),
               ],
             ),
           ),
         )
-    );
-  }
-  void _addAlertDialog(BuildContext context) {
-
-    showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Currently under development.'),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-
-                },
-                child: Text('Thank you for you patience.'),
-              ),
-            ],
-          );
-        }
     );
   }
 
@@ -155,7 +141,7 @@ class ExploreMemberLayout extends StatelessWidget{
                 onPressed: () {
 
                 },
-                child: Text('${tripdetails.accessUsers.length} Member(s)'),
+                child: Text('${tripDetails.accessUsers.length} Member(s)'),
               ),
               SimpleDialogOption(
                 onPressed: () {
@@ -181,7 +167,7 @@ class ExploreMemberLayout extends StatelessWidget{
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                DatabaseService(tripDocID: tripdetails.documentId, uid: uid).leaveTrip();
+                DatabaseService(tripDocID: tripDetails.documentId, uid: uid).leaveTrip();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>

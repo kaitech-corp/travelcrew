@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/database.dart';
-import '../../loading.dart';
+import '../../../loading.dart';
 
 
 class UsersSearchPage extends StatelessWidget{
@@ -12,29 +12,21 @@ class UsersSearchPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final currentUser = Provider.of<User>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Users'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: (){
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
       body: FutureBuilder(
-        future: DatabaseService(uid: user.uid).retrieveFollowingList(),
+        future: DatabaseService(uid: currentUser.uid).retrieveFollowingList(),
         builder: (context, users) {
           if (users.hasData) {
             return ListView.builder(
                 itemCount: users.data.length,
                 itemBuilder: (context, index) {
                   UserProfile user = users.data[index];
-                  return userCard(context, user);
+                  return userCard(context, user, currentUser);
                 },
               );
           } else {
@@ -44,7 +36,7 @@ class UsersSearchPage extends StatelessWidget{
       ),
     );
   }
-  Widget userCard(BuildContext context, UserProfile user){
+  Widget userCard(BuildContext context, UserProfile user, User currentUser){
     return Card(
       child: Container(
           child: Column(
@@ -70,7 +62,10 @@ class UsersSearchPage extends StatelessWidget{
                 trailing: !tripDetails.accessUsers.contains(user.uid) ? IconButton(
                   icon: Icon(Icons.add),
                   onPressed: (){
-
+                    var message = '${currentUser.displayName} invited you to ${tripDetails.location}.';
+                    var type = 'Invite';
+                    DatabaseService().addNewNotificationData(message, tripDetails.documentId, type, user.uid);
+                    _showDialog(context);
                   },
                 ) : Icon(Icons.check_box),
               ),
@@ -78,5 +73,9 @@ class UsersSearchPage extends StatelessWidget{
           ),
         ),
       );
+  }
+  _showDialog(BuildContext context) {
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: Text('Invite sent.')));
   }
 }

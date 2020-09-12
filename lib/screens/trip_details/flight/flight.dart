@@ -48,7 +48,7 @@ class _FlightState extends State<Flight> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: const Text('Currently under development.'),
+            title: const Text('Feature coming soon!'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {

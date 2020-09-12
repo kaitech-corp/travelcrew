@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../loading.dart';
+import '../../../loading.dart';
 
 class WebViewScreen extends StatefulWidget {
   final url;

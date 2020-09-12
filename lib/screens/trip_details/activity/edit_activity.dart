@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/loading.dart';
+import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/services/database.dart';
 
 
@@ -21,15 +21,15 @@ class EditActivity extends StatefulWidget {
 class _EditActivityState extends State<EditActivity> {
 
   final _formKey = GlobalKey<FormState>();
-
+  final ImagePicker _picker = ImagePicker();
   File _image;
 
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 

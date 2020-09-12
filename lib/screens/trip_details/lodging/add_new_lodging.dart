@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/database.dart';
 
-import '../../loading.dart';
+import '../../../loading.dart';
 
 
 
@@ -27,12 +27,13 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   String link = '';
   File _image;
   File urlToImage;
+  final ImagePicker _picker = ImagePicker();
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
       urlToImage = _image;
     });
   }

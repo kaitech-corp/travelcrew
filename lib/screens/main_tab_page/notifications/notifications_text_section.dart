@@ -13,13 +13,13 @@ class NotificationsTextSection extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
 
     var notificationType = {
-      'joinRequest': notificationType1(),
-      'Activity' : notificationType2(context),
-      'Lodging' : notificationType2(context),
-      'Follow' : notificationType3(context),
+      'Activity' : notificationType1(),
+      'Lodging' : notificationType1(),
+      'joinRequest': notificationType2(context),
+      'Invite' : notificationType2(context),
+      'Follow' : notificationType3(context)
     };
 
     return notificationType[notification.type];
@@ -30,6 +30,9 @@ class NotificationsTextSection extends StatelessWidget{
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        onTap: (){
+          print('card tapped');
+        },
       ),
     );
   }
@@ -49,6 +52,9 @@ class NotificationsTextSection extends StatelessWidget{
             _showDialog(context);
           },
         ),
+        onTap: (){
+          print('card tapped');
+        },
       ),
     );
   }
@@ -60,7 +66,7 @@ class NotificationsTextSection extends StatelessWidget{
         title: Text('${notification.message}'),
         subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
         trailing: IconButton(
-          icon: Icon(Icons.add_circle),
+          icon: Icon(Icons.person_add),
           onPressed: () async{
             String fieldID = notification.fieldID;
             DatabaseService(uid: user.uid).followUser(notification.documentID);
@@ -68,6 +74,9 @@ class NotificationsTextSection extends StatelessWidget{
             _showDialog(context);
           },
         ),
+        onTap: (){
+          print('card tapped');
+        },
       ),
     );
   }

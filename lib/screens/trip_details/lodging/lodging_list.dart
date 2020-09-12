@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 
+import '../../../loading.dart';
 import 'lodging_item_layout.dart';
 
 class LodgingList extends StatefulWidget {
@@ -19,9 +20,15 @@ class _LodgingListState extends State<LodgingList> {
   Widget build(BuildContext context) {
 
     final lodgingList = Provider.of<List<LodgingData>>(context);
+    bool loading = true;
+    if(lodgingList != null) {
+      setState(() {
+        loading = false;
+      });
 
+    }
 
-    return ListView.builder(
+    return loading ? Loading() : ListView.builder(
         itemCount: lodgingList != null ? lodgingList.length : 0,
         itemBuilder: (context, index){
           return LodgingItemLayout(lodging: lodgingList[index],trip: widget.trip,);

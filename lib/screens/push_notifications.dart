@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) {
-        print('on message ${message}');
+        print('on message $message');
         displayNotification(message);
       },
       onResume: (Map<String, dynamic> message) {

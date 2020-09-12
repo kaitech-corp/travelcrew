@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/app_bar/popup_menu.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic_layout.dart';
-import 'package:travelcrew/services/auth.dart';
 
 class ExploreBasic extends StatelessWidget {
 
-  final AuthService _auth = AuthService();
   final Trip trip;
   ExploreBasic({this.trip});
 

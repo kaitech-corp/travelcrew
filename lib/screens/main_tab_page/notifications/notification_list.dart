@@ -50,7 +50,7 @@ class _NotificationListState extends State<NotificationList> {
                   .showSnackBar(SnackBar(content: Text("Notification removed.")));
             },
 
-            child: buildSection(context, notifications[index]),
+            child: NotificationsTextSection(notification: notifications[index],),
           );
         });
   }
@@ -77,35 +77,6 @@ class _NotificationCountState extends State<NotificationCount> {
 
 }
 
-Widget buildSection(BuildContext context, NotificationData notification) {
-  final user = Provider.of<UserProfile>(context);
-
-  return notification.type != 'joinRequest' ? Card(
-    child: ListTile(
-      title: Text('${notification.message}'),
-      subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
-    ),
-  ):
-  Card(
-    child: ListTile(
-      title: Text('${notification.message}'),
-      subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
-      trailing: IconButton(
-        icon: Icon(Icons.add_circle),
-        onPressed: () async{
-          String fieldID = notification.fieldID;
-          DatabaseService(tripDocID: notification.documentID, uid: notification.uid).joinTrip();
-          DatabaseService(uid: user.uid).removeNotificationData(fieldID);
-          _showDialog(context);
-
-        },
-      ),
-    ),
-  );
-}
-
-
-
 String readTimestamp(int timestamp) {
   var now = new DateTime.now();
   var format = new DateFormat('HH:mm a');
@@ -123,9 +94,4 @@ String readTimestamp(int timestamp) {
   }
 
   return time;
-}
-
-_showDialog(BuildContext context) {
-  Scaffold.of(context)
-      .showSnackBar(SnackBar(content: Text('Request accepted.')));
 }

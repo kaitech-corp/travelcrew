@@ -7,13 +7,10 @@ import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/flight/flight.dart';
-import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'explore_owner_layout.dart';
 
 class Explore extends StatelessWidget {
-
-  final AuthService _auth = AuthService();
   
   final Trip trip;
   Explore({this.trip});
@@ -74,9 +71,9 @@ class Explore extends StatelessWidget {
   
    checkOwner(String uid) {
   if (trip.ownerID == uid){
-  return ExploreLayout(tripdetails: trip,);
+  return ExploreLayout(tripDetails: trip,);
   } else {
-  return ExploreMemberLayout(tripdetails: trip,);
+  return ExploreMemberLayout(tripDetails: trip,);
   }
 }
 }

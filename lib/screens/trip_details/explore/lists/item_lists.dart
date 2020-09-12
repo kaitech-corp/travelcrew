@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/api.dart';
 import 'package:travelcrew/services/database.dart';
-import '../../../loading.dart';
+import '../../../../loading.dart';
 
 
 class BringingList extends StatefulWidget{

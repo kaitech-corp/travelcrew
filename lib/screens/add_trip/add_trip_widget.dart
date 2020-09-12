@@ -16,7 +16,7 @@ class HomeMaterial extends StatefulWidget {
 }
 class _HomeMaterialState extends State<HomeMaterial> {
   final _formKey = GlobalKey<FormState>();
-  PickedFile _image;
+  File _image;
   final ImagePicker _picker = ImagePicker();
 
 
@@ -67,8 +67,8 @@ class _HomeMaterialState extends State<HomeMaterial> {
   String displayName = '';
   String documentId = '';
   String endDate = '';
-  String firstname = '';
-  String lastname = '';
+  String firstName = '';
+  String lastName = '';
   Timestamp startDateTimeStamp;
   Timestamp endDateTimeStamp;
   bool ispublic = true;
@@ -84,7 +84,7 @@ class _HomeMaterialState extends State<HomeMaterial> {
 
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
       urlToImage = File(_image.path);
     });
   }
@@ -96,8 +96,8 @@ class _HomeMaterialState extends State<HomeMaterial> {
     ownerID = user.uid;
     List<String> accessUsers = [user.uid];
     displayName = user.displayName;
-    firstname = user.firstName;
-    lastname = user.lastName;
+    firstName = user.firstName;
+    lastName = user.lastName;
 
 
 
@@ -203,7 +203,7 @@ class _HomeMaterialState extends State<HomeMaterial> {
                               Container(
                                 child: _image == null
                                     ? Text('No image selected.')
-                                    : Image.network(_image.path),
+                                    : Image.file(_image),
                               ),
                               RaisedButton(
                                 shape: RoundedRectangleBorder(
@@ -247,8 +247,8 @@ class _HomeMaterialState extends State<HomeMaterial> {
                                                 comment,
                                                 displayName,
                                                 endDate,
-                                                firstname,
-                                                lastname,
+                                                firstName,
+                                                lastName,
                                                 endDateTimeStamp,
                                                 startDateTimeStamp,
                                                 ispublic,

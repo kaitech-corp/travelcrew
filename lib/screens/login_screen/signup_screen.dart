@@ -61,7 +61,7 @@ class _SignupScreenState extends State {
                                   }
                                 },
                                 onSaved: (val) =>
-                                    setState(() => _user.firstname = val)),
+                                    setState(() => _user.firstName = val)),
                             TextFormField(
                               decoration:
                               InputDecoration(labelText: 'Last Name'),
@@ -73,7 +73,7 @@ class _SignupScreenState extends State {
                                 }
                               },
                               onSaved: (val) =>
-                                  setState(() => _user.lastname = val),
+                                  setState(() => _user.lastName = val),
                             ),
                             TextFormField(
                                 decoration:
@@ -155,7 +155,7 @@ class _SignupScreenState extends State {
                                     if (form.validate()) {
                                       form.save();
                                       _showDialog(context);
-                                      dynamic result = await _auth.signUpWithEmailAndPassword(_user.email, password, _user.firstname, _user.lastname, _user.displayName, _image);
+                                      dynamic result = await _auth.signUpWithEmailAndPassword(_user.email, password, _user.firstName, _user.lastName, _user.displayName, _image);
                                       if (result == null){
                                         setState(() => error = 'Sign in credentials are not valid!');
                                       }

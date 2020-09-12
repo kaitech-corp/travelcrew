@@ -1,31 +1,36 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/database.dart';
 
 
 class AuthService {
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
+  final AnalyticsService _analyticsService = AnalyticsService();
 
   //Create user object based on Firebase user
-  User _userFromFirebase(FirebaseUser user){
+  User _userFromFirebase(auth.User user){
     return user != null ? User(uid: user.uid) : null;
   }
 
   // auth change user stream
 
   Stream<User> get user {
-    return _auth.onAuthStateChanged
+    return _auth.authStateChanges()
         .map(_userFromFirebase);
   }
 
   Future signInCredentials(String email, String password) async {
     try {
-     AuthResult result =  await _auth.signInWithEmailAndPassword(email: email, password: password);
+     auth.UserCredential result =  await _auth.signInWithEmailAndPassword(email: email, password: password);
 //    AuthResult result = await _auth.signInAnonymously();
-    FirebaseUser user = result.user;
+    auth.User user = result.user;
 
+    if(user.uid != null){
+      await _analyticsService.logLogin();
+    }
 
      return _userFromFirebase(user);
     } catch(e){
@@ -58,11 +63,11 @@ class AuthService {
 
   Future signUpWithEmailAndPassword(String email, String password, String firstname, String lastName, String displayName, File urlToImage) async {
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseUser user = result.user;
+      auth.UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      auth.User user = result.user;
       await DatabaseService(uid: user.uid).updateUserData(firstname, lastName, email, user.uid);
       await DatabaseService(uid: user.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, 0, 0, user.uid, urlToImage);
-
+      await _analyticsService.logSignUp();
       return _userFromFirebase(user);
     } catch(e) {
       print(e.toString());

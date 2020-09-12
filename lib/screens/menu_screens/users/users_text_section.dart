@@ -12,7 +12,7 @@ class UsersTextSection extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final user = Provider.of<UserProfile>(context);
 
 
     return Card(
@@ -56,14 +56,17 @@ class UsersTextSection extends StatelessWidget{
                   DatabaseService(uid: user.uid).unFollowUser(allUsers.uid);
                    },
               ) : FlatButton(
-                child:  Text('follow'),
+                child:  Text('Follow'),
                 shape: Border.all(width: 1, color: Colors.blue),
                 onPressed: () {
                   // Send a follow request notification to user
-                  var message = 'Follow request from ${allUsers.displayName}';
+                  var message = 'Follow request from ${user.displayName}';
                   var type = 'Follow';
-                  DatabaseService().addNewNotificationData(message, allUsers.uid, type, user.uid);
-                  _showDialog(context);
+                  if(user.uid != allUsers.uid) {
+                    DatabaseService(uid: user.uid).addNewNotificationData(
+                        message, user.uid, type, allUsers.uid);
+                    _showDialog(context);
+                  }
                    },
               ),
             ],
