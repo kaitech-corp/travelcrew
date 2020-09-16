@@ -5,6 +5,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 class LodgingItemLayout extends StatelessWidget {
@@ -69,9 +70,11 @@ class LodgingItemLayout extends StatelessWidget {
                           String fieldID = lodging.fieldID;
                           String uid = user.uid;
                           if (!lodging.voters.contains(user.uid)) {
-                            return DatabaseService(tripDocID: trip.documentId).addVoteToLodging(uid, fieldID);
+                            CloudFunction().addVoteToLodging(trip.documentId, fieldID);
+                            CloudFunction().addVoterToLodging(trip.documentId, fieldID, uid);
                           } else {
-                            return DatabaseService(tripDocID: trip.documentId).removeVoteFromLodging(uid, fieldID);
+                            CloudFunction().removeVoteFromLodging(trip.documentId, fieldID);
+                            CloudFunction().removeVoterFromLodging(trip.documentId, fieldID, uid);
                           }
                         }
                     ),
@@ -95,7 +98,7 @@ class LodgingItemLayout extends StatelessWidget {
                           }
                           break;
                           case "Delete": {
-                            DatabaseService(tripDocID: trip.documentId).removeLodging(lodging.fieldID);
+                            CloudFunction().removeLodging(trip.documentId, lodging.fieldID);
                           }
                           break;
                           default: {

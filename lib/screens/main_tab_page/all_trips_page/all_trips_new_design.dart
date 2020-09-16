@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-
 
 
 class AllTripsNewDesign extends StatefulWidget{
@@ -218,22 +218,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
           )
           ]),
       child: Stack(
-//            mainAxisSize: MainAxisSize.min,
-//            crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-//          Container(
-////                margin: EdgeInsets.only(left: 12.5, bottom: 10, top: 5),
-//                decoration: BoxDecoration(
-//                    color: Colors.white,
-//                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10)),
-//                    boxShadow: [BoxShadow(
-//                      offset: Offset(0, 5),
-//                      blurRadius: 33,
-//                      color: Colors.lightBlueAccent,
-//                      spreadRadius: 10,
-//                    )
-//                    ]),
-//              ),
             ListTile(
               title: Text((trip.location != '' ? trip.location : 'Trip Name'), textScaleFactor: 1,),
               subtitle: Text("${trip.travelType}",
@@ -262,12 +247,14 @@ Widget TripCard3(BuildContext context, Trip trip) {
                     onPressed: () {
                       if (trip.favorite.contains(user.uid)){
                         try {
-                          DatabaseService(tripDocID: trip.documentId).removeFavoriteFromTrip(user.uid);
+                          CloudFunction().removeFavoriteFromTrip(trip.documentId, user.uid);
+                          // DatabaseService(tripDocID: trip.documentId).removeFavoriteFromTrip(user.uid);
                         } catch (e) {
                           print('Error removing favorite. ${e.toString()}');
                         }
                       } else {
                         try {
+                          // CloudFunction().addFavoriteToTrip(trip.documentId, user.uid);
                           DatabaseService(tripDocID: trip.documentId)
                               .addFavoriteToTrip(user.uid);
                         } catch (e) {

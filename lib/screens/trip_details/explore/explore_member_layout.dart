@@ -4,6 +4,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/menu_screens/users/users_search_page.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 import 'layout_widgets.dart';
@@ -167,7 +168,7 @@ class ExploreMemberLayout extends StatelessWidget{
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                DatabaseService(tripDocID: tripDetails.documentId, uid: uid).leaveTrip();
+                CloudFunction().leaveTrip(tripDetails.documentId, uid);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>

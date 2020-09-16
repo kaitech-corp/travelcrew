@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 class NotificationsTextSection extends StatelessWidget{
@@ -47,7 +48,7 @@ class NotificationsTextSection extends StatelessWidget{
           icon: Icon(Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
-            DatabaseService(tripDocID: notification.documentID, uid: notification.uid).joinTrip();
+            CloudFunction().joinTrip(notification.documentID, notification.uid);
             DatabaseService(uid: user.uid).removeNotificationData(fieldID);
             _showDialog(context);
           },

@@ -335,12 +335,6 @@ class DatabaseService {
     }
 
     try {
-      await flightCollection.doc(key).set({});
-    }catch (e) {
-      print('Error adding Flight: ${e.toString()}');
-    }
-
-    try {
       await userCollection.doc(ownerID).update({'trips': FieldValue.arrayUnion([key])});
     }catch (e) {
       print('Error adding new trip to user document: ${e.toString()}');

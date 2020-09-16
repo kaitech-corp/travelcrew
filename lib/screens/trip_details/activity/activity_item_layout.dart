@@ -4,6 +4,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 class ActivityItemLayout extends StatelessWidget {
@@ -99,7 +100,7 @@ class ActivityItemLayout extends StatelessWidget {
                           }
                           break;
                           case "Delete": {
-                            DatabaseService(tripDocID: trip.documentId).removeActivity(activity.fieldID);
+                            CloudFunction().removeActivity(trip.documentId, activity.fieldID);
                           }
                           break;
                           default: {
@@ -143,8 +144,11 @@ class ActivityItemLayout extends StatelessWidget {
                           String fieldID = activity.fieldID;
                           String uid = user.uid;
                           if (!activity.voters.contains(user.uid)) {
-                            return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
+                            CloudFunction().addVoteToActivity(trip.documentId, fieldID, uid);
+                            // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                           } else {
+                            // CloudFunction().removeVoteFromActivity(trip.documentId, fieldID, uid);
+                            // CloudFunction().removeVoterFromActivity(trip.documentId, fieldID, uid);
                             return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                           }
                         }
