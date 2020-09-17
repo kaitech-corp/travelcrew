@@ -136,13 +136,13 @@ class LodgingItemLayout extends StatelessWidget {
                       onSelected: (value){
                         switch (value){
                           case "View": {
-//                            if (activity.link.isNotEmpty) {
+                           if (lodging.link.isNotEmpty) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
                                   WebViewScreen(lodging.link, key)),
                             );
-//                            }
+                           }
                           }
                           break;
                           default: {

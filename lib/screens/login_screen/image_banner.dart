@@ -9,11 +9,11 @@ class ImageBanner extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints.expand(
-        height: 275.0,
+        height: MediaQuery.of(context).size.height * .33,
       ),
       decoration: BoxDecoration(color: Colors.grey),
       child: Image.asset(_assestPath,
-      fit: BoxFit.cover,
+      fit: BoxFit.fill,
     ));
   }
 }

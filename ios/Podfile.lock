@@ -4,6 +4,8 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
+  - apple_sign_in (0.0.1):
+    - Flutter
   - cloud_firestore (0.14.0-2):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Firestore (~> 6.26.0)
@@ -175,6 +177,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - apple_sign_in (from `.symlinks/plugins/apple_sign_in/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -217,6 +220,8 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
+  apple_sign_in:
+    :path: ".symlinks/plugins/apple_sign_in/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   cloud_functions:
@@ -254,6 +259,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
   cloud_firestore: b054ccc068b5907645c32b669d38e82db2a11fc7
   cloud_functions: d4c231ef524d0d49d89177b3f3f85256c6be4a9a
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6

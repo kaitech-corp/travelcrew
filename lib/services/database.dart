@@ -129,21 +129,21 @@ class DatabaseService {
     }
   }
 
-// Get user display name.
-  Future<UserPublicProfile> retrieveUserPublicProfile(String uid) async {
-     var ref = await userPublicProfileCollection.doc(uid).get();
-     if(ref.exists){
-       Map<String, dynamic> data = ref.data();
-       return UserPublicProfile(
-         displayName: data['displayName'],
-         firstName: data['firstName'],
-         lastName: data['lastName'],
-         urlToImage: data['urlToImage'],
-       );
-     } else {
-       return null;
-     }
-  }
+// // Get user display name.
+//   Future<UserPublicProfile> retrieveUserPublicProfile(String uid) async {
+//      var ref = await userPublicProfileCollection.doc(uid).get();
+//      if(ref.exists){
+//        Map<String, dynamic> data = ref.data();
+//        return UserPublicProfile(
+//          displayName: data['displayName'],
+//          firstName: data['firstName'],
+//          lastName: data['lastName'],
+//          urlToImage: data['urlToImage'],
+//        );
+//      } else {
+//        return null;
+//      }
+//   }
   Future<String> retrieveUserPic(String uid) async {
     var ref = await userPublicProfileCollection.doc(uid).get();
     Map<String, dynamic> data = ref.data();
@@ -197,58 +197,6 @@ class DatabaseService {
 
   }
 
-
-  // Join Trip &
-  //Add member to Trip
-  Future joinTrip() async {
-
-    try {
-      await tripsCollectionUnordered.doc(tripDocID).update({
-        'accessUsers': FieldValue.arrayUnion([uid]),
-      }).then((value) =>
-      {
-        retrieveUserPublicProfile(uid).then((value) =>
-        {
-          tripsCollectionUnordered.doc(tripDocID)
-              .collection('Members')
-              .doc(uid)
-              .set({
-            'displayName': value.displayName ?? '',
-            'firstName': value.firstName ?? '',
-            'lastName': value.lastName ?? '',
-            'uid': uid,
-            'urlToImage': value.urlToImage ?? '',
-          })
-        })
-      });
-      
-    } catch(e){
-      print('Error joining trip: ${e.toString()}');
-      _analyticsService.writeError('Error joining trip:  ${e.toString()}');
-    }
-
-     await userPublicProfileCollection.doc(uid).update({
-       "tripsJoined": FieldValue.increment(1),
-     });
-
-  }
-
-
-  // Leave Trip
-  Future leaveTrip() async {
-
-     tripsCollectionUnordered.doc(tripDocID).update({
-      'accessUsers': FieldValue.arrayRemove([uid]),
-    });
-     tripsCollectionUnordered.doc(tripDocID).collection('Members').doc(uid).delete();
-
-     userCollection.doc(uid).update({
-      'accessTrips': FieldValue.arrayRemove([tripDocID]),
-    });
-     userPublicProfileCollection.doc(uid).update({
-      "tripsJoined": FieldValue.increment(-1),
-    });
-  }
   // Add new trip
   Future addNewTripData(List<String> accessUsers, String comment, String displayName,
       String endDate, String firstName, String lastName, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location, String ownerID,
@@ -655,6 +603,29 @@ class DatabaseService {
 
   }
 
+  // Get Trip
+  Future<Trip> getTrip(String documentID) async {
+    var ref = await tripsCollectionUnordered.doc(documentID).get();
+    if (ref.exists){
+        Map<String, dynamic> data = ref.data();
+        return Trip(
+          accessUsers: List<String>.from(data['accessUsers']) ?? null,
+          comment: data['comment'] ?? '',
+          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
+          displayName: data['displayName'] ?? '',
+          documentId: data['documentId'] ?? '',
+          endDate: data['endDate'] ?? '',
+          endDateTimeStamp: data['endDateTimeStamp'],
+          favorite: List<String>.from(data['favorite']) ?? [''],
+          ispublic: data['ispublic'] ?? null,
+          location: data['location'] ?? '',
+          ownerID: data['ownerID'] ?? '',
+          startDate: data['startDate'] ?? '',
+          travelType: data['travelType'] ?? '',
+          urlToImage: data['urlToImage'] ?? '',
+        );
+    }
+  }
 
 // Get all trips
   List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
@@ -794,16 +765,6 @@ class DatabaseService {
   }
 
 
-  // Remove Lodging
-   removeLodging(String fieldID){
-    try {
-      return lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).delete();
-    } catch (e) {
-      print('Error deleting lodging: ${e.toString()}');
-      _analyticsService.writeError('Error deleting lodging:  ${e.toString()}');
-    }
-  }
-
 // Add new activity
   Future addNewActivityData(String comment, String displayName, String documentID,
       String link, String activityType, String uid, File urlToImage, String tripName) async {
@@ -894,15 +855,6 @@ class DatabaseService {
     }
   }
 
-  // Remove Activity
-   removeActivity(String fieldID){
-    try {
-      return activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).delete();
-    } catch (e) {
-      print('Error deleting activity: ${e.toString()}');
-      _analyticsService.writeError('Error removing activity:  ${e.toString()}');
-    }
-  }
   //Get Activity List
   Stream<List<LodgingData>> get lodgingList {
     return lodgingCollection.doc(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
@@ -1126,26 +1078,8 @@ class DatabaseService {
     }
   }
 
-  //Add and Remove vote for activity
-  Future addVoteToActivity(String uid, String fieldID) async {
-    try {
-      await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
-        'vote':
-        FieldValue.increment(1),
-      });
-    } catch (e) {
-      print('Error updating vote count. ${e.toString()}');
-    }
-    try {
-      return await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
-        'voters':
-        FieldValue.arrayUnion([uid]),
-      });
-    } catch (e) {
-      print('Error updating voters. ${e.toString()}');
-    }
-  }
-  Future removeVoteFromActivity(String uid, String fieldID) async {
+
+  void removeVoteFromActivity(String uid, String fieldID) async {
     try {
       await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
         'vote':
@@ -1165,44 +1099,6 @@ class DatabaseService {
   }
 // Store Images
 
-
-  //Add and Remove vote for lodging
-  Future addVoteToLodging(String uid, String fieldID) async {
-    try {
-      await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
-        'vote':
-        FieldValue.increment(1),
-      });
-    } catch (e) {
-      print('Error updating vote count. ${e.toString()}');
-    }
-    try {
-      return await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
-        'voters':
-        FieldValue.arrayUnion([uid]),
-      });
-    } catch (e) {
-      print('Error updating voters. ${e.toString()}');
-    }
-  }
-  Future removeVoteFromLodging(String uid, String fieldID) async {
-    try {
-      await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
-        'vote':
-        FieldValue.increment(-1),
-      });
-    } catch (e) {
-      print('Error updating vote count. ${e.toString()}');
-    }
-    try {
-      return await lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).update({
-        'voters':
-        FieldValue.arrayRemove([uid]),
-      });
-    } catch (e) {
-      print('Error updating voters. ${e.toString()}');
-    }
-  }
 
   // Add new notification
   Future addNewNotificationData(String message, String documentID, String type, String ownerID) async {

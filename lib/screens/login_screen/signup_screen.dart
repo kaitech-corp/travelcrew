@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
-import 'package:travelcrew/screens/login_screen/privacy_page.dart';
+import 'package:travelcrew/screens/menu_screens/privacy_policy/privacy_page.dart';
 
 import 'package:travelcrew/services/auth.dart';
 
@@ -113,7 +113,7 @@ class _SignupScreenState extends State {
                                     setState(() => password = val)),
                             Container(
                               child: _image == null
-                                  ? Text('No image selected.')
+                                  ? Text('Select a Profile Picture.')
                                   : Image.file(_image),
                             ),
                             RaisedButton(

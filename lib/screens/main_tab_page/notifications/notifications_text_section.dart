@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/trip_details/explore/explore.dart';
+import 'package:travelcrew/screens/trip_details/explore/stream_to_explore.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
@@ -16,23 +18,30 @@ class NotificationsTextSection extends StatelessWidget{
   Widget build(BuildContext context) {
 
     var notificationType = {
-      'Activity' : notificationType1(),
-      'Lodging' : notificationType1(),
+      'Activity' : notificationType1(context),
+      'Lodging' : notificationType1(context),
       'joinRequest': notificationType2(context),
       'Invite' : notificationType2(context),
-      'Follow' : notificationType3(context)
+      'Follow' : notificationType3(context),
+      'Welcome': notificationType4()
     };
 
     return notificationType[notification.type];
   }
 
-  Widget notificationType1(){
+  Widget notificationType1(BuildContext context){
     return Card(
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
-        onTap: (){
+        onTap: () async {
           print('card tapped');
+          Trip trip = await DatabaseService().getTrip(notification.documentID);
+          Navigator.push(
+            context,
+              MaterialPageRoute(builder: (context) => StreamToExplore(trip: trip,)),
+          );
+
         },
       ),
     );
@@ -82,6 +91,18 @@ class NotificationsTextSection extends StatelessWidget{
     );
   }
 
+  Widget notificationType4(){
+    return Card(
+      child: ListTile(
+        title: Text('${notification.message}'),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        onTap: (){
+          print('card tapped');
+        },
+      ),
+    );
+  }
+
 
   String readTimestamp(int timestamp) {
     var now = new DateTime.now();
@@ -107,3 +128,4 @@ class NotificationsTextSection extends StatelessWidget{
         .showSnackBar(SnackBar(content: Text('Request accepted.')));
   }
 }
+

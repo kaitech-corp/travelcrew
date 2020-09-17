@@ -14,6 +14,7 @@ class AllTripsPage extends StatelessWidget{
     return StreamProvider<List<Trip>>.value(
       value: DatabaseService().trips,
       child: Container (
+        // height: MediaQuery.of(context).size.height,
         child: AllTripsNewDesign(),
       ),
     );

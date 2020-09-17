@@ -9,6 +9,17 @@ class CloudFunction {
   //   });
   //
   // }
+  // Give feedback
+  void giveFeedback(String message) async {
+    final HttpsCallable giveFeedback = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'giveFeedback');
+    giveFeedback({
+      'message': message,
+    }).then((value) =>
+    {
+      print('Feedback submitted.'),
+    });
+  }
 
   void joinTrip(String docID, String uid) async {
     final HttpsCallable joinTrip = CloudFunctions.instance.getHttpsCallable(
@@ -144,7 +155,7 @@ class CloudFunction {
     }).then((value) =>
     {
       print('removed vote from Activity'),
-      // removeVoterFromActivity(docID, fieldID, uid)
+      removeVoterFromActivity(docID, fieldID, uid)
     });
   }
 

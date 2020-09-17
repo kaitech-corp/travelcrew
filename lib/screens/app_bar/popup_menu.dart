@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/screens/menu_screens/help/help.dart';
 import 'package:travelcrew/screens/menu_screens/users/users.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/services/auth.dart';
@@ -26,6 +27,13 @@ class PopupMenuButtons extends StatelessWidget{
             );
           }
           break;
+          case "help": {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HelpPage()),
+            );
+          }
+          break;
           case "signout": {
             _auth.logOut();
           }
@@ -50,6 +58,13 @@ class PopupMenuButtons extends StatelessWidget{
           child: ListTile(
             leading: Icon(Icons.account_circle),
             title: Text('Users'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'help',
+          child: ListTile(
+            leading: Icon(Icons.info),
+            title: Text('Help & Feedback'),
           ),
         ),
         const PopupMenuItem(

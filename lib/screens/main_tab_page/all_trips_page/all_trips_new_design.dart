@@ -22,81 +22,101 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(left: 10, right: 10),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 5, bottom: 5),
-            ),
-            RichText(
-              text: TextSpan(
-                  style: Theme.of(context).textTheme.headline6,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextSpan(text: 'Social Distancing', style: TextStyle(fontSize: 18)),
-                    TextSpan(text: " Suggestions",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent))
-                  ]
-              ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  TileCard(country: 'Nature Park', text: 'Bike Ride',),
-                  TileCard(country: 'Hiking Trails',text: 'Hike',),
-                  TileCard(country: 'Riverbed',text: 'Rent a Canoe',),
-                  TileCard(country: 'Park', text: 'Have a picnic',)
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 0, bottom: 5),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                RichText(
-                  text: TextSpan(
-                      style: Theme.of(context).textTheme.headline6,
-                      children: [
-                        TextSpan(text: pressed ? 'Coming' : "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purpleAccent)),
-                        TextSpan(text: pressed ? ' Up' : " New", style: TextStyle(fontSize: 18)),
-                      ]
-                  ),
+                    RichText(
+                      text: TextSpan(
+                          style: Theme.of(context).textTheme.headline6,
+                          children: [
+                            TextSpan(text: 'Social Distancing', style: TextStyle(fontSize: 18)),
+                            TextSpan(text: " Suggestions",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent))
+                          ]
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: <Widget>[
+                            TileCard(country: 'Nature Park', text: 'Bike Ride',),
+                            TileCard(country: 'Hiking Trails',text: 'Hike',),
+                            TileCard(country: 'Riverbed',text: 'Rent a Canoe',),
+                            TileCard(country: 'Park', text: 'Have a picnic',)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                IconButton(icon: Icon(Icons.swap_horiz),
-                onPressed: (){
-                  setState(() {
-                    pressed = !pressed;
-                  });
-                }),
-              ],
-            ),
-            SliverGridList(pressed: pressed,),
-            Padding(
-              padding: EdgeInsets.only(top: 0, bottom: 10),
-            ),
-            RichText(
-              text: TextSpan(
-                  style: Theme.of(context).textTheme.headline5,
-                  children: [
-                    TextSpan(text: 'Popular', style: TextStyle(fontSize: 20)),
-                    TextSpan(text: " Destinations",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent))
-                  ]
               ),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  TileCard(country: 'Spain', text: 'Dance Flamenco in Granada',),
-                  TileCard(country: 'Hawaii',text: 'Snorkel in Waikiki',),
-                  TileCard(country: 'Brazil',text: 'Visit Cristo!',),
-                  TileCard(country: 'Monaco', text: 'Grand Prix',)
+            Flexible(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      RichText(
+                        text: TextSpan(
+                            style: Theme.of(context).textTheme.headline6,
+                            children: [
+                              TextSpan(text: pressed ? 'Coming' : "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purpleAccent)),
+                              TextSpan(text: pressed ? ' Up' : " New", style: TextStyle(fontSize: 18)),
+                            ]
+                        ),
+                      ),
+                      IconButton(icon: Icon(Icons.swap_horiz),
+                          onPressed: (){
+                            setState(() {
+                              pressed = !pressed;
+                            });
+                          }),
+                    ],
+                  ),
+                  SliverGridList(pressed: pressed,),
                 ],
               ),
             ),
+            Flexible(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                        style: Theme.of(context).textTheme.headline5,
+                        children: [
+                          TextSpan(text: 'Popular', style: TextStyle(fontSize: 20)),
+                          TextSpan(text: " Destinations",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent))
+                        ]
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: <Widget>[
+                          TileCard(country: 'Spain', text: 'Dance Flamenco in Granada',),
+                          TileCard(country: 'Hawaii',text: 'Snorkel in Waikiki',),
+                          TileCard(country: 'Brazil',text: 'Visit Cristo!',),
+                          TileCard(country: 'Monaco', text: 'Grand Prix',)
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -164,10 +184,11 @@ class SliverGridList extends StatelessWidget {
       }
     }
     return Flexible(
-      flex: 0,
+      flex: 1,
       child: Container(
-        height: 400,
-        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        height: MediaQuery.of(context).size.height * .6,
+        // width: MediaQuery.of(context).size.width,
         child: CustomScrollView(
             slivers: <Widget>[
               SliverGrid(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
+import 'package:travelcrew/services/apple_auth.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/google_auth.dart';
 import 'image_banner.dart';
@@ -12,11 +13,13 @@ class LoginPage extends StatefulWidget {
 
 }
   class _LoginPageState extends State<LoginPage> {
+
     final _formKey = GlobalKey<FormState>();
 
     Key get key => null;
 
   final AuthService _auth = AuthService();
+  final AppleAuthService _auth2 = AppleAuthService();
   bool loading = false;
   String error = '';
   String email = '';
@@ -111,7 +114,24 @@ class LoginPage extends StatefulWidget {
                       ),
                     ),
                   ),
-                  _signInButton(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _signInButton(),
+                      FutureBuilder(
+                        future: _auth2.appleSignInAvailable,
+                        builder: (context, snapshot) {
+
+                          if (snapshot.data == true) {
+                            return _signInAppleButton();
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+
+                    ],
+                  ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Row(
@@ -167,6 +187,38 @@ class LoginPage extends StatefulWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image(image: AssetImage("assets/images/google_logo.png"), height: 25.0),
+//              Padding(
+//                padding: const EdgeInsets.only(left: 10),
+//                child: Text(
+//                  'Sign in with Google',
+//                  style: TextStyle(
+//                    fontSize: 20,
+//                    color: Colors.grey,
+//                  ),
+//                ),
+//              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget _signInAppleButton() {
+      return OutlineButton(
+        splashColor: Colors.grey,
+        onPressed: () {
+          _auth2.appleSignIn();
+        },
+        shape: CircleBorder(),
+        highlightElevation: 0,
+        borderSide: BorderSide(color: Colors.grey),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(image: AssetImage("assets/images/apple_logo.png"), height: 25.0),
 //              Padding(
 //                padding: const EdgeInsets.only(left: 10),
 //                child: Text(

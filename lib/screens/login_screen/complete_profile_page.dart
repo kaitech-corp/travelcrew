@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
-import 'package:travelcrew/screens/login_screen/privacy_page.dart';
+import 'package:travelcrew/screens/menu_screens/privacy_policy/privacy_page.dart';
 import 'package:travelcrew/services/database.dart';
 
 class CompleteProfile extends StatefulWidget {

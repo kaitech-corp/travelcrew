@@ -74,9 +74,11 @@ class ActivityItemLayout extends StatelessWidget {
                         String fieldID = activity.fieldID;
                         String uid = user.uid;
                         if (!activity.voters.contains(user.uid)) {
-                      return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
+                         return CloudFunction().addVoteToActivity(trip.documentId, fieldID, uid);
+                      // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                         } else {
-                      return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
+                          return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID, uid);
+                      // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                         }
                       }
                     ),
@@ -144,10 +146,10 @@ class ActivityItemLayout extends StatelessWidget {
                           String fieldID = activity.fieldID;
                           String uid = user.uid;
                           if (!activity.voters.contains(user.uid)) {
-                            CloudFunction().addVoteToActivity(trip.documentId, fieldID, uid);
+                            return CloudFunction().addVoteToActivity(trip.documentId, fieldID, uid);
                             // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                           } else {
-                            // CloudFunction().removeVoteFromActivity(trip.documentId, fieldID, uid);
+                            // return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID, uid);
                             // CloudFunction().removeVoterFromActivity(trip.documentId, fieldID, uid);
                             return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                           }
@@ -157,11 +159,13 @@ class ActivityItemLayout extends StatelessWidget {
                       onSelected: (value){
                         switch (value){
                           case "View": {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>
-                                  WebViewScreen(activity.link, key)),
-                            );
+                            if (!activity.link.isEmpty) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    WebViewScreen(activity.link, key)),
+                              );
+                            }
                           }
                           break;
                           default: {
