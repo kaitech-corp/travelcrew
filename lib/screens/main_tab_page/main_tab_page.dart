@@ -35,7 +35,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       ],
     ),
     AllTripsPage(),
-    ExploreMain(),
+    // ExploreMain(),
     Favorites(),
     Notifications(),];
 
@@ -71,11 +71,11 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               title: Text('All Trips'),
               backgroundColor: Colors.grey,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              title: Text('Explore'),
-              backgroundColor: Colors.grey,
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.search),
+            //   title: Text('Explore'),
+            //   backgroundColor: Colors.grey,
+            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               title: Text('Favorites'),
@@ -180,11 +180,11 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             title: Text('All Trips'),
             backgroundColor: Colors.grey,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            title: Text('Explore'),
-            backgroundColor: Colors.grey,
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.search),
+          //   title: Text('Explore'),
+          //   backgroundColor: Colors.grey,
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             title: Text('Favorites'),

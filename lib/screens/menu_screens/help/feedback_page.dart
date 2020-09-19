@@ -38,7 +38,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               Padding(padding: EdgeInsets.only(top: 5),),
               Text('Feel free to share your thoughts with us. All feedback will remain anonymous.',style: TextStyle(fontSize: 16),),
               _buildTextField(),
-              Center(child: Text('Please do not add any personal or identifying info',style: TextStyle(fontSize: 12),)),
+              Center(child: Text('Please do not add any personal info',style: TextStyle(fontSize: 12),)),
               const SizedBox(height: 30),
               Center(
                 child: RaisedButton(

@@ -291,13 +291,3 @@ Widget TripCard3(BuildContext context, Trip trip) {
     ),
   );
 }
-//String readTimestamp(int timestamp) {
-//  var format = new DateFormat('MMMM');
-//  var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
-//  var time = '';
-//
-//  time = format.format(date);
-//
-//
-//  return time;
-//}

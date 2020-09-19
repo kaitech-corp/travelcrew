@@ -194,10 +194,13 @@ class _HomeMaterialState extends State<HomeMaterial> {
                               ),
                               SwitchListTile(
                                   title: Text('Public'),
-                                  value: true,
+                                  value: ispublic,
                                   onChanged: (bool val) =>
                                   {
-                                      ispublic = val,
+                                    setState((){
+                                      ispublic = val;
+                                    }),
+
                                   }
                               ),
                               Container(

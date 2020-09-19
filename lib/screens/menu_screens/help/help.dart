@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
 import 'package:travelcrew/screens/menu_screens/privacy_policy/privacy_page.dart';
+import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 
 class HelpPage extends StatelessWidget{
+
+  Key key1;
+  String urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +29,21 @@ class HelpPage extends StatelessWidget{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Text('Terms of Service'),
+                        Icon(Icons.navigate_next),
+                      ],
+                    ),
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WebViewScreen(urlToS, key1)),
+                      );
+                    },
+                  ),
+                  RaisedButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Text('Privacy Policy'),
                         Icon(Icons.navigate_next),
                       ],
@@ -34,7 +54,7 @@ class HelpPage extends StatelessWidget{
                         MaterialPageRoute(builder: (context) => PrivacyPolicy()),
                       );
                     },
-                  )
+                  ),
                 ],
               ),
               Padding(padding: EdgeInsets.only(top: 5, bottom: 5),),

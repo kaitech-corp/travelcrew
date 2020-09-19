@@ -121,6 +121,22 @@ class PrivacyPolicy extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(bottom: 10),
               ),
+              Text("Age Restrictions", style: TextStyle(fontWeight: FontWeight.bold),),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+              ),
+              Text("By using the Travel Crew App, you represent and warrant that (a) you are 17 years of age or older and you agree to be bound by this Agreement; (b) if you are under 17 years of age, you have obtained verifiable consent from a parent or legal guardian; and (c) your use of the Travel Crew App does not violate any applicable law or regulation. Your access to the Travel Crew App may be terminated without warning if Travel Crew believes, in its sole discretion, that you are under the age of 17 years and have not obtained verifiable consent from a parent or legal guardian. If you are a parent or legal guardian and you provide your consent to your child’s use of the Travel Crew App, you agree to be bound by this Agreement in respect to your child’s use of the Travel Crew App.",textAlign: TextAlign.justify,),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+              ),
+              Text("Objectionable Content Policy", style: TextStyle(fontWeight: FontWeight.bold),),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+              ),
+              Text("Content may not be submitted to Travel Crew, who will moderate all content and ultimately decide whether or not to post a submission to the extent such content includes, is in conjunction with, or alongside any, Objectionable Content. Objectionable Content includes, but is not limited to: (i) sexually explicit materials; (ii) obscene, defamatory, libelous, slanderous, violent and/or unlawful content or profanity; (iii) content that infringes upon the rights of any third party, including copyright, trademark, privacy, publicity or other personal or proprietary right, or that is deceptive or fraudulent; (iv) content that promotes the use or sale of illegal or regulated substances, tobacco products, ammunition and/or firearms; and (v) gambling, including without limitation, any online casino, sports books, bingo or poker.",textAlign: TextAlign.justify,),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+              ),
               Text("Children", style: TextStyle(fontWeight: FontWeight.bold),),
               Padding(
                 padding: EdgeInsets.only(bottom: 10),

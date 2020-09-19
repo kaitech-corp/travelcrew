@@ -20,6 +20,20 @@ class CloudFunction {
       print('Feedback submitted.'),
     });
   }
+  void flagContent(String owner, String flaggedUser, String image, String tripDocID) async {
+    final HttpsCallable giveFeedback = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'flagContent');
+    giveFeedback({
+      'owner': owner,
+      'flaggedUser': flaggedUser,
+      'urlToImage': image,
+      'tripDocID':tripDocID
+    }).then((value) =>
+    {
+      print('Flag submitted.'),
+    });
+  }
+
 
   void joinTrip(String docID, String uid) async {
     final HttpsCallable joinTrip = CloudFunctions.instance.getHttpsCallable(

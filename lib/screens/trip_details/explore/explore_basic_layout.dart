@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
@@ -24,6 +25,12 @@ class ExploreBasicLayout extends StatelessWidget{
                 ListTile(
                   title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
                   subtitle: Text('Owner: ${tripdetails.displayName}', style: TextStyle(fontSize: 12.0),),
+                  trailing: IconButton(
+                    icon: Icon(Icons.flag,),
+                    onPressed: (){
+                      _flagTripAlert(context, user.uid, tripdetails.ownerID, tripdetails.documentId);
+                    },
+                  ),
                 ),
                 RaisedButton(
                     shape: Border.all(width: 1, color: Colors.blue),
@@ -83,18 +90,35 @@ class ExploreBasicLayout extends StatelessWidget{
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
   }
+
+  Future<void> _flagTripAlert(BuildContext context, String owner, String flaggedUser, String tripDocID) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+              'Flag this trip as objectionable content?'),
+          // content: Text('You will no longer have access to this Trip'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                CloudFunction().flagContent(owner, flaggedUser, '', tripDocID);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 
 
-//{
-//String message = '${user.displayName} has requested to join your trip.';
-//String trip = tripdetails.location;
-//String type = 'joinRequest';
-//for (var i = 0; i < tripdetails.accessUsers.length; i++) {
-//String uid = tripdetails.accessUsers[i];
-//DatabaseService(tripDocID: tripdetails.documentId)
-//    .addNewNotificationData(
-//message, trip, type, uid);
-//}
-//}

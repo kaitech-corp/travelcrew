@@ -30,17 +30,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Need an image</string>
+	<string>Enable Travel Crew to access your camera to upload your photos for profile and trip images.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Request authentication using face id</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Need an image</string>
+	<string>Requesting authentication using face id.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Need an image</string>
+	<string>Enable Travel Crew to access your camera roll to upload your photos for profile and trip-related images.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

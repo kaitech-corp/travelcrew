@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/menu_screens/privacy_policy/privacy_page.dart';
+import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 
 import 'package:travelcrew/services/auth.dart';
 
@@ -28,6 +29,8 @@ class _SignupScreenState extends State {
   String error = '';
 
   Key get key => null;
+  Key key1;
+  String urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
 
   Future getImage() async {
     var image = await picker.getImage(source: ImageSource.gallery);
@@ -130,9 +133,21 @@ class _SignupScreenState extends State {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text('By pressing Signup you are agreeing to our privacy policy.'),
+                                  Text("By pressing Signup you are agreeing to our terms of service, privacy policy and Apple's EULA."),
                                   FlatButton(
-                                    child: Text('View policy here!'),
+                                    child: Text('Terms of Service'),
+                                    textColor: Colors.lightBlue,
+                                    onPressed: (){
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              WebViewScreen(urlToS, key1),
+                                          )
+                                      );
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text('Privacy Policy'),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       Navigator.push(
