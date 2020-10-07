@@ -32,4 +32,5 @@ class AnalyticsService {
   Future writeError( String error) async {
     await _analytics.logEvent(name: 'writeError', parameters: {'errorDescription': error});
   }
+
 }

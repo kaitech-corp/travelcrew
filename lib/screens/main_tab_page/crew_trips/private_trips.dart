@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -20,13 +21,14 @@ class PrivateTripList extends StatelessWidget {
       future: DatabaseService(uid: uid).privateTripList(),
       builder: (context, trips) {
         if (trips.hasData) {
-          return ListView.builder(
-            itemCount: trips.data.length,
-            itemBuilder: (context, index) {
-              Trip trip = trips.data[index];
-              return TappableCrewTripTile(trip: trip,);
-            },
-          );
+          return Container(
+              child: ListView.builder(
+                itemCount: trips.data.length,
+                itemBuilder: (context, index) {
+                  Trip trip = trips.data[index];
+                  return TappableCrewTripTile(trip: trip,);
+                },
+              ));
         } else {
           return Loading();
         }

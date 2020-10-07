@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 
 
 class EditLodging extends StatefulWidget {
 
+  var userService = locator<UserService>();
   final LodgingData lodging;
   final Trip trip;
   EditLodging({this.lodging, this.trip});
@@ -36,7 +38,7 @@ class _EditLodgingState extends State<EditLodging> {
   @override
   Widget build(BuildContext context) {
     bool loading = false;
-    final user = Provider.of<UserProfile>(context);
+
 
     String displayName = widget.lodging.displayName;
     String link = widget.lodging.link;
@@ -156,8 +158,12 @@ class _EditLodgingState extends State<EditLodging> {
                             String message = 'A lodging option has been modified within ${widget.trip.location}';
 
                             DatabaseService().editLodgingData(comment, displayName, documentID, link, lodgingType, _image, fieldID);
-                            widget.trip.accessUsers.forEach((f) async => await DatabaseService(uid: user.uid).addNewNotificationData(message, documentID, 'Lodging', f));
-
+                            widget.trip.accessUsers.forEach((f)  =>  CloudFunction().addNewNotification(
+                              message: message,
+                              documentID: documentID,
+                              type: 'Lodging',
+                              ownerID: f,
+                            ));
                             setState(() {
                               loading = false;
                             });

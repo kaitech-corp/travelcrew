@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'notifications_text_section.dart';
 
 class NotificationList extends StatefulWidget {
@@ -19,7 +19,6 @@ class _NotificationListState extends State<NotificationList> {
   Widget build(BuildContext context) {
 
     final notifications = Provider.of<List<NotificationData>>(context);
-    final user = Provider.of<UserProfile>(context);
     return ListView.builder(
         itemCount: notifications != null ? notifications.length : 0,
         itemBuilder: (context, index){
@@ -43,7 +42,7 @@ class _NotificationListState extends State<NotificationList> {
             onDismissed: (direction) {
               setState(() {
                 notifications.removeAt(index);
-                DatabaseService(uid: user.uid).removeNotificationData(item.fieldID);
+                CloudFunction().removeNotificationData(item.fieldID);
               });
               Scaffold
                   .of(context)

@@ -1,13 +1,16 @@
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/api.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 import '../../../../loading.dart';
 
 
 class BringingList extends StatefulWidget{
+
+  var userService = locator<UserService>();
 
   final String documentID;
   BringingList({this.documentID});
@@ -33,14 +36,14 @@ class _BringingListState extends State<BringingList> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
+
     return SingleChildScrollView(
       child: Container(
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
         child: SearchBar(
           cancellationWidget: Text('Clear'),
-            placeHolder: Text('  i.e. Cups, Doritos, Dos Equis'),
+            placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
               return CheckboxListTile(
@@ -51,8 +54,9 @@ class _BringingListState extends State<BringingList> {
                   setState(() {
                     _onSelectedProduct(selected, product.query);
                     try {
-                      DatabaseService().addItemToBringingList(
-                          widget.documentID, product.query, user.displayName);
+                      CloudFunction().addItemToBringingList(widget.documentID, product.query);
+                      // DatabaseService().addItemToBringingList(
+                      //     widget.documentID, product.query, widget.userService.currentUserID);
                       Scaffold
                           .of(context)
                           .showSnackBar(SnackBar(content: Text("Item added")));
@@ -73,14 +77,19 @@ class _BringingListState extends State<BringingList> {
 
 class NeedList extends StatefulWidget{
 
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
   String documentID;
   NeedList({this.documentID});
+
+
 
   @override
   _NeedListState createState() => _NeedListState();
 }
 
 class _NeedListState extends State<NeedList> {
+
 
   List _selectedProducts = List();
 
@@ -96,17 +105,18 @@ class _NeedListState extends State<NeedList> {
     }
   }
 
+
   bool selected;
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
+
     return SingleChildScrollView(
       child: Container(
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
         child:  SearchBar(
             cancellationWidget: Text('Clear'),
-            placeHolder: needList(user.displayName),
+            placeHolder: needList(),
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
               return CheckboxListTile(
@@ -119,8 +129,9 @@ class _NeedListState extends State<NeedList> {
                     if(selected ==true) {
                       try {
                         // print(widget.documentID);
-                        DatabaseService().addItemToNeedList(
-                            widget.documentID, product.query, user.displayName);
+                        CloudFunction().addItemToNeedList(widget.documentID, product.query, widget.currentUserProfile.displayName);
+                        // DatabaseService().addItemToNeedList(
+                        //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
                         Scaffold
                             .of(context)
                             .showSnackBar(SnackBar(
@@ -142,7 +153,8 @@ class _NeedListState extends State<NeedList> {
     );
   }
 
-  Widget needList(String displayName) {
+  Widget needList() {
+
     List _selectedItems = List();
 
     void _onSelectedItems(bool selected, Need item) {
@@ -151,10 +163,12 @@ class _NeedListState extends State<NeedList> {
           _selectedItems.add(item.item);
         });
         try {
-          DatabaseService().addItemToBringingList(
-              widget.documentID, item.item, displayName);
-          DatabaseService().removeItemFromNeedList(
-              widget.documentID, item.documentID);
+          CloudFunction().addItemToBringingList(widget.documentID, item.item);
+          CloudFunction().removeItemFromNeedList(widget.documentID, item.documentID);
+          // DatabaseService().addItemToBringingList(
+          //     widget.documentID, item.item, widget.currentUserProfile.displayName);
+          // DatabaseService().removeItemFromNeedList(
+          //     widget.documentID, item.documentID);
           Scaffold
               .of(context)
               .showSnackBar(SnackBar(
@@ -189,15 +203,15 @@ class _NeedListState extends State<NeedList> {
                 ),
                 key: Key(item.item),
                 onDismissed: (direction) {
-
-                  DatabaseService().removeItemFromNeedList(widget.documentID, item.documentID);
+                  CloudFunction().removeItemFromNeedList(widget.documentID, item.documentID);
+                  // DatabaseService().removeItemFromNeedList(widget.documentID, item.documentID);
                   Scaffold
                       .of(context)
                       .showSnackBar(SnackBar(content: Text("Item removed")));
                 },
                 child: CheckboxListTile(
-                  title: Text(item.item.toUpperCase()),
-                  subtitle: Text(item.displayName),
+                  title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
+                  subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
                   controlAffinity: ListTileControlAffinity.trailing,
                   value: _selectedItems.contains(item.item),
                   onChanged: (bool value){
@@ -258,7 +272,8 @@ class BringListToDisplay extends StatelessWidget{
                 ),
                 key: Key(item.item),
                 onDismissed: (direction) {
-                  DatabaseService().removeItemFromBringingList(documentID, item.documentID);
+                  CloudFunction().removeItemFromBringingList(documentID, item.documentID);
+                  // DatabaseService().removeItemFromBringingList(documentID, item.documentID);
                   Scaffold
                       .of(context)
                       .showSnackBar(SnackBar(content: Text("Item removed")));
@@ -267,8 +282,8 @@ class BringListToDisplay extends StatelessWidget{
                   // Widget to display the list of project
                   ListTile(
                     leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
-                    title: Text(item.item.toUpperCase()),
-                    subtitle: Text(item.displayName),
+                    title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
+                    subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
                   ),
               );
             },

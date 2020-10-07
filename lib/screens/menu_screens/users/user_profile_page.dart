@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class UserProfilePage extends StatelessWidget{
   UserProfile user;
+  var userService = locator<UserService>();
 
   UserProfilePage({this.user});
 
   Widget build(BuildContext context) {
-    final owner = Provider.of<UserProfile>(context);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Profile'),
+        title: Text('Profile',style: Theme.of(context).textTheme.headline3,),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -36,43 +36,10 @@ class UserProfilePage extends StatelessWidget{
 //                    user.urlToImage != null ? Image.network(user.urlToImage) : Text('No image available.')
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.flag,),
-                onPressed: (){
-                  _flagTripAlert(context, user.uid, owner.uid);
-                },
-              ),
             ],
           ),
         ),
       ),
-    );
-  }
-  Future<void> _flagTripAlert(BuildContext context, String uid, String owner) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-              'Flag this user for objectionable content or behaviour?'),
-          content: Text('Please use our feedback feature to provide specific details'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Yes'),
-              onPressed: () {
-                CloudFunction().flagContent(owner, owner, user.urlToImage, '');
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/locator.dart';
 import '../../../loading.dart';
 import 'users_text_section.dart';
 
@@ -15,19 +16,30 @@ class UserList extends StatefulWidget {
 
 class _UserListState extends State<UserList> {
 
+  List<UserProfile> allUsersList;
   final ScrollController controller = ScrollController();
   bool _isSearching = false;
+  var userService = locator<UserService>();
 
   void pressedSearch(){
     setState(() {
       _isSearching = !_isSearching;
     });
   }
+@override
+  void initState() {
+    super.initState();
 
+  }
   @override
   Widget build(BuildContext context) {
     bool loading = true;
-    final allUsersList = Provider.of<List<UserProfile>>(context);
+
+    final usersList = Provider.of<List<UserProfile>>(context);
+
+    if (usersList != null) {
+      allUsersList = usersList.where((user) => user.uid != userService.currentUserID).toList();
+    }
 
     if(allUsersList != null) {
       setState(() {
@@ -47,7 +59,7 @@ class _UserListState extends State<UserList> {
 
     return loading ? Loading() : Scaffold(
       appBar: AppBar(
-        title: Text('Users'),
+        title: Text('Users',style: Theme.of(context).textTheme.headline3,),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search),
           onPressed: (){

@@ -34,11 +34,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Enable Travel Crew to access your camera to upload your photos for profile and trip images.</string>
+	<string>Enable Travel Crew access to your camera in order to upload your photos for profile and trip images.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Requesting authentication using face id.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Enable Travel Crew to access your camera roll to upload your photos for profile and trip-related images.</string>
+	<string>Enable Travel Crew access to your camera roll to upload photos for profile and trip-related images.</string>
+	<key>NSCalendarsUsageDescription</key>
+    <string>Enable Travel Crew access to your calendar in order to save and modify trip details created within Travel Crew.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

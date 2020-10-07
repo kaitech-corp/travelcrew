@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class ActivityItemLayout extends StatelessWidget {
 
+  final userService = locator<UserService>();
   final ActivityData activity;
   final Trip trip;
   ActivityItemLayout({this.activity, this.trip});
 
   @override
   Widget build(BuildContext context) {
-
-    final user = Provider.of<User>(context);
-
 
     return Center(
       child: Card(
@@ -27,10 +25,19 @@ class ActivityItemLayout extends StatelessWidget {
 
           },
           child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [BoxShadow(
+                  offset: Offset(0, 10),
+                  blurRadius: 33,
+                  color: Color(Colors.blueGrey.value).withOpacity(.84),
+                  spreadRadius: 5,
+                )
+                ]),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-//                ImageLayout(_text ?? "assests/images/barcelona.jpg"),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
                   child: Column(
@@ -38,46 +45,44 @@ class ActivityItemLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Text('${activity.activityType}', style: TextStyle(fontWeight: FontWeight.bold), textScaleFactor: 1.25,),
+                      Text('${activity.activityType}',style: Theme.of(context).textTheme.headline1,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
-                      Text('Comment: ${activity.comment}', style: TextStyle(fontSize: 16),),
+                      Text('Comment: ${activity.comment}',style: Theme.of(context).textTheme.subtitle1,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
                       ),
-
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Owner: ${activity.displayName}'),
-                          Text('Votes: ${activity.vote}'),
+                          Text('Owner: ${activity.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                          Text('Votes: ${activity.vote}',style: Theme.of(context).textTheme.subtitle1,),
                         ],
                       ),
                       Column (
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          if (activity.link?.isNotEmpty) Text('Link attached'),
+                          if (activity.link?.isNotEmpty) Text('Link attached',style: Theme.of(context).textTheme.subtitle2,),
                           if (activity.urlToImage?.isNotEmpty) ImageLayout(activity.urlToImage),
                         ],
                       )
                     ],
                   ),
                 ),
-                activity.uid == user.uid ? ButtonBar(
+                activity.uid == userService.currentUserID ? ButtonBar(
                   children: <Widget>[
                     FlatButton(
-                      child: favorite(user.uid),
+                      child: favorite(userService.currentUserID),
                       onPressed: () {
                         String fieldID = activity.fieldID;
-                        String uid = user.uid;
-                        if (!activity.voters.contains(user.uid)) {
-                         return CloudFunction().addVoteToActivity(trip.documentId, fieldID, uid);
+                        if (!activity.voters.contains(userService.currentUserID)) {
+                         return CloudFunction().addVoteToActivity(trip.documentId, fieldID);
                       // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                         } else {
-                          return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID, uid);
+                          return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID);
                       // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                         }
                       }
@@ -94,7 +99,7 @@ class ActivityItemLayout extends StatelessWidget {
                           }
                           break;
                           case "View": {
-                              Navigator.push(
+                              if(activity.link.isNotEmpty) Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
                                     WebViewScreen(activity.link, key)),
@@ -106,7 +111,6 @@ class ActivityItemLayout extends StatelessWidget {
                           }
                           break;
                           default: {
-
                           }
                           break;
                         }
@@ -141,25 +145,29 @@ class ActivityItemLayout extends StatelessWidget {
                 ButtonBar(
                   children: <Widget>[
                     FlatButton(
-                        child: favorite(user.uid),
+                        child: favorite(userService.currentUserID),
                         onPressed: () {
                           String fieldID = activity.fieldID;
-                          String uid = user.uid;
-                          if (!activity.voters.contains(user.uid)) {
-                            return CloudFunction().addVoteToActivity(trip.documentId, fieldID, uid);
+                          if (!activity.voters.contains(userService.currentUserID)) {
+                            return CloudFunction().addVoteToActivity(trip.documentId, fieldID);
                             // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
                           } else {
-                            // return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID, uid);
-                            // CloudFunction().removeVoterFromActivity(trip.documentId, fieldID, uid);
-                            return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
+                            return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID);
+                            // CloudFunction().removeVoterFromActivity(trip.documentId, fieldID);
+                            // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                           }
                         }
                     ),
                     PopupMenuButton<String>(
                       onSelected: (value){
                         switch (value){
+                          case "report":
+                            {
+                              TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
+                            }
+                            break;
                           case "View": {
-                            if (!activity.link.isEmpty) {
+                            if (activity.link.isNotEmpty) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
@@ -175,6 +183,13 @@ class ActivityItemLayout extends StatelessWidget {
                       },
                       padding: EdgeInsets.zero,
                       itemBuilder: (context) =>[
+                        const PopupMenuItem(
+                          value: 'report',
+                          child: ListTile(
+                            leading: Icon(Icons.report),
+                            title: Text('Report'),
+                          ),
+                        ),
                         const PopupMenuItem(
                           value: 'View',
                           child: ListTile(
@@ -193,31 +208,11 @@ class ActivityItemLayout extends StatelessWidget {
       ),
     );
   }
-  favorite(String uid){
-      if (activity.voters.contains(uid)) {
-        return Icon(Icons.favorite);
-      } else {
-        return Icon(Icons.favorite_border);
-      }
+  favorite(String uid) {
+    if (activity.voters.contains(uid)) {
+      return Icon(Icons.favorite);
+    } else {
+      return Icon(Icons.favorite_border);
+    }
   }
-  void userAlertDialog(BuildContext context) {
-
-    showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Currently under development.'),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-
-                },
-                child: Text('Thank you for you patience.'),
-              ),
-            ],
-          );
-        }
-    );
-  }
-
 }

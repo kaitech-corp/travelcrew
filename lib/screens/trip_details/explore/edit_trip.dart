@@ -49,7 +49,9 @@ class _EditTripDataState extends State<EditTripData> {
     if (picked != null && picked != _fromDateDepart) {
       setState(() {
         _fromDateDepart = picked;
-        _fromDateReturn = picked;
+        if(_fromDateReturn.isBefore(_fromDateDepart)){
+          _fromDateReturn = picked;
+        }
         startDate = DateFormat.yMMMd().format(_fromDateDepart);
         startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
       });
@@ -57,6 +59,7 @@ class _EditTripDataState extends State<EditTripData> {
   }
   Future<void> _showDatePickerReturn() async {
     final picked = await showDatePicker(
+      fieldLabelText: 'Return Date',
       context: context,
       initialDate: _fromDateReturn,
       firstDate: DateTime(2015, 1),
@@ -146,7 +149,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: <Widget>[
-                                        Text(_labelTextDepart),
+                                        Text(_labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
 //                                SizedBox(height: 16),
                                         ButtonTheme(
                                           minWidth: 150,
@@ -166,7 +169,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: <Widget>[
-                                        Text(_labelTextReturn),
+                                        Text(_labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
 //                                SizedBox(height: 16),
                                         ButtonTheme(
                                           minWidth: 150,
@@ -214,7 +217,7 @@ class _EditTripDataState extends State<EditTripData> {
                               ),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                child: Text('Description'),
+                                child: Text('Description',style: Theme.of(context).textTheme.subtitle1,),
                               ),
                               TextFormField(
                                 cursorColor: Colors.grey,
@@ -234,16 +237,31 @@ class _EditTripDataState extends State<EditTripData> {
                                       onPressed: () {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
-                                          if (endDateTimeStamp == null) {
-                                          endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
-                                          }
-                                          if (endDate == null) {
+                                          if(!dateChangeVisible){
+                                            endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
                                             endDate = widget.tripDetails.endDate;
-                                          }
-                                          if (startDate == null) {
                                             startDate = widget.tripDetails.startDate;
-                                          }
-                                          DatabaseService().editTripData(comment, documentID, endDate, endDateTimeStamp, ispublic, location, startDate, travelType, urlToImage);
+                                            startDate = widget.tripDetails.startDate;
+                                          } else
+                                            {
+                                              startDate = DateFormat.yMMMd().format(_fromDateDepart);
+                                              startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
+                                              endDate = DateFormat.yMMMd().format(_fromDateReturn);
+                                              endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
+                                            }
+                                          // if (endDateTimeStamp == null) {
+                                          //
+                                          // }
+                                          // if (endDate == null) {
+                                          //
+                                          // }
+                                          // if (startDate == null) {
+                                          //
+                                          // }
+                                          // if (startDate == null) {
+                                          //
+                                          // }
+                                          DatabaseService().editTripData(comment, documentID, endDate, endDateTimeStamp, ispublic, location, startDate, startDateTimeStamp, travelType, urlToImage);
                                           _showDialog(context);
                                         }
                                       },

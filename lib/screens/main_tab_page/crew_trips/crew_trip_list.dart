@@ -14,6 +14,7 @@ class CrewTripList extends StatefulWidget {
 }
 
 class _CrewTripListState extends State<CrewTripList> {
+
   @override
   Widget build(BuildContext context) {
     bool loading = true;

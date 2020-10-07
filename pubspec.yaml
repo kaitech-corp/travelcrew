@@ -11,32 +11,34 @@ description: First Flutter App
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.3.0+8
+version: 1.3.0+9
 
 dependencies:
   flutter:
     sdk: flutter
   intl: ^0.16.1
   image_picker: ^0.6.7+4
-  webview_flutter: ^0.3.22+1
-  cloud_firestore: ^0.14.0+2
-  cloud_functions: ^0.6.0
+  webview_flutter: ^1.0.1
+  cloud_firestore: ^0.14.1+2
+  cloud_functions: ^0.6.0+1
+  device_calendar: ^3.1.0
   firebase_core: ^0.5.0
-  firebase_analytics: ^6.0.0
-  firebase_auth: ^0.18.0+1
-  firebase_messaging: ^7.0.0
-  firebase_storage: ^4.0.0
+  firebase_analytics: ^6.0.1
+  firebase_auth: ^0.18.1+1
+  firebase_messaging: ^7.0.2
+  firebase_storage: ^4.0.1
   floating_search_bar: ^0.3.0
-  fluttertoast: ^7.0.1
-  flutter_local_notifications: ^1.4.4+2
+  fluttertoast: ^7.1.1
+  flutter_local_notifications: ^2.0.0
   flutter_spinkit: ^4.1.2+1
-  get_it: ^4.0.4
-  google_sign_in: ^4.5.3
+  get_it: ^5.0.1
+  google_fonts: ^1.1.0
+  google_sign_in: ^4.5.4
   provider: ^4.3.2+2
   http: ^0.12.2
   draggable_scrollbar: ^0.0.4
   flappy_search_bar: ^1.7.2
-  modal_bottom_sheet: ^0.2.0+1
+  modal_bottom_sheet: ^0.2.2
   apple_sign_in: ^0.1.0
 
   # The following adds the Cupertino Icons font to your application.
@@ -75,17 +77,20 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
+  fonts:
+   - family: Raleway
+     fonts:
+       - asset: assets/fonts/Raleway-VariableFont_wght.ttf
+#       - weight: 400
+#       - asset: assets/fonts/Raleway-Italic-VariableFont_wght.ttf
+#         style: italic
+   - family: Cantata One
+     fonts:
+       - asset: assets/fonts/CantataOne-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+   - family: Lato Black
+     fonts:
+       - asset: assets/fonts/Lato-Black.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

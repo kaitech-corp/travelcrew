@@ -1,73 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class ChatMessageLayout extends StatelessWidget {
+  var userService = locator<UserService>();
   final ChatData message;
+  final String tripDocID;
 
-// constructor to get text from textfield
-  ChatMessageLayout({this.message});
+  ChatMessageLayout({this.message, this.tripDocID});
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
+
     
 
-    return message.uid == user.uid ? Container(
-      
-        decoration: BoxDecoration(
-          color: Colors.lightBlue[100],
-        ),
+    return message.uid == userService.currentUserID ? InkWell(
+      onLongPress: (){
+        showBottomSheet(
+            context: context,
+            builder: (context){
+              return Container(
+                height: MediaQuery.of(context).size.height * .2,
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    OutlineButton(
+                      color: Colors.grey,
+                      child: Text('Delete',style: TextStyle(fontSize: 18),),
+                      onPressed: (){
+                        CloudFunction().deleteChatMessage(tripDocID: tripDocID, fieldID: message.fieldID);
+                        // DatabaseService().deleteChatMessage(message.fieldID, tripDocID);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    OutlineButton(
+                      color: Colors.grey,
+                      child: Text('Close',style: TextStyle(fontSize: 18),),
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            });
+      },
+      child: Container(
+          decoration: BoxDecoration(
+            color: Colors.lightBlue[100],
+          ),
 //        margin: const EdgeInsets.symmetric(vertical: 2.0),
-        child: new Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-             Container(
-              margin: const EdgeInsets.only(right: 16.0),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
-                  Container(
-                    margin: const EdgeInsets.all(5.0),
-                    child:  Text(message.message ?? '', textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
-                  ),
-                  Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
-                ],
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+               Container(
+                margin: const EdgeInsets.only(right: 16.0),
               ),
-            )
-          ],
-        )
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,),
+                    Container(
+                      margin: const EdgeInsets.all(5.0),
+                      child:  Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
+                    ),
+                    Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,),
+                  ],
+                ),
+              )
+            ],
+          )
+      ),
     ) :
-    Container(
-        decoration: BoxDecoration(
+    InkWell(
+      child: Container(
+          decoration: BoxDecoration(
 
-        ),
-        margin: const EdgeInsets.symmetric(vertical: 2.0),
-        child: new Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(right: 16.0),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                   Text(message.displayName ?? '', textScaleFactor: .9, style: TextStyle(fontWeight: FontWeight.bold),),
-                   Container(
-                    margin: const EdgeInsets.all(5.0),
-                    child:  Text(message.message ?? '', textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
-                  ),
-                  Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75, style: TextStyle(fontStyle: FontStyle.italic),),
-                ],
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 2.0),
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(right: 16.0),
               ),
-            )
-          ],
-        )
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                     Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,),
+                     Container(
+                      margin: const EdgeInsets.all(5.0),
+                      child:  Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
+                    ),
+                    Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,),
+                  ],
+                ),
+              )
+            ],
+          )
+      ),
     );
   }
   String readTimestamp(int timestamp) {

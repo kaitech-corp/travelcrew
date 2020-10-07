@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 
 
 class EditActivity extends StatefulWidget {
 
+  var userService = locator<UserService>();
   final ActivityData activity;
   final Trip trip;
   EditActivity({this.activity, this.trip});
@@ -36,11 +38,9 @@ class _EditActivityState extends State<EditActivity> {
   @override
   Widget build(BuildContext context) {
     bool loading = false;
-    final user = Provider.of<UserProfile>(context);
+
 
     String displayName = widget.activity.displayName;
-    String fieldID = widget.activity.fieldID;
-    String uid = widget.activity.uid;
     String link = widget.activity.link;
     String activityType = widget.activity.activityType;
     String comment = widget.activity.comment;
@@ -158,8 +158,11 @@ class _EditActivityState extends State<EditActivity> {
                             String message = 'An activity has been modified within ${widget.trip.location}';
 
                             DatabaseService().editActivityData(comment, displayName, documentID, link, activityType, _image, fieldID);
-                            widget.trip.accessUsers.forEach((f) async => await DatabaseService(uid: user.uid).addNewNotificationData(message, documentID, 'Activity', f));
-
+                            widget.trip.accessUsers.forEach((f) =>  CloudFunction().addNewNotification(
+                                message: message,
+                                documentID: documentID,
+                                type: 'Activity',
+                                uidToUse: f));
                             setState(() {
                               loading = false;
                             });

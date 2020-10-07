@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
 
-  final Trip tripdetails;
+  var userService = locator<UserService>();
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final Trip tripDetails;
 
-  ExploreBasicLayout({this.tripdetails});
+  ExploreBasicLayout({this.tripDetails});
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
 
     return  Scaffold(
         body: Container(
@@ -21,14 +22,14 @@ class ExploreBasicLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripdetails.urlToImage != "" ? tripdetails.urlToImage : "assets/images/travelPics.png"),
+                ImageLayout(tripDetails.urlToImage != "" ? tripDetails.urlToImage : "assets/images/travelPics.png"),
                 ListTile(
-                  title: Text('${tripdetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
-                  subtitle: Text('Owner: ${tripdetails.displayName}', style: TextStyle(fontSize: 12.0),),
+                  title: Text('${tripDetails.location}'.toUpperCase(),style: Theme.of(context).textTheme.headline1,),
+                  subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                   trailing: IconButton(
-                    icon: Icon(Icons.flag,),
+                    icon: Icon(Icons.report,),
                     onPressed: (){
-                      _flagTripAlert(context, user.uid, tripdetails.ownerID, tripdetails.documentId);
+                      TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
                     },
                   ),
                 ),
@@ -37,15 +38,19 @@ class ExploreBasicLayout extends StatelessWidget{
                   child: Text('Request to Join'),
                     onPressed: ()
                       {
-                        String message = '${user.displayName} has requested to join your trip ${tripdetails.location}.';
-                        String trip = tripdetails.documentId;
+                        String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.location}.';
+                        String trip = tripDetails.documentId;
                         String type = 'joinRequest';
-                        String ownerID = tripdetails.ownerID;
+                        String ownerID = tripDetails.ownerID;
+                        bool ispublic = tripDetails.ispublic;
 
-                        DatabaseService(tripDocID: tripdetails.documentId, uid: user.uid)
-                            .addNewNotificationData(message, trip, type, ownerID);
-//
-                        _showDialog(context);
+                        CloudFunction().addNewNotification(message: message,
+                        documentID: trip,
+                        type: type,
+                        ownerID: ownerID,
+                        ispublic: ispublic,
+                        );
+                        TravelCrewAlertDialogs().showRequestDialog(context);
                       }
                   ),
                 Container(
@@ -54,13 +59,13 @@ class ExploreBasicLayout extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Trip: ${tripdetails.travelType}'.toUpperCase()),
+                        Text('Trip: ${tripDetails.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('Start: ${tripdetails.startDate}'),
-                            Text('End: ${tripdetails.endDate}')
+                            Text('Start: ${tripDetails.startDate}',style: Theme.of(context).textTheme.subtitle1,),
+                            Text('End: ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
                           ],
                         )
 
@@ -78,44 +83,12 @@ class ExploreBasicLayout extends StatelessWidget{
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent)
                   ),
-                  child: Text(tripdetails.comment, textScaleFactor: 1.25,),
+                  child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,),
                 ),
               ],
             ),
           ),
         )
-    );
-  }
-  _showDialog(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
-  }
-
-  Future<void> _flagTripAlert(BuildContext context, String owner, String flaggedUser, String tripDocID) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-              'Flag this trip as objectionable content?'),
-          // content: Text('You will no longer have access to this Trip'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Yes'),
-              onPressed: () {
-                CloudFunction().flagContent(owner, flaggedUser, '', tripDocID);
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

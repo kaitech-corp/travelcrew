@@ -21,6 +21,7 @@ class UserSignUp {
 
 }
 class UserPublicProfile {
+  List<String> blockedList;
   String displayName;
   String email;
   String firstName;
@@ -30,7 +31,7 @@ class UserPublicProfile {
   String uid;
   String urlToImage;
 
-  UserPublicProfile({this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
+  UserPublicProfile({this.blockedList, this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
 
 }
 
@@ -164,28 +165,30 @@ class ActivityData {
 
 class NotificationData {
   final String documentID;
-  String displayName;
+  final String displayName;
   final String fieldID;
-  String firstname;
-  String lastname;
+  final String firstname;
+  final bool ispublic;
+  final String lastname;
   final String message;
   final Timestamp timestamp;
   final String type;
   final String uid;
 
-  NotificationData({this.displayName, this.firstname, this.lastname,this.fieldID, this.message, this.timestamp, this.documentID, this.type, this.uid});
+  NotificationData({this.displayName, this.firstname, this.ispublic, this.lastname,this.fieldID, this.message, this.timestamp, this.documentID, this.type, this.uid});
 
 }
 
 class ChatData {
   final String displayName;
+  final String fieldID;
   final String message;
   final List<Status> status;
   final Timestamp timestamp;
   final String uid;
 
 
-  ChatData({this.status, this.displayName, this.message, this.timestamp, this.uid,});
+  ChatData({this.fieldID, this.status, this.displayName, this.message, this.timestamp, this.uid,});
 
 }
 class Status {

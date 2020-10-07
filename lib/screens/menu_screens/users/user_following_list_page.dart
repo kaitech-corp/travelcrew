@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 import '../../../loading.dart';
 
 
-class UsersSearchPage extends StatelessWidget{
+class currentUserFollowingList extends StatelessWidget{
 
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   Trip tripDetails;
-  UsersSearchPage({this.tripDetails});
+  currentUserFollowingList({this.tripDetails});
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<User>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users'),
+        title: Text('Followers',style: Theme.of(context).textTheme.headline3,),
       ),
-      body: FutureBuilder(
-        future: DatabaseService(uid: currentUser.uid).retrieveFollowingList(),
+      body: StreamBuilder(
+        stream: DatabaseService().retrieveFollowingList(),
         builder: (context, users) {
           if (users.hasData) {
             return ListView.builder(
                 itemCount: users.data.length,
                 itemBuilder: (context, index) {
                   UserProfile user = users.data[index];
-                  return userCard(context, user, currentUser);
+                  return userCard(context, user);
                 },
               );
           } else {
@@ -36,7 +37,7 @@ class UsersSearchPage extends StatelessWidget{
       ),
     );
   }
-  Widget userCard(BuildContext context, UserProfile user, User currentUser){
+  Widget userCard(BuildContext context, UserProfile user){
     return Card(
       child: Container(
           child: Column(
@@ -58,13 +59,20 @@ class UsersSearchPage extends StatelessWidget{
                 ),
                 title: Text('${user.firstName} ${user.lastName}'),
                 subtitle: Text("${user.displayName}",
-                  textAlign: TextAlign.start,),
+                  textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
                 trailing: !tripDetails.accessUsers.contains(user.uid) ? IconButton(
                   icon: Icon(Icons.add),
                   onPressed: (){
-                    var message = '${currentUser.displayName} invited you to ${tripDetails.location}.';
+                    var message = '${currentUserProfile.displayName} invited you to ${tripDetails.location}.';
                     var type = 'Invite';
-                    DatabaseService().addNewNotificationData(message, tripDetails.documentId, type, user.uid);
+                    CloudFunction().addNewNotification(
+                        ownerID: user.uid,
+                        message: message,
+                        documentID: tripDetails.documentId,
+                        type: type,
+                        ispublic: tripDetails.ispublic,
+                        uidToUse: user.uid);
+                    // DatabaseService().addNewNotificationData(ownerID: user.uid, message: message, documentID:tripDetails.documentId, type:type, ispublic: tripDetails.ispublic);
                     _showDialog(context);
                   },
                 ) : Icon(Icons.check_box),

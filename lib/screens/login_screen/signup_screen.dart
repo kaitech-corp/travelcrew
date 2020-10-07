@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
-import 'package:travelcrew/screens/menu_screens/privacy_policy/privacy_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 
 import 'package:travelcrew/services/auth.dart';
@@ -30,7 +29,8 @@ class _SignupScreenState extends State {
 
   Key get key => null;
   Key key1;
-  String urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
+  String _urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
+  String _urlToPrivacyPolicy = 'https://travelcrewkt.wordpress.com/travel-crew-privacy-policy/';
 
   Future getImage() async {
     var image = await picker.getImage(source: ImageSource.gallery);
@@ -44,7 +44,7 @@ class _SignupScreenState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Sign Up!')),
+        appBar: AppBar(title: Text('Sign Up!',style: Theme.of(context).textTheme.headline3,)),
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -55,8 +55,10 @@ class _SignupScreenState extends State {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             TextFormField(
+                                style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 decoration:
-                                InputDecoration(labelText: 'First Name'),
+                                InputDecoration(labelText: 'First Name',
+                                labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -66,8 +68,10 @@ class _SignupScreenState extends State {
                                 onSaved: (val) =>
                                     setState(() => _user.firstName = val)),
                             TextFormField(
+                              style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                               decoration:
-                              InputDecoration(labelText: 'Last Name'),
+                              InputDecoration(labelText: 'Last Name',
+                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               // ignore: missing_return
                               validator: (value) {
                                 // ignore: missing_return
@@ -79,8 +83,10 @@ class _SignupScreenState extends State {
                                   setState(() => _user.lastName = val),
                             ),
                             TextFormField(
+                                style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 decoration:
-                                InputDecoration(labelText: 'Display Name'),
+                                InputDecoration(labelText: 'Display Name',
+                                labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   // ignore: missing_return, missing_return
@@ -91,8 +97,10 @@ class _SignupScreenState extends State {
                                 onSaved: (val) =>
                                     setState(() => _user.displayName = val)),
                             TextFormField(
+                              style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                               decoration:
-                              InputDecoration(labelText: 'Email'),
+                              InputDecoration(labelText: 'Email',
+                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               // ignore: missing_return
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -103,8 +111,10 @@ class _SignupScreenState extends State {
                                   setState(() => _user.email = val),
                             ),
                             TextFormField(
+                                style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 decoration:
-                                InputDecoration(labelText: 'Password'),
+                                InputDecoration(labelText: 'Password',
+                                labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   if (value.length < 8) {
@@ -114,9 +124,10 @@ class _SignupScreenState extends State {
                                 obscureText: true,
                                 onSaved: (val) =>
                                     setState(() => password = val)),
+                            Padding(padding: EdgeInsets.only(top: 5),),
                             Container(
                               child: _image == null
-                                  ? Text('Select a Profile Picture.')
+                                  ? Text('Select a Profile Picture.',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold))
                                   : Image.file(_image),
                             ),
                             RaisedButton(
@@ -133,27 +144,27 @@ class _SignupScreenState extends State {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text("By pressing Signup you are agreeing to our terms of service, privacy policy and Apple's EULA."),
+                                  Text("By pressing Signup you are agreeing to our Term's of Service, Privacy Policy.",style: Theme.of(context).textTheme.subtitle1,),
                                   FlatButton(
-                                    child: Text('Terms of Service'),
+                                    child: Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) =>
-                                              WebViewScreen(urlToS, key1),
+                                              WebViewScreen(_urlToS, key1),
                                           )
                                       );
                                     },
                                   ),
                                   FlatButton(
-                                    child: Text('Privacy Policy'),
+                                    child: Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
-                                      PrivacyPolicy(),
+                                            WebViewScreen(_urlToPrivacyPolicy, key1),
                                         )
                                       );
                                     },
@@ -180,7 +191,7 @@ class _SignupScreenState extends State {
                                       );
                                     }
                                     },
-                                    child: Text('Sign Up!'))),
+                                    child: Text('Sign Up!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)))),
                             SizedBox(height: 10,),
                             Column(
                               mainAxisSize: MainAxisSize.min,

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/screens/trip_details/explore/stream_to_explore.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class NotificationsTextSection extends StatelessWidget{
   final NotificationData notification;
 
   NotificationsTextSection({this.notification});
 
-
+  var userService = locator<UserService>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +20,9 @@ class NotificationsTextSection extends StatelessWidget{
       'Activity' : notificationType1(context),
       'Lodging' : notificationType1(context),
       'joinRequest': notificationType2(context),
-      'Invite' : notificationType2(context),
       'Follow' : notificationType3(context),
-      'Welcome': notificationType4()
+      'Welcome': notificationType4(context),
+      'Invite' : notificationType5(context),
     };
 
     return notificationType[notification.type];
@@ -33,32 +32,39 @@ class NotificationsTextSection extends StatelessWidget{
     return Card(
       child: ListTile(
         title: Text('${notification.message}'),
-        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         onTap: () async {
-          print('card tapped');
-          Trip trip = await DatabaseService().getTrip(notification.documentID);
-          Navigator.push(
-            context,
+          if(notification.ispublic){
+            Trip trip = await DatabaseService().getTrip(notification.documentID);
+            Navigator.push(
+              context,
               MaterialPageRoute(builder: (context) => StreamToExplore(trip: trip,)),
-          );
-
+            );
+          } else {
+            Trip trip = await DatabaseService().getPrivateTrip(notification.documentID);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StreamToExplore(trip: trip,)),
+            );
+          }
         },
       ),
     );
   }
 
   Widget notificationType2(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
+
     return Card(
       child: ListTile(
         title: Text('${notification.message}'),
-        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
           icon: Icon(Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
-            CloudFunction().joinTrip(notification.documentID, notification.uid);
-            DatabaseService(uid: user.uid).removeNotificationData(fieldID);
+            CloudFunction().joinTrip(notification.documentID, notification.ispublic,notification.uid);
+            CloudFunction().removeNotificationData(fieldID);
+            // DatabaseService(uid: userService.currentUserID).removeNotificationData(fieldID);
             _showDialog(context);
           },
         ),
@@ -70,17 +76,19 @@ class NotificationsTextSection extends StatelessWidget{
   }
 
   Widget notificationType3(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
+
     return Card(
       child: ListTile(
         title: Text('${notification.message}'),
-        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
           icon: Icon(Icons.person_add),
           onPressed: () async{
             String fieldID = notification.fieldID;
-            DatabaseService(uid: user.uid).followUser(notification.documentID);
-            DatabaseService(uid: user.uid).removeNotificationData(fieldID);
+            CloudFunction().followUser(notification.uid);
+            CloudFunction().removeNotificationData(fieldID);
+            // DatabaseService(uid: userService.currentUserID).followUser(notification.documentID);
+            // DatabaseService(uid: userService.currentUserID).removeNotificationData(fieldID);
             _showDialog(context);
           },
         ),
@@ -91,11 +99,34 @@ class NotificationsTextSection extends StatelessWidget{
     );
   }
 
-  Widget notificationType4(){
+  Widget notificationType4(BuildContext context){
     return Card(
       child: ListTile(
         title: Text('${notification.message}'),
-        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch)),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
+        onTap: (){
+          print('card tapped');
+        },
+      ),
+    );
+  }
+
+  Widget notificationType5(BuildContext context) {
+
+    return Card(
+      child: ListTile(
+        title: Text('${notification.message}'),
+        subtitle: Text(readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
+        trailing: IconButton(
+          icon: Icon(Icons.add_circle),
+          onPressed: () async{
+            String fieldID = notification.fieldID;
+            CloudFunction().joinTripInvite(notification.documentID, notification.uid, notification.ispublic);
+            CloudFunction().removeNotificationData(fieldID);
+            // DatabaseService(uid: userService.currentUserID).removeNotificationData(fieldID);
+            _showDialog(context);
+          },
+        ),
         onTap: (){
           print('card tapped');
         },

@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
-import 'package:travelcrew/screens/menu_screens/privacy_policy/privacy_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 
 class HelpPage extends StatelessWidget{
 
   Key key1;
-  String urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
-
+  String _urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
+  String _urlToPrivacyPolicy = 'https://travelcrewkt.wordpress.com/travel-crew-privacy-policy/';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Help & Feedback'),
+          title: Text('Help & Feedback',style: Theme.of(context).textTheme.headline3,),
         ),
         body: Container(
           height: MediaQuery.of(context).size.height *.5,
@@ -36,7 +35,7 @@ class HelpPage extends StatelessWidget{
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => WebViewScreen(urlToS, key1)),
+                        MaterialPageRoute(builder: (context) => WebViewScreen(_urlToS, key1)),
                       );
                     },
                   ),
@@ -51,7 +50,7 @@ class HelpPage extends StatelessWidget{
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PrivacyPolicy()),
+                        MaterialPageRoute(builder: (context) => WebViewScreen(_urlToPrivacyPolicy, key1))
                       );
                     },
                   ),

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
+
+var userService = locator<UserService>();
 
 
 class AllTripsNewDesign extends StatefulWidget{
 
-
+  
   @override
   _AllTripsNewDesignState createState() => _AllTripsNewDesignState();
 }
@@ -34,9 +37,9 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                   children: [
                     RichText(
                       text: TextSpan(
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context).textTheme.headline3,
                           children: [
-                            TextSpan(text: 'Social Distancing', style: TextStyle(fontSize: 18)),
+                            TextSpan(text: 'Social Distancing',style: Theme.of(context).textTheme.headline2,),
                             TextSpan(text: " Suggestions",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent))
                           ]
                       ),
@@ -68,10 +71,10 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                     children: <Widget>[
                       RichText(
                         text: TextSpan(
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context).textTheme.headline3,
                             children: [
                               TextSpan(text: pressed ? 'Coming' : "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purpleAccent)),
-                              TextSpan(text: pressed ? ' Up' : " New", style: TextStyle(fontSize: 18)),
+                              TextSpan(text: pressed ? ' Up' : " New",style: Theme.of(context).textTheme.headline2,),
                             ]
                         ),
                       ),
@@ -94,9 +97,9 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                 children: [
                   RichText(
                     text: TextSpan(
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headline3,
                         children: [
-                          TextSpan(text: 'Popular', style: TextStyle(fontSize: 20)),
+                          TextSpan(text: 'Popular',style: Theme.of(context).textTheme.headline2),
                           TextSpan(text: " Destinations",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent))
                         ]
                     ),
@@ -106,10 +109,10 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: <Widget>[
-                          TileCard(country: 'Spain', text: 'Dance Flamenco in Granada',),
+                          TileCard(country: 'The Bahamas', text: 'Sunbath on the beach',),
                           TileCard(country: 'Hawaii',text: 'Snorkel in Waikiki',),
                           TileCard(country: 'Brazil',text: 'Visit Cristo!',),
-                          TileCard(country: 'Monaco', text: 'Grand Prix',)
+                          TileCard(country: 'Mexico', text: 'Party in Cabo',)
                         ],
                       ),
                     ),
@@ -132,7 +135,7 @@ class TileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 25, bottom: 20, top: 10),
+      margin: EdgeInsets.only(left: 25, bottom: 10, top: 5),
       height: 75,
       width: 200,
       decoration: BoxDecoration(
@@ -141,46 +144,69 @@ class TileCard extends StatelessWidget {
           boxShadow: [BoxShadow(
             offset: Offset(0, 10),
             blurRadius: 33,
-            color: Color(0xFFD3D3D3).withOpacity(.84),
+            color: Color(Colors.blueGrey.value).withOpacity(.84),
             spreadRadius: 5,
           )
           ]),
       child: ListTile(
-        title: Text(country),
-        subtitle: Text(text),
+        title: Text(country,style: Theme.of(context).textTheme.headline2,),
+        subtitle: Text(text,style: Theme.of(context).textTheme.subtitle1,maxLines: 1, overflow: TextOverflow.ellipsis,),
+        onTap: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddTrip()),
+          );
+        },
       ),
     );
   }
 }
 
-class SliverGridList extends StatelessWidget {
+class SliverGridList extends StatefulWidget {
+
   final bool pressed;
 
   SliverGridList({this.pressed});
 
   @override
+  _SliverGridListState createState() => _SliverGridListState();
+}
+
+class _SliverGridListState extends State<SliverGridList> {
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
+
     final trips = Provider.of<List<Trip>>(context);
     List<Trip> trips2 = List();
     List<Trip> trips4 = List();
 
     if (trips != null) {
-      if(pressed) {
-        var trips3 = trips.where((trip) =>
-        !trip.accessUsers.contains(user.uid));
+      var trips3 = trips.where((trip) =>
+      !trip.accessUsers.contains(userService.currentUserID));
+      if(widget.pressed) {
+
         trips3.forEach((f) => trips2.add(f));
         trips4 = trips3.where((trip) =>
             trip.endDateTimeStamp.toDate().isAfter(DateTime.now())).toList();
+        try {
+          trips4 = trips4.where((trip) =>
+          !currentUserProfile.blockedList.contains(trip.ownerID)).toList();
+        } catch (e){
+          // print(e.toString());
+        }
       }
       else{
-        var trips3 = trips.where((trip) =>
-        !trip.accessUsers.contains(user.uid));
-        trips3 = trips3.where((trip) => trip.dateCreatedTimeStamp != null);
         trips3.forEach((f) => trips2.add(f));
         trips2.sort((a,b) => b.dateCreatedTimeStamp.compareTo(a.dateCreatedTimeStamp));
         trips4 = trips2.where((trip) =>
             trip.endDateTimeStamp.toDate().isAfter(DateTime.now())).toList();
+        try {
+          trips4 = trips4.where((trip) =>
+          !currentUserProfile.blockedList.contains(trip.ownerID)).toList();
+        } catch (e){
+          // print(e.toString());
+        }
       }
     }
     return Flexible(
@@ -206,7 +232,6 @@ class SliverGridList extends StatelessWidget {
   }
 }
 Widget TripCard3(BuildContext context, Trip trip) {
-  final user = Provider.of<UserProfile>(context);
 
   favorite(String uid, Trip trip){
     if (trip.favorite.contains(uid)){
@@ -237,50 +262,43 @@ Widget TripCard3(BuildContext context, Trip trip) {
             color: Color(Colors.blueGrey.value).withOpacity(.84),
             spreadRadius: 5,
           )
-          ]),
+          ]
+      ),
       child: Stack(
           children: <Widget>[
             ListTile(
-              title: Text((trip.location != '' ? trip.location : 'Trip Name'), textScaleFactor: 1,),
+              title: Text((trip.location != '' ? trip.location : 'Trip Name'),style: Theme.of(context).textTheme.headline1, maxLines: 2, overflow: TextOverflow.ellipsis,),
               subtitle: Text("${trip.travelType}",
-                textAlign: TextAlign.start,),
+                textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2, maxLines: 1, overflow: TextOverflow.ellipsis,),
             ),
             Positioned(
               bottom: 20,
               left: 20,
               child: Container(
                   height: 50,
-                  child: Text('${trip.startDate}')),
+                  child: Text('${trip.startDate}',style: Theme.of(context).textTheme.subtitle1,)),
             ),
             Positioned(
               bottom: 0,
               left: 20,
               child: Container(
                 height: 50,
-                  child: Text('${trip.displayName}')),
+                  child: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1,)),
             ),
             Positioned(
               bottom: 5,
               right: 5,
               child: ButtonBar(
                   children: <Widget>[ FlatButton(
-                    child: favorite(user.uid, trip),
+                    child: favorite(userService.currentUserID, trip),
                     onPressed: () {
-                      if (trip.favorite.contains(user.uid)){
-                        try {
-                          CloudFunction().removeFavoriteFromTrip(trip.documentId, user.uid);
-                          // DatabaseService(tripDocID: trip.documentId).removeFavoriteFromTrip(user.uid);
-                        } catch (e) {
-                          print('Error removing favorite. ${e.toString()}');
-                        }
+                      if (trip.favorite.contains(userService.currentUserID)){
+                          CloudFunction().removeFavoriteFromTrip(trip.documentId);
+                          // DatabaseService(tripDocID: trip.documentId).removeFavoriteFromTrip(userService.currentUserID);
                       } else {
-                        try {
-                          // CloudFunction().addFavoriteToTrip(trip.documentId, user.uid);
-                          DatabaseService(tripDocID: trip.documentId)
-                              .addFavoriteToTrip(user.uid);
-                        } catch (e) {
-                          print('Error adding favorite. ${e.toString()}');
-                        }
+                          CloudFunction().addFavoriteTrip(trip.documentId);
+                          // DatabaseService(tripDocID: trip.documentId)
+                          //     .addFavoriteToTrip(userService.currentUserID);
                       }
                       },
                   ),

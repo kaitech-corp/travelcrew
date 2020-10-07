@@ -1,4 +1,3 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 
@@ -27,7 +26,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Help & Feedback'),
+          title: Text('Feedback',style: Theme.of(context).textTheme.headline3,),
         ),
         body: Container(
           padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -36,9 +35,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(padding: EdgeInsets.only(top: 5),),
-              Text('Feel free to share your thoughts with us. All feedback will remain anonymous.',style: TextStyle(fontSize: 16),),
+              Text('Feel free to share your thoughts with us.',style: Theme.of(context).textTheme.headline2,),
               _buildTextField(),
-              Center(child: Text('Please do not add any personal info',style: TextStyle(fontSize: 12),)),
+              Center(child: Text('Interested in collaborating? Email KaiTech2020@gmail.com directly.',style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,)),
               const SizedBox(height: 30),
               Center(
                 child: RaisedButton(

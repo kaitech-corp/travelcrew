@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/authenticate/wrapper.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
-import 'package:travelcrew/screens/menu_screens/users/users_search_page.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
-
+import 'package:travelcrew/screens/menu_screens/users/user_following_list_page.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'layout_widgets.dart';
 import 'lists/item_lists.dart';
-import 'members/members_layout.dart';
+
 
 class ExploreMemberLayout extends StatelessWidget{
 
   final Trip tripDetails;
+  var userService = locator<UserService>();
 
   ExploreMemberLayout({this.tripDetails});
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+
     return Scaffold(
         body: Container(
           child: SingleChildScrollView(
@@ -32,26 +30,22 @@ class ExploreMemberLayout extends StatelessWidget{
                   trailing: PopupMenuButton<String>(
                     onSelected: (value){
                       switch (value) {
-                        case "Members":
+                        case "report":
                           {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>
-                                  MembersLayout(tripDetails: tripDetails,)),
-                            );
+                            TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
                           }
                           break;
                         case "Add":
                           {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => UsersSearchPage(tripDetails: tripDetails,)),
+                              MaterialPageRoute(builder: (context) => currentUserFollowingList(tripDetails: tripDetails,)),
                             );
                           }
                           break;
                         case "Leave":
                           {
-                            _leaveTripAlert(context, user.uid);
+                            TravelCrewAlertDialogs().leaveTripAlert(context,userService.currentUserID, tripDetails);
                           }
                           break;
                         default:
@@ -64,10 +58,10 @@ class ExploreMemberLayout extends StatelessWidget{
                     padding: EdgeInsets.zero,
                     itemBuilder: (context) =>[
                       const PopupMenuItem(
-                        value: 'Members',
+                        value: 'report',
                         child: ListTile(
-                          leading: Icon(Icons.people),
-                          title: Text('Crew'),
+                          leading: Icon(Icons.report),
+                          title: Text('Report'),
                         ),
                       ),
                       const PopupMenuItem(
@@ -86,7 +80,7 @@ class ExploreMemberLayout extends StatelessWidget{
                       ),
                     ],
                   ),
-                  subtitle: Text('Owner: ${tripDetails.displayName}', style: TextStyle(fontSize: 12.0),),
+                  subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                 ),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
@@ -94,18 +88,16 @@ class ExploreMemberLayout extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Trip: ${tripDetails.travelType}'),
-                        tripDetails.ispublic ? Text('Public') : Text('Private'),
+                        Text('Trip: ${tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,),
+                        tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('Start: ${tripDetails.startDate}'),
-                            Text('End: ${tripDetails.endDate}')
+                            Text('Start: ${tripDetails.startDate}',style: Theme.of(context).textTheme.subtitle1,),
+                            Text('End: ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
                           ],
                         )
-
-
                       ],
                     )
                 ),
@@ -119,7 +111,7 @@ class ExploreMemberLayout extends StatelessWidget{
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent)
                   ),
-                  child: Text(tripDetails.comment, textScaleFactor: 1.25,),
+                  child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,),
                 ),
                 ListWidget(tripDetails: tripDetails,),
                 BringListToDisplay(documentID: tripDetails.documentId,),
@@ -127,65 +119,6 @@ class ExploreMemberLayout extends StatelessWidget{
             ),
           ),
         )
-    );
-  }
-
-  Future<void> userAlertDialog(BuildContext context) async {
-
-    await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Members'),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-
-                },
-                child: Text('${tripDetails.accessUsers.length} Member(s)'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-
-                },
-                child: Text(''),
-              ),
-            ],
-          );
-        }
-    );
-  }
-
-  Future<void> _leaveTripAlert(BuildContext context, String uid) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-              'Are you sure you want to leave this Trip?'),
-          content: Text('You will no longer have access to this Trip'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Yes'),
-              onPressed: () {
-                CloudFunction().leaveTrip(tripDetails.documentId, uid);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      Wrapper(),
-                  ),
-                );
-              },
-            ),
-            FlatButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

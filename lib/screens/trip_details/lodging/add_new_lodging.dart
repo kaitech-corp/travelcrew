@@ -1,16 +1,18 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-
+import 'package:travelcrew/services/locator.dart';
 import '../../../loading.dart';
 
 
 
 class AddNewLodging extends StatefulWidget {
+
+  var userService = locator<UserService>();
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final Trip trip;
   AddNewLodging({this.trip});
@@ -41,7 +43,6 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   @override
   Widget build(BuildContext context) {
 
-    final user = Provider.of<UserProfile>(context);
 
     return widget.loading ? Loading() : Scaffold(
       appBar: AppBar(
@@ -143,13 +144,20 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   onPressed: () async{
                     final form = _formKey.currentState;
                     if (form.validate()) {
-                      String displayName = user.displayName;
+                      String displayName = widget.currentUserProfile.displayName;
                       String documentID = widget.trip.documentId;
-                      String uid = user.uid;
+                      String uid = widget.userService.currentUserID;
                       String tripName = widget.trip.location;
                       String message = 'A new lodging has been added to ${widget.trip.location}';
+                      bool ispublic = widget.trip.ispublic;
                       await DatabaseService().addNewLodgingData(comment, displayName, documentID, link, lodgingType, uid, urlToImage, tripName);
-                      widget.trip.accessUsers.forEach((f) async => await DatabaseService(uid: user.uid).addNewNotificationData(message, documentID, 'Activity', f));
+                      widget.trip.accessUsers.forEach((f)  =>  CloudFunction().addNewNotification(
+                        message: message,
+                        documentID: documentID,
+                        type: 'Lodging',
+                        ownerID: f,
+                        ispublic: ispublic,
+                      ));
                       Navigator.pop(context);
                     }
                   },

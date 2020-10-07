@@ -3,16 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/app_bar/app_bar.dart';
+import 'package:travelcrew/screens/app_bar/main_menu.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
-import 'package:travelcrew/screens/menu_screens/users/users.dart';
-import 'package:travelcrew/screens/profile_page/profile_page.dart';
-import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'crew_trips/crew_trips.dart';
 import 'crew_trips/private_trips.dart';
-import 'explore_main/explore_main.dart';
 
 
 class MainTabPage extends StatefulWidget {
@@ -25,7 +22,6 @@ class MainTabPage extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
   int _selectedIndex = 0;
-  final AuthService _auth = AuthService();
   final List<Widget> _widgetOptions = <Widget>[
     TabBarView(
       children: [
@@ -63,22 +59,17 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.group),
-              title: Text('My Crew'),
+              label: 'My Crew',
               backgroundColor: Colors.grey,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.assignment),
-              title: Text('All Trips'),
+              label: 'All Trips',
               backgroundColor: Colors.grey,
             ),
-            // BottomNavigationBarItem(
-            //   icon: Icon(Icons.search),
-            //   title: Text('Explore'),
-            //   backgroundColor: Colors.grey,
-            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
-              title: Text('Favorites'),
+              label: 'Favorites',
               backgroundColor: Colors.grey,
             ),
             BottomNavigationBarItem(
@@ -86,7 +77,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                 icon: Icon(Icons.notifications_active),
                 badgeCount: notifications != null ? notifications.length : 0,
               ),
-              title: Text('Notifications'),
+              label: 'Notifications',
               backgroundColor: Colors.grey,
             ),
           ],
@@ -99,59 +90,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: PopupMenuButton<String>(
-          onSelected: (value){
-            switch (value){
-              case "profile": {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              }
-              break;
-              case "users": {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Users()),
-                );
-              }
-              break;
-              case "signout": {
-                _auth.logOut();
-              }
-              break;
-              default: {
-
-              }
-              break;
-            }
-          },
-          padding: EdgeInsets.zero,
-          itemBuilder: (context) =>[
-            const PopupMenuItem(
-              value: 'profile',
-              child: ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text('Profile'),
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'users',
-              child: ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text('Users'),
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'signout',
-              child: ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text('Signout'),
-              ),
-            ),
-          ],
-        ),
-        title: const Text('Travel Crew'),
+        leading: MainMenuButtons(),
+        title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
@@ -172,22 +112,17 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
         items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.group),
-            title: Text('My Crew'),
+            label: 'My Crew',
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
-            title: Text('All Trips'),
+            label: 'All Trips',
             backgroundColor: Colors.grey,
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.search),
-          //   title: Text('Explore'),
-          //   backgroundColor: Colors.grey,
-          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            title: Text('Favorites'),
+            label: 'Favorites',
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
@@ -195,7 +130,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               icon: Icon(Icons.notifications_active),
               badgeCount: notifications != null ? notifications.length : 0,
             ),
-            title: Text('Notifications'),
+            label: 'Notifications',
             backgroundColor: Colors.grey,
           ),
         ],

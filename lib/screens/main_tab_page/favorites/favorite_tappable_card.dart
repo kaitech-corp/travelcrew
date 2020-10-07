@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class FavoriteTappableTripCard extends StatelessWidget {
+
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final Trip trip;
   FavoriteTappableTripCard({this.trip});
@@ -21,28 +26,51 @@ class FavoriteTappableTripCard extends StatelessWidget {
 
         },
         child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [BoxShadow(
+                offset: Offset(0, 10),
+                blurRadius: 33,
+                color: Color(Colors.blueGrey.value).withOpacity(.84),
+                spreadRadius: 5,
+              )
+              ]),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-//              ImageLayout("assests/images/barcelona.jpg"),
+
               ListTile(
-                title: Text((trip.location != '' ? (trip.location).toUpperCase() : 'Trip Name'), textScaleFactor: 1.25,),
+                title: Text((trip.location != '' ? (trip.location).toUpperCase() : 'Trip Name'),style: Theme.of(context).textTheme.headline1,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 subtitle: Text("Travel Type: ${trip.travelType}",
-                  textAlign: TextAlign.start,),
-//              isThreeLine: true,
+                  textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                trailing: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: (){
+                    String message = '${currentUserProfile.displayName} has requested to join your trip ${trip.location}.';
+                    String type = 'joinRequest';
+
+                    CloudFunction().addNewNotification(message: message,
+                      documentID: trip.documentId,
+                      type: type,
+                      ownerID: trip.ownerID,
+                      ispublic: trip.ispublic,
+                    );
+                    TravelCrewAlertDialogs().showRequestDialog(context);
+                  },
+                ),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Owner:'),
+                    Text('Owner: ${trip.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Start Date: ${trip.startDate}'),
-                        Text('End Date: ${trip.endDate}')
+                        Text('Start Date: ${trip.startDate}',style: Theme.of(context).textTheme.subtitle1,),
+                        Text('End Date: ${trip.endDate}',style: Theme.of(context).textTheme.subtitle1,)
                       ],
                     ),
                   ],

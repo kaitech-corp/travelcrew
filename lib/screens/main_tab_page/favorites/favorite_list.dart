@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/database.dart';
-
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'favorite_tappable_card.dart';
 
 class FavoriteTripList extends StatefulWidget {
@@ -15,7 +14,6 @@ class _FavoriteTripState extends State<FavoriteTripList> {
   @override
   Widget build(BuildContext context) {
 
-    final user = Provider.of<User>(context);
     final trips = Provider.of<List<Trip>>(context);
 
 
@@ -37,7 +35,7 @@ class _FavoriteTripState extends State<FavoriteTripList> {
             onDismissed: (direction) {
               setState(() {
                 trips.removeAt(index);
-                DatabaseService(tripDocID: item.documentId).removeFavoriteFromTrip(user.uid);
+                CloudFunction().removeFavoriteFromTrip(item.documentId);
               });
 
               Scaffold

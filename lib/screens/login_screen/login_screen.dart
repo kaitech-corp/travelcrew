@@ -29,7 +29,7 @@ class LoginPage extends StatefulWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Login',style: Theme.of(context).textTheme.headline3,),
       ),
       body: SingleChildScrollView(
          child: Builder(
@@ -48,6 +48,7 @@ class LoginPage extends StatefulWidget {
                     child: Column(
                       children: [
                         TextFormField(
+                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                           enableInteractiveSelection: true,
                           validator: (value) {
                             if (value.isEmpty || !value.contains('.com')) {
@@ -64,9 +65,11 @@ class LoginPage extends StatefulWidget {
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Email",
+                            labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                           ),
                         ),
                         TextFormField(
+                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                           onChanged: (val){
                             setState(() => password = val);
                             setState(() =>error = '');
@@ -82,6 +85,7 @@ class LoginPage extends StatefulWidget {
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Password",
+                            labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)
                           ),
                         ),
                       ],
@@ -110,7 +114,7 @@ class LoginPage extends StatefulWidget {
                       color: Colors.lightBlue,
                       child: const Text(
                           'Login',
-                          style: TextStyle(color: Colors.white, fontSize: 20 )
+                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold,fontSize: 20)
                       ),
                     ),
                   ),
@@ -139,9 +143,9 @@ class LoginPage extends StatefulWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text('No account?'),
+                        Text('No account?',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                         FlatButton(
-                          child: Text('Sign up here!'),
+                          child: Text('Sign up here!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                           textColor: Colors.lightBlue,
                           onPressed: (){
                             Navigator.push(

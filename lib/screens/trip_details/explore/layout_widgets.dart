@@ -44,6 +44,7 @@ class _ListWidgetState extends State<ListWidget> {
             length: 2,
             child: Scaffold(
               appBar: TabBar(
+                labelStyle: Theme.of(context).textTheme.subtitle1,
                 labelColor: Colors.black,
                 tabs: <Widget>[
                   Tab(text: 'Bringing'),

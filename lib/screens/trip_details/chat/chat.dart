@@ -3,15 +3,20 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_list.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 
 class Chat extends StatefulWidget {
+
+  var userService = locator<UserService>();
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final Trip trip;
   Chat({this.trip});
 
   @override
   State<StatefulWidget> createState() {
+
     return _ChatState();
   }
 }
@@ -22,15 +27,14 @@ class _ChatState extends State<Chat> {
 
   Future<void> clearChat(String uid) async {
     await DatabaseService(tripDocID: widget.trip.documentId, uid: uid).clearChatNotifications();
+
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProfile>(context);
-    clearChat(user.uid);
-    String displayName = user.displayName;
-    String uid = user.uid;
+    clearChat(widget.userService.currentUserID);
+
 
     return StreamProvider.value(
       value: DatabaseService(tripDocID: widget.trip.documentId).chatList,
@@ -69,6 +73,8 @@ class _ChatState extends State<Chat> {
                               String message = _chatController.text;
                               var status = createStatus();
                               _chatController.clear();
+                              String displayName = widget.currentUserProfile.displayName;
+                              String uid = widget.userService.currentUserID;
                               await DatabaseService(
                                   tripDocID: widget.trip.documentId)
                                   .addNewChatMessage(
@@ -89,9 +95,8 @@ class _ChatState extends State<Chat> {
     );
   }
   createStatus() {
-    final user = Provider.of<UserProfile>(context, listen: false);
     Map<String, bool> status = {};
-    var users = widget.trip.accessUsers.where((f) => f != user.uid);
+    var users = widget.trip.accessUsers.where((f) => f != widget.userService.currentUserID);
 
     users.forEach((f) => status[f] = false);
 //    print(status.toList());

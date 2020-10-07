@@ -31,7 +31,7 @@ class WebViewScreen extends StatefulWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Travel Crew'),
+        title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
       ),
       body: Column(
         children: <Widget>[

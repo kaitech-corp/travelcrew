@@ -22,7 +22,7 @@ class Wrapper extends StatelessWidget{
     if (user == null) {
       return Authenticate();
     } else {
-//      return ProfileStream();
+
        return FutureBuilder(
          builder: (context, data) {
            if (data.data == false) {

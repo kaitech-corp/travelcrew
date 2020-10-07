@@ -1,27 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
+
 
 class LodgingItemLayout extends StatelessWidget {
 
+  var userService = locator<UserService>();
   final LodgingData lodging;
   final Trip trip;
+
   LodgingItemLayout({this.lodging, this.trip});
 
   @override
   Widget build(BuildContext context) {
 
-    final user = Provider.of<User>(context);
+    
 
     return Center(
       child: Card(
           child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [BoxShadow(
+                  offset: Offset(0, 10),
+                  blurRadius: 33,
+                  color: Color(Colors.blueGrey.value).withOpacity(.84),
+                  spreadRadius: 5,
+                )
+                ]),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -32,30 +45,27 @@ class LodgingItemLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Text('${lodging.lodgingType}', style: TextStyle(fontWeight: FontWeight.bold), textScaleFactor: 1.25,),
+                      Text('${lodging.lodgingType}',style: Theme.of(context).textTheme.headline1,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
+                      ),
+                      Text('Comment: ${lodging.comment}',style: Theme.of(context).textTheme.subtitle1,),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
                       ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('${lodging.displayName}', style: TextStyle(fontSize: 16)),
-                        Text('Likes: ${lodging.vote}'),
+                        Text('${lodging.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                        Text('Votes: ${lodging.vote}',style: Theme.of(context).textTheme.subtitle1,),
                       ],
                     ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                      ),
-                      Text('Comment: ${lodging.comment}'),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                      ),
                       Column (
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                           if (lodging.link.isNotEmpty ) Text('Link attached'),
+                           if (lodging.link.isNotEmpty ) Text('Link attached',style: Theme.of(context).textTheme.subtitle1,),
                           if (lodging.urlToImage.isNotEmpty) ImageLayout(lodging.urlToImage),
                         ],
                       )
@@ -65,11 +75,11 @@ class LodgingItemLayout extends StatelessWidget {
                 ButtonBar(
                   children: <Widget>[
                     FlatButton(
-                      child: favorite(user.uid),
+                      child: favorite(userService.currentUserID),
                         onPressed: () {
                           String fieldID = lodging.fieldID;
-                          String uid = user.uid;
-                          if (!lodging.voters.contains(user.uid)) {
+                          String uid = userService.currentUserID;
+                          if (!lodging.voters.contains(userService.currentUserID)) {
                             CloudFunction().addVoteToLodging(trip.documentId, fieldID);
                             CloudFunction().addVoterToLodging(trip.documentId, fieldID, uid);
                           } else {
@@ -78,7 +88,7 @@ class LodgingItemLayout extends StatelessWidget {
                           }
                         }
                     ),
-                    lodging.uid == user.uid ? PopupMenuButton<String>(
+                    lodging.uid == userService.currentUserID ? PopupMenuButton<String>(
                       onSelected: (value){
                         switch (value){
                           case "Edit": {
@@ -90,7 +100,7 @@ class LodgingItemLayout extends StatelessWidget {
                           }
                           break;
                           case "View": {
-                            Navigator.push(
+                            if(lodging.link.isNotEmpty) Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
                                   WebViewScreen(lodging.link, key)),
@@ -135,6 +145,11 @@ class LodgingItemLayout extends StatelessWidget {
                     PopupMenuButton<String>(
                       onSelected: (value){
                         switch (value){
+                          case "report":
+                            {
+                              TravelCrewAlertDialogs().reportAlert(context: context, lodgingData: lodging, type: 'lodging');
+                            }
+                            break;
                           case "View": {
                            if (lodging.link.isNotEmpty) {
                             Navigator.push(
@@ -153,6 +168,13 @@ class LodgingItemLayout extends StatelessWidget {
                       },
                       padding: EdgeInsets.zero,
                       itemBuilder: (context) =>[
+                        const PopupMenuItem(
+                          value: 'report',
+                          child: ListTile(
+                            leading: Icon(Icons.report),
+                            title: Text('Report'),
+                          ),
+                        ),
                         const PopupMenuItem(
                           value: 'View',
                           child: ListTile(

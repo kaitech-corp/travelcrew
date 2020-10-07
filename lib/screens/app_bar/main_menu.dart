@@ -4,14 +4,15 @@ import 'package:travelcrew/screens/menu_screens/users/users.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/services/auth.dart';
 
-class PopupMenuButtons extends StatelessWidget{
+class MainMenuButtons extends StatelessWidget{
+
+
   @override
   Widget build(BuildContext context) {
     final AuthService _auth = AuthService();
-
-    // TODO: implement build
     return PopupMenuButton<String>(
-      onSelected: (value){
+
+      onSelected: (value) async{
         switch (value){
           case "profile": {
             Navigator.push(
@@ -77,5 +78,4 @@ class PopupMenuButtons extends StatelessWidget{
       ],
     );
   }
-
 }

@@ -6,15 +6,17 @@ PODS:
   - AppAuth/ExternalUserAgent (1.4.0)
   - apple_sign_in (0.0.1):
     - Flutter
-  - cloud_firestore (0.14.0-2):
+  - cloud_firestore (0.14.1-2):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Firestore (~> 6.26.0)
     - firebase_core
     - Flutter
-  - cloud_functions (0.6.0):
+  - cloud_functions (0.6.0-1):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Functions (~> 6.26.0)
     - firebase_core
+    - Flutter
+  - device_calendar (0.0.1):
     - Flutter
   - Firebase/Analytics (6.26.0):
     - Firebase/Core
@@ -38,12 +40,12 @@ PODS:
   - Firebase/Storage (6.26.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.6.1)
-  - firebase_analytics (6.0.0):
+  - firebase_analytics (6.0.1):
     - Firebase/Analytics (~> 6.26.0)
     - Firebase/CoreOnly (~> 6.26.0)
     - firebase_core
     - Flutter
-  - firebase_auth (0.18.0-1):
+  - firebase_auth (0.18.1-1):
     - Firebase/Auth (~> 6.26.0)
     - Firebase/CoreOnly (~> 6.26.0)
     - firebase_core
@@ -51,12 +53,12 @@ PODS:
   - firebase_core (0.5.0):
     - Firebase/CoreOnly (~> 6.26.0)
     - Flutter
-  - firebase_messaging (7.0.0):
+  - firebase_messaging (7.0.2):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Messaging (~> 6.26.0)
     - firebase_core
     - Flutter
-  - firebase_storage (4.0.0):
+  - firebase_storage (4.0.1):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Storage (~> 6.26.0)
     - firebase_core
@@ -157,9 +159,9 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
-  - GTMAppAuth (1.0.0):
-    - AppAuth/Core (~> 1.0)
-    - GTMSessionFetcher (~> 1.1)
+  - GTMAppAuth (1.1.0):
+    - AppAuth/Core (~> 1.4)
+    - GTMSessionFetcher (~> 1.4)
   - GTMSessionFetcher (1.4.0):
     - GTMSessionFetcher/Full (= 1.4.0)
   - GTMSessionFetcher/Core (1.4.0)
@@ -172,7 +174,9 @@ PODS:
     - nanopb/encode (= 1.30905.0)
   - nanopb/decode (1.30905.0)
   - nanopb/encode (1.30905.0)
-  - PromisesObjC (1.2.10)
+  - path_provider (0.0.1):
+    - Flutter
+  - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
   - Toast (4.0.0)
   - webview_flutter (0.0.1):
@@ -182,6 +186,7 @@ DEPENDENCIES:
   - apple_sign_in (from `.symlinks/plugins/apple_sign_in/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
+  - device_calendar (from `.symlinks/plugins/device_calendar/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -193,6 +198,7 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
@@ -229,6 +235,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   cloud_functions:
     :path: ".symlinks/plugins/cloud_functions/ios"
+  device_calendar:
+    :path: ".symlinks/plugins/device_calendar/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_auth:
@@ -252,6 +260,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
@@ -263,14 +273,15 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
-  cloud_firestore: b054ccc068b5907645c32b669d38e82db2a11fc7
-  cloud_functions: d4c231ef524d0d49d89177b3f3f85256c6be4a9a
+  cloud_firestore: d800bcc818ca2307beaeb697a94aa76341bc661d
+  cloud_functions: cc36e7b5ec30848fbf6ff5f240188d51104ce9dd
+  device_calendar: 23b28a5f1ab3bf77e34542fb1167e1b8b29a98f5
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
-  firebase_analytics: 3ad65aa7be059752b2c1a6392bfafe030b4ab9fa
-  firebase_auth: c42c06a212439824b5da53437da905931e8e6b9a
+  firebase_analytics: 1d9cb866405f31cf24f0e307cfcc05d8d6daef87
+  firebase_auth: 7263cdea1ab32345b00be89bed437e6f427363b7
   firebase_core: 3134fe79d257d430f163b558caf52a10a87efe8a
-  firebase_messaging: 6061cbdfe4463502a0d4d7049820c25d1757a095
-  firebase_storage: 760ea52570d1896e3b08e2815f1123e61f25e685
+  firebase_messaging: 2844c37f9ce87c0904b38fe435223161b1a71528
+  firebase_storage: 419f66c641d8bbd8306abeb7d08bd6ece87d8b5a
   FirebaseAnalytics: 96634d356482d4f3af8fe459a0ebf19a99c71b75
   FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
   FirebaseAuth: 7047aec89c0b17ecd924a550c853f0c27ac6015e
@@ -285,22 +296,23 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 29543feb343b09546ab3aa04d008ee8595b43c44
   FirebaseStorage: f4f39ae834a7145963b913f54e2f24a9db1d8fac
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
   GoogleDataTransport: 672fb0ce96fe7f7f31d43672fca62ad2c9c86f7b
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
-  GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
+  GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
-  PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: 7e6e9a3ccd6fb98eddf9356f701b91d38373ef72
+PODFILE CHECKSUM: dc68e7b2cd6d77e83aa47ecf9ef02bdeedf0b635
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0.rc.1

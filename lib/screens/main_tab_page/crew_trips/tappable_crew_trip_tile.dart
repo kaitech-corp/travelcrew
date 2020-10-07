@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/explore/stream_to_explore.dart';
+import 'package:travelcrew/services/locator.dart';
+
 
 
 class TappableCrewTripTile extends StatelessWidget {
@@ -10,11 +11,17 @@ class TappableCrewTripTile extends StatelessWidget {
 
   TappableCrewTripTile({this.trip});
 
+  var userService = locator<UserService>();
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
 
-    final user = Provider.of<User>(context);
     return Container(
       height: size.height*.2,
       width: double.infinity,
@@ -28,22 +35,22 @@ class TappableCrewTripTile extends StatelessWidget {
             color: Color(Colors.blueGrey.value).withOpacity(.84),
             spreadRadius: 5,
           )
-          ]),
+          ]
+      ),
       child: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ListTile(
-              title: Text(trip.location != null ? trip.location : 'Trip Name',style: TextStyle(fontSize: 24),),
+              title: Text(trip.location != null ? trip.location : 'Trip Name',style: Theme.of(context).textTheme.headline1,maxLines: 2,overflow: TextOverflow.ellipsis,),
               subtitle: Text(trip.travelType != null ? "${trip.travelType}" : "",
-                textAlign: TextAlign.start,),
+                textAlign: TextAlign.start, style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => StreamToExplore(trip: trip,)),
                 );
-
               },
             ),
             Expanded(
@@ -56,14 +63,14 @@ class TappableCrewTripTile extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('${ownerName(user.uid)}'),
-                          Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates'),
+                          Text('${ownerName(userService.currentUserID)}',style: Theme.of(context).textTheme.subtitle1,),
+                          Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text('${trip.accessUsers.length} '),
+                          Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle2,),
                           Icon(Icons.people)
                         ],
                       ),
@@ -76,8 +83,8 @@ class TappableCrewTripTile extends StatelessWidget {
       ),
     );
   }
-  String ownerName(String uid){
-    if (trip.ownerID == uid){
+  String ownerName(String currentUserID){
+    if (trip.ownerID == currentUserID){
       return 'You';
     }else {
       return trip.displayName;

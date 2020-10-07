@@ -2,9 +2,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 
 import 'analytics_service.dart';
 
+var userService = locator<UserService>();
+var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
 class DatabaseService {
 
@@ -12,6 +16,7 @@ class DatabaseService {
   var tripDocID;
   DatabaseService({this.tripDocID, this.uid});
   final AnalyticsService _analyticsService = AnalyticsService();
+
 
   //  All collection references
 
@@ -29,6 +34,7 @@ class DatabaseService {
   final CollectionReference notificationCollection = FirebaseFirestore.instance.collection('notifications');
   final CollectionReference bringListCollection = FirebaseFirestore.instance.collection('bringList');
   final CollectionReference needListCollection = FirebaseFirestore.instance.collection('needList');
+  final CollectionReference uniqueCollection = FirebaseFirestore.instance.collection('unique');
 
 
 
@@ -53,6 +59,7 @@ class DatabaseService {
     var ref = userPublicProfileCollection.doc(uid);
      try {
        await ref.set({
+        'blockedList': [],
         'displayName': displayName,
         'email': email,
          'followers': [],
@@ -129,21 +136,21 @@ class DatabaseService {
     }
   }
 
-// // Get user display name.
-//   Future<UserPublicProfile> retrieveUserPublicProfile(String uid) async {
-//      var ref = await userPublicProfileCollection.doc(uid).get();
-//      if(ref.exists){
-//        Map<String, dynamic> data = ref.data();
-//        return UserPublicProfile(
-//          displayName: data['displayName'],
-//          firstName: data['firstName'],
-//          lastName: data['lastName'],
-//          urlToImage: data['urlToImage'],
-//        );
-//      } else {
-//        return null;
-//      }
-//   }
+// Get user display name.
+  Future<UserPublicProfile> retrieveUserPublicProfile(String uid) async {
+     var ref = await userPublicProfileCollection.doc(uid).get();
+     if(ref.exists){
+       Map<String, dynamic> data = ref.data();
+       return UserPublicProfile(
+         displayName: data['displayName'],
+         firstName: data['firstName'],
+         lastName: data['lastName'],
+         urlToImage: data['urlToImage'],
+       );
+     } else {
+       return null;
+     }
+  }
   Future<String> retrieveUserPic(String uid) async {
     var ref = await userPublicProfileCollection.doc(uid).get();
     Map<String, dynamic> data = ref.data();
@@ -151,58 +158,13 @@ class DatabaseService {
     return profilePic;
   }
 
-  //Follow a user
-  Future followUser(String userUID) async {
-     userPublicProfileCollection.doc(userUID).update({
-      'following': FieldValue.arrayUnion([uid]),
-    });
-     userPublicProfileCollection.doc(uid).update({
-       'followers': FieldValue.arrayUnion([userUID]),
-     });
-  }
-
-  //Un-Follow a user
-  Future unFollowUser(String userUID) async {
-    userPublicProfileCollection.doc(uid).update({
-      'following': FieldValue.arrayRemove([userUID]),
-    });
-    userPublicProfileCollection.doc(userUID).update({
-      'followers': FieldValue.arrayRemove([uid]),
-    });
-  }
-
-  // Get following list
-  Future<List<UserProfile>> retrieveFollowingList() async {
-    List<UserProfile> followingList;
-    UserProfile followingListUID;
-    try {
-      await userPublicProfileCollection.doc(uid).get().then((value) => {
-        if(value.exists) {
-          followingListUID = UserProfile(
-            following: List<String>.from(value.data()['following']) ?? [''],
-            // firstName: value.data['firstName'] ?? '',
-          ),
-        }
-      });
-      await usersList().then((value) =>
-      {
-        followingList =
-            value.where((user) => followingListUID.following.contains(user.uid)).toList(),
-      });
-      return followingList;
-    } catch (e) {
-      print('Error getting following list: ${e.toString()}');
-    }
-
-
-  }
 
   // Add new trip
-  Future addNewTripData(List<String> accessUsers, String comment, String displayName,
-      String endDate, String firstName, String lastName, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location, String ownerID,
+  Future addNewTripData(List<String> accessUsers, String comment,
+      String endDate, String firstName, String lastName, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location,
       String startDate, String travelType, File urlToImage)
-
   async {
+
     var key = tripsCollectionUnordered.doc().id;
     if (ispublic) {
       var addTripRef =  tripsCollectionUnordered.doc(key);
@@ -213,13 +175,13 @@ class DatabaseService {
               'accessUsers': accessUsers,
               'comment': comment,
               'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
-              'displayName': displayName,
+              'displayName': currentUserProfile.displayName,
               'documentId': key,
               'endDate': endDate,
               'endDateTimeStamp': endDateTimeStamp,
               'ispublic': ispublic,
               'location': location,
-              'ownerID': ownerID,
+              'ownerID': userService.currentUserID,
               'startDate': startDate,
               'startDateTimeStamp': startDateTimeStamp,
               'travelType': travelType,
@@ -232,11 +194,11 @@ class DatabaseService {
         _analyticsService.writeError('Error saving new public trip:  ${e.toString()}');
       }
       try {
-         addTripRef.collection('Members').doc(ownerID).set({
-           'displayName' : displayName,
+         addTripRef.collection('Members').doc(userService.currentUserID).set({
+           'displayName' : currentUserProfile.displayName,
            'firstName': firstName,
            'lastname' : lastName,
-           'uid' : ownerID,
+           'uid' : userService.currentUserID,
            'urlToImage' : '',
          });
       } catch(e){
@@ -251,13 +213,13 @@ class DatabaseService {
           'accessUsers': accessUsers,
           'comment': comment,
            'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
-          'displayName': displayName,
+          'displayName': currentUserProfile.displayName,
           'documentId': key,
           'endDate': endDate,
           'endDateTimeStamp': endDateTimeStamp,
           'ispublic': ispublic,
           'location': location,
-          'ownerID': ownerID,
+          'ownerID': userService.currentUserID,
           'startDate': startDate,
            'startDateTimeStamp': startDateTimeStamp,
           'travelType': travelType,
@@ -270,11 +232,11 @@ class DatabaseService {
         _analyticsService.writeError('Error saving new private trip:  ${e.toString()}');
       }
       try {
-        addTripRef.collection('Members').doc(ownerID).set({
-          'displayName' : displayName,
+        addTripRef.collection('Members').doc(userService.currentUserID).set({
+          'displayName' : currentUserProfile.displayName,
           'firstName': firstName,
           'lastName' : lastName,
-          'uid' : ownerID,
+          'uid' : userService.currentUserID,
           'urlToImage' : '',
         });
       } catch(e){
@@ -283,7 +245,7 @@ class DatabaseService {
     }
 
     try {
-      await userCollection.doc(ownerID).update({'trips': FieldValue.arrayUnion([key])});
+      await userCollection.doc(userService.currentUserID).update({'trips': FieldValue.arrayUnion([key])});
     }catch (e) {
       print('Error adding new trip to user document: ${e.toString()}');
     }
@@ -361,8 +323,11 @@ class DatabaseService {
         } catch (e){
           print("Error deleting private trip: ${e.toString()}");
         }
+        trip.accessUsers.forEach((member) {
+          CloudFunction().addMember(trip.documentId, member);
+        });
       } catch (e) {
-        print("Error saving trip: ${e.toString()}");
+
         _analyticsService.writeError('Error converting to public trip:  ${e.toString()}');
       }
     } else {
@@ -390,6 +355,9 @@ class DatabaseService {
         } catch (e){
           print("Error deleting public trip: ${e.toString()}");
         }
+        trip.accessUsers.forEach((member) {
+          CloudFunction().addPrivateMember(trip.documentId, member);
+        });
       }
       catch (e) {
         print("Error saving private trip: ${e.toString()}");
@@ -397,52 +365,11 @@ class DatabaseService {
       }
     }
   }
-// Delete trip
-  Future deleteTrip() async {
-
-    try {
-      await lodgingCollection.doc(tripDocID).delete();
-    }catch (e) {
-      print('Error deleting Lodging: ${e.toString()}');
-    }
-    try {
-      await flightCollection.doc(tripDocID).delete();
-    }catch (e) {
-      print('Error deleting Flight: ${e.toString()}');
-    }
-    try {
-      await activitiesCollection.doc(tripDocID).delete();
-    }catch (e) {
-      print('Error deleting Activity: ${e.toString()}');
-    }
-    try {
-      await chatCollection.doc(tripDocID).delete();
-    }catch (e) {
-      print('Error deleting Chat: ${e.toString()}');
-    }
-    try {
-      await tripsCollectionUnordered.doc(tripDocID).delete();
-    }catch (e) {
-      print('Error deleting Trip: ${e.toString()}');
-    }
-    try {
-      await privateTripsCollectionUnordered.doc(tripDocID).delete();
-    }catch (e) {
-      print('Error deleting Trip: ${e.toString()}');
-    }
-  }
-  // Update trip with new field
-  Future updateTrip(String documentID) async {
-    var updateTripRef = tripsCollectionUnordered.doc(documentID);
-    await updateTripRef.update({
-      'dateCreatedTimeStamp': FieldValue.serverTimestamp()
-    });
-  }
 
 
 // Edit Trip
   Future editTripData(String comment, String documentID, String endDate, Timestamp endDateTimeStamp,
-      bool ispublic, String location, String startDate, String travelType, File urlToImage)
+      bool ispublic, String location, String startDate, Timestamp startDateTimeStamp, String travelType, File urlToImage)
 
   async {
     var addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
@@ -456,6 +383,7 @@ class DatabaseService {
       "ispublic": ispublic,
       "location": location,
       "startDate": startDate,
+      'startDateTimeStamp': startDateTimeStamp,
       "travelType": travelType,
     });
     if (urlToImage != null) {
@@ -476,21 +404,15 @@ class DatabaseService {
     }
   }
 
-  //Add items the user is Bringing
-  Future addItemToBringingList(String tripDocID, String item, String displayName) async {
-    String key = bringListCollection.doc().id;
-    try {
-      var ref = bringListCollection.doc(tripDocID).collection('Items')
-          .doc(key);
-      ref.set({
-        'item': item,
-        'displayName': displayName,
-        'documentID': key
-      });
-    } catch (e) {
-      print('Error saving item to Bringing collection: ${e.toString()}');
-    }
+  // Get following list
+  Stream<List<UserProfile>> retrieveFollowingList() async*{
+      var user = await usersList();
+      final followingList =
+          user.where((user) => currentUserProfile.following.contains(user.uid)).toList();
+
+    yield followingList;
   }
+
 
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
         return snapshot.docs.map((doc) {
@@ -504,33 +426,6 @@ class DatabaseService {
   }
   Stream<List<Bringing>> getBringingList(String docID){
     return bringListCollection.doc(docID).collection('Items').snapshots().map(_retrieveBringingItems);
-  }
-
-  //Remove item from Bring list
-  Future removeItemFromBringingList(String tripDocID, String documentID) async {
-    try {
-      var ref = bringListCollection.doc(tripDocID).collection('Items')
-          .doc(documentID);
-      ref.delete();
-    } catch (e) {
-      print('Error deleting item from Bringing collection: ${e.toString()}');
-    }
-  }
-
-  //Create a list of items user wants others to bring
-  Future addItemToNeedList(String docID, String item, String displayName) async {
-    String key = needListCollection.doc().id;
-    try {
-      var ref = needListCollection.doc(docID).collection('Items')
-          .doc(key);
-      ref.set({
-        'item': item,
-        'displayName': displayName,
-        'documentID': key
-      });
-    } catch (e) {
-      print('Error saving item to Need collection: ${e.toString()}');
-    }
   }
 
   List<Need> _retrieveNeedItems(QuerySnapshot snapshot) {
@@ -547,21 +442,9 @@ class DatabaseService {
     return needListCollection.doc(docID).collection('Items').snapshots().map(_retrieveNeedItems);
   }
 
-  //Remove item from Need list
-  Future removeItemFromNeedList(String tripDocID, String documentID) async {
-    try {
-      var ref = needListCollection.doc(tripDocID).collection('Items')
-          .doc(documentID);
-      ref.delete();
-    } catch (e) {
-      print('Error deleting item from Bringing collection: ${e.toString()}');
-    }
-  }
-
-
   //Get all members from Trip
-  Future<List<Members>> retrieveMembers(String docID, bool pubic) async {
-    if(pubic) {
+  Future<List<Members>> retrieveMembers(String docID, bool ispubic) async {
+    if(ispubic) {
       try {
         var ref = await tripsCollectionUnordered.doc(docID).collection(
             'Members').get();
@@ -571,6 +454,7 @@ class DatabaseService {
             displayName: data['displayName'] ?? '',
             firstName: data['firstName'] ?? '',
             lastName: data['lastName'] ?? '',
+            uid: data['uid'] ?? '',
             urlToImage: data['urlToImage'] ?? '',
           );
         }).toList();
@@ -584,27 +468,31 @@ class DatabaseService {
       try {
         var ref = await privateTripsCollectionUnordered.doc(docID).collection(
             'Members').get();
-        List<Members> memberList = ref.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
-          return Members(
-            displayName: data['displayName'] ?? '',
-            firstName: data['firstName'] ?? '',
-            lastName: data['lastName'] ?? '',
-            urlToImage: data['urlToImage'] ?? '',
-          );
-        }).toList();
-        memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
-        return memberList;
-      } catch (e) {
+
+          List<Members> memberList = ref.docs.map((doc) {
+            Map<String, dynamic> data = doc.data();
+            return Members(
+              displayName: data['displayName'] ?? '',
+              firstName: data['firstName'] ?? '',
+              lastName: data['lastName'] ?? '',
+              uid: data['uid'] ?? '',
+              urlToImage: data['urlToImage'] ?? '',
+            );
+          }).toList();
+          memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
+          return memberList;
+        } catch (e) {
         print(e.toString());
         return null;
       }
     }
 
+
   }
 
   // Get Trip
   Future<Trip> getTrip(String documentID) async {
+
     var ref = await tripsCollectionUnordered.doc(documentID).get();
     if (ref.exists){
         Map<String, dynamic> data = ref.data();
@@ -626,31 +514,56 @@ class DatabaseService {
         );
     }
   }
+  // Get Private Trip
+  Future<Trip> getPrivateTrip(String documentID) async {
 
-// Get all trips
-  List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
-
-    return snapshot.docs.map((doc) {
-      Map<String, dynamic> data = doc.data();
-        return Trip(
-          accessUsers: List<String>.from(data['accessUsers']) ?? null,
-          comment: data['comment'] ?? '',
-          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-          displayName: data['displayName'] ?? '',
-          documentId: data['documentId'] ?? '',
-          endDate: data['endDate'] ?? '',
-          endDateTimeStamp: data['endDateTimeStamp'],
-          favorite: List<String>.from(data['favorite']) ?? [''],
-          ispublic: data['ispublic'] ?? null,
-          location: data['location'] ?? '',
-          ownerID: data['ownerID'] ?? '',
-          startDate: data['startDate'] ?? '',
-          travelType: data['travelType'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-        );
-    }).toList();
+    var ref = await privateTripsCollectionUnordered.doc(documentID).get();
+    if (ref.exists){
+      Map<String, dynamic> data = ref.data();
+      return Trip(
+        accessUsers: List<String>.from(data['accessUsers']) ?? null,
+        comment: data['comment'] ?? '',
+        dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
+        displayName: data['displayName'] ?? '',
+        documentId: data['documentId'] ?? '',
+        endDate: data['endDate'] ?? '',
+        endDateTimeStamp: data['endDateTimeStamp'],
+        favorite: List<String>.from(data['favorite']) ?? [''],
+        ispublic: data['ispublic'] ?? null,
+        location: data['location'] ?? '',
+        ownerID: data['ownerID'] ?? '',
+        startDate: data['startDate'] ?? '',
+        travelType: data['travelType'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
+      );
+    }
   }
 
+// Get all trips
+    List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
+
+    List<Trip> trips = snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data();
+      return Trip(
+        accessUsers: List<String>.from(data['accessUsers']) ?? null,
+        comment: data['comment'] ?? '',
+        dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
+        displayName: data['displayName'] ?? '',
+        documentId: data['documentId'] ?? '',
+        endDate: data['endDate'] ?? '',
+        endDateTimeStamp: data['endDateTimeStamp'],
+        favorite: List<String>.from(data['favorite']) ?? [''],
+        ispublic: data['ispublic'] ?? null,
+        location: data['location'] ?? '',
+        ownerID: data['ownerID'] ?? '',
+        startDate: data['startDate'] ?? '',
+        travelType: data['travelType'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
+      );
+    }).toList();
+
+    return trips;
+  }
   // get trips
   Stream<List<Trip>> get trips {
     return tripCollection.snapshots()
@@ -900,6 +813,7 @@ class DatabaseService {
       );
     }).toList();
     userList.sort((a,b) => a.firstName.compareTo(b.firstName));
+
     return userList;
   }
   // get all users
@@ -948,7 +862,7 @@ class DatabaseService {
 
   // get current use public profile
   Stream<UserProfile> get currentUserPublicProfile {
-    return userPublicProfileCollection.doc(uid).snapshots()
+    return userPublicProfileCollection.doc(userService.currentUserID).snapshots()
         .map(_userPublicProfileSnapshot);
   }
 
@@ -1055,84 +969,13 @@ class DatabaseService {
         .map(_tripListFromSnapshot);
   }
 
-
-// Add Favorite Trip
-  Future addFavoriteToTrip(String uid) async {
+// check uniqueness
+  Future addToUniqueDocs(String key2){
     try {
-      return await tripsCollectionUnordered.doc(tripDocID).update({
-        'favorite': FieldValue.arrayUnion([uid]),
+      uniqueCollection.doc(key2).set({
       });
-    } catch (e) {
-      print('Error adding favorite. ${e.toString()}');
-    }
-
-  }
-  //Remove Favorite Trip
-  Future removeFavoriteFromTrip(String uid) async {
-    try {
-      return await tripsCollectionUnordered.doc(tripDocID).update({
-        'favorite': FieldValue.arrayRemove([uid]),
-      });
-    } catch (e) {
-      print('Error removing favorite. ${e.toString()}');
-    }
-  }
-
-
-  void removeVoteFromActivity(String uid, String fieldID) async {
-    try {
-      await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
-        'vote':
-        FieldValue.increment(-1),
-      });
-    } catch (e) {
-      print('Error updating vote count. ${e.toString()}');
-    }
-    try {
-      return await activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).update({
-        'voters':
-        FieldValue.arrayRemove([uid]),
-      });
-    } catch (e) {
-      print('Error updating voters. ${e.toString()}');
-    }
-  }
-// Store Images
-
-
-  // Add new notification
-  Future addNewNotificationData(String message, String documentID, String type, String ownerID) async {
-    var key = notificationCollection.doc().id;
-    try {
-      return await notificationCollection.doc(ownerID).collection('notifications').doc(key).set({
-        'fieldID': key,
-        'message': message,
-        'timestamp': FieldValue.serverTimestamp(),
-        'documentID': documentID,
-        'type': type,
-        'uid': uid,
-
-      });
-    } catch (e) {
-      print('Error writing notification: ${e.toString()}');
-      _analyticsService.writeError('Error writing notification:  ${e.toString()}');
-    }
-  }
-  // Remove notification
-  Future removeNotificationData(String fieldID) async {
-    return await notificationCollection.doc(uid).collection('notifications').doc(fieldID).delete();
-  }
-  // Clear all notifications
-  Future removeAllNotificationData() async {
-    try {
-      return await notificationCollection.doc(uid).collection('notifications').get().then((QuerySnapshot val) => {
-        val.docs.forEach((val) => {
-          notificationCollection.doc(uid).collection('notifications').doc(val.id).delete()
-        })
-      });
-    } catch (e) {
-      print('Error deleting all notificatons: ${e.toString()}');
-      _analyticsService.writeError('Error deleting all notifications:  ${e.toString()}');
+    } catch(e){
+      print(e.toString());
     }
   }
   // Get all Notifications
@@ -1145,6 +988,7 @@ class DatabaseService {
         return NotificationData(
           documentID: data['documentID'] ?? '',
           fieldID: data['fieldID'] ?? '',
+          ispublic: data['ispublic'] ?? false,
           message: data['message'] ?? '',
           timestamp: data['timestamp'] ?? Timestamp.now(),
           type: data['type'] ?? '',
@@ -1169,6 +1013,7 @@ class DatabaseService {
       return await chatCollection.doc(tripDocID).collection('messages').doc(key).set(
           {
             'displayName': displayName,
+            'fieldID': key,
             'message': message,
             'status': status,
             'timestamp': FieldValue.serverTimestamp(),
@@ -1176,6 +1021,14 @@ class DatabaseService {
           });
     } catch (e) {
       _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
+    }
+  }
+  // Delete a chat message
+  Future deleteChatMessage(String fieldID, String tripDocID) async {
+    try {
+      return await chatCollection.doc(tripDocID).collection('messages').doc(fieldID).delete();
+    } catch (e) {
+      _analyticsService.writeError('Error deleting new chat:  ${e.toString()}');
     }
   }
 // Clear chat notifications.
@@ -1194,6 +1047,7 @@ class DatabaseService {
       Map<String, dynamic> data = doc.data();
       return ChatData(
         displayName: data['displayName'] ?? '',
+        fieldID: data['fieldID'] ?? '',
         message: data['message'] ?? '',
         timestamp: data['timestamp'] ?? Timestamp.now(),
         uid: data['uid'] ?? '',

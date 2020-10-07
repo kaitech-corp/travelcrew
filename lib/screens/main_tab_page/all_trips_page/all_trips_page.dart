@@ -7,6 +7,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 
 class AllTripsPage extends StatelessWidget{
 
+  List<Trip> trip;
   AllTripsPage();
 
   @override

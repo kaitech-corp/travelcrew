@@ -32,7 +32,7 @@ class _ChatListState extends State<ChatList> {
         reverse: true,
         itemCount: chatList != null ? chatList.length : 0,
         itemBuilder: (context, index){
-          return ChatMessageLayout(message: chatList[index],);
+          return ChatMessageLayout(message: chatList[index], tripDocID: widget.tripDocID,);
         });
   }
 }

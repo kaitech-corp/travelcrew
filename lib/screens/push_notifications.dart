@@ -1,217 +1,229 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'authenticate/wrapper.dart';
+import 'dart:async';
+import 'dart:ui';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 
+typedef Future<dynamic> MessageHandler(Map<String, dynamic> message);
 
-class PushNotifications extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Notifications',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Notifications'),
+/// Setup method channel to handle Firebase Cloud Messages received while
+/// the Flutter app is not active. The handle for this method is generated
+/// and passed to the Android side so that the background isolate knows where
+/// to send background messages for processing.
+///
+/// Your app should never call this method directly, this is only for use
+/// by the firebase_messaging plugin to setup background message handling.
+void _fcmSetupBackgroundChannel(
+    {MethodChannel backgroundChannel = const MethodChannel(
+        'plugins.flutter.io/firebase_messaging_background')}) async {
+  // Setup Flutter state needed for MethodChannels.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // This is where the magic happens and we handle background events from the
+  // native portion of the plugin.
+  backgroundChannel.setMethodCallHandler((MethodCall call) async {
+    if (call.method == 'handleBackgroundMessage') {
+      final CallbackHandle handle =
+      CallbackHandle.fromRawHandle(call.arguments['handle']);
+      final Function handlerFunction =
+      PluginUtilities.getCallbackFromHandle(handle);
+      try {
+        await handlerFunction(
+            Map<String, dynamic>.from(call.arguments['message']));
+      } catch (e) {
+        print('Unable to handle incoming background message.');
+        print(e);
+      }
+      return Future<void>.value();
+    }
+  });
+
+  // Once we've finished initializing, let the native portion of the plugin
+  // know that it can start scheduling handling messages.
+  backgroundChannel.invokeMethod<void>('FcmDartService#initialized');
+}
+
+/// Implementation of the Firebase Cloud Messaging API for Flutter.
+///
+/// Your app should call [requestNotificationPermissions] first and then
+/// register handlers for incoming messages with [configure].
+class FirebaseMessaging {
+  factory FirebaseMessaging() => _instance;
+
+  @visibleForTesting
+  FirebaseMessaging.private(MethodChannel channel) : _channel = channel;
+
+  static final FirebaseMessaging _instance = FirebaseMessaging.private(
+      const MethodChannel('plugins.flutter.io/firebase_messaging'));
+
+  final MethodChannel _channel;
+
+  MessageHandler _onMessage;
+  MessageHandler _onBackgroundMessage;
+  MessageHandler _onLaunch;
+  MessageHandler _onResume;
+
+  /// On iOS, prompts the user for notification permissions the first time
+  /// it is called.
+  ///
+  /// Does nothing and returns null on Android.
+  FutureOr<bool> requestNotificationPermissions([
+    IosNotificationSettings iosSettings = const IosNotificationSettings(),
+  ]) {
+    if (defaultTargetPlatform != TargetPlatform.iOS) {
+      return null;
+    }
+    return _channel.invokeMethod<bool>(
+      'requestNotificationPermissions',
+      iosSettings.toMap(),
     );
+  }
+
+  final StreamController<IosNotificationSettings> _iosSettingsStreamController =
+  StreamController<IosNotificationSettings>.broadcast();
+
+  /// Stream that fires when the user changes their notification settings.
+  ///
+  /// Only fires on iOS.
+  Stream<IosNotificationSettings> get onIosSettingsRegistered {
+    return _iosSettingsStreamController.stream;
+  }
+
+  /// Sets up [MessageHandler] for incoming messages.
+  void configure({
+    MessageHandler onMessage,
+    MessageHandler onBackgroundMessage,
+    MessageHandler onLaunch,
+    MessageHandler onResume,
+  }) {
+    _onMessage = onMessage;
+    _onLaunch = onLaunch;
+    _onResume = onResume;
+    _channel.setMethodCallHandler(_handleMethod);
+    _channel.invokeMethod<void>('configure');
+    if (onBackgroundMessage != null) {
+      _onBackgroundMessage = onBackgroundMessage;
+      final CallbackHandle backgroundSetupHandle =
+      PluginUtilities.getCallbackHandle(_fcmSetupBackgroundChannel);
+      final CallbackHandle backgroundMessageHandle =
+      PluginUtilities.getCallbackHandle(_onBackgroundMessage);
+
+      if (backgroundMessageHandle == null) {
+        throw ArgumentError(
+          '''Failed to setup background message handler! `onBackgroundMessage`
+          should be a TOP-LEVEL OR STATIC FUNCTION and should NOT be tied to a
+          class or an anonymous function.''',
+        );
+      }
+
+      _channel.invokeMethod<bool>(
+        'FcmDartService#start',
+        <String, dynamic>{
+          'setupHandle': backgroundSetupHandle.toRawHandle(),
+          'backgroundHandle': backgroundMessageHandle.toRawHandle()
+        },
+      );
+    }
+  }
+
+  final StreamController<String> _tokenStreamController =
+  StreamController<String>.broadcast();
+
+  /// Fires when a new FCM token is generated.
+  Stream<String> get onTokenRefresh {
+    return _tokenStreamController.stream;
+  }
+
+  /// Returns the FCM token.
+  Future<String> getToken() async {
+    return await _channel.invokeMethod<String>('getToken');
+  }
+
+  /// Subscribe to topic in background.
+  ///
+  /// [topic] must match the following regular expression:
+  /// "[a-zA-Z0-9-_.~%]{1,900}".
+  Future<void> subscribeToTopic(String topic) {
+    return _channel.invokeMethod<void>('subscribeToTopic', topic);
+  }
+
+  /// Unsubscribe from topic in background.
+  Future<void> unsubscribeFromTopic(String topic) {
+    return _channel.invokeMethod<void>('unsubscribeFromTopic', topic);
+  }
+
+  /// Resets Instance ID and revokes all tokens. In iOS, it also unregisters from remote notifications.
+  ///
+  /// A new Instance ID is generated asynchronously if Firebase Cloud Messaging auto-init is enabled.
+  ///
+  /// returns true if the operations executed successfully and false if an error ocurred
+  Future<bool> deleteInstanceID() async {
+    return await _channel.invokeMethod<bool>('deleteInstanceID');
+  }
+
+  /// Determine whether FCM auto-initialization is enabled or disabled.
+  Future<bool> autoInitEnabled() async {
+    return await _channel.invokeMethod<bool>('autoInitEnabled');
+  }
+
+  /// Enable or disable auto-initialization of Firebase Cloud Messaging.
+  Future<void> setAutoInitEnabled(bool enabled) async {
+    await _channel.invokeMethod<void>('setAutoInitEnabled', enabled);
+  }
+
+  Future<dynamic> _handleMethod(MethodCall call) async {
+    switch (call.method) {
+      case "onToken":
+        final String token = call.arguments;
+        _tokenStreamController.add(token);
+        return null;
+      case "onIosSettingsRegistered":
+        _iosSettingsStreamController.add(IosNotificationSettings._fromMap(
+            call.arguments.cast<String, bool>()));
+        return null;
+      case "onMessage":
+        return _onMessage(call.arguments.cast<String, dynamic>());
+      case "onLaunch":
+        return _onLaunch(call.arguments.cast<String, dynamic>());
+      case "onResume":
+        return _onResume(call.arguments.cast<String, dynamic>());
+      default:
+        throw UnsupportedError("Unrecognized JSON message");
+    }
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class IosNotificationSettings {
+  const IosNotificationSettings({
+    this.sound = true,
+    this.alert = true,
+    this.badge = true,
+    this.provisional = false,
+  });
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  IosNotificationSettings._fromMap(Map<String, bool> settings)
+      : sound = settings['sound'],
+        alert = settings['alert'],
+        badge = settings['badge'],
+        provisional = settings['provisional'];
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  final bool sound;
+  final bool alert;
+  final bool badge;
+  final bool provisional;
 
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-
-  @override
-  void initState() {
-    super.initState();
-    var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    var initializationSettingsIOS = new IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidRecieveLocalNotification);
-
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) {
-        print('on message $message');
-        displayNotification(message);
-      },
-      onResume: (Map<String, dynamic> message) {
-        displayNotification(message);
-      },
-      onLaunch: (Map<String, dynamic> message) {
-        print('on launch $message');
-      },
-    );
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-    _firebaseMessaging.getToken().then((String token) {
-      assert(token != null);
-      print(token);
-    });
-  }
-
-  Future displayNotification(Map<String, dynamic> message) async{
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'channelid', 'flutterfcm', 'your channel description',
-        importance: Importance.Max, priority: Priority.High);
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      message['notification']['title'],
-      message['notification']['body'],
-      platformChannelSpecifics,
-      payload: 'hello',);
-  }
-  Future onSelectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-    await Fluttertoast.showToast(
-        msg: "Notification Clicked",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Wrapper(),
-      ),
-    );
-
-  }
-
-  Future onDidRecieveLocalNotification(
-      int id, String title, String body, String payload) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => new CupertinoAlertDialog(
-        title: new Text(title),
-        content: new Text(body),
-        actions: [
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: new Text('Ok'),
-            onPressed: () async {
-              Navigator.of(context, rootNavigator: true).pop();
-              await Fluttertoast.showToast(
-                  msg: "Notification Clicked",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.black54,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-  Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
-    if (message.containsKey('data')) {
-      // Handle data message
-      final dynamic data = message['data'];
-    }
-
-    if (message.containsKey('notification')) {
-      // Handle notification message
-      final dynamic notification = message['notification'];
-    }
-
-    // Or do other work.
-  }
-
-  void _incrementCounter() {
-    setState(() {
-
-      _counter++;
-    });
+  @visibleForTesting
+  Map<String, dynamic> toMap() {
+    return <String, bool>{
+      'sound': sound,
+      'alert': alert,
+      'badge': badge,
+      'provisional': provisional
+    };
   }
 
   @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-
-        title: Text(widget.title),
-        leading: IconButton(
-          icon: Icon(Icons.close),
-          onPressed: (){
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Wrapper(),
-              ),
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Column(
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
+  String toString() => 'PushNotificationSettings ${toMap()}';
 }

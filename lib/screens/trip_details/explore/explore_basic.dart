@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/app_bar/popup_menu.dart';
+import 'package:travelcrew/screens/app_bar/main_menu.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic_layout.dart';
 
 class ExploreBasic extends StatelessWidget {
@@ -19,8 +19,8 @@ class ExploreBasic extends StatelessWidget {
       child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            leading: PopupMenuButtons(),
-            title: Text('${trip.location}'.toUpperCase()),
+            leading: MainMenuButtons(),
+            title: Text('${trip.location}'.toUpperCase(), style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.close),
@@ -31,13 +31,14 @@ class ExploreBasic extends StatelessWidget {
 
             ],
             bottom: TabBar(
+              labelStyle: Theme.of(context).textTheme.subtitle1,
               isScrollable: true,
               tabs: [
                 for (final tab in tabs) Tab(text: tab),
               ],
             ),
           ),
-          body: ExploreBasicLayout(tripdetails: trip,),
+          body: ExploreBasicLayout(tripDetails: trip,),
       ),
     );
   }
