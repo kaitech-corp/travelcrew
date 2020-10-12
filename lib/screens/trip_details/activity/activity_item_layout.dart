@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
@@ -18,38 +17,41 @@ class ActivityItemLayout extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Center(
-      child: Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [BoxShadow(
-                  offset: Offset(0, 10),
-                  blurRadius: 33,
-                  color: Color(Colors.blueGrey.value).withOpacity(.84),
-                  spreadRadius: 5,
-                )
-                ]),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: InkWell(
+            splashColor: Colors.blue.withAlpha(30),
+            onTap: () {
+              if(activity.link.isNotEmpty) Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>
+                    WebViewScreen(activity.link, key)),
+              );
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width *.9,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [BoxShadow(
+                    offset: Offset(0, 10),
+                    blurRadius: 33,
+                    color: Color(Colors.blueGrey.value).withOpacity(.84),
+                    spreadRadius: 5,
+                  )
+                  ]),
+              child: Container(
+                margin: EdgeInsets.only(left: 10,top: 10, right: 10, bottom: 10),
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Text('${activity.activityType}',style: Theme.of(context).textTheme.headline1,),
+                      Text('${activity.activityType}',style: Theme.of(context).textTheme.headline4,maxLines: 2,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
-                      Text('Comment: ${activity.comment}',style: Theme.of(context).textTheme.subtitle1,),
+                      Text('Comment: ${activity.comment}',style: Theme.of(context).textTheme.subtitle1,maxLines: 5,overflow: TextOverflow.ellipsis,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
                       ),
@@ -57,155 +59,35 @@ class ActivityItemLayout extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Owner: ${activity.displayName}',style: Theme.of(context).textTheme.subtitle2,),
-                          Text('Votes: ${activity.vote}',style: Theme.of(context).textTheme.subtitle1,),
+                          Text('${activity.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                          Row(
+                            children: [
+                              if(activity.link.isNotEmpty) Icon(Icons.link),
+                              IconButton(
+                                  icon: favorite(userService.currentUserID),
+                                  onPressed: () {
+                                    String fieldID = activity.fieldID;
+                                    if (!activity.voters.contains(userService.currentUserID)) {
+                                      return CloudFunction().addVoterToActivity(trip.documentId, fieldID);
+                                      // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
+                                    } else {
+                                      return CloudFunction().removeVoterFromActivity(trip.documentId, fieldID);
+                                      // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
+                                    }
+                                  }
+                              ),
+                              Text('${activity.voters.length}',style: Theme.of(context).textTheme.subtitle1,),
+                              menuButton(context),
+                            ],
+                          ),
                         ],
                       ),
-                      Column (
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          if (activity.link?.isNotEmpty) Text('Link attached',style: Theme.of(context).textTheme.subtitle2,),
-                          if (activity.urlToImage?.isNotEmpty) ImageLayout(activity.urlToImage),
-                        ],
-                      )
-                    ],
-                  ),
+                    ]
                 ),
-                activity.uid == userService.currentUserID ? ButtonBar(
-                  children: <Widget>[
-                    FlatButton(
-                      child: favorite(userService.currentUserID),
-                      onPressed: () {
-                        String fieldID = activity.fieldID;
-                        if (!activity.voters.contains(userService.currentUserID)) {
-                         return CloudFunction().addVoteToActivity(trip.documentId, fieldID);
-                      // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
-                        } else {
-                          return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID);
-                      // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
-                        }
-                      }
-                    ),
-                    PopupMenuButton<String>(
-                      onSelected: (value){
-                        switch (value){
-                          case "Edit": {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>
-                                  EditActivity(activity: activity, trip: trip,)),
-                            );
-                          }
-                          break;
-                          case "View": {
-                              if(activity.link.isNotEmpty) Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    WebViewScreen(activity.link, key)),
-                              );
-                          }
-                          break;
-                          case "Delete": {
-                            CloudFunction().removeActivity(trip.documentId, activity.fieldID);
-                          }
-                          break;
-                          default: {
-                          }
-                          break;
-                        }
-                      },
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context) =>[
-                        const PopupMenuItem(
-                          value: 'Edit',
-                          child: ListTile(
-                            leading: Icon(Icons.edit),
-                            title: Text('Edit'),
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'View',
-                          child: ListTile(
-                            leading: Icon(Icons.people),
-                            title: Text('View Link'),
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'Delete',
-                          child: ListTile(
-                            leading: Icon(Icons.exit_to_app),
-                            title: Text('Delete Activity'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ):
-                ButtonBar(
-                  children: <Widget>[
-                    FlatButton(
-                        child: favorite(userService.currentUserID),
-                        onPressed: () {
-                          String fieldID = activity.fieldID;
-                          if (!activity.voters.contains(userService.currentUserID)) {
-                            return CloudFunction().addVoteToActivity(trip.documentId, fieldID);
-                            // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
-                          } else {
-                            return CloudFunction().removeVoteFromActivity(trip.documentId, fieldID);
-                            // CloudFunction().removeVoterFromActivity(trip.documentId, fieldID);
-                            // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
-                          }
-                        }
-                    ),
-                    PopupMenuButton<String>(
-                      onSelected: (value){
-                        switch (value){
-                          case "report":
-                            {
-                              TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
-                            }
-                            break;
-                          case "View": {
-                            if (activity.link.isNotEmpty) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    WebViewScreen(activity.link, key)),
-                              );
-                            }
-                          }
-                          break;
-                          default: {
-                          }
-                          break;
-                        }
-                      },
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context) =>[
-                        const PopupMenuItem(
-                          value: 'report',
-                          child: ListTile(
-                            leading: Icon(Icons.report),
-                            title: Text('Report'),
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'View',
-                          child: ListTile(
-                            leading: Icon(Icons.people),
-                            title: Text('View Link'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        )
     );
   }
   favorite(String uid) {
@@ -214,5 +96,102 @@ class ActivityItemLayout extends StatelessWidget {
     } else {
       return Icon(Icons.favorite_border);
     }
+  }
+
+  Widget menuButton(BuildContext context){
+    return activity.uid == userService.currentUserID ? PopupMenuButton<String>(
+      onSelected: (value){
+        switch (value){
+          case "Edit": {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                  EditActivity(activity: activity, trip: trip,)),
+            );
+          }
+          break;
+          case "View": {
+            if(activity.link.isNotEmpty) Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                  WebViewScreen(activity.link, key)),
+            );
+          }
+          break;
+          case "Delete": {
+            CloudFunction().removeActivity(trip.documentId, activity.fieldID);
+          }
+          break;
+          default: {
+          }
+          break;
+        }
+      },
+      padding: EdgeInsets.zero,
+      itemBuilder: (context) =>[
+        const PopupMenuItem(
+          value: 'Edit',
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Edit'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'View',
+          child: ListTile(
+            leading: Icon(Icons.people),
+            title: Text('View Link'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Delete',
+          child: ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Delete Activity'),
+          ),
+        ),
+      ],
+    ):
+    PopupMenuButton<String>(
+      onSelected: (value){
+        switch (value){
+          case "report":
+            {
+              TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
+            }
+            break;
+          case "View": {
+            if (activity.link.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>
+                    WebViewScreen(activity.link, key)),
+              );
+            }
+          }
+          break;
+          default: {
+          }
+          break;
+        }
+      },
+      padding: EdgeInsets.zero,
+      itemBuilder: (context) =>[
+        const PopupMenuItem(
+          value: 'report',
+          child: ListTile(
+            leading: Icon(Icons.report),
+            title: Text('Report'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'View',
+          child: ListTile(
+            leading: Icon(Icons.link),
+            title: Text('View Link'),
+          ),
+        ),
+      ],
+    );
   }
 }

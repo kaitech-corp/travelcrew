@@ -118,6 +118,7 @@ class _AddTripState extends State<AddTrip> {
                             children: [
                               TextFormField(
                                   enableInteractiveSelection: true,
+                                  textCapitalization: TextCapitalization.words,
                                   decoration:
                                   InputDecoration(labelText: 'Trip Name or Location'),
                                   // ignore: missing_return
@@ -134,6 +135,7 @@ class _AddTripState extends State<AddTrip> {
                               ),
                               TextFormField(
                                   enableInteractiveSelection: true,
+                                  textCapitalization: TextCapitalization.words,
                                   decoration:
                                   InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
                                   // ignore: missing_return
@@ -227,6 +229,7 @@ class _AddTripState extends State<AddTrip> {
                               ),
                               TextFormField(
                                 enableInteractiveSelection: true,
+                                textCapitalization: TextCapitalization.sentences,
                                 cursorColor: Colors.grey,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(),

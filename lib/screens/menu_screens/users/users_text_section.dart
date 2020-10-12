@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'user_profile_page.dart';
 
@@ -71,7 +72,7 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(25),
                       child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/images/blank_profile_picture.png',
+                        placeholder: profileImagePlaceholder,
                         image: widget.allUsers.urlToImage,
                         height: 75,
                         width: 75,
@@ -95,7 +96,6 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                           {
                             TravelCrewAlertDialogs().reportAlert(context: context, userProfile: widget.allUsers, type:'userAccount');
                           }
-
                           break;
                         default:
                           {
@@ -152,7 +152,7 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                 ),
                 widget.allUsers.followers.contains(userService.currentUserID) ? FlatButton(
                   child:  Text('Remove'),
-                  shape: Border.all(width: 1, color: Colors.blue),
+                  shape: Border.all(width: 1, color: Colors.red),
                   onPressed: () {
                     if(blockedList.contains(widget.allUsers.uid)){
                     } else {
@@ -164,7 +164,7 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                      },
                 ) : FlatButton(
                   child:  Text('Follow'),
-                  shape: Border.all(width: 1, color: Colors.blue),
+                  shape: Border.all(width: 1, color: Color(0xAA2D3D49)),
                   onPressed: () {
                     // Send a follow request notification to user
                     var message = 'Follow request from ${currentUserProfile.displayName}';

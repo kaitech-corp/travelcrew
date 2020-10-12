@@ -3,29 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 import '../../loading.dart';
 
 class ProfilePage extends StatefulWidget{
+
 
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 class _ProfilePageState extends State<ProfilePage> {
-  
+  double defaultSize = SizeConfig.defaultSize;
   @override
   Widget build(BuildContext context) {
-    File urlToImage;
-    File _image;
-    Future getImage() async {
-      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
-      setState(() {
-        _image = image;
-        urlToImage = _image;
-      });
-    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -50,45 +46,56 @@ class _ProfilePageState extends State<ProfilePage> {
           if(snapshot.hasData) {
             UserProfile currentUserProfile = snapshot.data;
             return SingleChildScrollView(
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.fromLTRB(15, 50, 0, 50),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Text(currentUserProfile.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
-                  Text('${currentUserProfile.firstName} ${currentUserProfile.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
-                  currentUserProfile.email.isEmpty ? Padding(padding: EdgeInsets.only(top: 2),) : Text('Email: ${currentUserProfile.email}'),
-                  Container(
-                    width: 250,
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                        child: currentUserProfile.urlToImage != null ? Image.network(currentUserProfile.urlToImage, height: 250, width: 250, fit: BoxFit.cover,) : _image == null
-                            ? Text('No image selected.')
-                            : Image.file(_image),
-                    ),
-                  ),
-                  Container(
-                    width: 30,
-                    child: RaisedButton(
-                      shape: CircleBorder(
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    ClipPath(
+                      clipper: CustomShape(),
+                      child: Container(
+                        height: defaultSize.toDouble() * 15.0, //150
+                        // color: Color(0xAA2D3D49),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(spaceImage),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                      onPressed: () {
-                        getImage();
-                      },
-//                              tooltip: 'Pick Image',
-                      child: Icon(Icons.add_a_photo),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20.0),
-                  ),
-                ],
+                    Container(
+                      margin: EdgeInsets.only(bottom: defaultSize), //10
+                      height: defaultSize * 30, //140
+                      width: defaultSize * 30,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: defaultSize * 0.8, //8
+                        ),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: currentUserProfile.urlToImage.isNotEmpty ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder)
+                              
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                    ),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(currentUserProfile.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.black54,),),
+                          Text('${currentUserProfile.firstName} ${currentUserProfile.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.black54),),
+                          currentUserProfile.email.isEmpty ? Padding(padding: EdgeInsets.only(top: 2),) : Text('Email: ${currentUserProfile.email}'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
           );} else {
             return Loading();
           }
@@ -98,3 +105,4 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
 }
+

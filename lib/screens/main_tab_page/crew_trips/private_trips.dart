@@ -17,22 +17,30 @@ class PrivateTripList extends StatelessWidget {
   }
 
   Widget privateTrips(String uid) {
-    return FutureBuilder(
-      future: DatabaseService(uid: uid).privateTripList(),
-      builder: (context, trips) {
-        if (trips.hasData) {
-          return Container(
-              child: ListView.builder(
-                itemCount: trips.data.length,
-                itemBuilder: (context, index) {
-                  Trip trip = trips.data[index];
-                  return TappableCrewTripTile(trip: trip,);
-                },
-              ));
-        } else {
-          return Loading();
-        }
-      },
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/space3.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: FutureBuilder(
+        future: DatabaseService(uid: uid).privateTripList(),
+        builder: (context, trips) {
+          if (trips.hasData) {
+            return Container(
+                child: ListView.builder(
+                  itemCount: trips.data.length,
+                  itemBuilder: (context, index) {
+                    Trip trip = trips.data[index];
+                    return TappableCrewTripTile(trip: trip,);
+                  },
+                ));
+          } else {
+            return Loading();
+          }
+        },
+      ),
     );
   }
 }

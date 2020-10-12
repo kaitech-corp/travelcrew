@@ -12,7 +12,7 @@ class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
 
     return AppBar(
       centerTitle: true,
-      leading: MainMenuButtons(),
+      // leading: MainMenuButtons(),
       title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
       actions: <Widget>[
         IconButton(

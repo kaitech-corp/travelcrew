@@ -114,6 +114,7 @@ class ExploreMemberLayout extends StatelessWidget{
                   child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,),
                 ),
                 ListWidget(tripDetails: tripDetails,),
+                Container(height: 1,color: Colors.grey,),
                 BringListToDisplay(documentID: tripDetails.documentId,),
               ],
             ),

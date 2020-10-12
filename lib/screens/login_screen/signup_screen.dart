@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -56,9 +57,11 @@ class _SignupScreenState extends State {
                           children: [
                             TextFormField(
                                 style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                textCapitalization: TextCapitalization.words,
                                 decoration:
                                 InputDecoration(labelText: 'First Name',
                                 labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                 // ignore: missing_return
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -69,9 +72,11 @@ class _SignupScreenState extends State {
                                     setState(() => _user.firstName = val)),
                             TextFormField(
                               style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                              textCapitalization: TextCapitalization.words,
                               decoration:
                               InputDecoration(labelText: 'Last Name',
                               labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                              inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
                               validator: (value) {
                                 // ignore: missing_return
@@ -84,6 +89,7 @@ class _SignupScreenState extends State {
                             ),
                             TextFormField(
                                 style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                textCapitalization: TextCapitalization.words,
                                 decoration:
                                 InputDecoration(labelText: 'Display Name',
                                 labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
@@ -101,6 +107,7 @@ class _SignupScreenState extends State {
                               decoration:
                               InputDecoration(labelText: 'Email',
                               labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                              inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
                               validator: (value) {
                                 if (value.isEmpty) {

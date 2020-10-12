@@ -51,10 +51,12 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       length: 3,
       child: Scaffold(
         appBar: TravelCrewAppBar(bottomTabBar: true,),
+        drawer: MenuDrawer(),
         body: Center(
               child: _widgetOptions.elementAt(_selectedIndex),
             ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.black,
 
           items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -88,9 +90,9 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       ),
     ):
     Scaffold(
+      drawer: MenuDrawer(),
       appBar: AppBar(
         centerTitle: true,
-        leading: MainMenuButtons(),
         title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
         actions: <Widget>[
           IconButton(

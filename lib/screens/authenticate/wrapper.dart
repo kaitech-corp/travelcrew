@@ -6,13 +6,14 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/screens/login_screen/complete_profile_page.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class Wrapper extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
-
+    SizeConfig().init(context);
 //    dynamic result;
 //    if (user != null) {
 //      result = DatabaseService(uid: user.uid).checkUserHasProfile();

@@ -17,33 +17,41 @@ class _FavoriteTripState extends State<FavoriteTripList> {
     final trips = Provider.of<List<Trip>>(context);
 
 
-    return ListView.builder(
-        itemCount: trips != null ? trips.length : 0,
-        itemBuilder: (context, index){
-          var item = trips[index];
-          return Dismissible(
-            // Show a red background as the item is swiped away.
-            background: Container(color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Icon(Icons.delete, color: Colors.white,),
-                  Icon(Icons.delete, color: Colors.white,)
-                ],
-              ),),
-            key: Key(item.documentId),
-            onDismissed: (direction) {
-              setState(() {
-                trips.removeAt(index);
-                CloudFunction().removeFavoriteFromTrip(item.documentId);
-              });
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/space3.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: ListView.builder(
+          itemCount: trips != null ? trips.length : 0,
+          itemBuilder: (context, index){
+            var item = trips[index];
+            return Dismissible(
+              // Show a red background as the item is swiped away.
+              background: Container(color: Colors.red,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Icon(Icons.delete, color: Colors.white,),
+                    Icon(Icons.delete, color: Colors.white,)
+                  ],
+                ),),
+              key: Key(item.documentId),
+              onDismissed: (direction) {
+                setState(() {
+                  trips.removeAt(index);
+                  CloudFunction().removeFavoriteFromTrip(item.documentId);
+                });
 
-              Scaffold
-                  .of(context)
-                  .showSnackBar(SnackBar(content: Text("Tripped removed from favorites.")));
-            },
-            child: FavoriteTappableTripCard(trip: trips[index]),
-          );
-        });
+                Scaffold
+                    .of(context)
+                    .showSnackBar(SnackBar(content: Text("Tripped removed from favorites.")));
+              },
+              child: FavoriteTappableTripCard(trip: trips[index]),
+            );
+          }),
+    );
   }
 }

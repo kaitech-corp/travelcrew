@@ -24,6 +24,7 @@ class _ListWidgetState extends State<ListWidget> {
         children: [
           BringingList(documentID: widget.tripDetails.documentId,),
           NeedList(documentID: widget.tripDetails.documentId,),
+          CustomList(documentID: widget.tripDetails.documentId,)
         ],
       )
     ];
@@ -41,7 +42,7 @@ class _ListWidgetState extends State<ListWidget> {
         showBottomSheet(
           context: context,
           builder: (context) => DefaultTabController(
-            length: 2,
+            length: 3,
             child: Scaffold(
               appBar: TabBar(
                 labelStyle: Theme.of(context).textTheme.subtitle1,
@@ -49,9 +50,11 @@ class _ListWidgetState extends State<ListWidget> {
                 tabs: <Widget>[
                   Tab(text: 'Bringing'),
                   Tab(text: 'Need',),
+                  Tab(text: 'Custom',)
                 ],
               ),
               body: Container(
+                padding: EdgeInsets.all(10),
                 height: MediaQuery.of(context).size.height,
                 child: _widgetOptions.elementAt(_selectedIndex),
               ),

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class UserProfilePage extends StatelessWidget{
   UserProfile user;
   var userService = locator<UserService>();
+  double defaultSize = SizeConfig.defaultSize;
 
   UserProfilePage({this.user});
 
   Widget build(BuildContext context) {
+
 
     return Scaffold(
       appBar: AppBar(
@@ -17,23 +22,46 @@ class UserProfilePage extends StatelessWidget{
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
-          padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
-              Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
+              ClipPath(
+                clipper: CustomShape(),
+                child: Container(
+                  height: defaultSize.toDouble() * 15.0, //150
+                  // color: Color(0xAA2D3D49),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(spaceImage),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
               Container(
-                padding: EdgeInsets.all(10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
-                  child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/blank_profile_picture.png',
-                    image: user.urlToImage,
-                  )
-//                    user.urlToImage != null ? Image.network(user.urlToImage) : Text('No image available.')
+                margin: EdgeInsets.only(bottom: defaultSize), //10
+                height: defaultSize * 30, //140
+                width: defaultSize * 30,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: defaultSize * 0.8, //8
+                  ),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder)
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0),
+              ),
+              Center(
+                child: Column(
+                  children: [
+                    Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
+                    Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
+                  ],
                 ),
               ),
             ],

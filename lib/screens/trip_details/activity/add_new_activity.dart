@@ -62,6 +62,7 @@ class _AddNewActivityState extends State<AddNewActivity> {
                         setState(() => activityType = val);
                       },
                       enableInteractiveSelection: true,
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "snorkeling, festival, restuarant, etc",
@@ -101,35 +102,37 @@ class _AddNewActivityState extends State<AddNewActivity> {
                         setState(() => comment = val);
                       },
                       enableInteractiveSelection: true,
+                      textCapitalization: TextCapitalization.words,
                       obscureText: false,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Description",
                       ),
+                      maxLines: 5,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                      child: _image == null
-                          ? Text('No image selected.')
-                          : Image.file(_image),
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width,
-                        maxHeight: 300,
-                      ),
-                    ),
-                    RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      onPressed: () {
-                        getImage();
-                      },
-//                              tooltip: 'Pick Image',
-                      child: Icon(Icons.add_a_photo),
-                    ),
+//                     Padding(
+//                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+//                     ),
+//                     Container(
+//                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+//                       child: _image == null
+//                           ? Text('No image selected.')
+//                           : Image.file(_image),
+//                       constraints: BoxConstraints(
+//                         maxWidth: MediaQuery.of(context).size.width,
+//                         maxHeight: 300,
+//                       ),
+//                     ),
+//                     RaisedButton(
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(20),
+//                       ),
+//                       onPressed: () {
+//                         getImage();
+//                       },
+// //                              tooltip: 'Pick Image',
+//                       child: Icon(Icons.add_a_photo),
+//                     ),
                     const SizedBox(height: 30),
                     Container(
                       padding: const EdgeInsets.symmetric(

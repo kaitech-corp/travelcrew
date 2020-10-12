@@ -28,20 +28,20 @@ class FavoriteTappableTripCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: [BoxShadow(
-                offset: Offset(0, 10),
-                blurRadius: 33,
-                color: Color(Colors.blueGrey.value).withOpacity(.84),
-                spreadRadius: 5,
-              )
-              ]),
+              // boxShadow: [BoxShadow(
+              //   offset: Offset(0, 10),
+              //   blurRadius: 33,
+              //   color: Color(Colors.blueGrey.value).withOpacity(.84),
+              //   spreadRadius: 5,
+              // )]
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
 
               ListTile(
-                title: Text((trip.location != '' ? (trip.location).toUpperCase() : 'Trip Name'),style: Theme.of(context).textTheme.headline1,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                title: Text((trip.location != '' ? (trip.location).toUpperCase() : 'Trip Name'),style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 subtitle: Text("Travel Type: ${trip.travelType}",
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 trailing: IconButton(
@@ -61,7 +61,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -69,8 +69,8 @@ class FavoriteTappableTripCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Start Date: ${trip.startDate}',style: Theme.of(context).textTheme.subtitle1,),
-                        Text('End Date: ${trip.endDate}',style: Theme.of(context).textTheme.subtitle1,)
+                        Text('Start Date: ${trip.startDate}',style: Theme.of(context).textTheme.subtitle2,),
+                        Text('End Date: ${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,)
                       ],
                     ),
                   ],

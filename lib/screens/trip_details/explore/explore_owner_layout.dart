@@ -147,6 +147,8 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       : "No description provided",style: Theme.of(context).textTheme.subtitle1,),
                 ),
                 ListWidget(tripDetails: widget.tripDetails,),
+                Padding(padding: EdgeInsets.only(top: 5),),
+                Container(height: 1,color: Colors.grey,),
                 BringListToDisplay(documentID: widget.tripDetails.documentId,),
 
               ],

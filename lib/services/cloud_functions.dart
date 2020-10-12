@@ -34,9 +34,6 @@ class CloudFunction {
       'ownerID': userService.currentUserID,
       'type': type,
       'urlToImage': urlToImage
-    }).then((value) =>
-    {
-      print('Feedback submitted.'),
     });
   }
   // Give feedback
@@ -45,9 +42,6 @@ class CloudFunction {
         functionName: 'giveFeedback');
     giveFeedback({
       'message': message,
-    }).then((value) =>
-    {
-      print('Feedback submitted.'),
     });
   }
 
@@ -96,9 +90,6 @@ class CloudFunction {
     functionData({
       'docID': docID,
       'uid': uid,
-    }).then((value) =>
-    {
-      print('Added Member')
     });
   }
   void addPrivateMember(String docID, String uid) async {
@@ -107,9 +98,6 @@ class CloudFunction {
     functionData({
       'docID': docID,
       'uid': uid,
-    }).then((value) =>
-    {
-      print('Added Member')
     });
   }
 
@@ -138,9 +126,6 @@ class CloudFunction {
       'tripDocID': tripDocID,
       'userUID': userUID,
       'ispublic': ispublic,
-    }).then((value) =>
-    {
-      print('Removed Member')
     });
   }
   void removeLodging(String docID, String fieldID) async {
@@ -149,9 +134,6 @@ class CloudFunction {
     functionData({
       'docID': docID,
       'fieldID': fieldID,
-    }).then((value) =>
-    {
-      print('Removed Lodging')
     });
   }
 
@@ -161,9 +143,6 @@ class CloudFunction {
     functionData({
       'docID': docID,
       'fieldID': fieldID,
-    }).then((value) =>
-    {
-      print('Removed Lodging')
     });
   }
 
@@ -181,24 +160,17 @@ class CloudFunction {
     functionData({
       'docID': docID,
       'uid': userService.currentUserID,
-    }).then((value) =>
-    {
-      print('Removed from favorite list')
     });
   }
 
-  void addVoteToActivity(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addVoteToActivity');
-    functionData({
-      'docID': docID,
-      'fieldID': fieldID,
-    }).then((value) =>
-    {
-      print('Added vote to Activity'),
-      addVoterToActivity(docID, fieldID)
-    });
-  }
+  // void addVoteToActivity(String docID, String fieldID) async {
+  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+  //       functionName: 'addVoteToActivity');
+  //   functionData({
+  //     'docID': docID,
+  //     'fieldID': fieldID,
+  //   });
+  // }
 
   void addVoterToActivity(String docID, String fieldID) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
@@ -207,24 +179,17 @@ class CloudFunction {
       'docID': docID,
       'fieldID': fieldID,
       'uid': userService.currentUserID,
-    }).then((value) =>
-    {
-      print('Added user to voter list')
     });
   }
 
-  void removeVoteFromActivity(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeVoteFromActivity');
-    functionData({
-      'docID': docID,
-      'fieldID': fieldID,
-    }).then((value) =>
-    {
-      print('removed vote from Activity'),
-      removeVoterFromActivity(docID, fieldID)
-    });
-  }
+  // void removeVoteFromActivity(String docID, String fieldID) async {
+  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+  //       functionName: 'removeVoteFromActivity');
+  //   functionData({
+  //     'docID': docID,
+  //     'fieldID': fieldID,
+  //   });
+  // }
 
   // void removeVoterFromActivity(String docID, String field )
   void removeVoterFromActivity(String docID, String fieldID) async {
@@ -234,24 +199,17 @@ class CloudFunction {
       'docID': docID,
       'fieldID': fieldID,
       'uid': userService.currentUserID,
-    }).then((value) =>
-    {
-      print('Removed user from voter list')
     });
   }
 
-  void addVoteToLodging(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addVoteToLodging');
-    functionData({
-      'docID': docID,
-      'fieldID': fieldID,
-    }).then((value) =>
-    {
-      print('Added vote to Lodging')
-
-    });
-  }
+  // void addVoteToLodging(String docID, String fieldID) async {
+  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+  //       functionName: 'addVoteToLodging');
+  //   functionData({
+  //     'docID': docID,
+  //     'fieldID': fieldID,
+  //   });
+  // }
 
   void addVoterToLodging(String docID, String fieldID, String uid) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
@@ -260,23 +218,17 @@ class CloudFunction {
       'docID': docID,
       'fieldID': fieldID,
       'uid': uid,
-    }).then((value) =>
-    {
-      print('Added user to voter list')
     });
   }
 
-  void removeVoteFromLodging(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeVoteFromLodging');
-    functionData({
-      'docID': docID,
-      'fieldID': fieldID,
-    }).then((value) =>
-    {
-      print('removed vote from Lodging')
-    });
-  }
+  // void removeVoteFromLodging(String docID, String fieldID) async {
+  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+  //       functionName: 'removeVoteFromLodging');
+  //   functionData({
+  //     'docID': docID,
+  //     'fieldID': fieldID,
+  //   });
+  // }
 
   void removeVoterFromLodging(String docID, String fieldID, String uid) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
@@ -285,9 +237,6 @@ class CloudFunction {
       'docID': docID,
       'fieldID': fieldID,
       'uid': uid,
-    }).then((value) =>
-    {
-      print('Removed user from voter list')
     });
   }
 
@@ -296,6 +245,13 @@ class CloudFunction {
     // Add current user's ID to user's following list
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'followUser');
+    functionData({
+      'userUID': userUID,
+    });
+  }
+  void followBack(String userUID) async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'followBack');
     functionData({
       'userUID': userUID,
     });

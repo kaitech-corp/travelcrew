@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -55,6 +56,8 @@ class _SignupScreenState extends State {
                                     TextFormField(
                                         decoration:
                                         InputDecoration(labelText: 'First Name'),
+                                        textCapitalization: TextCapitalization.words,
+                                        inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                         initialValue: user.firstName,
                                         // ignore: missing_return
                                         validator: (value) {
@@ -67,6 +70,8 @@ class _SignupScreenState extends State {
                                     TextFormField(
                                       decoration:
                                       InputDecoration(labelText: 'Last Name'),
+                                      textCapitalization: TextCapitalization.words,
+                                      inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                       initialValue: user.lastName,
                                       // ignore: missing_return
                                       validator: (value) {

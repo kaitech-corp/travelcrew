@@ -270,4 +270,52 @@ class TravelCrewAlertDialogs {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('User has been unblocked.')));
   }
+
+  Future<void> submitFeedbackAlert(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Feedback Submitted!'),
+          content: const Text(
+              'We thank you for your feedback.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.pop(context);
+                // Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> followBackAlert(BuildContext context, String userUID) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text('Follow back?',style: Theme.of(context).textTheme.subtitle1,)),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                CloudFunction().followBack(userUID);
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

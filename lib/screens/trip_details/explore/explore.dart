@@ -38,7 +38,7 @@ class Explore extends StatelessWidget {
 
           ],
           bottom: TabBar(
-            labelStyle: Theme.of(context).textTheme.subtitle1,
+            labelStyle: Theme.of(context).textTheme.subtitle2,
             isScrollable: true,
             tabs: [
               Tab(text: 'Explore',

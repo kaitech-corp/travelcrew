@@ -30,7 +30,6 @@ class UserProfileService {
   UserPublicProfile profile;
 
   Future<UserPublicProfile> currentUserProfile() async {
-    print('initiated');
     var ref = await FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).get();
     if(ref.exists){
       Map<String, dynamic> data = ref.data();
@@ -53,4 +52,38 @@ class UserProfileService {
     currentUserProfile().then((value) => profile = value);
     return profile;
   }
+}
+class UserProfileServiceStream {
+
+  var userService = locator<UserService>();
+  UserPublicProfile profile;
+
+  UserProfile _userListFromSnapshot(DocumentSnapshot snapshot){
+    if (snapshot.exists)
+    {
+
+      Map<String, dynamic> data = snapshot.data();
+      profile = UserPublicProfile(
+        displayName: data['displayName'] ?? '',
+        email: data['email'] ?? '',
+        following: List<String>.from(data['following']) ?? [''],
+        followers: List<String>.from(data['followers']) ?? [''],
+        firstName: data['firstName'] ?? '',
+        lastName: data['lastName'] ?? '',
+        uid: data['uid'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
+      );
+
+    }
+
+  }
+  // get all users
+  Stream<UserProfile> get userList {
+    return FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).snapshots()
+        .map(_userListFromSnapshot);
+  }
+
+  // UserPublicProfile currentUserProfileDirect(){
+  //   return userList;
+  // }
 }

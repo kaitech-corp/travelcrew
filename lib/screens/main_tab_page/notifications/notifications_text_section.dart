@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/stream_to_explore.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -12,6 +13,7 @@ class NotificationsTextSection extends StatelessWidget{
   NotificationsTextSection({this.notification});
 
   var userService = locator<UserService>();
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +89,9 @@ class NotificationsTextSection extends StatelessWidget{
             String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
             CloudFunction().removeNotificationData(fieldID);
-            // DatabaseService(uid: userService.currentUserID).followUser(notification.documentID);
-            // DatabaseService(uid: userService.currentUserID).removeNotificationData(fieldID);
-            _showDialog(context);
+            if (!currentUserProfile.following.contains(notification.uid)) {
+              TravelCrewAlertDialogs().followBackAlert(context, notification.uid);
+            }
           },
         ),
         onTap: (){
@@ -123,7 +125,6 @@ class NotificationsTextSection extends StatelessWidget{
             String fieldID = notification.fieldID;
             CloudFunction().joinTripInvite(notification.documentID, notification.uid, notification.ispublic);
             CloudFunction().removeNotificationData(fieldID);
-            // DatabaseService(uid: userService.currentUserID).removeNotificationData(fieldID);
             _showDialog(context);
           },
         ),

@@ -111,6 +111,7 @@ class _EditTripDataState extends State<EditTripData> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               TextFormField(
+                                  textCapitalization: TextCapitalization.words,
                                   decoration:
                                   InputDecoration(labelText: 'Trip Name or Location'),
                                   initialValue: location,
@@ -126,6 +127,7 @@ class _EditTripDataState extends State<EditTripData> {
                                   }
                               ),
                               TextFormField(
+                                  textCapitalization: TextCapitalization.words,
                                   decoration:
                                   InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
                                   initialValue: travelType,
@@ -223,6 +225,7 @@ class _EditTripDataState extends State<EditTripData> {
                                 cursorColor: Colors.grey,
                                 initialValue: comment,
                                 maxLines: 3,
+                                textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     hintText: 'Add a short description.'),

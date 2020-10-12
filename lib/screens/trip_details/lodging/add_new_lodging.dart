@@ -27,18 +27,18 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   String lodgingType = '';
   String comment = '';
   String link = '';
-  File _image;
+  // File _image;
   File urlToImage;
-  final ImagePicker _picker = ImagePicker();
-
-  Future getImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
-
-    setState(() {
-      _image = File(image.path);
-      urlToImage = _image;
-    });
-  }
+  // final ImagePicker _picker = ImagePicker();
+  //
+  // Future getImage() async {
+  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+  //
+  //   setState(() {
+  //     _image = File(image.path);
+  //     urlToImage = _image;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +68,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   border: OutlineInputBorder(),
                   labelText: "Hotel, Airbnb, etc",
                 ),
+                textCapitalization: TextCapitalization.words,
                 // ignore: missing_return
                 validator: (value) {
                   if (value.isEmpty) {
@@ -104,6 +105,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   setState(() => comment = val);
                 },
                 enableInteractiveSelection: true,
+                textCapitalization: TextCapitalization.words,
                 obscureText: false,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -113,26 +115,26 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: _image == null
-                        ? Text('No image selected.')
-                        : Image.file(_image),
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width,
-                      maxHeight: 300,
-                    ),
-                  ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    onPressed: () {
-                      getImage();
-                    },
-//                              tooltip: 'Pick Image',
-                    child: Icon(Icons.add_a_photo),
-                  ),
+//                   Container(
+//                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+//                     child: _image == null
+//                         ? Text('No image selected.')
+//                         : Image.file(_image),
+//                     constraints: BoxConstraints(
+//                       maxWidth: MediaQuery.of(context).size.width,
+//                       maxHeight: 300,
+//                     ),
+//                   ),
+//                   RaisedButton(
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(20),
+//                     ),
+//                     onPressed: () {
+//                       getImage();
+//                     },
+// //                              tooltip: 'Pick Image',
+//                     child: Icon(Icons.add_a_photo),
+//                   ),
               const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(

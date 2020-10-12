@@ -509,6 +509,7 @@ class DatabaseService {
           location: data['location'] ?? '',
           ownerID: data['ownerID'] ?? '',
           startDate: data['startDate'] ?? '',
+          startDateTimeStamp: data['startDateTimeStamp'],
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
@@ -533,6 +534,7 @@ class DatabaseService {
         location: data['location'] ?? '',
         ownerID: data['ownerID'] ?? '',
         startDate: data['startDate'] ?? '',
+        startDateTimeStamp: data['startDateTimeStamp'],
         travelType: data['travelType'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
       );
@@ -557,10 +559,12 @@ class DatabaseService {
         location: data['location'] ?? '',
         ownerID: data['ownerID'] ?? '',
         startDate: data['startDate'] ?? '',
+        startDateTimeStamp: data['startDateTimeStamp'],
         travelType: data['travelType'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
       );
     }).toList();
+    trips.sort((a,b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
 
     return trips;
   }
@@ -589,6 +593,7 @@ class DatabaseService {
           location: data['location'] ?? '',
           ownerID: data['ownerID'] ?? '',
           startDate: data['startDate'] ?? '',
+          startDateTimeStamp: data['startDateTimeStamp'],
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
@@ -616,22 +621,22 @@ class DatabaseService {
         'voters': [],
     });
 
-    if (urlToImage != null) {
-      String urlforImage;
-      StorageReference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('lodging/$key');
-      StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-      await uploadTask.onComplete;
-      print('File Uploaded');
-
-      return await addNewLodgingRef.update({
-        "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-          urlforImage = fileURL;
-          return urlforImage;
-        })
-      });
-    }
+    // if (urlToImage != null) {
+    //   String urlforImage;
+    //   StorageReference storageReference = FirebaseStorage.instance
+    //       .ref()
+    //       .child('lodging/$key');
+    //   StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+    //   await uploadTask.onComplete;
+    //   print('File Uploaded');
+    //
+    //   return await addNewLodgingRef.update({
+    //     "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
+    //       urlforImage = fileURL;
+    //       return urlforImage;
+    //     })
+    //   });
+    // }
   }
 
   // Edit Lodging
@@ -655,26 +660,26 @@ class DatabaseService {
       _analyticsService.writeError('Error editing lodging:  ${e.toString()}');
     }
 
-    try {
-      if (urlToImage != null) {
-        String urlforImage;
-        StorageReference storageReference = FirebaseStorage.instance
-            .ref()
-            .child('lodging/$fieldID');
-        StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-        await uploadTask.onComplete;
-        print('File Uploaded');
-
-        return await editLodgingRef.update({
-          "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-            urlforImage = fileURL;
-            return urlforImage;
-          })
-        });
-      }
-    } catch (e) {
-      print('Error updating lodging image: ${e.toString()}');
-    }
+    // try {
+    //   if (urlToImage != null) {
+    //     String urlforImage;
+    //     StorageReference storageReference = FirebaseStorage.instance
+    //         .ref()
+    //         .child('lodging/$fieldID');
+    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+    //     await uploadTask.onComplete;
+    //     print('File Uploaded');
+    //
+    //     return await editLodgingRef.update({
+    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
+    //         urlforImage = fileURL;
+    //         return urlforImage;
+    //       })
+    //     });
+    //   }
+    // } catch (e) {
+    //   print('Error updating lodging image: ${e.toString()}');
+    // }
   }
 
 
@@ -703,26 +708,26 @@ class DatabaseService {
       _analyticsService.writeError('Error adding new activity:  ${e.toString()}');
     }
 
-    try {
-      if (urlToImage != null) {
-        String urlforImage;
-        StorageReference storageReference = FirebaseStorage.instance
-            .ref()
-            .child('activity/$key');
-        StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-        await uploadTask.onComplete;
-        print('File Uploaded');
-
-        return await addNewActivityRef.update({
-          "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-            urlforImage = fileURL;
-            return urlforImage;
-          })
-        });
-      }
-    } catch (e) {
-      print('Error updating activity image: ${e.toString()}');
-    }
+    // try {
+    //   if (urlToImage != null) {
+    //     String urlforImage;
+    //     StorageReference storageReference = FirebaseStorage.instance
+    //         .ref()
+    //         .child('activity/$key');
+    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+    //     await uploadTask.onComplete;
+    //     print('File Uploaded');
+    //
+    //     return await addNewActivityRef.update({
+    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
+    //         urlforImage = fileURL;
+    //         return urlforImage;
+    //       })
+    //     });
+    //   }
+    // } catch (e) {
+    //   print('Error updating activity image: ${e.toString()}');
+    // }
   }
 
   // Edit activity
@@ -746,29 +751,47 @@ class DatabaseService {
       _analyticsService.writeError('Error editing activity:  ${e.toString()}');
     }
 
-    try {
-      if (urlToImage != null) {
-        String urlforImage;
-        StorageReference storageReference = FirebaseStorage.instance
-            .ref()
-            .child('activity/$fieldID');
-        StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-        await uploadTask.onComplete;
-        print('File Uploaded');
-
-        return await addNewActivityRef.update({
-          "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-            urlforImage = fileURL;
-            return urlforImage;
-          })
-        });
-      }
-    } catch (e) {
-      print('Error updating activity image: ${e.toString()}');
-    }
+    // try {
+    //   if (urlToImage != null) {
+    //     String urlforImage;
+    //     StorageReference storageReference = FirebaseStorage.instance
+    //         .ref()
+    //         .child('activity/$fieldID');
+    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+    //     await uploadTask.onComplete;
+    //     print('File Uploaded');
+    //
+    //     return await addNewActivityRef.update({
+    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
+    //         urlforImage = fileURL;
+    //         return urlforImage;
+    //       })
+    //     });
+    //   }
+    // } catch (e) {
+    //   print('Error updating activity image: ${e.toString()}');
+    // }
   }
-
-  //Get Activity List
+  //Get Lodging items
+  List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
+    List<LodgingData> lodgingList = snapshot.docs.map((doc){
+      Map<String, dynamic> data = doc.data();
+      return LodgingData(
+        comment: data['comment'] ?? '',
+        lodgingType: data['lodgingType'] ?? '',
+        displayName: data['displayName'] ?? '',
+        fieldID: data['fieldID'] ?? '',
+        link: data['link'] ?? '',
+        uid: data['uid'] ?? '',
+        urlToImage: data['urlToImage'] ?? '',
+        vote: data['vote'] ?? 0,
+        voters: List<String>.from(data['voters']) ?? [''],
+      );
+    }).toList();
+    lodgingList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
+    return lodgingList;
+  }
+  //Get Lodging List
   Stream<List<LodgingData>> get lodgingList {
     return lodgingCollection.doc(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
   }
@@ -788,7 +811,7 @@ class DatabaseService {
         voters: List<String>.from(data['voters']) ?? [''],
       );
     }).toList();
-    activitiesList.sort((a,b) => b.vote.compareTo(a.vote));
+    activitiesList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
     return activitiesList;
   }
 
@@ -908,25 +931,7 @@ class DatabaseService {
     }
   }
 
-  //Get Lodging items
-  List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
-    List<LodgingData> lodgingList = snapshot.docs.map((doc){
-      Map<String, dynamic> data = doc.data();
-      return LodgingData(
-        comment: data['comment'] ?? '',
-        lodgingType: data['lodgingType'] ?? '',
-        displayName: data['displayName'] ?? '',
-        fieldID: data['fieldID'] ?? '',
-        link: data['link'] ?? '',
-        uid: data['uid'] ?? '',
-        urlToImage: data['urlToImage'] ?? '',
-        vote: data['vote'] ?? 0,
-        voters: List<String>.from(data['voters']) ?? [''],
-      );
-    }).toList();
-    lodgingList.sort((a,b) => b.vote.compareTo(a.vote));
-    return lodgingList;
-  }
+
 
 
 

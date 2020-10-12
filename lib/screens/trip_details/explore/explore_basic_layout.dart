@@ -3,6 +3,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
@@ -22,9 +23,9 @@ class ExploreBasicLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripDetails.urlToImage != "" ? tripDetails.urlToImage : "assets/images/travelPics.png"),
+                ImageLayout(tripDetails.urlToImage != "" ? tripDetails.urlToImage : travelImage),
                 ListTile(
-                  title: Text('${tripDetails.location}'.toUpperCase(),style: Theme.of(context).textTheme.headline1,),
+                  title: Text('${tripDetails.location}'.toUpperCase(),style: TextStyle(fontSize: 20.0)),
                   subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                   trailing: IconButton(
                     icon: Icon(Icons.report,),
