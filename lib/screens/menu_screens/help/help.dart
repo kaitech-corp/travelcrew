@@ -15,6 +15,7 @@ class HelpPage extends StatelessWidget{
           title: Text('Help & Feedback',style: Theme.of(context).textTheme.headline3,),
         ),
         body: Container(
+          margin: EdgeInsets.all(10),
           height: MediaQuery.of(context).size.height *.5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

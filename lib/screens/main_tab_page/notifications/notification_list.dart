@@ -5,6 +5,8 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'notifications_text_section.dart';
 
+
+
 class NotificationList extends StatefulWidget {
 
   NotificationList();
@@ -19,6 +21,7 @@ class _NotificationListState extends State<NotificationList> {
   Widget build(BuildContext context) {
 
     final notifications = Provider.of<List<NotificationData>>(context);
+
     return ListView.builder(
         itemCount: notifications != null ? notifications.length : 0,
         itemBuilder: (context, index){

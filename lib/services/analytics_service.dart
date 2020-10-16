@@ -33,4 +33,11 @@ class AnalyticsService {
     await _analytics.logEvent(name: 'writeError', parameters: {'errorDescription': error});
   }
 
+  Future joinedTrip(bool joined) async {
+    await _analytics.logEvent(name: 'joinedTrip', parameters: {'did_join': joined});
+  }
+
+  Future likedTrip() async {
+    await _analytics.logEvent(name: 'likedTrip');
+  }
 }

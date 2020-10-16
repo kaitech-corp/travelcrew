@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
+import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -16,6 +17,8 @@ class TravelCrewAlertDialogs {
   var blockMessage = 'This user will be removed from all of your trips (public and private) and '
       ' will not be able to view any of your content. Please note this user will not be removed from '
       'shared trips where neither party is the owner. It is your responsibility to exit such trips.';
+
+  var forgotPassword = "We'll send you an email with instructions to reset your password.";
 
   Future<void> blockAlert(BuildContext context, String blockedUserID) {
 
@@ -317,5 +320,78 @@ class TravelCrewAlertDialogs {
         );
       },
     );
+  }
+
+
+  Future<void> resetPasswordDialog(BuildContext context) async {
+    final _formKey = GlobalKey<FormState>();
+    String email;
+    return await showDialog<String>(
+      context: context,
+      child: _SystemPadding(child: AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        title: Text('Reset Password', textAlign: TextAlign.center,),
+        content:  Row(
+          children: <Widget>[
+             Expanded(
+              child:  Builder(
+                builder: (context) => Form(
+                  key: _formKey,
+                  child: TextFormField(
+                    maxLines: 1,
+                    autofocus: true,
+                    onSaved: (val){
+                      email = val;
+                    },
+                    validator: (value) {
+                      if (value.isEmpty || !value.contains('.com')) {
+                        return 'Please enter valid email address.';
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration:  InputDecoration(
+                         hintText: 'Your email address'),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+           FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+           FlatButton(
+              child: const Text('Reset'),
+              onPressed: () {
+                final form = _formKey.currentState;
+                if (form.validate()){
+                  form.save();
+                  AuthService().resetPassword(email);
+                  submittedAlert(context);
+                  Navigator.pop(context);
+                }
+              })
+        ],
+      ),),
+    );
+  }
+}
+
+class _SystemPadding extends StatelessWidget {
+  final Widget child;
+
+  _SystemPadding({Key key, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context);
+    return new AnimatedContainer(
+        padding: mediaQuery.padding,
+        duration: const Duration(milliseconds: 300),
+        child: child);
   }
 }

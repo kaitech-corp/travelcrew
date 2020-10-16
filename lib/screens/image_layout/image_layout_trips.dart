@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ImageLayout extends StatelessWidget{
-  final String _assestPath;
+  final String _assetPath;
 
-  ImageLayout(this._assestPath);
+  ImageLayout(this._assetPath);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class ImageLayout extends StatelessWidget{
         ),
         child: ClipRRect(
           // borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
-            child: _assestPath.contains("https") ? Image.network(_assestPath, fit: BoxFit.fill,) : Image.asset(_assestPath,
+            child: _assetPath.contains("https") ? Image.network(_assetPath, fit: BoxFit.fill,) : Image.asset(_assetPath,
               fit: BoxFit.cover,
             )
         ),
@@ -22,9 +22,9 @@ class ImageLayout extends StatelessWidget{
 }
 
 class ImageLayout2 extends StatelessWidget{
-  final String _assestPath;
+  final String _assetPath;
 
-  ImageLayout2(this._assestPath);
+  ImageLayout2(this._assetPath);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class ImageLayout2 extends StatelessWidget{
       ),
       child: ClipRRect(
           borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
-          child: _assestPath.contains("https") ? Image.network(_assestPath, fit: BoxFit.fill,) : Image.asset(_assestPath,
+          child: _assetPath.contains("https") ? Image.network(_assetPath, fit: BoxFit.fill,) : Image.asset(_assetPath,
             fit: BoxFit.cover,
           )
       ),

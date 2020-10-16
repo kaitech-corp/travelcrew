@@ -9,16 +9,12 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class Wrapper extends StatelessWidget{
+
   @override
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
     SizeConfig().init(context);
-//    dynamic result;
-//    if (user != null) {
-//      result = DatabaseService(uid: user.uid).checkUserHasProfile();
-//    }
-
 
     if (user == null) {
       return Authenticate();

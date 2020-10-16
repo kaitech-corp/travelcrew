@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
-import 'package:travelcrew/screens/app_bar/main_menu.dart';
+import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 
 class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
 

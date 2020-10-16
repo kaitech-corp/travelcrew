@@ -1,10 +1,23 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/locator.dart';
 
 class CloudFunction {
 
   var userService = locator<UserService>();
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final AnalyticsService _analyticsService = AnalyticsService();
+
+  //Add blank profile info
+
+  void addCustomMember(){
+    final HttpsCallable addCustomMember = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'addCustomMember');
+    addCustomMember({
+      'docID': 'zUEcSXEpEkp8wFV6AIRn',
+      'uid': 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3',
+    });
+  }
 
   // Block User
   void blockUser(String blockedUserID){
@@ -55,13 +68,7 @@ class CloudFunction {
       'ownerID': ownerID
     }).then((value) =>
     {
-      print('Join Trip completed'),
-      if(ispublic){
-        addMember(docID, userService.currentUserID),
-      } else
-        {
-          addPrivateMember(docID, userService.currentUserID),
-        }
+      _analyticsService.joinedTrip(true),
     });
   }
 
@@ -74,7 +81,7 @@ class CloudFunction {
       'ispublic':ispublic,
     }).then((value) =>
     {
-      print('Join Trip completed'),
+      _analyticsService.joinedTrip(true),
       if(ispublic){
         addMember(docID, uidInvitee),
       } else
@@ -151,6 +158,8 @@ class CloudFunction {
         functionName: "addFavoriteTrip");
     functionData({
       'docID': docID,
+    }).then((value) => {
+      _analyticsService.likedTrip(),
     });
   }
 
@@ -163,15 +172,6 @@ class CloudFunction {
     });
   }
 
-  // void addVoteToActivity(String docID, String fieldID) async {
-  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-  //       functionName: 'addVoteToActivity');
-  //   functionData({
-  //     'docID': docID,
-  //     'fieldID': fieldID,
-  //   });
-  // }
-
   void addVoterToActivity(String docID, String fieldID) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addVoterToActivity');
@@ -181,15 +181,6 @@ class CloudFunction {
       'uid': userService.currentUserID,
     });
   }
-
-  // void removeVoteFromActivity(String docID, String fieldID) async {
-  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-  //       functionName: 'removeVoteFromActivity');
-  //   functionData({
-  //     'docID': docID,
-  //     'fieldID': fieldID,
-  //   });
-  // }
 
   // void removeVoterFromActivity(String docID, String field )
   void removeVoterFromActivity(String docID, String fieldID) async {
@@ -202,14 +193,6 @@ class CloudFunction {
     });
   }
 
-  // void addVoteToLodging(String docID, String fieldID) async {
-  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-  //       functionName: 'addVoteToLodging');
-  //   functionData({
-  //     'docID': docID,
-  //     'fieldID': fieldID,
-  //   });
-  // }
 
   void addVoterToLodging(String docID, String fieldID, String uid) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
@@ -220,15 +203,6 @@ class CloudFunction {
       'uid': uid,
     });
   }
-
-  // void removeVoteFromLodging(String docID, String fieldID) async {
-  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-  //       functionName: 'removeVoteFromLodging');
-  //   functionData({
-  //     'docID': docID,
-  //     'fieldID': fieldID,
-  //   });
-  // }
 
   void removeVoterFromLodging(String docID, String fieldID, String uid) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
@@ -318,6 +292,15 @@ class CloudFunction {
       'type': type,
     });
   }
+
+  void addCustomNotification(String message) async{
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'addCustomNotification');
+    functionData({
+      'message': message,
+    });
+  }
+
   void removeNotificationData(String fieldID) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'removeNotificationData');
@@ -343,4 +326,32 @@ class CloudFunction {
     });
   }
 
+  // Future<List<TCFeedback>> feedbackData() async {
+  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+  //       functionName: 'feedbackData');
+  //   dynamic data = await functionData.call();
+  //
+  //   return data.map((doc) {
+  //     Map<String, dynamic> data = doc.data();
+  //     return TCFeedback(
+  //       message: data['message'] ?? '',
+  //       uid: data['uid'] ?? '',
+  //       timestamp: data['timestamp'] ?? null,
+  //     );
+  //   }).toList();
+  // }
+  void feedbackData() async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'feedbackData');
+    functionData({
+    });
+  }
+
+  void removeFeedback(String fieldID) async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'removeFeedback');
+    functionData({
+      'fieldID': fieldID,
+    });
+  }
 }

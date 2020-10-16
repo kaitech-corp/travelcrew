@@ -47,6 +47,10 @@ class AuthService {
     }
   }
 
+  // Reset Password
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
   // Sign in with email and password
 
   //Register with email and password

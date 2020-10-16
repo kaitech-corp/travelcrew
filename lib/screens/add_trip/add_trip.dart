@@ -13,8 +13,6 @@ class AddTrip extends StatefulWidget {
 
   var currentUserProfile;
 
-
-
   @override
   _AddTripState createState() => _AddTripState();
 }
@@ -222,7 +220,6 @@ class _AddTripState extends State<AddTrip> {
 //                              tooltip: 'Pick Image',
                                 child: Icon(Icons.add_a_photo),
                               ),
-
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                                 child: Text('Description',style: Theme.of(context).textTheme.subtitle1,),
@@ -238,8 +235,6 @@ class _AddTripState extends State<AddTrip> {
                                   comment = val;
                                 },
                               ),
-//
-
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
@@ -268,7 +263,6 @@ class _AddTripState extends State<AddTrip> {
                                                 startDate,
                                                 travelType,
                                                 urlToImage);
-
                                       _showDialog(context);
                                       Navigator.pop(context);
                                         }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/admin/admin_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/help.dart';
 import 'package:travelcrew/screens/menu_screens/users/users.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/services/auth.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -41,6 +43,7 @@ class MainMenuButtons extends StatelessWidget{
           }
           break;
           case "signout": {
+            Navigator.pop(context);
             _auth.logOut();
           }
           break;
@@ -100,7 +103,6 @@ class MenuDrawer extends StatelessWidget{
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-
             // child: Align(alignment: Alignment.bottomCenter ,child: Text('Menu')),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -110,7 +112,8 @@ class MenuDrawer extends StatelessWidget{
               ),
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: currentUserProfile.urlToImage.isNotEmpty ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder)
+                  image: (currentUserProfile.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) :
+                AssetImage(profileImagePlaceholder)
               ),
             ),
           ),
@@ -144,18 +147,21 @@ class MenuDrawer extends StatelessWidget{
               );
             },
           ),
-          ListTile(
+          if(currentUserProfile.uid.contains('XCVzgl7xIG3')) ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
             onTap: () {
-              // Update the state of the app.
-              // ...
+              if(currentUserProfile.uid.contains('XCVzgl7xIG3')) Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminPage()),
+              );
             },
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Signout'),
             onTap: () {
+              Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (route) => false);
               _auth.logOut();
             },
           ),

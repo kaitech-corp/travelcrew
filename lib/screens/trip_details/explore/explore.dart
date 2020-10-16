@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/app_bar/main_menu.dart';
+import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';

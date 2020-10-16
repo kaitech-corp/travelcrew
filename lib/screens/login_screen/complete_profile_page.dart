@@ -6,7 +6,9 @@ import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class CompleteProfile extends StatefulWidget {
 
@@ -16,17 +18,15 @@ class CompleteProfile extends StatefulWidget {
 }
 class _CompleteProfileState extends State {
 
-
+  final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final _user = UserSignUp();
   File _image;
   final picker = ImagePicker();
-  String _urlToPrivacyPolicy = 'https://travelcrewkt.wordpress.com/travel-crew-privacy-policy/';
   String error = '';
 
   Key get key => null;
   Key key1;
-  String _urlToS = 'https://travelcrewkt.wordpress.com/terms-of-service/';
   Future getImage() async {
     var image = await picker.getImage(source: ImageSource.gallery);
 
@@ -38,10 +38,12 @@ class _CompleteProfileState extends State {
 
   @override
   Widget build(BuildContext context) {
+    String email = _auth.currentUser.email;
+    print(email);
     final user = Provider.of<User>(context);
     _user.email = user.email;
     return Scaffold(
-        appBar: AppBar(title: Text('Complete Profile',style: Theme.of(context).textTheme.headline3,)),
+        appBar: AppBar(title: Text('Welcome!',style: Theme.of(context).textTheme.headline3,)),
         body: SingleChildScrollView(
           child: Container(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -51,42 +53,29 @@ class _CompleteProfileState extends State {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'First Name'),
-                                // ignore: missing_return
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please first name.';
-                                  }
-                                },
-                                onSaved: (val) =>
-                                    setState(() => _user.firstName = val)),
-                            TextFormField(
-                              decoration:
-                              InputDecoration(labelText: 'Last Name'),
-                              // ignore: missing_return
-                              validator: (value) {
-                                // ignore: missing_return
-                                if (value.isEmpty) {
-                                  return 'Please enter last name';
-                                }
-                              },
-                              onSaved: (val) =>
-                                  setState(() => _user.lastName = val),
+                            Container(
+                              padding: EdgeInsets.only(top: 15,bottom: 15),
+                              child: Column(
+                                children: [
+                                  Text('Add a display name and profile picture!'
+                                    ,style: Theme.of(context).textTheme.subtitle1,
+                                  textAlign: TextAlign.center,),
+                                  Text('Both are optional and can be changed later.'
+                                    ,style: Theme.of(context).textTheme.subtitle1,
+                                    textAlign: TextAlign.center,),
+                                ],
+                              ),
                             ),
+                            Container(height: 1,color: Colors.grey,),
+
                             TextFormField(
                                 decoration:
-                                InputDecoration(labelText: 'Display Name'),
+                                InputDecoration(labelText: 'Display Name',),
                                 // ignore: missing_return
-                                validator: (value) {
-                                  // ignore: missing_return, missing_return
-                                  if (value.isEmpty) {
-                                    return 'Please enter a display name.';
-                                  }
-                                },
                                 onSaved: (val) =>
                                     setState(() => _user.displayName = val)),
+                            Padding(padding: EdgeInsets.only(bottom: 20)),
+
                             Container(
                               child: _image == null
                                   ? Text('No image selected.')
@@ -106,7 +95,9 @@ class _CompleteProfileState extends State {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text("By pressing Signup you are agreeing to our Term's of Service, Privacy Policy.",style: Theme.of(context).textTheme.subtitle1,),
+                                  Text("By continuing you are agreeing to our Term's of Service, Privacy Policy.",
+                                    style: Theme.of(context).textTheme.subtitle1,
+                                  textAlign: TextAlign.center,),
                                   FlatButton(
                                     child: Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                     textColor: Colors.lightBlue,
@@ -114,7 +105,7 @@ class _CompleteProfileState extends State {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) =>
-                                              WebViewScreen(_urlToS, key1),
+                                              WebViewScreen(urlToTerms, key1),
                                           )
                                       );
                                     },
@@ -126,7 +117,7 @@ class _CompleteProfileState extends State {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) =>
-                                              WebViewScreen(_urlToPrivacyPolicy, key1),
+                                              WebViewScreen(urlToPrivacyPolicy, key1),
                                           )
                                       );
                                     },
@@ -143,16 +134,20 @@ class _CompleteProfileState extends State {
                                       if (form.validate()) {
                                         form.save();
                                         _showDialog(context);
+                                        if(_user.displayName.isEmpty){
+                                          _user.displayName = 'user${user.uid.substring(user.uid.length - 5)}';
+                                        }
+
                                         DatabaseService().updateUserData(_user.
-                                            firstName, _user.lastName, _user.email, user.uid);
-                                        DatabaseService().updateUserPublicProfileData(_user.displayName, _user.firstName, _user.lastName, _user.email, 0, 0, user.uid, _image);
+                                            firstName, _user.lastName, email, user.uid);
+                                        DatabaseService().updateUserPublicProfileData(_user.displayName, _user.firstName, _user.lastName, email, 0, 0, user.uid, _image);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => Wrapper()),
                                         );
                                       }
                                     },
-                                    child: Text('Sign Up!'))),
+                                    child: Text('I Agree'))),
                             SizedBox(height: 10,),
                             Column(
                               mainAxisSize: MainAxisSize.min,
@@ -167,6 +162,6 @@ class _CompleteProfileState extends State {
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Saving Account')));
+        .showSnackBar(SnackBar(content: Text('Creating Account')));
   }
 }

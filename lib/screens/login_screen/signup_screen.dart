@@ -63,11 +63,6 @@ class _SignupScreenState extends State {
                                 labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                 // ignore: missing_return
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please first name.';
-                                  }
-                                },
                                 onSaved: (val) =>
                                     setState(() => _user.firstName = val)),
                             TextFormField(
@@ -78,12 +73,7 @@ class _SignupScreenState extends State {
                               labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
-                              validator: (value) {
-                                // ignore: missing_return
-                                if (value.isEmpty) {
-                                  return 'Please enter last name';
-                                }
-                              },
+
                               onSaved: (val) =>
                                   setState(() => _user.lastName = val),
                             ),

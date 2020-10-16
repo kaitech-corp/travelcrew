@@ -95,6 +95,9 @@ class _EditTripDataState extends State<EditTripData> {
     String location = widget.tripDetails.location;
     String travelType = widget.tripDetails.travelType;
 
+    print(widget.tripDetails.endDateTimeStamp);
+    print(widget.tripDetails.startDateTimeStamp);
+
 
 
 
@@ -241,9 +244,9 @@ class _EditTripDataState extends State<EditTripData> {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
                                           if(!dateChangeVisible){
+                                            startDateTimeStamp = widget.tripDetails.startDateTimeStamp;
                                             endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
                                             endDate = widget.tripDetails.endDate;
-                                            startDate = widget.tripDetails.startDate;
                                             startDate = widget.tripDetails.startDate;
                                           } else
                                             {
@@ -252,18 +255,6 @@ class _EditTripDataState extends State<EditTripData> {
                                               endDate = DateFormat.yMMMd().format(_fromDateReturn);
                                               endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
                                             }
-                                          // if (endDateTimeStamp == null) {
-                                          //
-                                          // }
-                                          // if (endDate == null) {
-                                          //
-                                          // }
-                                          // if (startDate == null) {
-                                          //
-                                          // }
-                                          // if (startDate == null) {
-                                          //
-                                          // }
                                           DatabaseService().editTripData(comment, documentID, endDate, endDateTimeStamp, ispublic, location, startDate, startDateTimeStamp, travelType, urlToImage);
                                           _showDialog(context);
                                         }

@@ -18,3 +18,21 @@ class CustomShape extends CustomClipper<Path> {
     return true;
   }
 }
+
+class ImageBanner extends StatelessWidget{
+  final String _assetPath;
+
+  ImageBanner(this._assetPath);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height * .33,
+        ),
+        decoration: BoxDecoration(color: Colors.grey),
+        child: Image.asset(_assetPath,
+          fit: BoxFit.fill,
+        ));
+  }
+}

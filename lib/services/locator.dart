@@ -82,8 +82,5 @@ class UserProfileServiceStream {
     return FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).snapshots()
         .map(_userListFromSnapshot);
   }
-
-  // UserPublicProfile currentUserProfileDirect(){
-  //   return userList;
-  // }
 }
+

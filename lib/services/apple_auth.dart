@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:apple_sign_in/apple_sign_in.dart';
 
+
 class AppleAuthService {
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;

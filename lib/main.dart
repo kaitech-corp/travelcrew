@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
+import 'package:travelcrew/screens/login_screen/login_screen.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'models/custom_objects.dart';
@@ -45,6 +46,10 @@ class TravelCrew extends StatelessWidget{
           accentColor: Colors.blueAccent,
 
         ),
+        routes: <String, WidgetBuilder>{
+          '/wrapper': (BuildContext context)=> new Wrapper(),
+          '/login': (BuildContext context)=> new LoginPage(),
+        },
         navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
       ),
     );

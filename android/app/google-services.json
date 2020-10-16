@@ -32,10 +32,11 @@
               "client_type": 3
             },
             {
-              "client_id": "101337609697-7fvme5csavkvqik1jck4fhkl15koccg2.apps.googleusercontent.com",
+              "client_id": "101337609697-binmcjfhbt7rcr8js828akf1svcl50se.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.randamproductions.Travel-Crew"
+                "bundle_id": "com.kaitechcorp.travelcrew",
+                "app_store_id": "1501930493"
               }
             }
           ]

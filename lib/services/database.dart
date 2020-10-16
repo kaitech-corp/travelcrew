@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
@@ -35,6 +36,8 @@ class DatabaseService {
   final CollectionReference bringListCollection = FirebaseFirestore.instance.collection('bringList');
   final CollectionReference needListCollection = FirebaseFirestore.instance.collection('needList');
   final CollectionReference uniqueCollection = FirebaseFirestore.instance.collection('unique');
+  final CollectionReference feedbackCollection = FirebaseFirestore.instance.collection('feedback');
+  final CollectionReference reportsCollection = FirebaseFirestore.instance.collection('reports');
 
 
 
@@ -370,14 +373,13 @@ class DatabaseService {
 // Edit Trip
   Future editTripData(String comment, String documentID, String endDate, Timestamp endDateTimeStamp,
       bool ispublic, String location, String startDate, Timestamp startDateTimeStamp, String travelType, File urlToImage)
-
   async {
     var addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
 
 
     await addTripRef.update({
       "comment": comment,
-      'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
+      // 'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
       "endDate": endDate,
       "endDateTimeStamp": endDateTimeStamp,
       "ispublic": ispublic,
@@ -953,6 +955,7 @@ class DatabaseService {
           location: data['location'] ?? '',
           ownerID: data['ownerID'] ?? '',
           startDate: data['startDate'] ?? '',
+          startDateTimeStamp: data['startDateTimeStamp'],
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
@@ -1048,16 +1051,21 @@ class DatabaseService {
   // Get all chat messages
   List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
 
-    return snapshot.docs.map((doc){
-      Map<String, dynamic> data = doc.data();
-      return ChatData(
-        displayName: data['displayName'] ?? '',
-        fieldID: data['fieldID'] ?? '',
-        message: data['message'] ?? '',
-        timestamp: data['timestamp'] ?? Timestamp.now(),
-        uid: data['uid'] ?? '',
-      );
-    }).toList();
+    try {
+      return snapshot.docs.map((doc){
+        Map<String, dynamic> data = doc.data();
+        return ChatData(
+          displayName: data['displayName'] ?? '',
+          fieldID: data['fieldID'] ?? '',
+          message: data['message'] ?? '',
+          timestamp: data['timestamp'] ?? Timestamp.now(),
+          uid: data['uid'] ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      // AnalyticsService().writeError(e.toString());
+      print("Error: ${e.toString()}");
+    }
   }
 
   Stream<List<ChatData>> get chatList {
@@ -1071,10 +1079,49 @@ class DatabaseService {
   }
   Stream<List<ChatData>> get chatListNotification {
     try {
-      return chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
+      return chatCollection.doc(tripDocID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       print("Could not load chat notification list: ${e.toString()}");
     }
   }
 
+
+  Future<List<TCFeedback>> feedback() async {
+    try {
+      var ref = await feedbackCollection.get();
+      List<TCFeedback> feedback = ref.docs.map((doc) {
+          Map<String, dynamic> data = doc.data();
+          return TCFeedback(
+            fieldID: data['fieldID'] ?? '',
+            message: data['message'] ?? '',
+            uid: data['uid'] ?? '',
+            timestamp: data['timestamp'] ?? null,
+          );
+        }).toList();
+      feedback.sort((a,b) => a.timestamp.compareTo(b.timestamp));
+
+      return feedback;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  // Future<List<TCReports>> reports() async {
+  //   try {
+  //     var ref = await reportsCollection.get();
+  //     List<TCFeedback> feedback = ref.docs.map((doc) {
+  //       Map<String, dynamic> data = doc.data();
+  //       return TCFeedback(
+  //         message: data['message'] ?? '',
+  //         uid: data['uid'] ?? '',
+  //         timestamp: data['timestamp'] ?? null,
+  //       );
+  //     }).toList();
+  //     feedback.sort((a,b) => a.timestamp.compareTo(b.timestamp));
+  //
+  //     return feedback;
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }

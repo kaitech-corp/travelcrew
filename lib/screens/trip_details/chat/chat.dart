@@ -38,58 +38,63 @@ class _ChatState extends State<Chat> {
 
     return StreamProvider.value(
       value: DatabaseService(tripDocID: widget.trip.documentId).chatList,
-      child: Scaffold(
-        body: Column(
-          children: <Widget>[
-            Flexible(
-                child: ChatList(tripDocID: widget.trip.documentId,)
-            ),
-            new Divider(
-              height: 1.0,
-            ),
-            Container(
-              decoration: new BoxDecoration(
-                color: Theme.of(context).cardColor,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Scaffold(
+          body: Column(
+            children: <Widget>[
+              Flexible(
+                  child: ChatList(tripDocID: widget.trip.documentId,)
               ),
-              child: IconTheme(
-                data: new IconThemeData(color: Colors.blue),
-                child: new Container(
-                  margin: const EdgeInsets.fromLTRB(25, 0, 0, 25),
-                  child: new Row(
-                    children: <Widget>[
-                      new Flexible(
-                        child: new TextField(
-                          decoration: new InputDecoration.collapsed(hintText: "Starts typing ..."),
-                          controller: _chatController,
+              new Divider(
+                height: 1.0,
+              ),
+              Container(
+                decoration: new BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                ),
+                child: IconTheme(
+                  data: new IconThemeData(color: Colors.blue),
+                  child: new Container(
+                    margin: const EdgeInsets.fromLTRB(25, 0, 0, 25),
+                    child: new Row(
+                      children: <Widget>[
+                        new Flexible(
+                          child: new TextField(
+                            decoration: new InputDecoration.collapsed(hintText: "Starts typing ..."),
+                            controller: _chatController,
 //                    onSubmitted: _handleSubmit,
+                          ),
                         ),
-                      ),
-                      new Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: new IconButton(
-                          icon: new Icon(Icons.send),
-                          onPressed: () async {
-                            if (_chatController.text != '') {
-                              String message = _chatController.text;
-                              var status = createStatus();
-                              _chatController.clear();
-                              String displayName = widget.currentUserProfile.displayName;
-                              String uid = widget.userService.currentUserID;
-                              await DatabaseService(
-                                  tripDocID: widget.trip.documentId)
-                                  .addNewChatMessage(
-                                  displayName, message, uid, status);
-                            }
-                          },
-                        ),
-                      )
-                    ],
-                  ),
+                        new Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: new IconButton(
+                            icon: new Icon(Icons.send),
+                            onPressed: () async {
+                              if (_chatController.text != '') {
+                                String message = _chatController.text;
+                                var status = createStatus();
+                                _chatController.clear();
+                                String displayName = widget.currentUserProfile.displayName;
+                                String uid = widget.userService.currentUserID;
+                                await DatabaseService(
+                                    tripDocID: widget.trip.documentId)
+                                    .addNewChatMessage(
+                                    displayName, message, uid, status);
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
 
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

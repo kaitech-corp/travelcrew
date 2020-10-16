@@ -291,3 +291,17 @@ class WalmartProducts {
         query = jsonMap['query'];
 
 }
+
+class TCFeedback {
+  final String message;
+  final Timestamp timestamp;
+  final String uid;
+  final String fieldID;
+
+  TCFeedback({this.fieldID, this.message, this.timestamp, this.uid});
+
+}
+
+class TCReports {
+
+}

@@ -88,6 +88,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         enableInteractiveSelection: true,
         controller: _controller,
         maxLines: maxLines,
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           hintText: "Enter a message",
           fillColor: Colors.grey[300],
