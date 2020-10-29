@@ -48,7 +48,7 @@ class _BringingListState extends State<BringingList> {
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
         child: SearchBar(
-          cancellationWidget: Text('Clear'),
+          cancellationWidget: const Text('Clear'),
             placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
@@ -111,7 +111,7 @@ class _NeedListState extends State<NeedList> {
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
         child:  SearchBar(
-            cancellationWidget: Text('Clear'),
+            cancellationWidget:const Text('Clear'),
             placeHolder: needList(),
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
@@ -130,8 +130,7 @@ class _NeedListState extends State<NeedList> {
                         //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
                         Scaffold
                             .of(context)
-                            .showSnackBar(SnackBar(
-                            content: Text("Item added")));
+                            .showSnackBar(SnackBar(content: const Text("Item added")));
                       } catch (e) {
                         print(e.toString());
                       }
@@ -157,7 +156,7 @@ class _NeedListState extends State<NeedList> {
           Scaffold
               .of(context)
               .showSnackBar(SnackBar(
-                content: Text("Item added to Bringing list")));
+                content: const Text("Item added to Bringing list")));
     }
     return StreamBuilder(
       builder: (context, items) {
@@ -169,12 +168,12 @@ class _NeedListState extends State<NeedList> {
               return Dismissible(
                 background: Container(
                   color: Colors.red,
-                  padding: EdgeInsets.only(left: 5, right: 5),
+                  padding: const EdgeInsets.only(left: 5, right: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Icon(Icons.delete, color: Colors.white,),
-                      Icon(Icons.delete, color: Colors.white,)
+                      const Icon(Icons.delete, color: Colors.white,),
+                      const Icon(Icons.delete, color: Colors.white,)
                     ],
                   ),
                 ),
@@ -184,12 +183,12 @@ class _NeedListState extends State<NeedList> {
                   // DatabaseService().removeItemFromNeedList(widget.documentID, item.documentID);
                   Scaffold
                       .of(context)
-                      .showSnackBar(SnackBar(content: Text("Item removed")));
+                      .showSnackBar(SnackBar(content: const Text("Item removed")));
                 },
                 child: ListTile(
                   title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
                   subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
-                  trailing: Icon(Icons.add),
+                  trailing: const Icon(Icons.add),
                   onTap: (){
                       setState(() {
                         _onSelectedItems(item);
@@ -235,12 +234,12 @@ class BringListToDisplay extends StatelessWidget{
               return Dismissible(
                 background: Container(
                   color: Colors.red,
-                  padding: EdgeInsets.only(left: 5, right: 5),
+                  padding: const EdgeInsets.only(left: 5, right: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Icon(Icons.delete, color: Colors.white,),
-                      Icon(Icons.delete, color: Colors.white,)
+                      const Icon(Icons.delete, color: Colors.white,),
+                      const Icon(Icons.delete, color: Colors.white,)
                   ],
                 ),
                 ),
@@ -249,7 +248,7 @@ class BringListToDisplay extends StatelessWidget{
                   CloudFunction().removeItemFromBringingList(documentID, item.documentID);
                   Scaffold
                       .of(context)
-                      .showSnackBar(SnackBar(content: Text("Item removed")));
+                      .showSnackBar(SnackBar(content: const Text("Item removed")));
                 },
                 child:
                   // Widget to display the list of project
@@ -307,12 +306,13 @@ class _CustomListState extends State<CustomList> {
                       enableInteractiveSelection: true,
                       maxLines: 1,
                       textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Custom Item',
                       ),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          // ignore: missing_return, missing_return
+                          if (value.isEmpty){
                             return 'Please enter an item first.';
                             // ignore: missing_return
                           }
@@ -322,7 +322,7 @@ class _CustomListState extends State<CustomList> {
                           item = val,
                         }
                     ),
-                      Padding(padding: EdgeInsets.only(top: 20),),
+                      const Padding(padding: EdgeInsets.only(top: 20),),
                       Container(
                         height: SizeConfig.screenHeight*.15,
                         child: ListView.builder(
@@ -355,16 +355,16 @@ class _CustomListState extends State<CustomList> {
                             if(option == 'Bringing'){
                               CloudFunction().addItemToBringingList(widget.documentID, item);
                             Scaffold.of(context)
-                                .showSnackBar(SnackBar(content: Text("Item added to Bringing list")));
+                                .showSnackBar(SnackBar(content: const Text("Item added to Bringing list")));
                             } else{
                               CloudFunction().addItemToNeedList(widget.documentID, item, currentUserProfile.displayName);
                               Scaffold.of(context)
-                                  .showSnackBar(SnackBar(content: Text("Item added to Need list")));
+                                  .showSnackBar(SnackBar(content: const Text("Item added to Need list")));
                             }
                             form.reset();
                           }
                         },
-                        child: Text('Save'))
+                        child: const Text('Save'))
                     ],))),
         ],
       ),

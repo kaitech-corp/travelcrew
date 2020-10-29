@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
-import 'package:travelcrew/screens/menu_screens/main_menu.dart';
+import 'package:travelcrew/services/database.dart';
 
 class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
 
   final bool bottomTabBar;
+
   TravelCrewAppBar({this.bottomTabBar});
 
   @override
@@ -16,12 +18,10 @@ class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
       title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           onPressed: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddTrip()),
-            );
+            Navigator.pushNamed(context, '/addTrip');
+
           },
         ),
       ],
@@ -29,9 +29,9 @@ class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
         labelStyle: Theme.of(context).textTheme.subtitle1,
         isScrollable: true,
         tabs: [
-          Tab(text: 'Current',),
-          Tab(text: 'Past',),
-          Tab(text: 'Private',),
+          const Tab(text: 'Current',),
+          const Tab(text: 'Private',),
+          const Tab(text: 'Past',),
         ],
       ): null,
     );

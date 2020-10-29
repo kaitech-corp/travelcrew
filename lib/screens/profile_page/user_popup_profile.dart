@@ -1,11 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 
 class UserPopupProfile extends StatelessWidget{
 
-  Members member;
+  final Members member;
 
   UserPopupProfile({this.member});
 

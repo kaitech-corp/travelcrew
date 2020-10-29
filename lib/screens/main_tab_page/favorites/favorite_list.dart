@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'favorite_tappable_card.dart';
 
 class FavoriteTripList extends StatefulWidget {
@@ -20,7 +21,7 @@ class _FavoriteTripState extends State<FavoriteTripList> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/space3.jpg'),
+          image: AssetImage(spaceImage),
           fit: BoxFit.cover,
         ),
       ),
@@ -34,8 +35,8 @@ class _FavoriteTripState extends State<FavoriteTripList> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.delete, color: Colors.white,),
-                    Icon(Icons.delete, color: Colors.white,)
+                    const Icon(Icons.delete, color: Colors.white,),
+                    const Icon(Icons.delete, color: Colors.white,)
                   ],
                 ),),
               key: Key(item.documentId),
@@ -44,7 +45,6 @@ class _FavoriteTripState extends State<FavoriteTripList> {
                   trips.removeAt(index);
                   CloudFunction().removeFavoriteFromTrip(item.documentId);
                 });
-
                 Scaffold
                     .of(context)
                     .showSnackBar(SnackBar(content: Text("Tripped removed from favorites.")));

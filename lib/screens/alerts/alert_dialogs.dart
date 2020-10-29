@@ -103,7 +103,7 @@ class TravelCrewAlertDialogs {
     );
   }
 
-  deleteNotificationsAlert(BuildContext context, String uid) {
+  deleteNotificationsAlert(BuildContext context,) {
 
     return showDialog<void>(
       context: context,

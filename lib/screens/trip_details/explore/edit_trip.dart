@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/add_trip/add_trip.dart';
+import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/services/database.dart';
 
@@ -29,6 +31,7 @@ class _EditTripDataState extends State<EditTripData> {
   DateTime _fromDateReturn = DateTime.now();
 
   bool dateChangeVisible = false;
+  bool locationChangeVisible = false;
 
   String get _labelTextDepart {
 
@@ -94,15 +97,15 @@ class _EditTripDataState extends State<EditTripData> {
     bool ispublic = widget.tripDetails.ispublic;
     String location = widget.tripDetails.location;
     String travelType = widget.tripDetails.travelType;
+    String tripName = widget.tripDetails.tripName;
+    GeoPoint tripGeoPoint = widget.tripDetails.tripGeoPoint;
 
-    print(widget.tripDetails.endDateTimeStamp);
-    print(widget.tripDetails.startDateTimeStamp);
 
 
 
 
     return Scaffold(
-        appBar: AppBar(title: Text('Create a Trip!')),
+        appBar: AppBar(title: Text('Edit $tripName!')),
         body: Container(
             child: SingleChildScrollView(
                 padding:
@@ -116,8 +119,8 @@ class _EditTripDataState extends State<EditTripData> {
                               TextFormField(
                                   textCapitalization: TextCapitalization.words,
                                   decoration:
-                                  InputDecoration(labelText: 'Trip Name or Location'),
-                                  initialValue: location,
+                                  const InputDecoration(labelText: 'Trip Name or Location'),
+                                  initialValue: tripName,
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -126,13 +129,13 @@ class _EditTripDataState extends State<EditTripData> {
                                   },
                                   onChanged: (val) =>
                                   {
-                                    location = val,
+                                    tripName = val,
                                   }
                               ),
                               TextFormField(
                                   textCapitalization: TextCapitalization.words,
                                   decoration:
-                                  InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
+                                  const InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
                                   initialValue: travelType,
                                   // ignore: missing_return
                                   validator: (value) {
@@ -145,7 +148,58 @@ class _EditTripDataState extends State<EditTripData> {
                                     travelType = val,
                                   }
                               ),
-                              Padding(
+                              locationChangeVisible ?
+                              Column(
+                                children: [
+                                  TextFormField(
+                                    controller: myController,
+                                    enableInteractiveSelection: true,
+                                    textCapitalization: TextCapitalization.words,
+                                    decoration: InputDecoration(labelText:'Location'),
+                                    // ignore: missing_return
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please enter a location.';
+                                        // ignore: missing_return
+                                      }
+                                    },
+                                  ),
+                                  Container(
+                                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                                    padding: EdgeInsets.only(top: 5, bottom: 5),),
+                                ],
+                              ):
+                              Column(
+                                children: [
+                                  TextFormField(
+                                      textCapitalization: TextCapitalization.words,
+                                      enabled: false,
+                                      decoration:
+                                      const InputDecoration(labelText: 'Location'),
+                                      initialValue: location,
+                                      // ignore: missing_return
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Please enter a location.';
+                                        }
+                                      },
+                                      onChanged: (val) =>
+                                      {
+                                        location = val,
+                                      }
+                                  ),
+                                  RaisedButton(
+                                    color: Colors.blue[300],
+                                    child: const Text('Edit Location'),
+                                    onPressed: (){
+                                      setState(() {
+                                        locationChangeVisible = true;
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                              const Padding(
                                 padding: EdgeInsets.only(top: 10),
                               ),
                               dateChangeVisible ? Column(
@@ -159,7 +213,7 @@ class _EditTripDataState extends State<EditTripData> {
                                         ButtonTheme(
                                           minWidth: 150,
                                           child: RaisedButton(
-                                            child: Text(
+                                            child: const Text(
                                               'Departure Date',
                                             ),
                                             onPressed: () async {
@@ -179,7 +233,7 @@ class _EditTripDataState extends State<EditTripData> {
                                         ButtonTheme(
                                           minWidth: 150,
                                           child: RaisedButton(
-                                            child: Text(
+                                            child: const Text(
                                               'Return Date',
                                             ),
                                             onPressed: () {
@@ -199,7 +253,7 @@ class _EditTripDataState extends State<EditTripData> {
                                   Text('Return Date: ${widget.tripDetails.endDate}',style: TextStyle(fontSize: 15)),
                                   RaisedButton(
                                     color: Colors.blue[300],
-                                    child: Text('Edit Dates'),
+                                    child: const Text('Edit Dates'),
                                     onPressed: (){
                                       setState(() {
                                         dateChangeVisible = true;
@@ -209,16 +263,21 @@ class _EditTripDataState extends State<EditTripData> {
                                 ],
                               ),
                               Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
                                 child: _image == null
-                                    ? Text('No image selected.')
+                                    ? const Text('No image selected.')
                                     : Image.file(_image),
                               ),
                               RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 onPressed: () {
                                   getImage();
                                 },
 //                              tooltip: 'Pick Image',
-                                child: Icon(Icons.add_a_photo),
+                                child: const Icon(Icons.add_a_photo),
                               ),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -229,7 +288,7 @@ class _EditTripDataState extends State<EditTripData> {
                                 initialValue: comment,
                                 maxLines: 3,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     hintText: 'Add a short description.'),
                                 onChanged: (val){
@@ -240,6 +299,9 @@ class _EditTripDataState extends State<EditTripData> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
                                   child: RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
                                       onPressed: () {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
@@ -255,16 +317,36 @@ class _EditTripDataState extends State<EditTripData> {
                                               endDate = DateFormat.yMMMd().format(_fromDateReturn);
                                               endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
                                             }
-                                          DatabaseService().editTripData(comment, documentID, endDate, endDateTimeStamp, ispublic, location, startDate, startDateTimeStamp, travelType, urlToImage);
+                                          if(locationChangeVisible){
+                                            location = myController.text;
+                                            if(googleData2.value != null){
+                                              tripGeoPoint = googleData2.value.geoLocation;
+                                            }
+                                          }
+                                          DatabaseService().editTripData(
+                                              comment,
+                                              documentID,
+                                              endDate,
+                                              endDateTimeStamp,
+                                              ispublic,
+                                              location,
+                                              startDate,
+                                              startDateTimeStamp,
+                                              travelType,
+                                              urlToImage,
+                                              tripName,
+                                              tripGeoPoint);
                                           _showDialog(context);
                                         }
+                                        myController.clear();
+                                        googleData2.dispose();
                                       },
-                                      child: Text('Save'))),
+                                      child: const Text('Save'))),
                             ]))))));
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Submitting form')));
+        .showSnackBar(SnackBar(content: const Text('Submitting form')));
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) =>

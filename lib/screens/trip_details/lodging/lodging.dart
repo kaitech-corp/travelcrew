@@ -35,7 +35,7 @@ class _LodgingState extends State<Lodging> {
               MaterialPageRoute(builder: (context) => AddNewLodging(trip: widget.trip,)),
             );
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

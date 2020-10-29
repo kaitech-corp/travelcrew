@@ -6,9 +6,8 @@ import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_t
 import 'package:travelcrew/services/constants.dart';
 
 class CrewTripList extends StatefulWidget {
-  int type;
+  final int type;
   CrewTripList({this.type});
-
 
 
   @override
@@ -18,13 +17,14 @@ class CrewTripList extends StatefulWidget {
 
 class _CrewTripListState extends State<CrewTripList> {
 
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now().toUtc();
-    var tomorrow = DateTime(now.year, now.month, now.day + 1);
     var yesterday = DateTime(now.year, now.month, now.day - 1);
     bool loading = true;
     var crewTrips = Provider.of<List<Trip>>(context);
+
     if(crewTrips != null) {
       setState(() {
         loading = false;
@@ -35,7 +35,6 @@ class _CrewTripListState extends State<CrewTripList> {
               trip.endDateTimeStamp.toDate().isAfter(yesterday)).toList();
         }
       });
-
     }
     return loading ? Loading() : Container(
       decoration: BoxDecoration(
@@ -48,7 +47,8 @@ class _CrewTripListState extends State<CrewTripList> {
         itemCount: crewTrips.length ?? 0,
         itemBuilder: (context, index){
           return TappableCrewTripTile(trip: crewTrips[index]);
-        },),
+        },
+      ),
     );
   }
 }

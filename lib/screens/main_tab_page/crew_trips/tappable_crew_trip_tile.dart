@@ -1,7 +1,8 @@
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
-import 'package:travelcrew/screens/trip_details/explore/stream_to_explore.dart';
+import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -13,19 +14,24 @@ class TappableCrewTripTile extends StatelessWidget {
 
   final Trip trip;
 
+
+
   TappableCrewTripTile({this.trip});
 
   var userService = locator<UserService>();
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  Trace trace = FirebasePerformance.instance.newTrace('CrewTrips');
 
   var size = SizeConfig.screenHeight;
 
-
   @override
   Widget build(BuildContext context) {
+  trace.start();
+
 
     return Card(
-      margin: EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),
+      key: Key(trip.documentId),
+      margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
@@ -33,7 +39,7 @@ class TappableCrewTripTile extends StatelessWidget {
         onTap: (){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StreamToExplore(trip: trip,)),
+            MaterialPageRoute(builder: (context) => Explore(trip: trip,)),
           );
         },
         child: Container(
@@ -47,7 +53,7 @@ class TappableCrewTripTile extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ListTile(
-                    title: Text(trip.location != null ? trip.location : 'Trip Name',style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                    title: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,),
                     subtitle:  Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,),
                     trailing: Tooltip(
                       message: 'Members',
@@ -56,7 +62,7 @@ class TappableCrewTripTile extends StatelessWidget {
                         spacing: 3,
                         children: <Widget>[
                           Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle1,),
-                          Icon(Icons.people),
+                          const Icon(Icons.people),
                         ],
                       ),
                     ),
@@ -69,7 +75,7 @@ class TappableCrewTripTile extends StatelessWidget {
                     alignment: MainAxisAlignment.end,
                     children: [
                       if(trip.favorite.length > 0) Tooltip(
-                        message: 'Liked',
+                        message: 'Likes',
                         child: BadgeIcon(
                           icon: Icon(Icons.favorite,color: Colors.redAccent,),
                           badgeCount: trip.favorite.length,
@@ -102,15 +108,15 @@ class TappableCrewTripTile extends StatelessWidget {
               return Tooltip(
                 message: 'New Messages',
                 child: BadgeIcon(
-                  icon: Icon(Icons.chat, color: Colors.grey,),
+                  icon: const Icon(Icons.chat, color: Colors.grey,),
                   badgeCount: chats.data.length,
                 ),
               );
             } else {
-              return Visibility(child: Container(),visible: false,);
+              return Container();
             }
           } else {
-            return Visibility(child: Container(),visible: false,);
+            return Container();
           }
         },
         stream: DatabaseService(tripDocID: trip.documentId, uid: userService.currentUserID).chatListNotification,
@@ -118,6 +124,7 @@ class TappableCrewTripTile extends StatelessWidget {
   }
 
   Widget needListBadges(Trip trip){
+    trace.stop();
     return StreamBuilder(
       builder: (context, items){
         if(items.hasData){
@@ -125,19 +132,18 @@ class TappableCrewTripTile extends StatelessWidget {
             return Tooltip(
               message: 'Need List',
               child: BadgeIcon(
-                icon: Icon(Icons.shopping_basket, color: Colors.grey,),
+                icon: const Icon(Icons.shopping_basket, color: Colors.grey,),
                 badgeCount: items.data.length,
               ),
             );
           } else {
-            return Visibility(child: Container(),visible: false,);
+            return Container();
           }
         } else {
-          return Visibility(child: Container(),visible: false,);
+          return Container();
         }
       },
       stream: DatabaseService().getNeedList(trip.documentId),
     );
   }
-
 }

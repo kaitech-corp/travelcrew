@@ -27,14 +27,13 @@ class Activity extends StatefulWidget {
             child: ActivityList(trip: widget.trip,),
           ),
             floatingActionButton: FloatingActionButton(
-
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddNewActivity(trip: widget.trip,)),
                 );
               },
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),

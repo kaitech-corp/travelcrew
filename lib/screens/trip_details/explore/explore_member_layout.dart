@@ -60,22 +60,22 @@ class ExploreMemberLayout extends StatelessWidget{
                       const PopupMenuItem(
                         value: 'report',
                         child: ListTile(
-                          leading: Icon(Icons.report),
-                          title: Text('Report'),
+                          leading: const Icon(Icons.report),
+                          title: const Text('Report'),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 'Add',
                         child: ListTile(
-                          leading: Icon(Icons.person_add),
-                          title: Text('Add Member'),
+                          leading: const Icon(Icons.person_add),
+                          title: const Text('Add Member'),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 'Leave',
                         child: ListTile(
-                          leading: Icon(Icons.exit_to_app),
-                          title: Text('Leave Group'),
+                          leading: const Icon(Icons.exit_to_app),
+                          title: const Text('Leave Group'),
                         ),
                       ),
                     ],

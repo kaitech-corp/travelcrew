@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
+import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/size_config/size_config.dart';
+import 'dart:math' as math;
+
+import 'ad_card_layout.dart';
 
 var userService = locator<UserService>();
 
+bool animatePress = false;
 
 class AllTripsNewDesign extends StatefulWidget{
 
@@ -16,9 +25,24 @@ class AllTripsNewDesign extends StatefulWidget{
   _AllTripsNewDesignState createState() => _AllTripsNewDesignState();
 }
 
-class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
+class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTickerProviderStateMixin{
 
   bool pressed = true;
+  AnimationController _animationController;
+  Animation _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    animatePress = false;
+    _animationController = AnimationController(duration: Duration(milliseconds: 750), vsync: this);
+    _animation = IntTween(begin: 4, end: 32).animate(_animationController);
+    _animation.addListener(() => setState(() {
+      if(_animation.isCompleted){
+        animatePress = !animatePress;
+      }
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +50,17 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/space3.jpg'),
+        decoration: const BoxDecoration(
+          image: const DecorationImage(
+            image: const AssetImage('assets/images/space3.jpg'),
             fit: BoxFit.fitHeight,
           ),
         ),
-        height: MediaQuery.of(context).size.height,
+        height: SizeConfig.screenHeight,
         child: Column(
           children: [
-
             Flexible(
-              flex: 3,
+              flex: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -53,14 +76,8 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
                             ]
                         ),
                       ),
-                      // FlatButton(
-                      //   shape: Border.all(width: 1, color: Colors.white),
-                      //   textColor: Colors.white,
-                      //   child: Text('Change'),
-                      //   color: Colors.black,
-                      // ),
                       IconButton(
-                          icon: Icon(Icons.filter_list_sharp,color: Colors.white,),
+                          icon: const Icon(Icons.filter_list_sharp,color: Colors.white,),
                           iconSize: 30,
                           onPressed: (){
                             setState(() {
@@ -74,109 +91,69 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> {
               ),
             ),
             Flexible(
-              flex: 1,
+              flex: _animation.value,
               child: Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                          style: Theme.of(context).textTheme.headline3,
-                          children: [
-                            TextSpan(text: 'Social',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                            TextSpan(text: " Distancing",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent,fontSize: 28))
-                          ]
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                              style: Theme.of(context).textTheme.headline3,
+                              children: [
+                                TextSpan(text: 'Social',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                                TextSpan(text: " Distancing",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent,fontSize: 28))
+                              ]
+                          ),
+                        ),
+                        IconButton(
+                            icon: animatePress ? Transform.rotate(
+                              angle: 180 * math.pi / 180,
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.filter_list_sharp,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: (){
+                                    if (_animationController.value == 0.0) {
+                                      _animationController.forward();
+                                    } else {
+                                      _animationController.reverse();
+                                      setState(() {
+                                        animatePress = !animatePress;
+                                      });
+                                    }
+                                  }),
+                            ) :  Icon(Icons.filter_list_sharp,color: Colors.white,),
+                            iconSize: 30,
+                            onPressed: (){
+                              if (_animationController.value == 0.0) {
+                                _animationController.forward();
+                              } else {
+                                _animationController.reverse();
+                                setState(() {
+                                  animatePress = !animatePress;
+                                });
+                              }
+                            }),
+                      ],
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: <Widget>[
-                            TileCard(country: 'Nature Park', text: 'Bike Ride',),
-                            TileCard(country: 'Hiking Trails',text: 'Hike',),
-                            TileCard(country: 'Riverbed',text: 'Rent a Canoe',),
-                            TileCard(country: 'Park', text: 'Have a picnic',)
-                          ],
-                        ),
-                      ),
+                      child: AdTileCard(),
                     ),
                   ],
                 ),
               ),
             ),
-            // Flexible(
-            //   flex: 1,
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       RichText(
-            //         text: TextSpan(
-            //             style: Theme.of(context).textTheme.headline3,
-            //             children: [
-            //               TextSpan(text: 'Popular',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-            //               TextSpan(text: " Destinations",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purpleAccent,fontSize: 28))
-            //             ]
-            //         ),
-            //       ),
-            //       Expanded(
-            //         child: SingleChildScrollView(
-            //           scrollDirection: Axis.horizontal,
-            //           child: Row(
-            //             children: <Widget>[
-            //               TileCard(country: 'The Bahamas', text: 'Sunbath on the beach',),
-            //               TileCard(country: 'Hawaii',text: 'Snorkel in Waikiki',),
-            //               TileCard(country: 'Brazil',text: 'Visit Cristo!',),
-            //               TileCard(country: 'Mexico', text: 'Party in Cabo',)
-            //             ],
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // )
           ],
         ),
       ),
     );
   }
 }
-class TileCard extends StatelessWidget {
-  final String country;
-  final String text;
 
-  const TileCard({Key key, this.country, this.text}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 25, bottom: 10, top: 5),
-      height: 75,
-      width: 200,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          // boxShadow: [BoxShadow(
-          //   offset: Offset(0, 10),
-          //   blurRadius: 33,
-          //   color: Color(Colors.blueGrey.value).withOpacity(.84),
-          //   spreadRadius: 5,
-          // )
-          // ]
-      ),
-      child: ListTile(
-        title: Text(country,style: Theme.of(context).textTheme.headline2,),
-        subtitle: Text(text,style: Theme.of(context).textTheme.subtitle1,maxLines: 1, overflow: TextOverflow.ellipsis,),
-        onTap: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddTrip()),
-          );
-        },
-      ),
-    );
-  }
-}
 
 class SliverGridList extends StatefulWidget {
 
@@ -228,7 +205,7 @@ class _SliverGridListState extends State<SliverGridList> {
     return Flexible(
       flex: 1,
       child: Container(
-        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
         height: MediaQuery.of(context).size.height * .6,
         // width: MediaQuery.of(context).size.width,
         child: CustomScrollView(
@@ -259,13 +236,14 @@ Widget TripCard3(BuildContext context, Trip trip) {
   }
 
   return InkWell(
+    key: Key(trip.documentId),
     splashColor: Colors.blue.withAlpha(30),
 
     child: Container (
-      margin: EdgeInsets.only(left: 25, bottom: 20, top: 10),
+      margin: const EdgeInsets.only(left: 25, bottom: 20, top: 10),
       decoration: BoxDecoration(
-          color: Color(0xAA2D3D49),
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+          color: const Color(0xAA2D3D49),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
       ),
       child: Column(
         children: [
@@ -288,7 +266,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
             flex: 2,
               child: ListTile(
                 title: Text('${trip.startDate}',style: Theme.of(context).textTheme.headline5,),
-                subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.headline5,),
+                subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -313,8 +291,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
-
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
         ],
       ),
     ),

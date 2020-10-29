@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
-
 import 'analytics_service.dart';
 
 var userService = locator<UserService>();
@@ -38,6 +36,9 @@ class DatabaseService {
   final CollectionReference uniqueCollection = FirebaseFirestore.instance.collection('unique');
   final CollectionReference feedbackCollection = FirebaseFirestore.instance.collection('feedback');
   final CollectionReference reportsCollection = FirebaseFirestore.instance.collection('reports');
+  final CollectionReference adsCollection = FirebaseFirestore.instance.collection('tripAds');
+
+
 
 
 
@@ -165,7 +166,7 @@ class DatabaseService {
   // Add new trip
   Future addNewTripData(List<String> accessUsers, String comment,
       String endDate, String firstName, String lastName, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location,
-      String startDate, String travelType, File urlToImage)
+      String startDate, String travelType, File urlToImage, GeoPoint geoPoint, String tripName)
   async {
 
     var key = tripsCollectionUnordered.doc().id;
@@ -187,6 +188,8 @@ class DatabaseService {
               'ownerID': userService.currentUserID,
               'startDate': startDate,
               'startDateTimeStamp': startDateTimeStamp,
+              'tripName': tripName,
+              'tripGeoPoint': geoPoint,
               'travelType': travelType,
               'urlToImage': '',
             });
@@ -225,6 +228,8 @@ class DatabaseService {
           'ownerID': userService.currentUserID,
           'startDate': startDate,
            'startDateTimeStamp': startDateTimeStamp,
+           'tripName': tripName,
+           'tripGeoPoint': geoPoint,
           'travelType': travelType,
           'urlToImage': '',
         });
@@ -318,6 +323,8 @@ class DatabaseService {
               'ownerID': trip.ownerID,
               'startDate': trip.startDate,
               'startDateTimeStamp': trip.startDateTimeStamp,
+              'tripName': trip.tripName,
+              'tripGeoPoint': trip.tripGeoPoint,
               'travelType': trip.travelType,
               'urlToImage': trip.urlToImage,
             });
@@ -350,6 +357,8 @@ class DatabaseService {
           'ownerID': trip.ownerID,
           'startDate': trip.startDate,
           'startDateTimeStamp': trip.startDateTimeStamp,
+          'tripName': trip.tripName,
+          'tripGeoPoint': trip.tripGeoPoint,
           'travelType': trip.travelType,
           'urlToImage': trip.urlToImage,
         });
@@ -371,21 +380,33 @@ class DatabaseService {
 
 
 // Edit Trip
-  Future editTripData(String comment, String documentID, String endDate, Timestamp endDateTimeStamp,
-      bool ispublic, String location, String startDate, Timestamp startDateTimeStamp, String travelType, File urlToImage)
+  Future editTripData(
+      String comment,
+      String documentID,
+      String endDate,
+      Timestamp endDateTimeStamp,
+      bool ispublic,
+      String location,
+      String startDate,
+      Timestamp startDateTimeStamp,
+      String travelType,
+      File urlToImage,
+      String tripName,
+      GeoPoint tripGeoPoint)
   async {
     var addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
 
 
     await addTripRef.update({
       "comment": comment,
-      // 'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
       "endDate": endDate,
       "endDateTimeStamp": endDateTimeStamp,
       "ispublic": ispublic,
       "location": location,
       "startDate": startDate,
       'startDateTimeStamp': startDateTimeStamp,
+      'tripName': tripName,
+      'tripGeoPoint': tripGeoPoint,
       "travelType": travelType,
     });
     if (urlToImage != null) {
@@ -409,7 +430,7 @@ class DatabaseService {
   // Get following list
   Stream<List<UserProfile>> retrieveFollowingList() async*{
       var user = await usersList();
-      final followingList =
+      var followingList =
           user.where((user) => currentUserProfile.following.contains(user.uid)).toList();
 
     yield followingList;
@@ -512,6 +533,8 @@ class DatabaseService {
           ownerID: data['ownerID'] ?? '',
           startDate: data['startDate'] ?? '',
           startDateTimeStamp: data['startDateTimeStamp'],
+          tripGeoPoint: data['tripGeoPoint'] ?? null,
+          tripName: data['tripName'] ?? '',
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
@@ -537,6 +560,8 @@ class DatabaseService {
         ownerID: data['ownerID'] ?? '',
         startDate: data['startDate'] ?? '',
         startDateTimeStamp: data['startDateTimeStamp'],
+        tripGeoPoint: data['tripGeoPoint'] ?? null,
+        tripName: data['tripName'] ?? '',
         travelType: data['travelType'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
       );
@@ -562,6 +587,8 @@ class DatabaseService {
         ownerID: data['ownerID'] ?? '',
         startDate: data['startDate'] ?? '',
         startDateTimeStamp: data['startDateTimeStamp'],
+        tripGeoPoint: data['tripGeoPoint'] ?? null,
+        tripName: data['tripName'] ?? '',
         travelType: data['travelType'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
       );
@@ -596,6 +623,8 @@ class DatabaseService {
           ownerID: data['ownerID'] ?? '',
           startDate: data['startDate'] ?? '',
           startDateTimeStamp: data['startDateTimeStamp'],
+          tripGeoPoint: data['tripGeoPoint'] ?? null,
+          tripName: data['tripName'] ?? '',
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
@@ -604,7 +633,9 @@ class DatabaseService {
 
   // Add new lodging
 
-  Future addNewLodgingData(String comment, String displayName, String documentID, String link, String lodgingType, String uid, File urlToImage, String tripName) async {
+  Future addNewLodgingData(String comment, String displayName, String documentID,
+      String link, String lodgingType, String uid, File urlToImage, String tripName,
+      String startTime, String endTime) async {
 
     var key = lodgingCollection.doc().id;
     print(documentID);
@@ -613,13 +644,14 @@ class DatabaseService {
     addNewLodgingRef.set(
       {'comment': comment,
         'displayName': displayName,
+        'endTime': endTime,
         'fieldID': key,
         'link': link,
         'lodgingType' : lodgingType,
         'tripName': tripName,
+        'startTime': startTime,
         'uid': uid,
         'urlToImage': '',
-        'vote': 0,
         'voters': [],
     });
 
@@ -643,7 +675,8 @@ class DatabaseService {
 
   // Edit Lodging
   Future editLodgingData(String comment, String displayName, String documentID,
-      String link, String lodgingType, File urlToImage, String fieldID) async {
+      String link, String lodgingType, File urlToImage, String fieldID,
+      String startTime, String endTime) async {
 
     var editLodgingRef = lodgingCollection.doc(documentID).collection('lodging').doc(fieldID);
 
@@ -654,7 +687,8 @@ class DatabaseService {
             'link': link,
             'lodgingType' : lodgingType,
             'urlToImage': '',
-
+            'startTime': startTime,
+            'endTime': endTime,
 
           });
     } catch (e) {
@@ -687,7 +721,8 @@ class DatabaseService {
 
 // Add new activity
   Future addNewActivityData(String comment, String displayName, String documentID,
-      String link, String activityType, String uid, File urlToImage, String tripName) async {
+      String link, String activityType, String uid, File urlToImage, String tripName,
+      String startTime, String endTime) async {
     var key = activitiesCollection.doc().id;
 
     var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(key);
@@ -702,8 +737,9 @@ class DatabaseService {
         'tripName': tripName,
         'uid': uid,
         'urlToImage': '',
-        'vote': 0,
         'voters': [],
+        'startTime': startTime,
+        'endTime': endTime,
       });
     } catch (e) {
       print('Error adding new activity: ${e.toString()}');
@@ -734,7 +770,8 @@ class DatabaseService {
 
   // Edit activity
   Future editActivityData(String comment, String displayName, String documentID,
-      String link, String activityType, File urlToImage, String fieldID) async {
+      String link, String activityType, File urlToImage, String fieldID,
+      String startTime, String endTime) async {
 
     var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(fieldID);
 
@@ -745,7 +782,8 @@ class DatabaseService {
         'link': link,
         'activityType' : activityType,
         'urlToImage': '',
-
+        'startTime': startTime,
+        'endTime': endTime,
 
       });
     } catch (e) {
@@ -784,9 +822,10 @@ class DatabaseService {
         displayName: data['displayName'] ?? '',
         fieldID: data['fieldID'] ?? '',
         link: data['link'] ?? '',
+        endTime: data['endTime'] ?? '',
+        startTime: data['startTime'] ?? '',
         uid: data['uid'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
-        vote: data['vote'] ?? 0,
         voters: List<String>.from(data['voters']) ?? [''],
       );
     }).toList();
@@ -806,10 +845,11 @@ class DatabaseService {
         activityType: data['activityType'] ?? '',
         displayName: data['displayName'] ?? '',
         fieldID: data['fieldID'] ?? '',
+        endTime: data['endTime'] ?? '',
+        startTime: data['startTime'] ?? '',
         link: data['link'] ?? '',
         uid: data['uid'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
-        vote: data['vote'] ?? 0,
         voters: List<String>.from(data['voters']) ?? [''],
       );
     }).toList();
@@ -956,6 +996,8 @@ class DatabaseService {
           ownerID: data['ownerID'] ?? '',
           startDate: data['startDate'] ?? '',
           startDateTimeStamp: data['startDateTimeStamp'],
+          tripGeoPoint: data['tripGeoPoint'] ?? null,
+          tripName: data['tripName'] ?? '',
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
@@ -973,7 +1015,7 @@ class DatabaseService {
   }
 
   Stream<List<Trip>> get favoriteTrips {
-    return tripCollection.where('favorite', arrayContainsAny: [uid]).snapshots()
+    return tripCollection.where('favorite', arrayContainsAny: [userService.currentUserID]).snapshots()
         .map(_tripListFromSnapshot);
   }
 
@@ -1009,7 +1051,7 @@ class DatabaseService {
   }
 
   Stream<List<NotificationData>> get notificationList {
-    return notificationCollection.doc(uid).collection('notifications').orderBy('timestamp', descending: true).snapshots().map(_notificationListFromSnapshot);
+    return notificationCollection.doc(userService.currentUserID).collection('notifications').orderBy('timestamp', descending: true).snapshots().map(_notificationListFromSnapshot);
   }
 
 
@@ -1124,4 +1166,43 @@ class DatabaseService {
   //     print(e.toString());
   //   }
   // }
+
+  // Get all Ads
+  List<TripAds> _adListFromSnapshot(QuerySnapshot snapshot){
+
+      return snapshot.docs.map((doc){
+        Map<String, dynamic> data = doc.data();
+        return TripAds(
+          tripName: data['tripName'] ?? '',
+          documentID: data['documentID'] ?? '',
+          link: data['link'] ?? '',
+          location: data['location'] ?? '',
+          dateCreated: data['dateCreated'] ?? null,
+          clicks: data['clicks'] ?? 0,
+          favorites: List<String>.from(data['favorites']) ?? null,
+          clickers: List<String>.from(data['clickers']) ?? null,
+          urlToImage: data['urlToImage'] ?? '',
+        );
+      }).toList();
+
+  }
+
+  Stream<List<TripAds>> get adList {
+      return adsCollection.snapshots().map(_adListFromSnapshot);
+  }
+
+  Future createAd() async {
+    var key = adsCollection.doc().id;
+    return await adsCollection.doc(key).set({
+      'tripName': 'Cathedral Rock',
+      'documentID' : key,
+      'location': 'Sedona, Arizona',
+      'dateCreated': FieldValue.serverTimestamp(),
+      'clicks' : 0,
+      'favorites': [],
+      'clickers': [],
+      'urlToImage': 'https://www.tripstodiscover.com/wp-content/uploads/2016/10/bigstock-Cathedral-Rock-in-Sedona-Ariz-92403158-3-1.jpg',
+    });
+  }
+
 }

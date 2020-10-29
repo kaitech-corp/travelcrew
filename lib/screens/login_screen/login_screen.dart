@@ -67,7 +67,7 @@ class LoginPage extends StatefulWidget {
                              setState(() =>error = '');
                            },
                            obscureText: false,
-                           decoration: InputDecoration(
+                           decoration: const InputDecoration(
                              border: OutlineInputBorder(),
                              labelText: "Email",
                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
@@ -88,7 +88,7 @@ class LoginPage extends StatefulWidget {
                              }
                            },
                            obscureText: true,
-                           decoration: InputDecoration(
+                           decoration: const InputDecoration(
                              border: OutlineInputBorder(),
                              labelText: "Password",
                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)
@@ -155,9 +155,9 @@ class LoginPage extends StatefulWidget {
                          mainAxisAlignment: MainAxisAlignment.center,
                          crossAxisAlignment: CrossAxisAlignment.center,
                          children: <Widget>[
-                           Text('No account?',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                           const Text('No account?',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                            FlatButton(
-                             child: Text('Sign up here!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                             child: const Text('Sign up here!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                              textColor: Colors.lightBlue,
                              onPressed: (){
                                Navigator.push(
@@ -173,7 +173,7 @@ class LoginPage extends StatefulWidget {
                    Flexible(
                      flex: 1,
                      child: FlatButton(
-                       child: Text('Forgot Password?',),
+                       child: const Text('Forgot Password?',),
                        textColor: Colors.lightBlue,
                        onPressed: (){
                          TravelCrewAlertDialogs().resetPasswordDialog(context);
@@ -210,7 +210,7 @@ class LoginPage extends StatefulWidget {
         },
         shape: CircleBorder(),
         highlightElevation: 0,
-        borderSide: BorderSide(color: Colors.grey),
+        borderSide: const BorderSide(color: Colors.grey),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: Row(
@@ -218,16 +218,6 @@ class LoginPage extends StatefulWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image(image: AssetImage("assets/images/google_logo.png"), height: 25.0),
-//              Padding(
-//                padding: const EdgeInsets.only(left: 10),
-//                child: Text(
-//                  'Sign in with Google',
-//                  style: TextStyle(
-//                    fontSize: 20,
-//                    color: Colors.grey,
-//                  ),
-//                ),
-//              )
             ],
           ),
         ),
@@ -242,7 +232,7 @@ class LoginPage extends StatefulWidget {
         },
         shape: CircleBorder(),
         highlightElevation: 0,
-        borderSide: BorderSide(color: Colors.grey),
+        borderSide: const BorderSide(color: Colors.grey),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: Row(
@@ -250,16 +240,6 @@ class LoginPage extends StatefulWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image(image: AssetImage("assets/images/apple_logo.png"), height: 25.0),
-//              Padding(
-//                padding: const EdgeInsets.only(left: 10),
-//                child: Text(
-//                  'Sign in with Google',
-//                  style: TextStyle(
-//                    fontSize: 20,
-//                    color: Colors.grey,
-//                  ),
-//                ),
-//              )
             ],
           ),
         ),

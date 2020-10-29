@@ -22,6 +22,7 @@ class LodgingItemLayout extends StatelessWidget {
     
 
     return Center(
+        key: Key(lodging.fieldID),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
@@ -48,16 +49,16 @@ class LodgingItemLayout extends StatelessWidget {
                   )
                   ]),
               child: Container(
-                margin: EdgeInsets.only(left: 10,top: 10, right: 10, bottom: 10),
+                margin: const EdgeInsets.only(left: 10,top: 10, right: 10, bottom: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Text('${lodging.lodgingType}',style: Theme.of(context).textTheme.headline4,),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(bottom: 4.0),
                     ),
                     Text('Comment: ${lodging.comment}',style: Theme.of(context).textTheme.subtitle1,),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
                     ),
                     Row(
@@ -97,9 +98,9 @@ class LodgingItemLayout extends StatelessWidget {
   }
   favorite(String uid){
     if (lodging.voters.contains(uid)){
-      return Icon(Icons.favorite);
+      return const Icon(Icons.favorite);
     } else {
-      return Icon(Icons.favorite_border);
+      return const Icon(Icons.favorite_border);
     }
   }
 
@@ -138,22 +139,22 @@ class LodgingItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Edit'),
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: Icon(Icons.people),
-            title: Text('View Link'),
+            leading: const Icon(Icons.people),
+            title: const Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Delete Lodging'),
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Delete Lodging'),
           ),
         ),
       ],
@@ -187,15 +188,15 @@ class LodgingItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
-            leading: Icon(Icons.report),
-            title: Text('Report'),
+            leading: const Icon(Icons.report),
+            title: const Text('Report'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: Icon(Icons.people),
-            title: Text('View Link'),
+            leading: const Icon(Icons.people),
+            title: const Text('View Link'),
           ),
         ),
       ],

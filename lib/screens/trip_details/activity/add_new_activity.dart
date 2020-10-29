@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class AddNewActivity extends StatefulWidget {
 
@@ -16,10 +17,15 @@ class AddNewActivity extends StatefulWidget {
   AddNewActivity({this.trip});
 
   @override
-  _AddNewActivityState createState() => _AddNewActivityState();
+  AddNewActivityState createState() => AddNewActivityState();
 
 }
-class _AddNewActivityState extends State<AddNewActivity> {
+TimeOfDay timeStart = TimeOfDay.now();
+TimeOfDay timeEnd = TimeOfDay.now();
+final ValueNotifier<String> startTime = ValueNotifier('');
+final ValueNotifier<String> endTime = ValueNotifier('');
+
+class AddNewActivityState extends State<AddNewActivity> {
 
   final _formKey = GlobalKey<FormState>();
   String activityType = '';
@@ -27,16 +33,18 @@ class _AddNewActivityState extends State<AddNewActivity> {
   String link = '';
   File _image;
   File urlToImage;
-  final ImagePicker _picker = ImagePicker();
 
-  Future getImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+  bool timePickerVisible = false;
+  // final ImagePicker _picker = ImagePicker();
 
-    setState(() {
-      _image = File(image.path);
-      urlToImage = _image;
-    });
-  }
+  // Future getImage() async {
+  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+  //
+  //   setState(() {
+  //     _image = File(image.path);
+  //     urlToImage = _image;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +52,10 @@ class _AddNewActivityState extends State<AddNewActivity> {
 
     return loading ? Loading() : Scaffold(
         appBar: AppBar(
-          title: Text('Add Activity'),
+          title: const Text('Add Activity'),
         ),
         body: SingleChildScrollView(
+          padding: const EdgeInsets.all(10),
           child: Builder(
             builder: (context) => Form(
               key: _formKey,
@@ -54,18 +63,15 @@ class _AddNewActivityState extends State<AddNewActivity> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    ),
                     TextFormField(
                       onChanged: (val){
                         setState(() => activityType = val);
                       },
                       enableInteractiveSelection: true,
                       textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: "snorkeling, festival, restuarant, etc",
+                        labelText: "snorkeling, festival, restaurant, etc",
                       ),
                       // ignore: missing_return
                       validator: (value) {
@@ -74,7 +80,7 @@ class _AddNewActivityState extends State<AddNewActivity> {
                         }
                       },
                     ),
-                    Padding(
+                    const Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                     ),
                     TextFormField(
@@ -83,18 +89,18 @@ class _AddNewActivityState extends State<AddNewActivity> {
                       },
                       enableInteractiveSelection: true,
                       maxLines: 2,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Link",
                       ),
                       // ignore: missing_return
                       validator: (value) {
                         if ( value.isNotEmpty && !value.startsWith('https')){
-                          return 'Please enter a valide link with including https.';
+                          return 'Please enter a valid link with including https.';
                         }
                       },
                     ),
-                    Padding(
+                    const Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                     ),
                     TextFormField(
@@ -104,11 +110,14 @@ class _AddNewActivityState extends State<AddNewActivity> {
                       enableInteractiveSelection: true,
                       textCapitalization: TextCapitalization.words,
                       obscureText: false,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Description",
                       ),
                       maxLines: 5,
+                    ),
+                    const Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                     ),
 //                     Padding(
 //                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -133,6 +142,25 @@ class _AddNewActivityState extends State<AddNewActivity> {
 // //                              tooltip: 'Pick Image',
 //                       child: Icon(Icons.add_a_photo),
 //                     ),
+                    timePickerVisible ? TimePickers()
+                    : Container(
+                      width: SizeConfig.screenWidth*.25,
+                      child: ButtonTheme(
+                        child: RaisedButton(
+                          shape:  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'Start/End Time',
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              timePickerVisible = true;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 30),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -149,10 +177,21 @@ class _AddNewActivityState extends State<AddNewActivity> {
                             String uid = widget.userService.currentUserID;
                             String tripName = widget.trip.location;
                             setState(() => loading =true);
-                            String message = 'A new activity has been added to ${widget.trip.location}';
+                            String message = 'A new activity has been added to ${widget.trip.tripName}';
                             bool ispublic = widget.trip.ispublic;
 
-                            await DatabaseService().addNewActivityData(comment, displayName, documentID, link, activityType, uid, urlToImage, tripName);
+                            await DatabaseService().addNewActivityData(
+                                comment,
+                                displayName,
+                                documentID,
+                                link,
+                                activityType,
+                                uid,
+                                urlToImage,
+                                tripName,
+                                startTime.value,
+                                endTime.value
+                            );
                             widget.trip.accessUsers.forEach((f)  =>  CloudFunction().addNewNotification(
                               message: message,
                               documentID: documentID,

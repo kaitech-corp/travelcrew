@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/admin/admin_page.dart';
-import 'package:travelcrew/screens/menu_screens/help/help.dart';
-import 'package:travelcrew/screens/menu_screens/users/users.dart';
-import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
@@ -22,24 +19,15 @@ class MainMenuButtons extends StatelessWidget{
       onSelected: (value) async{
         switch (value){
           case "profile": {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
-            );
+            Navigator.pushNamed(context, '/profilePage');
           }
           break;
           case "users": {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Users()),
-            );
+            Navigator.pushNamed(context, '/usersFromMenu');
           }
           break;
           case "help": {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HelpPage()),
-            );
+            Navigator.pushNamed(context, '/help');
           }
           break;
           case "signout": {
@@ -65,22 +53,22 @@ class MainMenuButtons extends StatelessWidget{
         const PopupMenuItem(
           value: 'users',
           child: ListTile(
-            leading: Icon(Icons.people),
-            title: Text('TC Members'),
+            leading: const Icon(Icons.people),
+            title: const Text('TC Members'),
           ),
         ),
         const PopupMenuItem(
           value: 'help',
           child: ListTile(
-            leading: Icon(Icons.info),
-            title: Text('Help & Feedback'),
+            leading: const Icon(Icons.info),
+            title: const Text('Help & Feedback'),
           ),
         ),
         const PopupMenuItem(
           value: 'signout',
           child: ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Signout'),
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Signout'),
           ),
         ),
       ],
@@ -97,75 +85,68 @@ class MenuDrawer extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Drawer(
-      child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            // child: Align(alignment: Alignment.bottomCenter ,child: Text('Menu')),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white,
-                width: defaultSize * 0.25, //8
-              ),
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: (currentUserProfile.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) :
-                AssetImage(profileImagePlaceholder)
-              ),
+    return SafeArea(
+      child: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              // child: Align(alignment: Alignment.bottomCenter ,child: Text('Menu')),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: defaultSize * 0.3, //8
+                ),
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: (currentUserProfile.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) :
+                  AssetImage(profileImagePlaceholder)
+                ),
+              ), child: const Text('TC'),
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text('${currentUserProfile.displayName}'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.people),
-            title: Text('TC Members'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Users()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.info),
-            title: Text('Help & Feedback'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HelpPage()),
-              );
-            },
-          ),
-          if(currentUserProfile.uid.contains('XCVzgl7xIG3')) ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () {
-              if(currentUserProfile.uid.contains('XCVzgl7xIG3')) Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Signout'),
-            onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (route) => false);
-              _auth.logOut();
-            },
-          ),
-        ],
+            ListTile(
+              leading: const Icon(Icons.account_circle),
+              title: Text('${currentUserProfile.displayName}'),
+              onTap: () {
+                Navigator.pushNamed(context, '/profilePage');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: Text('TC Members'),
+              onTap: () {
+                Navigator.pushNamed(context, '/usersFromMenu');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: Text('Help & Feedback'),
+              onTap: () {
+                Navigator.pushNamed(context, '/help');
+              },
+            ),
+            if(currentUserProfile.uid.contains('XCVzgl7xIG3')) ListTile(
+              leading: const Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                if(currentUserProfile.uid.contains('XCVzgl7xIG3')) Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdminPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: Text('Signout'),
+              onTap: () {
+                Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (route) => false);
+                _auth.logOut();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

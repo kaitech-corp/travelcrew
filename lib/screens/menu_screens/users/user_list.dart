@@ -26,11 +26,7 @@ class _UserListState extends State<UserList> {
       _isSearching = !_isSearching;
     });
   }
-@override
-  void initState() {
-    super.initState();
 
-  }
   @override
   Widget build(BuildContext context) {
     bool loading = true;
@@ -61,7 +57,7 @@ class _UserListState extends State<UserList> {
       appBar: AppBar(
         title: Text('Users',style: Theme.of(context).textTheme.headline3,),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search),
+          IconButton(icon: const Icon(Icons.search),
           onPressed: (){
             pressedSearch();
           },)

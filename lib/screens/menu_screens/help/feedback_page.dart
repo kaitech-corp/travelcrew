@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 
 class FeedbackPage extends StatefulWidget{
   @override
@@ -34,15 +35,15 @@ class _FeedbackPageState extends State<FeedbackPage> {
             title: Text('Feedback',style: Theme.of(context).textTheme.headline3,),
           ),
           body: Container(
-            padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             height: MediaQuery.of(context).size.height *.5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(padding: EdgeInsets.only(top: 5),),
+                const Padding(padding: EdgeInsets.only(top: 5),),
                 Text('Feel free to share your thoughts with us.',style: Theme.of(context).textTheme.headline2,),
                 _buildTextField(),
-                Center(child: Text('Interested in collaborating? Email KaiTech2020@gmail.com directly.',style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,)),
+                Center(child: Text(collaboratingText,style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,)),
                 const SizedBox(height: 30),
                 Center(
                   child: RaisedButton(
@@ -56,11 +57,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: <Color>[
-                            Color(0xFF0D47A1),
-                            Color(0xFF1976D2),
-                            Color(0xFF42A5F5),
+                            const Color(0xFF0D47A1),
+                            const Color(0xFF1976D2),
+                            const Color(0xFF42A5F5),
                           ],
                         ),
                       ),
@@ -81,7 +82,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     final maxLines = 5;
 
     return Container(
-      margin: EdgeInsets.all(12),
+      margin: const EdgeInsets.all(12),
       height: maxLines * 24.0,
       child: TextField(
         autocorrect: true,
@@ -102,6 +103,4 @@ class _FeedbackPageState extends State<FeedbackPage> {
       ),
     );
   }
-
-
 }

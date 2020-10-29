@@ -7,6 +7,7 @@ import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/services/badge_icon.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'explore_owner_layout.dart';
 import 'members/members_layout.dart';
@@ -19,7 +20,7 @@ class Explore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final chatNotifications = Provider.of<List<ChatData>>(context);
+    // final chatNotifications = Provider.of<List<ChatData>>(context);
 
     return DefaultTabController(
       length: 5,
@@ -27,10 +28,10 @@ class Explore extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           leading: MainMenuButtons(),
-          title: Text('${trip.location}'.toUpperCase(),style: Theme.of(context).textTheme.headline3,),
+          title: Text('${trip.tripName ?? trip.location}'.toUpperCase(),style: Theme.of(context).textTheme.headline3,),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: (){
                 Navigator.of(context).pop();
               },
@@ -41,19 +42,16 @@ class Explore extends StatelessWidget {
             labelStyle: Theme.of(context).textTheme.subtitle2,
             isScrollable: true,
             tabs: [
-              Tab(text: 'Explore',
-              icon: Icon(Icons.assignment),),
-              Tab(text: 'Crew',
-                icon: Icon(Icons.people),),
-              Tab(text: 'Lodging',
-                icon: Icon(Icons.hotel),),
-              Tab(text: 'Activities',
-                icon: Icon(Icons.directions_bike),),
+              const Tab(text: 'Explore',
+              icon: const Icon(Icons.assignment),),
+              const Tab(text: 'Crew',
+                icon: const Icon(Icons.people),),
+              const Tab(text: 'Lodging',
+                icon: const Icon(Icons.hotel),),
+              const Tab(text: 'Activities',
+                icon: const Icon(Icons.directions_bike),),
               Tab(text: 'Chat',
-                icon: BadgeIcon(
-                  icon: Icon(Icons.chat),
-                  badgeCount: chatNotifications !=null ? chatNotifications.length : 0,
-                ),),
+                icon: getChatNotificationBadge()),
             ],
           ),
         ),
@@ -76,6 +74,36 @@ class Explore extends StatelessWidget {
   } else {
   return ExploreMemberLayout(tripDetails: trip,);
   }
+}
+
+Widget getChatNotificationBadge (){
+    return StreamBuilder(
+        builder: (context, chats){
+          if(chats.hasData){
+            if(chats.data.length > 0) {
+              int chatNotifications = chats.data.length;
+              return Tooltip(
+                message: 'Messages',
+                child: BadgeIcon(
+                  icon: const Icon(Icons.chat),
+                  badgeCount: chatNotifications,
+                ),
+              );
+            } else {
+              return BadgeIcon(
+                icon: const Icon(Icons.chat),
+                badgeCount: 0,
+              );
+            }
+          } else {
+            return BadgeIcon(
+              icon: const Icon(Icons.chat),
+              badgeCount: 0,
+            );
+          }
+        },
+      stream: DatabaseService(tripDocID: trip.documentId).chatListNotification,
+    );
 }
 }
 

@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/database.dart';
-
 import '../../loading.dart';
 
 
@@ -38,7 +37,7 @@ class _SignupScreenState extends State {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        appBar: AppBar(title: Text('Edit Profile')),
+        appBar: AppBar(title: const Text('Edit Profile')),
         body: StreamBuilder<UserProfile>(
             stream: DatabaseService().currentUserPublicProfile,
             builder: (context, snapshot) {
@@ -46,7 +45,7 @@ class _SignupScreenState extends State {
                 UserProfile user = snapshot.data;
                 return SingleChildScrollView(
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: Builder(
                           builder: (context) => Form(
                               key: _formKey,
@@ -55,7 +54,7 @@ class _SignupScreenState extends State {
                                   children: [
                                     TextFormField(
                                         decoration:
-                                        InputDecoration(labelText: 'First Name'),
+                                        const InputDecoration(labelText: 'First Name'),
                                         textCapitalization: TextCapitalization.words,
                                         inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                         initialValue: user.firstName,
@@ -69,7 +68,7 @@ class _SignupScreenState extends State {
                                             setState(() => _user.firstName = val)),
                                     TextFormField(
                                       decoration:
-                                      InputDecoration(labelText: 'Last Name'),
+                                      const InputDecoration(labelText: 'Last Name'),
                                       textCapitalization: TextCapitalization.words,
                                       inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                       initialValue: user.lastName,
@@ -86,7 +85,7 @@ class _SignupScreenState extends State {
                                     TextFormField(
                                         initialValue: user.displayName,
                                         decoration:
-                                        InputDecoration(labelText: 'Display Name'),
+                                        const InputDecoration(labelText: 'Display Name'),
                                         // ignore: missing_return
                                         validator: (value) {
                                           // ignore: missing_return, missing_return
@@ -96,7 +95,7 @@ class _SignupScreenState extends State {
                                         },
                                         onSaved: (val) =>
                                             setState(() => _user.displayName = val)),
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.only(top: 20.0),
                                     ),
                                     user.urlToImage == null ? Container(
@@ -139,8 +138,7 @@ class _SignupScreenState extends State {
                                             },
                                             child: Text('Save'))
                                     ),
-
-                                    SizedBox(height: 10,),
+                                    const SizedBox(height: 10,),
                                     Column(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,

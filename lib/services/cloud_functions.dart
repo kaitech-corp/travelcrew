@@ -1,8 +1,11 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/locator.dart';
 
 class CloudFunction {
+
+  final Trace trace = FirebasePerformance.instance.newTrace("test");
 
   var userService = locator<UserService>();
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
@@ -10,6 +13,13 @@ class CloudFunction {
 
   //Add blank profile info
 
+  // void updateTrips(){
+  //   final HttpsCallable updateTrips = CloudFunctions.instance.getHttpsCallable(
+  //       functionName: 'updateTrips');
+  //   updateTrips({
+  //
+  //   });
+  // }
   void addCustomMember(){
     final HttpsCallable addCustomMember = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addCustomMember');
@@ -154,12 +164,14 @@ class CloudFunction {
   }
 
   void addFavoriteTrip(String docID) async {
+    trace.start();
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: "addFavoriteTrip");
     functionData({
       'docID': docID,
     }).then((value) => {
       _analyticsService.likedTrip(),
+      trace.stop(),
     });
   }
 

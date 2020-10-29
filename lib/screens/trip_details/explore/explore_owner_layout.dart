@@ -80,33 +80,33 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       const PopupMenuItem(
                         value: 'Edit',
                         child: ListTile(
-                          leading: Icon(Icons.edit),
-                          title: Text('Edit'),
+                          leading: const Icon(Icons.edit),
+                          title: const Text('Edit'),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 'Add',
                         child: ListTile(
-                          leading: Icon(Icons.person_add),
-                          title: Text('Add Member'),
+                          leading: const Icon(Icons.person_add),
+                          title: const Text('Add Member'),
                         ),
                       ),
                       PopupMenuItem(
                         value: 'Convert',
                         child: ListTile(
-                          leading: widget.tripDetails.ispublic ? Icon(Icons
-                              .do_not_disturb_on) : Icon(Icons
+                          leading: widget.tripDetails.ispublic ? const Icon(Icons
+                              .do_not_disturb_on) : const Icon(Icons
                               .do_not_disturb_off),
                           title: widget.tripDetails.ispublic
-                              ? Text('Make Private')
-                              : Text('Make Public'),
+                              ? const Text('Make Private')
+                              : const Text('Make Public'),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 'Delete',
                         child: ListTile(
-                          leading: Icon(Icons.exit_to_app),
-                          title: Text('Delete Trip'),
+                          leading: const Icon(Icons.exit_to_app),
+                          title: const Text('Delete Trip'),
                         ),
                       ),
                     ],
@@ -147,7 +147,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       : "No description provided",style: Theme.of(context).textTheme.subtitle1,),
                 ),
                 ListWidget(tripDetails: widget.tripDetails,),
-                Padding(padding: EdgeInsets.only(top: 5),),
+                const Padding(padding: EdgeInsets.only(top: 5),),
                 Container(height: 1,color: Colors.grey,),
                 BringListToDisplay(documentID: widget.tripDetails.documentId,),
 

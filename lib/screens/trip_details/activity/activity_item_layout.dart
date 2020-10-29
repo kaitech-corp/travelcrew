@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class ActivityItemLayout extends StatelessWidget {
 
@@ -17,6 +18,7 @@ class ActivityItemLayout extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Center(
+        key: Key(activity.fieldID),
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
@@ -31,29 +33,39 @@ class ActivityItemLayout extends StatelessWidget {
               );
             },
             child: Container(
-              width: MediaQuery.of(context).size.width *.9,
+              width: SizeConfig.screenWidth *.9,
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [BoxShadow(
-                    offset: Offset(0, 10),
+                    offset: const Offset(0, 10),
                     blurRadius: 33,
                     color: Color(Colors.blueGrey.value).withOpacity(.84),
                     spreadRadius: 5,
                   )
                   ]),
               child: Container(
-                margin: EdgeInsets.only(left: 10,top: 10, right: 10, bottom: 10),
+                margin: const EdgeInsets.only(left: 10,top: 10, right: 10, bottom: 10),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       Text('${activity.activityType}',style: Theme.of(context).textTheme.headline4,maxLines: 2,),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
                       Text('Comment: ${activity.comment}',style: Theme.of(context).textTheme.subtitle1,maxLines: 5,overflow: TextOverflow.ellipsis,),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
+                      ),
+                      Visibility(
+                        visible: activity.startTime.isNotEmpty,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Start: ${activity.startTime ?? ''}',style: Theme.of(context).textTheme.subtitle1,),
+                            Text('End: ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.subtitle1,),
+                          ],
+                        ),
                       ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -92,9 +104,9 @@ class ActivityItemLayout extends StatelessWidget {
   }
   favorite(String uid) {
     if (activity.voters.contains(uid)) {
-      return Icon(Icons.favorite);
+      return const Icon(Icons.favorite);
     } else {
-      return Icon(Icons.favorite_border);
+      return const Icon(Icons.favorite_border);
     }
   }
 
@@ -132,22 +144,22 @@ class ActivityItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Edit'),
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: Icon(Icons.people),
-            title: Text('View Link'),
+            leading: const Icon(Icons.people),
+            title: const Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Delete Activity'),
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Delete Activity'),
           ),
         ),
       ],
@@ -180,15 +192,15 @@ class ActivityItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
-            leading: Icon(Icons.report),
-            title: Text('Report'),
+            leading: const Icon(Icons.report),
+            title: const Text('Report'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: Icon(Icons.link),
-            title: Text('View Link'),
+            leading: const Icon(Icons.link),
+            title: const Text('View Link'),
           ),
         ),
       ],

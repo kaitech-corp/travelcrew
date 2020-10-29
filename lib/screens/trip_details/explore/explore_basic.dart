@@ -23,7 +23,7 @@ class ExploreBasic extends StatelessWidget {
             title: Text('${trip.location}'.toUpperCase(), style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: (){
                   Navigator.of(context).pop();
                 },

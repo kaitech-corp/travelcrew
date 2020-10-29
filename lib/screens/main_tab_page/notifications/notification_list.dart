@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
@@ -35,9 +34,9 @@ class _NotificationListState extends State<NotificationList> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.delete,
+                  const Icon(Icons.delete,
                   color: Colors.white,),
-                  Icon(Icons.delete,
+                  const Icon(Icons.delete,
                     color: Colors.white,),
                 ],
               )),
@@ -79,21 +78,3 @@ class _NotificationCountState extends State<NotificationCount> {
 
 }
 
-String readTimestamp(int timestamp) {
-  var now = new DateTime.now();
-  var format = new DateFormat('HH:mm a');
-  var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
-  var diff = date.difference(now);
-  var time = '';
-  if (diff.inDays == 0) {
-    time = format.format(date);
-  } else {
-    if ((diff.inDays).abs() == 1) {
-      time = '1 DAY AGO';
-    } else {
-      time = (diff.inDays).abs().toString() + ' DAYS AGO';
-    }
-  }
-
-  return time;
-}

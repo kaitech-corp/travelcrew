@@ -71,6 +71,7 @@ class Trip {
   final Timestamp endDateTimeStamp;
   final List<String> favorite;
   final bool ispublic;
+  final GeoPoint tripGeoPoint;
   final String tripName;
   final String location;
   final String ownerID;
@@ -79,7 +80,7 @@ class Trip {
   final String travelType;
   final String urlToImage;
 
-  Trip( {this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
+  Trip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
 }
 class PrivateTrip {
   final List<String> accessUsers;
@@ -91,6 +92,7 @@ class PrivateTrip {
   final Timestamp endDateTimeStamp;
   final List<String> favorite;
   final bool ispublic;
+  final GeoPoint tripGeoPoint;
   final String tripName;
   final String location;
   final String ownerID;
@@ -99,7 +101,7 @@ class PrivateTrip {
   final String travelType;
   final String urlToImage;
 
-  PrivateTrip({this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
+  PrivateTrip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
 }
 
 class UserProfile {
@@ -136,29 +138,33 @@ class FlightData {
 class LodgingData {
   final String comment;
   final String displayName;
+  final String endTime;
   final String fieldID;
   final String link;
   final String lodgingType;
+  final String startTime;
   final String uid;
   final String urlToImage;
   final int vote;
   final List<String> voters;
 
-  LodgingData({this.comment, this.displayName, this.fieldID, this.link, this.lodgingType, this.uid, this.urlToImage, this.vote, this.voters});
+  LodgingData({this.endTime, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.lodgingType, this.uid, this.urlToImage, this.vote, this.voters});
 }
 
 class ActivityData {
   final String comment;
   final String displayName;
+  final String endTime;
   final String fieldID;
   final String link;
   final String activityType;
+  final String startTime;
   final String uid;
   final String urlToImage;
   final int vote;
   final List<String> voters;
 
-  ActivityData({this.comment, this.displayName, this.fieldID, this.link, this.activityType, this.uid, this.urlToImage, this.vote, this.voters});
+  ActivityData({this.endTime, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.activityType, this.uid, this.urlToImage, this.vote, this.voters});
 }
 
 
@@ -304,4 +310,36 @@ class TCFeedback {
 
 class TCReports {
 
+}
+
+class GoogleData {
+  String location;
+  GeoPoint geoLocation;
+
+  GoogleData({this.location, this.geoLocation});
+}
+
+class TripAds {
+  final String tripName;
+  final GeoPoint geoPoint;
+  final String link;
+  final String location;
+  final Timestamp dateCreated;
+  final String documentID;
+  final List<String> favorites;
+  final int clicks;
+  final List<String> clickers;
+  final String urlToImage;
+
+  TripAds(
+      {this.link,
+        this.urlToImage,
+        this.tripName,
+      this.geoPoint,
+      this.location,
+      this.dateCreated,
+      this.documentID,
+      this.favorites,
+      this.clicks,
+      this.clickers});
 }

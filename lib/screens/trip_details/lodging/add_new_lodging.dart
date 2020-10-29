@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 import '../../../loading.dart';
 
 
@@ -29,6 +30,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   String link = '';
   // File _image;
   File urlToImage;
+  bool timePickerVisible = false;
   // final ImagePicker _picker = ImagePicker();
   //
   // Future getImage() async {
@@ -40,15 +42,17 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   //   });
   // }
 
+
   @override
   Widget build(BuildContext context) {
 
 
     return widget.loading ? Loading() : Scaffold(
       appBar: AppBar(
-        title: Text('Add Lodging'),
+        title: const Text('Add Lodging'),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
         child: Builder(
           builder: (context) => Form(
             key: _formKey,
@@ -56,15 +60,12 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                Container(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-              ),
               TextFormField(
                 onChanged: (val){
                   setState(() => lodgingType = val);
                 },
                 enableInteractiveSelection: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Hotel, Airbnb, etc",
                 ),
@@ -76,7 +77,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   }
                 },
               ),
-                  Padding(
+                  const Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                   ),
 
@@ -86,18 +87,18 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 },
                 enableInteractiveSelection: true,
                 maxLines: 2,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Link",
                 ),
                 // ignore: missing_return
                 validator: (value) {
                   if ( value.isNotEmpty && !value.startsWith('https')){
-                    return 'Please enter a valide link with including https.';
+                    return 'Please enter a valid link with including https.';
                   } 
                 },
               ),
-                  Padding(
+                  const Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                   ),
               TextFormField(
@@ -107,12 +108,12 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 enableInteractiveSelection: true,
                 textCapitalization: TextCapitalization.words,
                 obscureText: false,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Description",
                 ),
               ),
-                  Padding(
+                  const Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   ),
 //                   Container(
@@ -135,6 +136,23 @@ class _AddNewLodgingState extends State<AddNewLodging> {
 // //                              tooltip: 'Pick Image',
 //                     child: Icon(Icons.add_a_photo),
 //                   ),
+//               timePickerVisible ? TimePickers()
+//                   : ButtonTheme(
+//                 minWidth: 150,
+//                 child: RaisedButton(
+//                   shape:  RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(20),
+//                   ),
+//                   child: const Text(
+//                     'Arrive/Leave Time',
+//                   ),
+//                   onPressed: () {
+//                     setState(() {
+//                       timePickerVisible = true;
+//                     });
+//                   },
+//                 ),
+//               ),
               const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -150,9 +168,20 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                       String documentID = widget.trip.documentId;
                       String uid = widget.userService.currentUserID;
                       String tripName = widget.trip.location;
-                      String message = 'A new lodging has been added to ${widget.trip.location}';
+                      String message = 'A new lodging has been added to ${widget.trip.tripName}';
                       bool ispublic = widget.trip.ispublic;
-                      await DatabaseService().addNewLodgingData(comment, displayName, documentID, link, lodgingType, uid, urlToImage, tripName);
+                      await DatabaseService().addNewLodgingData(
+                          comment,
+                          displayName,
+                          documentID,
+                          link,
+                          lodgingType,
+                          uid,
+                          urlToImage,
+                          tripName,
+                          startTime.value,
+                          endTime.value,
+                      );
                       widget.trip.accessUsers.forEach((f)  =>  CloudFunction().addNewNotification(
                         message: message,
                         documentID: documentID,

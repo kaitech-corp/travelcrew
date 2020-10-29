@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 
 
 
@@ -25,15 +26,16 @@ class _EditLodgingState extends State<EditLodging> {
   final _formKey = GlobalKey<FormState>();
 
   File _image;
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
+  bool timePickerVisible = false;
 
-  Future getImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
-
-    setState(() {
-      _image = File(image.path);
-    });
-  }
+  // Future getImage() async {
+  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+  //
+  //   setState(() {
+  //     _image = File(image.path);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +46,16 @@ class _EditLodgingState extends State<EditLodging> {
     String link = widget.lodging.link;
     String lodgingType = widget.lodging.lodgingType;
     String comment = widget.lodging.comment;
+    String startTimeSaved = widget.lodging.startTime;
+    String endTimeSaved = widget.lodging.endTime;
 
 
     return loading ? Loading() : Scaffold(
         appBar: AppBar(
-          title: Text('Add Lodging'),
+          title: const Text('Edit Lodging'),
         ),
         body: SingleChildScrollView(
+          padding: EdgeInsets.all(10),
           child: Builder(
             builder: (context) => Form(
               key: _formKey,
@@ -58,16 +63,13 @@ class _EditLodgingState extends State<EditLodging> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    ),
                     TextFormField(
                       onSaved: (val){
                         setState(() => lodgingType = val);
                       },
                       enableInteractiveSelection: true,
                       initialValue: lodgingType,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Hotel, Airbnb, etc",
                       ),
@@ -78,7 +80,7 @@ class _EditLodgingState extends State<EditLodging> {
                         }
                       },
                     ),
-                    Padding(
+                    const Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                     ),
                     TextFormField(
@@ -88,18 +90,18 @@ class _EditLodgingState extends State<EditLodging> {
                       enableInteractiveSelection: true,
                       maxLines: 2,
                       initialValue: link,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Link",
                       ),
                       // ignore: missing_return
                       validator: (value) {
                         if ( value.isNotEmpty && !value.startsWith('https')){
-                          return 'Please enter a valide link with including https.';
+                          return 'Please enter a valid link with including https.';
                         }
                       },
                     ),
-                    Padding(
+                    const Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                     ),
                     TextFormField(
@@ -109,39 +111,68 @@ class _EditLodgingState extends State<EditLodging> {
                       enableInteractiveSelection: true,
                       obscureText: false,
                       initialValue: comment,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Description",
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    ),
-                    widget.lodging.urlToImage == null ? Container(
-                      child: _image == null
-                          ? Text('No image selected.')
-                          : Image.file(_image),
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width,
-                        maxHeight: 300,
-                      ),
-                    ):
-                    Container(
-                      child: _image == null
-                          ? Image.network(widget.lodging.urlToImage)
-                          : Image.file(_image),
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width,
-                        maxHeight: 300,
-                      ),
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        getImage();
-                      },
-//                              tooltip: 'Pick Image',
-                      child: Icon(Icons.add_a_photo),
-                    ),
+                    // timePickerVisible ?
+                    // TimePickers():
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Column(
+                    //       children: [
+                    //         Text('Start: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
+                    //         Text('Start: $endTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
+                    //       ],
+                    //     ),
+                    //     ButtonTheme(
+                    //       minWidth: 150,
+                    //       child: RaisedButton(
+                    //         shape:  RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(20),
+                    //         ),
+                    //         child: const Text(
+                    //           'Edit Time',
+                    //         ),
+                    //         onPressed: () {
+                    //           setState(() {
+                    //             timePickerVisible = true;
+                    //           });
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+//                     const Padding(
+//                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+//                     ),
+//                     widget.lodging.urlToImage == null ? Container(
+//                       child: _image == null
+//                           ? const Text('No image selected.')
+//                           : Image.file(_image),
+//                       constraints: BoxConstraints(
+//                         maxWidth: MediaQuery.of(context).size.width,
+//                         maxHeight: 300,
+//                       ),
+//                     ):
+//                     Container(
+//                       child: _image == null
+//                           ? Image.network(widget.lodging.urlToImage)
+//                           : Image.file(_image),
+//                       constraints: BoxConstraints(
+//                         maxWidth: MediaQuery.of(context).size.width,
+//                         maxHeight: 300,
+//                       ),
+//                     ),
+//                     RaisedButton(
+//                       onPressed: () {
+//                         getImage();
+//                       },
+// //                              tooltip: 'Pick Image',
+//                       child: const Icon(Icons.add_a_photo),
+//                     ),
                     const SizedBox(height: 30),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -153,11 +184,25 @@ class _EditLodgingState extends State<EditLodging> {
                             form.save();
                             String documentID = widget.trip.documentId;
                             String fieldID = widget.lodging.fieldID;
+                            if(!timePickerVisible){
+                              startTime.value = startTimeSaved;
+                              endTime.value = endTimeSaved;
+                            }
 
                             setState(() => loading =true);
-                            String message = 'A lodging option has been modified within ${widget.trip.location}';
+                            String message = 'A lodging option has been modified within ${widget.trip.tripName}';
 
-                            DatabaseService().editLodgingData(comment, displayName, documentID, link, lodgingType, _image, fieldID);
+                            DatabaseService().editLodgingData(
+                                comment,
+                                displayName,
+                                documentID,
+                                link,
+                                lodgingType,
+                                _image,
+                                fieldID,
+                                startTime.value,
+                                endTime.value,
+                            );
                             widget.trip.accessUsers.forEach((f)  =>  CloudFunction().addNewNotification(
                               message: message,
                               documentID: documentID,

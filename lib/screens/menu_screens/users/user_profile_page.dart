@@ -45,16 +45,16 @@ class UserProfilePage extends StatelessWidget{
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white,
-                    width: defaultSize * 0.8, //8
+                    width: defaultSize * 0.5, //8
                   ),
                   image: DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       image: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder)
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 20.0),
               ),
               Center(
                 child: Column(

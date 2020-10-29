@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
 import 'package:travelcrew/services/constants.dart';
@@ -28,14 +26,9 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text('Profile',style: Theme.of(context).textTheme.headline3,),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: (){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      EditProfilePage(),
-                  )
-              );
+              Navigator.pushNamed(context, '/editProfilePage');
             },
           )
         ],
@@ -71,17 +64,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.white,
-                          width: defaultSize * 0.8, //8
+                          color: Colors.grey,
+                          width: defaultSize * 0.5, //8
                         ),
                         image: DecorationImage(
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           image: currentUserProfile.urlToImage.isNotEmpty ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder)
                               
                         ),
                       ),
                     ),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
                     Center(

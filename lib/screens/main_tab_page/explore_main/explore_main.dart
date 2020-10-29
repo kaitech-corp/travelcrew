@@ -56,7 +56,7 @@ class _ExploreMainState extends State<ExploreMain> {
             ),
             Container(
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(top: 100),
+              padding: const EdgeInsets.only(top: 100),
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),

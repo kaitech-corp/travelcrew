@@ -11,26 +11,12 @@ class Favorites extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
 
     return StreamProvider<List<Trip>>.value(
-      value: DatabaseService(uid: user.uid).favoriteTrips,
+      value: DatabaseService().favoriteTrips,
       child: Container (
           child: FavoriteTripList(),
         ),
     );
   }
-
-//     callAPI() {
-//     return FutureBuilder(
-//       builder: (context, snapshot) {
-//         if (snapshot.hasData) {
-//           return snapshot.data;
-//         } else {
-//           return Text('no data');
-//         }
-//       },
-//       future: TestFunctions().function_1(),
-//     );
-// }
 }

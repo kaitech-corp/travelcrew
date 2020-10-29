@@ -19,35 +19,19 @@ class UsersTextSection extends StatefulWidget{
 
 class _UsersTextSectionState extends State<UsersTextSection> {
   var userService = locator<UserService>();
-
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  List blockedList =  [];
 
   @override
   void initState()  {
     super.initState();
-    createBlockList(widget.allUsers.uid);
 
   }
-  void createBlockList(String uid){
-    try {
-      currentUserProfile.blockedList.forEach((element) {
-        if(!blockedList.contains(element)){
-          blockedList.add(element);
-        }
-      });
-    } catch (e){
-      print(e.toString());
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
 
-
-
     return Card(
+      key: Key(widget.allUsers.uid),
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
@@ -73,7 +57,7 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                       borderRadius: BorderRadius.circular(25),
                       child: FadeInImage.assetNetwork(
                         placeholder: profileImagePlaceholder,
-                        image: widget.allUsers.urlToImage,
+                        image: widget.allUsers.urlToImage.isNotEmpty ? widget.allUsers.urlToImage : profileImagePlaceholder,
                         height: 75,
                         width: 75,
                         fit: BoxFit.fill,
@@ -84,7 +68,7 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                   subtitle: Text("${widget.allUsers.displayName}",
                     textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
 //              isThreeLine: true,
-                  trailing: !(blockedList.contains(widget.allUsers.uid)) ? PopupMenuButton<String>(
+                  trailing: !(currentUserProfile.blockedList.contains(widget.allUsers.uid) ?? false) ? PopupMenuButton<String>(
                     onSelected: (value){
                       switch (value) {
                         case "block":
@@ -109,15 +93,15 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                       const PopupMenuItem(
                         value: 'block',
                         child: ListTile(
-                          leading: Icon(Icons.block),
-                          title: Text('Block Account'),
+                          leading: const Icon(Icons.block),
+                          title: const Text('Block Account'),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 'report',
                         child: ListTile(
-                          leading: Icon(Icons.report),
-                          title: Text('Report'),
+                          leading: const Icon(Icons.report),
+                          title: const Text('Report'),
                         ),
                       ),
                     ],
@@ -143,34 +127,31 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                       const PopupMenuItem(
                         value: 'unblock',
                         child: ListTile(
-                          leading: Icon(Icons.block),
-                          title: Text('Unblock'),
+                          leading: const Icon(Icons.block),
+                          title: const Text('Unblock'),
                         ),
                       ),
                     ],
                   ),
                 ),
                 widget.allUsers.followers.contains(userService.currentUserID) ? FlatButton(
-                  child:  Text('Remove'),
+                  child:  const Text('Remove'),
                   shape: Border.all(width: 1, color: Colors.red),
                   onPressed: () {
-                    if(blockedList.contains(widget.allUsers.uid)){
+                    if(currentUserProfile.blockedList.contains(widget.allUsers.uid)){
                     } else {
                       CloudFunction().unFollowUser(widget.allUsers.uid);
                     }
-                    //Unfollow user
-
-                    // DatabaseService(uid: userService.currentUserID).unFollowUser(allUsers.uid);
-                     },
+                    },
                 ) : FlatButton(
-                  child:  Text('Follow'),
+                  child:  const Text('Follow'),
                   shape: Border.all(width: 1, color: Color(0xAA2D3D49)),
                   onPressed: () {
                     // Send a follow request notification to user
                     var message = 'Follow request from ${currentUserProfile.displayName}';
                     var type = 'Follow';
                     if(userService.currentUserID != widget.allUsers.uid) {
-                      if(blockedList.contains(widget.allUsers.uid)){
+                      if(currentUserProfile.blockedList.contains(widget.allUsers.uid)){
                       } else {
                         CloudFunction().addNewNotification(message: message,
                             ownerID: widget.allUsers.uid,
@@ -179,9 +160,6 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                             uidToUse: currentUserProfile.uid);
                         _showDialog(context);
                       }
-                      // DatabaseService().addNewNotificationData(
-                      //     message: message, type:type, ownerID:allUsers.uid,documentID:allUsers.uid );
-
                     }
                      },
                 ),
@@ -194,6 +172,6 @@ class _UsersTextSectionState extends State<UsersTextSection> {
 
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Request sent.')));
+        .showSnackBar(SnackBar(content: const Text('Request sent.')));
   }
 }

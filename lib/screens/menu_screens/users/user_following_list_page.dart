@@ -23,10 +23,12 @@ class currentUserFollowingList extends StatelessWidget{
         stream: DatabaseService().retrieveFollowingList(),
         builder: (context, users) {
           if (users.hasData) {
+            var followingList =
+                users.data.where((user) => currentUserProfile.following.contains(user.uid)).toList();
             return ListView.builder(
-                itemCount: users.data.length,
+                itemCount: followingList.length,
                 itemBuilder: (context, index) {
-                  UserProfile user = users.data[index];
+                  UserProfile user = followingList[index];
                   return userCard(context, user);
                 },
               );
@@ -61,9 +63,9 @@ class currentUserFollowingList extends StatelessWidget{
                 subtitle: Text("${user.displayName}",
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
                 trailing: !tripDetails.accessUsers.contains(user.uid) ? IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: (){
-                    var message = '${currentUserProfile.displayName} invited you to ${tripDetails.location}.';
+                    var message = '${currentUserProfile.displayName} invited you to ${tripDetails.tripName}.';
                     var type = 'Invite';
                     CloudFunction().addNewNotification(
                         ownerID: user.uid,
@@ -75,7 +77,7 @@ class currentUserFollowingList extends StatelessWidget{
                     // DatabaseService().addNewNotificationData(ownerID: user.uid, message: message, documentID:tripDetails.documentId, type:type, ispublic: tripDetails.ispublic);
                     _showDialog(context);
                   },
-                ) : Icon(Icons.check_box),
+                ) : const Icon(Icons.check_box),
               ),
             ],
           ),
@@ -84,6 +86,6 @@ class currentUserFollowingList extends StatelessWidget{
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Invite sent.')));
+        .showSnackBar(SnackBar(content: const Text('Invite sent.')));
   }
 }

@@ -23,15 +23,15 @@ class MainTabPage extends StatefulWidget {
 }
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
-  String _appBadgeSupported = 'Unknown';
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     TabBarView(
       children: [
         CrewTrips(type: 0),
-        CrewTrips(type: 1),
         PrivateTripList(),
+        CrewTrips(type: 1),
+
       ],
     ),
     AllTripsPage(),
@@ -45,38 +45,11 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     });
   }
 
-  @override
-  initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  initPlatformState() async {
-    String appBadgeSupported;
-    try {
-      bool res = await FlutterAppBadger.isAppBadgeSupported();
-      if (res) {
-        appBadgeSupported = 'Supported';
-      } else {
-        appBadgeSupported = 'Not supported';
-      }
-    } on PlatformException {
-      appBadgeSupported = 'Failed to get badge support.';
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _appBadgeSupported = appBadgeSupported;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final notifications = Provider.of<List<NotificationData>>(context);
-    if (notifications != null) {
-      FlutterAppBadger.updateBadgeCount(notifications.length);
-    }
+
     return _selectedIndex == 0 ? DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -90,23 +63,23 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
           items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.group),
+              icon: const Icon(Icons.group),
               label: 'My Crew',
               backgroundColor: Colors.grey,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.assignment),
+              icon: const Icon(Icons.assignment),
               label: 'All Trips',
               backgroundColor: Colors.grey,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
+              icon: const Icon(Icons.favorite),
               label: 'Favorites',
               backgroundColor: Colors.grey,
             ),
             BottomNavigationBarItem(
               icon: BadgeIcon(
-                icon: Icon(Icons.notifications_active),
+                icon: const Icon(Icons.notifications_active),
                 badgeCount: notifications != null ? notifications.length : 0,
               ),
               label: 'Notifications',
@@ -121,21 +94,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     ):
     Scaffold(
       drawer: MenuDrawer(),
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddTrip()),
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: TravelCrewAppBar(bottomTabBar: false),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -143,23 +102,23 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
         items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.group),
+            icon: const Icon(Icons.group),
             label: 'My Crew',
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
+            icon: const Icon(Icons.assignment),
             label: 'All Trips',
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: const Icon(Icons.favorite),
             label: 'Favorites',
             backgroundColor: Colors.grey,
           ),
           BottomNavigationBarItem(
             icon: BadgeIcon(
-              icon: Icon(Icons.notifications_active),
+              icon: const Icon(Icons.notifications_active),
               badgeCount: notifications != null ? notifications.length : 0,
             ),
             label: 'Notifications',

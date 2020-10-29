@@ -48,13 +48,13 @@ class _ListWidgetState extends State<ListWidget> {
                 labelStyle: Theme.of(context).textTheme.subtitle1,
                 labelColor: Colors.black,
                 tabs: <Widget>[
-                  Tab(text: 'Bringing'),
-                  Tab(text: 'Need',),
-                  Tab(text: 'Custom',)
+                  const Tab(text: 'Bringing'),
+                  const Tab(text: 'Need',),
+                  const Tab(text: 'Custom',)
                 ],
               ),
               body: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 height: MediaQuery.of(context).size.height,
                 child: _widgetOptions.elementAt(_selectedIndex),
               ),
@@ -62,7 +62,7 @@ class _ListWidgetState extends State<ListWidget> {
           ),
         );
       },
-      child: Text('Add to List'),
+      child: const Text('Add to List'),
     );
   }
 }

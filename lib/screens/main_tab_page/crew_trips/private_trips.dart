@@ -1,31 +1,34 @@
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 
 class PrivateTripList extends StatelessWidget {
 
+  var userService = locator<UserService>();
+
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    // final user = Provider.of<User>(context);
     return Container(
-      child: privateTrips(user.uid),
+      child: privateTrips(),
     );
   }
 
-  Widget privateTrips(String uid) {
+  Widget privateTrips() {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/space3.jpg'),
+          image: AssetImage(spaceImage),
           fit: BoxFit.cover,
         ),
       ),
       child: FutureBuilder(
-        future: DatabaseService(uid: uid).privateTripList(),
+        future: DatabaseService(uid: userService.currentUserID).privateTripList(),
         builder: (context, trips) {
           if (trips.hasData) {
             return Container(

@@ -68,9 +68,9 @@ return retrieveMembers(context);
               title: Text('${member.firstName} ${member.lastName}',style: Theme.of(context).textTheme.subtitle1,),
               subtitle: Text("${member.displayName}",style: Theme.of(context).textTheme.subtitle2,
                 textAlign: TextAlign.start,),
-              trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? Icon(Icons.check)
+              trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? const Icon(Icons.check)
               : IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: (){
                   TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
                 },

@@ -48,7 +48,7 @@ class _ChatState extends State<Chat> {
               Flexible(
                   child: ChatList(tripDocID: widget.trip.documentId,)
               ),
-              new Divider(
+              const Divider(
                 height: 1.0,
               ),
               Container(
@@ -56,22 +56,24 @@ class _ChatState extends State<Chat> {
                   color: Theme.of(context).cardColor,
                 ),
                 child: IconTheme(
-                  data: new IconThemeData(color: Colors.blue),
-                  child: new Container(
+                  data: const IconThemeData(color: Colors.blue),
+                  child: Container(
                     margin: const EdgeInsets.fromLTRB(25, 0, 0, 25),
                     child: new Row(
                       children: <Widget>[
                         new Flexible(
                           child: new TextField(
-                            decoration: new InputDecoration.collapsed(hintText: "Starts typing ..."),
+                            decoration: new InputDecoration.collapsed(
+                                hintText: "Starts typing ..."),
                             controller: _chatController,
 //                    onSubmitted: _handleSubmit,
+                          textCapitalization: TextCapitalization.sentences,
                           ),
                         ),
                         new Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: new IconButton(
-                            icon: new Icon(Icons.send),
+                            icon: const Icon(Icons.send),
                             onPressed: () async {
                               if (_chatController.text != '') {
                                 String message = _chatController.text;

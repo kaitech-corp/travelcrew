@@ -105,17 +105,17 @@ class _ReportContentState extends State<ReportContent> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Report User'),
+          title: const Text('Report User'),
         ),
         body: Container(
-          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
           // height: MediaQuery.of(context).size.height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(padding: EdgeInsets.only(top: 5),),
+              const Padding(padding: EdgeInsets.only(top: 5),),
               Text('Report this user for...',style: Theme.of(context).textTheme.subtitle1,),
-              Padding(padding: EdgeInsets.only(top: 5),),
+              const Padding(padding: EdgeInsets.only(top: 5),),
               Container(
                 height: MediaQuery.of(context).size.height * .3,
                 child: ListView.builder(
@@ -154,11 +154,11 @@ class _ReportContentState extends State<ReportContent> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         colors: <Color>[
-                          Color(0xFF0D47A1),
-                          Color(0xFF1976D2),
-                          Color(0xFF42A5F5),
+                          const Color(0xFF0D47A1),
+                          const Color(0xFF1976D2),
+                          const Color(0xFF42A5F5),
                         ],
                       ),
                     ),
@@ -178,15 +178,15 @@ class _ReportContentState extends State<ReportContent> {
     final maxLines = 5;
 
     return Container(
-      margin: EdgeInsets.all(12),
+      margin: const EdgeInsets.all(12),
       height: maxLines * 24.0,
       child: TextField(
         style: Theme.of(context).textTheme.subtitle1,
         controller: _controller,
         maxLines: maxLines,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: "Please describe the reasoning for this report and/or add additional details.",
-          fillColor: Colors.grey[300],
+          fillColor: Colors.grey,
           filled: true,
         ),
         onChanged: (String value) {

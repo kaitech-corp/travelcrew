@@ -28,7 +28,7 @@ class _ChatListState extends State<ChatList> {
     }
 
     return loading ? Loading() : ListView.builder(
-        padding: new EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         reverse: true,
         itemCount: chatList != null ? chatList.length : 0,
         itemBuilder: (context, index){

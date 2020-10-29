@@ -16,6 +16,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Card(
+      key: Key(trip.documentId),
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
@@ -23,31 +24,23 @@ class FavoriteTappableTripCard extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
           );
-
         },
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
-              // boxShadow: [BoxShadow(
-              //   offset: Offset(0, 10),
-              //   blurRadius: 33,
-              //   color: Color(Colors.blueGrey.value).withOpacity(.84),
-              //   spreadRadius: 5,
-              // )]
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-
               ListTile(
-                title: Text((trip.location != '' ? (trip.location).toUpperCase() : 'Trip Name'),style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                title: Text((trip.tripName).toUpperCase(),style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 subtitle: Text("Travel Type: ${trip.travelType}",
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 trailing: IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: (){
-                    String message = '${currentUserProfile.displayName} has requested to join your trip ${trip.location}.';
+                    String message = '${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.';
                     String type = 'joinRequest';
 
                     CloudFunction().addNewNotification(message: message,

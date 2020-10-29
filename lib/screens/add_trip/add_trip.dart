@@ -3,33 +3,54 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'dart:async';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 
 
 
+GoogleData googleData;
+
+
 class AddTrip extends StatefulWidget {
 
+  final String location;
+  
   var currentUserProfile;
 
+  AddTrip({Key key, this.location}) : super(key: key);
+  
   @override
   _AddTripState createState() => _AddTripState();
 }
+
+final homeScaffoldKey = GlobalKey<ScaffoldState>();
+final searchScaffoldKey = GlobalKey<ScaffoldState>();
+final myController = TextEditingController();
+final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData);
 class _AddTripState extends State<AddTrip> {
 @override
   void initState() {
     super.initState();
     currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+    myController.clear();
+    // myController.addListener(addTripTextControllerFunction());
+    // googleData2.addListener(updateGoogleDataValueNotifier);
   }
+
+
 
   final _formKey = GlobalKey<FormState>();
   File _image;
   final ImagePicker _picker = ImagePicker();
-
+  bool gotDataBool = false;
 
   DateTime _fromDateDepart = DateTime.now();
   DateTime _fromDateReturn = DateTime.now();
+
 
   String get _labelTextDepart {
     startDate = DateFormat.yMMMd().format(_fromDateDepart);
@@ -71,6 +92,7 @@ class _AddTripState extends State<AddTrip> {
     }
   }
 
+
   String comment = '';
   String displayName = '';
   String documentId = '';
@@ -80,6 +102,7 @@ class _AddTripState extends State<AddTrip> {
   Timestamp startDateTimeStamp;
   Timestamp endDateTimeStamp;
   bool ispublic = true;
+  String tripName = '';
   String location = '';
   String ownerID = '';
   String startDate = '';
@@ -87,7 +110,12 @@ class _AddTripState extends State<AddTrip> {
   File urlToImage;
 
 
-  Future getImage() async {
+
+  updateGoogleDataValueNotifier() {
+  googleData2.value = new GoogleData();
+}
+
+  Future getImageAddTrip() async {
     var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
 
@@ -97,12 +125,11 @@ class _AddTripState extends State<AddTrip> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    // profileService.currentUserProfile().then((value) => currentUserProfile = value);
 
     return Scaffold(
+      key: homeScaffoldKey,
         appBar: AppBar(title: Text('Create a Trip!',style: Theme.of(context).textTheme.headline3,)),
         body: Container(
             child: SingleChildScrollView(
@@ -118,7 +145,7 @@ class _AddTripState extends State<AddTrip> {
                                   enableInteractiveSelection: true,
                                   textCapitalization: TextCapitalization.words,
                                   decoration:
-                                  InputDecoration(labelText: 'Trip Name or Location'),
+                                  InputDecoration(labelText: 'Trip Name'),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -128,14 +155,15 @@ class _AddTripState extends State<AddTrip> {
                                   },
                                   onChanged: (val) =>
                                   {
-                                    location = val,
+                                    tripName = val,
                                   }
                               ),
                               TextFormField(
                                   enableInteractiveSelection: true,
                                   textCapitalization: TextCapitalization.words,
+                                  autocorrect: true,
                                   decoration:
-                                  InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
+                                  const InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -148,19 +176,35 @@ class _AddTripState extends State<AddTrip> {
                                     travelType = val,
                                   }
                               ),
+                              TextFormField(
+                                  controller: myController,
+                                  enableInteractiveSelection: true,
+                                  textCapitalization: TextCapitalization.words,
+                                  decoration: InputDecoration(labelText:'Location'),
+                                  // ignore: missing_return
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Please enter a location.';
+                                      // ignore: missing_return
+                                    }
+                                  },
+                              ),
+                              Container(
+                                  child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                              padding: EdgeInsets.only(top: 5, bottom: 5),),
                               Container(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     Text(_labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
 //                                SizedBox(height: 16),
-                                    ButtonTheme(
+                                     ButtonTheme(
                                       minWidth: 150,
                                       child: RaisedButton(
-                                        shape: RoundedRectangleBorder(
+                                        shape:  RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(20),
                                         ),
-                                        child: Text(
+                                        child: const Text(
                                           'Start Date',
                                         ),
                                         onPressed: () async {
@@ -183,7 +227,7 @@ class _AddTripState extends State<AddTrip> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(20),
                                         ),
-                                        child: Text(
+                                        child: const Text(
                                           'End Date',
                                         ),
                                         onPressed: () {
@@ -195,7 +239,7 @@ class _AddTripState extends State<AddTrip> {
                                 ),
                               ),
                               SwitchListTile(
-                                  title: Text('Public'),
+                                  title: const Text('Public'),
                                   value: ispublic,
                                   onChanged: (bool val) =>
                                   {
@@ -207,7 +251,7 @@ class _AddTripState extends State<AddTrip> {
                               ),
                               Container(
                                 child: _image == null
-                                    ? Text('No image selected.')
+                                    ? const Text('No image selected.')
                                     : Image.file(_image),
                               ),
                               RaisedButton(
@@ -215,7 +259,7 @@ class _AddTripState extends State<AddTrip> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 onPressed: () {
-                                  getImage();
+                                  getImageAddTrip();
                                 },
 //                              tooltip: 'Pick Image',
                                 child: Icon(Icons.add_a_photo),
@@ -243,6 +287,7 @@ class _AddTripState extends State<AddTrip> {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                       onPressed: () {
+                                        location = myController.text;
                                         ownerID = currentUserProfile.uid;
                                         List<String> accessUsers = [currentUserProfile.uid];
                                         displayName = currentUserProfile.displayName;
@@ -250,33 +295,42 @@ class _AddTripState extends State<AddTrip> {
                                         lastName = currentUserProfile.lastName;
                                         final form = _formKey.currentState;
                                         if (form.validate()) {
-                                            DatabaseService().addNewTripData(
-                                                accessUsers,
-                                                comment,
-                                                endDate,
-                                                firstName,
-                                                lastName,
-                                                endDateTimeStamp,
-                                                startDateTimeStamp,
-                                                ispublic,
-                                                location,
-                                                startDate,
-                                                travelType,
-                                                urlToImage);
+                                              DatabaseService().addNewTripData(
+                                                  accessUsers,
+                                                  comment,
+                                                  endDate,
+                                                  firstName,
+                                                  lastName,
+                                                  endDateTimeStamp,
+                                                  startDateTimeStamp,
+                                                  ispublic,
+                                                  location,
+                                                  startDate,
+                                                  travelType,
+                                                  urlToImage,
+                                                  googleData2.value.geoLocation,
+                                                  tripName);
+
                                       _showDialog(context);
+                                            myController.clear();
+                                            // googleData2.dispose();
                                       Navigator.pop(context);
                                         }
                                       },
-                                      child: Text('Add Trip'))),
+                                      child: const Text('Add Trip'))),
                             ]))))));
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('Submitting form')));
   }
+
+// @override
+// void dispose() {
+//   // Clean up the controller when the widget is removed from the widget tree.
+//   myController.dispose();
+//   super.dispose();
+// }
 }
 
-// Copyright 2019 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 

@@ -70,15 +70,15 @@ class _CompleteProfileState extends State {
 
                             TextFormField(
                                 decoration:
-                                InputDecoration(labelText: 'Display Name',),
+                                const InputDecoration(labelText: 'Display Name',),
                                 // ignore: missing_return
                                 onSaved: (val) =>
                                     setState(() => _user.displayName = val)),
-                            Padding(padding: EdgeInsets.only(bottom: 20)),
+                            const Padding(padding: EdgeInsets.only(bottom: 20)),
 
                             Container(
                               child: _image == null
-                                  ? Text('No image selected.')
+                                  ? const Text('No image selected.')
                                   : Image.file(_image),
                             ),
                             RaisedButton(
@@ -148,7 +148,7 @@ class _CompleteProfileState extends State {
                                       }
                                     },
                                     child: Text('I Agree'))),
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,

@@ -18,9 +18,7 @@ class AnalyticsService {
   Future logSignUp() async {
     await _analytics.logSignUp(signUpMethod: 'email');
   }
-  // Future logSignUpGoogle() async {
-  //   await _analytics.logSignUp(signUpMethod: 'google');
-  // }
+
   Future createTrip( bool created) async {
     await _analytics.logEvent(name: 'createTrip', parameters: {'did_create': created});
   }

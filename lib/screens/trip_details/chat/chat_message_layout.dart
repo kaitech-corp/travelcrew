@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/size_config/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatMessageLayout extends StatelessWidget {
   var userService = locator<UserService>();
@@ -17,28 +20,28 @@ class ChatMessageLayout extends StatelessWidget {
     
 
     return message.uid == userService.currentUserID ? InkWell(
+      key: Key(message.fieldID),
       onLongPress: (){
         showBottomSheet(
             context: context,
             builder: (context){
               return Container(
-                height: MediaQuery.of(context).size.height * .2,
+                height: SizeConfig.screenHeight * .2,
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     OutlineButton(
                       color: Colors.grey,
-                      child: Text('Delete',style: TextStyle(fontSize: 18),),
+                      child: const Text('Delete',style: TextStyle(fontSize: 18),),
                       onPressed: (){
                         CloudFunction().deleteChatMessage(tripDocID: tripDocID, fieldID: message.fieldID);
-                        // DatabaseService().deleteChatMessage(message.fieldID, tripDocID);
-                        Navigator.pop(context);
+                       Navigator.pop(context);
                       },
                     ),
                     OutlineButton(
                       color: Colors.grey,
-                      child: Text('Close',style: TextStyle(fontSize: 18),),
+                      child: const Text('Close',style: TextStyle(fontSize: 18),),
                       onPressed: (){
                         Navigator.pop(context);
                       },
@@ -52,7 +55,6 @@ class ChatMessageLayout extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.lightBlue[100],
           ),
-//        margin: const EdgeInsets.symmetric(vertical: 2.0),
           child: new Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -66,7 +68,22 @@ class ChatMessageLayout extends StatelessWidget {
                     Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,),
                     Container(
                       margin: const EdgeInsets.all(5.0),
-                      child:  Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
+                      child:  Linkify(
+                        onOpen: (link) async{
+                          if (await canLaunch(link.url)) {
+                            await launch(link.url);
+                          } else {
+                            throw 'Could not launch $link';
+                          }
+                        },
+                        text: message.message ?? '',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textScaleFactor: 1.2,
+                        maxLines: 50,
+                        overflow: TextOverflow.ellipsis,
+                        linkStyle: TextStyle(color: Colors.blue),
+                      ),
+                      // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
                     ),
                     Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,),
                   ],
@@ -77,6 +94,7 @@ class ChatMessageLayout extends StatelessWidget {
       ),
     ) :
     InkWell(
+      key: Key(message.fieldID),
       child: Container(
           decoration: BoxDecoration(
 
@@ -95,8 +113,24 @@ class ChatMessageLayout extends StatelessWidget {
                      Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,),
                      Container(
                       margin: const EdgeInsets.all(5.0),
-                      child:  Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
-                    ),
+                      child:  Linkify(
+                        onOpen: (link) async{
+                          if (await canLaunch(link.url)) {
+                            await launch(link.url);
+                          } else {
+                            throw 'Could not launch $link';
+                          }
+                        },
+                        text: message.message ?? '',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textScaleFactor: 1.2,
+                        maxLines: 50,
+                        overflow: TextOverflow.ellipsis,
+                        linkStyle: TextStyle(color: Colors.blue),
+                      ),
+                      ),
+                      // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
+                    // ),
                     Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,),
                   ],
                 ),

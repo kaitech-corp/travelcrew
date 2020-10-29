@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+
 import '../../../loading.dart';
 import 'activity_item_layout.dart';
 

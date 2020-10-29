@@ -11,19 +11,18 @@ class Notifications extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
 
     return StreamProvider<List<NotificationData>>.value(
-      value: DatabaseService(uid: user.uid).notificationList,
+      value: DatabaseService().notificationList,
       child: Scaffold(
         body: Container (
           child: NotificationList(),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            TravelCrewAlertDialogs().deleteNotificationsAlert(context, user.uid);
+            TravelCrewAlertDialogs().deleteNotificationsAlert(context);
           },
-          child: Text('Clear All',textAlign: TextAlign.center,),
+          child: const Text('Clear All',textAlign: TextAlign.center,),
 
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

@@ -28,7 +28,7 @@ class ExploreBasicLayout extends StatelessWidget{
                   title: Text('${tripDetails.location}'.toUpperCase(),style: TextStyle(fontSize: 20.0)),
                   subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                   trailing: IconButton(
-                    icon: Icon(Icons.report,),
+                    icon: const Icon(Icons.report,),
                     onPressed: (){
                       TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
                     },
@@ -36,10 +36,10 @@ class ExploreBasicLayout extends StatelessWidget{
                 ),
                 RaisedButton(
                     shape: Border.all(width: 1, color: Colors.blue),
-                  child: Text('Request to Join'),
+                  child: const Text('Request to Join'),
                     onPressed: ()
                       {
-                        String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.location}.';
+                        String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
                         String trip = tripDetails.documentId;
                         String type = 'joinRequest';
                         String ownerID = tripDetails.ownerID;
