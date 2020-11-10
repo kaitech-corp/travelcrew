@@ -91,7 +91,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                       maxLines: 2,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: "Link",
+                        labelText: "Link (i.e. Website/GoogleMaps )",
                       ),
                       // ignore: missing_return
                       validator: (value) {

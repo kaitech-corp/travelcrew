@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/add_trip/add_trip.dart';
-import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
+import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'dart:math' as math;
@@ -18,18 +15,24 @@ var userService = locator<UserService>();
 
 bool animatePress = false;
 
+
 class AllTripsNewDesign extends StatefulWidget{
 
-  
+  // final heroTag;
   @override
   _AllTripsNewDesignState createState() => _AllTripsNewDesignState();
 }
+final AnalyticsService _analyticsService = AnalyticsService();
 
 class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTickerProviderStateMixin{
+
+
 
   bool pressed = true;
   AnimationController _animationController;
   Animation _animation;
+
+
 
   @override
   void initState() {
@@ -60,7 +63,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
         child: Column(
           children: [
             Flexible(
-              flex: 16,
+              flex: 14,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -215,7 +218,7 @@ class _SliverGridListState extends State<SliverGridList> {
                       crossAxisCount: 2,
                   ),
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-                    return TripCard3(context, trips4[index]);
+                    return trips4[index].urlToImage.isEmpty ? TripCard3(context, trips4[index]) : TripCard4(context, trips4[index]);
                   },
                     childCount: trips4.length,
                   )
@@ -240,7 +243,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
     splashColor: Colors.blue.withAlpha(30),
 
     child: Container (
-      margin: const EdgeInsets.only(left: 25, bottom: 20, top: 10),
+      margin: const EdgeInsets.only(left: 15,right: 15, bottom: 20, top: 10),
       decoration: BoxDecoration(
           color: const Color(0xAA2D3D49),
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
@@ -250,10 +253,11 @@ Widget TripCard3(BuildContext context, Trip trip) {
           Flexible(
             flex: 4,
             child: ListTile(
-              title: Text((trip.location != '' ? trip.location : 'Trip Name'),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis,),
+              title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis,),
               subtitle: Text("${trip.travelType}",
                 textAlign: TextAlign.start,style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
               onTap: () {
+                _analyticsService.viewedTrip();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
@@ -261,7 +265,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
               },
             ),
           ),
-          Padding(padding: EdgeInsets.only(top: 5)),
+          // Padding(padding: EdgeInsets.only(top: 5)),
           Flexible(
             flex: 2,
               child: ListTile(
@@ -293,6 +297,61 @@ Widget TripCard3(BuildContext context, Trip trip) {
           ),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
         ],
+      ),
+    ),
+  );
+}
+
+Widget TripCard4(BuildContext context, Trip trip) {
+
+
+  favorite(String uid, Trip trip){
+    if (trip.favorite.contains(uid)){
+
+      return Icon(Icons.favorite, color: Colors.black,);
+    } else {
+      return Icon(Icons.favorite_border, color: Colors.black,);
+    }
+  }
+
+  return InkWell(
+    key: Key(trip.documentId),
+    splashColor: Colors.blue.withAlpha(30),
+
+    child: GestureDetector(
+      onTap: () {
+        _analyticsService.viewedTrip();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
+        );
+      },
+      child: Hero(
+        tag: trip.urlToImage,
+        child: Container (
+          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(trip.urlToImage,),
+              fit: BoxFit.fill,
+            ),
+            color: const Color(0xAA2D3D49),
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+          ),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: FlatButton(
+              child: favorite(userService.currentUserID, trip),
+              onPressed: () {
+                if (trip.favorite.contains(userService.currentUserID)){
+                  CloudFunction().removeFavoriteFromTrip(trip.documentId);
+                } else {
+                  CloudFunction().addFavoriteTrip(trip.documentId);
+                }
+              },
+            ),
+          ),
+        ),
       ),
     ),
   );

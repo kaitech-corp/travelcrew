@@ -6,6 +6,7 @@ import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/tc_functions.dart';
 
 
 class LodgingItemLayout extends StatelessWidget {
@@ -30,11 +31,7 @@ class LodgingItemLayout extends StatelessWidget {
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
             onTap: () {
-              if(lodging.link.isNotEmpty) Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>
-                    WebViewScreen(lodging.link, key)),
-              );
+              if(lodging.link.isNotEmpty) TCFunctions().launchURL(lodging.link);
             },
             child: Container(
               width: MediaQuery.of(context).size.width *.9,
@@ -117,11 +114,7 @@ class LodgingItemLayout extends StatelessWidget {
           }
           break;
           case "View": {
-            if(lodging.link.isNotEmpty) Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) =>
-                  WebViewScreen(lodging.link, key)),
-            );
+            if(lodging.link.isNotEmpty) TCFunctions().launchURL(lodging.link);
           }
           break;
           case "Delete": {
@@ -169,11 +162,7 @@ class LodgingItemLayout extends StatelessWidget {
             break;
           case "View": {
             if (lodging.link.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>
-                    WebViewScreen(lodging.link, key)),
-              );
+              TCFunctions().launchURL(lodging.link);
             }
           }
           break;

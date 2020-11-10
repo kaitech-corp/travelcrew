@@ -25,6 +25,7 @@ class NotificationsTextSection extends StatelessWidget{
       'Follow' : notificationType3(context),
       'Welcome': notificationType4(context),
       'Invite' : notificationType5(context),
+      'Follow_back': notificationType4(context)
     };
 
     return notificationType[notification.type];
@@ -87,6 +88,8 @@ class NotificationsTextSection extends StatelessWidget{
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
+            // CloudFunction().addNewNotification(uidToUse: notification.uid,message: 'Now following ${currentUserProfile.displayName}',type: 'Follow_back',ownerID: currentUserProfile.uid);
+            // if(notification?.ownerID?.isNotEmpty ?? false)
             CloudFunction().removeNotificationData(fieldID);
             if (!currentUserProfile.following.contains(notification.uid)) {
               TravelCrewAlertDialogs().followBackAlert(context, notification.uid);

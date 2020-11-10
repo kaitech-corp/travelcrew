@@ -4,6 +4,7 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class FavoriteTappableTripCard extends StatelessWidget {
 
@@ -16,6 +17,10 @@ class FavoriteTappableTripCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
+      ),
+      margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
       key: Key(trip.documentId),
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
@@ -26,9 +31,10 @@ class FavoriteTappableTripCard extends StatelessWidget {
           );
         },
         child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-          ),
+          // decoration: BoxDecoration(
+          //   color: Colors.white,
+          //   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
+          // ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +60,10 @@ class FavoriteTappableTripCard extends StatelessWidget {
                 ),
               ),
               Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xAA2D3D49),
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
+                ),
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,8 +72,8 @@ class FavoriteTappableTripCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Start Date: ${trip.startDate}',style: Theme.of(context).textTheme.subtitle2,),
-                        Text('End Date: ${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,)
+                        Text(' ${trip.startDate.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
+                        // Text('${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,)
                       ],
                     ),
                   ],

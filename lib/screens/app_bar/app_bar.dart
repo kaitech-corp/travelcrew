@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/add_trip/add_trip.dart';
-import 'package:travelcrew/services/database.dart';
+
 
 class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
 
@@ -21,7 +19,6 @@ class TravelCrewAppBar extends StatelessWidget with PreferredSizeWidget{
           icon: const Icon(Icons.add),
           onPressed: (){
             Navigator.pushNamed(context, '/addTrip');
-
           },
         ),
       ],

@@ -321,7 +321,7 @@ class _EditTripDataState extends State<EditTripData> {
                                             location = myController.text;
                                             if(googleData2.value != null){
                                               tripGeoPoint = googleData2.value.geoLocation;
-                                            }
+                                            } 
                                           }
                                           DatabaseService().editTripData(
                                               comment,

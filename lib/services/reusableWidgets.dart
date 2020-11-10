@@ -169,3 +169,44 @@ class AnimatedClipRRect extends StatelessWidget {
     );
   }
 }
+//
+// Widget PlacesNearbyList(String place, Position currentPosition) {
+//   return FutureBuilder(
+//     builder: (context, places) {
+//       if(places.hasData) {
+//         return ListView.builder(
+//             itemCount: places.data.length,
+//             itemBuilder: (context, index) {
+//               TrueWay place = places.data[index];
+//               return Card(
+//                 child: InkWell(
+//                   key: Key(place.name),
+//                   splashColor: Colors.blueAccent,
+//                   onTap: () {
+//                     TCFunctions().launchURL(place.website);
+//                   },
+//                   child: ListTile(
+//                     title: Text('${place.name}',
+//                       style: TextStyle(fontSize: 24, color: Colors.black),),
+//                     subtitle: Text('Address: ${place.address}',
+//                       style: TextStyle(fontSize: 12, color: Colors.black),),
+//                     trailing: IconButton(
+//                       icon: Icon(Icons.post_add),
+//                       onPressed: (){
+//                         Navigator.push(context, MaterialPageRoute(builder: (context) => AddTrip(addedLocation: place.address,)),);
+//                       },
+//                     ),
+//                   ),
+//                 ),
+//               );
+//             }
+//         );
+//       } else {
+//         return Loading();
+//       }
+//     },
+//     future:  PlacesNearby().getNearbyPlaces(place,
+//         currentPosition?.latitude.toString() ?? '',
+//         currentPosition?.longitude.toString()) ?? '',
+//   );
+// }

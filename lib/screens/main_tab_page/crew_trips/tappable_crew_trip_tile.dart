@@ -13,10 +13,11 @@ import 'package:travelcrew/size_config/size_config.dart';
 class TappableCrewTripTile extends StatelessWidget {
 
   final Trip trip;
+  final heroTag;
 
 
 
-  TappableCrewTripTile({this.trip});
+  TappableCrewTripTile({this.trip, this.heroTag});
 
   var userService = locator<UserService>();
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
@@ -49,7 +50,7 @@ class TappableCrewTripTile extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: ImageLayout2(trip.urlToImage)) : Container(),
+                trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage,child: ImageLayout2(trip.urlToImage))) : Container(),
                 Flexible(
                   flex: 1,
                   child: ListTile(

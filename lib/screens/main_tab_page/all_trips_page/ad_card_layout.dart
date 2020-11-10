@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/services/tc_functions.dart';
@@ -21,7 +21,7 @@ class AdTileCard extends StatefulWidget {
 
 class _AdTileCardState extends State<AdTileCard> {
 
-  double _height = 75;
+  double _height = 100;
   double _width = 200;
   double _margins = 5;
   var _radius = Radius.zero;
@@ -41,7 +41,7 @@ class _AdTileCardState extends State<AdTileCard> {
       });
     } else {
       setState(() {
-        _height = 75;
+        _height = 100;
         _width = 200;
         _borderRadius = BorderRadius.circular(20);
         // _borderRadius = BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20));
@@ -108,6 +108,7 @@ class AnimatedAd extends StatelessWidget {
       child: GestureDetector(
         onTap: (){
           TCFunctions().launchURL(ad.link);
+          CloudFunction().updateClicks(ad.documentID);
         },
         child: Column(
           children: [
@@ -126,6 +127,8 @@ class AnimatedAd extends StatelessWidget {
                       .of(context)
                       .textTheme
                       .headline2,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis
                 ),
                 subtitle: Text(
                   ad.location,

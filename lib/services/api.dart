@@ -254,3 +254,44 @@ class Covid19StatsByCountry {
     }
   }
 }
+
+class PlacesNearby {
+  // API key
+  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+
+  // Base API url
+  static const String _baseUrl = "https://rapidapi.p.rapidapi.com/FindPlacesNearby";
+
+  // Base headers for Response url
+  static const Map<String, String> _headers = {
+//    "content-type": "application/json",
+    "x-rapidapi-host": "trueway-places.p.rapidapi.com",
+    "x-rapidapi-key": _api_key,
+  };
+
+
+  // Base API request to get response
+  Future<List<TrueWay>> getNearbyPlaces(String place, String lat, String lng) async {
+
+    // "/FindPlacesNearby?location=37.783366%2C-122.402325&type=cafe&radius=150&language=en"
+
+    if(place == 'tourist'){
+      place = 'tourist_attraction';
+    }
+    var query = '?location=${lat.substring(0,9)}%2C${lng.substring(0,9)}&type=$place&radius=10000&language=en';
+    print(query);
+    final response = await http.get(_baseUrl + query, headers: _headers);
+    if (response.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+
+      final result = json.decode(response.body);
+      Iterable list = result['results'];
+      return list.map((item) => TrueWay.fromJSON(item)).toList();
+      // print(statistic.length);
+      // return statistic;
+    } else {
+      // If that response was not OK, throw an error.
+      throw Exception('Failed to load json data: ${response.statusCode}');
+    }
+  }
+}

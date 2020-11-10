@@ -1,18 +1,23 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
+export 'package:add_2_calendar/src/add_2_cal.dart';
+export 'package:add_2_calendar/src/model/event.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/menu_screens/users/user_following_list_page.dart';
-import 'package:travelcrew/screens/trip_details/explore/edit_trip.dart';
+import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
+import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
+
 
 
 
 class ExploreLayout extends StatefulWidget {
 
   final Trip tripDetails;
+  final heroTag;
 
-  ExploreLayout({this.tripDetails});
+  ExploreLayout({this.tripDetails, this.heroTag});
 
   @override
   _ExploreLayoutState createState() => _ExploreLayoutState();
@@ -20,8 +25,17 @@ class ExploreLayout extends StatefulWidget {
 
 class _ExploreLayoutState extends State<ExploreLayout> {
 
+
   @override
   Widget build(BuildContext context) {
+
+    final Event event = Event(
+      title: widget.tripDetails.tripName,
+      description: widget.tripDetails.comment,
+      location: widget.tripDetails.location,
+      startDate: widget.tripDetails.startDateTimeStamp.toDate(),
+      endDate: widget.tripDetails.endDateTimeStamp.toDate(),
+    );
 
     return Scaffold(
         body: Container(
@@ -29,10 +43,13 @@ class _ExploreLayoutState extends State<ExploreLayout> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                FadeInImage.assetNetwork(
-                  placeholder: 'assets/images/travelPics.png',
-                  image: widget.tripDetails.urlToImage,
+                Hero(
+                  tag: widget.tripDetails.urlToImage,
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/images/travelPics.png',
+                    image: widget.tripDetails.urlToImage,
 
+                  ),
                 ),
                 ListTile(
                   title: Text('${widget.tripDetails.location}'.toUpperCase(),
@@ -52,6 +69,11 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                         case "Delete":
                           {
                             TravelCrewAlertDialogs().deleteTripAlert(context, widget.tripDetails);
+                          }
+                          break;
+                        case "Calendar":
+                          {
+                            Add2Calendar.addEvent2Cal(event);
                           }
                           break;
                         case "Add":
@@ -82,6 +104,13 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                         child: ListTile(
                           leading: const Icon(Icons.edit),
                           title: const Text('Edit'),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'Calendar',
+                        child: ListTile(
+                          leading: const Icon(Icons.calendar_today_outlined),
+                          title: const Text('Save to Calendar'),
                         ),
                       ),
                       const PopupMenuItem(

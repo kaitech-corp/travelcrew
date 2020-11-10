@@ -3,7 +3,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
-import '../../../loading.dart';
+import '../../../../loading.dart';
 
 
 class currentUserFollowingList extends StatelessWidget{

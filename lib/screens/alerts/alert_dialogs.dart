@@ -379,6 +379,27 @@ class TravelCrewAlertDialogs {
       ),),
     );
   }
+
+  Future<void> SuggestionPageAlert(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Please make sure location settings are enabled to continue.',style: Theme.of(context).textTheme.subtitle1,),
+          // content: Text('You will no longer have access to this Trip'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Close',style: Theme.of(context).textTheme.subtitle1,),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class _SystemPadding extends StatelessWidget {

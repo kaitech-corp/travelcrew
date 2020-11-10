@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';

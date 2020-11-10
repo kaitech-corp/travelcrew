@@ -103,6 +103,10 @@ class _AdminPageState extends State<AdminPage> {
                     onPressed: () {
                       if (_message.isNotEmpty) {
                         CloudFunction().addCustomNotification(_message);
+                        Scaffold
+                            .of(context)
+                            .showSnackBar(SnackBar(content: Text("Submitted")));
+                        _controller.clear();
                       }
                     },
                     textColor: Colors.white,

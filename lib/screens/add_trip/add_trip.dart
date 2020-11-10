@@ -16,11 +16,11 @@ GoogleData googleData;
 
 class AddTrip extends StatefulWidget {
 
-  final String location;
+  final String addedLocation;
   
   var currentUserProfile;
 
-  AddTrip({Key key, this.location}) : super(key: key);
+  AddTrip({Key key, this.addedLocation}) : super(key: key);
   
   @override
   _AddTripState createState() => _AddTripState();
@@ -37,6 +37,9 @@ class _AddTripState extends State<AddTrip> {
     currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
     myController.clear();
+    if(widget.addedLocation != null){
+      myController.text = widget.addedLocation;
+    }
     // myController.addListener(addTripTextControllerFunction());
     // googleData2.addListener(updateGoogleDataValueNotifier);
   }
@@ -188,6 +191,9 @@ class _AddTripState extends State<AddTrip> {
                                       // ignore: missing_return
                                     }
                                   },
+                                onSaved: (value){
+                                    myController.text = value;
+                                },
                               ),
                               Container(
                                   child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
@@ -249,6 +255,12 @@ class _AddTripState extends State<AddTrip> {
 
                                   }
                               ),
+                              (_image != null) ? Align(
+                                  alignment: Alignment.topRight,
+                                  child: IconButton(icon: Icon(Icons.clear),iconSize: 30, onPressed: (){ setState(() {
+                                _image = null;
+                                urlToImage = null;
+                              });})): Container(),
                               Container(
                                 child: _image == null
                                     ? const Text('No image selected.')
@@ -294,6 +306,7 @@ class _AddTripState extends State<AddTrip> {
                                         firstName = currentUserProfile.firstName;
                                         lastName = currentUserProfile.lastName;
                                         final form = _formKey.currentState;
+                                        form.save();
                                         if (form.validate()) {
                                               DatabaseService().addNewTripData(
                                                   accessUsers,
@@ -308,7 +321,7 @@ class _AddTripState extends State<AddTrip> {
                                                   startDate,
                                                   travelType,
                                                   urlToImage,
-                                                  googleData2.value.geoLocation,
+                                                  googleData2.value?.geoLocation ?? null,
                                                   tripName);
 
                                       _showDialog(context);

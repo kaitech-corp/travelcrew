@@ -5,7 +5,6 @@ import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
 import '../../../loading.dart';
 
 

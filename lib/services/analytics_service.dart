@@ -38,4 +38,7 @@ class AnalyticsService {
   Future likedTrip() async {
     await _analytics.logEvent(name: 'likedTrip');
   }
+  Future viewedTrip() async {
+    await _analytics.logEvent(name: 'viewedTrip');
+  }
 }

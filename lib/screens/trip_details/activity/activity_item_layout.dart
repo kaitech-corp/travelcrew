@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class ActivityItemLayout extends StatelessWidget {
@@ -26,11 +27,7 @@ class ActivityItemLayout extends StatelessWidget {
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
             onTap: () {
-              if(activity.link.isNotEmpty) Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>
-                    WebViewScreen(activity.link, key)),
-              );
+              if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
             },
             child: Container(
               width: SizeConfig.screenWidth *.9,
@@ -123,11 +120,7 @@ class ActivityItemLayout extends StatelessWidget {
           }
           break;
           case "View": {
-            if(activity.link.isNotEmpty) Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) =>
-                  WebViewScreen(activity.link, key)),
-            );
+            if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
           }
           break;
           case "Delete": {
@@ -174,11 +167,7 @@ class ActivityItemLayout extends StatelessWidget {
             break;
           case "View": {
             if (activity.link.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>
-                    WebViewScreen(activity.link, key)),
-              );
+              TCFunctions().launchURL(activity.link);
             }
           }
           break;

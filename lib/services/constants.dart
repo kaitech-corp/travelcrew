@@ -7,3 +7,14 @@ const urlToTerms = 'https://travelcrewkt.wordpress.com/terms-of-service/';
 const collaboratingText = 'Interested in collaborating? Email KaiTech2020@gmail.com directly.';
 const agreement = "By pressing Signup you are agreeing to our Term's of Service, Privacy Policy.";
 const kGoogleApiKey = "AIzaSyCYf7VkBxDm8ZPADJgmMbQj9CbLxxIFFV0";
+
+const urls = [];
+
+const placeTypes = [
+  'bar',
+  'cafe',
+  'campground',
+  'park',
+  'tourist',
+  'zoo',
+];

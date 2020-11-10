@@ -39,6 +39,12 @@
 	<string>Enable Travel Crew access to your camera in order to upload your photos for profile and trip images.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Requesting authentication using face id.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Allow Travel Crew access to your location for personalized trip suggestions.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Allow Travel Crew access to your location for personalized trip suggestions.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow Travel Crew access to your location for personalized trip suggestions.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Enable Travel Crew access to your camera roll to upload photos for profile and trip-related images.</string>
 	<key>UIBackgroundModes</key>

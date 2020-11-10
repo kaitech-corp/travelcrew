@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:travelcrew/services/analytics_service.dart';
@@ -301,6 +302,7 @@ class CloudFunction {
       'documentID': documentID,
       'ispublic': ispublic,
       'ownerID': ownerID,
+      'ownerDisplayName': currentUserProfile.displayName,
       'type': type,
     });
   }
@@ -364,6 +366,29 @@ class CloudFunction {
         functionName: 'removeFeedback');
     functionData({
       'fieldID': fieldID,
+    });
+  }
+
+  void updateClicks(String docID) async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'updateClicks');
+    functionData({
+      'docID': docID,
+      'uid': currentUserProfile.uid,
+    });
+  }
+
+
+  void addCurrentLocation({String docID, String city, String country, String zipcode, GeoPoint geoPoint}) async{
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'addCurrentLocation');
+    functionData({
+    'docID' : docID,
+    'city': city,
+    'zipcode': zipcode,
+    'country': country,
+    'lat': geoPoint.latitude,
+      'lng': geoPoint.longitude,
     });
   }
 }

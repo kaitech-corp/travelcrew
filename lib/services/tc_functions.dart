@@ -1,7 +1,14 @@
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_webservice/places.dart';
+
+import 'locator.dart';
 
 class TCFunctions {
+
+  var userService = locator<UserService>();
+
 
   int calculateTimeDifference(DateTime date) {
     DateTime now = DateTime.now();
@@ -34,4 +41,27 @@ class TCFunctions {
       throw 'Could not launch $url';
     }
   }
+
+  String createChatDoc(String x, String y){
+    var _userList = [x,y];
+    _userList.sort();
+    String _docID = '${_userList[0]}_${_userList[1]}';
+    return _docID;
+  }
+
+  List<String> splitDocID(List<String> x){
+    var _idList = [];
+    x.forEach((id) {
+      var _y = id.split('_');
+      _y.remove(userService.currentUserID);
+      _idList.add(_y[0]);
+    });
+    // print(_idList);
+    return _idList;
+  }
+
+  dynamic getLocation(dynamic lat, dynamic lng){
+    return Location(lat,lng);
+  }
+
 }

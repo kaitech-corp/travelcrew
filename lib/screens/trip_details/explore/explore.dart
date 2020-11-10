@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity.dart';
@@ -25,9 +24,10 @@ class Explore extends StatelessWidget {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
+        drawer: MenuDrawer(),
         appBar: AppBar(
           centerTitle: true,
-          leading: MainMenuButtons(),
+          // leading: MenuDrawer(),
           title: Text('${trip.tripName ?? trip.location}'.toUpperCase(),style: Theme.of(context).textTheme.headline3,),
           actions: <Widget>[
             IconButton(

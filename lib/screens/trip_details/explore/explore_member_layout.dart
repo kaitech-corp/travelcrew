@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
-import 'package:travelcrew/screens/menu_screens/users/user_following_list_page.dart';
+import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'layout_widgets.dart';
 import 'lists/item_lists.dart';
@@ -24,7 +24,14 @@ class ExploreMemberLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripDetails.urlToImage != "" ? tripDetails.urlToImage : "assets/images/travelPics.png"),
+                Hero(
+                  tag: tripDetails.urlToImage,
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/images/travelPics.png',
+                    image: tripDetails.urlToImage,
+
+                  ),
+                ),
                 ListTile(
                   title: Text('${tripDetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
                   trailing: PopupMenuButton<String>(

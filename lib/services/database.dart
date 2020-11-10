@@ -3,7 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/push_notifications.dart';
+import 'package:travelcrew/services/tc_functions.dart';
 import 'analytics_service.dart';
 
 var userService = locator<UserService>();
@@ -13,8 +16,10 @@ class DatabaseService {
 
   final String uid;
   var tripDocID;
-  DatabaseService({this.tripDocID, this.uid});
+  var userID;
+  DatabaseService({this.tripDocID, this.uid, this.userID});
   final AnalyticsService _analyticsService = AnalyticsService();
+  final FirebaseMessaging _fcm = FirebaseMessaging();
 
 
   //  All collection references
@@ -37,10 +42,36 @@ class DatabaseService {
   final CollectionReference feedbackCollection = FirebaseFirestore.instance.collection('feedback');
   final CollectionReference reportsCollection = FirebaseFirestore.instance.collection('reports');
   final CollectionReference adsCollection = FirebaseFirestore.instance.collection('tripAds');
+  final CollectionReference dmChatCollection = FirebaseFirestore.instance.collection('dmChat');
+  final CollectionReference suggestionsCollection = FirebaseFirestore.instance.collection('suggestions');
+  final CollectionReference tokensCollection = FirebaseFirestore.instance.collection('tokens');
 
 
+  saveDeviceToken() async {
+    // Get the current user
+    String uid = userService.currentUserID;
+    // FirebaseUser user = await _auth.currentUser();
 
+    // Get the token for this device
+    String fcmToken = await _fcm.getToken();
+    var ref = await tokensCollection.doc(uid).collection('tokens')
+        .doc(fcmToken).get();
+    // Save it to Firestore
+    if (!ref.exists) {
+      if (fcmToken != null) {
+        var tokens = tokensCollection
+            .doc(uid)
+            .collection('tokens')
+            .doc(fcmToken);
 
+        await tokens.set({
+          'token': fcmToken,
+          'createdAt': FieldValue.serverTimestamp(), // optional
+          'platform': Platform.operatingSystem // optional
+        });
+      }
+    }
+  }
 
   Future updateUserData(String firstName, String lastName, String email, String uid) async {
     return await userCollection.doc(uid).set({
@@ -57,7 +88,6 @@ class DatabaseService {
 
     return refSnapshot.exists;
     }
-
 
   Future updateUserPublicProfileData(String displayName, String firstName, String lastName, String email, int tripsCreated, int tripsJoined, String uid, File urlToImage) async {
     var ref = userPublicProfileCollection.doc(uid);
@@ -313,7 +343,7 @@ class DatabaseService {
               'favorite': trip.favorite,
               'accessUsers': trip.accessUsers,
               'comment': trip.comment,
-              'dateCreatedTimeStamp': trip.dateCreatedTimeStamp,
+              'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
               'displayName': trip.displayName,
               'documentId': trip.documentId,
               'endDate': trip.endDate,
@@ -347,7 +377,7 @@ class DatabaseService {
           'favorite': trip.favorite,
           'accessUsers': trip.accessUsers,
           'comment': trip.comment,
-          'dateCreatedTimeStamp': trip.dateCreatedTimeStamp,
+          'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
           'displayName': trip.displayName,
           'documentId': trip.documentId,
           'endDate': trip.endDate,
@@ -1037,6 +1067,8 @@ class DatabaseService {
         Map<String, dynamic> data = doc.data();
         return NotificationData(
           documentID: data['documentID'] ?? '',
+          ownerID: data['ownerID'] ?? '',
+          ownerDisplayName: data['ownerDisplayName'] ?? '',
           fieldID: data['fieldID'] ?? '',
           ispublic: data['ispublic'] ?? false,
           message: data['message'] ?? '',
@@ -1097,6 +1129,7 @@ class DatabaseService {
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
         return ChatData(
+          chatID: data['chatID'] ?? '',
           displayName: data['displayName'] ?? '',
           fieldID: data['fieldID'] ?? '',
           message: data['message'] ?? '',
@@ -1205,4 +1238,145 @@ class DatabaseService {
     });
   }
 
+
+  // Add new direct message
+  Future addNewDMChatMessage(String displayName, String message, String uid, Map status) async {
+    var key = chatCollection.doc().id;
+
+    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
+
+    var ref = await dmChatCollection.doc(chatID).get();
+    if(!ref.exists) {
+      await dmChatCollection.doc(chatID).set({
+        'ids': [userID, userService.currentUserID],
+      });
+    }
+    try {
+      return await dmChatCollection.doc(chatID).collection('messages').doc(key).set(
+          {
+            'chatID': chatID,
+            'displayName': displayName,
+            'fieldID': key,
+            'message': message,
+            'status': status,
+            'timestamp': FieldValue.serverTimestamp(),
+            'uid': uid,
+          });
+    } catch (e) {
+      _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
+    }
+  }
+  // Delete a chat message
+  Future deleteDMChatMessage({ChatData message}) async {
+    // String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
+    try {
+      return await dmChatCollection.doc(message.chatID).collection('messages').doc(message.fieldID).delete();
+    } catch (e) {
+      _analyticsService.writeError('Error deleting new chat:  ${e.toString()}');
+    }
+  }
+
+  // Clear DM chat notifications.
+  Future clearDMChatNotifications() async {
+    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
+    var db = dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false);
+    QuerySnapshot snapshot = await db.get();
+    snapshot.docs.forEach((doc) {
+      dmChatCollection.doc(chatID).collection('messages').doc(doc.id).update({'status.${userService.currentUserID}': true});
+    });
+  }
+
+  // Get all direct message chat messages
+  Stream<List<ChatData>> get dmChatList {
+    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
+    try {
+      return dmChatCollection.doc(chatID).collection('messages')
+          .orderBy('timestamp', descending: true)
+          .snapshots().map(_chatListFromSnapshot);
+    }catch (e) {
+      AnalyticsService().writeError(e.toString());
+    }
+  }
+
+  Stream<List<ChatData>> get dmChatListNotification {
+    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
+    try {
+      return dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false)
+          .snapshots().map(_chatListFromSnapshot);
+    }catch (e) {
+      print("Could not load chat notification list: ${e.toString()}");
+    }
+  }
+  // Get following list
+  Stream<List<UserProfile>> retrieveDMChats() async*{
+    List<String> _uids = [];
+    var _chatList;
+    var user = await usersList();
+    var ref = await dmChatCollection.where('ids', arrayContains: userService.currentUserID).get();
+    ref.docs.forEach((doc) {
+      _uids.add(doc.id);
+    });
+    // _chatList = TCFunctions().splitDocID(_uids);
+    var _idList = [];
+    _uids.forEach((id) {
+      var _y = id.split('_');
+      _y.remove(userService.currentUserID);
+      _idList.add(_y[0]);
+    });
+
+    var chats =
+    user.where((user) => _idList.contains(user.uid)).toList();
+
+    print(chats.length);
+    yield chats;
+  }
+
+
+  Future writeSuggestions() async{
+    var ref = suggestionsCollection;
+    urls.forEach((url) {
+      var key = suggestionsCollection.doc().id;
+      ref.doc(key).set({
+        'fieldID': key,
+        'url': url,
+        'timestamp': FieldValue.serverTimestamp(),
+        'tags': [],
+      });
+    });
+  }
+
+  // Get all Suggestions
+  List<Suggestions> _suggestionListFromSnapshot(QuerySnapshot snapshot){
+
+    return snapshot.docs.map((doc){
+      Map<String, dynamic> data = doc.data();
+      return Suggestions(
+        url: data['url'] ?? '',
+        timestamp: data['timestamp'] ?? null,
+        fieldID: data['fieldID'] ?? '',
+      );
+    }).toList();
+
+  }
+
+  Stream<List<Suggestions>> get suggestionList {
+    return suggestionsCollection.snapshots().map(_suggestionListFromSnapshot);
+  }
+
+  // Delete a suggestion
+  Future deleteSuggestion({String fieldID}) async {
+      return await suggestionsCollection.doc(fieldID).delete();
+  }
+
+  // addCustomNotification() async {
+  //   var ref = notificationCollection;
+  //   ref.doc('r5bm1FxFD7RAU6wBg3tGXadBFvl1').collection('notifications').doc().set({
+  //     'documentID': '',
+  //     'fieldID': '',
+  //     'message': 'Welcome to Travel Crew! Get started now and create your first trip!',
+  //     'timestamp': FieldValue.serverTimestamp(),
+  //     'type': 'Welcome',
+  //     'uid': 'r5bm1FxFD7RAU6wBg3tGXadBFvl1',
+  //       });
+  // }
 }

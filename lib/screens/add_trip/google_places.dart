@@ -65,6 +65,7 @@ class _GooglePlacesState extends State<GooglePlaces> {
 
     if (p != null) {
       // get detail (lat/lng)
+
       PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
       // print(detail.result.formattedAddress);
       final lat = detail.result.geometry.location.lat;

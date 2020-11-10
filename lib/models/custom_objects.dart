@@ -172,6 +172,8 @@ class ActivityData {
 class NotificationData {
   final String documentID;
   final String displayName;
+  final String ownerID;
+  final String ownerDisplayName;
   final String fieldID;
   final String firstname;
   final bool ispublic;
@@ -181,7 +183,7 @@ class NotificationData {
   final String type;
   final String uid;
 
-  NotificationData({this.displayName, this.firstname, this.ispublic, this.lastname,this.fieldID, this.message, this.timestamp, this.documentID, this.type, this.uid});
+  NotificationData({this.ownerID, this.ownerDisplayName, this.displayName, this.firstname, this.ispublic, this.lastname,this.fieldID, this.message, this.timestamp, this.documentID, this.type, this.uid});
 
 }
 
@@ -192,9 +194,10 @@ class ChatData {
   final List<Status> status;
   final Timestamp timestamp;
   final String uid;
+  final String chatID;
 
 
-  ChatData({this.fieldID, this.status, this.displayName, this.message, this.timestamp, this.uid,});
+  ChatData({this.fieldID, this.status, this.displayName, this.message, this.timestamp, this.uid, this.chatID});
 
 }
 class Status {
@@ -342,4 +345,29 @@ class TripAds {
       this.favorites,
       this.clicks,
       this.clickers});
+}
+
+class Suggestions {
+  final String url;
+  final Timestamp timestamp;
+  final List<String> tags;
+  final String fieldID;
+
+  Suggestions({this.fieldID, this.url, this.timestamp, this.tags});
+}
+
+class TrueWay {
+
+  final String name;
+  final String address;
+  final int distance;
+  final String website;
+
+  TrueWay({this.name, this.address, this.distance, this.website});
+
+  TrueWay.fromJSON(Map<String, dynamic> jsonMap):
+        name = jsonMap['name'],
+        address = jsonMap['address'],
+        distance = jsonMap['distance'],
+        website = jsonMap['website'];
 }

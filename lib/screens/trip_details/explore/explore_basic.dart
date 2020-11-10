@@ -17,10 +17,10 @@ class ExploreBasic extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
+        drawer: MenuDrawer(),
           appBar: AppBar(
             centerTitle: true,
-            leading: MainMenuButtons(),
-            title: Text('${trip.location}'.toUpperCase(), style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),),
+            title: Text('${trip.tripName}'.toUpperCase(), style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.close),

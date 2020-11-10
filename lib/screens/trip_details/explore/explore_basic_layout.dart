@@ -11,8 +11,9 @@ class ExploreBasicLayout extends StatelessWidget{
   var userService = locator<UserService>();
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final Trip tripDetails;
+  final heroTag;
 
-  ExploreBasicLayout({this.tripDetails});
+  ExploreBasicLayout({this.tripDetails,this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,14 @@ class ExploreBasicLayout extends StatelessWidget{
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ImageLayout(tripDetails.urlToImage != "" ? tripDetails.urlToImage : travelImage),
+                Hero(
+                  tag: tripDetails.urlToImage,
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/images/travelPics.png',
+                    image: tripDetails.urlToImage,
+
+                  ),
+                ),
                 ListTile(
                   title: Text('${tripDetails.location}'.toUpperCase(),style: TextStyle(fontSize: 20.0)),
                   subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),

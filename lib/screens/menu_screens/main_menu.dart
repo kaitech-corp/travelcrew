@@ -26,6 +26,10 @@ class MainMenuButtons extends StatelessWidget{
             Navigator.pushNamed(context, '/usersFromMenu');
           }
           break;
+          case "chats": {
+            Navigator.pushNamed(context, '/usersFromMenu');
+          }
+          break;
           case "help": {
             Navigator.pushNamed(context, '/help');
           }
@@ -55,6 +59,13 @@ class MainMenuButtons extends StatelessWidget{
           child: ListTile(
             leading: const Icon(Icons.people),
             title: const Text('TC Members'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'chats',
+          child: ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text('Chats'),
           ),
         ),
         const PopupMenuItem(
@@ -108,7 +119,7 @@ class MenuDrawer extends StatelessWidget{
             ),
             ListTile(
               leading: const Icon(Icons.account_circle),
-              title: Text('${currentUserProfile.displayName}'),
+              title: Text('${currentUserProfile?.displayName ?? 'Just a sec...'}'),
               onTap: () {
                 Navigator.pushNamed(context, '/profilePage');
               },
@@ -118,6 +129,13 @@ class MenuDrawer extends StatelessWidget{
               title: Text('TC Members'),
               onTap: () {
                 Navigator.pushNamed(context, '/usersFromMenu');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.message),
+              title: Text('Chats'),
+              onTap: () {
+                Navigator.pushNamed(context, '/chats_page');
               },
             ),
             ListTile(
@@ -145,6 +163,10 @@ class MenuDrawer extends StatelessWidget{
                 _auth.logOut();
               },
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text('v1.4.0'),
+            )
           ],
         ),
       ),

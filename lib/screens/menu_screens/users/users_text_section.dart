@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -71,6 +72,13 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                   trailing: !(currentUserProfile.blockedList.contains(widget.allUsers.uid) ?? false) ? PopupMenuButton<String>(
                     onSelected: (value){
                       switch (value) {
+                        case "chat":
+                          {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => DMChat(user: widget.allUsers,)
+                            ));
+                          }
+                          break;
                         case "block":
                           {
                             TravelCrewAlertDialogs().blockAlert(context, widget.allUsers.uid);
@@ -90,6 +98,13 @@ class _UsersTextSectionState extends State<UsersTextSection> {
                     },
                     padding: EdgeInsets.zero,
                     itemBuilder: (context) =>[
+                      const PopupMenuItem(
+                        value: 'chat',
+                        child: ListTile(
+                          leading: const Icon(Icons.message),
+                          title: const Text('Chat'),
+                        ),
+                      ),
                       const PopupMenuItem(
                         value: 'block',
                         child: ListTile(
