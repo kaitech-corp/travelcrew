@@ -225,55 +225,7 @@ class Countries {
   region = jsonMap['region'];
 
 }
-class Covid19 {
-  final String countryName;
-  final String cases;
-  final String deaths;
-  final String totalRecovered;
-  final String newDeaths;
-  final String newCases;
-  final String seriousCritical;
-  final String activeCases;
-  final String totalCasesPer1mPopulation;
 
-
-  Covid19({this.countryName, this.cases, this.deaths, this.totalRecovered, this.newDeaths, this.newCases, this.seriousCritical, this.activeCases, this.totalCasesPer1mPopulation});
-
-  Covid19.fromJSON(Map<String, dynamic> jsonMap):
-        countryName = jsonMap['country_name'],
-        cases = jsonMap['cases'],
-        deaths = jsonMap['deaths'],
-        totalRecovered = jsonMap['total_recovered'],
-        newDeaths = jsonMap['new_deaths'],
-        newCases = jsonMap['new_cases'],
-        seriousCritical = jsonMap['serious_critical'],
-        activeCases = jsonMap['active_cases'],
-        totalCasesPer1mPopulation = jsonMap['total_cases_per_1m_population'];
-
-}
-
-class Covid19_2 {
-  final String activeCases;
-  final String countryName;
-  final String lastUpdate;
-  final String totalRecovered;
-  final String newDeaths;
-  final String newCases;
-  final String totalDeaths;
-  final String totalCases;
-
-  Covid19_2({this.activeCases, this.countryName, this.lastUpdate, this.totalRecovered, this.newDeaths, this.newCases, this.totalDeaths, this.totalCases,});
-
-  Covid19_2.fromJSON(Map<String, dynamic> jsonMap):
-        activeCases = jsonMap['Active Cases_text'],
-        countryName = jsonMap['Country_text'],
-        lastUpdate = jsonMap['Last Update'],
-        totalRecovered = jsonMap['Total Recovered_text'],
-        newDeaths = jsonMap['New Deaths_text'],
-        newCases = jsonMap['Total Cases_text'],
-        totalDeaths = jsonMap['Total Deaths_text'],
-        totalCases = jsonMap['Total Cases_text'];
-}
 
 class Holiday {
   final String date;

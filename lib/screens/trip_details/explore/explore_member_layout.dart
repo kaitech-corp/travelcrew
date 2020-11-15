@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'layout_widgets.dart';
 import 'lists/item_lists.dart';
@@ -26,8 +26,9 @@ class ExploreMemberLayout extends StatelessWidget{
               children: <Widget>[
                 Hero(
                   tag: tripDetails.urlToImage,
+                  transitionOnUserGestures: true,
                   child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/travelPics.png',
+                    placeholder: travelImage,
                     image: tripDetails.urlToImage,
 
                   ),
@@ -42,7 +43,7 @@ class ExploreMemberLayout extends StatelessWidget{
                             TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
                           }
                           break;
-                        case "Add":
+                        case "Invite":
                           {
                             Navigator.push(
                               context,
@@ -72,10 +73,10 @@ class ExploreMemberLayout extends StatelessWidget{
                         ),
                       ),
                       const PopupMenuItem(
-                        value: 'Add',
+                        value: 'Invite',
                         child: ListTile(
                           leading: const Icon(Icons.person_add),
-                          title: const Text('Add Member'),
+                          title: const Text('Invite'),
                         ),
                       ),
                       const PopupMenuItem(

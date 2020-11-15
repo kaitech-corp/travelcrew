@@ -3,6 +3,7 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
 import 'package:travelcrew/services/apple_auth.dart';
 import 'package:travelcrew/services/auth.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/google_auth.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -27,7 +28,7 @@ class LoginPage extends StatefulWidget {
   String error = '';
   String email = '';
   String password = '';
-//TODO: Add form and validator and return errors
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +56,7 @@ class LoginPage extends StatefulWidget {
                          TextFormField(
                            style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                            enableInteractiveSelection: true,
+                           keyboardType: TextInputType.emailAddress,
                            validator: (value) {
                              if (value.isEmpty || !value.contains('.com')) {
                                return 'Please enter valid email address.';
@@ -73,7 +75,7 @@ class LoginPage extends StatefulWidget {
                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                            ),
                          ),
-                         Padding(padding: EdgeInsets.only(top: 10)),
+                         const Padding(padding: EdgeInsets.only(top: 10)),
                          TextFormField(
                            style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                            onChanged: (val){
@@ -101,7 +103,7 @@ class LoginPage extends StatefulWidget {
                    Flexible(
                      flex: 2,
                      child: Container(
-                       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
                        child: RaisedButton(
                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                          onPressed: () async{
@@ -128,8 +130,9 @@ class LoginPage extends StatefulWidget {
                    ),
                    Flexible(
                      flex: 2,
-                     child: Row(
-                       mainAxisAlignment: MainAxisAlignment.center,
+                     child: Column(
+                       // mainAxisAlignment: MainAxisAlignment.center,
+                       crossAxisAlignment: CrossAxisAlignment.center,
                        children: [
                          _signInButton(),
                          FutureBuilder(
@@ -159,12 +162,9 @@ class LoginPage extends StatefulWidget {
                            FlatButton(
                              child: const Text('Sign up here!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                              textColor: Colors.lightBlue,
-                             onPressed: (){
-                               Navigator.push(
-                                 context,
-                                 MaterialPageRoute(builder: (context) => SignUpScreen()),
-                               );
-                             },
+                             onPressed: () {
+                               Navigator.pushNamed(context, '/signUpScreen');
+                             }
                            ),
                          ],
                        ),
@@ -208,7 +208,7 @@ class LoginPage extends StatefulWidget {
         onPressed: () {
           GoogleAuthService().signInWithGoogle();
         },
-        shape: CircleBorder(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         highlightElevation: 0,
         borderSide: const BorderSide(color: Colors.grey),
         child: Padding(
@@ -217,7 +217,8 @@ class LoginPage extends StatefulWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image(image: AssetImage("assets/images/google_logo.png"), height: 25.0),
+              Image(image: AssetImage(google_logo), height: 25.0),
+              Text(' Sign in with Google')
             ],
           ),
         ),
@@ -230,7 +231,7 @@ class LoginPage extends StatefulWidget {
         onPressed: () {
           _auth2.appleSignIn();
         },
-        shape: CircleBorder(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         highlightElevation: 0,
         borderSide: const BorderSide(color: Colors.grey),
         child: Padding(
@@ -239,7 +240,8 @@ class LoginPage extends StatefulWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image(image: AssetImage("assets/images/apple_logo.png"), height: 25.0),
+              Image(image: AssetImage(apple_logo), height: 25.0),
+              Text(' Sign in with Apple')
             ],
           ),
         ),

@@ -96,7 +96,7 @@ class _SignupScreenState extends State {
                                         onSaved: (val) =>
                                             setState(() => _user.displayName = val)),
                                     const Padding(
-                                      padding: EdgeInsets.only(top: 20.0),
+                                      padding: const EdgeInsets.only(top: 20.0),
                                     ),
                                     user.urlToImage == null ? Container(
                                       child: _image == null
@@ -117,7 +117,7 @@ class _SignupScreenState extends State {
                                           getImage();
                                         },
 //                              tooltip: 'Pick Image',
-                                        child: Icon(Icons.add_a_photo),
+                                        child: const Icon(Icons.add_a_photo),
                                       ),
                                     ),
                                     Container(
@@ -136,7 +136,7 @@ class _SignupScreenState extends State {
                                               }
 
                                             },
-                                            child: Text('Save'))
+                                            child: const Text('Save'))
                                     ),
                                     const SizedBox(height: 10,),
                                     Column(

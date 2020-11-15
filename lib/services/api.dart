@@ -33,55 +33,55 @@ class APIService {
   }
 }
 
-class Covid19API {
-  // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
-  // Base API url
-  static const String _baseUrl = "https://corona-virus-world-and-india-data.p.rapidapi.com/api";
-  // Base headers for Response url
-  static const Map<String, String> _headers = {
-//    "content-type": "application/json",
-    "x-rapidapi-host": "corona-virus-world-and-india-data.p.rapidapi.com",
-    "x-rapidapi-key": _api_key,
-  };
-
-  // Base API request to get response
-  Future<List<Covid19>> getStats() async {
-//    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(_baseUrl, headers: _headers);
-    if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      final result = json.decode(response.body);
-     // print(response.body);
-   // print(result['countries_stat']);
-      Iterable list = result['countries_stat'];
-//      print(list.map((stat) => Covid19.fromJSON(stat)).toList());
-      return list.map((stat) => Covid19.fromJSON(stat)).toList();
-    } else {
-      // If that response was not OK, throw an error.
-      throw Exception('Failed to load json data: ${response.statusCode}');
-    }
-  }
-  Future<List<Covid19>> getStatsOnCountry(String countryName) async {
-    List<Covid19> covidList;
-
-//    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(_baseUrl, headers: _headers);
-    if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      final result = json.decode(response.body);
-//      print(response.body);
-//    print(result['countries_stat']);
-      Iterable list = result['countries_stat'];
-//      print(list.map((stat) => Covid19.fromJSON(stat)).toList());
-       covidList = list.map((stat) => Covid19.fromJSON(stat)).toList();
-      return covidList.where((country) => country.countryName == countryName);
-    } else {
-      // If that response was not OK, throw an error.
-      throw Exception('Failed to load json data: ${response.statusCode}');
-    }
-  }
-}
+// class Covid19API {
+//   // API key
+//   static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+//   // Base API url
+//   static const String _baseUrl = "https://corona-virus-world-and-india-data.p.rapidapi.com/api";
+//   // Base headers for Response url
+//   static const Map<String, String> _headers = {
+// //    "content-type": "application/json",
+//     "x-rapidapi-host": "corona-virus-world-and-india-data.p.rapidapi.com",
+//     "x-rapidapi-key": _api_key,
+//   };
+//
+//   // Base API request to get response
+//   Future<List<Covid19>> getStats() async {
+// //    Uri uri = Uri.https(_baseUrl, endpoint);
+//     final response = await http.get(_baseUrl, headers: _headers);
+//     if (response.statusCode == 200) {
+//       // If server returns an OK response, parse the JSON.
+//       final result = json.decode(response.body);
+//      // print(response.body);
+//    // print(result['countries_stat']);
+//       Iterable list = result['countries_stat'];
+// //      print(list.map((stat) => Covid19.fromJSON(stat)).toList());
+//       return list.map((stat) => Covid19.fromJSON(stat)).toList();
+//     } else {
+//       // If that response was not OK, throw an error.
+//       throw Exception('Failed to load json data: ${response.statusCode}');
+//     }
+//   }
+//   Future<List<Covid19>> getStatsOnCountry(String countryName) async {
+//     List<Covid19> covidList;
+//
+// //    Uri uri = Uri.https(_baseUrl, endpoint);
+//     final response = await http.get(_baseUrl, headers: _headers);
+//     if (response.statusCode == 200) {
+//       // If server returns an OK response, parse the JSON.
+//       final result = json.decode(response.body);
+// //      print(response.body);
+// //    print(result['countries_stat']);
+//       Iterable list = result['countries_stat'];
+// //      print(list.map((stat) => Covid19.fromJSON(stat)).toList());
+//        covidList = list.map((stat) => Covid19.fromJSON(stat)).toList();
+//       return covidList.where((country) => country.countryName == countryName);
+//     } else {
+//       // If that response was not OK, throw an error.
+//       throw Exception('Failed to load json data: ${response.statusCode}');
+//     }
+//   }
+// }
 
 class PublicHolidayAPI {
   // API key
@@ -221,39 +221,39 @@ class addMessage {
   }
 }
 
-class Covid19StatsByCountry {
-  // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
-
-  // Base API url
-  static const String _baseUrl = "https://covid-19-tracking.p.rapidapi.com/v1/";
-
-  // Base headers for Response url
-  static const Map<String, String> _headers = {
-//    "content-type": "application/json",
-    "x-rapidapi-host": "covid-19-tracking.p.rapidapi.com",
-    "x-rapidapi-key": _api_key,
-  };
-
-
-  // Base API request to get response
-  Future<Covid19_2> getStats(String country) async {
-
-    // country = 'Colombia';
-
-    final response = await http.get(_baseUrl + country, headers: _headers);
-    if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      final result = json.decode(response.body);
-      return Covid19_2.fromJSON(result);
-      // print(statistic.length);
-      // return statistic;
-    } else {
-      // If that response was not OK, throw an error.
-      throw Exception('Failed to load json data: ${response.statusCode}');
-    }
-  }
-}
+// class Covid19StatsByCountry {
+//   // API key
+//   static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+//
+//   // Base API url
+//   static const String _baseUrl = "https://covid-19-tracking.p.rapidapi.com/v1/";
+//
+//   // Base headers for Response url
+//   static const Map<String, String> _headers = {
+// //    "content-type": "application/json",
+//     "x-rapidapi-host": "covid-19-tracking.p.rapidapi.com",
+//     "x-rapidapi-key": _api_key,
+//   };
+//
+//
+//   // Base API request to get response
+//   Future<Covid19_2> getStats(String country) async {
+//
+//     // country = 'Colombia';
+//
+//     final response = await http.get(_baseUrl + country, headers: _headers);
+//     if (response.statusCode == 200) {
+//       // If server returns an OK response, parse the JSON.
+//       final result = json.decode(response.body);
+//       return Covid19_2.fromJSON(result);
+//       // print(statistic.length);
+//       // return statistic;
+//     } else {
+//       // If that response was not OK, throw an error.
+//       throw Exception('Failed to load json data: ${response.statusCode}');
+//     }
+//   }
+// }
 
 class PlacesNearby {
   // API key

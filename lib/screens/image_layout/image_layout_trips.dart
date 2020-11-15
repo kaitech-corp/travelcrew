@@ -8,7 +8,7 @@ class ImageLayout extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints.expand(
+        constraints: const BoxConstraints.expand(
           height: 200.0,
         ),
         child: ClipRRect(
@@ -29,11 +29,11 @@ class ImageLayout2 extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints.expand(
+      constraints: const BoxConstraints.expand(
         height: 200.0,
       ),
       child: ClipRRect(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
+          borderRadius: const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
           child: _assetPath.contains("https") ? FadeInImage.assetNetwork(
             placeholder: 'assets/images/travelPics.png',
             image: _assetPath, fit: BoxFit.cover,) : Image.asset(_assetPath,

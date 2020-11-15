@@ -155,7 +155,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     controller: myController,
                                     enableInteractiveSelection: true,
                                     textCapitalization: TextCapitalization.words,
-                                    decoration: InputDecoration(labelText:'Location'),
+                                    decoration: const InputDecoration(labelText:'Location'),
                                     // ignore: missing_return
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -166,7 +166,7 @@ class _EditTripDataState extends State<EditTripData> {
                                   ),
                                   Container(
                                     child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
-                                    padding: EdgeInsets.only(top: 5, bottom: 5),),
+                                    padding: const EdgeInsets.only(top: 5, bottom: 5),),
                                 ],
                               ):
                               Column(
@@ -200,7 +200,7 @@ class _EditTripDataState extends State<EditTripData> {
                                 ],
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.only(top: 10),
                               ),
                               dateChangeVisible ? Column(
                                 children: <Widget>[
@@ -289,7 +289,7 @@ class _EditTripDataState extends State<EditTripData> {
                                 maxLines: 3,
                                 textCapitalization: TextCapitalization.words,
                                 decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
+                                    border: const OutlineInputBorder(),
                                     hintText: 'Add a short description.'),
                                 onChanged: (val){
                                   comment = val;
@@ -347,12 +347,7 @@ class _EditTripDataState extends State<EditTripData> {
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: const Text('Submitting form')));
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) =>
-          Wrapper(),
-      ),
-    );
+    Navigator.pushNamed(context, '/wrapper');
   }
 }
 

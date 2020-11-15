@@ -26,8 +26,9 @@ class ExploreBasicLayout extends StatelessWidget{
               children: <Widget>[
                 Hero(
                   tag: tripDetails.urlToImage,
+                  transitionOnUserGestures: true,
                   child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/travelPics.png',
+                    placeholder: travelImage,
                     image: tripDetails.urlToImage,
 
                   ),

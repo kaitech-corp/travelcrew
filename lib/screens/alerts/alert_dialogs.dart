@@ -12,7 +12,7 @@ class TravelCrewAlertDialogs {
 
   var reportMessage = "Submit a report and we will review this report within 24 hrs and "
       "if deemed inappropriate we will take action by removing the "
-      "content and/or account within that timeframe.";
+      "content and/or account within that time frame.";
 
   var blockMessage = 'This user will be removed from all of your trips (public and private) and '
       ' will not be able to view any of your content. Please note this user will not be removed from '
@@ -113,13 +113,13 @@ class TravelCrewAlertDialogs {
           content: Text('Join requests and follow requests will also be removed.',style: Theme.of(context).textTheme.subtitle1,),
           actions: <Widget>[
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().removeAllNotifications();
                 // DatabaseService(uid: uid).removeAllNotificationData();
@@ -145,12 +145,7 @@ class TravelCrewAlertDialogs {
               child: Text('Yes',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, uid,tripDetails.ispublic);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      Wrapper(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/wrapper');
               },
             ),
             FlatButton(
@@ -175,19 +170,14 @@ class TravelCrewAlertDialogs {
             'All data associated with this trip will be deleted.',style: Theme.of(context).textTheme.subtitle1,),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      Wrapper(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/wrapper');
               },
             ),
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -217,12 +207,7 @@ class TravelCrewAlertDialogs {
               child: Text('Yes'),
               onPressed: () {
                 DatabaseService().convertTrip(tripDetails);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      Wrapper(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/wrapper');
               },
             ),
             FlatButton(
@@ -247,14 +232,14 @@ class TravelCrewAlertDialogs {
             '${member.firstName} will no longer be able to view this trip.',style: Theme.of(context).textTheme.subtitle1,),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, member.uid, tripDetails.ispublic);
                 Navigator.pop(context);
               },
             ),
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -271,7 +256,7 @@ class TravelCrewAlertDialogs {
 
   void unblockDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('User has been unblocked.')));
+        .showSnackBar(SnackBar(content: const Text('User has been unblocked.')));
   }
 
   Future<void> submitFeedbackAlert(BuildContext context) {
@@ -279,18 +264,29 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Feedback Submitted!'),
+          title: const Text('Feedback Submitted!'),
           content: const Text(
               'We thank you for your feedback.'),
           actions: <Widget>[
             FlatButton(
-              child: Text('Close'),
+              child: const Text('Close'),
               onPressed: () {
                 Navigator.pop(context);
                 // Navigator.of(context).popUntil((route) => route.isFirst);
               },
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<void> pushCustomNotification(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Notification Sent!'),
         );
       },
     );
@@ -304,14 +300,14 @@ class TravelCrewAlertDialogs {
           title: Center(child: Text('Follow back?',style: Theme.of(context).textTheme.subtitle1,)),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().followBack(userUID);
                 Navigator.pop(context);
               },
             ),
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -330,7 +326,7 @@ class TravelCrewAlertDialogs {
       context: context,
       child: _SystemPadding(child: AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
-        title: Text('Reset Password', textAlign: TextAlign.center,),
+        title: const Text('Reset Password', textAlign: TextAlign.center,),
         content:  Row(
           children: <Widget>[
              Expanded(
@@ -350,7 +346,7 @@ class TravelCrewAlertDialogs {
                         return null;
                       }
                     },
-                    decoration:  InputDecoration(
+                    decoration:  const InputDecoration(
                          hintText: 'Your email address'),
                   ),
                 ),

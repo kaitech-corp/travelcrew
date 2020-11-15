@@ -49,108 +49,112 @@ class _EditActivityState extends State<EditActivity> {
     String endTimeSaved = widget.activity.endTime;
 
 
-    return loading ? Loading() : Scaffold(
-        appBar: AppBar(
-          title: const Text('Edit Activity'),
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(10),
-          child: Builder(
-            builder: (context) => Form(
-              key: _formKey,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      // padding: const EdgeInsets.all(10),
-                    ),
-                    TextFormField(
-                      onSaved: (val){
-                        setState(() => activityType = val);
-                      },
-                      enableInteractiveSelection: true,
-                      initialValue: activityType,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "snorkeling, festival, restaurant, etc",
+    return loading ? Loading() : GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Edit Activity'),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(10),
+            child: Builder(
+              builder: (context) => Form(
+                key: _formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        // padding: const EdgeInsets.all(10),
                       ),
-                      // ignore: missing_return
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter an activity.';
-                        }
-                      },
-                    ),
-                    const Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    ),
-                    TextFormField(
-                      onSaved: (val){
-                        setState(() => link = val);
-                      },
-                      enableInteractiveSelection: true,
-                      maxLines: 2,
-                      initialValue: link,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Link",
+                      TextFormField(
+                        onSaved: (val){
+                          setState(() => activityType = val);
+                        },
+                        enableInteractiveSelection: true,
+                        initialValue: activityType,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "snorkeling, festival, restaurant, etc",
+                        ),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter an activity.';
+                          }
+                        },
                       ),
-                      // ignore: missing_return
-                      validator: (value) {
-                        if ( value.isNotEmpty && !value.startsWith('https')){
-                          return 'Please enter a valid link with including https.';
-                        }
-                      },
-                    ),
-                    const Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    ),
-                    TextFormField(
-                      onSaved: (val){
-                        setState(() => comment = val);
-                      },
-                      enableInteractiveSelection: true,
-                      obscureText: false,
-                      initialValue: comment,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Description",
+                      const Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       ),
-                    ),
-                    timePickerVisible ?
-                    TimePickers():
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              Text('Start: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
-                              Padding(padding: EdgeInsets.only(top: 2)),
-                              Text('End: $endTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
-                            ],
-                          ),
-                          ButtonTheme(
-                            minWidth: 150,
-                            child: RaisedButton(
-                              shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text(
-                                'Edit Time',
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  timePickerVisible = true;
-                                });
-                              },
+                      TextFormField(
+                        onSaved: (val){
+                          setState(() => link = val);
+                        },
+                        enableInteractiveSelection: true,
+                        maxLines: 2,
+                        initialValue: link,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Link",
+                        ),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if ( value.isNotEmpty && !value.startsWith('https')){
+                            return 'Please enter a valid link with including https.';
+                          }
+                        },
+                      ),
+                      const Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      ),
+                      TextFormField(
+                        onSaved: (val){
+                          setState(() => comment = val);
+                        },
+                        enableInteractiveSelection: true,
+                        obscureText: false,
+                        initialValue: comment,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Description",
+                        ),
+                      ),
+                      timePickerVisible ?
+                      TimePickers():
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                Text('Start: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
+                                Padding(padding: EdgeInsets.only(top: 2)),
+                                Text('End: $endTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
+                              ],
                             ),
-                          ),
-                        ],
+                            ButtonTheme(
+                              minWidth: 150,
+                              child: RaisedButton(
+                                shape:  RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Text(
+                                  'Edit Time',
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    timePickerVisible = true;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 //                     const Padding(
 //                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
 //                     ),
@@ -179,61 +183,68 @@ class _EditActivityState extends State<EditActivity> {
 // //                              tooltip: 'Pick Image',
 //                       child: Icon(Icons.add_a_photo),
 //                     ),
-                    const SizedBox(height: 30),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 30.0, horizontal: 30.0),
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        onPressed: () async{
-                          final form = _formKey.currentState;
-                          if (form.validate()) {
-                            form.save();
-                            String documentID = widget.trip.documentId;
-                            String fieldID = widget.activity.fieldID;
-                            if(!timePickerVisible){
-                              startTime.value = startTimeSaved;
-                              endTime.value = endTimeSaved;
+                      const SizedBox(height: 30),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 30.0, horizontal: 30.0),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          onPressed: () async{
+                            final form = _formKey.currentState;
+                            if (form.validate()) {
+                              form.save();
+                              String documentID = widget.trip.documentId;
+                              String fieldID = widget.activity.fieldID;
+                              if(!timePickerVisible){
+                                startTime.value = startTimeSaved;
+                                endTime.value = endTimeSaved;
+                              }
+
+                              setState(() => loading =true);
+                              String message = 'An activity has been modified within ${widget.trip.tripName}';
+
+                              DatabaseService().editActivityData(
+                                  comment,
+                                  displayName,
+                                  documentID,
+                                  link,
+                                  activityType,
+                                  _image, fieldID,
+                                  startTime.value,
+                                  endTime.value,
+                              );
+                              widget.trip.accessUsers.forEach((f) {
+                                if(f != currentUserProfile.uid){
+                                  CloudFunction().addNewNotification(
+                                    message: message,
+                                    documentID: documentID,
+                                    type: 'Activity',
+                                    uidToUse: f,
+                                    ownerID: currentUserProfile.uid,
+                                  );
+                                }
+                              });
+                              setState(() {
+                                loading = false;
+                              });
+                              Navigator.pop(context);
                             }
-
-                            setState(() => loading =true);
-                            String message = 'An activity has been modified within ${widget.trip.tripName}';
-
-                            DatabaseService().editActivityData(
-                                comment,
-                                displayName,
-                                documentID,
-                                link,
-                                activityType,
-                                _image, fieldID,
-                                startTime.value,
-                                endTime.value,
-                            );
-                            widget.trip.accessUsers.forEach((f) =>  CloudFunction().addNewNotification(
-                                message: message,
-                                documentID: documentID,
-                                type: 'Activity',
-                                uidToUse: f));
-                            setState(() {
-                              loading = false;
-                            });
-                            Navigator.pop(context);
-                          }
-                        },
-                        color: Colors.lightBlue,
-                        child: const Text(
-                            'Save',
-                            style: TextStyle(color: Colors.white, fontSize: 20)
+                          },
+                          color: Colors.lightBlue,
+                          child: const Text(
+                              'Save',
+                              style: TextStyle(color: Colors.white, fontSize: 20)
+                          ),
                         ),
                       ),
-                    ),
-                  ]
+                    ]
+                ),
               ),
             ),
-          ),
-        )
+          )
+      ),
     );
   }
 

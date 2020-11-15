@@ -5,7 +5,6 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
 import '../../../loading.dart';
 import 'all_trips_new_design.dart';
 
@@ -21,7 +20,6 @@ class AdTileCard extends StatefulWidget {
 
 class _AdTileCardState extends State<AdTileCard> {
 
-  double _height = 100;
   double _width = 200;
   double _margins = 5;
   var _radius = Radius.zero;
@@ -32,7 +30,6 @@ class _AdTileCardState extends State<AdTileCard> {
   void animate(){
     if(animatePress){
       setState(() {
-        _height = SizeConfig.screenHeight*.25;
         _width = SizeConfig.screenWidth*.6;
         _borderRadius = BorderRadius.circular(60);
         // _borderRadius = BorderRadius.only(bottomLeft: Radius.circular(60), bottomRight: Radius.circular(60));
@@ -41,7 +38,6 @@ class _AdTileCardState extends State<AdTileCard> {
       });
     } else {
       setState(() {
-        _height = 100;
         _width = 200;
         _borderRadius = BorderRadius.circular(20);
         // _borderRadius = BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20));

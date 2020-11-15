@@ -51,95 +51,97 @@ class ChatMessageLayout extends StatelessWidget {
               );
             });
       },
-      child: Container(
-          decoration: BoxDecoration(
-            color: Colors.lightBlue[100],
-          ),
-          child: new Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-               Container(
-                margin: const EdgeInsets.only(right: 16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+              margin: EdgeInsets.fromLTRB(80,5,5,5),
+              decoration: BoxDecoration(
+                  color: Colors.lightBlue[100],
+                  borderRadius:  BorderRadius.circular(15.0)
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,),
-                    Container(
-                      margin: const EdgeInsets.all(5.0),
-                      child:  Linkify(
-                        onOpen: (link) async{
-                          if (await canLaunch(link.url)) {
-                            await launch(link.url);
-                          } else {
-                            throw 'Could not launch $link';
-                          }
-                        },
-                        text: message.message ?? '',
-                        style: Theme.of(context).textTheme.subtitle1,
-                        textScaleFactor: 1.2,
-                        maxLines: 50,
-                        overflow: TextOverflow.ellipsis,
-                        linkStyle: TextStyle(color: Colors.blue),
-                      ),
-                      // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(5.0,5.0,10.0,5.0),
+                    child:  Linkify(
+                      onOpen: (link) async{
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          throw 'Could not launch $link';
+                        }
+                      },
+                      text: message.message ?? '',
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textScaleFactor: 1.2,
+                      maxLines: 50,
+                      overflow: TextOverflow.ellipsis,
+                      linkStyle: TextStyle(color: Colors.blue),
+                      textAlign: TextAlign.left,
                     ),
-                    Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,),
-                  ],
-                ),
+                    // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
+                  ),
+                  Container(
+                      margin:EdgeInsets.all(10),
+                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,)),
+                ],
               )
-            ],
-          )
+          ),
+        ],
       ),
     ) :
     InkWell(
       key: Key(message.fieldID),
-      child: Container(
-          decoration: BoxDecoration(
-
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 2.0),
-          child: new Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(right: 16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              margin: EdgeInsets.fromLTRB(5,5,80,5),
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(15.0)
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                     Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,),
-                     Container(
-                      margin: const EdgeInsets.all(5.0),
-                      child:  Linkify(
-                        onOpen: (link) async{
-                          if (await canLaunch(link.url)) {
-                            await launch(link.url);
-                          } else {
-                            throw 'Could not launch $link';
-                          }
-                        },
-                        text: message.message ?? '',
-                        style: Theme.of(context).textTheme.subtitle1,
-                        textScaleFactor: 1.2,
-                        maxLines: 50,
-                        overflow: TextOverflow.ellipsis,
-                        linkStyle: TextStyle(color: Colors.blue),
-                      ),
-                      ),
-                      // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
-                    // ),
-                    Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,),
-                  ],
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                      margin:EdgeInsets.all(5),
+                      child: Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,)),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(10.0,5.0,5.0,5.0),
+                    child:  Linkify(
+                      onOpen: (link) async{
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          throw 'Could not launch $link';
+                        }
+                      },
+                      text: message.message ?? '',
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textScaleFactor: 1.2,
+                      maxLines: 50,
+                      overflow: TextOverflow.ellipsis,
+                      linkStyle: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                  // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
+                  // ),
+                  Container(
+                      margin:EdgeInsets.all(10),
+                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,)),
+                ],
               )
-            ],
-          )
+          ),
+        ],
       ),
     );
   }
+  //
   String readTimestamp(int timestamp) {
     var now = new DateTime.now();
     var format = new DateFormat('HH:mm a');

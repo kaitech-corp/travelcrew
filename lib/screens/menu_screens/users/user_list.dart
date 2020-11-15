@@ -48,7 +48,7 @@ class _UserListState extends State<UserList> {
       var results = allUsersList.where((user) =>
       user.displayName.toLowerCase().contains(val)
           || user.firstName.toLowerCase().contains(val) ||
-      user.lastName.toLowerCase().contains(val)
+      user.lastName.toLowerCase().contains(val) || user.displayName.toLowerCase().contains(val)
       ).toList();
       return results;
     }

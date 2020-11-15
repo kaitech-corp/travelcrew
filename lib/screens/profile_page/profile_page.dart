@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
@@ -50,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         // color: Color(0xAA2D3D49),
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(spaceImage),
+                            image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -74,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(top: 20.0),
+                      padding: const EdgeInsets.only(top: 20.0),
                     ),
                     Center(
                       child: Column(

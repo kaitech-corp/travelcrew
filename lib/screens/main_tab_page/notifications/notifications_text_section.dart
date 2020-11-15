@@ -64,7 +64,7 @@ class NotificationsTextSection extends StatelessWidget{
         title: Text('${notification.message}'),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: Icon(Icons.add_circle),
+          icon: const Icon(Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().joinTrip(notification.documentID, notification.ispublic,notification.uid);
@@ -84,7 +84,7 @@ class NotificationsTextSection extends StatelessWidget{
         title: Text('${notification.message}'),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: Icon(Icons.person_add),
+          icon: const Icon(Icons.person_add),
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
@@ -118,7 +118,7 @@ class NotificationsTextSection extends StatelessWidget{
         title: Text('${notification.message}'),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: Icon(Icons.add_circle),
+          icon: const Icon(Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().joinTripInvite(notification.documentID, notification.uid, notification.ispublic);

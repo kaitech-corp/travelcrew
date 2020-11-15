@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/constants.dart';
 
 class UserPopupProfile extends StatelessWidget{
 
@@ -22,11 +23,13 @@ class UserPopupProfile extends StatelessWidget{
           ),
         ),
         Container(
+          height: 300,
+          width: 300,
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: member.urlToImage.isNotEmpty ? NetworkImage(member.urlToImage) : Image.asset(
-                'assets/images/travelPics.png',
+              child: (member.urlToImage?.isNotEmpty ?? false) ? NetworkImage(member.urlToImage) : Image.asset(
+                profileImagePlaceholder,
                 height: 300,
                 width: 300,
               ),

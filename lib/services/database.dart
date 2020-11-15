@@ -658,7 +658,7 @@ class DatabaseService {
           travelType: data['travelType'] ?? '',
           urlToImage: data['urlToImage'] ?? '',
         );
-      }).toList();
+      }).toList().reversed.toList();
   }
 
   // Add new lodging
@@ -1307,6 +1307,7 @@ class DatabaseService {
       print("Could not load chat notification list: ${e.toString()}");
     }
   }
+
   // Get following list
   Stream<List<UserProfile>> retrieveDMChats() async*{
     List<String> _uids = [];

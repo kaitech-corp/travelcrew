@@ -46,7 +46,7 @@ class _CompleteProfileState extends State {
         appBar: AppBar(title: Text('Welcome!',style: Theme.of(context).textTheme.headline3,)),
         body: SingleChildScrollView(
           child: Container(
-              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Builder(
                   builder: (context) => Form(
                       key: _formKey,
@@ -54,7 +54,7 @@ class _CompleteProfileState extends State {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Container(
-                              padding: EdgeInsets.only(top: 15,bottom: 15),
+                              padding: const EdgeInsets.only(top: 15,bottom: 15),
                               child: Column(
                                 children: [
                                   Text('Add a display name and profile picture!'
@@ -86,7 +86,7 @@ class _CompleteProfileState extends State {
                                 getImage();
                               },
 //                              tooltip: 'Pick Image',
-                              child: Icon(Icons.add_a_photo),
+                              child: const Icon(Icons.add_a_photo),
                             ),
                             Container(
                               padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -147,7 +147,7 @@ class _CompleteProfileState extends State {
                                         );
                                       }
                                     },
-                                    child: Text('I Agree'))),
+                                    child: const Text('I Agree'))),
                             const SizedBox(height: 10,),
                             Column(
                               mainAxisSize: MainAxisSize.min,
@@ -162,6 +162,6 @@ class _CompleteProfileState extends State {
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Creating Account')));
+        .showSnackBar(SnackBar(content: const Text('Creating Account')));
   }
 }

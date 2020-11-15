@@ -6,6 +6,7 @@ import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_t
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class PrivateTripList extends StatelessWidget {
 
@@ -15,15 +16,15 @@ class PrivateTripList extends StatelessWidget {
   Widget build(BuildContext context) {
     // final user = Provider.of<User>(context);
     return Container(
-      child: privateTrips(),
+      child: privateTrips(context),
     );
   }
 
-  Widget privateTrips() {
+  Widget privateTrips(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(spaceImage),
+          image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
           fit: BoxFit.cover,
         ),
       ),

@@ -8,6 +8,7 @@ import 'package:travelcrew/screens/trip_details/explore/followers/user_following
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
+import 'package:travelcrew/services/constants.dart';
 
 
 
@@ -45,8 +46,9 @@ class _ExploreLayoutState extends State<ExploreLayout> {
               children: <Widget>[
                 Hero(
                   tag: widget.tripDetails.urlToImage,
+                  transitionOnUserGestures: true,
                   child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/travelPics.png',
+                    placeholder: travelImage,
                     image: widget.tripDetails.urlToImage,
 
                   ),
@@ -76,7 +78,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                             Add2Calendar.addEvent2Cal(event);
                           }
                           break;
-                        case "Add":
+                        case "Invite":
                           {
                             Navigator.push(
                               context,
@@ -114,10 +116,10 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                         ),
                       ),
                       const PopupMenuItem(
-                        value: 'Add',
+                        value: 'Invite',
                         child: ListTile(
                           leading: const Icon(Icons.person_add),
-                          title: const Text('Add Member'),
+                          title: const Text('Invite'),
                         ),
                       ),
                       PopupMenuItem(

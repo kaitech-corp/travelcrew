@@ -27,18 +27,14 @@ class _NotificationListState extends State<NotificationList> {
           var item = notifications[index];
 
           return Dismissible(
+            direction: DismissDirection.endToStart,
             // Show a red background as the item is swiped away.
             background: Container(color: Colors.red,
               alignment: AlignmentDirectional.centerStart,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Icon(Icons.delete,
-                  color: Colors.white,),
-                  const Icon(Icons.delete,
-                    color: Colors.white,),
-                ],
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: const Icon(Icons.delete,
+                color: Colors.white,),
               )),
             key: UniqueKey(),
             onDismissed: (direction) {
@@ -48,7 +44,7 @@ class _NotificationListState extends State<NotificationList> {
               });
               Scaffold
                   .of(context)
-                  .showSnackBar(SnackBar(content: Text("Notification removed.")));
+                  .showSnackBar(SnackBar(content: const Text("Notification removed.")));
             },
 
             child: NotificationsTextSection(notification: notifications[index],),

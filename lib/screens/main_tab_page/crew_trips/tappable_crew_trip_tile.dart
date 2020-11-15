@@ -50,7 +50,7 @@ class TappableCrewTripTile extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage,child: ImageLayout2(trip.urlToImage))) : Container(),
+                trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage, transitionOnUserGestures: true,child: ImageLayout2(trip.urlToImage))) : Container(),
                 Flexible(
                   flex: 1,
                   child: ListTile(
@@ -78,7 +78,7 @@ class TappableCrewTripTile extends StatelessWidget {
                       if(trip.favorite.length > 0) Tooltip(
                         message: 'Likes',
                         child: BadgeIcon(
-                          icon: Icon(Icons.favorite,color: Colors.redAccent,),
+                          icon: const Icon(Icons.favorite,color: Colors.redAccent,),
                           badgeCount: trip.favorite.length,
                         ),
                       ),

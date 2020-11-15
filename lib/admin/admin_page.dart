@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
 import '../loading.dart';
 
 
@@ -45,7 +45,7 @@ class _AdminPageState extends State<AdminPage> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             height: SizeConfig.screenHeight,
             child: Column(
               children: [
@@ -65,14 +65,9 @@ class _AdminPageState extends State<AdminPage> {
                               TCFeedback feedback = feedbackList.data[index];
                               var item = feedback;
                               return Dismissible(
+                                direction: DismissDirection.endToStart,
                                 background: Container(color: Colors.red,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Icon(Icons.delete, color: Colors.white,),
-                                      Icon(Icons.delete, color: Colors.white,)
-                                    ],
-                                  ),),
+                                  child: const Align(alignment: Alignment.centerRight,child: Icon(Icons.delete, color: Colors.white,)),),
                                 key: Key(item.fieldID),
                                 onDismissed: (direction) {
                                   setState(() {
@@ -107,6 +102,7 @@ class _AdminPageState extends State<AdminPage> {
                             .of(context)
                             .showSnackBar(SnackBar(content: Text("Submitted")));
                         _controller.clear();
+                        TravelCrewAlertDialogs().pushCustomNotification(context);
                       }
                     },
                     textColor: Colors.white,
@@ -128,6 +124,7 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
                 ),
+                const Padding(padding: EdgeInsets.only(top: 15)),
               ],
             ),
           ),

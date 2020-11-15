@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
+import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -82,6 +83,7 @@ Widget chatNotificationBadges(UserProfile user){
     builder: (context, chats){
       if(chats.hasData){
         if(chats.data.length > 0) {
+          chatNotifier.value = 1;
           return Tooltip(
             message: 'New Messages',
             child: BadgeIcon(
@@ -90,10 +92,10 @@ Widget chatNotificationBadges(UserProfile user){
             ),
           );
         } else {
-          return Icon(Icons.chat, color: Colors.grey,);
+          return const Icon(Icons.chat, color: Colors.grey,);
         }
       } else {
-        return Icon(Icons.chat, color: Colors.grey,);
+        return const Icon(Icons.chat, color: Colors.grey,);
       }
     },
     stream: DatabaseService(userID: user.uid).dmChatListNotification,

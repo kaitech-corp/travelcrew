@@ -55,21 +55,21 @@ class _SignupScreenState extends State {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             TextFormField(
-                                style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 textCapitalization: TextCapitalization.words,
                                 decoration:
                                 const InputDecoration(labelText: 'First Name',
-                                labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                 // ignore: missing_return
                                 onSaved: (val) =>
                                     setState(() => _user.firstName = val)),
                             TextFormField(
-                              style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                               textCapitalization: TextCapitalization.words,
                               decoration:
                               const InputDecoration(labelText: 'Last Name',
-                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                              labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
 
@@ -77,11 +77,11 @@ class _SignupScreenState extends State {
                                   setState(() => _user.lastName = val),
                             ),
                             TextFormField(
-                                style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                style:const  TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 textCapitalization: TextCapitalization.words,
                                 decoration:
                                 const InputDecoration(labelText: 'Display Name',
-                                labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   // ignore: missing_return, missing_return
@@ -92,10 +92,11 @@ class _SignupScreenState extends State {
                                 onSaved: (val) =>
                                     setState(() => _user.displayName = val)),
                             TextFormField(
-                              style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                              keyboardType: TextInputType.emailAddress,
                               decoration:
                               const InputDecoration(labelText: 'Email',
-                              labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                              labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
                               validator: (value) {
@@ -107,10 +108,10 @@ class _SignupScreenState extends State {
                                   setState(() => _user.email = val),
                             ),
                             TextFormField(
-                                style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 decoration:
                                 const InputDecoration(labelText: 'Password',
-                                labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   if (value.length < 8) {
@@ -140,9 +141,9 @@ class _SignupScreenState extends State {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text(agreement,style: Theme.of(context).textTheme.subtitle1,),
+                                  Text(agreement,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
                                   FlatButton(
-                                    child: const Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                    child: const Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold,fontSize: 18)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       Navigator.push(
@@ -154,7 +155,7 @@ class _SignupScreenState extends State {
                                     },
                                   ),
                                   FlatButton(
-                                    child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                    child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 18)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       Navigator.push(
@@ -181,14 +182,11 @@ class _SignupScreenState extends State {
                                       if (result == null){
                                         setState(() => error = 'Sign in credentials are not valid!');
                                       }
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => Wrapper()),
-                                      );
+                                      Navigator.pushNamed(context, '/wrapper');
                                     }
                                     },
-                                    child: const Text('Sign Up!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)))),
-                            SizedBox(height: 10,),
+                                    child: const Text('Sign Up!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 20)))),
+                            const SizedBox(height: 10,),
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -202,6 +200,6 @@ class _SignupScreenState extends State {
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Creating Account')));
+        .showSnackBar(SnackBar(content: const Text('Creating Account')));
   }
 }

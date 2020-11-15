@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_message_layout.dart';
-import 'package:travelcrew/screens/trip_details/chat/chat_message_layout.dart';
+
 
 
 class DMChatList extends StatefulWidget {

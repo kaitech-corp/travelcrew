@@ -34,7 +34,7 @@ class _GooglePlacesState extends State<GooglePlaces> {
         borderRadius: BorderRadius.circular(20),
       ),
                 onPressed: _handlePressButton,
-                child: Text("Search"),
+                child: const Text("Search"),
               );
   }
 

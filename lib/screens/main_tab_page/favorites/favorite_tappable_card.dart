@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
@@ -31,10 +32,6 @@ class FavoriteTappableTripCard extends StatelessWidget {
           );
         },
         child: Container(
-          // decoration: BoxDecoration(
-          //   color: Colors.white,
-          //   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
-          // ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +58,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xAA2D3D49),
+                  color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49),
                   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
                 ),
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),

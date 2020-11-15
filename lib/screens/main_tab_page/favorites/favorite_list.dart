@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 import 'favorite_tappable_card.dart';
 
 class FavoriteTripList extends StatefulWidget {
@@ -21,7 +23,7 @@ class _FavoriteTripState extends State<FavoriteTripList> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(spaceImage),
+          image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
           fit: BoxFit.cover,
         ),
       ),
@@ -30,15 +32,12 @@ class _FavoriteTripState extends State<FavoriteTripList> {
           itemBuilder: (context, index){
             var item = trips[index];
             return Dismissible(
+              direction: DismissDirection.endToStart,
               // Show a red background as the item is swiped away.
-              background: Container(color: Colors.red,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Icon(Icons.delete, color: Colors.white,),
-                    const Icon(Icons.delete, color: Colors.white,)
-                  ],
-                ),),
+              background: Container(
+                margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
+                color: Colors.red,
+                child: const Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),),
               key: Key(item.documentId),
               onDismissed: (direction) {
                 setState(() {
@@ -47,7 +46,7 @@ class _FavoriteTripState extends State<FavoriteTripList> {
                 });
                 Scaffold
                     .of(context)
-                    .showSnackBar(SnackBar(content: Text("Tripped removed from favorites.")));
+                    .showSnackBar(SnackBar(content: const Text("Tripped removed from favorites.")));
               },
               child: FavoriteTappableTripCard(trip: trips[index]),
             );

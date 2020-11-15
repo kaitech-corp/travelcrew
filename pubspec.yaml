@@ -11,7 +11,7 @@ description: First Flutter App
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.0+21
+version: 1.5.0+22
 
 dependencies:
   flutter:
@@ -44,8 +44,10 @@ dependencies:
   http: ^0.12.2
   draggable_scrollbar: ^0.0.4
   flappy_search_bar: ^1.7.2
+  in_app_review: ^1.0.2
   modal_bottom_sheet: ^0.2.2
   apple_sign_in: ^0.1.0
+  theme_provider: ^0.4.0+1
   url_launcher: ^5.7.5
 
 

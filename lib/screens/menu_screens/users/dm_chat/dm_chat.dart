@@ -44,7 +44,9 @@ class _DMChatState extends State<DMChat> {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: Scaffold(
-          appBar: TravelCrewAppBar(bottomTabBar: false,),
+          appBar: AppBar(
+            title: Text(widget.user.displayName,style: Theme.of(context).textTheme.headline3,),
+          ),
           body: Column(
             children: <Widget>[
               Flexible(
@@ -70,6 +72,8 @@ class _DMChatState extends State<DMChat> {
                             controller: _chatController,
 //                    onSubmitted: _handleSubmit,
                           textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
                           ),
                         ),
                         new Container(

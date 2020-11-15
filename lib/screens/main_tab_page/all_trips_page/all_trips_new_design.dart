@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'dart:math' as math;
@@ -18,7 +20,7 @@ bool animatePress = false;
 
 class AllTripsNewDesign extends StatefulWidget{
 
-  // final heroTag;
+
   @override
   _AllTripsNewDesignState createState() => _AllTripsNewDesignState();
 }
@@ -53,9 +55,9 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        decoration: const BoxDecoration(
-          image: const DecorationImage(
-            image: const AssetImage('assets/images/space3.jpg'),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
             fit: BoxFit.fitHeight,
           ),
         ),
@@ -106,8 +108,8 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
                           text: TextSpan(
                               style: Theme.of(context).textTheme.headline3,
                               children: [
-                                TextSpan(text: 'Social',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                                TextSpan(text: " Distancing",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent,fontSize: 28))
+                                const TextSpan(text: 'Social',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                                const TextSpan(text: " Distancing",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent,fontSize: 28))
                               ]
                           ),
                         ),
@@ -115,7 +117,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
                             icon: animatePress ? Transform.rotate(
                               angle: 180 * math.pi / 180,
                               child: IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.filter_list_sharp,
                                     color: Colors.white,
                                   ),
@@ -129,7 +131,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
                                       });
                                     }
                                   }),
-                            ) :  Icon(Icons.filter_list_sharp,color: Colors.white,),
+                            ) :  const Icon(Icons.filter_list_sharp,color: Colors.white,),
                             iconSize: 30,
                             onPressed: (){
                               if (_animationController.value == 0.0) {
@@ -245,7 +247,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
     child: Container (
       margin: const EdgeInsets.only(left: 15,right: 15, bottom: 20, top: 10),
       decoration: BoxDecoration(
-          color: const Color(0xAA2D3D49),
+          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49),
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
       ),
       child: Column(
@@ -265,7 +267,7 @@ Widget TripCard3(BuildContext context, Trip trip) {
               },
             ),
           ),
-          // Padding(padding: EdgeInsets.only(top: 5)),
+          Padding(padding: EdgeInsets.only(top: 3)),
           Flexible(
             flex: 2,
               child: ListTile(
@@ -308,9 +310,9 @@ Widget TripCard4(BuildContext context, Trip trip) {
   favorite(String uid, Trip trip){
     if (trip.favorite.contains(uid)){
 
-      return Icon(Icons.favorite, color: Colors.black,);
+      return Icon(Icons.favorite, color: Colors.white,);
     } else {
-      return Icon(Icons.favorite_border, color: Colors.black,);
+      return Icon(Icons.favorite_border, color: Colors.white,);
     }
   }
 
@@ -328,6 +330,7 @@ Widget TripCard4(BuildContext context, Trip trip) {
       },
       child: Hero(
         tag: trip.urlToImage,
+          transitionOnUserGestures: true,
         child: Container (
           margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
           decoration: BoxDecoration(
@@ -335,7 +338,7 @@ Widget TripCard4(BuildContext context, Trip trip) {
               image: NetworkImage(trip.urlToImage,),
               fit: BoxFit.fill,
             ),
-            color: const Color(0xAA2D3D49),
+            color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49), //
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
           ),
           child: Align(

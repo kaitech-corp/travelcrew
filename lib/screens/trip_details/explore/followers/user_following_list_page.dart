@@ -1,16 +1,28 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import '../../../../loading.dart';
 
 
-class currentUserFollowingList extends StatelessWidget{
+class currentUserFollowingList extends StatefulWidget{
 
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   Trip tripDetails;
   currentUserFollowingList({this.tripDetails});
+
+  @override
+  _currentUserFollowingListState createState() => _currentUserFollowingListState();
+}
+
+class _currentUserFollowingListState extends State<currentUserFollowingList> {
+  // var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+  var _showImage = false;
+  String _image;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +37,40 @@ class currentUserFollowingList extends StatelessWidget{
           if (users.hasData) {
             var followingList =
                 users.data.where((user) => currentUserProfile.following.contains(user.uid)).toList();
-            return ListView.builder(
-                itemCount: followingList.length,
-                itemBuilder: (context, index) {
-                  UserProfile user = followingList[index];
-                  return userCard(context, user);
-                },
-              );
+            return Stack(
+              children: [
+                ListView.builder(
+                  itemCount: followingList.length,
+                  itemBuilder: (context, index) {
+                    UserProfile user = followingList[index];
+                    return userCard(context, user);
+                  },
+                ),
+                if (_showImage) ...[
+                  BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 5.0,
+                      sigmaY: 5.0,
+                    ),
+                    child: Container(
+                      color: Colors.white.withOpacity(0.6),
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      child: Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: _image.isNotEmpty ? Image.network(_image,height: 300,
+                            width: 300, fit: BoxFit.fill,) : Image.asset(
+                            profileImagePlaceholder,height: 300,
+                            width: 300,fit: BoxFit.fill,),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+            ]);
           } else {
             return Loading();
           }
@@ -39,51 +78,60 @@ class currentUserFollowingList extends StatelessWidget{
       ),
     );
   }
+
   Widget userCard(BuildContext context, UserProfile user){
     return Card(
       child: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              ListTile(
-                leading: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    color: Colors.blue,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: user.urlToImage != null ? Image.network(user.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
-                  ),
+          child: GestureDetector(
+            onLongPress: (){
+              setState(() {
+                _showImage = true;
+                _image = user.urlToImage;
+              });
+            },
+            onLongPressEnd: (details) {
+              setState(() {
+                _showImage = false;
+              });
+            },
+            child: ListTile(
+              leading: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25.0),
+                  color: Colors.blue,
                 ),
-                title: Text('${user.firstName} ${user.lastName}'),
-                subtitle: Text("${user.displayName}",
-                  textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
-                trailing: !tripDetails.accessUsers.contains(user.uid) ? IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: (){
-                    var message = '${currentUserProfile.displayName} invited you to ${tripDetails.tripName}.';
-                    var type = 'Invite';
-                    CloudFunction().addNewNotification(
-                        ownerID: user.uid,
-                        message: message,
-                        documentID: tripDetails.documentId,
-                        type: type,
-                        ispublic: tripDetails.ispublic,
-                        uidToUse: user.uid);
-                    // DatabaseService().addNewNotificationData(ownerID: user.uid, message: message, documentID:tripDetails.documentId, type:type, ispublic: tripDetails.ispublic);
-                    _showDialog(context);
-                  },
-                ) : const Icon(Icons.check_box),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: user.urlToImage != null ? Image.network(user.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
+                ),
               ),
-            ],
+              title: Text('${user.firstName} ${user.lastName}'),
+              subtitle: Text("${user.displayName}",
+                textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
+              trailing: !widget.tripDetails.accessUsers.contains(user.uid) ? IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: (){
+                  var message = '${currentUserProfile.displayName} invited you to ${widget.tripDetails.tripName}.';
+                  var type = 'Invite';
+                  CloudFunction().addNewNotification(
+                      ownerID: user.uid,
+                      message: message,
+                      documentID: widget.tripDetails.documentId,
+                      type: type,
+                      ispublic: widget.tripDetails.ispublic,
+                      uidToUse: user.uid);
+                  // DatabaseService().addNewNotificationData(ownerID: user.uid, message: message, documentID:tripDetails.documentId, type:type, ispublic: tripDetails.ispublic);
+                  _showDialog(context);
+                },
+              ) : const Icon(Icons.check_box),
+            ),
           ),
         ),
       );
   }
+
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: const Text('Invite sent.')));

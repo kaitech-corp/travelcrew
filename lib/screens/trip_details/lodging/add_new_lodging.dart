@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 import '../../../loading.dart';
 
 
@@ -46,75 +47,79 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   Widget build(BuildContext context) {
 
 
-    return widget.loading ? Loading() : Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Lodging'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Builder(
-          builder: (context) => Form(
-            key: _formKey,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-              TextFormField(
-                onChanged: (val){
-                  setState(() => lodgingType = val);
-                },
-                enableInteractiveSelection: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Hotel, Airbnb, etc",
-                ),
-                textCapitalization: TextCapitalization.words,
-                // ignore: missing_return
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a lodging type.';
-                  }
-                },
-              ),
-                  const Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+    return widget.loading ? Loading() : GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Add Lodging'),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(10),
+          child: Builder(
+            builder: (context) => Form(
+              key: _formKey,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                TextFormField(
+                  onChanged: (val){
+                    setState(() => lodgingType = val);
+                  },
+                  enableInteractiveSelection: true,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Hotel, Airbnb, etc",
                   ),
+                  textCapitalization: TextCapitalization.words,
+                  // ignore: missing_return
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter a lodging type.';
+                    }
+                  },
+                ),
+                    const Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    ),
 
-              TextFormField(
-                onChanged: (val){
-                  setState(() => link = val);
-                },
-                enableInteractiveSelection: true,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Link",
-                ),
-                // ignore: missing_return
-                validator: (value) {
-                  if ( value.isNotEmpty && !value.startsWith('https')){
-                    return 'Please enter a valid link with including https.';
-                  } 
-                },
-              ),
-                  const Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                TextFormField(
+                  onChanged: (val){
+                    setState(() => link = val);
+                  },
+                  enableInteractiveSelection: true,
+                  maxLines: 2,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Link",
                   ),
-              TextFormField(
-                onChanged: (val){
-                  setState(() => comment = val);
-                },
-                enableInteractiveSelection: true,
-                textCapitalization: TextCapitalization.words,
-                obscureText: false,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Description",
+                  // ignore: missing_return
+                  validator: (value) {
+                    if ( value.isNotEmpty && !value.startsWith('https')){
+                      return 'Please enter a valid link with including https.';
+                    }
+                  },
                 ),
-              ),
-                  const Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    const Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    ),
+                TextFormField(
+                  onChanged: (val){
+                    setState(() => comment = val);
+                  },
+                  enableInteractiveSelection: true,
+                  textCapitalization: TextCapitalization.words,
+                  obscureText: false,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Description",
                   ),
+                ),
+                    const Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    ),
 //                   Container(
 //                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
 //                     child: _image == null
@@ -135,74 +140,80 @@ class _AddNewLodgingState extends State<AddNewLodging> {
 // //                              tooltip: 'Pick Image',
 //                     child: Icon(Icons.add_a_photo),
 //                   ),
-//               timePickerVisible ? TimePickers()
-//                   : ButtonTheme(
-//                 minWidth: 150,
-//                 child: RaisedButton(
-//                   shape:  RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(20),
-//                   ),
-//                   child: const Text(
-//                     'Arrive/Leave Time',
-//                   ),
-//                   onPressed: () {
-//                     setState(() {
-//                       timePickerVisible = true;
-//                     });
-//                   },
-//                 ),
-//               ),
-              const SizedBox(height: 30),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 30.0, horizontal: 30.0),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  onPressed: () async{
-                    final form = _formKey.currentState;
-                    if (form.validate()) {
-                      String displayName = widget.currentUserProfile.displayName;
-                      String documentID = widget.trip.documentId;
-                      String uid = widget.userService.currentUserID;
-                      String tripName = widget.trip.location;
-                      String message = 'A new lodging has been added to ${widget.trip.tripName}';
-                      bool ispublic = widget.trip.ispublic;
-                      await DatabaseService().addNewLodgingData(
-                          comment,
-                          displayName,
-                          documentID,
-                          link,
-                          lodgingType,
-                          uid,
-                          urlToImage,
-                          tripName,
-                          startTime.value,
-                          endTime.value,
-                      );
-                      widget.trip.accessUsers.forEach((f)  =>  CloudFunction().addNewNotification(
-                        message: message,
-                        documentID: documentID,
-                        type: 'Lodging',
-                        ownerID: f,
-                        ispublic: ispublic,
-                      ));
-                      Navigator.pop(context);
-                    }
-                  },
-                  color: Colors.lightBlue,
-                  child: const Text(
-                      'Add',
-                      style: TextStyle(color: Colors.white, fontSize: 20)
+                timePickerVisible ? TimePickers()
+                    : ButtonTheme(
+                  minWidth: 150,
+                  child: RaisedButton(
+                    shape:  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'CheckIn/Checkout',
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        timePickerVisible = true;
+                      });
+                    },
                   ),
                 ),
-              ),
-          ]
+                const SizedBox(height: 30),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 30.0, horizontal: 30.0),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    onPressed: () async{
+                      final form = _formKey.currentState;
+                      if (form.validate()) {
+                        String displayName = widget.currentUserProfile.displayName;
+                        String documentID = widget.trip.documentId;
+                        String uid = widget.userService.currentUserID;
+                        String tripName = widget.trip.location;
+                        String message = 'A new lodging has been added to ${widget.trip.tripName}';
+                        bool ispublic = widget.trip.ispublic;
+                        await DatabaseService().addNewLodgingData(
+                            comment,
+                            displayName,
+                            documentID,
+                            link,
+                            lodgingType,
+                            uid,
+                            urlToImage,
+                            tripName,
+                            startTime.value,
+                            endTime.value,
+                        );
+                        widget.trip.accessUsers.forEach((f)  {
+                          if(f != currentUserProfile.uid){
+                            CloudFunction().addNewNotification(
+                              message: message,
+                              documentID: documentID,
+                              type: 'Lodging',
+                              uidToUse: f,
+                              ownerID: currentUserProfile.uid,
+                              ispublic: ispublic,
+                            );
+                          }
+                        });
+                        Navigator.pop(context);
+                      }
+                    },
+                    color: Colors.lightBlue,
+                    child: const Text(
+                        'Add',
+                        style: TextStyle(color: Colors.white, fontSize: 20)
+                    ),
+                  ),
+                ),
+            ]
+            ),
+            ),
           ),
-          ),
-        ),
-      )
+        )
+      ),
     );
   }
 

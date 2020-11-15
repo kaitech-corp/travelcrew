@@ -166,16 +166,11 @@ class _NeedListState extends State<NeedList> {
             itemBuilder: (context, index) {
               Need item = items.data[index];
               return Dismissible(
+                direction: DismissDirection.endToStart,
                 background: Container(
                   color: Colors.red,
                   padding: const EdgeInsets.only(left: 5, right: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      const Icon(Icons.delete, color: Colors.white,),
-                      const Icon(Icons.delete, color: Colors.white,)
-                    ],
-                  ),
+                  child: Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),
                 ),
                 key: Key(item.documentID),
                 onDismissed: (direction) {
@@ -232,16 +227,11 @@ class BringListToDisplay extends StatelessWidget{
             itemBuilder: (context, index) {
               Bringing item = items.data[index];
               return Dismissible(
+                direction: DismissDirection.endToStart,
                 background: Container(
                   color: Colors.red,
                   padding: const EdgeInsets.only(left: 5, right: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      const Icon(Icons.delete, color: Colors.white,),
-                      const Icon(Icons.delete, color: Colors.white,)
-                  ],
-                ),
+                  child: Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),
                 ),
                 key: Key(item.documentID),
                 onDismissed: (direction) {

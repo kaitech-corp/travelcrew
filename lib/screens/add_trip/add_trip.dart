@@ -7,7 +7,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'dart:async';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
+
 
 
 
@@ -18,7 +18,7 @@ class AddTrip extends StatefulWidget {
 
   final String addedLocation;
   
-  var currentUserProfile;
+  // var currentUserProfile;
 
   AddTrip({Key key, this.addedLocation}) : super(key: key);
   
@@ -34,7 +34,7 @@ class _AddTripState extends State<AddTrip> {
 @override
   void initState() {
     super.initState();
-    currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+    // currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
     myController.clear();
     if(widget.addedLocation != null){
@@ -148,7 +148,7 @@ class _AddTripState extends State<AddTrip> {
                                   enableInteractiveSelection: true,
                                   textCapitalization: TextCapitalization.words,
                                   decoration:
-                                  InputDecoration(labelText: 'Trip Name'),
+                                  const InputDecoration(labelText: 'Trip Name'),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -183,7 +183,7 @@ class _AddTripState extends State<AddTrip> {
                                   controller: myController,
                                   enableInteractiveSelection: true,
                                   textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(labelText:'Location'),
+                                  decoration: const InputDecoration(labelText:'Location'),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -284,7 +284,7 @@ class _AddTripState extends State<AddTrip> {
                                 enableInteractiveSelection: true,
                                 textCapitalization: TextCapitalization.sentences,
                                 cursorColor: Colors.grey,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     hintText: 'Add a short description.'),
                                 onChanged: (val){
@@ -335,7 +335,7 @@ class _AddTripState extends State<AddTrip> {
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Submitting form')));
+        .showSnackBar(SnackBar(content: const Text('Submitting form')));
   }
 
 // @override
