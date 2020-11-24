@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/main_tab_page/all_trips_page/tappableTripPreview.dart';
+import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
@@ -164,6 +168,10 @@ class SliverGridList extends StatefulWidget {
 
   final bool pressed;
 
+  var tripPopUp;
+
+  bool _showCard = false;
+
   SliverGridList({this.pressed});
 
   @override
@@ -171,7 +179,10 @@ class SliverGridList extends StatefulWidget {
 }
 
 class _SliverGridListState extends State<SliverGridList> {
+
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -207,24 +218,112 @@ class _SliverGridListState extends State<SliverGridList> {
         }
       }
     }
+
     return Flexible(
       flex: 1,
       child: Container(
         padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
         height: MediaQuery.of(context).size.height * .6,
         // width: MediaQuery.of(context).size.width,
-        child: CustomScrollView(
-            slivers: <Widget>[
-              SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+        child: Stack(
+          children: [
+            CustomScrollView(
+                slivers: <Widget>[
+                  SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                      ),
+                      delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+                        return trips4[index].urlToImage.isEmpty ? TripCard3(context, trips4[index]) : TripCard4(context, trips4[index]);
+                      },
+                        childCount: trips4.length,
+                      )
                   ),
-                  delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-                    return trips4[index].urlToImage.isEmpty ? TripCard3(context, trips4[index]) : TripCard4(context, trips4[index]);
-                  },
-                    childCount: trips4.length,
-                  )
-              )]),
+
+                ]),
+            if (widget._showCard) ...[
+              BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 5.0,
+                  sigmaY: 5.0,
+                ),
+                child: Container(
+                  color: Colors.white.withOpacity(0.6),
+                ),
+              ),
+              Center(
+                  child: TappableTripPreview(trip: widget.tripPopUp,)
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget TripCard4(BuildContext context, Trip trip) {
+
+
+    favorite(String uid, Trip trip){
+      if (trip.favorite.contains(uid)){
+
+        return Icon(Icons.favorite, color: Colors.white,);
+      } else {
+        return Icon(Icons.favorite_border, color: Colors.white,);
+      }
+    }
+
+    return InkWell(
+      key: Key(trip.documentId),
+      splashColor: Colors.blue.withAlpha(30),
+
+      child: GestureDetector(
+        onTap: () {
+          _analyticsService.viewedTrip();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
+          );
+        },
+        onLongPress: (){
+          setState(() {
+            widget._showCard = true;
+            widget.tripPopUp = trip;
+          });
+        },
+        onLongPressEnd: (details) {
+          setState(() {
+            widget._showCard = false;
+          });
+        },
+        child: Hero(
+          tag: trip.urlToImage,
+          transitionOnUserGestures: true,
+          child: Container (
+            margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(trip.urlToImage,),
+                fit: BoxFit.fill,
+              ),
+              color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49), //
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+            ),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: FlatButton(
+                child: favorite(userService.currentUserID, trip),
+                onPressed: () {
+                  if (trip.favorite.contains(userService.currentUserID)){
+                    CloudFunction().removeFavoriteFromTrip(trip.documentId);
+                  } else {
+                    CloudFunction().addFavoriteTrip(trip.documentId);
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -254,17 +353,20 @@ Widget TripCard3(BuildContext context, Trip trip) {
         children: [
           Flexible(
             flex: 4,
-            child: ListTile(
-              title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis,),
-              subtitle: Text("${trip.travelType}",
-                textAlign: TextAlign.start,style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
-              onTap: () {
-                _analyticsService.viewedTrip();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
-                );
-              },
+            child: Tooltip(
+              message: '${trip.tripName}',
+              child: ListTile(
+                title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis,),
+                subtitle: Text("${trip.travelType}",
+                  textAlign: TextAlign.start,style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                onTap: () {
+                  _analyticsService.viewedTrip();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
+                  );
+                },
+              ),
             ),
           ),
           Padding(padding: EdgeInsets.only(top: 3)),
@@ -304,58 +406,3 @@ Widget TripCard3(BuildContext context, Trip trip) {
   );
 }
 
-Widget TripCard4(BuildContext context, Trip trip) {
-
-
-  favorite(String uid, Trip trip){
-    if (trip.favorite.contains(uid)){
-
-      return Icon(Icons.favorite, color: Colors.white,);
-    } else {
-      return Icon(Icons.favorite_border, color: Colors.white,);
-    }
-  }
-
-  return InkWell(
-    key: Key(trip.documentId),
-    splashColor: Colors.blue.withAlpha(30),
-
-    child: GestureDetector(
-      onTap: () {
-        _analyticsService.viewedTrip();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
-        );
-      },
-      child: Hero(
-        tag: trip.urlToImage,
-          transitionOnUserGestures: true,
-        child: Container (
-          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(trip.urlToImage,),
-              fit: BoxFit.fill,
-            ),
-            color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49), //
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
-          ),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FlatButton(
-              child: favorite(userService.currentUserID, trip),
-              onPressed: () {
-                if (trip.favorite.contains(userService.currentUserID)){
-                  CloudFunction().removeFavoriteFromTrip(trip.documentId);
-                } else {
-                  CloudFunction().addFavoriteTrip(trip.documentId);
-                }
-              },
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}

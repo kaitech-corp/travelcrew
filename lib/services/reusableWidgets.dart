@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
+import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/size_config/size_config.dart';
+
+import 'constants.dart';
 
 class CustomShape extends CustomClipper<Path> {
   @override
@@ -169,6 +175,125 @@ class AnimatedClipRRect extends StatelessWidget {
     );
   }
 }
+
+class ProfileWidget extends StatelessWidget {
+  final UserPublicProfile user;
+  ProfileWidget({
+    Key key,
+    @required this.user,
+  }) : super(key: key);
+
+  final double defaultSize = SizeConfig.defaultSize;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            ClipPath(
+              clipper: CustomShape(),
+              child: Container(
+                height: defaultSize.toDouble() * 15.0, //150
+                // color: Color(0xAA2D3D49),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(spaceImage),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: defaultSize), //10
+              height: defaultSize * 30, //140
+              width: defaultSize * 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: defaultSize * 0.5, //8
+                ),
+                image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder)
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+            ),
+            Center(
+              child: Column(
+                children: [
+                  Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
+                  Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
+                  if(user.uid == currentUserProfile.uid) Text(
+                    'Email: ${user.email}',style: Theme.of(context).textTheme.subtitle1,),
+                ],
+              ),
+            ),
+            Padding(padding: EdgeInsets.only(top: 5)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Followers'),
+                    Text('${user.followers.length}'),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Following'),
+                    Text('${user.following.length}'),
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CrewModalBottomSheet extends StatelessWidget {
+  const CrewModalBottomSheet({
+    Key key,
+    @required this.tripDetails,
+  }) : super(key: key);
+
+  final Trip tripDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => Container(
+            padding: const EdgeInsets.all(10),
+            height: SizeConfig.screenHeight*.7,
+            child: MembersLayout(tripDetails: tripDetails,ownerID: userService.currentUserID,),
+          ),
+        );
+      },
+      child: const Text('Crew'),
+    );
+  }
+}
+
+// Widget DropDownTransportationList(BuildContext context) {
+//   return
+// }
 //
 // Widget PlacesNearbyList(String place, Position currentPosition) {
 //   return FutureBuilder(

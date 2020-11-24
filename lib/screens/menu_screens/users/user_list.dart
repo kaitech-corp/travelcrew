@@ -16,7 +16,7 @@ class UserList extends StatefulWidget {
 
 class _UserListState extends State<UserList> {
 
-  List<UserProfile> allUsersList;
+  List<UserPublicProfile> allUsersList;
   final ScrollController controller = ScrollController();
   bool _isSearching = false;
   var userService = locator<UserService>();
@@ -31,7 +31,7 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     bool loading = true;
 
-    final usersList = Provider.of<List<UserProfile>>(context);
+    final usersList = Provider.of<List<UserPublicProfile>>(context);
 
     if (usersList != null) {
       allUsersList = usersList.where((user) => user.uid != userService.currentUserID).toList();
@@ -43,7 +43,7 @@ class _UserListState extends State<UserList> {
       });
     }
     
-    Future<List<UserProfile>> userSearchList (String name) async {
+    Future<List<UserPublicProfile>> userSearchList (String name) async {
       String val = name.toLowerCase();
       var results = allUsersList.where((user) =>
       user.displayName.toLowerCase().contains(val)
@@ -74,7 +74,7 @@ class _UserListState extends State<UserList> {
                 return UsersTextSection(allUsers: allUsersList[index]);
               }),
         ),
-        onItemFound: (UserProfile user, int index){
+        onItemFound: (UserPublicProfile user, int index){
           return UsersTextSection(allUsers: user);
         },
       ): DraggableScrollbar.semicircle(

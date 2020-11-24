@@ -15,6 +15,11 @@ class TCFunctions {
     return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
   }
 
+  String AppReviewDocID() {
+    DateTime now = DateTime.now();
+    return DateFormat('yM').format(now).replaceAll('/', 'x');
+  }
+
   String readTimestamp(int timestamp) {
     var now = new DateTime.now();
     var format = new DateFormat('HH:mm a');

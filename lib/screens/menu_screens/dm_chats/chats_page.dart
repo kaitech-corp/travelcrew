@@ -27,7 +27,7 @@ class DMChatListPage extends StatelessWidget{
             return ListView.builder(
               itemCount: chats.length,
               itemBuilder: (context, index) {
-                UserProfile user = chats[index];
+                UserPublicProfile user = chats[index];
                 return userCard(context, user);
               },
             );
@@ -38,7 +38,7 @@ class DMChatListPage extends StatelessWidget{
       ),
     );
   }
-  Widget userCard(BuildContext context, UserProfile user){
+  Widget userCard(BuildContext context, UserPublicProfile user){
     return Card(
       child: Container(
         child: Column(
@@ -78,7 +78,7 @@ class DMChatListPage extends StatelessWidget{
         .showSnackBar(SnackBar(content: const Text('Invite sent.')));
   }
 }
-Widget chatNotificationBadges(UserProfile user){
+Widget chatNotificationBadges(UserPublicProfile user){
   return StreamBuilder(
     builder: (context, chats){
       if(chats.hasData){

@@ -2,7 +2,9 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/api.dart';
+import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -204,8 +206,8 @@ class _NeedListState extends State<NeedList> {
 
 class BringListToDisplay extends StatelessWidget{
 
-  final String documentID;
-  BringListToDisplay({this.documentID});
+  final String tripDocID;
+  BringListToDisplay({this.tripDocID});
 
   @override
   Widget build(BuildContext context) {
@@ -226,27 +228,28 @@ class BringListToDisplay extends StatelessWidget{
             itemCount: items.data.length,
             itemBuilder: (context, index) {
               Bringing item = items.data[index];
-              return Dismissible(
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  color: Colors.red,
-                  padding: const EdgeInsets.only(left: 5, right: 5),
-                  child: Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),
-                ),
+              return ListTile(
                 key: Key(item.documentID),
-                onDismissed: (direction) {
-                  CloudFunction().removeItemFromBringingList(documentID, item.documentID);
-                  Scaffold
-                      .of(context)
-                      .showSnackBar(SnackBar(content: const Text("Item removed")));
+                onLongPress: (){
+                  TravelCrewAlertDialogs().deleteBringinItemAlert(context, tripDocID, item.documentID);
                 },
-                child:
-                  // Widget to display the list of project
-                  ListTile(
-                    leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
-                    title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                    subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
+                leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
+                title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
+                subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
+                trailing: IconButton(
+                  icon: BadgeIcon(
+                    icon: favorite(item),
+                    badgeCount: item.voters?.length ?? 0,
                   ),
+                  onPressed: (){
+                    if (item.voters?.contains(currentUserProfile.uid) ?? false) {
+                      CloudFunction().removeVoterFromBringingItem(tripDocID: tripDocID, documentID: item.documentID);
+                    } else {
+                      CloudFunction().addVoterToBringingItem(tripDocID: tripDocID, documentID: item.documentID);
+                    }
+
+                  },
+                ),
               );
             },
           );
@@ -254,11 +257,17 @@ class BringListToDisplay extends StatelessWidget{
           return Loading();
         }
       },
-      stream: DatabaseService().getBringingList(documentID),
+      stream: DatabaseService().getBringingList(tripDocID),
       // future: ,
     );
   }
-
+  favorite(Bringing item){
+    if (item.voters?.contains(currentUserProfile.uid) ?? false){
+      return const Icon(Icons.favorite,color: Colors.red);
+    } else {
+      return const Icon(Icons.favorite_border,color: Colors.red);
+    }
+  }
 }
 
 class CustomList extends StatefulWidget{

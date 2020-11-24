@@ -9,6 +9,7 @@ import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
 import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 
 
 
@@ -53,105 +54,19 @@ class _ExploreLayoutState extends State<ExploreLayout> {
 
                   ),
                 ),
-                ListTile(
-                  title: Text('${widget.tripDetails.location}'.toUpperCase(),
-                      style: TextStyle(fontSize: 20.0)),
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value) {
-                      switch (value) {
-                        case "Edit":
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>
-                                  EditTripData(tripDetails: widget.tripDetails,)),
-                            );
-                          }
-                          break;
-                        case "Delete":
-                          {
-                            TravelCrewAlertDialogs().deleteTripAlert(context, widget.tripDetails);
-                          }
-                          break;
-                        case "Calendar":
-                          {
-                            Add2Calendar.addEvent2Cal(event);
-                          }
-                          break;
-                        case "Invite":
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => currentUserFollowingList(tripDetails: widget.tripDetails,)),
-                            );
-                          }
-                          break;
-                        case "Convert":
-                          {
-                            TravelCrewAlertDialogs().convertTripAlert(context, widget.tripDetails);
-                          }
-                          break;
-                        default:
-                          {
-
-                          }
-                          break;
-                      }
-                    },
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context) =>
-                    [
-                      const PopupMenuItem(
-                        value: 'Edit',
-                        child: ListTile(
-                          leading: const Icon(Icons.edit),
-                          title: const Text('Edit'),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Calendar',
-                        child: ListTile(
-                          leading: const Icon(Icons.calendar_today_outlined),
-                          title: const Text('Save to Calendar'),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Invite',
-                        child: ListTile(
-                          leading: const Icon(Icons.person_add),
-                          title: const Text('Invite'),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'Convert',
-                        child: ListTile(
-                          leading: widget.tripDetails.ispublic ? const Icon(Icons
-                              .do_not_disturb_on) : const Icon(Icons
-                              .do_not_disturb_off),
-                          title: widget.tripDetails.ispublic
-                              ? const Text('Make Private')
-                              : const Text('Make Public'),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Delete',
-                        child: ListTile(
-                          leading: const Icon(Icons.exit_to_app),
-                          title: const Text('Delete Trip'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  subtitle: Text('Owner: ${widget.tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
-                ),
+                OwnerPopupMenuButton(widget: widget, event: event,),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text('Trip: ${widget.tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,),
-                        widget.tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Type: ${widget.tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,),
+                            widget.tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
+                          ],
+                        ),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -177,10 +92,19 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                       ? widget.tripDetails.comment
                       : "No description provided",style: Theme.of(context).textTheme.subtitle1,),
                 ),
-                ListWidget(tripDetails: widget.tripDetails,),
+                Container(
+                  margin: const EdgeInsets.only(left: 18.0, right: 18.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ListWidget(tripDetails: widget.tripDetails,),
+                      CrewModalBottomSheet(tripDetails: widget.tripDetails),
+                    ],
+                  ),
+                ),
                 const Padding(padding: EdgeInsets.only(top: 5),),
                 Container(height: 1,color: Colors.grey,),
-                BringListToDisplay(documentID: widget.tripDetails.documentId,),
+                BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
 
               ],
             ),
@@ -191,5 +115,114 @@ class _ExploreLayoutState extends State<ExploreLayout> {
 
 
 }
+
+class OwnerPopupMenuButton extends StatelessWidget {
+  const OwnerPopupMenuButton({
+    Key key,
+    @required this.widget,
+    @required this.event,
+
+  }) : super(key: key);
+
+  final ExploreLayout widget;
+  final Event event;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text('${widget.tripDetails.location}'.toUpperCase(),
+          style: TextStyle(fontSize: 20.0)),
+      trailing: PopupMenuButton<String>(
+        onSelected: (value) {
+          switch (value) {
+            case "Edit":
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      EditTripData(tripDetails: widget.tripDetails,)),
+                );
+              }
+              break;
+            case "Delete":
+              {
+                TravelCrewAlertDialogs().deleteTripAlert(context, widget.tripDetails);
+              }
+              break;
+            case "Calendar":
+              {
+                Add2Calendar.addEvent2Cal(event);
+              }
+              break;
+            case "Invite":
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => currentUserFollowingList(tripDetails: widget.tripDetails,)),
+                );
+              }
+              break;
+            case "Convert":
+              {
+                TravelCrewAlertDialogs().convertTripAlert(context, widget.tripDetails);
+              }
+              break;
+            default:
+              {
+
+              }
+              break;
+          }
+        },
+        padding: EdgeInsets.zero,
+        itemBuilder: (context) =>
+        [
+          const PopupMenuItem(
+            value: 'Edit',
+            child: ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text('Edit'),
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'Calendar',
+            child: ListTile(
+              leading: const Icon(Icons.calendar_today_outlined),
+              title: const Text('Save to Calendar'),
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'Invite',
+            child: ListTile(
+              leading: const Icon(Icons.person_add),
+              title: const Text('Invite'),
+            ),
+          ),
+          PopupMenuItem(
+            value: 'Convert',
+            child: ListTile(
+              leading: widget.tripDetails.ispublic ? const Icon(Icons
+                  .do_not_disturb_on) : const Icon(Icons
+                  .do_not_disturb_off),
+              title: widget.tripDetails.ispublic
+                  ? const Text('Make Private')
+                  : const Text('Make Public'),
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'Delete',
+            child: ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Delete Trip'),
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text('Owner: ${widget.tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+    );
+  }
+}
+
+
 
 

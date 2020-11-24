@@ -49,7 +49,7 @@ class TravelCrewAlertDialogs {
       },
     );
   }
-  Future<void> reportAlert({BuildContext context, Trip tripDetails, UserProfile userProfile, ActivityData activityData, LodgingData lodgingData, String type}) {
+  Future<void> reportAlert({BuildContext context, Trip tripDetails, UserPublicProfile userProfile, ActivityData activityData, LodgingData lodgingData, String type}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -392,6 +392,64 @@ class TravelCrewAlertDialogs {
               },
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<void> deleteTransportationAlert(BuildContext context, TransportationData transportationData) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text('Delete?',style: Theme.of(context).textTheme.subtitle1,)),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FlatButton(
+                child: const Text('Yes'),
+                onPressed: () {
+                  CloudFunction().deleteTransportation(tripDocID: transportationData.tripDocID,fieldID: transportationData.fieldID);
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteBringinItemAlert(BuildContext context, String tripDocID, String itemID) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text('Delete?',style: Theme.of(context).textTheme.subtitle1,)),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FlatButton(
+                child: const Text('Yes'),
+                onPressed: () {
+                  CloudFunction().removeItemFromBringingList(tripDocID, itemID);
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
         );
       },
     );

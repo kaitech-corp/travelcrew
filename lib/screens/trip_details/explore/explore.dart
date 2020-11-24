@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/trip_details/activity/activity.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
+import 'package:travelcrew/screens/trip_details/transportation/transportation.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -28,7 +29,9 @@ class Explore extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           // leading: MenuDrawer(),
-          title: Text('${trip.tripName ?? trip.location}'.toUpperCase(),style: Theme.of(context).textTheme.headline3,),
+          title: Tooltip(
+            message: '${trip.tripName}',
+              child: Text('${trip.tripName}'.toUpperCase(),style: Theme.of(context).textTheme.headline3,)),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.close),
@@ -44,8 +47,8 @@ class Explore extends StatelessWidget {
             tabs: [
               const Tab(text: 'Explore',
               icon: const Icon(Icons.assignment),),
-              const Tab(text: 'Crew',
-                icon: const Icon(Icons.people),),
+              const Tab(text: 'Travel',
+                icon: const Icon(Icons.flight),),
               const Tab(text: 'Lodging',
                 icon: const Icon(Icons.hotel),),
               const Tab(text: 'Activities',
@@ -58,7 +61,7 @@ class Explore extends StatelessWidget {
         body: TabBarView(
           children: [
             checkOwner(userService.currentUserID),
-            MembersLayout(tripDetails: trip,ownerID: userService.currentUserID,),
+            Transportation(trip: trip,),
             Lodging(trip: trip,),
             Activity(trip: trip,),
             Chat(trip: trip,),

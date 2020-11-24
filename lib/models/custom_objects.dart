@@ -28,6 +28,8 @@ class UserPublicProfile {
   List<String> following;
   List<String> followers;
   String lastName;
+  int tripsCreated;
+  int tripsJoined;
   String uid;
   String urlToImage;
 
@@ -49,8 +51,9 @@ class Bringing {
   String item;
   String displayName;
   String documentID;
+  List<String> voters;
 
-  Bringing({this.displayName, this.documentID, this.item});
+  Bringing({this.voters, this.displayName, this.documentID, this.item});
 }
 
 class Need {
@@ -119,20 +122,27 @@ class UserProfile {
   UserProfile({this.urlToImage, this.uid, this.lastName, this.following, this.followers, this.firstName, this.email, this.displayName, this.tripsCreated, this.tripsJoined});
 }
 
-class FlightData {
+class TransportationData {
+  final String mode;
   final String airline;
   final String airportCode;
+  final bool canCarpool;
+  final String carpoolingWith;
+  final String comment;
   final String departureDate;
   final String departureDateArrivalTime;
   final String departureDateDepartTime;
   final String displayName;
+  final String fieldID;
   final String flightNumber;
   final String location;
   final String returnDateArrivalTime;
   final String returnDateDepartTime;
   final String returnDate;
+  final String uid;
+  final String tripDocID;
 
-  FlightData({this.airportCode, this.displayName, this.location, this.airline, this.departureDate,this.departureDateArrivalTime, this.departureDateDepartTime, this.flightNumber, this.returnDate, this.returnDateArrivalTime, this.returnDateDepartTime });
+  TransportationData({this.tripDocID,this.fieldID,this.uid, this.comment, this.canCarpool, this.carpoolingWith,this.mode, this.airportCode, this.displayName, this.location, this.airline, this.departureDate,this.departureDateArrivalTime, this.departureDateDepartTime, this.flightNumber, this.returnDate, this.returnDateArrivalTime, this.returnDateDepartTime });
 }
 
 class LodgingData {

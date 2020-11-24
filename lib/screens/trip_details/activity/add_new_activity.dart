@@ -7,6 +7,7 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/in_app_review.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class AddNewActivity extends StatefulWidget {
@@ -184,9 +185,8 @@ class AddNewActivityState extends State<AddNewActivity> {
                               setState(() => loading =true);
                               String message = 'A new activity has been added to ${widget.trip.tripName}';
                               bool ispublic = widget.trip.ispublic;
-
                               await DatabaseService().addNewActivityData(
-                                  comment,
+                                  comment.trim(),
                                   displayName,
                                   documentID,
                                   link,
@@ -214,7 +214,12 @@ class AddNewActivityState extends State<AddNewActivity> {
                                 loading = false;
                               });
                               Navigator.pop(context);
-                              // InAppReviewClass().requestReviewFunc();
+                              DatabaseService().appReviewExists(TCFunctions().AppReviewDocID()).then((value) => {
+                                if(!value){
+                                  InAppReviewClass().requestReviewFunc()
+                                }
+                              });
+
                             }
                           },
                           color: Colors.lightBlue,

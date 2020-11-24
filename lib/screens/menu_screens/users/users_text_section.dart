@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
@@ -11,7 +10,7 @@ import 'user_profile_page.dart';
 
 class UsersTextSection extends StatefulWidget{
 
-  final UserProfile allUsers;
+  final UserPublicProfile allUsers;
   UsersTextSection({this.allUsers,});
 
   @override

@@ -12,7 +12,7 @@ class DMChat extends StatefulWidget {
   var userService = locator<UserService>();
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
-  final UserProfile user;
+  final UserPublicProfile user;
   DMChat({this.user});
 
   @override

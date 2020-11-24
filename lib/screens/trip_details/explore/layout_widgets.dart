@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 import 'lists/item_lists.dart';
 
@@ -55,7 +56,7 @@ class _ListWidgetState extends State<ListWidget> {
               ),
               body: Container(
                 padding: const EdgeInsets.all(10),
-                height: MediaQuery.of(context).size.height,
+                height: SizeConfig.screenHeight,
                 child: _widgetOptions.elementAt(_selectedIndex),
               ),
             ),

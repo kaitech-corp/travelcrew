@@ -10,7 +10,7 @@ class Users extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<UserProfile>>.value(
+    return StreamProvider<List<UserPublicProfile>>.value(
       value: DatabaseService().userList,
       child: Container (
         child: UserList(),

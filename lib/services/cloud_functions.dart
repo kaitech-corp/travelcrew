@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:travelcrew/services/analytics_service.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 
 class CloudFunction {
@@ -9,7 +10,8 @@ class CloudFunction {
   final Trace trace = FirebasePerformance.instance.newTrace("test");
 
   var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  var currentUserProfile = locator<UserProfileService>()
+      .currentUserProfileDirect();
   final AnalyticsService _analyticsService = AnalyticsService();
 
   //Add blank profile info
@@ -21,8 +23,9 @@ class CloudFunction {
   //
   //   });
   // }
-  void addCustomMember(){
-    final HttpsCallable addCustomMember = CloudFunctions.instance.getHttpsCallable(
+  void addCustomMember() {
+    final HttpsCallable addCustomMember = CloudFunctions.instance
+        .getHttpsCallable(
         functionName: 'addCustomMember');
     addCustomMember({
       'docID': 'zUEcSXEpEkp8wFV6AIRn',
@@ -31,28 +34,31 @@ class CloudFunction {
   }
 
   // Block User
-  void blockUser(String blockedUserID){
+  void blockUser(String blockedUserID) {
     final HttpsCallable blockUser = CloudFunctions.instance.getHttpsCallable(
         functionName: 'blockUser');
     blockUser({
       'blockedUserID': blockedUserID
     }).then((value) =>
-    unFollowUser(blockedUserID));
+        unFollowUser(blockedUserID));
   }
-  void unBlockUser(String blockedUserID){
+
+  void unBlockUser(String blockedUserID) {
     final HttpsCallable unBlockUser = CloudFunctions.instance.getHttpsCallable(
         functionName: 'unBlockUser');
     unBlockUser({
       'blockedUserID': blockedUserID
     });
   }
+
   // Report inappropriate behaviour
-  void reportUser(String collection, String docID, String offenderID, String offense, String type, String urlToImage) async {
+  void reportUser(String collection, String docID, String offenderID,
+      String offense, String type, String urlToImage) async {
     final HttpsCallable giveFeedback = CloudFunctions.instance.getHttpsCallable(
         functionName: 'reportUser');
     giveFeedback({
-      'collection' : collection,
-      'docID' : docID,
+      'collection': collection,
+      'docID': docID,
       'offenderID': offenderID,
       'offense': offense,
       'ownerID': userService.currentUserID,
@@ -60,6 +66,7 @@ class CloudFunction {
       'urlToImage': urlToImage
     });
   }
+
   // Give feedback
   void giveFeedback(String message) async {
     final HttpsCallable giveFeedback = CloudFunctions.instance.getHttpsCallable(
@@ -75,7 +82,7 @@ class CloudFunction {
         functionName: 'joinTrip');
     joinTrip({
       'docID': docID,
-      'ispublic':ispublic,
+      'ispublic': ispublic,
       'ownerID': ownerID
     }).then((value) =>
     {
@@ -89,7 +96,7 @@ class CloudFunction {
     functionData({
       'docID': docID,
       'uidInvitee': uidInvitee,
-      'ispublic':ispublic,
+      'ispublic': ispublic,
     }).then((value) =>
     {
       _analyticsService.joinedTrip(true),
@@ -110,6 +117,7 @@ class CloudFunction {
       'uid': uid,
     });
   }
+
   void addPrivateMember(String docID, String uid) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addPrivateMember');
@@ -137,7 +145,8 @@ class CloudFunction {
   }
 
 
-  void leaveAndRemoveMemberFromTrip(String tripDocID, String userUID, bool ispublic) async {
+  void leaveAndRemoveMemberFromTrip(String tripDocID, String userUID,
+      bool ispublic) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'leaveAndRemoveMemberFromTrip');
     functionData({
@@ -146,6 +155,7 @@ class CloudFunction {
       'ispublic': ispublic,
     });
   }
+
   void removeLodging(String docID, String fieldID) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'removeLodging');
@@ -170,7 +180,8 @@ class CloudFunction {
         functionName: "addFavoriteTrip");
     functionData({
       'docID': docID,
-    }).then((value) => {
+    }).then((value) =>
+    {
       _analyticsService.likedTrip(),
       trace.stop(),
     });
@@ -236,6 +247,7 @@ class CloudFunction {
       'userUID': userUID,
     });
   }
+
   void followBack(String userUID) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'followBack');
@@ -255,7 +267,6 @@ class CloudFunction {
   }
 
   void addItemToBringingList(String tripDocID, String item) async {
-
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addItemToBringingList');
     functionData({
@@ -274,7 +285,8 @@ class CloudFunction {
     });
   }
 
-  void addItemToNeedList(String tripDocID, String item, String displayName) async {
+  void addItemToNeedList(String tripDocID, String item,
+      String displayName) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addItemToNeedList');
     functionData({
@@ -293,7 +305,8 @@ class CloudFunction {
     });
   }
 
-  void addNewNotification({String message, String uidToUse, String documentID, String type, String ownerID, bool ispublic}) async {
+  void addNewNotification(
+      {String message, String uidToUse, String documentID, String type, String ownerID, bool ispublic}) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addNewNotification');
     functionData({
@@ -307,7 +320,7 @@ class CloudFunction {
     });
   }
 
-  void addCustomNotification(String message) async{
+  void addCustomNotification(String message) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addCustomNotification');
     functionData({
@@ -379,16 +392,70 @@ class CloudFunction {
   }
 
 
-  void addCurrentLocation({String docID, String city, String country, String zipcode, GeoPoint geoPoint}) async{
+  void addCurrentLocation(
+      {String docID, String city, String country, String zipcode, GeoPoint geoPoint}) async {
     final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
         functionName: 'addCurrentLocation');
     functionData({
-    'docID' : docID,
-    'city': city,
-    'zipcode': zipcode,
-    'country': country,
-    'lat': geoPoint.latitude,
+      'docID': docID,
+      'city': city,
+      'zipcode': zipcode,
+      'country': country,
+      'lat': geoPoint.latitude,
       'lng': geoPoint.longitude,
     });
   }
-}
+
+
+  void addReview({String docID}) async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'addReview');
+    functionData({
+      'docID': docID,
+    });
+  }
+
+  void addTransportation({String mode, String tripDocID, bool canCarpool,
+    String carpoolingWith, String airline, String flightNumber, String comment}) async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'addTransportation');
+    functionData({
+      'mode': mode,
+      'tripDocID': tripDocID,
+      'displayName': currentUserProfile.displayName,
+      'canCarpool': canCarpool,
+      'carpoolingWith': carpoolingWith,
+      'airline': airline,
+      'flightNumber': flightNumber,
+      'comment': comment,
+    });
+  }
+
+  void deleteTransportation({String fieldID, String tripDocID}) async {
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'deleteTransportation');
+    functionData({
+      'fieldID':fieldID,
+      'tripDocID':tripDocID,
+    });
+  }
+
+  void addVoterToBringingItem({String documentID, String tripDocID}) async{
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'addVoterToBringingItem');
+    functionData({
+      'documentID':documentID,
+      'tripDocID':tripDocID,
+    });
+  }
+
+  void removeVoterFromBringingItem({String documentID, String tripDocID}) async{
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'removeVoterFromBringingItem');
+    functionData({
+      'documentID':documentID,
+      'tripDocID':tripDocID,
+    });
+  }
+
+}//end CloudFunction

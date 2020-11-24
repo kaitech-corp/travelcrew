@@ -4,6 +4,7 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 import 'layout_widgets.dart';
 import 'lists/item_lists.dart';
 
@@ -33,71 +34,20 @@ class ExploreMemberLayout extends StatelessWidget{
 
                   ),
                 ),
-                ListTile(
-                  title: Text('${tripDetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value){
-                      switch (value) {
-                        case "report":
-                          {
-                            TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
-                          }
-                          break;
-                        case "Invite":
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => currentUserFollowingList(tripDetails: tripDetails,)),
-                            );
-                          }
-                          break;
-                        case "Leave":
-                          {
-                            TravelCrewAlertDialogs().leaveTripAlert(context,userService.currentUserID, tripDetails);
-                          }
-                          break;
-                        default:
-                          {
-
-                          }
-                          break;
-                      }
-                    },
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context) =>[
-                      const PopupMenuItem(
-                        value: 'report',
-                        child: ListTile(
-                          leading: const Icon(Icons.report),
-                          title: const Text('Report'),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Invite',
-                        child: ListTile(
-                          leading: const Icon(Icons.person_add),
-                          title: const Text('Invite'),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Leave',
-                        child: ListTile(
-                          leading: const Icon(Icons.exit_to_app),
-                          title: const Text('Leave Group'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
-                ),
+                MemberPopupMenuButton(tripDetails: tripDetails, userService: userService),
                 Container(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text('Trip: ${tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,),
-                        tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Trip: ${tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,),
+                            tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
+                          ],
+                        ),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -121,13 +71,94 @@ class ExploreMemberLayout extends StatelessWidget{
                   ),
                   child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,),
                 ),
-                ListWidget(tripDetails: tripDetails,),
+                Container(
+                  margin: const EdgeInsets.only(left: 18.0, right: 18.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ListWidget(tripDetails: tripDetails,),
+                      CrewModalBottomSheet(tripDetails: tripDetails),
+                    ],
+                  ),
+                ),
                 Container(height: 1,color: Colors.grey,),
-                BringListToDisplay(documentID: tripDetails.documentId,),
+                BringListToDisplay(tripDocID: tripDetails.documentId,),
               ],
             ),
           ),
         )
+    );
+  }
+}
+
+class MemberPopupMenuButton extends StatelessWidget {
+  const MemberPopupMenuButton({
+    Key key,
+    @required this.tripDetails,
+    @required this.userService,
+  }) : super(key: key);
+
+  final Trip tripDetails;
+  final UserService userService;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text('${tripDetails.location}'.toUpperCase(), style: TextStyle(fontSize: 20.0)),
+      trailing: PopupMenuButton<String>(
+        onSelected: (value){
+          switch (value) {
+            case "report":
+              {
+                TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
+              }
+              break;
+            case "Invite":
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => currentUserFollowingList(tripDetails: tripDetails,)),
+                );
+              }
+              break;
+            case "Leave":
+              {
+                TravelCrewAlertDialogs().leaveTripAlert(context,userService.currentUserID, tripDetails);
+              }
+              break;
+            default:
+              {
+
+              }
+              break;
+          }
+        },
+        padding: EdgeInsets.zero,
+        itemBuilder: (context) =>[
+          const PopupMenuItem(
+            value: 'report',
+            child: ListTile(
+              leading: const Icon(Icons.report),
+              title: const Text('Report'),
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'Invite',
+            child: ListTile(
+              leading: const Icon(Icons.person_add),
+              title: const Text('Invite'),
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'Leave',
+            child: ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Leave Group'),
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
     );
   }
 }

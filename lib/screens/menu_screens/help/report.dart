@@ -6,7 +6,7 @@ import 'package:travelcrew/services/cloud_functions.dart';
 class ReportContent extends StatefulWidget{
 
   final String type;
-  final UserProfile userAccount;
+  final UserPublicProfile userAccount;
   final ActivityData activity;
   final LodgingData lodging;
   final Trip tripDetails;

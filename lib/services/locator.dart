@@ -36,7 +36,9 @@ class UserProfileService {
       profile = UserPublicProfile(
         blockedList: List<String>.from(data['blockedList']) ?? [],
         following: List<String>.from(data['following']) ?? [],
+        followers: List<String>.from(data['followers']) ?? [],
         displayName: data['displayName'] ?? '',
+        email: data['email'] ?? '',
         firstName: data['firstName'] ?? '',
         lastName: data['lastName'] ?? '',
         uid: data['uid'] ?? '',

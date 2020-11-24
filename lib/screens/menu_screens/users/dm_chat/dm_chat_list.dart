@@ -8,7 +8,7 @@ import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_message_la
 
 class DMChatList extends StatefulWidget {
 
-  final UserProfile user;
+  final UserPublicProfile user;
   DMChatList({this.user});
 
   @override

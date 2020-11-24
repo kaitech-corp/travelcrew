@@ -175,7 +175,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                         String message = 'A new lodging has been added to ${widget.trip.tripName}';
                         bool ispublic = widget.trip.ispublic;
                         await DatabaseService().addNewLodgingData(
-                            comment,
+                            comment.trim(),
                             displayName,
                             documentID,
                             link,

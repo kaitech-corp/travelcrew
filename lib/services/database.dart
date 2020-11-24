@@ -31,7 +31,7 @@ class DatabaseService {
   final Query privateTripCollection = FirebaseFirestore.instance.collection("privateTrips").orderBy('endDateTimeStamp');
   final CollectionReference tripsCollectionUnordered = FirebaseFirestore.instance.collection("trips");
   final CollectionReference privateTripsCollectionUnordered = FirebaseFirestore.instance.collection("privateTrips");
-  final CollectionReference flightCollection =  FirebaseFirestore.instance.collection("flights");
+  final CollectionReference transportCollection =  FirebaseFirestore.instance.collection("transport");
   final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");
   final CollectionReference activitiesCollection =  FirebaseFirestore.instance.collection("activities");
   final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
@@ -45,7 +45,7 @@ class DatabaseService {
   final CollectionReference dmChatCollection = FirebaseFirestore.instance.collection('dmChat');
   final CollectionReference suggestionsCollection = FirebaseFirestore.instance.collection('suggestions');
   final CollectionReference tokensCollection = FirebaseFirestore.instance.collection('tokens');
-
+  final CollectionReference appReviewCollection = FirebaseFirestore.instance.collection('appReview');
 
   saveDeviceToken() async {
     // Get the current user
@@ -468,14 +468,26 @@ class DatabaseService {
 
 
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
-        return snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
+        try {
+          return snapshot.docs.map((doc) {
+            Map<String, dynamic> data = doc.data();
+              return Bringing(
+              displayName: data['displayName'] ?? '',
+              item: data['item'] ?? '',
+              documentID: data['documentID'] ?? '',
+              voters: List<String>.from(data['voters']) ?? [],
+          );
+                }).toList();
+        } catch (e) {
+          return snapshot.docs.map((doc) {
+            Map<String, dynamic> data = doc.data();
             return Bringing(
-            displayName: data['displayName'] ?? '',
-            item: data['item'] ?? '',
-            documentID: data['documentID'] ?? ''
-        );
-      }).toList();
+              displayName: data['displayName'] ?? '',
+              item: data['item'] ?? '',
+              documentID: data['documentID'] ?? '',
+            );
+          }).toList();
+        }
   }
   Stream<List<Bringing>> getBringingList(String docID){
     return bringListCollection.doc(docID).collection('Items').snapshots().map(_retrieveBringingItems);
@@ -892,11 +904,11 @@ class DatabaseService {
   }
 
   //Get all users
-  List<UserProfile> _userListFromSnapshot(QuerySnapshot snapshot){
+  List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot snapshot){
 
-    List<UserProfile> userList =  snapshot.docs.map((doc){
+    List<UserPublicProfile> userList =  snapshot.docs.map((doc){
       Map<String, dynamic> data = doc.data();
-      return UserProfile(
+      return UserPublicProfile(
         displayName: data['displayName'] ?? '',
         email: data['email'] ?? '',
         following: List<String>.from(data['following']) ?? [''],
@@ -912,7 +924,7 @@ class DatabaseService {
     return userList;
   }
   // get all users
-  Stream<List<UserProfile>> get userList {
+  Stream<List<UserPublicProfile>> get userList {
     return userPublicProfileCollection.snapshots()
         .map(_userListFromSnapshot);
   }
@@ -962,53 +974,56 @@ class DatabaseService {
   }
 
   // Get flights
-  List<FlightData> _flightListFromSnapshot(DocumentSnapshot snapshot){
+  List<TransportationData> _transportListFromSnapshot(QuerySnapshot snapshot) {
+    // var list2 = List();
+    // List<TransportationData> listOfModes = List();
+    List<TransportationData> transportList =  snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data();
+      return TransportationData(
+        mode: data['mode'] ?? '',
+        carpoolingWith: data['carpoolingWith'] ?? '',
+        canCarpool: data['canCarpool'] ?? false,
+        airline: data['airline'] ?? '',
+        fieldID: data['fieldID'] ?? '',
+        flightNumber: data['flightNumber'] ?? '',
+        displayName: data['displayName'] ?? '',
+        comment:  data['comment'] ?? '',
+        tripDocID: data['tripDocID'] ?? '',
+        uid: data['uid'] ?? '',
+      );
+    }).toList();
 
-    try {
-      var list2 = List();
-      List<FlightData> listOfFlights = List();
-
-      if (snapshot.exists) {
-        Map<String, dynamic> data = snapshot.data();
-        data.forEach((k,v) => list2.add(v));
+    return transportList;
+  }
         
-         for (var i =0; i< list2.length;i++) {
-           listOfFlights.add(FlightData(
-             airline: list2[i]['airline'] ?? '',
-             departureDate: list2[i]['departureDate'] ?? '',
-             departureDateArrivalTime: list2[i]['departureDateArrivalTime'] ?? '',
-             departureDateDepartTime: list2[i]['departureDateDepartTime'] ?? '',
-             displayName: list2[i]['displayName'] ?? '',
-             flightNumber: list2[i]['flightNumber'] ?? '',
-             returnDate: list2[i]['returnDate'] ?? '',
-             returnDateArrivalTime: list2[i]['returnDateArrivalTime'] ?? '',
-             returnDateDepartTime: list2[i]['returnDateDepartTime'] ?? '',
-           ));
-         }
-      }
+        // data.forEach((k,v) => list2.add(v));
+        
+         // for (var i =0; i< list2.length;i++) {
+         //   listOfModes.add(TransportationData(
+         //     // airline: list2[i]['airline'] ?? '',
+         //     // departureDate: list2[i]['departureDate'] ?? '',
+         //     // departureDateArrivalTime: list2[i]['departureDateArrivalTime'] ?? '',
+         //     // departureDateDepartTime: list2[i]['departureDateDepartTime'] ?? '',
+         //     // displayName: list2[i]['displayName'] ?? '',
+         //     // flightNumber: list2[i]['flightNumber'] ?? '',
+         //     // returnDate: list2[i]['returnDate'] ?? '',
+         //     // returnDateArrivalTime: list2[i]['returnDateArrivalTime'] ?? '',
+         //     // returnDateDepartTime: list2[i]['returnDateDepartTime'] ?? '',
+         //   ));
+         // }
+  
 
-        return listOfFlights;
-    } catch (e) {
-      print('Error retrieving flight data. ${e.toString()}');
-    }
-
-
+  Stream<List<TransportationData>> get transportList {
+      return transportCollection.doc(tripDocID).collection('mode').snapshots().map(_transportListFromSnapshot);
+    
   }
-
-  Stream<List<FlightData>> get flightList {
-    try {
-      return flightCollection.doc(tripDocID).snapshots().map(_flightListFromSnapshot);
-    } catch (e) {
-      print('Error Streaming Flights. ${e.toString()}');
-    }
-  }
-
 
 
 
 
 
   //Query for My Crew Trips
+
   List<Trip> _crewTripListFromSnapshot(QuerySnapshot snapshot){
     try {
       return snapshot.docs.map((doc) {
@@ -1173,7 +1188,7 @@ class DatabaseService {
             timestamp: data['timestamp'] ?? null,
           );
         }).toList();
-      feedback.sort((a,b) => a.timestamp.compareTo(b.timestamp));
+      feedback.sort((a,b) => b.timestamp.compareTo(a.timestamp));
 
       return feedback;
     } catch (e) {
@@ -1380,4 +1395,14 @@ class DatabaseService {
   //     'uid': 'r5bm1FxFD7RAU6wBg3tGXadBFvl1',
   //       });
   // }
+
+
+  Future<bool> appReviewExists(String docID) async {
+    var ref = await appReviewCollection.get();
+
+    return ref.docs.contains(docID);
+
+  }
 }
+
+

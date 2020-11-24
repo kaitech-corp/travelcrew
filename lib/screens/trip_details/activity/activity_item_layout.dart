@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
-import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
 class ActivityItemLayout extends StatelessWidget {
 
@@ -21,28 +19,14 @@ class ActivityItemLayout extends StatelessWidget {
     return Center(
         key: Key(activity.fieldID),
         child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
             onTap: () {
               if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
             },
             child: Container(
-              width: SizeConfig.screenWidth *.9,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [BoxShadow(
-                    offset: const Offset(0, 10),
-                    blurRadius: 33,
-                    color: Color(Colors.blueGrey.value).withOpacity(.84),
-                    spreadRadius: 5,
-                  )
-                  ]),
               child: Container(
-                margin: const EdgeInsets.only(left: 10,top: 10, right: 10, bottom: 10),
+                margin: const EdgeInsets.all(8.0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -50,20 +34,11 @@ class ActivityItemLayout extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
-                      Text('Comment: ${activity.comment}',style: Theme.of(context).textTheme.subtitle1,maxLines: 5,overflow: TextOverflow.ellipsis,),
+                      if(activity.comment.isNotEmpty) Tooltip(message:activity.comment,child: Text(activity.comment,style: Theme.of(context).textTheme.subtitle1,maxLines: 10,overflow: TextOverflow.ellipsis,)),
                       const Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
+                        padding: EdgeInsets.only(bottom: 4.0),
                       ),
-                      Visibility(
-                        visible: activity.startTime.isNotEmpty,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Start: ${activity.startTime ?? ''}',style: Theme.of(context).textTheme.subtitle1,),
-                            Text('End: ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.subtitle1,),
-                          ],
-                        ),
-                      ),
+                      if(activity.startTime.isNotEmpty) Text('${activity.startTime ?? ''} - ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,9 +76,9 @@ class ActivityItemLayout extends StatelessWidget {
   }
   favorite(String uid) {
     if (activity.voters.contains(uid)) {
-      return const Icon(Icons.favorite);
+      return const Icon(Icons.favorite,color: Colors.red,);
     } else {
-      return const Icon(Icons.favorite_border);
+      return const Icon(Icons.favorite_border,color: Colors.red);
     }
   }
 
@@ -151,7 +126,7 @@ class ActivityItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
-            leading: const Icon(Icons.exit_to_app),
+            leading: const Icon(Icons.delete),
             title: const Text('Delete Activity'),
           ),
         ),
