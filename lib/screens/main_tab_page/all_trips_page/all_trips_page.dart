@@ -1,15 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_new_design.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:google_maps_webservice/places.dart';
 
 
 class AllTripsPage extends StatefulWidget{

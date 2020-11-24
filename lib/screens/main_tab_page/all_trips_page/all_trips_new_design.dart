@@ -1,12 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/tappableTripPreview.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/cloud_functions.dart';

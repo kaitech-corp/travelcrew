@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
 class UserProfilePage extends StatelessWidget{
   UserPublicProfile user;

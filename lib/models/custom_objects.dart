@@ -107,21 +107,6 @@ class PrivateTrip {
   PrivateTrip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
 }
 
-class UserProfile {
-  final String displayName;
-  final String email;
-  final List<String> following;
-  final List<String> followers;
-  final String firstName;
-  final String lastName;
-  final int tripsCreated;
-  final int tripsJoined;
-  final String uid;
-  final String urlToImage;
-
-  UserProfile({this.urlToImage, this.uid, this.lastName, this.following, this.followers, this.firstName, this.email, this.displayName, this.tripsCreated, this.tripsJoined});
-}
-
 class TransportationData {
   final String mode;
   final String airline;

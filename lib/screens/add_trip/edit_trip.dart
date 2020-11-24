@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
-import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/services/database.dart';
 
 

@@ -109,13 +109,17 @@ class AnimatedAd extends StatelessWidget {
         child: Column(
           children: [
             animatePress ?
-            AnimatedClipRRect(
-              duration: Duration(seconds: 1),
-              curve: Curves.linear,
-              borderRadius: BorderRadius.only(topLeft: _radius,topRight: _radius),
-                child: Image.network(ad.urlToImage))
+            Expanded(
+              flex: 3,
+              child: AnimatedClipRRect(
+                duration: Duration(seconds: 1),
+                curve: Curves.linear,
+                borderRadius: BorderRadius.only(topLeft: _radius,topRight: _radius),
+                  child: Image.network(ad.urlToImage,fit: BoxFit.fill,)),
+            )
                 : Container(),
             Expanded(
+              flex: 2,
               child: ListTile(
                 title: Text(
                   ad.tripName,

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 
 import 'package:travelcrew/services/auth.dart';

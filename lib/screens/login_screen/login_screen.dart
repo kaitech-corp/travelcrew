@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/login_screen/signup_screen.dart';
 import 'package:travelcrew/services/apple_auth.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/constants.dart';

@@ -458,7 +458,7 @@ class DatabaseService {
   }
 
   // Get following list
-  Stream<List<UserProfile>> retrieveFollowingList() async*{
+  Stream<List<UserPublicProfile>> retrieveFollowingList() async*{
       var user = await usersList();
       var followingList =
           user.where((user) => currentUserProfile.following.contains(user.uid)).toList();
@@ -929,12 +929,12 @@ class DatabaseService {
         .map(_userListFromSnapshot);
   }
   //Get all users Future Builder
-  Future<List<UserProfile>> usersList() async {
+  Future<List<UserPublicProfile>> usersList() async {
     try {
       var ref = await userPublicProfileCollection.get();
-      List<UserProfile> userList = ref.docs.map((doc) {
+      List<UserPublicProfile> userList = ref.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return UserProfile(
+        return UserPublicProfile(
           displayName: data['displayName'] ?? '',
           email: data['email'] ?? '',
           following: List<String>.from(data['following']) ?? [''],
@@ -954,9 +954,9 @@ class DatabaseService {
 
 
   // Get current user public profile
-  UserProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
+  UserPublicProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
     Map<String, dynamic> data = snapshot.data();
-      return UserProfile(
+      return UserPublicProfile(
         displayName: data['displayName'] ?? '',
         email: data['email'] ?? '',
         firstName: data['firstName'] ?? '',
@@ -968,7 +968,7 @@ class DatabaseService {
   }
 
   // get current use public profile
-  Stream<UserProfile> get currentUserPublicProfile {
+  Stream<UserPublicProfile> get currentUserPublicProfile {
     return userPublicProfileCollection.doc(userService.currentUserID).snapshots()
         .map(_userPublicProfileSnapshot);
   }
@@ -1324,7 +1324,7 @@ class DatabaseService {
   }
 
   // Get following list
-  Stream<List<UserProfile>> retrieveDMChats() async*{
+  Stream<List<UserPublicProfile>> retrieveDMChats() async*{
     List<String> _uids = [];
     var _chatList;
     var user = await usersList();

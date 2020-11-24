@@ -9,7 +9,6 @@ class WebViewScreen extends StatefulWidget {
 
   @override
   _WebViewScreenState createState() => _WebViewScreenState(this.url,this.key);
-// TODO: implement createState
 
 }
   class _WebViewScreenState extends State<WebViewScreen>{

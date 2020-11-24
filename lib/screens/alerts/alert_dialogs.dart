@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/cloud_functions.dart';

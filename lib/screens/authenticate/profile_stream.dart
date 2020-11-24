@@ -18,7 +18,7 @@ class ProfileStream extends StatelessWidget{
 
     final user = Provider.of<User>(context);
 
-    return StreamProvider<UserProfile>.value(
+    return StreamProvider<UserPublicProfile>.value(
       value: DatabaseService(uid: user.uid).currentUserPublicProfile,
       child: build2(context),
     );

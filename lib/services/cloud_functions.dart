@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 
 class CloudFunction {

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/admin/admin_page.dart';
 import 'package:travelcrew/services/auth.dart';
-import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/constants.dart';
-import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -27,7 +25,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     chatNotifier.value = 0;
   }

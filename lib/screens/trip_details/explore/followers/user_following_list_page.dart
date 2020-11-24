@@ -5,7 +5,6 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import '../../../../loading.dart';
 
 
@@ -19,7 +18,6 @@ class currentUserFollowingList extends StatefulWidget{
 }
 
 class _currentUserFollowingListState extends State<currentUserFollowingList> {
-  // var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   var _showImage = false;
   String _image;
@@ -42,7 +40,7 @@ class _currentUserFollowingListState extends State<currentUserFollowingList> {
                 ListView.builder(
                   itemCount: followingList.length,
                   itemBuilder: (context, index) {
-                    UserProfile user = followingList[index];
+                    UserPublicProfile user = followingList[index];
                     return userCard(context, user);
                   },
                 ),
@@ -79,7 +77,7 @@ class _currentUserFollowingListState extends State<currentUserFollowingList> {
     );
   }
 
-  Widget userCard(BuildContext context, UserProfile user){
+  Widget userCard(BuildContext context, UserPublicProfile user){
     return Card(
       child: Container(
           child: GestureDetector(

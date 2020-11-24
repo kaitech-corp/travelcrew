@@ -38,11 +38,11 @@ class _SignupScreenState extends State {
 
     return Scaffold(
         appBar: AppBar(title: const Text('Edit Profile')),
-        body: StreamBuilder<UserProfile>(
+        body: StreamBuilder<UserPublicProfile>(
             stream: DatabaseService().currentUserPublicProfile,
             builder: (context, snapshot) {
               if(snapshot.hasData){
-                UserProfile user = snapshot.data;
+                UserPublicProfile user = snapshot.data;
                 return SingleChildScrollView(
                   child: Container(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),

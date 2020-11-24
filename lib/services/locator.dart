@@ -60,7 +60,7 @@ class UserProfileServiceStream {
   var userService = locator<UserService>();
   UserPublicProfile profile;
 
-  UserProfile _userListFromSnapshot(DocumentSnapshot snapshot){
+  UserPublicProfile _userListFromSnapshot(DocumentSnapshot snapshot){
     if (snapshot.exists)
     {
 
@@ -80,7 +80,7 @@ class UserProfileServiceStream {
 
   }
   // get all users
-  Stream<UserProfile> get userList {
+  Stream<UserPublicProfile> get userList {
     return FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).snapshots()
         .map(_userListFromSnapshot);
   }
