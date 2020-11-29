@@ -6,6 +6,7 @@ import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 
 
 class LodgingItemLayout extends StatelessWidget {
@@ -43,6 +44,7 @@ class LodgingItemLayout extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
                   if(lodging.startTime.isNotEmpty) Text('${lodging.startTime ?? ''} - ${lodging.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+                  if(lodging.link.isNotEmpty) LinkPreview(link: lodging.link),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

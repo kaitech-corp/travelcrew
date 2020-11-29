@@ -11,10 +11,12 @@ class TappableTripPreview extends StatelessWidget {
 
   TappableTripPreview({this.trip, this.heroTag});
 
-  var size = SizeConfig.screenHeight;
+
 
   @override
   Widget build(BuildContext context) {
+
+    var size = SizeConfig.screenHeight;
     return Card(
       key: Key(trip.documentId),
       margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),

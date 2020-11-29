@@ -28,7 +28,7 @@ class _CompleteProfileState extends State {
   Key get key => null;
   Key key1;
   Future getImage() async {
-    var image = await picker.getImage(source: ImageSource.gallery);
+    var image = await picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
       _image = File(image.path);

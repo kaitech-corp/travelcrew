@@ -61,7 +61,7 @@ class AddNewActivityState extends State<AddNewActivity> {
             title: const Text('Add Activity'),
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             child: Builder(
               builder: (context) => Form(
                 key: _formKey,
@@ -216,7 +216,8 @@ class AddNewActivityState extends State<AddNewActivity> {
                               Navigator.pop(context);
                               DatabaseService().appReviewExists(TCFunctions().AppReviewDocID()).then((value) => {
                                 if(!value){
-                                  InAppReviewClass().requestReviewFunc()
+                                  InAppReviewClass().requestReviewFunc(),
+                                  CloudFunction().addReview(docID: TCFunctions().AppReviewDocID()),
                                 }
                               });
 

@@ -98,6 +98,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ListWidget(tripDetails: widget.tripDetails,),
+                      // SplitButton(tripDetails: widget.tripDetails,),
                       CrewModalBottomSheet(tripDetails: widget.tripDetails),
                     ],
                   ),
@@ -115,6 +116,7 @@ class _ExploreLayoutState extends State<ExploreLayout> {
 
 
 }
+
 
 class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({

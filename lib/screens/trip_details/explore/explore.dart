@@ -10,7 +10,6 @@ import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'explore_owner_layout.dart';
-import 'members/members_layout.dart';
 
 class Explore extends StatelessWidget {
   var userService = locator<UserService>();

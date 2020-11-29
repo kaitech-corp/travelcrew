@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_link_preview/flutter_link_preview.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
@@ -199,7 +201,7 @@ class ProfileWidget extends StatelessWidget {
                 // color: Color(0xAA2D3D49),
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(spaceImage),
+                    image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -230,7 +232,7 @@ class ProfileWidget extends StatelessWidget {
                   Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
                   Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
                   if(user.uid == currentUserProfile.uid) Text(
-                    'Email: ${user.email}',style: Theme.of(context).textTheme.subtitle1,),
+                    '${user.email}',style: Theme.of(context).textTheme.subtitle1,),
                 ],
               ),
             ),
@@ -287,6 +289,82 @@ class CrewModalBottomSheet extends StatelessWidget {
         );
       },
       child: const Text('Crew'),
+    );
+  }
+}
+
+class LinkPreview extends StatelessWidget {
+  const LinkPreview({
+    Key key,
+    @required this.link,
+  }) : super(key: key);
+
+  final String link;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlutterLinkPreview(
+      url: link,
+      showMultimedia: true,
+      bodyStyle: Theme.of(context).textTheme.subtitle1,
+      builder: (info){
+        if(info is WebInfo) {
+          return Container(
+              height: (info.image != null) ? 275 : 100,
+              child: Column(
+                children: [
+                  (info.image != null) ?
+                  Expanded(
+                      flex: 2,
+                      child: Image.network(
+                        info.image,
+                        width: double.maxFinite,
+                        fit: BoxFit.cover,
+                      )) : Container(),
+                  if (info.description != null)
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(info.description, maxLines: 4,),
+                      ),
+                    ),
+                ],
+              )
+          );
+        }
+        if (info is WebImageInfo) {
+          return SizedBox(
+            height: 350,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              clipBehavior: Clip.antiAlias,
+              child: Image.network(
+                info.image,
+                fit: BoxFit.cover,
+                width: double.maxFinite,
+              ),
+            ),
+          );
+        } else if (info is WebVideoInfo) {
+          return SizedBox(
+            height: 275,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              clipBehavior: Clip.antiAlias,
+              child: Image.network(
+                info.image,
+                fit: BoxFit.cover,
+                width: double.maxFinite,
+              ),
+            ),
+          );
+        } else{
+          return Container();
+        }
+      },
     );
   }
 }

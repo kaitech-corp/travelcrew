@@ -110,9 +110,7 @@ class _DMChatState extends State<DMChat> {
     List<String> _members = [userService.currentUserID, widget.user.uid];
     Map<String, bool> status = {};
     var users = _members.where((f) => f != widget.userService.currentUserID);
-
     users.forEach((f) => status[f] = false);
-//    print(status.toList());
     return status;
   }
 }

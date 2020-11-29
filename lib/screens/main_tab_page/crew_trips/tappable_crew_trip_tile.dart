@@ -54,7 +54,7 @@ class TappableCrewTripTile extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ListTile(
-                    title: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                    title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,)),
                     subtitle:  Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,),
                     trailing: Tooltip(
                       message: 'Members',

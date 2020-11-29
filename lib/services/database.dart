@@ -45,8 +45,19 @@ class DatabaseService {
   final CollectionReference dmChatCollection = FirebaseFirestore.instance.collection('dmChat');
   final CollectionReference suggestionsCollection = FirebaseFirestore.instance.collection('suggestions');
   final CollectionReference tokensCollection = FirebaseFirestore.instance.collection('tokens');
-  final CollectionReference appReviewCollection = FirebaseFirestore.instance.collection('appReview');
+  final CollectionReference addReviewCollection = FirebaseFirestore.instance.collection('addReview');
+  final CollectionReference versionCollection = FirebaseFirestore.instance.collection('version');
 
+
+  // Shows latest app version to display in main menu.
+  Future<String> getVersion() async{
+    var ref = await versionCollection.doc('version').get();
+    Map<String, dynamic> data = ref.data();
+    return data['version'] ?? '';
+
+  }
+
+  // Saves tokens for push notifications. Saves only after user navigates to the main screen.
   saveDeviceToken() async {
     // Get the current user
     String uid = userService.currentUserID;
@@ -73,6 +84,7 @@ class DatabaseService {
     }
   }
 
+  //Updates user info after signup
   Future updateUserData(String firstName, String lastName, String email, String uid) async {
     return await userCollection.doc(uid).set({
       'firstName': firstName,
@@ -82,13 +94,16 @@ class DatabaseService {
     });
   }
 
+  //Checks whether user has a Public Profile on Firestore to know whether to
+  // send user to complete profile page or not.
+
   Future<bool> checkUserHasProfile() async {
     var ref = userCollection.doc(uid);
     var refSnapshot = await ref.get();
 
     return refSnapshot.exists;
     }
-
+//Updates public profile after sign up
   Future updateUserPublicProfileData(String displayName, String firstName, String lastName, String email, int tripsCreated, int tripsJoined, String uid, File urlToImage) async {
     var ref = userPublicProfileCollection.doc(uid);
      try {
@@ -639,7 +654,7 @@ class DatabaseService {
 
     return trips;
   }
-  // get trips
+  // get trips stream
   Stream<List<Trip>> get trips {
     return tripCollection.snapshots()
         .map(_tripListFromSnapshot);
@@ -995,35 +1010,12 @@ class DatabaseService {
 
     return transportList;
   }
-        
-        // data.forEach((k,v) => list2.add(v));
-        
-         // for (var i =0; i< list2.length;i++) {
-         //   listOfModes.add(TransportationData(
-         //     // airline: list2[i]['airline'] ?? '',
-         //     // departureDate: list2[i]['departureDate'] ?? '',
-         //     // departureDateArrivalTime: list2[i]['departureDateArrivalTime'] ?? '',
-         //     // departureDateDepartTime: list2[i]['departureDateDepartTime'] ?? '',
-         //     // displayName: list2[i]['displayName'] ?? '',
-         //     // flightNumber: list2[i]['flightNumber'] ?? '',
-         //     // returnDate: list2[i]['returnDate'] ?? '',
-         //     // returnDateArrivalTime: list2[i]['returnDateArrivalTime'] ?? '',
-         //     // returnDateDepartTime: list2[i]['returnDateDepartTime'] ?? '',
-         //   ));
-         // }
-  
 
   Stream<List<TransportationData>> get transportList {
       return transportCollection.doc(tripDocID).collection('mode').snapshots().map(_transportListFromSnapshot);
-    
   }
 
-
-
-
-
   //Query for My Crew Trips
-
   List<Trip> _crewTripListFromSnapshot(QuerySnapshot snapshot){
     try {
       return snapshot.docs.map((doc) {
@@ -1051,9 +1043,7 @@ class DatabaseService {
       print(e.toString());
     }
   }
-//  endDateTimeStamp: DateFormat.yMd()
-//      .format(data['endDateTimeStamp'].toDate()).toString(),
-  // get trips
+
   Stream<List<Trip>> get crewTrips {
     return tripCollection.where('accessUsers', arrayContainsAny: [uid]).snapshots()
         .map(_crewTripListFromSnapshot);
@@ -1064,7 +1054,7 @@ class DatabaseService {
         .map(_tripListFromSnapshot);
   }
 
-// check uniqueness
+// check uniqueness to avoid duplicate function calls or writes
   Future addToUniqueDocs(String key2){
     try {
       uniqueCollection.doc(key2).set({
@@ -1073,10 +1063,9 @@ class DatabaseService {
       print(e.toString());
     }
   }
+
   // Get all Notifications
-
   List<NotificationData> _notificationListFromSnapshot(QuerySnapshot snapshot){
-
     try {
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
@@ -1101,7 +1090,6 @@ class DatabaseService {
     return notificationCollection.doc(userService.currentUserID).collection('notifications').orderBy('timestamp', descending: true).snapshots().map(_notificationListFromSnapshot);
   }
 
-
   // Add new chat message
   Future addNewChatMessage(String displayName, String message, String uid, Map status) async {
     var key = chatCollection.doc().id;
@@ -1120,14 +1108,7 @@ class DatabaseService {
       _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
     }
   }
-  // Delete a chat message
-  Future deleteChatMessage(String fieldID, String tripDocID) async {
-    try {
-      return await chatCollection.doc(tripDocID).collection('messages').doc(fieldID).delete();
-    } catch (e) {
-      _analyticsService.writeError('Error deleting new chat:  ${e.toString()}');
-    }
-  }
+
 // Clear chat notifications.
   Future clearChatNotifications() async {
     var db = chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false);
@@ -1157,7 +1138,7 @@ class DatabaseService {
       print("Error: ${e.toString()}");
     }
   }
-
+//Stream chats
   Stream<List<ChatData>> get chatList {
     try {
       return chatCollection.doc(tripDocID).collection('messages')
@@ -1175,7 +1156,7 @@ class DatabaseService {
     }
   }
 
-
+//Read feedback data from users. Only shown on admin page.
   Future<List<TCFeedback>> feedback() async {
     try {
       var ref = await feedbackCollection.get();
@@ -1384,24 +1365,11 @@ class DatabaseService {
       return await suggestionsCollection.doc(fieldID).delete();
   }
 
-  // addCustomNotification() async {
-  //   var ref = notificationCollection;
-  //   ref.doc('r5bm1FxFD7RAU6wBg3tGXadBFvl1').collection('notifications').doc().set({
-  //     'documentID': '',
-  //     'fieldID': '',
-  //     'message': 'Welcome to Travel Crew! Get started now and create your first trip!',
-  //     'timestamp': FieldValue.serverTimestamp(),
-  //     'type': 'Welcome',
-  //     'uid': 'r5bm1FxFD7RAU6wBg3tGXadBFvl1',
-  //       });
-  // }
-
-
+  //Check if user already submitted or view app Review this month
   Future<bool> appReviewExists(String docID) async {
-    var ref = await appReviewCollection.get();
+    var ref = await addReviewCollection.doc(currentUserProfile.uid).collection('review').get();
 
     return ref.docs.contains(docID);
-
   }
 }
 

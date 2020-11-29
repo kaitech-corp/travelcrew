@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/admin/admin_page.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -112,7 +113,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Text(currentVersion),
+                child: CurrentVersion(context),
               )
             ],
           ),
@@ -120,5 +121,19 @@ class _MenuDrawerState extends State<MenuDrawer> {
       ),
     );
   }
+  
+  Widget CurrentVersion(BuildContext context){
+    return FutureBuilder(
+      future: DatabaseService().getVersion(),
+        builder: (context, data){
+          if(data.hasData){
+            var version = data.data;
+            return Text(version);
+          } else {
+            return Text('');
+          }
+        },
+    );
+}
 
 }

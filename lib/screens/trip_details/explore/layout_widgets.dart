@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/trip_details/cost/cost_split_page.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import 'lists/item_lists.dart';
@@ -64,6 +65,32 @@ class _ListWidgetState extends State<ListWidget> {
         );
       },
       child: const Text('Add to List'),
+    );
+  }
+}
+
+class SplitButton extends StatelessWidget {
+
+  final Trip tripDetails;
+
+  const SplitButton({
+    Key key, this.tripDetails,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+              CostPage(tripDetails: tripDetails,)),
+        );
+      },
+      child: const Text('Split'),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_new_design.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 
@@ -185,6 +186,8 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                   child: RaisedButton(
                                       onPressed: () {
                                         final form = _formKey.currentState;
+                                        String documentID = widget.trip.documentId;
+                                        String message = 'A new travel method has been added to ${widget.trip.tripName}';
                                         if (form.validate()) {
                                           CloudFunction().addTransportation(
                                               mode: dropdownValue,
@@ -195,6 +198,19 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                               comment: comment.trim(),
                                               flightNumber: flightNumber.trim(),);
                                           Navigator.pop(context);
+
+                                          widget.trip.accessUsers.forEach((f) {
+                                            if(f != userService.currentUserID){
+                                              CloudFunction().addNewNotification(
+                                                message: message,
+                                                documentID: documentID,
+                                                type: 'Travel',
+                                                uidToUse: f,
+                                                ownerID: userService.currentUserID,
+                                                ispublic: widget.trip.ispublic,
+                                              );
+                                            }
+                                          });
                                         }
                                       },
                                       child: Text('Add'))),

@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 
 class ActivityItemLayout extends StatelessWidget {
 
@@ -39,6 +40,7 @@ class ActivityItemLayout extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
                       if(activity.startTime.isNotEmpty) Text('${activity.startTime ?? ''} - ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+                      if(activity.link.isNotEmpty) LinkPreview(link: activity.link),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,3 +173,5 @@ class ActivityItemLayout extends StatelessWidget {
     );
   }
 }
+
+

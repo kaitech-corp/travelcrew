@@ -217,6 +217,7 @@ class _TravelCrewState extends State<TravelCrew> {
                 '/googlePlaces': (BuildContext context)=> new GooglePlaces(),
                 '/chats_page': (BuildContext context)=> new DMChatListPage(),
                 '/settings': (BuildContext context)=> new Settings(),
+                // '/costPage' : (BuildContext context) => new CostPage(),
               },
               navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
             ),
