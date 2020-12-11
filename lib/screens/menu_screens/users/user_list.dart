@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/locator.dart';
 import '../../../loading.dart';
-import 'users_text_section.dart';
+import 'tc_user_card.dart';
 
 
 class UserList extends StatefulWidget {
@@ -65,17 +65,18 @@ class _UserListState extends State<UserList> {
       ),
       body: _isSearching ? SearchBar(
         onSearch: userSearchList,
+        textStyle: Theme.of(context).textTheme.subtitle1,
         placeHolder: DraggableScrollbar.semicircle(
           controller: controller,
           child: ListView.builder(
               controller: controller,
               itemCount: allUsersList.length ?? 0,
               itemBuilder: (context, index){
-                return UsersTextSection(allUsers: allUsersList[index]);
+                return TCUserCard(allUsers: allUsersList[index]);
               }),
         ),
         onItemFound: (UserPublicProfile user, int index){
-          return UsersTextSection(allUsers: user);
+          return TCUserCard(allUsers: user);
         },
       ): DraggableScrollbar.semicircle(
         controller: controller,
@@ -83,7 +84,7 @@ class _UserListState extends State<UserList> {
             controller: controller,
             itemCount: allUsersList.length ?? 0,
             itemBuilder: (context, index){
-              return UsersTextSection(allUsers: allUsersList[index]);
+              return TCUserCard(allUsers: allUsersList[index]);
             }),
 
       ),

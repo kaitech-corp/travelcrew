@@ -56,28 +56,26 @@ class _AdminPageState extends State<AdminPage> {
                     decoration: BoxDecoration(
                       border: Border.all(),
                     ),
-                    child: FutureBuilder(
-                      builder: (context, feedbackList) {
-                        if(feedbackList.hasData) {
+                    child: StreamBuilder(
+                      builder: (context, feedbackData) {
+                        if(feedbackData.hasData) {
                           return ListView.builder(
-                            itemCount: feedbackList.data.length,
+                            itemCount: feedbackData.data.length,
                             itemBuilder: (context, index) {
-                              TCFeedback feedback = feedbackList.data[index];
-                              var item = feedback;
+                              List<TCFeedback> feedbackList = feedbackData.data;
+                              var item = feedbackList[index];
                               return Dismissible(
                                 direction: DismissDirection.endToStart,
                                 background: Container(color: Colors.red,
                                   child: const Align(alignment: Alignment.centerRight,child: Icon(Icons.delete, color: Colors.white,)),),
                                 key: Key(item.fieldID),
                                 onDismissed: (direction) {
-                                  setState(() {
-                                    feedbackList.data.removeAt(index);
-                                  });
                                   CloudFunction().removeFeedback(item.fieldID);
                                 },
                                 child: ListTile(
-                                  title: Text('${feedback.message}',),
-                                  subtitle: Text('Submitted: ${feedback.timestamp.toDate()}'),
+                                  key: Key(item.fieldID),
+                                  title: Text('${item.message}',style: Theme.of(context).textTheme.subtitle1,),
+                                  subtitle: Text('Submitted: ${item.timestamp.toDate()}',style: Theme.of(context).textTheme.headline6,),
                                 ),
                               );
                             },
@@ -86,7 +84,7 @@ class _AdminPageState extends State<AdminPage> {
                           return Loading();
                         }
                       },
-                      future: DatabaseService().feedback(),
+                      stream: DatabaseService().feedback,
 
                     ),
                   ),
@@ -95,6 +93,9 @@ class _AdminPageState extends State<AdminPage> {
                 Flexible(flex: 2, child: _buildTextField()),
                 Center(
                   child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)
+                    ),
                     onPressed: () {
                       if (_message.isNotEmpty) {
                         CloudFunction().addCustomNotification(_message);
@@ -148,7 +149,6 @@ class _AdminPageState extends State<AdminPage> {
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           hintText: "Enter a message",
-          fillColor: Colors.grey[300],
           filled: true,
         ),
         onChanged: (String value) {

@@ -35,17 +35,6 @@ class _SettingsState extends State<Settings> {
             children: [
               Text('Theme',style: Theme.of(context).textTheme.headline2,),
               RadioListTile<String>(
-                title: const Text('Dark'),
-                value: 'dark_theme',
-                groupValue: theme_id,
-                onChanged: (value) {
-                  setState(() {
-                    theme_id = value;
-                    ThemeProvider.controllerOf(context).setTheme(value);
-                  });
-                },
-              ),
-              RadioListTile<String>(
                 title: const Text('Light'),
                 value: 'light_theme',
                 groupValue: theme_id,
@@ -56,7 +45,19 @@ class _SettingsState extends State<Settings> {
                   });
                 },
               ),
-              Container(height: 2, decoration: BoxDecoration(border: Border.all(color: Colors.black12)),),
+              RadioListTile<String>(
+                title: const Text('Dark'),
+                value: 'dark_theme',
+                groupValue: theme_id,
+                onChanged: (value) {
+                  setState(() {
+                    theme_id = value;
+                    ThemeProvider.controllerOf(context).setTheme(value);
+                  });
+                },
+              ),
+
+              Container(height: 2, decoration: BoxDecoration(border: Border.all(color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,)),),
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
                 children: [
@@ -96,7 +97,7 @@ class _SettingsState extends State<Settings> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(image: AssetImage(instagram_logo), height: 25.0),
-            Text(' Instagram')
+            Text(' Instagram',style: Theme.of(context).textTheme.subtitle2,)
           ],
         ),
       ),
@@ -118,7 +119,7 @@ class _SettingsState extends State<Settings> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(image: AssetImage(facebook_logo), height: 25.0),
-            Text(' Facebook')
+            Text(' Facebook',style: Theme.of(context).textTheme.subtitle2,)
           ],
         ),
       ),

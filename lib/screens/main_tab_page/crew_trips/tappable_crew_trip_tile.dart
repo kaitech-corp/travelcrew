@@ -1,8 +1,10 @@
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -27,16 +29,18 @@ class TappableCrewTripTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  trace.start();
+    trace.start();
 
 
     return Card(
       key: Key(trip.documentId),
-      margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),
+      margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
-      child: InkWell(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      child:
+      InkWell(
         onTap: (){
           Navigator.push(
             context,
@@ -46,53 +50,155 @@ class TappableCrewTripTile extends StatelessWidget {
         child: Container(
           height: trip.urlToImage.isNotEmpty ? size* .31 : size*.11,
           width: double.infinity,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage, transitionOnUserGestures: true,child: ImageLayout2(trip.urlToImage))) : Container(),
-                Flexible(
-                  flex: 1,
-                  child: ListTile(
-                    title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                    subtitle:  Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,),
-                    trailing: Tooltip(
-                      message: 'Members',
-                      child: Wrap(
-                        // mainAxisAlignment: MainAxisAlignment.end,
-                        spacing: 3,
-                        children: <Widget>[
-                          Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle1,),
-                          const Icon(Icons.people),
-                        ],
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(30),
+          //   boxShadow: <BoxShadow>[
+          //     BoxShadow(
+          //       color: Colors.blueAccent.withOpacity(0.1),
+          //       blurRadius: 1,
+          //       offset: Offset(0, 2),
+          //     ),
+          //   ],
+          // ),
+
+          child: Stack(
+            overflow: Overflow.clip,
+            children: [
+              (ThemeProvider.themeOf(context).id == 'light_theme') ? Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: SizeConfig.screenWidth*.025,
+                  width: (SizeConfig.screenWidth*.8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(30),topLeft: Radius.circular(30)),
+                    color: Colors.blue,
+                  )
+                ),
+              ) :
+              Container(),
+              Positioned.fill(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage, transitionOnUserGestures: true,child: ImageLayout2(trip.urlToImage))) : Container(),
+                    Flexible(
+                      flex: 1,
+                      child: ListTile(
+                        title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline3,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                        subtitle:  Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle2,),
+                        trailing: Tooltip(
+                          message: 'Members',
+                          child: Wrap(
+                            // mainAxisAlignment: MainAxisAlignment.end,
+                            spacing: 3,
+                            children: <Widget>[
+                              Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle1,),
+                              IconThemeWidget(icon:Icons.people,),
+                            ],
+                          ),
+                        ),
+
                       ),
                     ),
-
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: ButtonBar(
-                    alignment: MainAxisAlignment.end,
-                    children: [
-                      if(trip.favorite.length > 0) Tooltip(
-                        message: 'Likes',
-                        child: BadgeIcon(
-                          icon: const Icon(Icons.favorite,color: Colors.redAccent,),
-                          badgeCount: trip.favorite.length,
-                        ),
+                    Flexible(
+                      flex: 1,
+                      child: ButtonBar(
+                        alignment: MainAxisAlignment.end,
+                        children: [
+                          if(trip.favorite.length > 0) Tooltip(
+                            message: 'Likes',
+                            child: BadgeIcon(
+                              icon: const Icon(Icons.favorite,color: Colors.redAccent,),
+                              badgeCount: trip.favorite.length,
+                            ),
+                          ),
+                          chatNotificationBadges(trip),
+                          needListBadges(trip),
+                        ],
                       ),
-                      chatNotificationBadges(trip),
-                      needListBadges(trip),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
+        ),
       ),
     );
   }
+
+
+
+
+  // Widget build(BuildContext context) {
+  // trace.start();
+  //
+  //
+  //   return Card(
+  //     key: Key(trip.documentId),
+  //     margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(30),
+  //     ),
+  //     child:
+  //     InkWell(
+  //       onTap: (){
+  //         Navigator.push(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => Explore(trip: trip,)),
+  //         );
+  //       },
+  //       child: Container(
+  //         height: trip.urlToImage.isNotEmpty ? size* .31 : size*.11,
+  //         width: double.infinity,
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             crossAxisAlignment: CrossAxisAlignment.stretch,
+  //             children: <Widget>[
+  //               trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage, transitionOnUserGestures: true,child: ImageLayout2(trip.urlToImage))) : Container(),
+  //               Flexible(
+  //                 flex: 1,
+  //                 child: ListTile(
+  //                   title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+  //                   subtitle:  Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,),
+  //                   trailing: Tooltip(
+  //                     message: 'Members',
+  //                     child: Wrap(
+  //                       // mainAxisAlignment: MainAxisAlignment.end,
+  //                       spacing: 3,
+  //                       children: <Widget>[
+  //                         Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle1,),
+  //                         const Icon(Icons.people),
+  //                       ],
+  //                     ),
+  //                   ),
+  //
+  //                 ),
+  //               ),
+  //               Flexible(
+  //                 flex: 1,
+  //                 child: ButtonBar(
+  //                   alignment: MainAxisAlignment.end,
+  //                   children: [
+  //                     if(trip.favorite.length > 0) Tooltip(
+  //                       message: 'Likes',
+  //                       child: BadgeIcon(
+  //                         icon: const Icon(Icons.favorite,color: Colors.redAccent,),
+  //                         badgeCount: trip.favorite.length,
+  //                       ),
+  //                     ),
+  //                     chatNotificationBadges(trip),
+  //                     needListBadges(trip),
+  //                   ],
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //     ),
+  //   );
+  // }
   String ownerName(String currentUserID){
     if (trip.ownerID == currentUserID){
       return 'You';
@@ -109,7 +215,7 @@ class TappableCrewTripTile extends StatelessWidget {
               return Tooltip(
                 message: 'New Messages',
                 child: BadgeIcon(
-                  icon: const Icon(Icons.chat, color: Colors.grey,),
+                  icon: IconThemeWidget(icon: Icons.chat,),
                   badgeCount: chats.data.length,
                 ),
               );
@@ -133,7 +239,7 @@ class TappableCrewTripTile extends StatelessWidget {
             return Tooltip(
               message: 'Need List',
               child: BadgeIcon(
-                icon: const Icon(Icons.shopping_basket, color: Colors.grey,),
+                icon: IconThemeWidget(icon: Icons.shopping_basket,),
                 badgeCount: items.data.length,
               ),
             );

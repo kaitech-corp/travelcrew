@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -47,7 +48,8 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   Widget build(BuildContext context) {
 
 
-    return widget.loading ? Loading() : GestureDetector(
+    return widget.loading ? Loading() :
+    GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
@@ -69,8 +71,10 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     setState(() => lodgingType = val);
                   },
                   enableInteractiveSelection: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                    ),
                     labelText: "Hotel, Airbnb, etc",
                   ),
                   textCapitalization: TextCapitalization.words,
@@ -91,14 +95,16 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   },
                   enableInteractiveSelection: true,
                   maxLines: 2,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                    ),
                     labelText: "Link",
                   ),
                   // ignore: missing_return
                   validator: (value) {
-                    if ( value.isNotEmpty && !value.startsWith('https')){
-                      return 'Please enter a valid link with including https.';
+                    if ( value.trim().isNotEmpty && !value.startsWith('https')){
+                      return 'Please enter a valid link including https.';
                     }
                   },
                 ),
@@ -112,8 +118,10 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   enableInteractiveSelection: true,
                   textCapitalization: TextCapitalization.words,
                   obscureText: false,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                    ),
                     labelText: "Description",
                   ),
                 ),
@@ -141,22 +149,25 @@ class _AddNewLodgingState extends State<AddNewLodging> {
 //                     child: Icon(Icons.add_a_photo),
 //                   ),
                 timePickerVisible ? TimePickers()
-                    : ButtonTheme(
+                    : Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 30.0, horizontal: 30.0),
+                      child: ButtonTheme(
                   minWidth: 150,
                   child: RaisedButton(
-                    shape:  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      'CheckIn/Checkout',
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        timePickerVisible = true;
-                      });
-                    },
+                      shape:  RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('CheckIn/Checkout',style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          timePickerVisible = true;
+                        });
+                      },
                   ),
                 ),
+                    ),
                 const SizedBox(height: 30),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -174,37 +185,49 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                         String tripName = widget.trip.location;
                         String message = 'A new lodging has been added to ${widget.trip.tripName}';
                         bool ispublic = widget.trip.ispublic;
-                        await DatabaseService().addNewLodgingData(
-                            comment.trim(),
-                            displayName,
-                            documentID,
-                            link,
-                            lodgingType,
-                            uid,
-                            urlToImage,
-                            tripName,
-                            startTime.value,
-                            endTime.value,
-                        );
-                        widget.trip.accessUsers.forEach((f)  {
-                          if(f != currentUserProfile.uid){
-                            CloudFunction().addNewNotification(
-                              message: message,
-                              documentID: documentID,
-                              type: 'Lodging',
-                              uidToUse: f,
-                              ownerID: currentUserProfile.uid,
-                              ispublic: ispublic,
-                            );
-                          }
-                        });
+                        try {
+                          String action = 'Saving new lodging for $documentID';
+                          CloudFunction().logEvent(action);
+                          await DatabaseService().addNewLodgingData(
+                              comment.trim(),
+                              displayName,
+                              documentID,
+                              link,
+                              lodgingType,
+                              uid,
+                              urlToImage,
+                              tripName,
+                              startTime.value,
+                              endTime.value,
+                          );
+                        } on Exception catch (e) {
+                          CloudFunction().logError(e.toString());
+                        }
+                        try {
+                          String action = 'Sending notifications for $documentID lodging';
+                          CloudFunction().logEvent(action);
+                          widget.trip.accessUsers.forEach((f)  {
+                            if(f != currentUserProfile.uid){
+                              CloudFunction().addNewNotification(
+                                message: message,
+                                documentID: documentID,
+                                type: 'Lodging',
+                                uidToUse: f,
+                                ownerID: currentUserProfile.uid,
+                                ispublic: ispublic,
+                              );
+                            }
+                          });
+                        } on Exception catch (e) {
+                          CloudFunction().logError(e.toString());
+                        }
                         Navigator.pop(context);
                       }
                     },
-                    color: Colors.lightBlue,
-                    child: const Text(
+
+                    child: Text(
                         'Add',
-                        style: TextStyle(color: Colors.white, fontSize: 20)
+                        style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                 ),

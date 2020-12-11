@@ -4,6 +4,7 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/tc_functions.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
 
@@ -18,84 +19,86 @@ class ExploreBasicLayout extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return  Scaffold(
-        body: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Hero(
-                  tag: tripDetails.urlToImage,
-                  transitionOnUserGestures: true,
-                  child: FadeInImage.assetNetwork(
-                    placeholder: travelImage,
-                    image: tripDetails.urlToImage,
+        body: SingleChildScrollView(
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Stack(
+                children: [
+                  Hero(
+                    tag: tripDetails.urlToImage,
+                    transitionOnUserGestures: true,
+                    child: FadeInImage.assetNetwork(
+                      placeholder: travelImage,
+                      image: tripDetails.urlToImage,
 
+                    ),
+                  ),
+                  Positioned(
+                    right: 5,
+                    bottom: 10,
+                      child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          color: Colors.black,
+                          child: const Text('Request to Join',style: TextStyle(color: Colors.white),),
+                          onPressed: ()
+                          {
+                            String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
+                            String trip = tripDetails.documentId;
+                            String type = 'joinRequest';
+                            String ownerID = tripDetails.ownerID;
+                            bool ispublic = tripDetails.ispublic;
+
+                            CloudFunction().addNewNotification(message: message,
+                              documentID: trip,
+                              type: type,
+                              ownerID: ownerID,
+                              ispublic: ispublic,
+                            );
+                            TravelCrewAlertDialogs().showRequestDialog(context);
+                          }
+                      ),),
+                ],
+              ),
+              ListTile(
+                title: Text('${tripDetails.location}'.toUpperCase(),style: TextStyle(fontSize: 20.0)),
+                subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                trailing: IconButton(
+                  icon: const Icon(Icons.report,),
+                  onPressed: (){
+                    TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
+                  },
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left:18.0, right: 18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('${tripDetails.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
+                      Text('${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
+
+
+                    ],
                   ),
                 ),
-                ListTile(
-                  title: Text('${tripDetails.location}'.toUpperCase(),style: TextStyle(fontSize: 20.0)),
-                  subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.report,),
-                    onPressed: (){
-                      TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
-                    },
-                  ),
-                ),
-                RaisedButton(
-                    shape: Border.all(width: 1, color: Colors.blue),
-                  child: const Text('Request to Join'),
-                    onPressed: ()
-                      {
-                        String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
-                        String trip = tripDetails.documentId;
-                        String type = 'joinRequest';
-                        String ownerID = tripDetails.ownerID;
-                        bool ispublic = tripDetails.ispublic;
+              ),
 
-                        CloudFunction().addNewNotification(message: message,
-                        documentID: trip,
-                        type: type,
-                        ownerID: ownerID,
-                        ispublic: ispublic,
-                        );
-                        TravelCrewAlertDialogs().showRequestDialog(context);
-                      }
-                  ),
-                Container(
-                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Trip: ${tripDetails.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text('Start: ${tripDetails.startDate}',style: Theme.of(context).textTheme.subtitle1,),
-                            Text('End: ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
-                          ],
-                        )
-
-
-                      ],
-                    )
+              if(tripDetails.comment.isNotEmpty) Container(
+                // margin: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(18.0),
+                decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.blueAccent)
                 ),
-
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(5.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blueAccent)
-                  ),
-                  child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,),
-                ),
-              ],
-            ),
+                child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+              ),
+            ],
           ),
         )
     );

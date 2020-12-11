@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -75,7 +76,7 @@ class DMChatMessageLayout extends StatelessWidget {
                         }
                       },
                       text: message.message ?? '',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: ChatTextStyle().messageStyle(),
                       textScaleFactor: 1.2,
                       maxLines: 50,
                       overflow: TextOverflow.ellipsis,
@@ -86,7 +87,7 @@ class DMChatMessageLayout extends StatelessWidget {
                   ),
                   Container(
                       margin:EdgeInsets.all(10),
-                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,)),
+                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''),style: ChatTextStyle().timestampStyle(), textScaleFactor: 0.75,)),
                 ],
               )
           ),
@@ -119,7 +120,7 @@ class DMChatMessageLayout extends StatelessWidget {
                         }
                       },
                       text: message.message ?? '',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: ChatTextStyle().messageStyle(),
                       textScaleFactor: 1.2,
                       maxLines: 50,
                       overflow: TextOverflow.ellipsis,
@@ -130,7 +131,7 @@ class DMChatMessageLayout extends StatelessWidget {
                   // ),
                   Container(
                       margin:EdgeInsets.all(10),
-                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,)),
+                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), style: ChatTextStyle().timestampStyle(),textScaleFactor: 0.75)),
                 ],
               )
           ),

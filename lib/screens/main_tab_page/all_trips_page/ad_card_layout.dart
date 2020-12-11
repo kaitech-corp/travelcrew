@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -98,7 +99,7 @@ class AnimatedAd extends StatelessWidget {
       // height: _height,
       width: _width,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
         borderRadius: _borderRadius,
       ),
       child: GestureDetector(

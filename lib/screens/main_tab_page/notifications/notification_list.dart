@@ -22,6 +22,7 @@ class _NotificationListState extends State<NotificationList> {
     final notifications = Provider.of<List<NotificationData>>(context);
 
     return ListView.builder(
+        padding: EdgeInsets.all(0.0),
         itemCount: notifications != null ? notifications.length : 0,
         itemBuilder: (context, index){
           var item = notifications[index];

@@ -456,5 +456,20 @@ class CloudFunction {
       'tripDocID':tripDocID,
     });
   }
-
+//Log event
+  void logEvent(String action) async{
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'logEvent');
+    functionData({
+      'action': action,
+    });
+  }
+// Log Error
+  void logError(String error) async{
+    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'logError');
+    functionData({
+      'error': error,
+    });
+  }
 }//end CloudFunction

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -50,7 +51,8 @@ class _EditLodgingState extends State<EditLodging> {
     String endTimeSaved = widget.lodging.endTime;
 
 
-    return loading ? Loading() : GestureDetector(
+    return loading ? Loading() :
+    GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
@@ -71,10 +73,13 @@ class _EditLodgingState extends State<EditLodging> {
                         onSaved: (val){
                           setState(() => lodgingType = val);
                         },
+                        textCapitalization: TextCapitalization.sentences,
                         enableInteractiveSelection: true,
                         initialValue: lodgingType,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                          ),
                           labelText: "Hotel, Airbnb, etc",
                         ),
                         // ignore: missing_return
@@ -94,8 +99,10 @@ class _EditLodgingState extends State<EditLodging> {
                         enableInteractiveSelection: true,
                         maxLines: 2,
                         initialValue: link,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                          ),
                           labelText: "Link",
                         ),
                         // ignore: missing_return
@@ -104,6 +111,7 @@ class _EditLodgingState extends State<EditLodging> {
                             return 'Please enter a valid link with including https.';
                           }
                         },
+                          autovalidateMode: AutovalidateMode.onUserInteraction
                       ),
                       const Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -112,22 +120,30 @@ class _EditLodgingState extends State<EditLodging> {
                         onSaved: (val){
                           setState(() => comment = val);
                         },
+                        textCapitalization: TextCapitalization.sentences,
                         enableInteractiveSelection: true,
                         obscureText: false,
                         initialValue: comment,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                          ),
                           labelText: "Description",
                         ),
+                        maxLines: 5,
                       ),
+                      SizedBox(height: 20,),
                       timePickerVisible ?
                       TimePickers():
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('CheckIn: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
+                              Text('Check in: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
                               Text('Checkout: $endTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
                             ],
                           ),
@@ -137,8 +153,8 @@ class _EditLodgingState extends State<EditLodging> {
                               shape:  RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Text(
-                                'Edit Time',
+                              child: Text(
+                                'Edit Time',style: Theme.of(context).textTheme.subtitle1,
                               ),
                               onPressed: () {
                                 setState(() {
@@ -182,6 +198,9 @@ class _EditLodgingState extends State<EditLodging> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 30.0),
                         child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           onPressed: () async{
                             final form = _formKey.currentState;
                             if (form.validate()) {
@@ -196,38 +215,47 @@ class _EditLodgingState extends State<EditLodging> {
                               setState(() => loading =true);
                               String message = 'A lodging option has been modified within ${widget.trip.tripName}';
 
-                              DatabaseService().editLodgingData(
-                                  comment,
-                                  displayName,
-                                  documentID,
-                                  link,
-                                  lodgingType,
-                                  _image,
-                                  fieldID,
-                                  startTime.value,
-                                  endTime.value,
-                              );
-                              widget.trip.accessUsers.forEach((f)  {
-                                if(f != currentUserProfile.uid){
-                                  CloudFunction().addNewNotification(
-                                    message: message,
-                                    documentID: documentID,
-                                    type: 'Lodging',
-                                    uidToUse: f,
-                                    ownerID: currentUserProfile.uid,
-                                  );
-                                }
-                              });
+                              try {
+                                DatabaseService().editLodgingData(
+                                    comment,
+                                    displayName,
+                                    documentID,
+                                    link,
+                                    lodgingType,
+                                    _image,
+                                    fieldID,
+                                    startTime.value,
+                                    endTime.value,
+                                );
+                              } on Exception catch (e) {
+                                CloudFunction().logError(e.toString());
+                              }
+                              try {
+                                String action = 'Sending notifications for $documentID lodging';
+                                CloudFunction().logEvent(action);
+                                widget.trip.accessUsers.forEach((f) {
+                                  if (f != currentUserProfile.uid) {
+                                    CloudFunction().addNewNotification(
+                                      message: message,
+                                      documentID: documentID,
+                                      type: 'Lodging',
+                                      uidToUse: f,
+                                      ownerID: currentUserProfile.uid,
+                                    );
+                                  }
+                                });
+                              } catch(e){
+                                CloudFunction().logError(e.toString());
+                              }
                               setState(() {
                                 loading = false;
                               });
                               Navigator.pop(context);
                             }
                           },
-                          color: Colors.lightBlue,
-                          child: const Text(
+                          child: Text(
                               'Save',
-                              style: TextStyle(color: Colors.white, fontSize: 20)
+                              style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                       ),

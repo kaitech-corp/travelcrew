@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -30,9 +32,10 @@ class NotificationsTextSection extends StatelessWidget{
 
     return notificationType[notification.type];
   }
-
+// Activity or Lodging Notifications
   Widget notificationType1(BuildContext context){
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
@@ -55,16 +58,17 @@ class NotificationsTextSection extends StatelessWidget{
       ),
     );
   }
-
+// Join Request
   Widget notificationType2(BuildContext context) {
 
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: const Icon(Icons.add_circle),
+          icon: IconThemeWidget(icon:Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().joinTrip(notification.documentID, notification.ispublic,notification.uid);
@@ -75,16 +79,17 @@ class NotificationsTextSection extends StatelessWidget{
       ),
     );
   }
-
+// Follow Request Notification
   Widget notificationType3(BuildContext context) {
 
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: const Icon(Icons.person_add),
+          icon: IconThemeWidget(icon:Icons.person_add),
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
@@ -99,9 +104,10 @@ class NotificationsTextSection extends StatelessWidget{
       ),
     );
   }
-
+// Welcome or Follow back Notification
   Widget notificationType4(BuildContext context){
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
@@ -109,16 +115,17 @@ class NotificationsTextSection extends StatelessWidget{
       ),
     );
   }
-
+// Invitation Notification
   Widget notificationType5(BuildContext context) {
 
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: const Icon(Icons.add_circle),
+          icon: IconThemeWidget(icon:Icons.add_circle),
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().joinTripInvite(notification.documentID, notification.uid, notification.ispublic);

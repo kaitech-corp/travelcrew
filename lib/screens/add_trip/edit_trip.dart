@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 
@@ -177,11 +178,11 @@ class _EditTripDataState extends State<EditTripData> {
                                       const InputDecoration(labelText: 'Location'),
                                       initialValue: location,
                                       // ignore: missing_return
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'Please enter a location.';
-                                        }
-                                      },
+                                      // validator: (value) {
+                                      //   if (value.isEmpty) {
+                                      //     return 'Please enter a location.';
+                                      //   }
+                                      // },
                                       onChanged: (val) =>
                                       {
                                         location = val,
@@ -322,19 +323,25 @@ class _EditTripDataState extends State<EditTripData> {
                                               tripGeoPoint = googleData2.value.geoLocation;
                                             } 
                                           }
-                                          DatabaseService().editTripData(
-                                              comment,
-                                              documentID,
-                                              endDate,
-                                              endDateTimeStamp,
-                                              ispublic,
-                                              location,
-                                              startDate,
-                                              startDateTimeStamp,
-                                              travelType,
-                                              urlToImage,
-                                              tripName,
-                                              tripGeoPoint);
+                                          try {
+                                            String action = 'Saving edited Trip data';
+                                            CloudFunction().logEvent(action);
+                                            DatabaseService().editTripData(
+                                                comment,
+                                                documentID,
+                                                endDate,
+                                                endDateTimeStamp,
+                                                ispublic,
+                                                location,
+                                                startDate,
+                                                startDateTimeStamp,
+                                                travelType,
+                                                urlToImage,
+                                                tripName,
+                                                tripGeoPoint);
+                                          } on Exception catch (e) {
+                                            CloudFunction().logError(e.toString());
+                                          }
                                           _showDialog(context);
                                         }
                                         myController.clear();
@@ -346,7 +353,7 @@ class _EditTripDataState extends State<EditTripData> {
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: const Text('Submitting form')));
-    Navigator.pushNamed(context, '/wrapper');
+    Navigator.pushReplacementNamed(context, '/wrapper');
   }
 }
 

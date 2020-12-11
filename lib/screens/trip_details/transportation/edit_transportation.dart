@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 
@@ -164,12 +165,14 @@ class _EditTransportationState extends State<EditTransportation> {
                               ),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                child: Text('Comment'),
+                                child: Text('Comment',style: Theme.of(context).textTheme.subtitle2),
                               ),
                               TextFormField(
                                 cursorColor: Colors.grey,
                                 decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                                    ),
                                     hintText: 'Add a comment.'),
                                 textCapitalization: TextCapitalization.sentences,
                                 maxLines: 10,

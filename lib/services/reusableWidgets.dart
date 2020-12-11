@@ -1,13 +1,20 @@
+import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_link_preview/flutter_link_preview.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
+import '../loading.dart';
 import 'constants.dart';
+import 'locator.dart';
+
+final double defaultSize = SizeConfig.defaultSize;
 
 class CustomShape extends CustomClipper<Path> {
   @override
@@ -17,6 +24,25 @@ class CustomShape extends CustomClipper<Path> {
     double width = size.width;
     path.lineTo(0, height - 100);
     path.quadraticBezierTo(width / 2, height, width, height - 100);
+    path.lineTo(width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
+class CustomShape2 extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    double height = size.height;
+    double width = size.width;
+    path.lineTo(0, height - 0);
+    path.quadraticBezierTo(width / 1, height, width, height - 0);
     path.lineTo(width, 0);
     path.close();
     return path;
@@ -106,8 +132,8 @@ class _TimePickersState extends State<TimePickers> {
                   shape:  RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'Start Time',
+                  child: Text(
+                    'Start Time',style: Theme.of(context).textTheme.subtitle1,
                   ),
                   onPressed: () async {
                     showTimePickerStart(context);
@@ -129,8 +155,8 @@ class _TimePickersState extends State<TimePickers> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'End Time',
+                  child: Text(
+                    'End Time',style: Theme.of(context).textTheme.subtitle1
                   ),
                   onPressed: () {
                     showTimePickerEnd(context);
@@ -178,86 +204,115 @@ class AnimatedClipRRect extends StatelessWidget {
   }
 }
 
-class ProfileWidget extends StatelessWidget {
-  final UserPublicProfile user;
-  ProfileWidget({
+
+class HangingImageTheme extends StatelessWidget {
+  const HangingImageTheme({
     Key key,
-    @required this.user,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: CustomShape(),
+      child: Container(
+        height: SizeConfig.screenHeight*.22, //150
+        // color:
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HangingImageTheme3 extends StatelessWidget {
+  HangingImageTheme3({
+    Key key,
   }) : super(key: key);
 
-  final double defaultSize = SizeConfig.defaultSize;
+  final double hgt = SizeConfig.screenHeight*.06;
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: CustomShape(),
+      child: Container(
+          height: SizeConfig.screenHeight*.22, //150
+          // color:
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Padding(
+              padding: EdgeInsets.fromLTRB(8.0,0,8.0,0),
+              child:
+              Stack(
+                children: [
+                  Column(
+                    children: [
+                      Positioned.fill(
+                        // top: ,
+                        child: AppBar(
+                          shadowColor: Color(0x00000000),
+                          backgroundColor: Color(0x00000000),
+                          actions: <Widget>[
+                            // Center(
+                            //   child: ClipRRect(
+                            //     borderRadius: BorderRadius.circular(SizeConfig.screenWidth/16.0),
+                            //     child: FadeInImage.assetNetwork(
+                            //       placeholder: profileImagePlaceholder,
+                            //       image: currentUserProfile.urlToImage.isNotEmpty ? currentUserProfile.urlToImage : profileImagePlaceholder,
+                            //       height: SizeConfig.screenWidth/8.0,
+                            //       width: SizeConfig.screenWidth/8.0,
+                            //       fit: BoxFit.fill,
+                            //     ),
+                            //   ),
+                            // ),
+                            // SizedBox(width: SizeConfig.screenWidth/16.0,),
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: (){
+                                Navigator.pushNamed(context, '/editProfilePage');
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
 
+                    ],
+                  ),
+                ],
+              )
+
+            //   ],
+            // ),
+          )
+      ),
+    );
+  }
+}
+
+class CustomHangingImage extends StatelessWidget {
+  const CustomHangingImage({
+    Key key,
+    this.urlToImage
+  }) : super(key: key);
+
+  final urlToImage;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ClipPath(
+      clipper: CustomShape(),
       child: Container(
-        child: Column(
-          children: <Widget>[
-            ClipPath(
-              clipper: CustomShape(),
-              child: Container(
-                height: defaultSize.toDouble() * 15.0, //150
-                // color: Color(0xAA2D3D49),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: defaultSize), //10
-              height: defaultSize * 30, //140
-              width: defaultSize * 30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: defaultSize * 0.5, //8
-                ),
-                image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder)
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-            ),
-            Center(
-              child: Column(
-                children: [
-                  Text(user.displayName, textScaleFactor: 2.25,style: TextStyle(color: Colors.blueAccent,),),
-                  Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.9,style: TextStyle(color: Colors.blueAccent),),
-                  if(user.uid == currentUserProfile.uid) Text(
-                    '${user.email}',style: Theme.of(context).textTheme.subtitle1,),
-                ],
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(top: 5)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Followers'),
-                    Text('${user.followers.length}'),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Following'),
-                    Text('${user.following.length}'),
-                  ],
-                )
-              ],
-            )
-          ],
+        height: 350, //150
+        // color: Color(0xAA2D3D49),
+        decoration: BoxDecoration(
+            image: DecorationImage(image: NetworkImage(urlToImage),
+                fit: BoxFit.cover)
         ),
       ),
     );
@@ -288,7 +343,8 @@ class CrewModalBottomSheet extends StatelessWidget {
           ),
         );
       },
-      child: const Text('Crew'),
+      child: Text("Crew ${tripDetails.accessUsers.length} "),
+      // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
     );
   }
 }
@@ -326,7 +382,7 @@ class LinkPreview extends StatelessWidget {
                       flex: 1,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(info.description, maxLines: 4,),
+                        child: Text(info.description, maxLines: 4,style: Theme.of(context).textTheme.subtitle2,),
                       ),
                     ),
                 ],
@@ -369,9 +425,145 @@ class LinkPreview extends StatelessWidget {
   }
 }
 
-// Widget DropDownTransportationList(BuildContext context) {
-//   return
-// }
+class DateGauge extends StatelessWidget {
+  const DateGauge({
+    Key key,
+    @required this.tripDetails,
+  }) : super(key: key);
+
+  final Trip tripDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    CountDownDate countDownDate = TCFunctions().dateGauge(
+        tripDetails.dateCreatedTimeStamp.millisecondsSinceEpoch,
+        tripDetails.startDateTimeStamp.millisecondsSinceEpoch);
+
+    return (countDownDate.daysLeft != 0) ? Align(
+      alignment: Alignment.center,
+      child: Container(
+        height: SizeConfig.screenHeight*.2,
+        width: SizeConfig.screenWidth*.8,
+        child: SfRadialGauge(
+            axes: <RadialAxis>[
+              RadialAxis(
+                  minimum: 0.0,
+                  maximum: countDownDate.initialDayCount,
+                  showLabels: false,
+                  showTicks: false,
+                  startAngle: 180,
+                  endAngle: 0,
+                  axisLineStyle: AxisLineStyle(
+                    thickness: 0.2,
+                    cornerStyle: CornerStyle.bothCurve,
+                    color: Color.fromARGB(30, 0, 169, 181),
+                    thicknessUnit: GaugeSizeUnit.factor,
+                  ),
+                  pointers: <GaugePointer>[
+                    RangePointer(
+                      value: countDownDate.gaugeCount,
+                      cornerStyle: CornerStyle.bothCurve,
+                      width: 0.2,
+                      sizeUnit: GaugeSizeUnit.factor,
+                      color: Colors.blue,
+                    )
+                  ],
+                  annotations: <GaugeAnnotation>[
+                    GaugeAnnotation(
+                        positionFactor: 0.1,
+                        angle: 90,
+                        widget: Text(
+                          countDownDate.daysLeft.toStringAsFixed(0) + ' Days Left',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ))
+                  ])
+            ]
+        ),
+      ),
+    ):
+        Container(height:75,);
+  }
+}
+
+
+
+//Recent Trip tile
+class RecentTripTile extends StatelessWidget{
+  final String uid;
+
+  const RecentTripTile({Key key, this.uid}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        builder: (context, streamData){
+          if(streamData.hasData){
+            List<Trip> trips = streamData.data;
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: trips.length,
+              itemBuilder: (context, index){
+                Trip trip = trips[index];
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: (trip.urlToImage.isNotEmpty) ?
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                      child: Image.network(
+                        trip.urlToImage,
+                        fit: BoxFit.cover,
+                        height: 125,
+                        width: 125,
+                      )):
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      gradient: (ThemeProvider.themeOf(context).id == 'light_theme') ? LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.blue,
+                            Colors.lightBlueAccent
+                          ]
+                      ): null,
+                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? null : Color(0xFF424242),//5C6BC0 0xAA2D3D49
+                    ),
+
+                    // BoxDecoration(
+                    //   borderRadius: BorderRadius.circular(20.0),
+                    //   color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xFF424242),//5C6BC0 0xAA2D3D49
+                    // ),
+                    // color: Colors.grey,
+                    height: 125,
+                    width: 125,
+                    child: ListTile(
+                      title: Text('${trip.tripName}',style: Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle1,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,),
+                      subtitle: Text('${trip.location}',style: Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle2,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,),
+                    ),
+                  ),
+                );
+              });
+          } else {
+            return Loading();
+          }
+        },
+        stream: DatabaseService().pastCrewTripsCustom(uid),
+    );
+  }
+
+}
+
 //
 // Widget PlacesNearbyList(String place, Position currentPosition) {
 //   return FutureBuilder(

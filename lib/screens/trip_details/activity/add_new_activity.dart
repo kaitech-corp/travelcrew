@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/in_app_review.dart';
@@ -75,8 +76,10 @@ class AddNewActivityState extends State<AddNewActivity> {
                         },
                         enableInteractiveSelection: true,
                         textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                          ),
                           labelText: "snorkeling, festival, restaurant, etc",
                         ),
                         // ignore: missing_return
@@ -95,8 +98,10 @@ class AddNewActivityState extends State<AddNewActivity> {
                         },
                         enableInteractiveSelection: true,
                         maxLines: 2,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                          ),
                           labelText: "Link (i.e. Website/GoogleMaps )",
                         ),
                         // ignore: missing_return
@@ -116,8 +121,10 @@ class AddNewActivityState extends State<AddNewActivity> {
                         enableInteractiveSelection: true,
                         textCapitalization: TextCapitalization.words,
                         obscureText: false,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                          ),
                           labelText: "Description",
                         ),
                         maxLines: 5,
@@ -150,14 +157,15 @@ class AddNewActivityState extends State<AddNewActivity> {
 //                     ),
                       timePickerVisible ? TimePickers()
                       : Container(
-                        width: SizeConfig.screenWidth*.25,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 30.0, horizontal: 30.0),
                         child: ButtonTheme(
                           child: RaisedButton(
                             shape:  RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
-                              'Start/End Time',
+                            child:  Text(
+                              'Start/End Time', style: Theme.of(context).textTheme.subtitle1,
                             ),
                             onPressed: () {
                               setState(() {
@@ -185,30 +193,42 @@ class AddNewActivityState extends State<AddNewActivity> {
                               setState(() => loading =true);
                               String message = 'A new activity has been added to ${widget.trip.tripName}';
                               bool ispublic = widget.trip.ispublic;
-                              await DatabaseService().addNewActivityData(
-                                  comment.trim(),
-                                  displayName,
-                                  documentID,
-                                  link,
-                                  activityType,
-                                  uid,
-                                  urlToImage,
-                                  tripName,
-                                  startTime.value,
-                                  endTime.value
-                              );
-                              widget.trip.accessUsers.forEach((f) {
-                              if(f != currentUserProfile.uid){
-                                          CloudFunction().addNewNotification(
-                                            message: message,
-                                            documentID: documentID,
-                                            type: 'Activity',
-                                            uidToUse: f,
-                                            ownerID: currentUserProfile.uid,
-                                            ispublic: ispublic,
-                                          );
-                                        }
-                              });
+                              try {
+                                String action = 'Saving new activity';
+                                CloudFunction().logEvent(action);
+                                await DatabaseService().addNewActivityData(
+                                    comment.trim(),
+                                    displayName,
+                                    documentID,
+                                    link,
+                                    activityType,
+                                    uid,
+                                    urlToImage,
+                                    tripName,
+                                    startTime.value,
+                                    endTime.value
+                                );
+                              } on Exception catch (e) {
+                                CloudFunction().logError(e.toString());
+                              }
+                              try {
+                                String action = 'Send notifications for edited activity';
+                                CloudFunction().logEvent(action);
+                                widget.trip.accessUsers.forEach((f) {
+                                if(f != currentUserProfile.uid){
+                                            CloudFunction().addNewNotification(
+                                              message: message,
+                                              documentID: documentID,
+                                              type: 'Activity',
+                                              uidToUse: f,
+                                              ownerID: currentUserProfile.uid,
+                                              ispublic: ispublic,
+                                            );
+                                          }
+                                });
+                              } on Exception catch (e) {
+                                CloudFunction().logError(e.toString());
+                              }
 
                               setState(() {
                                 loading = false;
@@ -223,11 +243,10 @@ class AddNewActivityState extends State<AddNewActivity> {
 
                             }
                           },
-                          color: Colors.lightBlue,
-                          child: const Text(
+                            child: Text(
                               'Add',
-                              style: TextStyle(color: Colors.white, fontSize: 20)
-                          ),
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )
                         ),
                       ),
                     ]

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_list.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 
@@ -63,8 +65,9 @@ class _ChatState extends State<Chat> {
                       children: <Widget>[
                         new Flexible(
                           child: new TextField(
-                            decoration: new InputDecoration.collapsed(
-                                hintText: "Starts typing ..."),
+                            decoration: InputDecoration.collapsed(
+                              fillColor: ReusableThemeColor().color(context),
+                                hintText: "Start typing ..."),
                             controller: _chatController,
 //                    onSubmitted: _handleSubmit,
                           textCapitalization: TextCapitalization.sentences,
@@ -81,10 +84,16 @@ class _ChatState extends State<Chat> {
                                 _chatController.clear();
                                 String displayName = widget.currentUserProfile.displayName;
                                 String uid = widget.userService.currentUserID;
-                                await DatabaseService(
-                                    tripDocID: widget.trip.documentId)
-                                    .addNewChatMessage(
-                                    displayName, message, uid, status);
+                                try {
+                                  String action = 'Saving new message for ${widget.trip.documentId}';
+                                  CloudFunction().logEvent(action);
+                                  await DatabaseService(
+                                      tripDocID: widget.trip.documentId)
+                                      .addNewChatMessage(
+                                      displayName, message, uid, status);
+                                } on Exception catch (e) {
+                                  CloudFunction().logError(e.toString());
+                                }
                               }
                             },
                           ),

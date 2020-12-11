@@ -43,6 +43,10 @@ class UserProfileService {
         lastName: data['lastName'] ?? '',
         uid: data['uid'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
+        hometown: data['hometown'] ?? '',
+        instagramLink: data['instagramLink'] ?? '',
+        facebookLink: data['facebookLink'] ?? '',
+        topDestinations: List<String>.from(data['topDestinations']) ?? [''],
       );
       return profile;
     } else {
@@ -74,6 +78,10 @@ class UserProfileServiceStream {
         lastName: data['lastName'] ?? '',
         uid: data['uid'] ?? '',
         urlToImage: data['urlToImage'] ?? '',
+        hometown: data['hometown'] ?? '',
+        instagramLink: data['instagramLink'] ?? '',
+        facebookLink: data['facebookLink'] ?? '',
+        topDestinations: List<String>.from(data['topDestinations']) ?? [''],
       );
 
     }

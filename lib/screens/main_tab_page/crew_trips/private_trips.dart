@@ -1,50 +1,70 @@
-
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/loading.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/size_config/size_config.dart';
+import 'package:travelcrew/services/reusableWidgets.dart';
 
-class PrivateTripList extends StatelessWidget {
+class PrivateTripList extends StatefulWidget {
 
-  var userService = locator<UserService>();
+
+  @override
+  _PrivateTripListState createState() => _PrivateTripListState();
+}
+
+class _PrivateTripListState extends State<PrivateTripList>with
+    AutomaticKeepAliveClientMixin<PrivateTripList>{
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
-    // final user = Provider.of<User>(context);
     return Container(
       child: privateTrips(context),
     );
   }
 
   Widget privateTrips(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: FutureBuilder(
-        future: DatabaseService(uid: userService.currentUserID).privateTripList(),
-        builder: (context, trips) {
-          if (trips.hasData) {
-            return Container(
-                child: ListView.builder(
-                  itemCount: trips.data.length,
-                  itemBuilder: (context, index) {
-                    Trip trip = trips.data[index];
-                    return TappableCrewTripTile(trip: trip,);
+    return Stack(
+      children: [
+        // Container(
+        //   height: SizeConfig.screenHeight,
+        //   width: SizeConfig.screenWidth,
+        //   // color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black,
+        //   decoration: BoxDecoration(
+        //     image: DecorationImage(
+        //       image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
+        //       fit: BoxFit.fitHeight,
+        //     ),
+        //   ),
+        // ),
+        // HangingImageTheme(),
+        Positioned.fill(
+          // top: defaultSize.toDouble() * 10.5,
+          child: StreamBuilder(
+            builder: (context, trips){
+              if(trips.hasData){
+                List<Trip> tripList = trips.data;
+                return ListView.builder(
+                  padding: EdgeInsets.all(0.0),
+                  itemCount: tripList.length ?? 0,
+                  itemBuilder: (context, index){
+                    return TappableCrewTripTile(trip: tripList[index]);
                   },
-                ));
-          } else {
-            return Loading();
-          }
-        },
-      ),
+                );
+              } else {
+                return Loading();
+              }
+            },
+            stream: DatabaseService().privateTrips,
+          ),
+        ),
+      ],
     );
   }
 }

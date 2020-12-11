@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/admin/admin_page.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
@@ -40,62 +41,50 @@ class _MenuDrawerState extends State<MenuDrawer> {
       child: SafeArea(
         child: Drawer(
           child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                // child: Align(alignment: Alignment.bottomCenter ,child: Text('Menu')),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: defaultSize * 0.3, //8
-                  ),
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: (currentUserProfile.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) :
-                    AssetImage(profileImagePlaceholder)
-                  ),
-                ), child: const Text('TC'),
+                child:  Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text('TC',style: Theme.of(context).textTheme.subtitle1),
+                    CircleAvatar(
+                      radius: SizeConfig.screenWidth/4.0,
+                      backgroundImage: (currentUserProfile?.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder),
+                    ),
+                  ],
+                ),
               ),
               ListTile(
-                leading: const Icon(Icons.account_circle),
-                title: Text('${currentUserProfile?.displayName ?? 'Just a sec...'}'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/profilePage');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.people),
-                title: Text('TC Members'),
+                leading: IconThemeWidget(icon:Icons.people),
+                title: Text('TC Members',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
                   Navigator.pushNamed(context, '/usersFromMenu');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.message),
-                title: Text('Chats'),
+                leading: IconThemeWidget(icon: Icons.message,),
+                title: Text('Chats',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
                   Navigator.pushNamed(context, '/chats_page');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.info),
-                title: Text('Help & Feedback'),
+                leading: IconThemeWidget(icon:Icons.info),
+                title: Text('Help & Feedback',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
                   Navigator.pushNamed(context, '/help');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.settings),
-                title: Text('Settings'),
+                leading: IconThemeWidget(icon:Icons.settings),
+                title: Text('Settings',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
                   Navigator.pushNamed((context), '/settings');
                 },
               ),
               if(currentUserProfile.uid.contains('XCVzgl7xIG3')) ListTile(
-                leading: const Icon(Icons.admin_panel_settings),
-                title: Text('Admin'),
+                leading: IconThemeWidget(icon:Icons.admin_panel_settings),
+                title: Text('Admin',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
                   if(currentUserProfile.uid.contains('XCVzgl7xIG3')) Navigator.push(
                     context,
@@ -104,10 +93,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.exit_to_app),
-                title: Text('Signout'),
+                leading: IconThemeWidget(icon:Icons.exit_to_app),
+                title: Text('Signout',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
                   Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (route) => false);
+                  // locator.reset();
                   _auth.logOut();
                 },
               ),

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/screens/profile_page/profile_widget.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 
 class UserProfilePage extends StatelessWidget{
-  UserPublicProfile user;
-  var userService = locator<UserService>();
-
+  final UserPublicProfile user;
 
   UserProfilePage({this.user});
 
@@ -14,11 +12,12 @@ class UserProfilePage extends StatelessWidget{
 
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Profile',style: Theme.of(context).textTheme.headline3,),
+      body: Stack(
+        children: [
+          HangingImageTheme3(),
+          ProfileWidget(user: user),
+        ],
       ),
-      body: ProfileWidget( user: user),
     );
   }
 }

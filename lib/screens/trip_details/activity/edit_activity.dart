@@ -142,8 +142,8 @@ class _EditActivityState extends State<EditActivity> {
                                 shape:  RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                child: const Text(
-                                  'Edit Time',
+                                child: Text(
+                                  'Edit Time',style: Theme.of(context).textTheme.subtitle1,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -205,38 +205,49 @@ class _EditActivityState extends State<EditActivity> {
                               setState(() => loading =true);
                               String message = 'An activity has been modified within ${widget.trip.tripName}';
 
-                              DatabaseService().editActivityData(
-                                  comment,
-                                  displayName,
-                                  documentID,
-                                  link,
-                                  activityType,
-                                  _image, fieldID,
-                                  startTime.value,
-                                  endTime.value,
-                              );
-                              widget.trip.accessUsers.forEach((f) {
-                                if(f != currentUserProfile.uid){
-                                  CloudFunction().addNewNotification(
-                                    message: message,
-                                    documentID: documentID,
-                                    type: 'Activity',
-                                    uidToUse: f,
-                                    ownerID: currentUserProfile.uid,
-                                  );
-                                }
-                              });
+                              try {
+                                String action = 'Saving edited activity data';
+                                CloudFunction().logEvent(action);
+                                DatabaseService().editActivityData(
+                                    comment,
+                                    displayName,
+                                    documentID,
+                                    link,
+                                    activityType,
+                                    _image, fieldID,
+                                    startTime.value,
+                                    endTime.value,
+                                );
+                              } on Exception catch (e) {
+                                CloudFunction().logError(e.toString());
+                              }
+                              try {
+                                String action = 'Send notifications for edited activity';
+                                CloudFunction().logEvent(action);
+                                widget.trip.accessUsers.forEach((f) {
+                                  if(f != currentUserProfile.uid){
+                                    CloudFunction().addNewNotification(
+                                      message: message,
+                                      documentID: documentID,
+                                      type: 'Activity',
+                                      uidToUse: f,
+                                      ownerID: currentUserProfile.uid,
+                                    );
+                                  }
+                                });
+                              } on Exception catch (e) {
+                                CloudFunction().logError(e.toString());
+                              }
                               setState(() {
                                 loading = false;
                               });
                               Navigator.pop(context);
                             }
                           },
-                          color: Colors.lightBlue,
-                          child: const Text(
-                              'Save',
-                              style: TextStyle(color: Colors.white, fontSize: 20)
-                          ),
+                            child: Text(
+                              'Add',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )
                         ),
                       ),
                     ]

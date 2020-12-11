@@ -23,21 +23,26 @@ class _LodgingState extends State<Lodging> {
   Widget build(BuildContext context) {
     return StreamProvider.value(
       value: DatabaseService(tripDocID: widget.trip.documentId).lodgingList,
-      child: Scaffold(
-        body: Container(
-          child: LodgingList(trip: widget.trip,),
-        ),
-        floatingActionButton: FloatingActionButton(
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Scaffold(
+          body: Container(
+            child: LodgingList(trip: widget.trip,),
+          ),
+          floatingActionButton: FloatingActionButton(
 
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddNewLodging(trip: widget.trip,)),
-            );
-          },
-          child: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddNewLodging(trip: widget.trip,)),
+              );
+            },
+            child: const Icon(Icons.add),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

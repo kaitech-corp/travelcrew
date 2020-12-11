@@ -32,8 +32,12 @@ class UserPublicProfile {
   int tripsJoined;
   String uid;
   String urlToImage;
+  String hometown;
+  String instagramLink;
+  String facebookLink;
+  List<String> topDestinations;
 
-  UserPublicProfile({this.blockedList, this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
+  UserPublicProfile({this.hometown, this.instagramLink, this.facebookLink, this.topDestinations, this.blockedList, this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
 
 }
 
@@ -317,4 +321,13 @@ class TrueWay {
         address = jsonMap['address'],
         distance = jsonMap['distance'],
         website = jsonMap['website'];
+}
+
+class CountDownDate {
+
+  double initialDayCount;
+  double daysLeft;
+  double gaugeCount;
+
+  CountDownDate({this.daysLeft,this.initialDayCount,this.gaugeCount});
 }

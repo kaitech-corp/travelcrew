@@ -21,13 +21,10 @@ class _FavoriteTripState extends State<FavoriteTripList> {
 
 
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
-          fit: BoxFit.cover,
-        ),
-      ),
+      height: double.infinity,
+      width: double.infinity,
       child: ListView.builder(
+          padding: EdgeInsets.all(0.0),
           itemCount: trips != null ? trips.length : 0,
           itemBuilder: (context, index){
             var item = trips[index];

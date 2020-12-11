@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_new_design.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 
 
@@ -63,7 +65,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   String comment = '';
   String displayName = '';
   String documentId = '';
-  bool canCarpool = false;
+  bool canCarpool = true;
   String carpoolingWith = '';
   String airline = '';
   String flightNumber = '';
@@ -89,132 +91,158 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline3,),),
-        body: Container(
-            child: SingleChildScrollView(
-                padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                child: Builder(
-                    builder: (context) => Form(
-                        key: _formKey,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                          DropdownButton<String>(
-                          value: dropdownValue,
-                          // icon: Icon(Icons.arrow_downward),
-                          // iconSize: 24,
-                            isExpanded: true,
-                          elevation: 16,
-                          // style: Theme.of(context).textTheme.headline4,
-                          underline: Container(
-                            height: 2,
-                            color: Colors.blueAccent,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
+          appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline3,),),
+          body: Container(
+              child: SingleChildScrollView(
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                  child: Builder(
+                      builder: (context) => Form(
+                          key: _formKey,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                            DropdownButton<String>(
+                            value: dropdownValue,
+                            // icon: Icon(Icons.arrow_downward),
+                            // iconSize: 24,
+                              isExpanded: true,
+                            elevation: 16,
+                            // style: Theme.of(context).textTheme.headline4,
+                            underline: Container(
+                              height: 2,
+                              color: Colors.blueAccent,
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                dropdownValue = newValue;
+                              });
+                            },
+                            items: modes
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              dropdownValue = newValue;
-                            });
-                          },
-                          items: modes
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                              if(dropdownValue == 'Driving') SwitchListTile(
-                                  title: const Text('Open to Carpooling?'),
-                                  value: canCarpool,
-                                  onChanged: (bool val) =>
-                                  {
-                                    setState((){
-                                      canCarpool = val;
-                                    }),
-                                  }
-                              ),
-                              if(dropdownValue == 'Carpool') TextFormField(
-                                  decoration:
-                                  InputDecoration(labelText: 'Carpool with who?'),
-                                  textCapitalization: TextCapitalization.words,
-                                  keyboardType: TextInputType.name,
-                                  onChanged: (val) =>
-                                  {
-                                    carpoolingWith = val,
-                                  }
-                              ),
-                              if(dropdownValue == 'Flying') TextFormField(
-                                  decoration:
-                                  InputDecoration(labelText: 'Airline'),
-                                  textCapitalization: TextCapitalization.characters,
-                                  onChanged: (val) =>
-                                  {
-                                    airline = val,
-                                  }
-                              ),
-                              if(dropdownValue == 'Flying') TextFormField(
-                                  decoration:
-                                  InputDecoration(labelText: 'Flight Number'),
-                                  textCapitalization: TextCapitalization.characters,
-                                  onChanged: (val) =>
-                                  {
-                                    flightNumber = val,
-                                  }
-                              ),
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                child: Text('Comment'),
-                              ),
-                              TextFormField(
-                                cursorColor: Colors.grey,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Add a comment.'),
-                                textCapitalization: TextCapitalization.sentences,
-                                maxLines: 10,
-                                onChanged: (val){
-                                  comment = val;
-                                },
-                              ),
+                                if(dropdownValue == 'Driving') SwitchListTile(
+                                    title: const Text('Open to Carpooling?'),
+                                    value: canCarpool,
+                                    onChanged: (bool val) =>
+                                    {
+                                      setState((){
+                                        canCarpool = val;
+                                      }),
+                                    }
+                                ),
+                                if(dropdownValue == 'Carpool') TextFormField(
+                                    decoration:
+                                    InputDecoration(labelText: 'Carpool with who?'),
+                                    textCapitalization: TextCapitalization.words,
+                                    keyboardType: TextInputType.name,
+                                    onChanged: (val) =>
+                                    {
+                                      carpoolingWith = val,
+                                    }
+                                ),
+                                if(dropdownValue == 'Flying') TextFormField(
+                                    decoration:
+                                    InputDecoration(labelText: 'Airline'),
+                                    textCapitalization: TextCapitalization.characters,
+                                    onChanged: (val) =>
+                                    {
+                                      airline = val,
+                                    }
+                                ),
+                                if(dropdownValue == 'Flying') TextFormField(
+                                    decoration:
+                                    InputDecoration(labelText: 'Flight Number'),
+                                    textCapitalization: TextCapitalization.characters,
+                                    onChanged: (val) =>
+                                    {
+                                      flightNumber = val,
+                                    }
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                  child: Text('Comment',style: Theme.of(context).textTheme.subtitle2),
+                                ),
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                                      ),
+                                      hintText: 'Add a comment.'),
+                                  textCapitalization: TextCapitalization.sentences,
+                                  maxLines: 10,
+                                  onChanged: (val){
+                                    comment = val;
+                                  },
+                                ),
 //
 
-                              Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0, horizontal: 16.0),
-                                  child: RaisedButton(
-                                      onPressed: () {
-                                        final form = _formKey.currentState;
-                                        String documentID = widget.trip.documentId;
-                                        String message = 'A new travel method has been added to ${widget.trip.tripName}';
-                                        if (form.validate()) {
-                                          CloudFunction().addTransportation(
-                                              mode: dropdownValue,
-                                              tripDocID: widget.trip.documentId,
-                                              canCarpool: canCarpool,
-                                              carpoolingWith: carpoolingWith,
-                                              airline: airline.trim(),
-                                              comment: comment.trim(),
-                                              flightNumber: flightNumber.trim(),);
-                                          Navigator.pop(context);
-
-                                          widget.trip.accessUsers.forEach((f) {
-                                            if(f != userService.currentUserID){
-                                              CloudFunction().addNewNotification(
-                                                message: message,
-                                                documentID: documentID,
-                                                type: 'Travel',
-                                                uidToUse: f,
-                                                ownerID: userService.currentUserID,
-                                                ispublic: widget.trip.ispublic,
-                                              );
+                                Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 30.0, horizontal: 30.0),
+                                    child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        onPressed: () {
+                                          final form = _formKey.currentState;
+                                          String documentID = widget.trip.documentId;
+                                          String message = 'A new travel method has been added to ${widget.trip.tripName}';
+                                          if (form.validate()) {
+                                            try {
+                                              String action = 'Saving new transportation data';
+                                              CloudFunction().logEvent(action);
+                                              CloudFunction().addTransportation(
+                                                  mode: dropdownValue,
+                                                  tripDocID: widget.trip.documentId,
+                                                  canCarpool: canCarpool,
+                                                  carpoolingWith: carpoolingWith,
+                                                  airline: airline.trim(),
+                                                  comment: comment.trim(),
+                                                  flightNumber: flightNumber.trim(),);
+                                            } on Exception catch (e) {
+                                              CloudFunction().logError(e.toString());
                                             }
-                                          });
-                                        }
-                                      },
-                                      child: Text('Add'))),
-                              ]))))));
+
+
+                                            try {
+                                              String action = 'Sending notifications to access users for $documentId';
+                                              CloudFunction().logEvent(action);
+                                              widget.trip.accessUsers.forEach((f) {
+                                                if(f != userService.currentUserID){
+                                                  CloudFunction().addNewNotification(
+                                                    message: message,
+                                                    documentID: documentID,
+                                                    type: 'Travel',
+                                                    uidToUse: f,
+                                                    ownerID: userService.currentUserID,
+                                                    ispublic: widget.trip.ispublic,
+                                                  );
+                                                }
+                                              });
+                                            } on Exception catch (e) {
+                                              CloudFunction().logError(e.toString());
+                                            }
+
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      child: Text(
+                                        'Add',
+                                        style: Theme.of(context).textTheme.subtitle1,
+                                      ),)),
+                                ])))))),
+    );
   }
 }
 

@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 import '../../loading.dart';
 
 
@@ -17,10 +21,13 @@ class _SignupScreenState extends State {
 
 
   final _formKey = GlobalKey<FormState>();
-  final _user = UserSignUp();
+  final _user = UserPublicProfile();
   File _image;
   final ImagePicker _picker = ImagePicker();
   String error = '';
+  String destination1 = '';
+  String destination2 = '';
+  String destination3 = '';
 
   Key get key => null;
 
@@ -84,8 +91,8 @@ class _SignupScreenState extends State {
                                     ),
                                     TextFormField(
                                         initialValue: user.displayName,
-                                        decoration:
-                                        const InputDecoration(labelText: 'Display Name'),
+                                        decoration: const InputDecoration(labelText: 'Display Name'),
+                                        textCapitalization: TextCapitalization.words,
                                         // ignore: missing_return
                                         validator: (value) {
                                           // ignore: missing_return, missing_return
@@ -95,17 +102,119 @@ class _SignupScreenState extends State {
                                         },
                                         onSaved: (val) =>
                                             setState(() => _user.displayName = val)),
-                                    const Padding(
-                                      padding: const EdgeInsets.only(top: 20.0),
+                                    TextFormField(
+                                        initialValue: user.hometown ?? '',
+                                        decoration:
+                                        const InputDecoration(labelText: 'Hometown'),
+                                        // ignore: missing_return
+                                        // validator: (value) {
+                                        //   // ignore: missing_return, missing_retur
+                                        //
+                                        // },
+                                        onSaved: (val) =>
+                                            setState(() => _user.hometown = val.trim())),
+                                    SizedBox(height: 20,),
+                                    ExpandableTheme(
+                                      data: ExpandableThemeData(
+                                        iconSize: 20.0,
+                                        iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
+                                      ),
+                                      child: ExpandablePanel(
+                                        header: Text('Social Media', style: Theme.of(context).textTheme.headline2,),
+                                        // collapsed:
+                                        expanded: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            TextFormField(
+                                                initialValue: user.instagramLink ?? '',
+                                                decoration:
+                                                const InputDecoration(labelText: 'Instagram'),
+                                                // ignore: missing_return
+                                                validator: (value) {
+                                                  // ignore: missing_return, missing_return
+                                                  if (value.isNotEmpty && !value.contains('https://www.instagram.com/')) {
+                                                    return 'i.e. https://www.instagram.com/username';
+                                                  }
+                                                },
+                                                onSaved: (val) =>
+                                                    setState(() => _user.instagramLink = val)),
+                                            TextFormField(
+                                                initialValue: user.facebookLink ?? '',
+                                                decoration:
+                                                const InputDecoration(labelText: 'Facebook Link'),
+                                                // ignore: missing_return
+                                                validator: (value) {
+                                                  // ignore: missing_return, missing_return
+                                                  if (value.isNotEmpty && !value.contains('https://www.facebook.com/')) {
+                                                    return 'i.e. https://www.facebook.com/username';
+                                                  }
+                                                },
+                                                onSaved: (val) =>
+                                                    setState(() => _user.facebookLink = val)),
+                                          ],
+                                        ),
+                                      ),
                                     ),
+                                    SizedBox(height: 25,),
+                                    ExpandableTheme(
+                                      data: ExpandableThemeData(
+                                        iconSize: 20.0,
+                                        iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
+                                      ),
+                                      child: ExpandablePanel(
+                                        header: Text('Destination Wish List', style: Theme.of(context).textTheme.headline2,),
+                                        // collapsed:
+                                        expanded: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            TextFormField(
+                                                initialValue: (user.topDestinations[0].isNotEmpty) ? user.topDestinations[0] : '',
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration:
+                                                const InputDecoration(labelText: 'Destination 1'),
+                                                // ignore: missing_return
+                                                // validator: (value) {
+                                                //   // ignore: missing_return, missing_return
+                                                //
+                                                // },
+                                                onSaved: (val) =>
+                                                    setState(() => destination1 = val)),
+                                            TextFormField(
+                                                initialValue: (user.topDestinations[1].isNotEmpty) ? user.topDestinations[1] : '',
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration:
+                                                const InputDecoration(labelText: 'Destination 2'),
+                                                // ignore: missing_return
+                                                // validator: (value) {
+                                                //   // ignore: missing_return, missing_return
+                                                // },
+                                                onSaved: (val) =>
+                                                    setState(() => destination2 = val)),
+                                            TextFormField(
+                                                initialValue: (user.topDestinations[2].isNotEmpty) ? user.topDestinations[2] : '',
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration:
+                                                const InputDecoration(labelText: 'Destination 3'),
+                                                // ignore: missing_return
+                                                // validator: (value) {
+                                                //   // ignore: missing_return, missing_return
+                                                // },
+                                                onSaved: (val) =>
+                                                    setState(() => destination3 = val)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 50,),
                                     user.urlToImage == null ? Container(
                                       child: _image == null
                                           ? Text('No image selected.')
                                           : Image.file(_image),
                                     ):
-                                    Container(
-                                      child: _image == null
-                                          ? Image.network(user.urlToImage)
+                                    CircleAvatar(
+                                      radius: SizeConfig.screenWidth/3,
+                                      backgroundImage: _image == null
+                                          ? NetworkImage(user.urlToImage)
                                           : Image.file(_image),
                                     ),
                                     Container(
@@ -125,16 +234,25 @@ class _SignupScreenState extends State {
                                             vertical: 30.0, horizontal: 30.0),
                                         width: 30,
                                         child: RaisedButton(
-                                            shape: RoundedRectangleBorder(),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20)
+                                            ),
                                             onPressed: () async {
                                               final form = _formKey.currentState;
+                                              form.save();
+                                              _user.topDestinations =[destination1,destination2,destination3];
+                                              print(_user.hometown);
                                               if (form.validate()) {
-                                                form.save();
-
-                                                DatabaseService(uid: user.uid).editPublicProfileData(_user.displayName, _user.firstName, _user.lastName, _image);
-                                                Navigator.pop(context);
+                                                try {
+                                                  String action = 'Editing Public Profile page from page';
+                                                  CloudFunction().logEvent(action);
+                                                  DatabaseService(uid: user.uid).editPublicProfileData(_user,_image);
+                                                } on Exception catch (e) {
+                                                  CloudFunction().logError('Editing Public Profile page from page: ${e.toString()}');
+                                                  Navigator.pop(context);
+                                                }
                                               }
-
+                                              Navigator.pop(context);
                                             },
                                             child: const Text('Save'))
                                     ),

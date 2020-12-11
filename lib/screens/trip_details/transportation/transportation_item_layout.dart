@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
@@ -13,6 +15,7 @@ class TransportationItemLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
         child: InkWell(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -22,7 +25,7 @@ class TransportationItemLayout extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(transportationData.displayName,style: Theme.of(context).textTheme.headline4,),
+                    Text(transportationData.displayName,style: ReusableThemeColor().greenOrBlackTextColor(context),),
                     Text(transportationData.mode,style: Theme.of(context).textTheme.headline4,),
                   ],
                 ),
@@ -47,10 +50,8 @@ class TransportationItemLayout extends StatelessWidget {
                       TravelCrewAlertDialogs().deleteTransportationAlert(context, transportationData);
                     })
                   ],
-
                 ),
-
-
+                if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
               ],
             ),
           ),

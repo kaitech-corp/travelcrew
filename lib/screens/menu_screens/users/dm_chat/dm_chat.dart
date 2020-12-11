@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_list.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 
@@ -44,7 +45,7 @@ class _DMChatState extends State<DMChat> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.user.displayName,style: Theme.of(context).textTheme.headline3,),
+            title: Text(widget.user.displayName,style: Theme.of(context).textTheme.headline3,overflow: TextOverflow.ellipsis,),
           ),
           body: Column(
             children: <Widget>[
@@ -67,12 +68,14 @@ class _DMChatState extends State<DMChat> {
                         new Flexible(
                           child: new TextField(
                             decoration: new InputDecoration.collapsed(
-                                hintText: "Starts typing ..."),
+                                hintText: "Starts typing ...",
+                            ),
                             controller: _chatController,
 //                    onSubmitted: _handleSubmit,
                           textCapitalization: TextCapitalization.sentences,
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
+                            style: ChatTextStyle().messageStyle(),
                           ),
                         ),
                         new Container(

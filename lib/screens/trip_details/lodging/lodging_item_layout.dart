@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
@@ -25,6 +27,7 @@ class LodgingItemLayout extends StatelessWidget {
     return Center(
         key: Key(lodging.fieldID),
       child: Card(
+        color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
             onTap: () {
@@ -39,17 +42,20 @@ class LodgingItemLayout extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
+                  if(lodging.startTime.isNotEmpty) Text('${lodging.startTime ?? ''} - ${lodging.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8.0),
+                  ),
                   if(lodging.comment.isNotEmpty) Text(lodging.comment,style: Theme.of(context).textTheme.subtitle1,),
                   const Padding(
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
-                  if(lodging.startTime.isNotEmpty) Text('${lodging.startTime ?? ''} - ${lodging.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
                   if(lodging.link.isNotEmpty) LinkPreview(link: lodging.link),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('${lodging.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                      Text('${lodging.displayName}',style: ReusableThemeColor().greenOrBlackTextColor(context),),
                       Row(
                         children: [
                           if(lodging.link.isNotEmpty) Icon(Icons.link),
@@ -73,6 +79,7 @@ class LodgingItemLayout extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
                 ],
               ),
             ),
@@ -118,21 +125,21 @@ class LodgingItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
-            leading: const Icon(Icons.edit),
+            leading: IconThemeWidget(icon: Icons.edit),
             title: const Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: const Icon(Icons.people),
+            leading: IconThemeWidget(icon: Icons.people),
             title: const Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
-            leading: const Icon(Icons.delete),
+            leading: IconThemeWidget(icon: Icons.delete),
             title: const Text('Delete Lodging'),
           ),
         ),
@@ -163,14 +170,14 @@ class LodgingItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
-            leading: const Icon(Icons.report),
+            leading: IconThemeWidget(icon: Icons.report),
             title: const Text('Report'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: const Icon(Icons.people),
+            leading: IconThemeWidget(icon: Icons.people),
             title: const Text('View Link'),
           ),
         ),

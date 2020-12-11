@@ -18,6 +18,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Card(
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
       ),
@@ -32,6 +33,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
           );
         },
         child: Container(
+          // color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,19 +59,43 @@ class FavoriteTappableTripCard extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: BoxDecoration(
-                  color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49),
+                decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
+                BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
-                ),
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.blue,
+                        Colors.lightBlueAccent
+                      ]
+                  ),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black,
+                  //     blurRadius: 10.0,
+                  //   ),
+                  //   BoxShadow(
+                  //     color: Colors.blueAccent,
+                  //     blurRadius: 10.0,
+                  //   ),
+                  // ],
+                ):
+                // BoxDecoration(
+                //   // color:  Colors.black,
+                //   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
+                // ),
+                null,
+
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Owner: ${trip.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                    Text('Creator: ${trip.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(' ${trip.startDate.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
+                        Text('${trip.startDate.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
                         // Text('${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,)
                       ],
                     ),

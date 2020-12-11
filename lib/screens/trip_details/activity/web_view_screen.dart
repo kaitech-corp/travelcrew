@@ -32,20 +32,19 @@ class WebViewScreen extends StatefulWidget {
       appBar: AppBar(
         title: Text('Travel Crew',style: Theme.of(context).textTheme.headline3,),
       ),
-      body: Column(
-        children: <Widget>[
-          loading ? Center(child: Loading(),) : Container(),
-          Expanded(
-            child:  WebView(
-              key: _key,
-              javascriptMode: JavascriptMode.unrestricted,
-              initialUrl: _url,
-              onPageFinished: (done){
-                setState(() {
-                loading = false;
-              });},
-            ),
+      body:
+      Stack(
+        children: [
+          WebView(
+            key: _key,
+            javascriptMode: JavascriptMode.unrestricted,
+            initialUrl: _url,
+            onPageFinished: (done){
+              setState(() {
+              loading = false;
+            });},
           ),
+          loading ? Center(child: Loading()) : Stack(),
         ],
       ),
     );

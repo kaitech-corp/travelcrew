@@ -24,21 +24,26 @@ class _TransportationState extends State<Transportation> {
   Widget build(BuildContext context) {
     return StreamProvider<List<TransportationData>>.value(
       value: DatabaseService(tripDocID: widget.trip.documentId).transportList,
-      child: Scaffold(
-        body: Container(
-          child: TransportationList()
-        ),
-        floatingActionButton: FloatingActionButton(
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Scaffold(
+          body: Container(
+            child: TransportationList()
+          ),
+          floatingActionButton: FloatingActionButton(
 
-          onPressed: () {
-           Navigator.push(
-             context,
-             MaterialPageRoute(builder: (context) => AddNewModeOfTransport(trip: widget.trip,)),
-           );
-          },
-          child: Icon(Icons.add),
+            onPressed: () {
+             Navigator.push(
+               context,
+               MaterialPageRoute(builder: (context) => AddNewModeOfTransport(trip: widget.trip,)),
+             );
+            },
+            child: Icon(Icons.add),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import '../../../loading.dart';
 
 
 class DMChatListPage extends StatelessWidget{
-
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +37,7 @@ class DMChatListPage extends StatelessWidget{
   }
   Widget userCard(BuildContext context, UserPublicProfile user){
     return Card(
+      color: ReusableThemeColor().color(context),
       child: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,

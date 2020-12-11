@@ -48,8 +48,11 @@ class _AllTripsPageState extends State<AllTripsPage> {
     // }
     return StreamProvider<List<Trip>>.value(
       value: DatabaseService().trips,
-      child: Container (
-        child: AllTripsNewDesign(),
+      child: StreamProvider<List<TripAds>>.value(
+        value: DatabaseService().adList,
+        child: Container (
+          child: AllTripsNewDesign(),
+        ),
       ),
     );
   }

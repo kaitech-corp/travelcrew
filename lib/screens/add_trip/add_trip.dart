@@ -5,6 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
+import 'package:travelcrew/services/analytics_service.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'dart:async';
 import 'package:travelcrew/services/database.dart';
 
@@ -21,10 +24,14 @@ class AddTrip extends StatefulWidget {
   // var currentUserProfile;
 
   AddTrip({Key key, this.addedLocation}) : super(key: key);
+
+
   
   @override
   _AddTripState createState() => _AddTripState();
 }
+
+final AnalyticsService _analyticsService = AnalyticsService();
 
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
@@ -148,7 +155,12 @@ class _AddTripState extends State<AddTrip> {
                                   enableInteractiveSelection: true,
                                   textCapitalization: TextCapitalization.words,
                                   decoration:
-                                  const InputDecoration(labelText: 'Trip Name'),
+                                  InputDecoration(
+                                    labelText: 'Trip Name',
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
+                                    )
+                                  ),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -166,7 +178,11 @@ class _AddTripState extends State<AddTrip> {
                                   textCapitalization: TextCapitalization.words,
                                   autocorrect: true,
                                   decoration:
-                                  const InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
+                                  InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)',
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
+                                      )
+                                  ),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -183,21 +199,30 @@ class _AddTripState extends State<AddTrip> {
                                   controller: myController,
                                   enableInteractiveSelection: true,
                                   textCapitalization: TextCapitalization.words,
-                                  decoration: const InputDecoration(labelText:'Location'),
+                                  decoration: InputDecoration(labelText:'Location',
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
+                                      )
+                                  ),
                                   // ignore: missing_return
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Please enter a location.';
-                                      // ignore: missing_return
-                                    }
-                                  },
-                                onSaved: (value){
-                                    myController.text = value;
+                                  // validator: (value) {
+                                  //   if (value.isEmpty) {
+                                  //     return 'Please enter a location.';
+                                  //     // ignore: missing_return
+                                  //   }
+                                  // },
+                                onChanged: (value){
+                                  location = value;
                                 },
+                                // onSaved: (value){
+                                //     myController.text = value;
+                                // },
                               ),
-                              Container(
-                                  child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
-                              padding: EdgeInsets.only(top: 5, bottom: 5),),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
+                                child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                              ),
                               Container(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -239,6 +264,7 @@ class _AddTripState extends State<AddTrip> {
                                         onPressed: () {
                                           _showDatePickerReturn();
                                         },
+                                        // 
                                       ),
                                     ),
                                   ],
@@ -263,18 +289,22 @@ class _AddTripState extends State<AddTrip> {
                               });})): Container(),
                               Container(
                                 child: _image == null
-                                    ? const Text('No image selected.')
+                                    ? Text('No image selected.',style: Theme.of(context).textTheme.headline6,)
                                     : Image.file(_image),
                               ),
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                onPressed: () {
-                                  getImageAddTrip();
-                                },
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
+                                child: RaisedButton(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  onPressed: () {
+                                    getImageAddTrip();
+                                  },
 //                              tooltip: 'Pick Image',
-                                child: Icon(Icons.add_a_photo),
+                                  child: Icon(Icons.add_a_photo),
+                                ),
                               ),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -284,9 +314,15 @@ class _AddTripState extends State<AddTrip> {
                                 enableInteractiveSelection: true,
                                 textCapitalization: TextCapitalization.sentences,
                                 cursorColor: Colors.grey,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                                    ),
                                     border: OutlineInputBorder(),
-                                    hintText: 'Add a short description.'),
+                                    hintText: 'Add a short description.',
+                                  hintStyle: Theme.of(context).textTheme.subtitle1
+                                ),
+                                style: Theme.of(context).textTheme.subtitle1,
                                 onChanged: (val){
                                   comment = val;
                                 },
@@ -308,21 +344,47 @@ class _AddTripState extends State<AddTrip> {
                                         final form = _formKey.currentState;
                                         form.save();
                                         if (form.validate()) {
-                                              DatabaseService().addNewTripData(
-                                                  accessUsers,
-                                                  comment,
-                                                  endDate,
-                                                  firstName,
-                                                  lastName,
-                                                  endDateTimeStamp,
-                                                  startDateTimeStamp,
-                                                  ispublic,
-                                                  location,
-                                                  startDate,
-                                                  travelType,
-                                                  urlToImage,
-                                                  googleData2.value?.geoLocation ?? null,
-                                                  tripName);
+                                              try {
+                                                String action = 'Saving new Trip data';
+                                                CloudFunction().logEvent(action);
+                                                DatabaseService().addNewTripData(
+                                                    accessUsers,
+                                                    comment,
+                                                    endDate,
+                                                    firstName,
+                                                    lastName,
+                                                    endDateTimeStamp,
+                                                    startDateTimeStamp,
+                                                    ispublic,
+                                                    location,
+                                                    startDate,
+                                                    travelType,
+                                                    urlToImage,
+                                                    googleData2.value?.geoLocation ?? null,
+                                                    tripName);
+                                              }  catch (e) {
+                                                CloudFunction().logError(e.toString());
+                                                _analyticsService.writeError('Error adding new Trip:  ${e.toString()}');
+                                                try {
+                                                  DatabaseService().addNewTripData(
+                                                      accessUsers,
+                                                      comment,
+                                                      endDate,
+                                                      firstName,
+                                                      lastName,
+                                                      endDateTimeStamp,
+                                                      startDateTimeStamp,
+                                                      ispublic,
+                                                      '',
+                                                      startDate,
+                                                      travelType,
+                                                      urlToImage,
+                                                      null,
+                                                      tripName);
+                                                } on Exception catch (e) {
+                                                  CloudFunction().logError(e.toString());
+                                                }
+                                              }
 
                                       _showDialog(context);
                                             myController.clear();
@@ -330,20 +392,16 @@ class _AddTripState extends State<AddTrip> {
                                       Navigator.pop(context);
                                         }
                                       },
-                                      child: const Text('Add Trip'))),
+                                      child: const Text('Add Trip'),
+                                    
+                                  )
+                              ),
                             ]))))));
   }
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: const Text('Submitting form')));
   }
-
-// @override
-// void dispose() {
-//   // Clean up the controller when the widget is removed from the widget tree.
-//   myController.dispose();
-//   super.dispose();
-// }
 }
 
 

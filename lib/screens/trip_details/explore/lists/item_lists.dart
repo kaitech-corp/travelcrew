@@ -50,6 +50,7 @@ class _BringingListState extends State<BringingList> {
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
         child: SearchBar(
+          textStyle: Theme.of(context).textTheme.subtitle2,
           cancellationWidget: const Text('Clear'),
             placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
             onSearch: WalmartProductSearch().getProducts,
@@ -113,6 +114,7 @@ class _NeedListState extends State<NeedList> {
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
         child:  SearchBar(
+            textStyle: Theme.of(context).textTheme.subtitle2,
             cancellationWidget:const Text('Clear'),
             placeHolder: needList(),
             onSearch: WalmartProductSearch().getProducts,

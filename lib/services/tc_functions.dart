@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_webservice/places.dart';
 
@@ -17,6 +19,25 @@ class TCFunctions {
   String AppReviewDocID() {
     DateTime now = DateTime.now();
     return DateFormat('yM').format(now).replaceAll('/', 'x');
+  }
+
+  String dateToMonthDay(String dateTime){
+    return dateTime.split(',')[0];
+  }
+
+  CountDownDate dateGauge(int dateCreatedTimeStamp, int startDateTimeStamp){
+    var now = new DateTime.now();
+    var createdDate = new DateTime.fromMillisecondsSinceEpoch(dateCreatedTimeStamp);
+    var startDate = new DateTime.fromMillisecondsSinceEpoch(startDateTimeStamp);
+    var daysLeft = (startDate.difference(now).inDays > 0) ? startDate.difference(now).inDays.toDouble() : 0.0;
+    var initialDayCount = startDate.difference(createdDate).inDays.toDouble();
+    var gaugeCount = initialDayCount - daysLeft;
+    gaugeCount = (gaugeCount>0) ? gaugeCount : initialDayCount;
+    return CountDownDate(
+      daysLeft: daysLeft,
+      initialDayCount: initialDayCount,
+      gaugeCount: gaugeCount,
+    );
   }
 
   String readTimestamp(int timestamp) {

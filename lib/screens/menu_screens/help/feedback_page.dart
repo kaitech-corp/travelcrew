@@ -35,18 +35,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
             title: Text('Feedback',style: Theme.of(context).textTheme.headline3,),
           ),
           body: Container(
-            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+            padding: const EdgeInsets.all(8.0),
             height: MediaQuery.of(context).size.height *.5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(padding: EdgeInsets.only(top: 5),),
+                const Padding(padding: EdgeInsets.all(5.0),),
                 Text('Feel free to share your thoughts with us.',style: Theme.of(context).textTheme.headline2,),
                 _buildTextField(),
-                Center(child: Text(collaboratingText,style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,)),
-                const SizedBox(height: 30),
+                const SizedBox(height: 15),
                 Center(
                   child: RaisedButton(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     onPressed: () {
                       CloudFunction().giveFeedback(_message);
                       Navigator.of(context).pop();
@@ -71,6 +71,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 30),
+                Center(child: Text(collaboratingText,style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,)),
               ],
             ),
           )
@@ -91,8 +93,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         maxLines: maxLines,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          hintText: "Enter a message",
-          fillColor: Colors.grey[300],
+          hintText: "What's on your mind?",
           filled: true,
         ),
         onChanged: (String value) {

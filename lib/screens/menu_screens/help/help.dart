@@ -14,7 +14,7 @@ class HelpPage extends StatelessWidget{
           title: Text('Help & Feedback',style: Theme.of(context).textTheme.headline3,),
         ),
         body: Container(
-          margin: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(16),
           height: MediaQuery.of(context).size.height *.5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,8 +23,11 @@ class HelpPage extends StatelessWidget{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('About',textScaleFactor: 1.5, style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text('About',style: Theme.of(context).textTheme.subtitle1,),
                   RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -40,6 +43,9 @@ class HelpPage extends StatelessWidget{
                     },
                   ),
                   RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -60,8 +66,11 @@ class HelpPage extends StatelessWidget{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Feedback',textScaleFactor: 1.5, style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text('Feedback',style: Theme.of(context).textTheme.subtitle1,),
                   RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

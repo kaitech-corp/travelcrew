@@ -13,7 +13,7 @@ import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/crew_trips.dart';
+import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
@@ -38,6 +38,7 @@ import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/push_notifications.dart';
 import 'models/custom_objects.dart';
+import 'screens/menu_screens/main_menu.dart';
 
 
 void main() async {
@@ -75,54 +76,6 @@ class _TravelCrewState extends State<TravelCrew> {
 
       _fcm.requestNotificationPermissions(IosNotificationSettings());
     }
-    // FirebaseMessaging().configure(
-    //     onMessage:
-    //         (Map<String, dynamic> message) async {
-    //       // print("onMessage: $message");
-    //       showDialog(
-    //         context: context,
-    //         builder: (context) =>
-    //             AlertDialog(
-    //               content: ListTile(
-    //                 title: Text(message['aps']['alert']['title']),
-    //                 subtitle: Text(message['aps']['alert']['body']),
-    //               ),
-    //               actions: <Widget>[
-    //                 FlatButton(
-    //                   child: Text('Ok'),
-    //                   onPressed: () => Navigator.of(context).pop(),
-    //                 ),
-    //               ],
-    //             ),
-    //       );
-    //     },
-    //   onLaunch: (Map<String, dynamic> message) async {
-    //     print("onMessage: $message");
-    //
-    //   },
-    //   onResume: (Map<String, dynamic> message) async {
-    //     // print("onResume: $message");
-    //     // showDialog(
-    //     //   context: context,
-    //     //   builder: (context) => AlertDialog(
-    //     //     content: ListTile(
-    //     //       title: Text(message['notification']['title']),
-    //     //       subtitle: Text(message['notification']['body']),
-    //     //     ),
-    //     //     actions: <Widget>[
-    //     //       FlatButton(
-    //     //         child: Text('Ok'),
-    //     //         onPressed: () => Navigator.of(context).pop(),
-    //     //       ),
-    //     //     ],
-    //     //   ),
-    //     // );
-    //     if(message['aps']['category'] == 'chat'){
-    //       Navigator.pushNamed(context, '/chats_page');
-    //     }
-    //   },
-    // );
-
   }
   @override
   Widget build(BuildContext context) {
@@ -135,50 +88,111 @@ class _TravelCrewState extends State<TravelCrew> {
         saveThemesOnChange: true,
         themes: [
           AppTheme(
-            id: 'dark_theme',
-            description: 'space theme',
-            data: ThemeData(
-              fontFamily: 'Cantata One',textTheme: TextTheme(
-              headline1: TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.white),
-              headline2: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              headline3: TextStyle(fontWeight: FontWeight.w700, fontSize: 22, color: Colors.white),
-              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-              headline5: TextStyle(fontWeight: FontWeight.w600,color: Colors.white, fontSize: 14),
-              headline6: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14),
-              subtitle1: TextStyle(fontWeight: FontWeight.bold),
-              subtitle2: TextStyle(fontWeight: FontWeight.w600),
-              button: TextStyle(fontWeight: FontWeight.bold),
-            ),
-
-              brightness: Brightness.light,
-              primaryColor: Colors.black,
-              accentColor: Colors.blueAccent,
-            ),
-          ),
-          AppTheme(
             id: 'light_theme',
             description: 'sky theme',
             data: ThemeData(
               fontFamily: 'Cantata One',textTheme: TextTheme(
               headline1: TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.black),
-              headline2: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              headline3: TextStyle(fontWeight: FontWeight.w700, fontSize: 22, color: Colors.black),
-              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              headline2: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Colors.black),
+              headline3: TextStyle(fontWeight: FontWeight.w700, fontSize: 22,color: Colors.black, fontStyle: FontStyle.italic),
+              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
               headline5: TextStyle(fontWeight: FontWeight.w600,color: Colors.black, fontSize: 14),
               headline6: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14),
               subtitle1: TextStyle(fontWeight: FontWeight.bold),
               subtitle2: TextStyle(fontWeight: FontWeight.w600),
               button: TextStyle(fontWeight: FontWeight.bold),
             ),
+              buttonColor: Colors.blue,
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue
+              ),
+              bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                  backgroundColor: Color(0xFF121212),
+                  selectedItemColor: Colors.blueAccent,
+                  unselectedItemColor: Color(0xFF121212)
+              ),
+              canvasColor: Color(0xFFFAFAFA),
+              accentIconTheme: IconThemeData(
+                  color: Colors.black
+              ),
+
               brightness: Brightness.light,
               primaryColor: Colors.white,
               accentColor: Colors.blueAccent,
               inputDecorationTheme: InputDecorationTheme(
                 labelStyle: TextStyle(color: Colors.black),
+                fillColor: Colors.grey[300],
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
                 ),
-              )
+              ),
+              iconTheme: IconThemeData(
+                  color: Colors.white
+              ),
+            ),
+          ),
+          AppTheme(
+            id: 'dark_theme',
+            description: 'space theme',
+            data: ThemeData(
+                fontFamily: 'Cantata One',
+              textTheme: TextTheme(
+              headline1: TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.white),
+              headline2: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+              headline3: TextStyle(fontWeight: FontWeight.w700, fontSize: 22, color: Colors.greenAccent, fontStyle: FontStyle.italic),
+              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+              headline5: TextStyle(fontWeight: FontWeight.w600,color: Colors.white, fontSize: 14,),
+              headline6: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14, color: Colors.white),
+              subtitle1: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+              subtitle2: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+              button: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+                buttonColor: Colors.blue,
+                dialogBackgroundColor: Colors.grey[600],
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                    foregroundColor: Colors.white
+                ),
+                bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                    backgroundColor: Color(0xFF121212),
+                    selectedItemColor: Colors.greenAccent,
+                    unselectedItemColor: Colors.white
+                ),
+                tabBarTheme: TabBarTheme(
+                    labelColor: Colors.greenAccent,
+                    unselectedLabelColor: Colors.white
+                ),
+                inputDecorationTheme: InputDecorationTheme(
+                    labelStyle: TextStyle(color: Colors.white),
+                    fillColor: Colors.black,
+                    hintStyle: TextStyle(color: Colors.white),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                    )
+                ),
+                cardColor: Colors.black12,
+                unselectedWidgetColor: Colors.white,
+                canvasColor: Color(0xFF121212),
+                accentIconTheme: IconThemeData(
+                    color: Colors.white
+                ),
+                brightness: Brightness.light,
+                primaryColor: Color(0xFF121212),
+                accentColor: Colors.blueAccent,
+                iconTheme: IconThemeData(
+                    color: Colors.white
+                ),
+                popupMenuTheme: PopupMenuThemeData(
+                  color: Color(0xFF121212),
+                ),
+                dialogTheme: DialogTheme(
+                  titleTextStyle: TextStyle(fontFamily: 'Cantata One',color: Colors.white,fontWeight: FontWeight.bold, ),
+                  contentTextStyle: TextStyle(fontFamily: 'Cantata One',color: Colors.white),
+                ),
+
             ),
           ),
         ],
@@ -195,7 +209,7 @@ class _TravelCrewState extends State<TravelCrew> {
                 '/signUpScreen': (BuildContext context) => new SignUpScreen(),
                 '/addTrip': (BuildContext context)=> new AddTrip(),
                 '/allTrips': (BuildContext context)=> new AllTripsPage(),
-                '/crewTrips': (BuildContext context)=> new CrewTrips(),
+                '/crewTrips': (BuildContext context)=> new CurrentCrewTrips(),
                 '/favorites': (BuildContext context)=> new Favorites(),
                 '/notifications': (BuildContext context)=> new Notifications(),
                 '/mainTabPage': (BuildContext context)=> new MainTabPage(),
@@ -217,6 +231,7 @@ class _TravelCrewState extends State<TravelCrew> {
                 '/googlePlaces': (BuildContext context)=> new GooglePlaces(),
                 '/chats_page': (BuildContext context)=> new DMChatListPage(),
                 '/settings': (BuildContext context)=> new Settings(),
+                '/menuDrawer': (BuildContext context) => new MenuDrawer(),
                 // '/costPage' : (BuildContext context) => new CostPage(),
               },
               navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],

@@ -19,8 +19,11 @@ class ChatMessageLayout extends StatelessWidget {
 
     
 
-    return message.uid == userService.currentUserID ? InkWell(
+    return message.uid == userService.currentUserID ? GestureDetector(
       key: Key(message.fieldID),
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
       onLongPress: (){
         showBottomSheet(
             context: context,
@@ -32,16 +35,16 @@ class ChatMessageLayout extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     OutlineButton(
-                      color: Colors.grey,
-                      child: const Text('Delete',style: TextStyle(fontSize: 18),),
+                      // color: Colors.grey,
+                      child: Text('Delete',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){
                         CloudFunction().deleteChatMessage(tripDocID: tripDocID, fieldID: message.fieldID);
                        Navigator.pop(context);
                       },
                     ),
                     OutlineButton(
-                      color: Colors.grey,
-                      child: const Text('Close',style: TextStyle(fontSize: 18),),
+                      // color: Colors.grey,
+                      child: Text('Close',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){
                         Navigator.pop(context);
                       },
@@ -75,8 +78,8 @@ class ChatMessageLayout extends StatelessWidget {
                         }
                       },
                       text: message.message ?? '',
-                      style: Theme.of(context).textTheme.subtitle1,
-                      textScaleFactor: 1.2,
+                      style: TextStyle(color: Colors.black, fontFamily: 'Cantata One',fontSize: 18.0),
+                      // textScaleFactor: 1.2,
                       maxLines: 50,
                       overflow: TextOverflow.ellipsis,
                       linkStyle: TextStyle(color: Colors.blue),
@@ -85,8 +88,8 @@ class ChatMessageLayout extends StatelessWidget {
                     // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
                   ),
                   Container(
-                      margin:EdgeInsets.all(10),
-                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,)),
+                      margin:EdgeInsets.fromLTRB(10,0,10,10),
+                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: TextStyle(color: Colors.black,fontStyle: FontStyle.italic, fontFamily: 'Cantata One'))),
                 ],
               )
           ),
@@ -110,7 +113,7 @@ class ChatMessageLayout extends StatelessWidget {
                 children: <Widget>[
                   Container(
                       margin:EdgeInsets.all(5),
-                      child: Text(message.displayName ?? '',style: Theme.of(context).textTheme.subtitle2,)),
+                      child: Text(message.displayName ?? '',style: TextStyle(color: Colors.black, fontFamily: 'Cantata One'),)),
                   Container(
                     margin: const EdgeInsets.fromLTRB(10.0,5.0,5.0,5.0),
                     child:  Linkify(
@@ -122,8 +125,8 @@ class ChatMessageLayout extends StatelessWidget {
                         }
                       },
                       text: message.message ?? '',
-                      style: Theme.of(context).textTheme.subtitle1,
-                      textScaleFactor: 1.2,
+                      style: TextStyle(color: Colors.black, fontFamily: 'Cantata One',fontSize: 18.0),
+                      // textScaleFactor: 1.2,
                       maxLines: 50,
                       overflow: TextOverflow.ellipsis,
                       linkStyle: TextStyle(color: Colors.blue),
@@ -132,8 +135,8 @@ class ChatMessageLayout extends StatelessWidget {
                   // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
                   // ),
                   Container(
-                      margin:EdgeInsets.all(10),
-                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: Theme.of(context).textTheme.headline6,)),
+                      margin:EdgeInsets.fromLTRB(10,0,10,10),
+                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: TextStyle(color: Colors.black,fontStyle: FontStyle.italic, fontFamily: 'Cantata One'),)),
                 ],
               )
           ),

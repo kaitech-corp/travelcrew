@@ -8,13 +8,16 @@ import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/transportation/transportation.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'explore_owner_layout.dart';
 
+
 class Explore extends StatelessWidget {
-  var userService = locator<UserService>();
+
   final Trip trip;
-  Explore({this.trip});
+  Explore({this.trip,});
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  PersistentBottomSheetController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +27,20 @@ class Explore extends StatelessWidget {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
+        key: scaffoldKey,
         drawer: MenuDrawer(),
         appBar: AppBar(
           centerTitle: true,
           // leading: MenuDrawer(),
-          title: Tooltip(
-            message: '${trip.tripName}',
-              child: Text('${trip.tripName}'.toUpperCase(),style: Theme.of(context).textTheme.headline3,)),
+          title: Text('Explore',style: Theme.of(context).textTheme.headline3,),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.close),
-              onPressed: (){
+              onPressed: () {
+                _closeModalBottomSheet;
                 Navigator.of(context).pop();
               },
             ),
-
           ],
           bottom: TabBar(
             labelStyle: Theme.of(context).textTheme.subtitle2,
@@ -69,10 +71,17 @@ class Explore extends StatelessWidget {
       ),
     );
   }
-  
+
+  void _closeModalBottomSheet() {
+    if (controller != null) {
+      controller.close();
+      controller = null;
+    }
+  }
+
    checkOwner(String uid) {
   if (trip.ownerID == uid){
-  return ExploreLayout(tripDetails: trip,);
+  return ExploreOwnerLayout(tripDetails: trip,controller: controller,scaffoldKey: scaffoldKey,);
   } else {
   return ExploreMemberLayout(tripDetails: trip,);
   }

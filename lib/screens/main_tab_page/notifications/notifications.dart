@@ -25,7 +25,7 @@ class Notifications extends StatelessWidget{
           child: const Text('Clear All',textAlign: TextAlign.center,),
 
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
 
     );

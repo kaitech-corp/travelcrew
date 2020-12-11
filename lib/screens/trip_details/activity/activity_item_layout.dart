@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
@@ -20,6 +22,7 @@ class ActivityItemLayout extends StatelessWidget {
     return Center(
         key: Key(activity.fieldID),
         child: Card(
+          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
             onTap: () {
@@ -35,17 +38,21 @@ class ActivityItemLayout extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
+                      if(activity.startTime.isNotEmpty) Text('${activity.startTime ?? ''} - ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                      ),
                       if(activity.comment.isNotEmpty) Tooltip(message:activity.comment,child: Text(activity.comment,style: Theme.of(context).textTheme.subtitle1,maxLines: 10,overflow: TextOverflow.ellipsis,)),
                       const Padding(
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
-                      if(activity.startTime.isNotEmpty) Text('${activity.startTime ?? ''} - ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+
                       if(activity.link.isNotEmpty) LinkPreview(link: activity.link),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('${activity.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                          Text('${activity.displayName}',style: ReusableThemeColor().greenOrBlackTextColor(context),),
                           Row(
                             children: [
                               if(activity.link.isNotEmpty) Icon(Icons.link),
@@ -68,6 +75,7 @@ class ActivityItemLayout extends StatelessWidget {
                           ),
                         ],
                       ),
+                      if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
                     ]
                 ),
               ),
@@ -114,21 +122,21 @@ class ActivityItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
-            leading: const Icon(Icons.edit),
+            leading: IconThemeWidget(icon: Icons.edit),
             title: const Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: const Icon(Icons.people),
+            leading: IconThemeWidget(icon: Icons.people),
             title: const Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
-            leading: const Icon(Icons.delete),
+            leading: IconThemeWidget(icon: Icons.delete),
             title: const Text('Delete Activity'),
           ),
         ),

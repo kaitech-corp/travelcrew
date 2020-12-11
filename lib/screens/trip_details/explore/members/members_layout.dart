@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -29,61 +31,62 @@ class _MembersLayoutState extends State<MembersLayout> {
 
   @override
   Widget build(BuildContext context) {
-
-return retrieveMembers(context);
+  return getMember(context, widget.tripDetails);
   }
 
-  Widget retrieveMembers(BuildContext context) {
 
-    return FutureBuilder(
-      builder: (context, members) {
-        if (members.hasData) {
-          return Stack(
-            children: [
-              ListView.builder(
-              itemCount: members.data.length,
-              itemBuilder: (context, index) {
-                Members member = members.data[index];
-                return userCard(context, member, widget.tripDetails);
-              },
+  Widget getMember(BuildContext context, Trip tripDetails){
+    return Stack(
+      children: [
+        StreamBuilder(
+          builder: (context, userData){
+            if(userData.hasData){
+              List<UserPublicProfile> crew = userData.data;
+              return ListView.builder(
+                    itemCount: crew.length,
+                    itemBuilder: (context, index) {
+                      UserPublicProfile member = crew[index];
+                      return userCard(context, member, tripDetails);
+                    },
+                  );
+            } else {
+              return Loading();
+            }
+          },
+        stream: DatabaseService().getcrewList(widget.tripDetails.accessUsers),),
+        if (_showImage) ...[
+          BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 5.0,
+              sigmaY: 5.0,
             ),
-              if (_showImage) ...[
-                BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 5.0,
-                    sigmaY: 5.0,
-                  ),
-                  child: Container(
-                    color: Colors.white.withOpacity(0.6),
-                  ),
+            child: Container(
+              color: Colors.white.withOpacity(0.6),
+            ),
+          ),
+          Center(
+            child: Container(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: _image.isNotEmpty ? Image.network(_image, height: 300,
+                    width: 300,fit: BoxFit.fill,) : Image.asset(
+                    profileImagePlaceholder,height: 300,
+                    width: 300,fit: BoxFit.fill,),
                 ),
-                Center(
-                  child: Container(
-                    child: Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: _image.isNotEmpty ? Image.network(_image, height: 300,
-                          width: 300,fit: BoxFit.fill,) : Image.asset(
-                          profileImagePlaceholder,height: 300,
-                          width: 300,fit: BoxFit.fill,),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-          ]);
-        } else {
-          return Loading();
-        }
-      },
-      future: DatabaseService().retrieveMembers(widget.tripDetails.documentId, widget.tripDetails.ispublic),
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
-  Widget userCard(BuildContext context, Members member, Trip tripDetails){
+  Widget userCard(BuildContext context, UserPublicProfile member, Trip tripDetails){
 
     return Card(
       key: Key(member.uid),
+      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       child: Container(
         child: GestureDetector(
           onLongPress: (){
@@ -107,17 +110,16 @@ return retrieveMembers(context);
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
-                child: member.urlToImage != null ? Image.network(member.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
+                child: member.urlToImage.isNotEmpty ? Image.network(member.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
               ),
             ),
-            title: Text('${member.firstName} ${member.lastName}',style: Theme.of(context).textTheme.subtitle1,),
-            subtitle: Text("${member.displayName}",style: Theme.of(context).textTheme.subtitle2,
+            title: Text("${member.displayName}",style: Theme.of(context).textTheme.subtitle2,
               textAlign: TextAlign.start,),
-            trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? const Icon(Icons.check)
+            trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? IconThemeWidget(icon:Icons.check)
             : IconButton(
-              icon: const Icon(Icons.close),
+              icon: IconThemeWidget(icon: Icons.close),
               onPressed: (){
-                TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
+                // TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
               },
             ),
           ),

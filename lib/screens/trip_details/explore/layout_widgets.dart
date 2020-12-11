@@ -8,8 +8,10 @@ import 'lists/item_lists.dart';
 class ListWidget extends StatefulWidget{
 
   final Trip tripDetails;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  PersistentBottomSheetController controller;
 
-  const ListWidget({Key key, this.tripDetails}) : super(key: key);
+  ListWidget({Key key, this.tripDetails, this.scaffoldKey,this.controller}) : super(key: key);
 
   @override
   _ListWidgetState createState() => _ListWidgetState();
@@ -40,28 +42,30 @@ class _ListWidgetState extends State<ListWidget> {
         borderRadius: BorderRadius.circular(20),
       ),
       onPressed: () {
-
-        showBottomSheet(
-          context: context,
-          builder: (context) => DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              appBar: TabBar(
-                labelStyle: Theme.of(context).textTheme.subtitle1,
-                labelColor: Colors.black,
-                tabs: <Widget>[
-                  const Tab(text: 'Bringing'),
-                  const Tab(text: 'Need',),
-                  const Tab(text: 'Custom',)
-                ],
+        widget.controller = widget.scaffoldKey.currentState.showBottomSheet(
+          (BuildContext context) {
+            return DefaultTabController(
+              length: 3,
+              child: Scaffold(
+                appBar: TabBar(
+                  labelStyle: Theme
+                      .of(context)
+                      .textTheme
+                      .subtitle1,
+                  tabs: <Widget>[
+                    const Tab(text: 'Bringing'),
+                    const Tab(text: 'Need',),
+                    const Tab(text: 'Custom',)
+                  ],
+                ),
+                body: Container(
+                  padding: const EdgeInsets.all(10),
+                  height: SizeConfig.screenHeight,
+                  child: _widgetOptions.elementAt(_selectedIndex),
+                ),
               ),
-              body: Container(
-                padding: const EdgeInsets.all(10),
-                height: SizeConfig.screenHeight,
-                child: _widgetOptions.elementAt(_selectedIndex),
-              ),
-            ),
-          ),
+            );
+          }
         );
       },
       child: const Text('Add to List'),
