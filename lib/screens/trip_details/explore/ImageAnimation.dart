@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'explore_member_layout.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 
@@ -92,7 +91,6 @@ class _ImageAnimationState extends State<ImageAnimation> {
         transitionOnUserGestures: true,
         child: CustomHangingImage(urlToImage: widget.tripDetails.urlToImage,height: _height,),
       );
-      CustomHangingImage(urlToImage: widget.tripDetails.urlToImage,height: _height,);
     }
   }
 

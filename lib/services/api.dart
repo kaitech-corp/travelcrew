@@ -172,54 +172,6 @@ class WalmartProductSearch {
   }
 }
 
-//Testing Google Cloud Functions
-class TestFunctions {
-
-    Future<String> function_1() async {
-    var url = 'https://us-central1-travelcrew.cloudfunctions.net/function-2?message=Randy';
-
-    String result;
-    try {
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        var data = response.body;
-        result = data;
-        print(result);
-      } else {
-        result =
-        'Error getting a random quote:\nHttp status ${response.statusCode}';
-        print(result);
-      }
-    } catch (exception) {
-      result = 'Failed invoking the function.';
-      print(result);
-    }
-  }
-}
-
-class addMessage {
-
-  Future<String> function_1() async {
-    var url = 'https://us-central1-travelcrew.cloudfunctions.net/function-2?message=Randy';
-
-    String result;
-    try {
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        var data = response.body;
-        result = data;
-        print(result);
-      } else {
-        result =
-        'Error getting a random quote:\nHttp status ${response.statusCode}';
-        print(result);
-      }
-    } catch (exception) {
-      result = 'Failed invoking the function.';
-      print(result);
-    }
-  }
-}
 
 // class Covid19StatsByCountry {
 //   // API key

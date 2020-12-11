@@ -9,7 +9,6 @@ import 'package:travelcrew/services/in_app_review.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/services/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
 class AddNewActivity extends StatefulWidget {
 

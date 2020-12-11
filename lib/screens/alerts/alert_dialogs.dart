@@ -221,7 +221,7 @@ class TravelCrewAlertDialogs {
     );
   }
 
-  Future<void> removeMemberAlert(BuildContext context, Trip tripDetails, Members member) {
+  Future<void> removeMemberAlert(BuildContext context, Trip tripDetails, UserPublicProfile member) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {

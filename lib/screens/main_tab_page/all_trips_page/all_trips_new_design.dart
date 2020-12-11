@@ -5,17 +5,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/main_tab_page/all_trips_page/tappableTripPreview.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'dart:math' as math;
-import 'ad_card_layout.dart';
 
 var userService = locator<UserService>();
 

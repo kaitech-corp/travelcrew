@@ -4,8 +4,6 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:travelcrew/screens/authenticate/profile_stream.dart';
 import 'package:travelcrew/services/database.dart';
 
-import 'locator.dart';
-
 class LaunchIconBadger extends StatefulWidget{
 
   @override

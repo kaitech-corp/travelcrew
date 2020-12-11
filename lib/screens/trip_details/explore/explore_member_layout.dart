@@ -1,6 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -8,9 +7,7 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/ImageAnimation.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -97,7 +94,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       AnimatedPadding(
                           duration: Duration(milliseconds: 250),
                           padding: EdgeInsets.only(top: _padding),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,)),
+                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,)),
                     ],
                   ):
                   Stack(
@@ -105,7 +102,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       HangingImageTheme(),
                       Padding(
                           padding: EdgeInsets.only(top: SizeConfig.defaultSize.toDouble() * 10.0),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,)),
+                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,)),
                     ],
                   ),
                   Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),

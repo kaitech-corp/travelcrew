@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_link_preview/flutter_link_preview.dart';
@@ -12,7 +11,6 @@ import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import '../loading.dart';
 import 'constants.dart';
-import 'locator.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 

@@ -1,5 +1,4 @@
 
-import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 const profileImagePlaceholder = 'assets/images/blank_profile_picture.png';

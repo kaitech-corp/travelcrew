@@ -119,7 +119,7 @@ class _MembersLayoutState extends State<MembersLayout> {
             : IconButton(
               icon: IconThemeWidget(icon: Icons.close),
               onPressed: (){
-                // TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
+                TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
               },
             ),
           ),

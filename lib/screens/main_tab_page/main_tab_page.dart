@@ -13,7 +13,6 @@ import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dar
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/push_notifications.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'crew_trips/private_trips.dart';
 

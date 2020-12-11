@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_new_design.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
 
 
@@ -18,7 +16,7 @@ class AddNewModeOfTransport extends StatefulWidget {
 }
 class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   final _formKey = GlobalKey<FormState>();
-  File _image;
+  // File _image;
   // final ImagePicker _picker = ImagePicker();
   //
   // DateTime _fromDateDepart = DateTime.now();

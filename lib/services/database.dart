@@ -587,6 +587,7 @@ class DatabaseService {
       }).toList();
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
   Stream<List<Need>> getNeedList(String docID){
@@ -676,6 +677,7 @@ class DatabaseService {
       }
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
   // Get Private Trip
@@ -709,6 +711,7 @@ class DatabaseService {
       }
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -745,6 +748,7 @@ class DatabaseService {
       return trips;
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
   // get trips stream
@@ -1004,6 +1008,7 @@ class DatabaseService {
       return lodgingList;
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
   //Get Lodging List
@@ -1073,6 +1078,7 @@ class DatabaseService {
       return userList;
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
   // get all users
@@ -1107,6 +1113,7 @@ class DatabaseService {
       return userList;
     } on Exception catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
     }
 
@@ -1209,6 +1216,7 @@ class DatabaseService {
       }).toList().reversed.toList();
     } catch (e){
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1246,6 +1254,7 @@ class DatabaseService {
       return crewTrips;
     } on Exception catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1341,6 +1350,7 @@ class DatabaseService {
       }).toList();
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1407,6 +1417,7 @@ class DatabaseService {
     } catch (e) {
       // AnalyticsService().writeError(e.toString());
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 //Stream chats
@@ -1419,6 +1430,7 @@ class DatabaseService {
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
   Stream<List<ChatData>> get chatListNotification {
@@ -1428,6 +1440,7 @@ class DatabaseService {
       return chatCollection.doc(tripDocID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1517,6 +1530,7 @@ class DatabaseService {
         }).toList();
       } on Exception catch (e) {
         CloudFunction().logError(e.toString());
+        return null;
       }
 
   }

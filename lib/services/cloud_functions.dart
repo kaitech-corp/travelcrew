@@ -16,16 +16,16 @@ class CloudFunction {
   //Add blank profile info
 
   // void updateTrips(){
-  //   final HttpsCallable updateTrips = CloudFunctions.instance.getHttpsCallable(
+  //   final HttpsCallable updateTrips = FirebaseFunctions.instance.getHttpsCallable(
   //       functionName: 'updateTrips');
   //   updateTrips({
   //
   //   });
   // }
   void addCustomMember() {
-    final HttpsCallable addCustomMember = CloudFunctions.instance
-        .getHttpsCallable(
-        functionName: 'addCustomMember');
+    final HttpsCallable addCustomMember = FirebaseFunctions.instance
+        .httpsCallable(
+        'addCustomMember');
     addCustomMember({
       'docID': 'zUEcSXEpEkp8wFV6AIRn',
       'uid': 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3',
@@ -34,8 +34,7 @@ class CloudFunction {
 
   // Block User
   void blockUser(String blockedUserID) {
-    final HttpsCallable blockUser = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'blockUser');
+    final HttpsCallable blockUser = FirebaseFunctions.instance.httpsCallable( 'blockUser');
     blockUser({
       'blockedUserID': blockedUserID
     }).then((value) =>
@@ -43,8 +42,7 @@ class CloudFunction {
   }
 
   void unBlockUser(String blockedUserID) {
-    final HttpsCallable unBlockUser = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'unBlockUser');
+    final HttpsCallable unBlockUser = FirebaseFunctions.instance.httpsCallable( 'unBlockUser');
     unBlockUser({
       'blockedUserID': blockedUserID
     });
@@ -53,8 +51,7 @@ class CloudFunction {
   // Report inappropriate behaviour
   void reportUser(String collection, String docID, String offenderID,
       String offense, String type, String urlToImage) async {
-    final HttpsCallable giveFeedback = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'reportUser');
+    final HttpsCallable giveFeedback = FirebaseFunctions.instance.httpsCallable( 'reportUser');
     giveFeedback({
       'collection': collection,
       'docID': docID,
@@ -68,8 +65,7 @@ class CloudFunction {
 
   // Give feedback
   void giveFeedback(String message) async {
-    final HttpsCallable giveFeedback = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'giveFeedback');
+    final HttpsCallable giveFeedback = FirebaseFunctions.instance.httpsCallable( 'giveFeedback');
     giveFeedback({
       'message': message,
     });
@@ -77,8 +73,7 @@ class CloudFunction {
 
 
   void joinTrip(String docID, bool ispublic, String ownerID) async {
-    final HttpsCallable joinTrip = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'joinTrip');
+    final HttpsCallable joinTrip = FirebaseFunctions.instance.httpsCallable( 'joinTrip');
     joinTrip({
       'docID': docID,
       'ispublic': ispublic,
@@ -90,8 +85,7 @@ class CloudFunction {
   }
 
   void joinTripInvite(String docID, String uidInvitee, bool ispublic) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'joinTripInvite');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'joinTripInvite');
     functionData({
       'docID': docID,
       'uidInvitee': uidInvitee,
@@ -109,8 +103,7 @@ class CloudFunction {
   }
 
   void addMember(String docID, String uid) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addMember');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addMember');
     functionData({
       'docID': docID,
       'uid': uid,
@@ -118,8 +111,7 @@ class CloudFunction {
   }
 
   void addPrivateMember(String docID, String uid) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addPrivateMember');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addPrivateMember');
     functionData({
       'docID': docID,
       'uid': uid,
@@ -127,8 +119,7 @@ class CloudFunction {
   }
 
   void deleteTrip(String tripDocID, bool ispublic) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'deleteTrip');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteTrip');
     functionData({
       'tripDocID': tripDocID,
       'ispublic': ispublic,
@@ -136,8 +127,7 @@ class CloudFunction {
   }
 
   void deleteTripID(String tripDocID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'deleteTripID');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteTripID');
     functionData({
       'tripDocID': tripDocID,
     });
@@ -146,8 +136,7 @@ class CloudFunction {
 
   void leaveAndRemoveMemberFromTrip(String tripDocID, String userUID,
       bool ispublic) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'leaveAndRemoveMemberFromTrip');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'leaveAndRemoveMemberFromTrip');
     functionData({
       'tripDocID': tripDocID,
       'userUID': userUID,
@@ -156,8 +145,7 @@ class CloudFunction {
   }
 
   void removeLodging(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeLodging');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeLodging');
     functionData({
       'docID': docID,
       'fieldID': fieldID,
@@ -165,8 +153,7 @@ class CloudFunction {
   }
 
   void removeActivity(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeActivity');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeActivity');
     functionData({
       'docID': docID,
       'fieldID': fieldID,
@@ -175,8 +162,7 @@ class CloudFunction {
 
   void addFavoriteTrip(String docID) async {
     trace.start();
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: "addFavoriteTrip");
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( "addFavoriteTrip");
     functionData({
       'docID': docID,
     }).then((value) =>
@@ -187,8 +173,7 @@ class CloudFunction {
   }
 
   void removeFavoriteFromTrip(String docID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeFavoriteFromTrip');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeFavoriteFromTrip');
     functionData({
       'docID': docID,
       'uid': userService.currentUserID,
@@ -196,8 +181,7 @@ class CloudFunction {
   }
 
   void addVoterToActivity(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addVoterToActivity');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addVoterToActivity');
     functionData({
       'docID': docID,
       'fieldID': fieldID,
@@ -207,8 +191,7 @@ class CloudFunction {
 
   // void removeVoterFromActivity(String docID, String field )
   void removeVoterFromActivity(String docID, String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeVoterFromActivity');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromActivity');
     functionData({
       'docID': docID,
       'fieldID': fieldID,
@@ -218,8 +201,7 @@ class CloudFunction {
 
 
   void addVoterToLodging(String docID, String fieldID, String uid) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addVoterToLodging');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addVoterToLodging');
     functionData({
       'docID': docID,
       'fieldID': fieldID,
@@ -228,8 +210,7 @@ class CloudFunction {
   }
 
   void removeVoterFromLodging(String docID, String fieldID, String uid) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeVoterFromLodging');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromLodging');
     functionData({
       'docID': docID,
       'fieldID': fieldID,
@@ -240,16 +221,14 @@ class CloudFunction {
   void followUser(String userUID) async {
     // Add user ID to current user's followers list.
     // Add current user's ID to user's following list
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'followUser');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'followUser');
     functionData({
       'userUID': userUID,
     });
   }
 
   void followBack(String userUID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'followBack');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'followBack');
     functionData({
       'userUID': userUID,
     });
@@ -258,16 +237,14 @@ class CloudFunction {
   void unFollowUser(String userUID) async {
     // Remove user ID from current user following list.
     // Remove current user ID from user's followers list.
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'unFollowUser');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'unFollowUser');
     functionData({
       'userUID': userUID,
     });
   }
 
   void addItemToBringingList(String tripDocID, String item) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addItemToBringingList');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addItemToBringingList');
     functionData({
       'displayName': currentUserProfile.displayName,
       'item': item,
@@ -276,8 +253,7 @@ class CloudFunction {
   }
 
   void removeItemFromBringingList(String tripDocID, String documentID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeItemFromBringingList');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeItemFromBringingList');
     functionData({
       'tripDocID': tripDocID,
       'documentID': documentID,
@@ -286,8 +262,7 @@ class CloudFunction {
 
   void addItemToNeedList(String tripDocID, String item,
       String displayName) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addItemToNeedList');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addItemToNeedList');
     functionData({
       'displayName': displayName,
       'item': item,
@@ -296,8 +271,7 @@ class CloudFunction {
   }
 
   void removeItemFromNeedList(String tripDocID, String documentID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeItemFromNeedList');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeItemFromNeedList');
     functionData({
       'tripDocID': tripDocID,
       'documentID': documentID,
@@ -306,8 +280,7 @@ class CloudFunction {
 
   void addNewNotification(
       {String message, String uidToUse, String documentID, String type, String ownerID, bool ispublic}) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addNewNotification');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addNewNotification');
     functionData({
       'message': message,
       'uidToUse': uidToUse,
@@ -320,16 +293,14 @@ class CloudFunction {
   }
 
   void addCustomNotification(String message) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addCustomNotification');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addCustomNotification');
     functionData({
       'message': message,
     });
   }
 
   void removeNotificationData(String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeNotificationData');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeNotificationData');
     functionData({
       'uid': userService.currentUserID,
       'fieldID': fieldID,
@@ -337,15 +308,13 @@ class CloudFunction {
   }
 
   void removeAllNotifications() async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeAllNotifications');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeAllNotifications');
     functionData({
     });
   }
 
   void deleteChatMessage({String tripDocID, String fieldID}) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'deleteChatMessage');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteChatMessage');
     functionData({
       'tripDocID': tripDocID,
       'fieldID': fieldID,
@@ -353,7 +322,7 @@ class CloudFunction {
   }
 
   // Future<List<TCFeedback>> feedbackData() async {
-  //   final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
+  //   final HttpsCallable functionData = FirebaseFunctions.instance.getHttpsCallable(
   //       functionName: 'feedbackData');
   //   dynamic data = await functionData.call();
   //
@@ -367,23 +336,20 @@ class CloudFunction {
   //   }).toList();
   // }
   void feedbackData() async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'feedbackData');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'feedbackData');
     functionData({
     });
   }
 
   void removeFeedback(String fieldID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeFeedback');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeFeedback');
     functionData({
       'fieldID': fieldID,
     });
   }
 
   void updateClicks(String docID) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'updateClicks');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'updateClicks');
     functionData({
       'docID': docID,
       'uid': currentUserProfile.uid,
@@ -393,8 +359,7 @@ class CloudFunction {
 
   void addCurrentLocation(
       {String docID, String city, String country, String zipcode, GeoPoint geoPoint}) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addCurrentLocation');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addCurrentLocation');
     functionData({
       'docID': docID,
       'city': city,
@@ -407,8 +372,7 @@ class CloudFunction {
 
 
   void addReview({String docID}) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addReview');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addReview');
     functionData({
       'docID': docID,
     });
@@ -416,8 +380,7 @@ class CloudFunction {
 
   void addTransportation({String mode, String tripDocID, bool canCarpool,
     String carpoolingWith, String airline, String flightNumber, String comment}) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addTransportation');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addTransportation');
     functionData({
       'mode': mode,
       'tripDocID': tripDocID,
@@ -431,8 +394,7 @@ class CloudFunction {
   }
 
   void deleteTransportation({String fieldID, String tripDocID}) async {
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'deleteTransportation');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteTransportation');
     functionData({
       'fieldID':fieldID,
       'tripDocID':tripDocID,
@@ -440,8 +402,7 @@ class CloudFunction {
   }
 
   void addVoterToBringingItem({String documentID, String tripDocID}) async{
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'addVoterToBringingItem');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addVoterToBringingItem');
     functionData({
       'documentID':documentID,
       'tripDocID':tripDocID,
@@ -449,8 +410,7 @@ class CloudFunction {
   }
 
   void removeVoterFromBringingItem({String documentID, String tripDocID}) async{
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'removeVoterFromBringingItem');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromBringingItem');
     functionData({
       'documentID':documentID,
       'tripDocID':tripDocID,
@@ -458,16 +418,14 @@ class CloudFunction {
   }
 //Log event
   void logEvent(String action) async{
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'logEvent');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'logEvent');
     functionData({
       'action': action,
     });
   }
 // Log Error
   void logError(String error) async{
-    final HttpsCallable functionData = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'logError');
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'logError');
     functionData({
       'error': error,
     });
