@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -31,12 +31,25 @@ class _SignupScreenState extends State {
 
   Key get key => null;
 
-  Future getImage() async {
+   getImage() async {
     var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
-    setState(() {
-      _image = File(image.path);
-    });
+    _cropImage(image.path, image);
+  }
+
+  _cropImage(imagePath, image) async{
+    File croppedImage = await ImageCropper.cropImage(
+      sourcePath: imagePath, maxHeight: 1080, maxWidth: 1080,);
+
+    if (croppedImage != null) {
+      setState(() {
+        _image = croppedImage;
+      });
+    } else {
+      setState(() {
+        _image = File(image.path);
+      });
+    }
   }
 
 
@@ -172,11 +185,6 @@ class _SignupScreenState extends State {
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 1'),
-                                                // ignore: missing_return
-                                                // validator: (value) {
-                                                //   // ignore: missing_return, missing_return
-                                                //
-                                                // },
                                                 onSaved: (val) =>
                                                     setState(() => destination1 = val)),
                                             TextFormField(
@@ -184,10 +192,6 @@ class _SignupScreenState extends State {
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 2'),
-                                                // ignore: missing_return
-                                                // validator: (value) {
-                                                //   // ignore: missing_return, missing_return
-                                                // },
                                                 onSaved: (val) =>
                                                     setState(() => destination2 = val)),
                                             TextFormField(
@@ -195,10 +199,6 @@ class _SignupScreenState extends State {
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 3'),
-                                                // ignore: missing_return
-                                                // validator: (value) {
-                                                //   // ignore: missing_return, missing_return
-                                                // },
                                                 onSaved: (val) =>
                                                     setState(() => destination3 = val)),
                                           ],
@@ -212,10 +212,10 @@ class _SignupScreenState extends State {
                                           : Image.file(_image),
                                     ):
                                     CircleAvatar(
-                                      radius: SizeConfig.screenWidth/3,
+                                      radius: SizeConfig.screenWidth/2.25,
                                       backgroundImage: _image == null
                                           ? NetworkImage(user.urlToImage)
-                                          : Image.file(_image),
+                                          : FileImage(_image,),
                                     ),
                                     Container(
                                       width: 30,
@@ -252,6 +252,7 @@ class _SignupScreenState extends State {
                                                   Navigator.pop(context);
                                                 }
                                               }
+                                              // await locator.reset().whenComplete(() => setupLocator());
                                               Navigator.pop(context);
                                             },
                                             child: const Text('Save'))

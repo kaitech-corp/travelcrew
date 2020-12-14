@@ -8,17 +8,20 @@ class TransportationList extends StatefulWidget {
 
   @override
   _TransportationListState createState() => _TransportationListState();
-  bool loading = true;
+
 }
 
 class _TransportationListState extends State<TransportationList> {
+
+  bool loading = true;
+
   @override
   Widget build(BuildContext context) {
 
     final modeList = Provider.of<List<TransportationData>>(context);
     if(modeList != null) {
       setState(() {
-        widget.loading = false;
+        loading = false;
       });
     }
 

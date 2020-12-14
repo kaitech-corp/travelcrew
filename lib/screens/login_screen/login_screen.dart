@@ -4,7 +4,6 @@ import 'package:travelcrew/services/apple_auth.dart';
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/google_auth.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 
@@ -32,9 +31,6 @@ class LoginPage extends StatefulWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        title: Text('Login',style: Theme.of(context).textTheme.headline3,),
-      ),
       body: Container(
         child: Builder(
           builder: (context) => Form(
@@ -47,7 +43,9 @@ class LoginPage extends StatefulWidget {
                  children: <Widget>[
                    Flexible(
                      flex: 4,
-                       child: ImageBanner("assets/images/travelPics.png")),
+                       // child: ImageBanner("assets/images/travelPics.png")),
+                     child: Image.asset(TCLogo),
+                   ),
                    Container(
                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                      child: Column(

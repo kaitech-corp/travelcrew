@@ -6,6 +6,7 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
+import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -227,10 +228,11 @@ class HangingImageTheme extends StatelessWidget {
 
 class HangingImageTheme3 extends StatelessWidget {
   HangingImageTheme3({
-    Key key,
+    Key key, this.user,
   }) : super(key: key);
 
   final double hgt = SizeConfig.screenHeight*.06;
+  final UserPublicProfile user;
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -249,45 +251,28 @@ class HangingImageTheme3 extends StatelessWidget {
               child:
               Stack(
                 children: [
-                  Column(
-                    children: [
-                      Positioned.fill(
-                        // top: ,
-                        child: AppBar(
-                          shadowColor: Color(0x00000000),
-                          backgroundColor: Color(0x00000000),
-                          actions: <Widget>[
-                            // Center(
-                            //   child: ClipRRect(
-                            //     borderRadius: BorderRadius.circular(SizeConfig.screenWidth/16.0),
-                            //     child: FadeInImage.assetNetwork(
-                            //       placeholder: profileImagePlaceholder,
-                            //       image: currentUserProfile.urlToImage.isNotEmpty ? currentUserProfile.urlToImage : profileImagePlaceholder,
-                            //       height: SizeConfig.screenWidth/8.0,
-                            //       width: SizeConfig.screenWidth/8.0,
-                            //       fit: BoxFit.fill,
-                            //     ),
-                            //   ),
-                            // ),
-                            // SizedBox(width: SizeConfig.screenWidth/16.0,),
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: (){
-                                Navigator.pushNamed(context, '/editProfilePage');
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    ],
+                  Positioned.fill(
+                    child: AppBar(
+                      shadowColor: Color(0x00000000),
+                      backgroundColor: Color(0x00000000),
+                      actions: <Widget>[
+                        (currentUserProfile.uid == user.uid) ? IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: (){
+                            Navigator.pushNamed(context, '/editProfilePage');
+                            // Navigator.pushNamed(context, '/cropperTest');
+                          },
+                        ) :
+                        Container(),
+                      ],
+                    ),
                   ),
                 ],
               )
 
             //   ],
             // ),
-          )
+          ),
       ),
     );
   }
@@ -334,6 +319,9 @@ class CrewModalBottomSheet extends StatelessWidget {
       onPressed: () {
         showModalBottomSheet(
           context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+          ),
           builder: (context) => Container(
             padding: const EdgeInsets.all(10),
             height: SizeConfig.screenHeight*.7,
@@ -431,51 +419,57 @@ class DateGauge extends StatelessWidget {
 
   final Trip tripDetails;
 
+
   @override
   Widget build(BuildContext context) {
+
     CountDownDate countDownDate = TCFunctions().dateGauge(
         tripDetails.dateCreatedTimeStamp.millisecondsSinceEpoch,
         tripDetails.startDateTimeStamp.millisecondsSinceEpoch);
 
-    return (countDownDate.daysLeft != 0) ? Align(
-      alignment: Alignment.center,
-      child: Container(
-        height: SizeConfig.screenHeight*.2,
-        width: SizeConfig.screenWidth*.8,
-        child: SfRadialGauge(
-            axes: <RadialAxis>[
-              RadialAxis(
-                  minimum: 0.0,
-                  maximum: countDownDate.initialDayCount,
-                  showLabels: false,
-                  showTicks: false,
-                  startAngle: 180,
-                  endAngle: 0,
-                  axisLineStyle: AxisLineStyle(
-                    thickness: 0.2,
-                    cornerStyle: CornerStyle.bothCurve,
-                    color: Color.fromARGB(30, 0, 169, 181),
-                    thicknessUnit: GaugeSizeUnit.factor,
-                  ),
-                  pointers: <GaugePointer>[
-                    RangePointer(
-                      value: countDownDate.gaugeCount,
+    return (countDownDate.daysLeft != 0) ? GestureDetector(
+      child: Align(
+        alignment: Alignment.center,
+        child: Container(
+          height: SizeConfig.screenHeight*.2,
+          width: SizeConfig.screenWidth*.8,
+          child: SfRadialGauge(
+            animationDuration: 1250,
+              enableLoadingAnimation: true,
+              axes: <RadialAxis>[
+                RadialAxis(
+                    minimum: 0.0,
+                    maximum: countDownDate.initialDayCount,
+                    showLabels: false,
+                    showTicks: false,
+                    startAngle: 180,
+                    endAngle: 0,
+                    axisLineStyle: AxisLineStyle(
+                      thickness: 0.2,
                       cornerStyle: CornerStyle.bothCurve,
-                      width: 0.2,
-                      sizeUnit: GaugeSizeUnit.factor,
-                      color: Colors.blue,
-                    )
-                  ],
-                  annotations: <GaugeAnnotation>[
-                    GaugeAnnotation(
-                        positionFactor: 0.1,
-                        angle: 90,
-                        widget: Text(
-                          countDownDate.daysLeft.toStringAsFixed(0) + ' Days Left',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ))
-                  ])
-            ]
+                      color: Color.fromARGB(30, 0, 169, 181),
+                      thicknessUnit: GaugeSizeUnit.factor,
+                    ),
+                    pointers: <GaugePointer>[
+                      RangePointer(
+                        value: countDownDate.gaugeCount,
+                        cornerStyle: CornerStyle.bothCurve,
+                        width: 0.2,
+                        sizeUnit: GaugeSizeUnit.factor,
+                        color: ReusableThemeColor().bottomNavColor(context),
+                      )
+                    ],
+                    annotations: <GaugeAnnotation>[
+                      GaugeAnnotation(
+                          positionFactor: 0.1,
+                          angle: 90,
+                          widget: Text(
+                            countDownDate.daysLeft.toStringAsFixed(0) + ' Days Left',
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ))
+                    ])
+              ]
+          ),
         ),
       ),
     ):

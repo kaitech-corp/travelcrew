@@ -5,7 +5,6 @@ import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import '../../../loading.dart';
 
@@ -13,18 +12,15 @@ import '../../../loading.dart';
 
 class AddNewLodging extends StatefulWidget {
 
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-
   final Trip trip;
   AddNewLodging({this.trip});
-  bool loading = false;
+
   @override
   _AddNewLodgingState createState() => _AddNewLodgingState();
 
 }
 class _AddNewLodgingState extends State<AddNewLodging> {
-
+  bool loading = false;
   final _formKey = GlobalKey<FormState>();
   String lodgingType = '';
   String comment = '';
@@ -48,7 +44,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   Widget build(BuildContext context) {
 
 
-    return widget.loading ? Loading() :
+    return loading ? Loading() :
     GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -116,7 +112,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     setState(() => comment = val);
                   },
                   enableInteractiveSelection: true,
-                  textCapitalization: TextCapitalization.words,
+                  textCapitalization: TextCapitalization.sentences,
                   obscureText: false,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -179,9 +175,9 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     onPressed: () async{
                       final form = _formKey.currentState;
                       if (form.validate()) {
-                        String displayName = widget.currentUserProfile.displayName;
+                        String displayName = currentUserProfile.displayName;
                         String documentID = widget.trip.documentId;
-                        String uid = widget.userService.currentUserID;
+                        String uid = userService.currentUserID;
                         String tripName = widget.trip.location;
                         String message = 'A new lodging has been added to ${widget.trip.tripName}';
                         bool ispublic = widget.trip.ispublic;

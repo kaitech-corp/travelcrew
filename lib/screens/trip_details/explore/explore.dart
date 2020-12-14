@@ -83,7 +83,7 @@ class Explore extends StatelessWidget {
   if (trip.ownerID == uid){
   return ExploreOwnerLayout(tripDetails: trip,controller: controller,scaffoldKey: scaffoldKey,);
   } else {
-  return ExploreMemberLayout(tripDetails: trip,);
+  return ExploreMemberLayout(tripDetails: trip,controller: controller,scaffoldKey: scaffoldKey,);
   }
 }
 

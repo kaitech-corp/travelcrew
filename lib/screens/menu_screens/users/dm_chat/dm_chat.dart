@@ -4,13 +4,10 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_list.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 
 
 class DMChat extends StatefulWidget {
 
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final UserPublicProfile user;
   DMChat({this.user});
@@ -87,8 +84,8 @@ class _DMChatState extends State<DMChat> {
                                 String message = _chatController.text;
                                 var status = createStatus();
                                 _chatController.clear();
-                                String displayName = widget.currentUserProfile.displayName;
-                                String uid = widget.userService.currentUserID;
+                                String displayName = currentUserProfile.displayName;
+                                String uid = userService.currentUserID;
                                 await DatabaseService(
                                     userID: widget.user.uid)
                                     .addNewDMChatMessage(
@@ -112,7 +109,7 @@ class _DMChatState extends State<DMChat> {
   createStatus() {
     List<String> _members = [userService.currentUserID, widget.user.uid];
     Map<String, bool> status = {};
-    var users = _members.where((f) => f != widget.userService.currentUserID);
+    var users = _members.where((f) => f != userService.currentUserID);
     users.forEach((f) => status[f] = false);
     return status;
   }

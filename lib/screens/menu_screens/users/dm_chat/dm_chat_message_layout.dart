@@ -4,12 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DMChatMessageLayout extends StatelessWidget {
-  var userService = locator<UserService>();
+
   final ChatData message;
   final UserPublicProfile user;
 

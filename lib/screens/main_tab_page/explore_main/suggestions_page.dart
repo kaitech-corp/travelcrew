@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import 'package:travelcrew/screens/add_trip/add_trip.dart';
+import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
@@ -137,7 +137,7 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                     // }
                     // googleNearbyPlaces(place);
                     if(_currentPosition == null){
-                      TravelCrewAlertDialogs().SuggestionPageAlert(context);
+                      TravelCrewAlertDialogs().suggestionPageAlert(context);
                     }
                   },
                     child: Text('$placetype ',style: TextStyle(fontSize: 24))
@@ -167,7 +167,7 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                           trailing: IconButton(
                             icon: Icon(Icons.post_add),
                             onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddTrip(addedLocation: place.formattedAddress,)),);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddTripPage(addedLocation: place.formattedAddress,)),);
                             },
                           ),
                         ),

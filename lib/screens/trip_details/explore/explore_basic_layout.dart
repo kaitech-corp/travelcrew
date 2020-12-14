@@ -3,13 +3,11 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
-import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
 
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final Trip tripDetails;
   final heroTag;
 

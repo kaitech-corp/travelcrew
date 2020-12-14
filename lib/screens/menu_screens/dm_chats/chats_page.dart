@@ -4,6 +4,7 @@ import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/badge_icon.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import '../../../loading.dart';
 
@@ -19,6 +20,10 @@ class DMChatListPage extends StatelessWidget{
       body: StreamBuilder(
         stream: DatabaseService().retrieveDMChats(),
         builder: (context, users) {
+          if(users.hasError){
+            CloudFunction().logError('Error streaming dm chat list: ${users.error.toString()}');
+          }
+          print(users.error);
           if (users.hasData) {
             var chats = users.data;
             return ListView.builder(

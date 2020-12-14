@@ -13,8 +13,6 @@ class AdminPage extends StatefulWidget{
   _AdminPageState createState() => _AdminPageState();
 }
 
-
-
 class _AdminPageState extends State<AdminPage> {
 
   TextEditingController _controller;

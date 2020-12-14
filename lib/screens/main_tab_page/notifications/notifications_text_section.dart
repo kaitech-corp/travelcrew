@@ -6,7 +6,6 @@ import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 
 class NotificationsTextSection extends StatelessWidget{
@@ -14,8 +13,6 @@ class NotificationsTextSection extends StatelessWidget{
 
   NotificationsTextSection({this.notification});
 
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +90,6 @@ class NotificationsTextSection extends StatelessWidget{
           onPressed: () async{
             String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
-            // CloudFunction().addNewNotification(uidToUse: notification.uid,message: 'Now following ${currentUserProfile.displayName}',type: 'Follow_back',ownerID: currentUserProfile.uid);
-            // if(notification?.ownerID?.isNotEmpty ?? false)
             CloudFunction().removeNotificationData(fieldID);
             if (!currentUserProfile.following.contains(notification.uid)) {
               TravelCrewAlertDialogs().followBackAlert(context, notification.uid);

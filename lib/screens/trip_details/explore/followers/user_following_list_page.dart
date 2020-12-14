@@ -10,7 +10,7 @@ import '../../../../loading.dart';
 
 class currentUserFollowingList extends StatefulWidget{
 
-  Trip tripDetails;
+  final Trip tripDetails;
   currentUserFollowingList({this.tripDetails});
 
   @override

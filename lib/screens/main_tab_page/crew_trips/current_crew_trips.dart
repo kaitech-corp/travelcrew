@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import '../../../loading.dart';
 
@@ -11,11 +12,10 @@ class CurrentCrewTrips extends StatefulWidget{
 
 }
 
-class _CurrentCrewTripsState extends State<CurrentCrewTrips>with
-    AutomaticKeepAliveClientMixin<CurrentCrewTrips>{
+class _CurrentCrewTripsState extends State<CurrentCrewTrips>{
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -28,6 +28,9 @@ class _CurrentCrewTripsState extends State<CurrentCrewTrips>with
 
     return StreamBuilder(
       builder: (context, trips){
+        if(trips.hasError){
+          CloudFunction().logError('Error streaming current trips: ${trips.error.toString()}');
+        }
         if(trips.hasData){
           List<Trip> tripList = trips.data;
           return ListView.builder(

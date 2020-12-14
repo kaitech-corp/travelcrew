@@ -17,21 +17,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: Text('Profile',style: Theme.of(context).textTheme.headline3,),
-      //   actions: <Widget>[
-      //     IconButton(
-      //       icon: const Icon(Icons.edit),
-      //       onPressed: (){
-      //         Navigator.pushNamed(context, '/editProfilePage');
-      //       },
-      //     )
-      //   ],
-      //     ),
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          HangingImageTheme3(),
+          HangingImageTheme3(user: currentUserProfile,),
           StreamBuilder(
             builder: (context, userData){
               if(userData.hasData){

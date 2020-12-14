@@ -15,7 +15,7 @@ class Settings extends StatefulWidget{
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    String theme_id = ThemeProvider.themeOf(context).id;
+    String themeID = ThemeProvider.themeOf(context).id;
 
     return GestureDetector(
       onTap: () {
@@ -37,22 +37,24 @@ class _SettingsState extends State<Settings> {
               RadioListTile<String>(
                 title: const Text('Light'),
                 value: 'light_theme',
-                groupValue: theme_id,
+                groupValue: themeID,
                 onChanged: (value) {
                   setState(() {
-                    theme_id = value;
+                    themeID = value;
                     ThemeProvider.controllerOf(context).setTheme(value);
+                    Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (Route<dynamic> route) => false);
                   });
                 },
               ),
               RadioListTile<String>(
                 title: const Text('Dark'),
                 value: 'dark_theme',
-                groupValue: theme_id,
+                groupValue: themeID,
                 onChanged: (value) {
                   setState(() {
-                    theme_id = value;
+                    themeID = value;
                     ThemeProvider.controllerOf(context).setTheme(value);
+                    Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (Route<dynamic> route) => false);
                   });
                 },
               ),

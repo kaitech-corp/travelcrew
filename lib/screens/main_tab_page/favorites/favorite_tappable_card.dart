@@ -4,12 +4,11 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class FavoriteTappableTripCard extends StatelessWidget {
 
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final Trip trip;
   FavoriteTappableTripCard({this.trip});
@@ -33,7 +32,6 @@ class FavoriteTappableTripCard extends StatelessWidget {
           );
         },
         child: Container(
-          // color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,21 +68,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
                         Colors.lightBlueAccent
                       ]
                   ),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black,
-                  //     blurRadius: 10.0,
-                  //   ),
-                  //   BoxShadow(
-                  //     color: Colors.blueAccent,
-                  //     blurRadius: 10.0,
-                  //   ),
-                  // ],
                 ):
-                // BoxDecoration(
-                //   // color:  Colors.black,
-                //   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
-                // ),
                 null,
 
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -96,7 +80,6 @@ class FavoriteTappableTripCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text('${trip.startDate.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
-                        // Text('${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,)
                       ],
                     ),
                   ],

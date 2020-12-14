@@ -5,13 +5,9 @@ import 'package:travelcrew/screens/trip_details/chat/chat_list.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 
 
 class Chat extends StatefulWidget {
-
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final Trip trip;
   Chat({this.trip});
@@ -35,7 +31,7 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    clearChat(widget.userService.currentUserID);
+    clearChat(userService.currentUserID);
 
 
     return StreamProvider.value(
@@ -82,8 +78,8 @@ class _ChatState extends State<Chat> {
                                 String message = _chatController.text;
                                 var status = createStatus();
                                 _chatController.clear();
-                                String displayName = widget.currentUserProfile.displayName;
-                                String uid = widget.userService.currentUserID;
+                                String displayName = currentUserProfile.displayName;
+                                String uid = userService.currentUserID;
                                 try {
                                   String action = 'Saving new message for ${widget.trip.documentId}';
                                   CloudFunction().logEvent(action);
@@ -112,7 +108,7 @@ class _ChatState extends State<Chat> {
   }
   createStatus() {
     Map<String, bool> status = {};
-    var users = widget.trip.accessUsers.where((f) => f != widget.userService.currentUserID);
+    var users = widget.trip.accessUsers.where((f) => f != userService.currentUserID);
 
     users.forEach((f) => status[f] = false);
 //    print(status.toList());

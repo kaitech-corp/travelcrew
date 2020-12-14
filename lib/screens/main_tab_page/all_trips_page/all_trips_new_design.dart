@@ -29,25 +29,10 @@ final AnalyticsService _analyticsService = AnalyticsService();
 class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTickerProviderStateMixin,
 AutomaticKeepAliveClientMixin<AllTripsNewDesign>{
 
-  bool pressed = false;
-  AnimationController _animationController;
-  Animation _animation;
 
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  void initState() {
-    super.initState();
-    animatePress = false;
-    _animationController = AnimationController(duration: Duration(milliseconds: 750), vsync: this);
-    _animation = IntTween(begin: 4, end: 28).animate(_animationController);
-    _animation.addListener(() => setState(() {
-      if(_animation.isCompleted){
-        animatePress = !animatePress;
-      }
-    }));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +50,8 @@ AutomaticKeepAliveClientMixin<AllTripsNewDesign>{
                   text: TextSpan(
                       style: Theme.of(context).textTheme.headline3,
                       children: [
-                        TextSpan(text: pressed ? 'Coming' : "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent, fontSize: 28)),
-                        TextSpan(text: pressed ? ' Up' : " New",style: Theme.of(context).textTheme.headline4,),
+                        TextSpan(text: "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent, fontSize: 28)),
+                        TextSpan(text: " New",style: Theme.of(context).textTheme.headline4,),
                       ]
                   ),
                 ),
@@ -79,71 +64,9 @@ AutomaticKeepAliveClientMixin<AllTripsNewDesign>{
                     Text('Suggestion',style: Theme.of(context).textTheme.headline6,)
                   ],
                 )
-                // IconButton(
-                //     icon: IconThemeWidget(icon: Icons.filter_list_sharp,),
-                //     iconSize: 30,
-                //     onPressed: (){
-                //       setState(() {
-                //         pressed = !pressed;
-                //       });
-                //     }),
               ],
             ),
-            SliverGridList(pressed: pressed,),
-            // Flexible(
-            //   flex: _animation.value,
-            //   child: Container(
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //           children: [
-            //             RichText(
-            //               text: TextSpan(
-            //                   style: Theme.of(context).textTheme.headline3,
-            //                   children: [
-            //                     TextSpan(text: 'Social',style: Theme.of(context).textTheme.headline4,),
-            //                     const TextSpan(text: " Distancing",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent,fontSize: 28))
-            //                   ]
-            //               ),
-            //             ),
-            //             IconButton(
-            //                 icon: animatePress ? Transform.rotate(
-            //                   angle: 180 * math.pi / 180,
-            //                   child: IconButton(
-            //                       icon: IconThemeWidget(icon: Icons.filter_list_sharp,),
-            //                       onPressed: (){
-            //                         if (_animationController.value == 0.0) {
-            //                           _animationController.forward();
-            //                         } else {
-            //                           _animationController.reverse();
-            //                           setState(() {
-            //                             animatePress = !animatePress;
-            //                           });
-            //                         }
-            //                       }),
-            //                 ) :  IconThemeWidget(icon: Icons.filter_list_sharp,),
-            //                 iconSize: 30,
-            //                 onPressed: (){
-            //                   if (_animationController.value == 0.0) {
-            //                     _animationController.forward();
-            //                   } else {
-            //                     _animationController.reverse();
-            //                     setState(() {
-            //                       animatePress = !animatePress;
-            //                     });
-            //                   }
-            //                 }),
-            //           ],
-            //         ),
-            //         Expanded(
-            //           child: AdTileCard(),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            SliverGridList(),
           ],
         ),
       ),
@@ -154,13 +77,10 @@ AutomaticKeepAliveClientMixin<AllTripsNewDesign>{
 
 class SliverGridList extends StatefulWidget {
 
-  final bool pressed;
 
   var tripPopUp;
 
   bool _showCard = false;
-
-  SliverGridList({this.pressed});
 
   @override
   _SliverGridListState createState() => _SliverGridListState();
@@ -184,28 +104,7 @@ class _SliverGridListState extends State<SliverGridList> {
     if (trips != null) {
       var trips3 = trips.where((trip) =>
       !trip.accessUsers.contains(userService.currentUserID));
-      if(widget.pressed) {
-
-        trips3.forEach((f) => trips2.add(f));
-        trips4 = trips3.where((trip) =>
-            trip.startDateTimeStamp.toDate().isAfter(DateTime.now())).toList();
-        try {
-          trips4 = trips4.where((trip) =>
-          !currentUserProfile.blockedList.contains(trip.ownerID)).toList();
-          for (var i = 0; i < trips4.length; i++) {
-            if(i%3==0 && i !=0){
-              thirdItemList.add(i);
-            }
-          }
-          combinedList.addAll(trips4);
-          for (var i = 0; i < thirdItemList.length; i++){
-            combinedList.insert(thirdItemList[i], tripAds[i]);
-          }
-        } catch (e){
-          // print(e.toString());
-        }
-      }
-      else{
+//Logic to display trips from latest date created minus trips for user or blocked trips
         trips3.forEach((f) => trips2.add(f));
         trips2.sort((a,b) => b.dateCreatedTimeStamp.compareTo(a.dateCreatedTimeStamp));
         trips4 = trips2.where((trip) =>
@@ -226,8 +125,6 @@ class _SliverGridListState extends State<SliverGridList> {
           // print(e.toString());
         }
       }
-    }
-
 
     return Expanded(
       child: Container(
@@ -243,7 +140,7 @@ class _SliverGridListState extends State<SliverGridList> {
               itemCount: combinedList.length,
               itemBuilder: (context, index){
                 // return trips4[index].urlToImage.isEmpty ? TripCard3(context, trips4[index]) : TripCard4(context, trips4[index]);
-                return combinedList[index] is Trip ? (combinedList[index].urlToImage.isEmpty ? CardWithoutImage(context, combinedList[index]) : CardWithImage(context, combinedList[index]) ): AdCard(context,combinedList[index]);
+                return combinedList[index] is Trip ? (combinedList[index].urlToImage.isEmpty ? cardWithoutImage(context, combinedList[index]) : cardWithImage(context, combinedList[index]) ): adCard(context,combinedList[index]);
               },
               staggeredTileBuilder: (index){
                 if(combinedList[index] is Trip){
@@ -257,61 +154,12 @@ class _SliverGridListState extends State<SliverGridList> {
                 }
               },
             )
-                    // staggeredTileBuilder: (index) {
-                    //   if(trips4[index].urlToImage.isNotEmpty){
-                    //     return StaggeredTile.count(3, 3);
-                    //   } else{
-                    //     return StaggeredTile.count(3, 1);
-                    //   }
-                    // }),
               ],
             ),
       ),
     );
-
-
-    // return Flexible(
-    //   flex: 1,
-    //   child: Container(
-    //     padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-    //     height: MediaQuery.of(context).size.height * .6,
-    //     // width: MediaQuery.of(context).size.width,
-    //     child: Stack(
-    //       children: [
-    //         CustomScrollView(
-    //             slivers: <Widget>[
-    //               // SliverGrid(
-    //               //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //               //         crossAxisCount: 2,
-    //               //     ),
-    //               //     delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-    //               //       return trips4[index].urlToImage.isEmpty ? TripCard3(context, trips4[index]) : TripCard4(context, trips4[index]);
-    //               //     },
-    //               //       childCount: trips4.length,
-    //               //     )
-    //               // ),
-    //
-    //             ]),
-    //         if (widget._showCard) ...[
-    //           BackdropFilter(
-    //             filter: ImageFilter.blur(
-    //               sigmaX: 5.0,
-    //               sigmaY: 5.0,
-    //             ),
-    //             child: Container(
-    //               color: Colors.white.withOpacity(0.6),
-    //             ),
-    //           ),
-    //           Center(
-    //               child: TappableTripPreview(trip: widget.tripPopUp,)
-    //           ),
-    //         ],
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
-  Widget AdCard(BuildContext context, TripAds tripAds){
+  Widget adCard(BuildContext context, TripAds tripAds){
     return InkWell(
       key: Key(tripAds.documentID),
       splashColor: Colors.blue.withAlpha(30),
@@ -347,7 +195,7 @@ class _SliverGridListState extends State<SliverGridList> {
     );
   }
 
-  Widget CardWithImage(BuildContext context, Trip trip) {
+  Widget cardWithImage(BuildContext context, Trip trip) {
 
 
     favorite(String uid, Trip trip){
@@ -370,17 +218,17 @@ class _SliverGridListState extends State<SliverGridList> {
             MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
           );
         },
-        onLongPress: (){
-          setState(() {
-            widget._showCard = true;
-            widget.tripPopUp = trip;
-          });
-        },
-        onLongPressEnd: (details) {
-          setState(() {
-            widget._showCard = false;
-          });
-        },
+        // onLongPress: (){
+        //   setState(() {
+        //     widget._showCard = true;
+        //     widget.tripPopUp = trip;
+        //   });
+        // },
+        // onLongPressEnd: (details) {
+        //   setState(() {
+        //     widget._showCard = false;
+        //   });
+        // },
         child: Hero(
           tag: trip.urlToImage,
           transitionOnUserGestures: true,
@@ -413,7 +261,7 @@ class _SliverGridListState extends State<SliverGridList> {
     );
   }
 }
-Widget CardWithoutImage(BuildContext context, Trip trip) {
+Widget cardWithoutImage(BuildContext context, Trip trip) {
 
   favorite(String uid, Trip trip){
     if (trip.favorite.contains(uid)){
@@ -467,22 +315,11 @@ Widget CardWithoutImage(BuildContext context, Trip trip) {
               ),
             ),
           ),
-          // Padding(padding: EdgeInsets.only(top: 3)),
           Flexible(
             flex: 2,
               child: ListTile(
                 // title: Text('${trip.startDate}',style: Theme.of(context).textTheme.headline5,),
                 title: Text('${trip.displayName}',style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
-                // trailing: FlatButton(
-                //   child: favorite(userService.currentUserID, trip),
-                //   onPressed: () {
-                //     if (trip.favorite.contains(userService.currentUserID)){
-                //       CloudFunction().removeFavoriteFromTrip(trip.documentId);
-                //     } else {
-                //       CloudFunction().addFavoriteTrip(trip.documentId);
-                //     }
-                //   },
-                // ),
                 onTap: () {
                   Navigator.push(
                     context,

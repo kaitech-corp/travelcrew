@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/app_bar/app_bar.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/past_crew_trips.dart';
@@ -27,19 +28,17 @@ class MainTabPage extends StatefulWidget {
 }
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
-  // Color bottomNavColor = Colors. black;
-
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     TabBarView(
       children: [
         CurrentCrewTrips(),
-        PastCrewTrips(),
         PrivateTripList(),
-
+        PastCrewTrips(),
       ],
     ),
     AllTripsPage(),
+    AddTripPage(),
     // SuggestionsPage(),
     Favorites(),
     Notifications(),];
@@ -64,7 +63,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               msg: message['aps']['alert']['title'],
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.TOP,
-              timeInSecForIosWeb: 2);
+              timeInSecForIosWeb: 2,
+          );
         }
 
       },
@@ -135,8 +135,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                     isScrollable: true,
                     tabs: [
                       const Tab(text: 'Current',),
-                      const Tab(text: 'Past',),
                       const Tab(text: 'Private',),
+                      const Tab(text: 'Past',),
                     ],
                   ),
                 ),
@@ -164,7 +164,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             items: [
               IconThemeWidget(icon:Icons.group),
               IconThemeWidget(icon:Icons.search),
-              IconThemeWidget(icon:Icons.favorite),
+              IconThemeWidget(icon: Icons.add_outlined,),
+              IconThemeWidget(icon:Icons.favorite_border),
               BadgeIcon(
                 icon: IconThemeWidget(icon:Icons.notifications_active),
                 badgeCount: notifications != null ? notifications.length : 0,

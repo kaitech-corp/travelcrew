@@ -6,14 +6,13 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 
 
 class LodgingItemLayout extends StatelessWidget {
 
-  var userService = locator<UserService>();
   final LodgingData lodging;
   final Trip trip;
 

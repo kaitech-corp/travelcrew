@@ -8,6 +8,7 @@ GetIt locator = GetIt.asNewInstance();
 final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 
 
+
 void setupLocator() {
   locator.registerSingleton(UserService());
   locator.registerSingleton(UserProfileService());

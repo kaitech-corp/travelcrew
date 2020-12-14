@@ -6,14 +6,11 @@ import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/in_app_review.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 
 class AddNewActivity extends StatefulWidget {
 
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final Trip trip;
   AddNewActivity({this.trip});
@@ -118,7 +115,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                           setState(() => comment = val);
                         },
                         enableInteractiveSelection: true,
-                        textCapitalization: TextCapitalization.words,
+                        textCapitalization: TextCapitalization.sentences,
                         obscureText: false,
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -185,9 +182,9 @@ class AddNewActivityState extends State<AddNewActivity> {
                           onPressed: () async{
                             final form = _formKey.currentState;
                             if (form.validate()) {
-                              String displayName = widget.currentUserProfile.displayName;
+                              String displayName = currentUserProfile.displayName;
                               String documentID = widget.trip.documentId;
-                              String uid = widget.userService.currentUserID;
+                              String uid = userService.currentUserID;
                               String tripName = widget.trip.location;
                               setState(() => loading =true);
                               String message = 'A new activity has been added to ${widget.trip.tripName}';
@@ -233,10 +230,10 @@ class AddNewActivityState extends State<AddNewActivity> {
                                 loading = false;
                               });
                               Navigator.pop(context);
-                              DatabaseService().appReviewExists(TCFunctions().AppReviewDocID()).then((value) => {
+                              DatabaseService().appReviewExists(TCFunctions().appReviewDocID()).then((value) => {
                                 if(!value){
                                   InAppReviewClass().requestReviewFunc(),
-                                  CloudFunction().addReview(docID: TCFunctions().AppReviewDocID()),
+                                  CloudFunction().addReview(docID: TCFunctions().appReviewDocID()),
                                 }
                               });
 

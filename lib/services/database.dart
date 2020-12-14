@@ -53,8 +53,6 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      String action = 'Retrieving app version';
-      CloudFunction().logEvent(action);
       var ref = await versionCollection.doc('versionDec10').get();
       Map<String, dynamic> data = ref.data();
 
@@ -78,8 +76,6 @@ class DatabaseService {
     String fcmToken = await _fcm.getToken();
 
     try {
-      String action = 'Creating and saving device token for user';
-      CloudFunction().logEvent(action);
       var ref = await tokensCollection.doc(uid).collection('tokens')
           .doc(fcmToken).get();
       // Save it to Firestore
@@ -546,8 +542,6 @@ class DatabaseService {
 
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
         try {
-          String action = 'Retrieving bringing list';
-          CloudFunction().logEvent(action);
           return snapshot.docs.map((doc) {
             Map<String, dynamic> data = doc.data();
               return Bringing(
@@ -575,8 +569,6 @@ class DatabaseService {
 
   List<Need> _retrieveNeedItems(QuerySnapshot snapshot) {
     try {
-      String action = 'Retrieving Need List';
-      CloudFunction().logEvent(action);
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return Need(
@@ -719,8 +711,6 @@ class DatabaseService {
     List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
 
     try {
-      String action = 'Get all public trips';
-      CloudFunction().logEvent(action);
       List<Trip> trips = snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return Trip(
@@ -987,8 +977,6 @@ class DatabaseService {
   //Get Lodging items
   List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
     try {
-      String action = 'Retrieving all lodging items';
-      CloudFunction().logEvent(action);
       List<LodgingData> lodgingList = snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return LodgingData(
@@ -1013,15 +1001,11 @@ class DatabaseService {
   }
   //Get Lodging List
   Stream<List<LodgingData>> get lodgingList {
-    String action = 'Streaming lodging item for $tripDocID';
-    CloudFunction().logEvent(action);
     return lodgingCollection.doc(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
   }
 
   List<ActivityData> _activitiesListFromSnapshot(QuerySnapshot snapshot){
     try {
-      String action = 'Retrieving all activities';
-      CloudFunction().logEvent(action);
       List<ActivityData> activitiesList = snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
         return ActivityData(
@@ -1045,8 +1029,6 @@ class DatabaseService {
   }
 
   Stream<List<ActivityData>> get activityList {
-    String action = 'Streaming activities for $tripDocID';
-    CloudFunction().logEvent(action);
     return activitiesCollection.doc(tripDocID).collection('activity').snapshots().map(_activitiesListFromSnapshot);
   }
 
@@ -1054,8 +1036,6 @@ class DatabaseService {
   List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot snapshot){
 
     try {
-      String action = 'Get all users';
-      CloudFunction().logEvent(action);
       List<UserPublicProfile> userList =  snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
         return UserPublicProfile(
@@ -1089,8 +1069,6 @@ class DatabaseService {
   //Get all users Future Builder
   Future<List<UserPublicProfile>> usersList() async {
     try {
-      String action = 'Retrieve all users via Future';
-      CloudFunction().logEvent(action);
       var ref = await userPublicProfileCollection.get();
       List<UserPublicProfile> userList = ref.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
@@ -1109,7 +1087,7 @@ class DatabaseService {
           topDestinations: List<String>.from(data['topDestinations']) ?? [''],
         );
       }).toList();
-      userList.sort((a,b) => a.firstName.compareTo(b.firstName));
+      userList.sort((a,b) => a.displayName.compareTo(b.displayName));
       return userList;
     } on Exception catch (e) {
       CloudFunction().logError(e.toString());
@@ -1121,8 +1099,6 @@ class DatabaseService {
   // Get current user public profile
   UserPublicProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
     try {
-      String action = 'Retrieving User Public Profile';
-      CloudFunction().logEvent(action);
       Map<String, dynamic> data = snapshot.data();
         return UserPublicProfile(
           displayName: data['displayName'] ?? '',
@@ -1146,8 +1122,6 @@ class DatabaseService {
 
   // get current use public profile
   Stream<UserPublicProfile> get currentUserPublicProfile {
-    String action = 'Streaming user public profile: ${userService.currentUserID}';
-    CloudFunction().logEvent(action);
     return userPublicProfileCollection.doc(userService.currentUserID).snapshots()
         .map(_userPublicProfileSnapshot);
   }
@@ -1157,8 +1131,6 @@ class DatabaseService {
     // var list2 = List();
     // List<TransportationData> listOfModes = List();
     try {
-      String action = 'Retrieve all Transportation data';
-      CloudFunction().logEvent(action);
       List<TransportationData> transportList =  snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return TransportationData(
@@ -1182,16 +1154,12 @@ class DatabaseService {
   }
 
   Stream<List<TransportationData>> get transportList {
-    String action = 'Streaming transportation data for $tripDocID';
-    CloudFunction().logEvent(action);
       return transportCollection.doc(tripDocID).collection('mode').snapshots().map(_transportListFromSnapshot);
   }
 
   //Query for My Crew Trips
   List<Trip> _privateTripListFromSnapshot(QuerySnapshot snapshot){
     try {
-      String action = 'Query My Private Crew Trips';
-      CloudFunction().logEvent(action);
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return Trip(
@@ -1223,8 +1191,6 @@ class DatabaseService {
   //Query for current My Crew Trips
   List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot snapshot){
     try {
-      String action = 'Query My Public Crew Trips';
-      CloudFunction().logEvent(action);
       final now = DateTime.now().toUtc();
       var yesterday = DateTime(now.year, now.month, now.day - 1);
         List<Trip> trips = snapshot.docs.map((doc) {
@@ -1261,8 +1227,6 @@ class DatabaseService {
   //Query for past My Crew Trips
   List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot snapshot){
     try {
-      String action = 'Query Past Crew Trips';
-      CloudFunction().logEvent(action);
       final now = DateTime.now().toUtc();
       var yesterday = DateTime(now.year, now.month, now.day - 1);
       List<Trip> trips = snapshot.docs.map((doc) {
@@ -1332,8 +1296,6 @@ class DatabaseService {
   // Get all Notifications
   List<NotificationData> _notificationListFromSnapshot(QuerySnapshot snapshot){
     try {
-      String action = 'Retrieving all notifications';
-      CloudFunction().logEvent(action);
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
         return NotificationData(
@@ -1355,8 +1317,6 @@ class DatabaseService {
   }
 
   Stream<List<NotificationData>> get notificationList {
-    String action = 'Streaming notifications for ${userService.currentUserID}';
-    CloudFunction().logEvent(action);
     return notificationCollection.doc(userService.currentUserID).collection('notifications').orderBy('timestamp', descending: true).snapshots().map(_notificationListFromSnapshot);
   }
 
@@ -1365,8 +1325,6 @@ class DatabaseService {
     var key = chatCollection.doc().id;
 
     try {
-      String action = 'Adding new chat message for $tripDocID';
-      CloudFunction().logEvent(action);
       return await chatCollection.doc(tripDocID).collection('messages').doc(key).set(
           {
             'displayName': displayName,
@@ -1385,8 +1343,6 @@ class DatabaseService {
 // Clear chat notifications.
   Future clearChatNotifications() async {
     try {
-      String action = 'Clearing chat notifications';
-      CloudFunction().logEvent(action);
       var db = chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false);
       QuerySnapshot snapshot = await db.get();
       for(var i =0; i< snapshot.docs.length;i++) {
@@ -1401,8 +1357,6 @@ class DatabaseService {
   List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
 
     try {
-      String action = 'Retrieve all chat messages';
-      CloudFunction().logEvent(action);
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
         return ChatData(
@@ -1423,8 +1377,6 @@ class DatabaseService {
 //Stream chats
   Stream<List<ChatData>> get chatList {
     try {
-      String action = 'Streaming chat messages for $tripDocID';
-      CloudFunction().logEvent(action);
       return chatCollection.doc(tripDocID).collection('messages')
       .orderBy('timestamp', descending: true)
           .snapshots().map(_chatListFromSnapshot);
@@ -1435,8 +1387,6 @@ class DatabaseService {
   }
   Stream<List<ChatData>> get chatListNotification {
     try {
-      String action = 'Streaming chat notifications for $tripDocID';
-      CloudFunction().logEvent(action);
       return chatCollection.doc(tripDocID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError(e.toString());
@@ -1512,8 +1462,6 @@ class DatabaseService {
   List<TripAds> _adListFromSnapshot(QuerySnapshot snapshot){
 
       try {
-        String action = 'Retrieving all Trip ads';
-        CloudFunction().logEvent(action);
         return snapshot.docs.map((doc){
           Map<String, dynamic> data = doc.data();
           return TripAds(
@@ -1571,8 +1519,6 @@ class DatabaseService {
       });
     }
     try {
-      String action = 'Adding new DM chat message';
-      CloudFunction().logEvent(action);
       return await dmChatCollection.doc(chatID).collection('messages').doc(key).set(
           {
             'chatID': chatID,
@@ -1592,8 +1538,6 @@ class DatabaseService {
   Future deleteDMChatMessage({ChatData message}) async {
     // String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
     try {
-      String action = 'Deleting chat message';
-      CloudFunction().logEvent(action);
       return await dmChatCollection.doc(message.chatID).collection('messages').doc(message.fieldID).delete();
     } catch (e) {
       _analyticsService.writeError('Error deleting new chat:  ${e.toString()}');
@@ -1604,8 +1548,6 @@ class DatabaseService {
   // Clear DM chat notifications.
   Future clearDMChatNotifications() async {
     try {
-      String action = 'Clearing DM chat notifications';
-      CloudFunction().logEvent(action);
       String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
       var db = dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false);
       QuerySnapshot snapshot = await db.get();
@@ -1621,8 +1563,6 @@ class DatabaseService {
   Stream<List<ChatData>> get dmChatList {
     String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
     try {
-      String action = 'Streaming all DM chats';
-      CloudFunction().logEvent(action);
       return dmChatCollection.doc(chatID).collection('messages')
           .orderBy('timestamp', descending: true)
           .snapshots().map(_chatListFromSnapshot);
@@ -1635,8 +1575,6 @@ class DatabaseService {
   Stream<List<ChatData>> get dmChatListNotification {
     String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
     try {
-      String action = 'Streaming DM notifications';
-      CloudFunction().logEvent(action);
       return dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false)
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
@@ -1662,7 +1600,6 @@ class DatabaseService {
         _idList.add(_y[0]);
       });
 
-      print(_idList.length);
       _idList.forEach((profile) {
         sortedUserList.add(user.where((element) => profile == element.uid).first);
       });

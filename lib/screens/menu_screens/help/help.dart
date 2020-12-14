@@ -4,7 +4,9 @@ import 'package:travelcrew/services/constants.dart';
 
 class HelpPage extends StatelessWidget{
 
-  Key key1;
+   final Key key1;
+
+  const HelpPage({Key key, this.key1}) : super(key: key);
 
  @override
   Widget build(BuildContext context) {

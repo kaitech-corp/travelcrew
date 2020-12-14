@@ -6,6 +6,7 @@ class Authenticate extends StatefulWidget{
   _AuthenticateState createState() => _AuthenticateState();
 
 }
+//Pulls up the login page to sign in.
 class _AuthenticateState extends State<Authenticate>{
   @override
   Widget build(BuildContext context) {

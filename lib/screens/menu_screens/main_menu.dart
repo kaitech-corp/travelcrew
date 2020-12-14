@@ -103,7 +103,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: CurrentVersion(context),
+                child: currentVersion(context),
               )
             ],
           ),
@@ -112,7 +112,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
     );
   }
   
-  Widget CurrentVersion(BuildContext context){
+  Widget currentVersion(BuildContext context){
     return FutureBuilder(
       future: DatabaseService().getVersion(),
         builder: (context, data){

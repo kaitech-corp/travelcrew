@@ -30,7 +30,7 @@ class TravelCrewAlertDialogs {
               blockMessage,),
           actions: <Widget>[
             FlatButton(
-              child: Text('Block',),
+              child: const Text('Block',),
               onPressed: () {
                 CloudFunction().blockUser(blockedUserID);
                 Navigator.pop(context);
@@ -38,7 +38,7 @@ class TravelCrewAlertDialogs {
               },
             ),
             FlatButton(
-              child: Text('Cancel',),
+              child: const Text('Cancel',),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -58,7 +58,7 @@ class TravelCrewAlertDialogs {
               reportMessage,style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
           actions: <Widget>[
             FlatButton(
-              child: Text('Report',),
+              child: const Text('Report',),
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -68,7 +68,7 @@ class TravelCrewAlertDialogs {
               },
             ),
             FlatButton(
-              child: Text('Cancel',),
+              child: const Text('Cancel',),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -86,12 +86,12 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
               'Action completed.',),
           // content: Text('You will no longer have access to this Trip'),
           actions: <Widget>[
             FlatButton(
-              child: Text('Close',),
+              child: const Text('Close',),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -108,8 +108,8 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Clear all notifications?',textScaleFactor: 1.2,),
-          content: Text('Join requests and follow requests will also be removed.',),
+          title: const Text('Clear all notifications?',textScaleFactor: 1.2,),
+          content: const Text('Join requests and follow requests will also be removed.',),
           actions: <Widget>[
             FlatButton(
               child: const Text('No'),
@@ -136,19 +136,19 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
               'Are you sure you want to leave this Trip?',textScaleFactor: 1.2,),
-          content: Text('You will no longer have access to this Trip',),
+          content: const Text('You will no longer have access to this Trip',),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes',),
+              child: const Text('Yes',),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, uid,tripDetails.ispublic);
                 Navigator.pushNamed(context, '/wrapper');
               },
             ),
             FlatButton(
-              child: Text('No',),
+              child: const Text('No',),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -164,15 +164,15 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Are you sure you want to delete this trip?',textScaleFactor: 1.2,),
-          content: Text(
+          title: const Text('Are you sure you want to delete this trip?',textScaleFactor: 1.2,),
+          content: const Text(
             'All data associated with this trip will be deleted.',),
           actions: <Widget>[
             FlatButton(
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
-                Navigator.pushNamed(context, '/wrapper');
+                Navigator.pushReplacementNamed(context, '/wrapper');
               },
             ),
             FlatButton(
@@ -194,23 +194,23 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           title: tripDetails.ispublic
-              ? Text(
+              ? const Text(
             'Are you sure you want to convert this into a Private Trip?',textScaleFactor: 1.2,)
-              : Text(
+              : const Text(
             'Are you sure you want to convert this into a Public Trip?',),
           content: tripDetails.ispublic
-              ? Text('This trip will only be visible to members.')
-              : Text('Trip will be become public for followers to see.',),
+              ? const Text('This trip will only be visible to members.')
+              : const Text('Trip will be become public for followers to see.',),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 DatabaseService().convertTrip(tripDetails);
                 Navigator.pushNamed(context, '/wrapper');
               },
             ),
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -250,17 +250,17 @@ class TravelCrewAlertDialogs {
   }
   void showRequestDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
+        .showSnackBar(SnackBar(content: const Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
   }
 
   void unblockDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('User has been unblocked.')));
+        .showSnackBar(SnackBar(content: const Text('User has been unblocked.')));
   }
 
   followRequestDialog(BuildContext context) {
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Request sent.')));
+        .showSnackBar(SnackBar(content: const Text('Request sent.')));
   }
 
   newMessageDialog(BuildContext context, String message) {
@@ -273,12 +273,32 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text('Feedback Submitted!',textScaleFactor: 1.5,),
-          content:  Text(
+          title:  const Text('Feedback Submitted!',textScaleFactor: 1.5,),
+          content:  const Text(
               'We thank you for your feedback.'),
           actions: <Widget>[
             FlatButton(
               child:  Text('Close'),
+              onPressed: () {
+                Navigator.pop(context);
+                // Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> addTripAlert(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  const Text('Trip Created!',textScaleFactor: 1.5,),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('Close'),
               onPressed: () {
                 Navigator.pop(context);
                 // Navigator.of(context).popUntil((route) => route.isFirst);
@@ -295,7 +315,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Notification Sent!'),
+          title: const Text('Notification Sent!'),
         );
       },
     );
@@ -306,17 +326,17 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text('Follow back?',textScaleFactor: 1.5,)),
+          title: Center(child: const Text('Follow back?',textScaleFactor: 1.5,)),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().followBack(userUID);
                 Navigator.pop(context);
               },
             ),
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -333,17 +353,17 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text('Unfollow?',textScaleFactor: 1.5,)),
+          title: Center(child: const Text('Unfollow?',textScaleFactor: 1.5,)),
           actions: <Widget>[
             FlatButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().unFollowUser(userUID);
                 Navigator.pop(context);
               },
             ),
             FlatButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -362,7 +382,7 @@ class TravelCrewAlertDialogs {
       context: context,
       child: _SystemPadding(child: AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
-        title: Text('Reset Password', textAlign: TextAlign.center,textScaleFactor: 1.5,),
+        title: const Text('Reset Password', textAlign: TextAlign.center,textScaleFactor: 1.5,),
         content:  Row(
           children: <Widget>[
              Expanded(
@@ -392,12 +412,12 @@ class TravelCrewAlertDialogs {
         ),
         actions: <Widget>[
            FlatButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.pop(context);
               }),
            FlatButton(
-              child: Text('Reset'),
+              child: const Text('Reset'),
               onPressed: () {
                 final form = _formKey.currentState;
                 if (form.validate()){
@@ -412,12 +432,12 @@ class TravelCrewAlertDialogs {
     );
   }
 
-  Future<void> SuggestionPageAlert(BuildContext context) {
+  Future<void> suggestionPageAlert(BuildContext context) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Please make sure location settings are enabled to continue.',textScaleFactor: 1.2,),
           // content: Text('You will no longer have access to this Trip'),
           actions: <Widget>[
@@ -438,19 +458,19 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text('Delete?',textScaleFactor: 1.5,)),
+          title: Center(child: const Text('Delete?',textScaleFactor: 1.5,)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FlatButton(
-                child: Text('Yes'),
+                child: const Text('Yes'),
                 onPressed: () {
                   CloudFunction().deleteTransportation(tripDocID: transportationData.tripDocID,fieldID: transportationData.fieldID);
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -467,19 +487,19 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text('Delete?',textScaleFactor: 1.5,)),
+          title: Center(child: const Text('Delete?',textScaleFactor: 1.5,)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FlatButton(
-                child: Text('Yes'),
+                child: const Text('Yes'),
                 onPressed: () {
                   CloudFunction().removeItemFromBringingList(tripDocID, itemID);
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

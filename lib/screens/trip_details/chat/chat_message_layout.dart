@@ -3,12 +3,11 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatMessageLayout extends StatelessWidget {
-  var userService = locator<UserService>();
   final ChatData message;
   final String tripDocID;
 

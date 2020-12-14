@@ -47,6 +47,7 @@ class _ListWidgetState extends State<ListWidget> {
             return DefaultTabController(
               length: 3,
               child: Scaffold(
+                resizeToAvoidBottomInset: false,
                 appBar: TabBar(
                   labelStyle: Theme
                       .of(context)

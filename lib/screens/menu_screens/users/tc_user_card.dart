@@ -71,17 +71,6 @@ class _TCUserCardState extends State<TCUserCard> {
                         backgroundImage: widget.allUsers.urlToImage.isNotEmpty ? NetworkImage(widget.allUsers.urlToImage,) : AssetImage(profileImagePlaceholder),
                       ),
                     )
-
-                    // ClipRRect(
-                    //   borderRadius: BorderRadius.circular(37.5),
-                    //   child: FadeInImage.assetNetwork(
-                    //     placeholder: profileImagePlaceholder,
-                    //     image: widget.allUsers.urlToImage.isNotEmpty ? widget.allUsers.urlToImage : profileImagePlaceholder,
-                    //     height: 75,
-                    //     width: 75,
-                    //     fit: BoxFit.fill,
-                    //   ),
-                    // ),
                   ),
                 ),
                 Positioned(

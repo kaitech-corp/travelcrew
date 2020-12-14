@@ -8,6 +8,7 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/launch_icon_badger.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
+// Checks whether user has authenticated and redirects to complete profile if user does not have a Public Profile in the database or to main page.
 class Wrapper extends StatelessWidget{
 
   @override

@@ -5,10 +5,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'add_trip_page.dart';
 
 
 
@@ -99,10 +99,6 @@ class _EditTripDataState extends State<EditTripData> {
     String travelType = widget.tripDetails.travelType;
     String tripName = widget.tripDetails.tripName;
     GeoPoint tripGeoPoint = widget.tripDetails.tripGeoPoint;
-
-
-
-
 
     return Scaffold(
         appBar: AppBar(title: Text('Edit $tripName!')),
@@ -357,7 +353,4 @@ class _EditTripDataState extends State<EditTripData> {
   }
 }
 
-// Copyright 2019 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 

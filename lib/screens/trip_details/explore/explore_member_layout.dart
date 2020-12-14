@@ -20,7 +20,10 @@ class ExploreMemberLayout extends StatefulWidget{
 
   final Trip tripDetails;
 
-  ExploreMemberLayout({this.tripDetails});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  PersistentBottomSheetController controller;
+
+  ExploreMemberLayout({this.tripDetails, this.scaffoldKey, this.controller});
 
   @override
   _ExploreMemberLayoutState createState() => _ExploreMemberLayoutState();
@@ -30,6 +33,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
 
   final expandController = ExpandableController();
   final expandController2 = ExpandableController();
+  final expandController3 = ExpandableController();
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
@@ -38,15 +42,18 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
   @override
   void initState() {
     super.initState();
+    // controller.addListener(onScroll);
     expandController.addListener(onExpand);
     expandController2.addListener(onExpand);
+    expandController3.addListener(onExpand);
   }
 
   onExpand(){
     if(mounted){
       setState(() {
         if (expandController.expanded ||
-            expandController2.expanded) {
+            expandController2.expanded ||
+            expandController3.expanded) {
           _padding = SizeConfig.defaultSize.toDouble() * 10.0;
         } else {
           _padding = SizeConfig.screenHeight*.35;
@@ -66,6 +73,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
   Widget build(BuildContext context) {
 
     double _height = 3.0;
+    double _detailsPadding = SizeConfig.screenWidth*.05;
 
     final Event event = Event(
       title: widget.tripDetails.tripName,
@@ -90,7 +98,8 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                     children: [
                       ImageAnimation(tripDetails: widget.tripDetails,
                         expandController: expandController,
-                        expandController2: expandController2,),
+                        expandController2: expandController2,
+                        expandController3: expandController3,),
                       AnimatedPadding(
                           duration: Duration(milliseconds: 250),
                           padding: EdgeInsets.only(top: _padding),
@@ -101,7 +110,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                     children: [
                       HangingImageTheme(),
                       Padding(
-                          padding: EdgeInsets.only(top: SizeConfig.defaultSize.toDouble() * 10.0),
+                          padding: EdgeInsets.only(top:  SizeConfig.screenHeight*.16),
                           child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,)),
                     ],
                   ),
@@ -117,7 +126,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ListWidget(tripDetails: widget.tripDetails,),
+                            ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
                             CrewModalBottomSheet(tripDetails: widget.tripDetails),
                           ],
                         ),
@@ -132,46 +141,26 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       scrollOnExpand: true,
                       child: ExpandableTheme(
                         data: ExpandableThemeData(
-                          iconSize: 20.0,
+                          iconSize: 25.0,
                           iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                         ),
                         child: ExpandablePanel(
                           header: Text('Trip Details', style: Theme.of(context).textTheme.headline2,),
                           // collapsed:
-                          expanded: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            // crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                    child: Container(
-                                      padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                      height: _tripDetailsBoxSize,
-                                      width: _tripDetailsBoxSize,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          TripDetailsIconThemeWidget(icon: Icons.location_pin,),
-                                          Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
-                                        ],
+                          expanded: Padding(
+                            padding: EdgeInsets.all(_detailsPadding),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                    ),
-                                  ),
-                                  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                    child: InkWell(
-                                      onTap: (){
-                                        Add2Calendar.addEvent2Cal(event);
-                                      },
+                                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
                                       child: Container(
                                         padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
                                         height: _tripDetailsBoxSize,
@@ -179,57 +168,103 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                                            Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,),
+                                            TripDetailsIconThemeWidget(icon: Icons.location_pin,),
+                                            Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
                                           ],
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                    Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                      child: InkWell(
+                                        onTap: (){
+                                          Add2Calendar.addEvent2Cal(event);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
+                                          height: _tripDetailsBoxSize,
+                                          width: _tripDetailsBoxSize,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                                              Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                      child: Container(
+                                        padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
+                                        height: _tripDetailsBoxSize,
+                                        width: _tripDetailsBoxSize,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            TripDetailsIconThemeWidget(icon: Icons.label,),
+                                            Text('${widget.tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                      child: Container(
+                                        padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
+                                        height: _tripDetailsBoxSize,
+                                        width: _tripDetailsBoxSize,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            widget.tripDetails.ispublic ? TripDetailsIconThemeWidget(icon: Icons.public,) : TripDetailsIconThemeWidget(icon: Icons.public_off,),
+                                            widget.tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if(widget.tripDetails.comment.isNotEmpty) Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                  child: InkWell(
+                                    onTap: (){
+
+                                    },
                                     child: Container(
                                       padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
                                       height: _tripDetailsBoxSize,
-                                      width: _tripDetailsBoxSize,
+                                      width: double.infinity,
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          TripDetailsIconThemeWidget(icon: Icons.label,),
-                                          Text('${widget.tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                                          TripDetailsIconThemeWidget(icon: Icons.comment,),
+                                          Text(widget.tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                    child: Container(
-                                      padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                      height: _tripDetailsBoxSize,
-                                      width: _tripDetailsBoxSize,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          widget.tripDetails.ispublic ? TripDetailsIconThemeWidget(icon: Icons.public,) : TripDetailsIconThemeWidget(icon: Icons.public_off,),
-                                          widget.tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -237,7 +272,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                   ),
                 ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,25),
+                    padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,8.0),
                     child: ExpandableNotifier(
                       controller: expandController2,
                       child: ScrollOnExpand(
@@ -248,9 +283,29 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                             iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                           ),
                           child: ExpandablePanel(
-                            header: Text('List', style: Theme.of(context).textTheme.headline2,),
+                            header: Text('Bringing', style: Theme.of(context).textTheme.headline2,),
                             // collapsed:
                             expanded: BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,25),
+                    child: ExpandableNotifier(
+                      controller: expandController3,
+                      child: ScrollOnExpand(
+                        scrollOnExpand: true,
+                        child: ExpandableTheme(
+                          data: ExpandableThemeData(
+                            iconSize: 25.0,
+                            iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
+                          ),
+                          child: ExpandablePanel(
+                            header: Text('Need', style: Theme.of(context).textTheme.headline2,),
+                            // collapsed:
+                            expanded: NeedListToDisplay(documentID: widget.tripDetails.documentId,),
                           ),
                         ),
                       ),

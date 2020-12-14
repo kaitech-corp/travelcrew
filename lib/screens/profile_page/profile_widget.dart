@@ -22,10 +22,11 @@ class ProfileWidget extends StatelessWidget {
   }) : super(key: key);
 
 
-double profileSize = SizeConfig.screenWidth * .45;
+
 
   @override
   Widget build(BuildContext context) {
+    double profileSize = SizeConfig.screenWidth * .45;
 
     return Container(
       height: SizeConfig.screenHeight,
@@ -34,74 +35,70 @@ double profileSize = SizeConfig.screenWidth * .45;
         children: <Widget>[
           Flexible(
             flex: 6,
-            child: Stack(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10.0,sizeFromHangingTheme,10.0,10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        flex:1,
-                        child: Hero(
-                          tag: user.uid,
-                          transitionOnUserGestures: true,
-                          child:
-                          Container(
-                            // margin: EdgeInsets.only(bottom: defaultSize), //10
-                              height: profileSize,
-                              width: profileSize,
-                            child: CircleAvatar(
-                              radius: SizeConfig.screenWidth/1.8,
-                              backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
-                            ),
-                          ),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0,sizeFromHangingTheme,10.0,10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex:1,
+                    child: Hero(
+                      tag: user.uid,
+                      transitionOnUserGestures: true,
+                      child:
+                      Container(
+                        // margin: EdgeInsets.only(bottom: defaultSize), //10
+                          height: profileSize,
+                          width: profileSize,
+                        child: CircleAvatar(
+                          radius: SizeConfig.screenWidth/1.8,
+                          backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
                         ),
                       ),
-                      Flexible(
-                        flex:1,
-                        child: Container(
-                          // width: double.infinity,
-                          padding: EdgeInsets.only(right: 8.0,left: 8.0,top: sizeFromHangingTheme/3),
-                          child: Column(
+                    ),
+                  ),
+                  Flexible(
+                    flex:1,
+                    child: Container(
+                      // width: double.infinity,
+                      padding: EdgeInsets.only(right: 8.0,left: 8.0,top: sizeFromHangingTheme/3),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.1,style: Theme.of(context).textTheme.subtitle1,maxLines: 2,),
+                          SizedBox(height: SizeConfig.screenHeight*.01,),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${user.firstName} ${user.lastName}', textScaleFactor: 1.1,style: Theme.of(context).textTheme.subtitle1,maxLines: 2,),
-                              SizedBox(height: SizeConfig.screenHeight*.01,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  IconThemeWidget(icon: Icons.person,),
-                                  Flexible(child: Text(user.displayName,style: Theme.of(context).textTheme.subtitle2,overflow: TextOverflow.ellipsis,maxLines: 2,)),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  IconThemeWidget(icon: Icons.location_pin,),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        (user.hometown.isNotEmpty) ? Text(user.hometown, style: Theme.of(context).textTheme.subtitle2,
-                                          maxLines: 2,overflow: TextOverflow.ellipsis,softWrap: true,) :
-                                        Text('Hometown',style: Theme.of(context).textTheme.subtitle2),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
+                              IconThemeWidget(icon: Icons.person,),
+                              Flexible(child: Text(user.displayName,style: Theme.of(context).textTheme.subtitle2,overflow: TextOverflow.ellipsis,maxLines: 2,)),
                             ],
                           ),
-                        ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              IconThemeWidget(icon: Icons.location_pin,),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    (user.hometown.isNotEmpty) ? Text(user.hometown, style: Theme.of(context).textTheme.subtitle2,
+                                      maxLines: 2,overflow: TextOverflow.ellipsis,softWrap: true,) :
+                                    Text('Hometown',style: Theme.of(context).textTheme.subtitle2),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Flexible(flex:2,child: FollowerBar(user: user)),
@@ -241,6 +238,9 @@ class FollowerBar extends StatelessWidget {
           onTap: (){
             showModalBottomSheet(
               context: context,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+              ),
               builder: (context) => Container(
                 padding: const EdgeInsets.all(10),
                 height: SizeConfig.screenHeight*.7,

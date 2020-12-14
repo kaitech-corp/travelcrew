@@ -7,14 +7,11 @@ import 'package:travelcrew/services/api.dart';
 import 'package:travelcrew/services/badge_icon.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import '../../../../loading.dart';
 
 
 class BringingList extends StatefulWidget{
-
-  var userService = locator<UserService>();
 
   final String documentID;
   BringingList({this.documentID});
@@ -26,18 +23,18 @@ class BringingList extends StatefulWidget{
 class _BringingListState extends State<BringingList> {
   List _selectedProducts = List();
 
-  void _onSelectedProduct(bool selected, product_name) {
+  void _onSelectedProduct(bool selected, productName) {
     if (selected == true) {
       setState(() {
-        _selectedProducts.add(product_name);
-        CloudFunction().addItemToBringingList(widget.documentID, product_name);
+        _selectedProducts.add(productName);
+        CloudFunction().addItemToBringingList(widget.documentID, productName);
         Scaffold
             .of(context)
             .showSnackBar(SnackBar(content: Text("Item added")));
       });
     } else {
       setState(() {
-        _selectedProducts.remove(product_name);
+        _selectedProducts.remove(productName);
       });
     }
   }
@@ -76,9 +73,8 @@ class _BringingListState extends State<BringingList> {
 
 class NeedList extends StatefulWidget{
 
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
-  String documentID;
+  final String documentID;
   NeedList({this.documentID});
 
 
@@ -92,14 +88,14 @@ class _NeedListState extends State<NeedList> {
 
   List _selectedProducts = List();
 
-  void _onSelectedProduct(bool selected, product_name) {
+  void _onSelectedProduct(bool selected, productName) {
     if (selected == true) {
       setState(() {
-        _selectedProducts.add(product_name);
+        _selectedProducts.add(productName);
       });
     } else {
       setState(() {
-        _selectedProducts.remove(product_name);
+        _selectedProducts.remove(productName);
       });
     }
   }
@@ -116,7 +112,7 @@ class _NeedListState extends State<NeedList> {
         child:  SearchBar(
             textStyle: Theme.of(context).textTheme.subtitle2,
             cancellationWidget:const Text('Clear'),
-            placeHolder: needList(),
+            placeHolder: NeedListToDisplay(documentID: widget.documentID,),
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
               return CheckboxListTile(
@@ -129,7 +125,7 @@ class _NeedListState extends State<NeedList> {
                     if(selected ==true) {
                       try {
                         // print(widget.documentID);
-                        CloudFunction().addItemToNeedList(widget.documentID, product.query, widget.currentUserProfile.displayName);
+                        CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
                         // DatabaseService().addItemToNeedList(
                         //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
                         Scaffold
@@ -151,19 +147,39 @@ class _NeedListState extends State<NeedList> {
       ),
     );
   }
+}
 
-  Widget needList() {
+class NeedListToDisplay extends StatelessWidget{
+  final documentID;
+
+  const NeedListToDisplay({Key key, this.documentID}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+        height: MediaQuery.of(context).size.height * .4,
+        child: needList(context),
+      ),
+    );
+  }
+    Widget needList(context){
 
     void _onSelectedItems(Need item) {
-          CloudFunction().addItemToBringingList(widget.documentID, item.item);
-          CloudFunction().removeItemFromNeedList(widget.documentID, item.documentID);
-          Scaffold
-              .of(context)
-              .showSnackBar(SnackBar(
-                content: const Text("Item added to Bringing list")));
+      CloudFunction().addItemToBringingList(documentID, item.item);
+      CloudFunction().removeItemFromNeedList(documentID, item.documentID);
+      Scaffold
+          .of(context)
+          .showSnackBar(SnackBar(
+          content: const Text("Item added to Bringing list")));
     }
     return StreamBuilder(
       builder: (context, items) {
+        if(items.error != null){
+          CloudFunction().logEvent('Retrieving need items for ${currentUserProfile.uid}');
+          CloudFunction().logError(items.error.toString());
+        }
         if (items.hasData) {
           return ListView.builder(
             itemCount: items.data.length,
@@ -178,8 +194,8 @@ class _NeedListState extends State<NeedList> {
                 ),
                 key: Key(item.documentID),
                 onDismissed: (direction) {
-                  CloudFunction().removeItemFromNeedList(widget.documentID, item.documentID);
-                  // DatabaseService().removeItemFromNeedList(widget.documentID, item.documentID);
+                  CloudFunction().removeItemFromNeedList(documentID, item.documentID);
+                  // DatabaseService().removeItemFromNeedList(documentID, item.documentID);
                   Scaffold
                       .of(context)
                       .showSnackBar(SnackBar(content: const Text("Item removed")));
@@ -189,9 +205,7 @@ class _NeedListState extends State<NeedList> {
                   subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
                   trailing: const Icon(Icons.add),
                   onTap: (){
-                      setState(() {
-                        _onSelectedItems(item);
-                      });
+                      _onSelectedItems(item);
                   },
                 ),
               );
@@ -201,11 +215,10 @@ class _NeedListState extends State<NeedList> {
           return Loading();
         }
       },
-      stream: DatabaseService().getNeedList(widget.documentID),
+      stream: DatabaseService().getNeedList(documentID),
     );
   }
 }
-
 class BringListToDisplay extends StatelessWidget{
 
   final String tripDocID;
@@ -225,6 +238,10 @@ class BringListToDisplay extends StatelessWidget{
   Widget bringList() {
     return StreamBuilder(
       builder: (context, items) {
+        if(items.error != null){
+          CloudFunction().logEvent('Bringing items stream for ${currentUserProfile.uid}');
+          CloudFunction().logError(items.error.toString());
+        }
         if (items.hasData) {
           return ListView.builder(
             itemCount: items.data.length,

@@ -14,7 +14,7 @@ class UserProfilePage extends StatelessWidget{
     return Scaffold(
       body: Stack(
         children: [
-          HangingImageTheme3(),
+          HangingImageTheme3(user: user,),
           ProfileWidget(user: user),
         ],
       ),

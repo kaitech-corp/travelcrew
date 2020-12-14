@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 
 import 'package:travelcrew/services/auth.dart';
 import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class SignUpScreen extends StatefulWidget {
 
@@ -22,7 +23,7 @@ class _SignupScreenState extends State {
   final _formKey = GlobalKey<FormState>();
   final _user = UserSignUp();
   File _image;
-  final picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
 
   String email = '';
   String password = '';
@@ -31,12 +32,25 @@ class _SignupScreenState extends State {
   Key get key => null;
   Key key1;
 
-  Future getImage() async {
-    var image = await picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+  getImage() async {
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
-    setState(() {
-      _image = File(image.path);
-    });
+    _cropImage(image.path, image);
+  }
+
+  _cropImage(imagePath, image) async{
+    File croppedImage = await ImageCropper.cropImage(
+      sourcePath: imagePath, maxHeight: 1080, maxWidth: 1080,);
+
+    if (croppedImage != null) {
+      setState(() {
+        _image = croppedImage;
+      });
+    } else {
+      setState(() {
+        _image = File(image.path);
+      });
+    }
   }
 
 
@@ -121,10 +135,19 @@ class _SignupScreenState extends State {
                                 onSaved: (val) =>
                                     setState(() => password = val)),
                             const Padding(padding: EdgeInsets.only(top: 5),),
-                            Container(
-                              child: _image == null
-                                  ? const Text('Select a Profile Picture.',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold))
-                                  : Image.file(_image),
+                            _image == null
+                                ? const Text('Select a Profile Picture.',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold))
+                                : Container(
+                              height: (SizeConfig.screenWidth/3)*2.5,
+                              // width: (SizeConfig.screenWidth/3)*1.9,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  // color: Colors.orange,
+                                  image: DecorationImage(
+                                      image: FileImage(_image),
+                                      fit: BoxFit.cover
+                                  )
+                              ),
                             ),
                             RaisedButton(
                               onPressed: () {

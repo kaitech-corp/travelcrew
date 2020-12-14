@@ -8,7 +8,7 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 class CustomAppBar extends StatelessWidget {
 
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   CustomAppBar({
     Key key, this.bottomNav, this.heroTag,
   }) : super(key: key);
@@ -78,13 +78,6 @@ class CustomAppBar extends StatelessWidget {
                           icon: const Icon(Icons.chat),
                           onPressed: (){
                             Navigator.pushNamed(context, '/chats_page');
-                          },
-                        ),
-                        // SizedBox(width: SizeConfig.screenWidth/16.0,),
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: (){
-                            Navigator.pushNamed(context, '/addTrip');
                           },
                         ),
                       ],

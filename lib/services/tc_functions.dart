@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,7 +15,7 @@ class TCFunctions {
     return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
   }
 
-  String AppReviewDocID() {
+  String appReviewDocID() {
     DateTime now = DateTime.now();
     return DateFormat('yM').format(now).replaceAll('/', 'x');
   }

@@ -6,14 +6,12 @@ import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 
 
 
 class EditLodging extends StatefulWidget {
 
-  var userService = locator<UserService>();
   final LodgingData lodging;
   final Trip trip;
   EditLodging({this.lodging, this.trip});

@@ -8,7 +8,6 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:travelcrew/screens/add_trip/add_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
@@ -80,7 +79,7 @@ class _TravelCrewState extends State<TravelCrew> {
   @override
   Widget build(BuildContext context) {
 
-    FirebaseCrashlytics.instance.log('YOUR LOG COMES HERE');
+    FirebaseCrashlytics.instance.log('App Started');
 
     return StreamProvider<User>.value(
       value: AuthService().user,
@@ -92,15 +91,15 @@ class _TravelCrewState extends State<TravelCrew> {
             description: 'sky theme',
             data: ThemeData(
               fontFamily: 'Cantata One',textTheme: TextTheme(
-              headline1: TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.black),
-              headline2: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Colors.black),
-              headline3: TextStyle(fontWeight: FontWeight.w700, fontSize: 22,color: Colors.black, fontStyle: FontStyle.italic),
-              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
-              headline5: TextStyle(fontWeight: FontWeight.w600,color: Colors.black, fontSize: 14),
-              headline6: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14),
-              subtitle1: TextStyle(fontWeight: FontWeight.bold),
-              subtitle2: TextStyle(fontWeight: FontWeight.w600),
-              button: TextStyle(fontWeight: FontWeight.bold),
+              headline1: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.black),
+              headline2: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Colors.black),
+              headline3: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22,color: Colors.black, fontStyle: FontStyle.italic),
+              headline4: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
+              headline5: const TextStyle(fontWeight: FontWeight.w600,color: Colors.black, fontSize: 14),
+              headline6: const TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14),
+              subtitle1: const TextStyle(fontWeight: FontWeight.bold),
+              subtitle2: const TextStyle(fontWeight: FontWeight.w600),
+              button: const TextStyle(fontWeight: FontWeight.bold),
             ),
               buttonColor: Colors.blue,
               floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -138,15 +137,15 @@ class _TravelCrewState extends State<TravelCrew> {
             data: ThemeData(
                 fontFamily: 'Cantata One',
               textTheme: TextTheme(
-              headline1: TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.white),
-              headline2: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
-              headline3: TextStyle(fontWeight: FontWeight.w700, fontSize: 22, color: Colors.greenAccent, fontStyle: FontStyle.italic),
-              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
-              headline5: TextStyle(fontWeight: FontWeight.w600,color: Colors.white, fontSize: 14,),
-              headline6: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14, color: Colors.white),
-              subtitle1: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
-              subtitle2: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-              button: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              headline1: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.white),
+              headline2: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+              headline3: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22, color: Colors.greenAccent, fontStyle: FontStyle.italic),
+              headline4: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+              headline5: const TextStyle(fontWeight: FontWeight.w600,color: Colors.white, fontSize: 14,),
+              headline6: const TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14, color: Colors.white),
+              subtitle1: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+              subtitle2: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+              button: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
                 buttonColor: Colors.blue,
                 dialogBackgroundColor: Colors.grey[600],
@@ -207,7 +206,7 @@ class _TravelCrewState extends State<TravelCrew> {
               routes: <String, WidgetBuilder>{
                 '/wrapper': (BuildContext context)=> new Wrapper(),
                 '/signUpScreen': (BuildContext context) => new SignUpScreen(),
-                '/addTrip': (BuildContext context)=> new AddTrip(),
+                // '/addTrip': (BuildContext context)=> new AddTrip(),
                 '/allTrips': (BuildContext context)=> new AllTripsPage(),
                 '/crewTrips': (BuildContext context)=> new CurrentCrewTrips(),
                 '/favorites': (BuildContext context)=> new Favorites(),

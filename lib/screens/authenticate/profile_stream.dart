@@ -23,7 +23,7 @@ class ProfileStream extends StatelessWidget{
       child: build2(context),
     );
   }
-
+//Pulls in notifications to show badge count.
   Widget build2(BuildContext context) {
     final user = Provider.of<User>(context);
     return StreamProvider<List<NotificationData>>.value(
