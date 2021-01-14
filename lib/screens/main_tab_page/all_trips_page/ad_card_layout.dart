@@ -54,6 +54,9 @@ class _AdTileCardState extends State<AdTileCard> {
     return StreamBuilder(
         stream: DatabaseService().adList,
         builder: (context, snapshot) {
+          if(snapshot.hasError){
+            CloudFunction().logError('Error streaming ads: ${snapshot.error.toString()}');
+          }
           if(snapshot.hasData) {
             return ListView.builder(
                 scrollDirection: Axis.horizontal,

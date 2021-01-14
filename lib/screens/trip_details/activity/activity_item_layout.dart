@@ -22,6 +22,7 @@ class ActivityItemLayout extends StatelessWidget {
     return Center(
         key: Key(activity.fieldID),
         child: Card(
+          margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
           color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
@@ -52,7 +53,7 @@ class ActivityItemLayout extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('${activity.displayName}',style: ReusableThemeColor().greenOrBlackTextColor(context),),
+                          Text('${activity.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
                           Row(
                             children: [
                               if(activity.link.isNotEmpty) Icon(Icons.link),
@@ -94,6 +95,7 @@ class ActivityItemLayout extends StatelessWidget {
 
   Widget menuButton(BuildContext context){
     return activity.uid == userService.currentUserID ? PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
           case "Edit": {
@@ -108,11 +110,13 @@ class ActivityItemLayout extends StatelessWidget {
             if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
           }
           break;
-          case "Delete": {
-            CloudFunction().removeActivity(trip.documentId, activity.fieldID);
+          case "Finalize": {
+            TravelCrewAlertDialogs().finalizeOptionAlert(context, activity.fieldID);
+
           }
           break;
           default: {
+            CloudFunction().removeLodging(trip.documentId, activity.fieldID);
           }
           break;
         }
@@ -133,6 +137,13 @@ class ActivityItemLayout extends StatelessWidget {
             title: const Text('View Link'),
           ),
         ),
+        // const PopupMenuItem(
+        //   value: 'Finalize',
+        //   child: ListTile(
+        //     leading: IconThemeWidget(icon: Icons.check_circle_outline),
+        //     title: const Text('Finalize'),
+        //   ),
+        // ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
@@ -143,6 +154,7 @@ class ActivityItemLayout extends StatelessWidget {
       ],
     ):
     PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
           case "report":
@@ -166,14 +178,14 @@ class ActivityItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
-            leading: const Icon(Icons.report),
+            leading: IconThemeWidget(icon:Icons.report),
             title: const Text('Report'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
-            leading: const Icon(Icons.link),
+            leading: IconThemeWidget(icon:Icons.link),
             title: const Text('View Link'),
           ),
         ),

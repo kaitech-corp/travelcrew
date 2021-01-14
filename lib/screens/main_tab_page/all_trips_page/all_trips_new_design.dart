@@ -9,6 +9,8 @@ import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/in_app_review.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -26,12 +28,11 @@ class AllTripsNewDesign extends StatefulWidget{
 }
 final AnalyticsService _analyticsService = AnalyticsService();
 
-class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTickerProviderStateMixin,
-AutomaticKeepAliveClientMixin<AllTripsNewDesign>{
+class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTickerProviderStateMixin<AllTripsNewDesign>{
 
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 
 
   @override
@@ -119,7 +120,8 @@ class _SliverGridListState extends State<SliverGridList> {
           }
           combinedList.addAll(trips4);
           for (var i = 0; i < thirdItemList.length; i++){
-            combinedList.insert(thirdItemList[i], tripAds[i]);
+            var j = (i < 10) ? i : (i- 9);
+            combinedList.insert(thirdItemList[i], tripAds[j]);
           }
         } catch (e){
           // print(e.toString());
@@ -212,6 +214,12 @@ class _SliverGridListState extends State<SliverGridList> {
 
       child: GestureDetector(
         onTap: () {
+          DatabaseService().appReviewExists(TCFunctions().appReviewDocID()).then((value) => {
+            if(!value){
+              InAppReviewClass().requestReviewFunc(),
+              CloudFunction().addReview(docID: TCFunctions().appReviewDocID()),
+            }
+          });
           _analyticsService.viewedTrip();
           Navigator.push(
             context,

@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
@@ -43,7 +44,10 @@ import 'screens/menu_screens/main_menu.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
 
   // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
@@ -115,7 +119,6 @@ class _TravelCrewState extends State<TravelCrew> {
               accentIconTheme: IconThemeData(
                   color: Colors.black
               ),
-
               brightness: Brightness.light,
               primaryColor: Colors.white,
               accentColor: Colors.blueAccent,
@@ -147,7 +150,7 @@ class _TravelCrewState extends State<TravelCrew> {
               subtitle2: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
               button: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
-                buttonColor: Colors.blue,
+                buttonColor: Colors.greenAccent,
                 dialogBackgroundColor: Colors.grey[600],
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
                     foregroundColor: Colors.white

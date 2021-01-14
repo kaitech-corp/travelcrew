@@ -15,6 +15,7 @@ class TransportationItemLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
         child: InkWell(
           child: Padding(
@@ -25,7 +26,7 @@ class TransportationItemLayout extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(transportationData.displayName,style: ReusableThemeColor().greenOrBlackTextColor(context),),
+                    Text(transportationData.displayName,style: ReusableThemeColor().greenOrBlueTextColor(context),),
                     Text(transportationData.mode,style: Theme.of(context).textTheme.headline4,),
                   ],
                 ),
@@ -46,7 +47,7 @@ class TransportationItemLayout extends StatelessWidget {
                   children: [
                     (transportationData.canCarpool) ? Text('Open to Carpool',style: Theme.of(context).textTheme.headline6,) : Text(''),
                     // menuButton(context, transportationData),
-                    if(currentUserProfile.uid == transportationData.uid) IconButton(icon: Icon(Icons.delete), onPressed: (){
+                    if(currentUserProfile.uid == transportationData.uid) IconButton(icon: IconThemeWidget(icon:Icons.delete), onPressed: (){
                       TravelCrewAlertDialogs().deleteTransportationAlert(context, transportationData);
                     })
                   ],
@@ -82,17 +83,17 @@ class TransportationItemLayout extends StatelessWidget {
       },
       padding: EdgeInsets.zero,
       itemBuilder: (context) =>[
-        const PopupMenuItem(
+         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
-            leading: const Icon(Icons.edit),
+            leading: IconThemeWidget(icon:Icons.edit),
             title: const Text('Edit'),
           ),
         ),
-        const PopupMenuItem(
+         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
-            leading: const Icon(Icons.delete),
+            leading: IconThemeWidget(icon:Icons.delete),
             title: const Text('Delete'),
           ),
         ),
@@ -117,7 +118,7 @@ class TransportationItemLayout extends StatelessWidget {
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
-            leading: const Icon(Icons.report),
+            leading: IconThemeWidget(icon:Icons.report),
             title: const Text('Report'),
           ),
         ),

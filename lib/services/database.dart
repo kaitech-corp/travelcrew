@@ -53,7 +53,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('versionDec10').get();
+      var ref = await versionCollection.doc('version2_0_2').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -224,6 +224,8 @@ class DatabaseService {
       }
     }
   }
+
+
 
 
   // Add new trip
@@ -523,13 +525,23 @@ class DatabaseService {
     }
   }
 
+  Future<UserPublicProfile> followingList() async{
+    var ref = await userPublicProfileCollection.doc(currentUserProfile.uid).get();
+    if(ref.exists){
+      Map<String, dynamic> data = ref.data();
+      return UserPublicProfile(
+        following: List<String>.from(data['following']) ?? [],
+      );
+    }
+  }
   // Get following list
   Stream<List<UserPublicProfile>> retrieveFollowingList() async*{
       var user = await usersList();
-      var followingList =
-          user.where((user) => currentUserProfile.following.contains(user.uid)).toList();
+      var followingRef = await followingList();
+    var ref =
+          user.where((user) => followingRef.following.contains(user.uid)).toList();
 
-    yield followingList;
+    yield ref;
   }
 
   Stream<List<UserPublicProfile>> retrieveFollowList(UserPublicProfile currentUser) async*{
@@ -1192,7 +1204,7 @@ class DatabaseService {
   List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot snapshot){
     try {
       final now = DateTime.now().toUtc();
-      var yesterday = DateTime(now.year, now.month, now.day - 1);
+      var tomorrow = DateTime(now.year, now.month, now.day + 1);
         List<Trip> trips = snapshot.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
           return Trip(
@@ -1216,7 +1228,7 @@ class DatabaseService {
           );
         }).toList();
       List<Trip> crewTrips = trips.where((trip) =>
-          trip.endDateTimeStamp.toDate().isAfter(yesterday)).toList();
+          trip.endDateTimeStamp.toDate().isAfter(tomorrow)).toList();
       return crewTrips;
     } on Exception catch (e) {
       CloudFunction().logError(e.toString());

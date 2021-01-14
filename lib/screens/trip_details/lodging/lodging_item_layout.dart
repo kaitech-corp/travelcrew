@@ -26,6 +26,7 @@ class LodgingItemLayout extends StatelessWidget {
     return Center(
         key: Key(lodging.fieldID),
       child: Card(
+        margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
         color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
           child: InkWell(
             splashColor: Colors.blue.withAlpha(30),
@@ -54,7 +55,7 @@ class LodgingItemLayout extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('${lodging.displayName}',style: ReusableThemeColor().greenOrBlackTextColor(context),),
+                      Text('${lodging.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
                       Row(
                         children: [
                           if(lodging.link.isNotEmpty) Icon(Icons.link),
@@ -95,6 +96,7 @@ class LodgingItemLayout extends StatelessWidget {
 
   Widget menuButton(BuildContext context){
     return lodging.uid == userService.currentUserID ? PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
           case "Edit": {
@@ -109,12 +111,12 @@ class LodgingItemLayout extends StatelessWidget {
             if(lodging.link.isNotEmpty) TCFunctions().launchURL(lodging.link);
           }
           break;
-          case "Delete": {
-            CloudFunction().removeLodging(trip.documentId, lodging.fieldID);
+          case "Finalize": {
+
           }
           break;
           default: {
-
+            CloudFunction().removeLodging(trip.documentId, lodging.fieldID);
           }
           break;
         }
@@ -135,6 +137,13 @@ class LodgingItemLayout extends StatelessWidget {
             title: const Text('View Link'),
           ),
         ),
+        // const PopupMenuItem(
+        //   value: 'Finalize',
+        //   child: ListTile(
+        //     leading: IconThemeWidget(icon: Icons.check_circle_outline),
+        //     title: const Text('Finalize'),
+        //   ),
+        // ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
@@ -145,6 +154,7 @@ class LodgingItemLayout extends StatelessWidget {
       ],
     ):
     PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
           case "report":

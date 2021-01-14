@@ -5,6 +5,7 @@ import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/badge_icon.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -123,6 +124,9 @@ class TappableCrewTripTile extends StatelessWidget {
   Widget chatNotificationBadges(Trip trip){
     return StreamBuilder(
         builder: (context, chats){
+          if(chats.hasError){
+            CloudFunction().logError('Error streaming chats for notifications on Crew cards: ${chats.error.toString()}');
+          }
           if(chats.hasData){
             if(chats.data.length > 0) {
               return Tooltip(
@@ -147,6 +151,9 @@ class TappableCrewTripTile extends StatelessWidget {
 
     return StreamBuilder(
       builder: (context, items){
+        if(items.hasError){
+          CloudFunction().logError('Error streaming need list for Crew trip cards: ${items.error.toString()}');
+        }
         if(items.hasData){
           if(items.data.length > 0) {
             return Tooltip(

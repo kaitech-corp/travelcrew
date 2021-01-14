@@ -18,8 +18,9 @@ class ReusableThemeColor {
     return (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.blue : Colors.greenAccent;
   }
 
-  TextStyle greenOrBlackTextColor(BuildContext context){
-    return (ThemeProvider.themeOf(context).id == 'light_theme') ? Theme.of(context).textTheme.subtitle1 : TextStyle(color: Colors.greenAccent,fontSize: 16,fontFamily: 'Cantata One',fontWeight: FontWeight.bold);
+  TextStyle greenOrBlueTextColor(BuildContext context){
+    return (ThemeProvider.themeOf(context).id == 'light_theme') ?
+    TextStyle(color: Colors.blue,fontSize: 16,fontFamily: 'Cantata One',fontWeight: FontWeight.bold) : TextStyle(color: Colors.greenAccent,fontSize: 16,fontFamily: 'Cantata One',fontWeight: FontWeight.bold);
   }
 }
 

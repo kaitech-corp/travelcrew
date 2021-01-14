@@ -4,6 +4,7 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/appearance_widgets.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -40,6 +41,9 @@ class _MembersLayoutState extends State<MembersLayout> {
       children: [
         StreamBuilder(
           builder: (context, userData){
+            if(userData.hasError){
+              CloudFunction().logError('Error streaming user data for members layout: ${userData.error.toString()}');
+            }
             if(userData.hasData){
               List<UserPublicProfile> crew = userData.data;
               return ListView.builder(

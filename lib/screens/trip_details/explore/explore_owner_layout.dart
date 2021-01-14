@@ -14,7 +14,7 @@ import 'package:travelcrew/services/appearance_widgets.dart';
 import 'package:travelcrew/services/reusableWidgets.dart';
 import 'package:travelcrew/services/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
+import 'package:clipboard/clipboard.dart';
 import 'ImageAnimation.dart';
 
 
@@ -133,6 +133,16 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
+                          // RaisedButton(
+                          //   shape: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(20),
+                          //   ),
+                          //   onPressed: () {
+                          //     Navigator.push(context, MaterialPageRoute(builder: (context) => CostPage(tripDetails: widget.tripDetails,)),);
+                          //   },
+                          //   child: Text("Split"),
+                          //   // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
+                          // ),
                             CrewModalBottomSheet(tripDetails: widget.tripDetails),
                           ],
                         ),
@@ -162,21 +172,26 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                        child: Container(
-                                          padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                          height: _tripDetailsBoxSize,
-                                          width: _tripDetailsBoxSize,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              TripDetailsIconThemeWidget(icon: Icons.location_pin,),
-                                              Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
-                                            ],
+                                      GestureDetector(
+                                        onTap: (){
+                                          FlutterClipboard.copy(widget.tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
+                                    },
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                          child: Container(
+                                            padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
+                                            height: _tripDetailsBoxSize,
+                                            width: _tripDetailsBoxSize,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                TripDetailsIconThemeWidget(icon: Icons.location_pin,),
+                                                Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -262,7 +277,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                        height: _tripDetailsBoxSize,
+                                        // height: _tripDetailsBoxSize,
                                         width: double.infinity,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,

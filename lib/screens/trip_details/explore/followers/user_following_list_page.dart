@@ -32,6 +32,9 @@ class _currentUserFollowingListState extends State<currentUserFollowingList> {
       body: StreamBuilder(
         stream: DatabaseService().retrieveFollowingList(),
         builder: (context, users) {
+          if(users.hasError){
+           CloudFunction().logError('Error streaming Following list for invites: ${users.error.toString()}');
+          }
           if (users.hasData) {
             var followingList =
                 users.data.where((user) => currentUserProfile.following.contains(user.uid)).toList();

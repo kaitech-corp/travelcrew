@@ -176,9 +176,8 @@ class NeedListToDisplay extends StatelessWidget{
     }
     return StreamBuilder(
       builder: (context, items) {
-        if(items.error != null){
-          CloudFunction().logEvent('Retrieving need items for ${currentUserProfile.uid}');
-          CloudFunction().logError(items.error.toString());
+        if(items.hasError){
+          CloudFunction().logError('Error streaming items in need list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
           return ListView.builder(
@@ -201,6 +200,7 @@ class NeedListToDisplay extends StatelessWidget{
                       .showSnackBar(SnackBar(content: const Text("Item removed")));
                 },
                 child: ListTile(
+                  leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
                   title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
                   subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
                   trailing: const Icon(Icons.add),
@@ -238,9 +238,8 @@ class BringListToDisplay extends StatelessWidget{
   Widget bringList() {
     return StreamBuilder(
       builder: (context, items) {
-        if(items.error != null){
-          CloudFunction().logEvent('Bringing items stream for ${currentUserProfile.uid}');
-          CloudFunction().logError(items.error.toString());
+        if(items.hasError){
+          CloudFunction().logError('Error streaming items in bringing list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
           return ListView.builder(

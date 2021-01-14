@@ -150,6 +150,9 @@ class _SignupScreenState extends State {
                               ),
                             ),
                             RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)
+                              ),
                               onPressed: () {
                                 getImage();
                               },
@@ -195,6 +198,9 @@ class _SignupScreenState extends State {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 30.0, horizontal: 30.0),
                                 child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20)
+                                    ),
                                     onPressed: () async {
                                       final form = _formKey.currentState;
                                     if (form.validate()) {

@@ -430,4 +430,6 @@ class CloudFunction {
       'error': error,
     });
   }
+
+  // void addSplitItem(String )
 }//end CloudFunction

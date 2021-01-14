@@ -1,7 +1,10 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/cost/progress_bar.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 import '../../../loading.dart';
 
@@ -39,7 +42,7 @@ class BringListCostDisplay extends StatelessWidget{
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-        height: MediaQuery.of(context).size.height * .4,
+        height: MediaQuery.of(context).size.height,
         child: bringList(),
       ),
     );
@@ -53,19 +56,43 @@ class BringListCostDisplay extends StatelessWidget{
             itemCount: items.data.length,
             itemBuilder: (context, index) {
               Bringing item = items.data[index];
-              return ListTile(
-                key: Key(item.documentID),
-                onLongPress: (){
-                  TravelCrewAlertDialogs().deleteBringinItemAlert(context, tripDocID, item.documentID);
-                },
-                leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
-                title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: (){
-
-                  },
+              return Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      key: Key(item.documentID),
+                      onLongPress: (){
+                        TravelCrewAlertDialogs().deleteBringinItemAlert(context, tripDocID, item.documentID);
+                      },
+                      leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
+                      title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
+                      subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
+                      trailing: Text('\$100'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ProgressBarWidget(currentValue: 20, maxValue: 100,)
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ExpandablePanel(
+                        header: Text('Details', style: Theme.of(context).textTheme.headline2,),
+                        // collapsed:
+                        expanded: Container(
+                          height: SizeConfig.screenHeight*.3,
+                          width: SizeConfig.screenWidth,
+                          child: ListView.builder(
+                            itemCount: 3,
+                              itemBuilder: (context, index){
+                              return ListTile(
+                                title: Text('User $index'),
+                                trailing: Text('\$33.33'),
+                              );
+                              }),
+                        )
+                      ),
+                    ),
+                  ],
                 ),
               );
             },

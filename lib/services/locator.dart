@@ -12,6 +12,7 @@ final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 void setupLocator() {
   locator.registerSingleton(UserService());
   locator.registerSingleton(UserProfileService());
+  // locator.registerSingleton(UserProfileServiceStream());
 }
 
 class UserService {
@@ -71,6 +72,7 @@ class UserProfileServiceStream {
 
       Map<String, dynamic> data = snapshot.data();
       profile = UserPublicProfile(
+        blockedList: List<String>.from(data['blockedList']) ?? [],
         displayName: data['displayName'] ?? '',
         email: data['email'] ?? '',
         following: List<String>.from(data['following']) ?? [''],
@@ -89,9 +91,15 @@ class UserProfileServiceStream {
 
   }
   // get all users
-  Stream<UserPublicProfile> get userList {
+  Stream<UserPublicProfile> get userProfileStream {
     return FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).snapshots()
         .map(_userListFromSnapshot);
+  }
+
+  UserPublicProfile profileStream(){
+    print(userProfileStream.single.then((value) => value.uid));
+    userProfileStream.first.then((value) => profile = value);
+    return profile;
   }
 }
 

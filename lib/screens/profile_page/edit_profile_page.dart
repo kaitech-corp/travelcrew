@@ -186,21 +186,21 @@ class _SignupScreenState extends State {
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 1'),
                                                 onSaved: (val) =>
-                                                    setState(() => destination1 = val)),
+                                                    setState(() => destination1 = val.trim())),
                                             TextFormField(
                                                 initialValue: (user.topDestinations[1].isNotEmpty) ? user.topDestinations[1] : '',
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 2'),
                                                 onSaved: (val) =>
-                                                    setState(() => destination2 = val)),
+                                                    setState(() => destination2 = val.trim())),
                                             TextFormField(
                                                 initialValue: (user.topDestinations[2].isNotEmpty) ? user.topDestinations[2] : '',
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 3'),
                                                 onSaved: (val) =>
-                                                    setState(() => destination3 = val)),
+                                                    setState(() => destination3 = val.trim())),
                                           ],
                                         ),
                                       ),

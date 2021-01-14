@@ -7,6 +7,7 @@ import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.da
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/transportation/transportation.dart';
 import 'package:travelcrew/services/badge_icon.dart';
+import 'package:travelcrew/services/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'explore_owner_layout.dart';
 
@@ -90,6 +91,9 @@ class Explore extends StatelessWidget {
 Widget getChatNotificationBadge (){
     return StreamBuilder(
         builder: (context, chats){
+          if(chats.hasError){
+            CloudFunction().logError('Error streaming chats for explore chat notification: ${chats.error.toString()}');
+          }
           if(chats.hasData){
             if(chats.data.length > 0) {
               int chatNotifications = chats.data.length;

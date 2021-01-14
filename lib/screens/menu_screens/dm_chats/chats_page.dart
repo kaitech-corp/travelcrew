@@ -23,7 +23,6 @@ class DMChatListPage extends StatelessWidget{
           if(users.hasError){
             CloudFunction().logError('Error streaming dm chat list: ${users.error.toString()}');
           }
-          print(users.error);
           if (users.hasData) {
             var chats = users.data;
             return ListView.builder(
@@ -66,8 +65,7 @@ class DMChatListPage extends StatelessWidget{
                   child: user.urlToImage != null ? Image.network(user.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
                 ),
               ),
-              title: Text('${user.firstName} ${user.lastName}'),
-              subtitle: Text("${user.displayName}",
+              title: Text("${user.displayName}",
                 textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
               trailing: chatNotificationBadges(user),
             ),
@@ -84,6 +82,9 @@ class DMChatListPage extends StatelessWidget{
 Widget chatNotificationBadges(UserPublicProfile user){
   return StreamBuilder(
     builder: (context, chats){
+      if(chats.hasError){
+        CloudFunction().logError('Error streaming chats for DM notifications: ${chats.error.toString()}');
+      }
       if(chats.hasData){
         if(chats.data.length > 0) {
           chatNotifier.value = 1;

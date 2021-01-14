@@ -195,9 +195,9 @@ class TravelCrewAlertDialogs {
         return AlertDialog(
           title: tripDetails.ispublic
               ? const Text(
-            'Are you sure you want to convert this into a Private Trip?',textScaleFactor: 1.2,)
+            'Convert to Private Trip?',textScaleFactor: 1.2,)
               : const Text(
-            'Are you sure you want to convert this into a Public Trip?',),
+            'Convert to Public Trip?',),
           content: tripDetails.ispublic
               ? const Text('This trip will only be visible to members.')
               : const Text('Trip will be become public for followers to see.',),
@@ -251,6 +251,10 @@ class TravelCrewAlertDialogs {
   void showRequestDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: const Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
+  }
+  void copiedToClipboardDialog(BuildContext context) {
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: const Text('Copied to Clipboard.')));
   }
 
   void unblockDialog(BuildContext context) {
@@ -332,6 +336,33 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().followBack(userUID);
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //Finalize option
+  Future<void> finalizeOptionAlert(BuildContext context, String fieldID) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: const Text('Finalize this option?',textScaleFactor: 1.5,)),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('Yes'),
+              onPressed: () {
+
                 Navigator.pop(context);
               },
             ),

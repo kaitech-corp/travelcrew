@@ -96,12 +96,8 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                     onPressed: () {
                       if (_message.isNotEmpty) {
-                        CloudFunction().addCustomNotification(_message);
-                        Scaffold
-                            .of(context)
-                            .showSnackBar(SnackBar(content: Text("Submitted")));
-                        _controller.clear();
                         TravelCrewAlertDialogs().pushCustomNotification(context);
+                        CloudFunction().addCustomNotification(_message);
                       }
                     },
                     textColor: Colors.white,

@@ -118,7 +118,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
         builder: (context, data){
           if(data.hasData){
             var version = data.data;
-            return Text(version);
+            return Text(version,style: Theme.of(context).textTheme.subtitle1);
           } else {
             return Text('');
           }

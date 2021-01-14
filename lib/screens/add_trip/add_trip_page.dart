@@ -371,6 +371,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                             }
                                           }
 
+                                          myController.text = '';
                                           myController.clear();
                                           form.reset();
                                           setState(() {

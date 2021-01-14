@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -156,21 +157,26 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                      child: Container(
-                                        padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                        height: _tripDetailsBoxSize,
-                                        width: _tripDetailsBoxSize,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            TripDetailsIconThemeWidget(icon: Icons.location_pin,),
-                                            Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
-                                          ],
+                                    GestureDetector(
+                                      onTap: (){
+                                        FlutterClipboard.copy(widget.tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
+                                      },
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+                                        child: Container(
+                                          padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
+                                          height: _tripDetailsBoxSize,
+                                          width: _tripDetailsBoxSize,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              TripDetailsIconThemeWidget(icon: Icons.location_pin,),
+                                              Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -191,7 +197,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                                              Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,),
+                                              FittedBox(fit: BoxFit.fitWidth,child: Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,)),
                                             ],
                                           ),
                                         ),
@@ -251,7 +257,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                                     },
                                     child: Container(
                                       padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                      height: _tripDetailsBoxSize,
+                                      // height: _tripDetailsBoxSize,
                                       width: double.infinity,
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,

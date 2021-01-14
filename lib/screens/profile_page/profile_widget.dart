@@ -231,51 +231,36 @@ class FollowerBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: (){
-            showModalBottomSheet(
-              context: context,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-              ),
-              builder: (context) => Container(
-                padding: const EdgeInsets.all(10),
-                height: SizeConfig.screenHeight*.7,
-                child: FollowList(isFollowers: true,user: user,),
-              ),
-            );
-          },
-          child: Column(
+    return GestureDetector(
+      onTap: (){
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => Container(
+            padding: const EdgeInsets.all(10),
+            height: SizeConfig.screenHeight*.7,
+            child: FollowList(isFollowers: false,user: user,),
+          ),
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Followers',style: Theme.of(context).textTheme.subtitle1),
-              Text('${user.followers.length}',style: ReusableThemeColor().greenOrBlackTextColor(context),),
+              Text('${user.followers.length}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
             ],
           ),
-        ),
-        GestureDetector(
-          onTap: (){
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => Container(
-                padding: const EdgeInsets.all(10),
-                height: SizeConfig.screenHeight*.7,
-                child: FollowList(isFollowers: false,user: user,),
-              ),
-            );
-          },
-          child: Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Following',style: Theme.of(context).textTheme.subtitle1),
-              Text('${user.following.length}',style: ReusableThemeColor().greenOrBlackTextColor(context)),
+              Text('${user.following.length}',style: ReusableThemeColor().greenOrBlueTextColor(context)),
             ],
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }
@@ -304,6 +289,9 @@ class _FollowListState extends State<FollowList> {
     return StreamBuilder(
       stream: DatabaseService().retrieveFollowList(widget.user),
       builder: (context, users) {
+        if(users.hasError){
+          CloudFunction().logError('Error streaming follow list in profile widget: ${users.error.toString()}');
+        }
         if (users.hasData) {
           List<UserPublicProfile> followList = users.data;
           return Stack(
@@ -382,12 +370,7 @@ class _FollowListState extends State<FollowList> {
                     : null,
               ),
             ),
-            title: Text('${member.firstName ?? ''} ${member.lastName ?? ''}',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .subtitle1),
-            subtitle: Text("${member.displayName}", style: Theme
+            title: Text("${member.displayName}", style: Theme
                 .of(context)
                 .textTheme
                 .subtitle1,
