@@ -6,12 +6,13 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import '../loading.dart';
-import 'constants.dart';
+import 'loading.dart';
+import '../constants/constants.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 
@@ -259,7 +260,7 @@ class HangingImageTheme3 extends StatelessWidget {
                         (currentUserProfile.uid == user.uid) ? IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: (){
-                            Navigator.pushNamed(context, '/editProfilePage');
+                            navigationService.navigateTo(EditProfilePageRoute);
                             // Navigator.pushNamed(context, '/cropperTest');
                           },
                         ) :

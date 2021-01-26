@@ -6,7 +6,7 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 
 
 

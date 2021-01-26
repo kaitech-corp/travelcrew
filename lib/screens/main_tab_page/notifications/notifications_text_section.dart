@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 
 class NotificationsTextSection extends StatelessWidget{
   final NotificationData notification;
@@ -40,16 +40,10 @@ class NotificationsTextSection extends StatelessWidget{
         onTap: () async {
           if(notification.ispublic){
             Trip trip = await DatabaseService().getTrip(notification.documentID);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Explore(trip: trip,)),
-            );
+            navigationService.navigateTo(ExploreRoute,arguments: trip);
           } else {
             Trip trip = await DatabaseService().getPrivateTrip(notification.documentID);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Explore(trip: trip,)),
-            );
+            navigationService.navigateTo(ExploreRoute,arguments: trip);
           }
         },
       ),

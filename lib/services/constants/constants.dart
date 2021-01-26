@@ -1,6 +1,7 @@
 
 import 'package:travelcrew/size_config/size_config.dart';
 
+const error = 'assets/images/error.jpg';
 const profileImagePlaceholder = 'assets/images/blank_profile_picture.png';
 const spaceImage = 'assets/images/space3.jpg';
 const skyImage = 'assets/images/sky.jpg';

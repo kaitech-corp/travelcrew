@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
-import '../../../loading.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import '../../../services/widgets/loading.dart';
 
 
 
@@ -217,7 +217,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                         } on Exception catch (e) {
                           CloudFunction().logError(e.toString());
                         }
-                        Navigator.pop(context);
+                        navigationService.pop();
                       }
                     },
 

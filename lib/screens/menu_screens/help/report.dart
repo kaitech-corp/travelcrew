@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/database.dart';
 
 class ReportContent extends StatefulWidget{
 
@@ -146,7 +147,7 @@ class _ReportContentState extends State<ReportContent> {
                 child: RaisedButton(
                   onPressed: () {
                     CloudFunction().reportUser(collection, docID, offenderID, _message, itemType, urlToImage);
-                    Navigator.pop(context);
+                    navigationService.pop();
                     TravelCrewAlertDialogs().submittedAlert(context);
                   },
                   textColor: Colors.white,

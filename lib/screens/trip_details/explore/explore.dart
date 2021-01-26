@@ -6,8 +6,8 @@ import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/transportation/transportation.dart';
-import 'package:travelcrew/services/badge_icon.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'explore_owner_layout.dart';
 
@@ -39,7 +39,7 @@ class Explore extends StatelessWidget {
               icon: const Icon(Icons.close),
               onPressed: () {
                 _closeModalBottomSheet;
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],

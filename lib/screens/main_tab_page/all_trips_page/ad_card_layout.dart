@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import '../../../loading.dart';
+import '../../../services/widgets/loading.dart';
 import 'all_trips_new_design.dart';
 
 

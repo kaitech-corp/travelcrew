@@ -4,11 +4,11 @@ import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import '../../../loading.dart';
+import '../../../services/widgets/loading.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 

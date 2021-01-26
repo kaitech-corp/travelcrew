@@ -6,8 +6,9 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'add_trip_page.dart';
 
 
@@ -101,7 +102,8 @@ class _EditTripDataState extends State<EditTripData> {
     GeoPoint tripGeoPoint = widget.tripDetails.tripGeoPoint;
 
     return Scaffold(
-        appBar: AppBar(title: Text('Edit $tripName!')),
+        appBar: AppBar(
+            title: const Text('Edit Trip')),
         body: Container(
             child: SingleChildScrollView(
                 padding:
@@ -349,7 +351,7 @@ class _EditTripDataState extends State<EditTripData> {
   _showDialog(BuildContext context) {
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: const Text('Submitting form')));
-    Navigator.pushReplacementNamed(context, '/wrapper');
+    navigationService.pushNamedAndRemoveUntil(WrapperRoute);
   }
 }
 

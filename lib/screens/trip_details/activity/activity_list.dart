@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 
-import '../../../loading.dart';
+import '../../../services/widgets/loading.dart';
 import 'activity_item_layout.dart';
 
 class ActivityList extends StatefulWidget {

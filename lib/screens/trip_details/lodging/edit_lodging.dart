@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 
 
 
@@ -248,7 +248,7 @@ class _EditLodgingState extends State<EditLodging> {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pop(context);
+                              navigationService.pop();
                             }
                           },
                           child: Text(

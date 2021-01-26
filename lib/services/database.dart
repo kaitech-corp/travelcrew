@@ -2,15 +2,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/navigation/navigation_service.dart';
 import 'package:travelcrew/services/push_notifications.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'analytics_service.dart';
 
 var userService = locator<UserService>();
 var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+var navigationService = locator<NavigationService>();
 
 class DatabaseService {
 
@@ -98,6 +100,17 @@ class DatabaseService {
     }
   }
 
+
+  Future getUserProfile(String uid) async{
+    try{
+      var userData = await userPublicProfileCollection.doc(uid).get();
+      Map<String, dynamic> data = userData.data();
+      return UserPublicProfile.fromData(data);
+    } catch(e){
+      CloudFunction().logError(e.toString());
+    }
+  }
+
   //Updates user info after signup
   Future updateUserData(String firstName, String lastName, String email, String uid) async {
     try {
@@ -114,12 +127,16 @@ class DatabaseService {
     }
   }
 
+
+
   //Checks whether user has a Public Profile on Firestore to know whether to
   // send user to complete profile page or not.
 
   Future<bool> checkUserHasProfile() async {
     var ref = userCollection.doc(uid);
     var refSnapshot = await ref.get();
+    if (refSnapshot.exists){
+    }
 
     return refSnapshot.exists;
     }
@@ -532,6 +549,8 @@ class DatabaseService {
       return UserPublicProfile(
         following: List<String>.from(data['following']) ?? [],
       );
+    } else {
+      return null;
     }
   }
   // Get following list
@@ -608,13 +627,7 @@ class DatabaseService {
             'Members').get();
         List<Members> memberList = ref.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
-          return Members(
-            displayName: data['displayName'] ?? '',
-            firstName: data['firstName'] ?? '',
-            lastName: data['lastName'] ?? '',
-            uid: data['uid'] ?? '',
-            urlToImage: data['urlToImage'] ?? '',
-          );
+          return Members.fromData(data);
         }).toList();
         memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
         return memberList;
@@ -631,13 +644,7 @@ class DatabaseService {
 
           List<Members> memberList = ref.docs.map((doc) {
             Map<String, dynamic> data = doc.data();
-            return Members(
-              displayName: data['displayName'] ?? '',
-              firstName: data['firstName'] ?? '',
-              lastName: data['lastName'] ?? '',
-              uid: data['uid'] ?? '',
-              urlToImage: data['urlToImage'] ?? '',
-            );
+            return Members.fromData(data);
           }).toList();
           memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
           return memberList;
@@ -659,25 +666,9 @@ class DatabaseService {
       CloudFunction().logEvent(action);
       if (ref.exists){
           Map<String, dynamic> data = ref.data();
-          return Trip(
-            accessUsers: List<String>.from(data['accessUsers']) ?? null,
-            comment: data['comment'] ?? '',
-            dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-            displayName: data['displayName'] ?? '',
-            documentId: data['documentId'] ?? '',
-            endDate: data['endDate'] ?? '',
-            endDateTimeStamp: data['endDateTimeStamp'],
-            favorite: List<String>.from(data['favorite']) ?? [''],
-            ispublic: data['ispublic'] ?? null,
-            location: data['location'] ?? '',
-            ownerID: data['ownerID'] ?? '',
-            startDate: data['startDate'] ?? '',
-            startDateTimeStamp: data['startDateTimeStamp'],
-            tripGeoPoint: data['tripGeoPoint'] ?? null,
-            tripName: data['tripName'] ?? '',
-            travelType: data['travelType'] ?? '',
-            urlToImage: data['urlToImage'] ?? '',
-          );
+          return Trip.fromData(data);
+      } else {
+        return null;
       }
     } catch (e) {
       CloudFunction().logError(e.toString());
@@ -693,25 +684,9 @@ class DatabaseService {
       CloudFunction().logEvent(action);
       if (ref.exists){
         Map<String, dynamic> data = ref.data();
-        return Trip(
-          accessUsers: List<String>.from(data['accessUsers']) ?? null,
-          comment: data['comment'] ?? '',
-          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-          displayName: data['displayName'] ?? '',
-          documentId: data['documentId'] ?? '',
-          endDate: data['endDate'] ?? '',
-          endDateTimeStamp: data['endDateTimeStamp'],
-          favorite: List<String>.from(data['favorite']) ?? [''],
-          ispublic: data['ispublic'] ?? null,
-          location: data['location'] ?? '',
-          ownerID: data['ownerID'] ?? '',
-          startDate: data['startDate'] ?? '',
-          startDateTimeStamp: data['startDateTimeStamp'],
-          tripGeoPoint: data['tripGeoPoint'] ?? null,
-          tripName: data['tripName'] ?? '',
-          travelType: data['travelType'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-        );
+        return Trip.fromData(data);
+      } else {
+        return null;
       }
     } catch (e) {
       CloudFunction().logError(e.toString());
@@ -725,25 +700,7 @@ class DatabaseService {
     try {
       List<Trip> trips = snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return Trip(
-          accessUsers: List<String>.from(data['accessUsers']) ?? null,
-          comment: data['comment'] ?? '',
-          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-          displayName: data['displayName'] ?? '',
-          documentId: data['documentId'] ?? '',
-          endDate: data['endDate'] ?? '',
-          endDateTimeStamp: data['endDateTimeStamp'],
-          favorite: List<String>.from(data['favorite']) ?? [''],
-          ispublic: data['ispublic'] ?? null,
-          location: data['location'] ?? '',
-          ownerID: data['ownerID'] ?? '',
-          startDate: data['startDate'] ?? '',
-          startDateTimeStamp: data['startDateTimeStamp'],
-          tripGeoPoint: data['tripGeoPoint'] ?? null,
-          tripName: data['tripName'] ?? '',
-          travelType: data['travelType'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-        );
+        return Trip.fromData(data);
       }).toList();
       trips.sort((a,b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
 
@@ -768,28 +725,11 @@ class DatabaseService {
           'accessUsers', arrayContainsAny: [uid]).get();
       return ref.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-          return Trip(
-            accessUsers: List<String>.from(data['accessUsers']) ?? null,
-            comment: data['comment'] ?? '',
-            dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-            displayName: data['displayName'] ?? '',
-            documentId: data['documentId'] ?? '',
-            endDate: data['endDate'] ?? '',
-            endDateTimeStamp: data['endDateTimeStamp'],
-            favorite: List<String>.from(data['favorite']) ?? [''],
-            ispublic: data['ispublic'] ?? null,
-            location: data['location'] ?? '',
-            ownerID: data['ownerID'] ?? '',
-            startDate: data['startDate'] ?? '',
-            startDateTimeStamp: data['startDateTimeStamp'],
-            tripGeoPoint: data['tripGeoPoint'] ?? null,
-            tripName: data['tripName'] ?? '',
-            travelType: data['travelType'] ?? '',
-            urlToImage: data['urlToImage'] ?? '',
-          );
+          return Trip.fromData(data);
         }).toList().reversed.toList();
     } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -991,18 +931,7 @@ class DatabaseService {
     try {
       List<LodgingData> lodgingList = snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return LodgingData(
-          comment: data['comment'] ?? '',
-          lodgingType: data['lodgingType'] ?? '',
-          displayName: data['displayName'] ?? '',
-          fieldID: data['fieldID'] ?? '',
-          link: data['link'] ?? '',
-          endTime: data['endTime'] ?? '',
-          startTime: data['startTime'] ?? '',
-          uid: data['uid'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-          voters: List<String>.from(data['voters']) ?? [''],
-        );
+        return LodgingData.fromData(data);
       }).toList();
       lodgingList.sort((a, b) => b.voters.length.compareTo(a.voters.length));
       return lodgingList;
@@ -1020,23 +949,13 @@ class DatabaseService {
     try {
       List<ActivityData> activitiesList = snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
-        return ActivityData(
-          comment: data['comment'] ?? '',
-          activityType: data['activityType'] ?? '',
-          displayName: data['displayName'] ?? '',
-          fieldID: data['fieldID'] ?? '',
-          endTime: data['endTime'] ?? '',
-          startTime: data['startTime'] ?? '',
-          link: data['link'] ?? '',
-          uid: data['uid'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-          voters: List<String>.from(data['voters']) ?? [''],
-        );
+        return ActivityData.fromData(data);
       }).toList();
       activitiesList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
       return activitiesList;
-    } on Exception catch (e) {
+    } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1050,26 +969,13 @@ class DatabaseService {
     try {
       List<UserPublicProfile> userList =  snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
-        return UserPublicProfile(
-          displayName: data['displayName'] ?? '',
-          email: data['email'] ?? '',
-          following: List<String>.from(data['following']) ?? [''],
-          followers: List<String>.from(data['followers']) ?? [''],
-          firstName: data['firstName'] ?? '',
-          lastName: data['lastName'] ?? '',
-          uid: data['uid'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-          hometown: data['hometown'] ?? '',
-          instagramLink: data['instagramLink'] ?? '',
-          facebookLink: data['facebookLink'] ?? '',
-          topDestinations: List<String>.from(data['topDestinations']) ?? [''],
-        );
+        return UserPublicProfile.fromData(data);
       }).toList();
       userList.sort((a,b) => a.displayName.compareTo(b.displayName));
 
       return userList;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving stream of all users: ${e.toString()}');
       return null;
     }
   }
@@ -1084,25 +990,12 @@ class DatabaseService {
       var ref = await userPublicProfileCollection.get();
       List<UserPublicProfile> userList = ref.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return UserPublicProfile(
-          displayName: data['displayName'] ?? '',
-          email: data['email'] ?? '',
-          following: List<String>.from(data['following']) ?? [''],
-          followers: List<String>.from(data['followers']) ?? [''],
-          firstName: data['firstName'] ?? '',
-          lastName: data['lastName'] ?? '',
-          uid: data['uid'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-          hometown: data['hometown'] ?? '',
-          instagramLink: data['instagramLink'] ?? '',
-          facebookLink: data['facebookLink'] ?? '',
-          topDestinations: List<String>.from(data['topDestinations']) ?? [''],
-        );
+        return UserPublicProfile.fromData(data);
       }).toList();
       userList.sort((a,b) => a.displayName.compareTo(b.displayName));
       return userList;
-    } on Exception catch (e) {
-      CloudFunction().logError(e.toString());
+    } catch (e) {
+      CloudFunction().logError('Error retrieving all users: ${e.toString()}');
       return null;
     }
     }
@@ -1112,22 +1005,10 @@ class DatabaseService {
   UserPublicProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
     try {
       Map<String, dynamic> data = snapshot.data();
-        return UserPublicProfile(
-          displayName: data['displayName'] ?? '',
-          email: data['email'] ?? '',
-          firstName: data['firstName'] ?? '',
-          following: List<String>.from(data['following']) ?? [''],
-          followers: List<String>.from(data['followers']) ?? [''],
-          lastName: data['lastName'] ?? '',
-          uid: data['uid'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-          hometown: data['hometown'] ?? '',
-          instagramLink: data['instagramLink'] ?? '',
-          facebookLink: data['facebookLink'] ?? '',
-          topDestinations: List<String>.from(data['topDestinations']) ?? [''],
-        );
-    } on Exception catch (e) {
+        return UserPublicProfile.fromData(data);
+    } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
 
   }
@@ -1145,23 +1026,13 @@ class DatabaseService {
     try {
       List<TransportationData> transportList =  snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return TransportationData(
-          mode: data['mode'] ?? '',
-          carpoolingWith: data['carpoolingWith'] ?? '',
-          canCarpool: data['canCarpool'] ?? false,
-          airline: data['airline'] ?? '',
-          fieldID: data['fieldID'] ?? '',
-          flightNumber: data['flightNumber'] ?? '',
-          displayName: data['displayName'] ?? '',
-          comment:  data['comment'] ?? '',
-          tripDocID: data['tripDocID'] ?? '',
-          uid: data['uid'] ?? '',
-        );
+        return TransportationData.fromData(data);
       }).toList();
 
       return transportList;
-    } on Exception catch (e) {
+    } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1174,25 +1045,7 @@ class DatabaseService {
     try {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return Trip(
-          accessUsers: List<String>.from(data['accessUsers']) ?? null,
-          comment: data['comment'] ?? '',
-          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-          displayName: data['displayName'] ?? '',
-          documentId: data['documentId'] ?? '',
-          endDate: data['endDate'] ?? '',
-          endDateTimeStamp: data['endDateTimeStamp'],
-          favorite: List<String>.from(data['favorite']) ?? [''],
-          ispublic: data['ispublic'] ?? null,
-          location: data['location'] ?? '',
-          ownerID: data['ownerID'] ?? '',
-          startDate: data['startDate'] ?? '',
-          startDateTimeStamp: data['startDateTimeStamp'],
-          tripGeoPoint: data['tripGeoPoint'] ?? null,
-          tripName: data['tripName'] ?? '',
-          travelType: data['travelType'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-        );
+        return Trip.fromData(data);
       }).toList().reversed.toList();
     } catch (e){
       CloudFunction().logError(e.toString());
@@ -1202,35 +1055,18 @@ class DatabaseService {
 
   //Query for current My Crew Trips
   List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot snapshot){
+
     try {
       final now = DateTime.now().toUtc();
       var tomorrow = DateTime(now.year, now.month, now.day + 1);
         List<Trip> trips = snapshot.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
-          return Trip(
-            accessUsers: List<String>.from(data['accessUsers']) ?? null,
-            comment: data['comment'] ?? '',
-            dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-            displayName: data['displayName'] ?? '',
-            documentId: data['documentId'] ?? '',
-            endDate: data['endDate'] ?? '',
-            endDateTimeStamp: data['endDateTimeStamp'],
-            favorite: List<String>.from(data['favorite']) ?? [''],
-            ispublic: data['ispublic'] ?? null,
-            location: data['location'] ?? '',
-            ownerID: data['ownerID'] ?? '',
-            startDate: data['startDate'] ?? '',
-            startDateTimeStamp: data['startDateTimeStamp'],
-            tripGeoPoint: data['tripGeoPoint'] ?? null,
-            tripName: data['tripName'] ?? '',
-            travelType: data['travelType'] ?? '',
-            urlToImage: data['urlToImage'] ?? '',
-          );
+          return Trip.fromData(data);
         }).toList();
       List<Trip> crewTrips = trips.where((trip) =>
           trip.endDateTimeStamp.toDate().isAfter(tomorrow)).toList();
       return crewTrips;
-    } on Exception catch (e) {
+    } catch (e) {
       CloudFunction().logError(e.toString());
       return null;
     }
@@ -1238,35 +1074,19 @@ class DatabaseService {
 
   //Query for past My Crew Trips
   List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot snapshot){
+
     try {
       final now = DateTime.now().toUtc();
       var yesterday = DateTime(now.year, now.month, now.day - 1);
       List<Trip> trips = snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return Trip(
-          accessUsers: List<String>.from(data['accessUsers']) ?? null,
-          comment: data['comment'] ?? '',
-          dateCreatedTimeStamp: data['dateCreatedTimeStamp'],
-          displayName: data['displayName'] ?? '',
-          documentId: data['documentId'] ?? '',
-          endDate: data['endDate'] ?? '',
-          endDateTimeStamp: data['endDateTimeStamp'],
-          favorite: List<String>.from(data['favorite']) ?? [''],
-          ispublic: data['ispublic'] ?? null,
-          location: data['location'] ?? '',
-          ownerID: data['ownerID'] ?? '',
-          startDate: data['startDate'] ?? '',
-          startDateTimeStamp: data['startDateTimeStamp'],
-          tripGeoPoint: data['tripGeoPoint'] ?? null,
-          tripName: data['tripName'] ?? '',
-          travelType: data['travelType'] ?? '',
-          urlToImage: data['urlToImage'] ?? '',
-        );
+        return Trip.fromData(data);
       }).toList();
       List<Trip> crewTrips = trips.where((trip) => yesterday.isAfter(trip.endDateTimeStamp.toDate())).toList().reversed.toList();
       return crewTrips;
-    } on Exception catch (e) {
+    } catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1294,7 +1114,7 @@ class DatabaseService {
   }
 
 // check uniqueness to avoid duplicate function calls or writes
-  Future addToUniqueDocs(String key2){
+   addToUniqueDocs(String key2){
     try {
       String action = 'creating unique key';
       CloudFunction().logEvent(action);
@@ -1307,20 +1127,11 @@ class DatabaseService {
 
   // Get all Notifications
   List<NotificationData> _notificationListFromSnapshot(QuerySnapshot snapshot){
+
     try {
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
-        return NotificationData(
-          documentID: data['documentID'] ?? '',
-          ownerID: data['ownerID'] ?? '',
-          ownerDisplayName: data['ownerDisplayName'] ?? '',
-          fieldID: data['fieldID'] ?? '',
-          ispublic: data['ispublic'] ?? false,
-          message: data['message'] ?? '',
-          timestamp: data['timestamp'] ?? Timestamp.now(),
-          type: data['type'] ?? '',
-          uid: data['uid'] ?? '',
-        );
+        return NotificationData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError(e.toString());
@@ -1360,7 +1171,7 @@ class DatabaseService {
       for(var i =0; i< snapshot.docs.length;i++) {
         chatCollection.doc(tripDocID).collection('messages').doc(snapshot.docs[i].id).update({'status.$uid': true});
       }
-    } on Exception catch (e) {
+    } catch (e) {
       CloudFunction().logError(e.toString());
     }
   }
@@ -1371,14 +1182,7 @@ class DatabaseService {
     try {
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
-        return ChatData(
-          chatID: data['chatID'] ?? '',
-          displayName: data['displayName'] ?? '',
-          fieldID: data['fieldID'] ?? '',
-          message: data['message'] ?? '',
-          timestamp: data['timestamp'] ?? Timestamp.now(),
-          uid: data['uid'] ?? '',
-        );
+        return ChatData.fromData(data);
       }).toList();
     } catch (e) {
       // AnalyticsService().writeError(e.toString());
@@ -1488,7 +1292,7 @@ class DatabaseService {
             urlToImage: data['urlToImage'] ?? '',
           );
         }).toList();
-      } on Exception catch (e) {
+      } catch (e) {
         CloudFunction().logError(e.toString());
         return null;
       }
@@ -1566,7 +1370,7 @@ class DatabaseService {
       snapshot.docs.forEach((doc) {
         dmChatCollection.doc(chatID).collection('messages').doc(doc.id).update({'status.${userService.currentUserID}': true});
       });
-    } on Exception catch (e) {
+    } catch (e) {
       CloudFunction().logError(e.toString());
     }
   }
@@ -1581,6 +1385,7 @@ class DatabaseService {
     }catch (e) {
       _analyticsService.writeError(e.toString());
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1591,6 +1396,7 @@ class DatabaseService {
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError(e.toString());
+      return null;
     }
   }
 
@@ -1621,10 +1427,14 @@ class DatabaseService {
   // Get Access users for Crew list
   // Get user list of DM chats
   Stream<List<UserPublicProfile>> getcrewList(List<String> accessUsers) async*{
-    var users = await usersList();
-    List<UserPublicProfile> crewList = [];
+    try {
+      var users = await usersList();
+      yield users.where((user) => accessUsers.contains(user.uid)).toList();
+    } catch (e) {
+      CloudFunction().logError('Error in getcrewList for members layout: ${e.toString()}');
+    }
 
-    yield users.where((user) => accessUsers.contains(user.uid)).toList();
+
   }
 
 
@@ -1670,8 +1480,7 @@ class DatabaseService {
 
     return ref.docs.contains(docID);
   }
-
-
+  
 }
 
 

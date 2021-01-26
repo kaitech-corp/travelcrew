@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/trip_details/cost/cost_split_page.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import 'lists/item_lists.dart';
@@ -89,11 +90,7 @@ class SplitButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>
-              CostPage(tripDetails: tripDetails,)),
-        );
+        navigationService.navigateTo(CostPageRoute, arguments: tripDetails);
       },
       child: const Text('Split'),
     );

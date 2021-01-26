@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/badge_icon.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -38,10 +39,7 @@ class TappableCrewTripTile extends StatelessWidget {
       child:
       InkWell(
         onTap: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Explore(trip: trip,)),
-          );
+          navigationService.navigateTo(ExploreRoute, arguments: trip);
         },
         child: Container(
           height: trip.urlToImage.isNotEmpty ? size* .31 : size*.11,
@@ -71,7 +69,7 @@ class TappableCrewTripTile extends StatelessWidget {
                       flex: 1,
                       child: ListTile(
                         title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline3,maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                        subtitle:  Text(trip.startDate != null ? '${trip.startDate} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle2,),
+                        subtitle:  Text(trip.startDate != null ? '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle2,),
                         trailing: Tooltip(
                           message: 'Members',
                           child: Wrap(

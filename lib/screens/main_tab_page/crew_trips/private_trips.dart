@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 
 class PrivateTripList extends StatefulWidget {

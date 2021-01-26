@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -36,14 +36,14 @@ class DMChatMessageLayout extends StatelessWidget {
                       child: const Text('Delete',style: TextStyle(fontSize: 18),),
                       onPressed: (){
                         DatabaseService().deleteDMChatMessage(message: message);
-                       Navigator.pop(context);
+                        navigationService.pop();
                       },
                     ),
                     OutlineButton(
                       color: Colors.grey,
                       child: const Text('Close',style: TextStyle(fontSize: 18),),
                       onPressed: (){
-                        Navigator.pop(context);
+                        navigationService.pop();
                       },
                     ),
                   ],

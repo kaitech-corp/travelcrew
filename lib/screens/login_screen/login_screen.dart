@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/apple_auth.dart';
-import 'package:travelcrew/services/auth.dart';
-import 'package:travelcrew/services/constants.dart';
-import 'package:travelcrew/services/google_auth.dart';
+import 'package:travelcrew/services/auth/apple_auth.dart';
+import 'package:travelcrew/services/auth/auth.dart';
+import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/auth/google_auth.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 
@@ -160,7 +162,7 @@ class LoginPage extends StatefulWidget {
                              child: const Text('Sign up here!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                              textColor: Colors.lightBlue,
                              onPressed: () {
-                               Navigator.pushNamed(context, '/signUpScreen');
+                              navigationService.navigateTo(SignUpScreenRoute);
                              }
                            ),
                          ],

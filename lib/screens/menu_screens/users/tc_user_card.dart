@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
-import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'user_profile_page.dart';
 
 
 class TCUserCard extends StatefulWidget{
@@ -22,8 +21,6 @@ class TCUserCard extends StatefulWidget{
 }
 
 class _TCUserCardState extends State<TCUserCard> {
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   void initState()  {
@@ -42,10 +39,7 @@ class _TCUserCardState extends State<TCUserCard> {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UserProfilePage(user: widget.allUsers,)),
-            );
+            navigationService.navigateTo(UserProfilePageRoute, arguments: widget.allUsers);
           },
           child: Container(
             height: _cardHeight,
@@ -194,9 +188,7 @@ class UnblockedPopupMenu extends StatelessWidget {
         switch (value) {
           case "chat":
             {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => DMChat(user: allUsers,)
-              ));
+              navigationService.navigateTo(DMChatRoute, arguments: allUsers);
             }
             break;
           case "block":

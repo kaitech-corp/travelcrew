@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging_list.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 
-import 'add_new_lodging.dart';
 
 class Lodging extends StatefulWidget {
 
@@ -34,10 +34,7 @@ class _LodgingState extends State<Lodging> {
           floatingActionButton: FloatingActionButton(
 
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddNewLodging(trip: widget.trip,)),
-              );
+              navigationService.navigateTo(AddNewLodgingRoute, arguments: widget.trip);
             },
             child: const Icon(Icons.add),
           ),

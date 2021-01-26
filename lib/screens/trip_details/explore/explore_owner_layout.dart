@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
-import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:clipboard/clipboard.dart';
 import 'ImageAnimation.dart';
@@ -77,7 +77,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
   @override
   Widget build(BuildContext context) {
 
-    double _height = 3.0;
+    // double _height = 3.0;
     double _detailsPadding = SizeConfig.screenWidth*.05;
 
     final Event event = Event(
@@ -369,11 +369,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
           switch (value) {
             case "Edit":
               {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      EditTripData(tripDetails: tripDetails,)),
-                );
+                navigationService.navigateTo(EditTripDataRoute, arguments: tripDetails);
               }
               break;
             case "Delete":
@@ -388,10 +384,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
               break;
             case "Invite":
               {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => currentUserFollowingList(tripDetails: tripDetails,)),
-                );
+                navigationService.navigateTo(FollowingListRoute, arguments: tripDetails);
               }
               break;
             case "Convert":

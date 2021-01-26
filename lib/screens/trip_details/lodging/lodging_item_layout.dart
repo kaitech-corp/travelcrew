@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/tc_functions.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 
 
 class LodgingItemLayout extends StatelessWidget {
@@ -100,11 +100,7 @@ class LodgingItemLayout extends StatelessWidget {
       onSelected: (value){
         switch (value){
           case "Edit": {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) =>
-                  EditLodging(lodging: lodging, trip: trip,)),
-            );
+            navigationService.navigateTo(EditLodgingRoute,arguments: lodging);
           }
           break;
           case "View": {
