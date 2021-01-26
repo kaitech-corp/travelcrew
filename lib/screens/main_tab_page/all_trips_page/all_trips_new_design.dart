@@ -5,17 +5,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/in_app_review.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
-var userService = locator<UserService>();
 
 bool animatePress = false;
 
@@ -37,6 +35,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -78,10 +77,9 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
 
 class SliverGridList extends StatefulWidget {
 
-
   var tripPopUp;
 
-  bool _showCard = false;
+  // bool _showCard = false;
 
   @override
   _SliverGridListState createState() => _SliverGridListState();
@@ -214,17 +212,8 @@ class _SliverGridListState extends State<SliverGridList> {
 
       child: GestureDetector(
         onTap: () {
-          DatabaseService().appReviewExists(TCFunctions().appReviewDocID()).then((value) => {
-            if(!value){
-              InAppReviewClass().requestReviewFunc(),
-              CloudFunction().addReview(docID: TCFunctions().appReviewDocID()),
-            }
-          });
           _analyticsService.viewedTrip();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
-          );
+          navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
         },
         // onLongPress: (){
         //   setState(() {
@@ -315,10 +304,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                 trailing: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.headline5,),
                 onTap: () {
                   _analyticsService.viewedTrip();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
-                  );
+                  navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
                 },
               ),
             ),
@@ -329,10 +315,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                 // title: Text('${trip.startDate}',style: Theme.of(context).textTheme.headline5,),
                 title: Text('${trip.displayName}',style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ExploreBasic(trip: trip,)),
-                  );
+                  navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
                 },
               ),
           ),

@@ -2,22 +2,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
-import '../../../../loading.dart';
+import '../../../../services/widgets/loading.dart';
 
 
-class currentUserFollowingList extends StatefulWidget{
+class FollowingList extends StatefulWidget{
 
   final Trip tripDetails;
-  currentUserFollowingList({this.tripDetails});
+  FollowingList({this.tripDetails});
 
   @override
-  _currentUserFollowingListState createState() => _currentUserFollowingListState();
+  _FollowingListState createState() => _FollowingListState();
 }
 
-class _currentUserFollowingListState extends State<currentUserFollowingList> {
+class _FollowingListState extends State<FollowingList> {
 
   var _showImage = false;
   String _image;

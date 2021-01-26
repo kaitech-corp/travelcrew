@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 
@@ -61,7 +63,7 @@ class CustomAppBar extends StatelessWidget {
                         Center(
                           child: InkWell(
                             onTap: (){
-                              Navigator.pushNamed(context, '/profilePage');
+                              navigationService.navigateTo(ProfilePageRoute);
                             },
                             child: Hero(
                               tag: currentUserProfile?.uid ?? '1234',
@@ -77,7 +79,7 @@ class CustomAppBar extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.chat),
                           onPressed: (){
-                            Navigator.pushNamed(context, '/chats_page');
+                            navigationService.navigateTo(DMChatListPageRoute);
                           },
                         ),
                       ],

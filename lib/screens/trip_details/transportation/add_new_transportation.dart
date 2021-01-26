@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_new_design.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 
 
 
@@ -231,8 +231,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                             } on Exception catch (e) {
                                               CloudFunction().logError(e.toString());
                                             }
-
-                                            Navigator.pop(context);
+                                            navigationService.pop();
                                           }
                                         },
                                       child: Text(

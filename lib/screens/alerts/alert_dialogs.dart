@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
-import 'package:travelcrew/services/auth.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/auth/auth.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 
 class TravelCrewAlertDialogs {
   var userService = locator<UserService>();
@@ -33,14 +34,14 @@ class TravelCrewAlertDialogs {
               child: const Text('Block',),
               onPressed: () {
                 CloudFunction().blockUser(blockedUserID);
-                Navigator.pop(context);
+                navigationService.pop();
                 submittedAlert(context);
               },
             ),
             FlatButton(
               child: const Text('Cancel',),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -60,7 +61,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child: const Text('Report',),
               onPressed: () {
-                Navigator.pop(context);
+                navigationService.pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ReportContent(type: type, tripDetails: tripDetails, userAccount: userProfile, activity: activityData, lodging: lodgingData,)),
@@ -70,7 +71,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child: const Text('Cancel',),
               onPressed: () {
-                Navigator.pop(context);
+                navigationService.pop();
               },
             ),
 
@@ -93,7 +94,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child: const Text('Close',),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -114,7 +115,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
             FlatButton(
@@ -122,7 +123,7 @@ class TravelCrewAlertDialogs {
               onPressed: () {
                 CloudFunction().removeAllNotifications();
                 // DatabaseService(uid: uid).removeAllNotificationData();
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -144,13 +145,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes',),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, uid,tripDetails.ispublic);
-                Navigator.pushNamed(context, '/wrapper');
+                navigationService.pushNamedAndRemoveUntil(WrapperRoute);
               },
             ),
             FlatButton(
               child: const Text('No',),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -172,13 +173,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
-                Navigator.pushReplacementNamed(context, '/wrapper');
+                navigationService.pushNamedAndRemoveUntil(WrapperRoute);
               },
             ),
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
 
@@ -206,13 +207,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 DatabaseService().convertTrip(tripDetails);
-                Navigator.pushNamed(context, '/wrapper');
+                navigationService.pushNamedAndRemoveUntil(WrapperRoute);
               },
             ),
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -234,13 +235,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, member.uid, tripDetails.ispublic);
-                Navigator.pop(context);
+                navigationService.pop();
               },
             ),
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -284,7 +285,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child:  Text('Close'),
               onPressed: () {
-                Navigator.pop(context);
+                navigationService.pop();
                 // Navigator.of(context).popUntil((route) => route.isFirst);
               },
             ),
@@ -304,8 +305,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child: const Text('Close'),
               onPressed: () {
-                Navigator.pop(context);
-                // Navigator.of(context).popUntil((route) => route.isFirst);
+                navigationService.pop();
               },
             ),
           ],
@@ -336,13 +336,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().followBack(userUID);
-                Navigator.pop(context);
+                navigationService.pop();
               },
             ),
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -363,13 +363,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
 
-                Navigator.pop(context);
+                navigationService.pop();
               },
             ),
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -390,13 +390,13 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().unFollowUser(userUID);
-                Navigator.pop(context);
+                navigationService.pop();
               },
             ),
             FlatButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -445,7 +445,7 @@ class TravelCrewAlertDialogs {
            FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                navigationService.pop();
               }),
            FlatButton(
               child: const Text('Reset'),
@@ -455,7 +455,7 @@ class TravelCrewAlertDialogs {
                   form.save();
                   AuthService().resetPassword(email);
                   submittedAlert(context);
-                  Navigator.pop(context);
+                  navigationService.pop();
                 }
               })
         ],
@@ -475,7 +475,7 @@ class TravelCrewAlertDialogs {
             FlatButton(
               child: Text('Close',style: Theme.of(context).textTheme.subtitle1,),
               onPressed: () {
-                Navigator.of(context).pop();
+                navigationService.pop();
               },
             ),
           ],
@@ -497,13 +497,13 @@ class TravelCrewAlertDialogs {
                 child: const Text('Yes'),
                 onPressed: () {
                   CloudFunction().deleteTransportation(tripDocID: transportationData.tripDocID,fieldID: transportationData.fieldID);
-                  Navigator.of(context).pop();
+                  navigationService.pop();
                 },
               ),
               FlatButton(
                 child: const Text('Cancel'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  navigationService.pop();
                 },
               ),
             ],
@@ -526,13 +526,13 @@ class TravelCrewAlertDialogs {
                 child: const Text('Yes'),
                 onPressed: () {
                   CloudFunction().removeItemFromBringingList(tripDocID, itemID);
-                  Navigator.of(context).pop();
+                  navigationService.pop();
                 },
               ),
               FlatButton(
                 child: const Text('Cancel'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  navigationService.pop();
                 },
               ),
             ],

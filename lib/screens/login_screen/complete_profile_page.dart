@@ -6,9 +6,10 @@ import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:travelcrew/services/navigation/route_names.dart';
 
 class CompleteProfile extends StatefulWidget {
 
@@ -102,24 +103,26 @@ class _CompleteProfileState extends State {
                                     child: Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              WebViewScreen(urlToTerms, key1),
-                                          )
-                                      );
+                                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key1));
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(builder: (context) =>
+                                      //         WebViewScreen(urlToTerms, key1),
+                                      //     )
+                                      // );
                                     },
                                   ),
                                   FlatButton(
                                     child: Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              WebViewScreen(urlToPrivacyPolicy, key1),
-                                          )
-                                      );
+                                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key1));
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(builder: (context) =>
+                                      //         WebViewScreen(urlToPrivacyPolicy, key1),
+                                      //     )
+                                      // );
                                     },
                                   )
                                 ],

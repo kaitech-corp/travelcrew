@@ -7,8 +7,8 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'dart:async';
 import 'package:travelcrew/services/database.dart';
 

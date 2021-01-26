@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/loading.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/in_app_review.dart';
-import 'package:travelcrew/services/reusableWidgets.dart';
-import 'package:travelcrew/services/tc_functions.dart';
+import 'package:travelcrew/services/widgets/in_app_review.dart';
+import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 
 class AddNewActivity extends StatefulWidget {
 
@@ -30,7 +30,7 @@ class AddNewActivityState extends State<AddNewActivity> {
   String activityType = '';
   String comment = '';
   String link = '';
-  File _image;
+  // File _image;
   File urlToImage;
 
   bool timePickerVisible = false;
@@ -229,7 +229,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pop(context);
+                              navigationService.pop();
                               DatabaseService().appReviewExists(TCFunctions().appReviewDocID()).then((value) => {
                                 if(!value){
                                   InAppReviewClass().requestReviewFunc(),

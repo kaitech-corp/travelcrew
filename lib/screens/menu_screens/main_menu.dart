@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/admin/admin_page.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/auth.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/auth/auth.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -17,6 +17,7 @@ class MenuDrawer extends StatefulWidget{
 }
 
 class _MenuDrawerState extends State<MenuDrawer> {
+
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final AuthService _auth = AuthService();
@@ -58,45 +59,42 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 leading: IconThemeWidget(icon:Icons.people),
                 title: Text('TC Members',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  Navigator.pushNamed(context, '/usersFromMenu');
+                  navigationService.navigateTo(UsersRoute);
                 },
               ),
               ListTile(
                 leading: IconThemeWidget(icon: Icons.message,),
                 title: Text('Chats',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  Navigator.pushNamed(context, '/chats_page');
+                  navigationService.navigateTo(DMChatListPageRoute);
                 },
               ),
               ListTile(
                 leading: IconThemeWidget(icon:Icons.info),
                 title: Text('Help & Feedback',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  Navigator.pushNamed(context, '/help');
+                  navigationService.navigateTo(HelpPageRoute);
                 },
               ),
               ListTile(
                 leading: IconThemeWidget(icon:Icons.settings),
                 title: Text('Settings',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  Navigator.pushNamed((context), '/settings');
+                  navigationService.navigateTo(SettingsRoute);
                 },
               ),
               if(currentUserProfile.uid.contains('XCVzgl7xIG3')) ListTile(
                 leading: IconThemeWidget(icon:Icons.admin_panel_settings),
                 title: Text('Admin',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  if(currentUserProfile.uid.contains('XCVzgl7xIG3')) Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AdminPage()),
-                  );
+                  if(currentUserProfile.uid.contains('XCVzgl7xIG3')) navigationService.navigateTo(AdminPageRoute);
                 },
               ),
               ListTile(
                 leading: IconThemeWidget(icon:Icons.exit_to_app),
                 title: Text('Signout',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil('/wrapper', (route) => false);
+                  navigationService.pushNamedAndRemoveUntil(WrapperRoute);
                   // locator.reset();
                   _auth.logOut();
                 },

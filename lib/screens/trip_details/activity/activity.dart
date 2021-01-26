@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity_list.dart';
-import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 
 class Activity extends StatefulWidget {
 
@@ -32,10 +32,7 @@ class Activity extends StatefulWidget {
             ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddNewActivity(trip: widget.trip,)),
-                  );
+                  navigationService.navigateTo(AddNewActivityRoute, arguments: widget.trip);
                 },
                 child: const Icon(Icons.add),
               ),

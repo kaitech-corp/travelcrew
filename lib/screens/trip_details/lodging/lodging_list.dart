@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 
-import '../../../loading.dart';
+import '../../../services/widgets/loading.dart';
 import 'lodging_item_layout.dart';
 
 class LodgingList extends StatefulWidget {

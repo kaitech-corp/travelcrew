@@ -1,7 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+
+import 'database.dart';
+import 'navigation/navigation_service.dart';
 
 
 GetIt locator = GetIt.asNewInstance();
@@ -12,6 +15,7 @@ final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 void setupLocator() {
   locator.registerSingleton(UserService());
   locator.registerSingleton(UserProfileService());
+  locator.registerLazySingleton(() => NavigationService());
   // locator.registerSingleton(UserProfileServiceStream());
 }
 
@@ -22,6 +26,7 @@ class UserService {
     try {
       return _auth.currentUser.uid;
     } catch (e) {
+      CloudFunction().logError('Error retrieving uid for locator: ${e.toString()}');
       return '';
     }
   }
@@ -32,73 +37,18 @@ class UserProfileService {
   UserPublicProfile profile;
 
   Future<UserPublicProfile> currentUserProfile() async {
-    var ref = await FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).get();
-    if(ref.exists){
-      Map<String, dynamic> data = ref.data();
-      profile = UserPublicProfile(
-        blockedList: List<String>.from(data['blockedList']) ?? [],
-        following: List<String>.from(data['following']) ?? [],
-        followers: List<String>.from(data['followers']) ?? [],
-        displayName: data['displayName'] ?? '',
-        email: data['email'] ?? '',
-        firstName: data['firstName'] ?? '',
-        lastName: data['lastName'] ?? '',
-        uid: data['uid'] ?? '',
-        urlToImage: data['urlToImage'] ?? '',
-        hometown: data['hometown'] ?? '',
-        instagramLink: data['instagramLink'] ?? '',
-        facebookLink: data['facebookLink'] ?? '',
-        topDestinations: List<String>.from(data['topDestinations']) ?? [''],
-      );
-      return profile;
-    } else {
-      return null;
+
+    try {
+      profile = await DatabaseService().getUserProfile(userService.currentUserID);
+    } catch (e) {
+      CloudFunction().logError(e.toString());
     }
+
+    return profile;
   }
 
   UserPublicProfile currentUserProfileDirect(){
     currentUserProfile().then((value) => profile = value);
-    return profile;
-  }
-}
-class UserProfileServiceStream {
-
-  var userService = locator<UserService>();
-  UserPublicProfile profile;
-
-  UserPublicProfile _userListFromSnapshot(DocumentSnapshot snapshot){
-    if (snapshot.exists)
-    {
-
-      Map<String, dynamic> data = snapshot.data();
-      profile = UserPublicProfile(
-        blockedList: List<String>.from(data['blockedList']) ?? [],
-        displayName: data['displayName'] ?? '',
-        email: data['email'] ?? '',
-        following: List<String>.from(data['following']) ?? [''],
-        followers: List<String>.from(data['followers']) ?? [''],
-        firstName: data['firstName'] ?? '',
-        lastName: data['lastName'] ?? '',
-        uid: data['uid'] ?? '',
-        urlToImage: data['urlToImage'] ?? '',
-        hometown: data['hometown'] ?? '',
-        instagramLink: data['instagramLink'] ?? '',
-        facebookLink: data['facebookLink'] ?? '',
-        topDestinations: List<String>.from(data['topDestinations']) ?? [''],
-      );
-
-    }
-
-  }
-  // get all users
-  Stream<UserPublicProfile> get userProfileStream {
-    return FirebaseFirestore.instance.collection("userPublicProfile").doc(userService.currentUserID).snapshots()
-        .map(_userListFromSnapshot);
-  }
-
-  UserPublicProfile profileStream(){
-    print(userProfileStream.single.then((value) => value.uid));
-    userProfileStream.first.then((value) => profile = value);
     return profile;
   }
 }

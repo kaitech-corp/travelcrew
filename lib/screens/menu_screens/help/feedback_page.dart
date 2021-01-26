@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 
 class FeedbackPage extends StatefulWidget{
   @override
@@ -49,7 +50,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     onPressed: () {
                       CloudFunction().giveFeedback(_message);
-                      Navigator.of(context).pop();
+                      navigationService.pop();
                       TravelCrewAlertDialogs().submitFeedbackAlert(context);
                     },
                     textColor: Colors.white,

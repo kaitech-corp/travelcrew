@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/api.dart';
-import 'package:travelcrew/services/badge_icon.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/apis/api.dart';
+import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import '../../../../loading.dart';
+import '../../../../services/widgets/loading.dart';
 
 
 class BringingList extends StatefulWidget{
@@ -328,7 +328,7 @@ class _CustomListState extends State<CustomList> {
                         labelText: 'Custom Item',
                       ),
                         validator: (value) {
-                          // ignore: missing_return, missing_return
+                          // ignore: missing_return
                           if (value.isEmpty){
                             return 'Please enter an item first.';
                             // ignore: missing_return

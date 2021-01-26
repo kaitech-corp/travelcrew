@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travelcrew/loading.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_message_layout.dart';
 

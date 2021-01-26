@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/badge_icon.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import '../../../loading.dart';
+import '../../../services/widgets/loading.dart';
 
 
 class DMChatListPage extends StatelessWidget{
@@ -74,10 +74,7 @@ class DMChatListPage extends StatelessWidget{
       ),
     );
   }
-  _showDialog(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: const Text('Invite sent.')));
-  }
+
 }
 Widget chatNotificationBadges(UserPublicProfile user){
   return StreamBuilder(

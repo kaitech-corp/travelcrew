@@ -1,9 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/appearance_widgets.dart';
-import 'package:travelcrew/services/cloud_functions.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 
 
 
@@ -16,7 +15,7 @@ class EditTransportation extends StatefulWidget {
 }
 class _EditTransportationState extends State<EditTransportation> {
   final _formKey = GlobalKey<FormState>();
-  File _image;
+  // File _image;
   // final ImagePicker _picker = ImagePicker();
   //
   // DateTime _fromDateDepart = DateTime.now();

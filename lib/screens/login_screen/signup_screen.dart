@@ -5,9 +5,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
-
-import 'package:travelcrew/services/auth.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/auth/auth.dart';
+import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -171,24 +172,14 @@ class _SignupScreenState extends State {
                                     child: const Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold,fontSize: 18)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              WebViewScreen(urlToTerms, key1),
-                                          )
-                                      );
+                                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key1));
                                     },
                                   ),
                                   FlatButton(
                                     child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 18)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            WebViewScreen(urlToPrivacyPolicy, key1),
-                                        )
-                                      );
+                                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key1));
                                     },
                                   )
                                 ],
@@ -210,7 +201,7 @@ class _SignupScreenState extends State {
                                       if (result == null){
                                         setState(() => error = 'Sign in credentials are not valid!');
                                       }
-                                      Navigator.pushNamed(context, '/wrapper');
+                                      navigationService.navigateTo(WrapperRoute);
                                     }
                                     },
                                     child: const Text('Sign Up!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 20)))),

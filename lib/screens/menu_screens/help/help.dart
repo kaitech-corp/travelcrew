@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
-import 'package:travelcrew/services/constants.dart';
+import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 
 class HelpPage extends StatelessWidget{
 
-   final Key key1;
-
-  const HelpPage({Key key, this.key1}) : super(key: key);
+  const HelpPage({Key key}) : super(key: key);
 
  @override
   Widget build(BuildContext context) {
@@ -38,10 +38,7 @@ class HelpPage extends StatelessWidget{
                       ],
                     ),
                     onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => WebViewScreen(urlToTerms, key1)),
-                      );
+                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key));
                     },
                   ),
                   RaisedButton(
@@ -56,10 +53,7 @@ class HelpPage extends StatelessWidget{
                       ],
                     ),
                     onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => WebViewScreen(urlToPrivacyPolicy, key1))
-                      );
+                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key));
                     },
                   ),
                 ],
@@ -81,7 +75,7 @@ class HelpPage extends StatelessWidget{
                       ],
                     ),
                     onPressed: (){
-                      Navigator.pushNamed(context, '/feedback');
+                      navigationService.navigateTo(FeedbackPageRoute);
                     },
                   ),
                 ],

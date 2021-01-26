@@ -6,7 +6,7 @@ import 'package:travelcrew/screens/trip_details/cost/progress_bar.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
-import '../../../loading.dart';
+import '../../../services/widgets/loading.dart';
 
 class CostPage extends StatelessWidget{
 

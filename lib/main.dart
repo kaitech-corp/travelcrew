@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,36 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
-import 'package:travelcrew/screens/login_screen/signup_screen.dart';
-import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.dart';
-import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
-import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
-import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
-import 'package:travelcrew/screens/menu_screens/dm_chats/chats_page.dart';
-import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
-import 'package:travelcrew/screens/menu_screens/help/help.dart';
-import 'package:travelcrew/screens/menu_screens/help/report.dart';
-import 'package:travelcrew/screens/menu_screens/settings.dart';
-import 'package:travelcrew/screens/menu_screens/users/user_profile_page.dart';
-import 'package:travelcrew/screens/menu_screens/users/users.dart';
-import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
-import 'package:travelcrew/screens/profile_page/profile_page.dart';
-import 'package:travelcrew/screens/trip_details/activity/activity.dart';
-import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
-import 'package:travelcrew/screens/trip_details/chat/chat.dart';
-import 'package:travelcrew/screens/add_trip/edit_trip.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore.dart';
-import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
-import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
-import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
-import 'package:travelcrew/services/auth.dart';
+import 'package:travelcrew/services/auth/auth.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/navigation/navigation_service.dart';
 import 'package:travelcrew/services/push_notifications.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 import 'models/custom_objects.dart';
-import 'screens/menu_screens/main_menu.dart';
 
 
 void main() async {
@@ -205,37 +181,8 @@ class _TravelCrewState extends State<TravelCrew> {
               home: Wrapper(),
               debugShowCheckedModeBanner: false,
               theme: ThemeProvider.themeOf(themeContext).data,
-
-              routes: <String, WidgetBuilder>{
-                '/wrapper': (BuildContext context)=> new Wrapper(),
-                '/signUpScreen': (BuildContext context) => new SignUpScreen(),
-                // '/addTrip': (BuildContext context)=> new AddTrip(),
-                '/allTrips': (BuildContext context)=> new AllTripsPage(),
-                '/crewTrips': (BuildContext context)=> new CurrentCrewTrips(),
-                '/favorites': (BuildContext context)=> new Favorites(),
-                '/notifications': (BuildContext context)=> new Notifications(),
-                '/mainTabPage': (BuildContext context)=> new MainTabPage(),
-                '/profilePage': (BuildContext context)=> new ProfilePage(),
-                '/help': (BuildContext context)=> new HelpPage(),
-                '/feedback': (BuildContext context)=> new FeedbackPage(),
-                '/reportContent': (BuildContext context)=> new ReportContent(),
-                '/userProfilePage': (BuildContext context)=> new UserProfilePage(),
-                '/usersFromMenu': (BuildContext context)=> new Users(),
-                '/editProfilePage': (BuildContext context)=> new EditProfilePage(),
-                '/activity': (BuildContext context)=> new Activity(),
-                '/editActivity': (BuildContext context)=> new EditActivity(),
-                '/chat': (BuildContext context)=> new Chat(),
-                '/memberLayout': (BuildContext context)=> new MembersLayout(),
-                '/editTrip': (BuildContext context)=> new EditTripData(),
-                '/explore': (BuildContext context)=> new Explore(),
-                '/lodging': (BuildContext context)=> new Lodging(),
-                '/editLodging': (BuildContext context)=> new EditLodging(),
-                '/googlePlaces': (BuildContext context)=> new GooglePlaces(),
-                '/chats_page': (BuildContext context)=> new DMChatListPage(),
-                '/settings': (BuildContext context)=> new Settings(),
-                '/menuDrawer': (BuildContext context) => new MenuDrawer(),
-                // '/costPage' : (BuildContext context) => new CostPage(),
-              },
+              navigatorKey: locator<NavigationService>().navigationKey,
+              onGenerateRoute: generateRoute,
               navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
             ),
           ),
