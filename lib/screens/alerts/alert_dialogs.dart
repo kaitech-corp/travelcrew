@@ -411,56 +411,63 @@ class TravelCrewAlertDialogs {
     String email;
     return await showDialog<String>(
       context: context,
-      child: _SystemPadding(child: AlertDialog(
-        contentPadding: const EdgeInsets.all(16.0),
-        title: const Text('Reset Password', textAlign: TextAlign.center,textScaleFactor: 1.5,),
-        content:  Row(
-          children: <Widget>[
-             Expanded(
-              child:  Builder(
-                builder: (context) => Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    maxLines: 1,
-                    autofocus: true,
-                    onSaved: (val){
-                      email = val;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty || !value.contains('.com')) {
-                        return 'Please enter valid email address.';
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration:  InputDecoration(
-                         hintText: 'Your email address'),
+      builder: (BuildContext context) {
+      return _SystemPadding(
+        child: AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          title: const Text(
+            'Reset Password',
+            textAlign: TextAlign.center,
+            textScaleFactor: 1.5,
+          ),
+          content: Row(
+            children: <Widget>[
+              Expanded(
+                child: Builder(
+                  builder: (context) => Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      maxLines: 1,
+                      autofocus: true,
+                      onSaved: (val) {
+                        email = val;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty || !value.contains('.com')) {
+                          return 'Please enter valid email address.';
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration:
+                          InputDecoration(hintText: 'Your email address'),
+                    ),
                   ),
                 ),
-              ),
-            )
+              )
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  navigationService.pop();
+                }),
+            FlatButton(
+                child: const Text('Reset'),
+                onPressed: () {
+                  final form = _formKey.currentState;
+                  if (form.validate()) {
+                    form.save();
+                    AuthService().resetPassword(email);
+                    submittedAlert(context);
+                    navigationService.pop();
+                  }
+                })
           ],
         ),
-        actions: <Widget>[
-           FlatButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                navigationService.pop();
-              }),
-           FlatButton(
-              child: const Text('Reset'),
-              onPressed: () {
-                final form = _formKey.currentState;
-                if (form.validate()){
-                  form.save();
-                  AuthService().resetPassword(email);
-                  submittedAlert(context);
-                  navigationService.pop();
-                }
-              })
-        ],
-      ),),
-    );
+      );
+    });
   }
 
   Future<void> suggestionPageAlert(BuildContext context) {
