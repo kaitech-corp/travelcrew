@@ -32,7 +32,7 @@ class LoginPage extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       body: Container(
         child: Builder(
           builder: (context) => Form(

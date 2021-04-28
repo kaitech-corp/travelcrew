@@ -13,6 +13,9 @@ description: First Flutter App
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 2.0.2+35
 
+environment:
+  sdk: ">=2.10.0 <3.0.0"
+  
 dependencies:
   flutter:
     sdk: flutter
