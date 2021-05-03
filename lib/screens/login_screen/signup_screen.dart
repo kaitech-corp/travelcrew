@@ -61,7 +61,7 @@ class _SignupScreenState extends State {
         appBar: AppBar(title: Text('Sign Up!',style: Theme.of(context).textTheme.headline3,)),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Builder(
                   builder: (context) => Form(
                       key: _formKey,
@@ -73,7 +73,7 @@ class _SignupScreenState extends State {
                                 textCapitalization: TextCapitalization.words,
                                 decoration:
                                 const InputDecoration(labelText: 'First Name',
-                                labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                    labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                                 // ignore: missing_return
                                 onSaved: (val) =>
@@ -83,7 +83,7 @@ class _SignupScreenState extends State {
                               textCapitalization: TextCapitalization.words,
                               decoration:
                               const InputDecoration(labelText: 'Last Name',
-                              labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                  labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
 
@@ -95,7 +95,7 @@ class _SignupScreenState extends State {
                                 textCapitalization: TextCapitalization.words,
                                 decoration:
                                 const InputDecoration(labelText: 'Display Name',
-                                labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                    labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   // ignore: missing_return, missing_return
@@ -110,7 +110,7 @@ class _SignupScreenState extends State {
                               keyboardType: TextInputType.emailAddress,
                               decoration:
                               const InputDecoration(labelText: 'Email',
-                              labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                  labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                               inputFormatters: [FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))],
                               // ignore: missing_return
                               validator: (value) {
@@ -125,7 +125,7 @@ class _SignupScreenState extends State {
                                 style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
                                 decoration:
                                 const InputDecoration(labelText: 'Password',
-                                labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+                                    labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
                                   if (value.length < 8) {
@@ -152,7 +152,7 @@ class _SignupScreenState extends State {
                             ),
                             RaisedButton(
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)
+                                  borderRadius: BorderRadius.circular(20)
                               ),
                               onPressed: () {
                                 getImage();
@@ -194,15 +194,15 @@ class _SignupScreenState extends State {
                                     ),
                                     onPressed: () async {
                                       final form = _formKey.currentState;
-                                    if (form.validate()) {
-                                      form.save();
-                                      _showDialog(context);
-                                      dynamic result = await _auth.signUpWithEmailAndPassword(_user.email, password, _user.firstName, _user.lastName, _user.displayName, _image);
-                                      if (result == null){
-                                        setState(() => error = 'Sign in credentials are not valid!');
+                                      if (form.validate()) {
+                                        form.save();
+                                        _showDialog(context);
+                                        dynamic result = await _auth.signUpWithEmailAndPassword(_user.email, password, _user.firstName, _user.lastName, _user.displayName, _image);
+                                        if (result == null){
+                                          setState(() => error = 'Sign in credentials are not valid!');
+                                        }
+                                        navigationService.navigateTo(WrapperRoute);
                                       }
-                                      navigationService.navigateTo(WrapperRoute);
-                                    }
                                     },
                                     child: const Text('Sign Up!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 20)))),
                             const SizedBox(height: 10,),
@@ -211,14 +211,13 @@ class _SignupScreenState extends State {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(error,
-                                style: TextStyle(color: Colors.red, fontSize: 16.0),),
+                                  style: TextStyle(color: Colors.red, fontSize: 16.0),),
                               ],
                             )
                           ])))),
         ));
   }
   _showDialog(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: const Text('Creating Account')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Creating Account')));
   }
 }

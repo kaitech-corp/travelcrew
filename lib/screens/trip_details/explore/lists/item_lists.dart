@@ -21,16 +21,14 @@ class BringingList extends StatefulWidget{
 }
 
 class _BringingListState extends State<BringingList> {
-  List _selectedProducts = List();
+  List _selectedProducts = [];
 
   void _onSelectedProduct(bool selected, productName) {
     if (selected == true) {
       setState(() {
         _selectedProducts.add(productName);
         CloudFunction().addItemToBringingList(widget.documentID, productName);
-        Scaffold
-            .of(context)
-            .showSnackBar(SnackBar(content: Text("Item added")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Item added")));
       });
     } else {
       setState(() {
@@ -86,7 +84,7 @@ class NeedList extends StatefulWidget{
 class _NeedListState extends State<NeedList> {
 
 
-  List _selectedProducts = List();
+  List _selectedProducts = [];
 
   void _onSelectedProduct(bool selected, productName) {
     if (selected == true) {
@@ -128,14 +126,12 @@ class _NeedListState extends State<NeedList> {
                         CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
                         // DatabaseService().addItemToNeedList(
                         //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
-                        Scaffold
-                            .of(context)
-                            .showSnackBar(SnackBar(content: const Text("Item added")));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
                       } catch (e) {
                         print(e.toString());
                       }
                     } else{
-                        // TODO: change to delete 
+                        // TODO: change to delete
                         _onSelectedProduct(selected, product.query);
                     }
                   });
@@ -169,9 +165,7 @@ class NeedListToDisplay extends StatelessWidget{
     void _onSelectedItems(Need item) {
       CloudFunction().addItemToBringingList(documentID, item.item);
       CloudFunction().removeItemFromNeedList(documentID, item.documentID);
-      Scaffold
-          .of(context)
-          .showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: const Text("Item added to Bringing list")));
     }
     return StreamBuilder(
@@ -195,9 +189,7 @@ class NeedListToDisplay extends StatelessWidget{
                 onDismissed: (direction) {
                   CloudFunction().removeItemFromNeedList(documentID, item.documentID);
                   // DatabaseService().removeItemFromNeedList(documentID, item.documentID);
-                  Scaffold
-                      .of(context)
-                      .showSnackBar(SnackBar(content: const Text("Item removed")));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item removed")));
                 },
                 child: ListTile(
                   leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
@@ -371,12 +363,10 @@ class _CustomListState extends State<CustomList> {
                           if (form.validate()) {
                             if(option == 'Bringing'){
                               CloudFunction().addItemToBringingList(widget.documentID, item);
-                            Scaffold.of(context)
-                                .showSnackBar(SnackBar(content: const Text("Item added to Bringing list")));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added to Bringing list")));
                             } else{
                               CloudFunction().addItemToNeedList(widget.documentID, item, currentUserProfile.displayName);
-                              Scaffold.of(context)
-                                  .showSnackBar(SnackBar(content: const Text("Item added to Need list")));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added to Need list")));
                             }
                             form.reset();
                           }

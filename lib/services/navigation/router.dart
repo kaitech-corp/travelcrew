@@ -23,7 +23,6 @@ import 'package:travelcrew/screens/profile_page/profile_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
-import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat.dart';
 import 'package:travelcrew/screens/trip_details/cost/cost_split_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
@@ -135,11 +134,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: FollowingList(tripDetails: args,),
       );
-    case GooglePlacesRoute:
-      return _getPageRoute(
-        routeName: settings.name,
-        viewToShow: GooglePlaces(),
-      );
+    // case GooglePlacesRoute:
+    //   return _getPageRoute(
+    //     routeName: settings.name,
+    //     viewToShow: GooglePlaces(),
+    //   );
     case HelpPageRoute:
       return _getPageRoute(
         routeName: settings.name,
@@ -200,12 +199,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: ProfilePage(),
       );
-    case WebViewScreenRoute:
-      WebViewScreen argument = args;
-      return _getPageRoute(
-        routeName: settings.name,
-        viewToShow: WebViewScreen(url: argument.url, key: argument.key,),
-      );
+    // case WebViewScreenRoute:
+    //   WebViewScreen argument = args;
+    //   return _getPageRoute(
+    //     routeName: settings.name,
+    //     viewToShow: WebViewScreen(url: argument.url, key: argument.key,),
+    //   );
     case WrapperRoute:
       return _getPageRoute(
         routeName: settings.name,

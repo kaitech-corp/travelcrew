@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../services/widgets/loading.dart';
@@ -15,6 +17,13 @@ class WebViewScreen extends StatefulWidget {
 
   var _url;
   var _key;
+
+  @override
+  void initState() {
+    super.initState();
+    // Enable hybrid composition.
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+  }
 
   _WebViewScreenState(this._url, this._key);
   bool loading = true;

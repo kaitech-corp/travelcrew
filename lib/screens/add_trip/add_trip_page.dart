@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
@@ -50,7 +50,7 @@ class _AddTripPageState extends State<AddTripPage> {
 
   final _formKey = GlobalKey<FormState>();
   File _image;
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
   bool gotDataBool = false;
 
   DateTime _fromDateDepart = DateTime.now();
@@ -121,13 +121,13 @@ class _AddTripPageState extends State<AddTripPage> {
 }
 
   Future getImageAddTrip() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+    // var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
 
-    setState(() {
-      _image = File(image.path);
-      urlToImage = File(_image.path);
-    });
+  //   setState(() {
+  //     _image = File(image.path);
+  //     urlToImage = File(_image.path);
+  //   });
   }
 
   @override
@@ -206,7 +206,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 16.0, horizontal: 16.0),
-                            child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                            // child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
                           ),
                           Container(
                             child: Row(

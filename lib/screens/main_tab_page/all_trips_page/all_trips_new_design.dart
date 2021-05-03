@@ -95,10 +95,10 @@ class _SliverGridListState extends State<SliverGridList> {
 
     final trips = Provider.of<List<Trip>>(context);
     final tripAds = Provider.of<List<TripAds>>(context);
-    List<Trip> trips2 = List();
-    List<Trip> trips4 = List();
-    List<int> thirdItemList = List();
-    List<dynamic> combinedList = List();
+    List<Trip> trips2 = [];
+    List<Trip> trips4 = [];
+    List<int> thirdItemList = [];
+    List<dynamic> combinedList = [];
 
     if (trips != null) {
       var trips3 = trips.where((trip) =>

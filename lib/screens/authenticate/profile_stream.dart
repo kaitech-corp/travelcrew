@@ -8,13 +8,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 
 class ProfileStream extends StatelessWidget{
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
 
   @override
   Widget build(BuildContext context) {
-    _firebaseMessaging.requestNotificationPermissions();
+    _firebaseMessaging.requestPermission();
 
     final user = Provider.of<User>(context);
 

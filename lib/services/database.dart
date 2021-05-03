@@ -1058,7 +1058,7 @@ class DatabaseService {
 
     try {
       final now = DateTime.now().toUtc();
-      var tomorrow = DateTime(now.year, now.month, now.day + 1);
+      var tomorrow = DateTime(now.year, now.month, now.day + 2);
         List<Trip> trips = snapshot.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
           return Trip.fromData(data);

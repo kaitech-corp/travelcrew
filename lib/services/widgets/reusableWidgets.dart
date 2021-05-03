@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_link_preview/flutter_link_preview.dart';
+// import 'package:flutter_link_preview/flutter_link_preview.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -336,81 +336,82 @@ class CrewModalBottomSheet extends StatelessWidget {
   }
 }
 
-class LinkPreview extends StatelessWidget {
-  const LinkPreview({
-    Key key,
-    @required this.link,
-  }) : super(key: key);
-
-  final String link;
-
-  @override
-  Widget build(BuildContext context) {
-    return FlutterLinkPreview(
-      url: link,
-      showMultimedia: true,
-      bodyStyle: Theme.of(context).textTheme.subtitle1,
-      builder: (info){
-        if(info is WebInfo) {
-          return Container(
-              height: (info.image != null) ? 275 : 100,
-              child: Column(
-                children: [
-                  (info.image != null) ?
-                  Expanded(
-                      flex: 2,
-                      child: Image.network(
-                        info.image,
-                        width: double.maxFinite,
-                        fit: BoxFit.cover,
-                      )) : Container(),
-                  if (info.description != null)
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(info.description, maxLines: 4,style: Theme.of(context).textTheme.subtitle2,),
-                      ),
-                    ),
-                ],
-              )
-          );
-        }
-        if (info is WebImageInfo) {
-          return SizedBox(
-            height: 350,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                info.image,
-                fit: BoxFit.cover,
-                width: double.maxFinite,
-              ),
-            ),
-          );
-        } else if (info is WebVideoInfo) {
-          return SizedBox(
-            height: 275,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                info.image,
-                fit: BoxFit.cover,
-                width: double.maxFinite,
-              ),
-            ),
-          );
-        } else{
-          return Container();
-        }
-      },
-    );
-  }
-}
+// class LinkPreviewer extends StatelessWidget {
+//   const LinkPreviewer({
+//     Key key,
+//     @required this.link,
+//   }) : super(key: key);
+//
+//   final String link;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return LinkPreview(text: link,);
+//     return FlutterLinkPreview(
+//       url: link,
+//       showMultimedia: true,
+//       bodyStyle: Theme.of(context).textTheme.subtitle1,
+//       builder: (info){
+//         if(info is WebInfo) {
+//           return Container(
+//               height: (info.image != null) ? 275 : 100,
+//               child: Column(
+//                 children: [
+//                   (info.image != null) ?
+//                   Expanded(
+//                       flex: 2,
+//                       child: Image.network(
+//                         info.image,
+//                         width: double.maxFinite,
+//                         fit: BoxFit.cover,
+//                       )) : Container(),
+//                   if (info.description != null)
+//                     Expanded(
+//                       flex: 1,
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(8.0),
+//                         child: Text(info.description, maxLines: 4,style: Theme.of(context).textTheme.subtitle2,),
+//                       ),
+//                     ),
+//                 ],
+//               )
+//           );
+//         }
+//         if (info is WebImageInfo) {
+//           return SizedBox(
+//             height: 350,
+//             child: Card(
+//               shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(20.0)),
+//               clipBehavior: Clip.antiAlias,
+//               child: Image.network(
+//                 info.image,
+//                 fit: BoxFit.cover,
+//                 width: double.maxFinite,
+//               ),
+//             ),
+//           );
+//         } else if (info is WebVideoInfo) {
+//           return SizedBox(
+//             height: 275,
+//             child: Card(
+//               shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(20.0)),
+//               clipBehavior: Clip.antiAlias,
+//               child: Image.network(
+//                 info.image,
+//                 fit: BoxFit.cover,
+//                 width: double.maxFinite,
+//               ),
+//             ),
+//           );
+//         } else{
+//           return Container();
+//         }
+//       },
+//     );
+//   }
+// }
 
 class DateGauge extends StatelessWidget {
   const DateGauge({

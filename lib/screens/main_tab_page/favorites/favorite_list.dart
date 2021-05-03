@@ -39,9 +39,7 @@ class _FavoriteTripState extends State<FavoriteTripList> {
                   trips.removeAt(index);
                   CloudFunction().removeFavoriteFromTrip(item.documentId);
                 });
-                Scaffold
-                    .of(context)
-                    .showSnackBar(SnackBar(content: const Text("Tripped removed from favorites.")));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Tripped removed from favorites.")));
               },
               child: FavoriteTappableTripCard(trip: trips[index]),
             );

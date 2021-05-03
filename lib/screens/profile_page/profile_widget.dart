@@ -103,7 +103,7 @@ class ProfileWidget extends StatelessWidget {
             ),
           ),
           Flexible(flex:2,child: FollowerBar(user: user)),
-          SizedBox(height: 10,),
+          // SizedBox(height: 10,),
           Flexible(
             flex: 3,
             child: Card(
