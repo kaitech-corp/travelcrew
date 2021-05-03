@@ -8,7 +8,8 @@ import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/widgets/link_previewer.dart';
+
 
 class ActivityItemLayout extends StatelessWidget {
 
@@ -49,7 +50,7 @@ class ActivityItemLayout extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 4.0),
                       ),
 
-                      if(activity.link.isNotEmpty) LinkPreview(link: activity.link),
+                      if(activity.link.isNotEmpty) LinkPreviewer(link: activity.link),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

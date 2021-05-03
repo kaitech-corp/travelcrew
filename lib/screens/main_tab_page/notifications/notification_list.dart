@@ -43,9 +43,7 @@ class _NotificationListState extends State<NotificationList> {
                 notifications.removeAt(index);
                 CloudFunction().removeNotificationData(item.fieldID);
               });
-              Scaffold
-                  .of(context)
-                  .showSnackBar(SnackBar(content: const Text("Notification removed.")));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Notification removed.")));
             },
 
             child: NotificationsTextSection(notification: notifications[index],),

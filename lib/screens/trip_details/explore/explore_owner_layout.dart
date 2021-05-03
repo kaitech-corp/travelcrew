@@ -1,11 +1,14 @@
+// import 'package:add_2_calendar/add_2_calendar.dart';
+// import 'package:expandable/expandable.dart';
+// export 'package:add_2_calendar/src/add_2_cal.dart';
+// export 'package:add_2_calendar/src/model/event.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
-export 'package:add_2_calendar/src/add_2_cal.dart';
-export 'package:add_2_calendar/src/model/event.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/cost/cost_split_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
 import 'package:travelcrew/services/database.dart';
@@ -107,9 +110,9 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                         expandController2: expandController2,
                         expandController3: expandController3,),
                       AnimatedPadding(
-                        duration: Duration(milliseconds: 250),
-                        padding: EdgeInsets.only(top: _padding),
-                        child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,)),
+                          duration: Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(top: _padding),
+                          child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,)),
                     ],
                   ):
                   Stack(
@@ -133,16 +136,16 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
-                          // RaisedButton(
-                          //   shape: RoundedRectangleBorder(
-                          //     borderRadius: BorderRadius.circular(20),
-                          //   ),
-                          //   onPressed: () {
-                          //     Navigator.push(context, MaterialPageRoute(builder: (context) => CostPage(tripDetails: widget.tripDetails,)),);
-                          //   },
-                          //   child: Text("Split"),
-                          //   // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
-                          // ),
+                            // RaisedButton(
+                            //   shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(20),
+                            //   ),
+                            //   onPressed: () {
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context) => CostPage(tripDetails: widget.tripDetails,)),);
+                            //   },
+                            //   child: Text("Split"),
+                            //   // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
+                            // ),
                             CrewModalBottomSheet(tripDetails: widget.tripDetails),
                           ],
                         ),
@@ -175,7 +178,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                       GestureDetector(
                                         onTap: (){
                                           FlutterClipboard.copy(widget.tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
-                                    },
+                                        },
                                         child: Card(
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10),
@@ -361,7 +364,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${tripDetails.tripName}'.toUpperCase(),
-          style: TextStyle(fontSize: 20.0),maxLines: 2,overflow: TextOverflow.ellipsis,),
+        style: TextStyle(fontSize: 20.0),maxLines: 2,overflow: TextOverflow.ellipsis,),
       subtitle: Text('${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
       trailing: PopupMenuButton<String>(
         icon: IconThemeWidget(icon: Icons.more_horiz,),
@@ -446,7 +449,6 @@ class OwnerPopupMenuButton extends StatelessWidget {
     );
   }
 }
-
 
 
 

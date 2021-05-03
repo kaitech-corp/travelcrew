@@ -5,7 +5,6 @@ import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/widgets/in_app_review.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 
@@ -232,8 +231,8 @@ class AddNewActivityState extends State<AddNewActivity> {
                               navigationService.pop();
                               DatabaseService().appReviewExists(TCFunctions().appReviewDocID()).then((value) => {
                                 if(!value){
-                                  InAppReviewClass().requestReviewFunc(),
-                                  CloudFunction().addReview(docID: TCFunctions().appReviewDocID()),
+                                  // InAppReviewClass().requestReviewFunc(),
+                                  // CloudFunction().addReview(docID: TCFunctions().appReviewDocID()),
                                 }
                               });
 

@@ -134,7 +134,6 @@ class _FollowingListState extends State<FollowingList> {
   }
 
   _showDialog(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: const Text('Invite sent.')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Invite sent.')));
   }
 }

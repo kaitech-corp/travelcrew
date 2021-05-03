@@ -8,7 +8,8 @@ import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/widgets/link_previewer.dart';
+// import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 
 
 class LodgingItemLayout extends StatelessWidget {
@@ -50,7 +51,7 @@ class LodgingItemLayout extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
-                  if(lodging.link.isNotEmpty) LinkPreview(link: lodging.link),
+                  if(lodging.link.isNotEmpty) LinkPreviewer(link: lodging.link),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

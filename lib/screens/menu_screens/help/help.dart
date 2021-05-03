@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 
 class HelpPage extends StatelessWidget{
@@ -38,7 +38,7 @@ class HelpPage extends StatelessWidget{
                       ],
                     ),
                     onPressed: (){
-                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key));
+                      TCFunctions().launchURL(urlToTerms);
                     },
                   ),
                   RaisedButton(
@@ -53,8 +53,8 @@ class HelpPage extends StatelessWidget{
                       ],
                     ),
                     onPressed: (){
-                      navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key));
-                    },
+                      TCFunctions().launchURL(urlToPrivacyPolicy);
+                      },
                   ),
                 ],
               ),

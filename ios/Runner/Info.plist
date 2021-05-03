@@ -11,47 +11,17 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Travel Crew</string>
+	<string>travelcrew</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.101337609697-binmcjfhbt7rcr8js828akf1svcl50se</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Enable Travel Crew access to your calendar in order to save and modify trip details created within Travel Crew.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Enable Travel Crew access to your camera in order to upload your photos for profile and trip images.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Requesting authentication using face id.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow Travel Crew access to your location for personalized trip suggestions.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow Travel Crew access to your location for personalized trip suggestions.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow Travel Crew access to your location for personalized trip suggestions.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Enable Travel Crew access to your camera roll to upload photos for profile and trip-related images.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -59,6 +29,8 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -69,7 +41,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>io.flutter.embedded_views_preview</key>
-	<string>YES</string>
 </dict>
 </plist>

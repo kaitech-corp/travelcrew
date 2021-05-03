@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
@@ -60,14 +60,14 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           (Map<String, dynamic> message) async {
         print("onMessage: $message");
         // showSimpleNotification(
-        if(message['aps']['category'] == 'chat') {
-          Fluttertoast.showToast(
-              msg: message['aps']['alert']['title'],
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.TOP,
-              timeInSecForIosWeb: 2,
-          );
-        }
+        // if(message['aps']['category'] == 'chat') {
+        //   Fluttertoast.showToast(
+        //       msg: message['aps']['alert']['title'],
+        //       toastLength: Toast.LENGTH_LONG,
+        //       gravity: ToastGravity.TOP,
+        //       timeInSecForIosWeb: 2,
+        //   );
+        // }
 
       },
       onLaunch: (Map<String, dynamic> message) async {

@@ -31,7 +31,7 @@ class _SignupScreenState extends State {
 
   Key get key => null;
 
-   getImage() async {
+  getImage() async {
     var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
     _cropImage(image.path, image);

@@ -84,7 +84,6 @@ class ChatMessageLayout extends StatelessWidget {
                       linkStyle: TextStyle(color: Colors.blue),
                       textAlign: TextAlign.left,
                     ),
-                    // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
                   ),
                   Container(
                       margin:EdgeInsets.fromLTRB(10,0,10,10),

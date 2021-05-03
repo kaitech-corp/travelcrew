@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+// import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
@@ -82,7 +83,6 @@ class DMChatMessageLayout extends StatelessWidget {
                       linkStyle: TextStyle(color: Colors.blue),
                       textAlign: TextAlign.left,
                     ),
-                    // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, maxLines: 50, overflow: TextOverflow.ellipsis, textScaleFactor: 1.2),
                   ),
                   Container(
                       margin:EdgeInsets.all(10),
@@ -125,9 +125,7 @@ class DMChatMessageLayout extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       linkStyle: TextStyle(color: Colors.blue),
                     ),
-                    ),
-                    // Text(message.message ?? '',style: Theme.of(context).textTheme.subtitle1, textScaleFactor: 1.2, maxLines: 50, overflow: TextOverflow.ellipsis,),
-                  // ),
+                   ),
                   Container(
                       margin:EdgeInsets.all(10),
                       child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), style: ChatTextStyle().timestampStyle(),textScaleFactor: 0.75)),

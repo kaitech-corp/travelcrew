@@ -60,7 +60,7 @@ class _CompleteProfileState extends State {
                                 children: [
                                   Text('Add a display name and profile picture!'
                                     ,style: Theme.of(context).textTheme.subtitle1,
-                                  textAlign: TextAlign.center,),
+                                    textAlign: TextAlign.center,),
                                   Text('Both are optional and can be changed later.'
                                     ,style: Theme.of(context).textTheme.subtitle1,
                                     textAlign: TextAlign.center,),
@@ -98,18 +98,12 @@ class _CompleteProfileState extends State {
                                 children: <Widget>[
                                   Text("By continuing you are agreeing to our Term's of Service, Privacy Policy.",
                                     style: Theme.of(context).textTheme.subtitle1,
-                                  textAlign: TextAlign.center,),
+                                    textAlign: TextAlign.center,),
                                   FlatButton(
                                     child: Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key1));
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(builder: (context) =>
-                                      //         WebViewScreen(urlToTerms, key1),
-                                      //     )
-                                      // );
                                     },
                                   ),
                                   FlatButton(
@@ -117,12 +111,6 @@ class _CompleteProfileState extends State {
                                     textColor: Colors.lightBlue,
                                     onPressed: (){
                                       navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key1));
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(builder: (context) =>
-                                      //         WebViewScreen(urlToPrivacyPolicy, key1),
-                                      //     )
-                                      // );
                                     },
                                   )
                                 ],
@@ -142,7 +130,7 @@ class _CompleteProfileState extends State {
                                         }
 
                                         DatabaseService().updateUserData(_user.
-                                            firstName, _user.lastName, email, user.uid);
+                                        firstName, _user.lastName, email, user.uid);
                                         DatabaseService().updateUserPublicProfileData(_user.displayName, _user.firstName, _user.lastName, email, 0, 0, user.uid, _image);
                                         Navigator.push(
                                           context,
@@ -164,7 +152,6 @@ class _CompleteProfileState extends State {
         ));
   }
   _showDialog(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: const Text('Creating Account')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Creating Account')));
   }
 }

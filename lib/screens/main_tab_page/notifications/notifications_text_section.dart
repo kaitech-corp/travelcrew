@@ -127,8 +127,7 @@ class NotificationsTextSection extends StatelessWidget{
   }
 
   _showDialog(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: const Text('Request accepted.')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Request accepted.')));
   }
 }
 
