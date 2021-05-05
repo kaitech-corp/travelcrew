@@ -1,6 +1,7 @@
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:getwidget/components/search_bar/gf_search_bar.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/apis/api.dart';
@@ -44,25 +45,33 @@ class _BringingListState extends State<BringingList> {
       child: Container(
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
-        child: SearchBar(
-          textStyle: Theme.of(context).textTheme.subtitle2,
-          cancellationWidget: const Text('Clear'),
-            placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
-            onSearch: WalmartProductSearch().getProducts,
-            onItemFound: (WalmartProducts product, int index) {
-              return CheckboxListTile(
-                title: Text(product.query),
-                controlAffinity: ListTileControlAffinity.trailing,
-                value: _selectedProducts.contains(product.query),
-                onChanged: (bool selected){
-                  setState(() {
-                    _onSelectedProduct(selected, product.query);
-                  });
-                },
-                activeColor: Colors.green,
-                checkColor: Colors.blueGrey,
-              );
-            }),
+        child: FloatingSearchBar(
+          hint: 'Search',
+          onQueryChanged: (item){
+            return WalmartProductSearch().getProducts(item);
+            },
+          width: SizeConfig.screenWidth,
+        )
+
+        // child: SearchBar(
+        //   textStyle: Theme.of(context).textTheme.subtitle2,
+        //   cancellationWidget: const Text('Clear'),
+        //     placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
+        //     onSearch: WalmartProductSearch().getProducts,
+        //     onItemFound: (WalmartProducts product, int index) {
+        //       return CheckboxListTile(
+        //         title: Text(product.query),
+        //         controlAffinity: ListTileControlAffinity.trailing,
+        //         value: _selectedProducts.contains(product.query),
+        //         onChanged: (bool selected){
+        //           setState(() {
+        //             _onSelectedProduct(selected, product.query);
+        //           });
+        //         },
+        //         activeColor: Colors.green,
+        //         checkColor: Colors.blueGrey,
+        //       );
+        //     }),
       ),
     );
   }
@@ -107,39 +116,46 @@ class _NeedListState extends State<NeedList> {
       child: Container(
         // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
-        child:  SearchBar(
-            textStyle: Theme.of(context).textTheme.subtitle2,
-            cancellationWidget:const Text('Clear'),
-            placeHolder: NeedListToDisplay(documentID: widget.documentID,),
-            onSearch: WalmartProductSearch().getProducts,
-            onItemFound: (WalmartProducts product, int index) {
-              return CheckboxListTile(
-                title: Text(product.query),
-                controlAffinity: ListTileControlAffinity.trailing,
-                value: _selectedProducts.contains(product.query),
-                onChanged: (bool selected){
-                  setState(() {
-                    _onSelectedProduct(selected, product.query);
-                    if(selected ==true) {
-                      try {
-                        // print(widget.documentID);
-                        CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
-                        // DatabaseService().addItemToNeedList(
-                        //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
-                      } catch (e) {
-                        print(e.toString());
-                      }
-                    } else{
-                        // TODO: change to delete
-                        _onSelectedProduct(selected, product.query);
-                    }
-                  });
-                },
-                activeColor: Colors.green,
-                checkColor: Colors.blueGrey,
-              );
-            }),
+          child: FloatingSearchBar(
+            hint: 'Search',
+            onQueryChanged: (item){
+              return WalmartProductSearch().getProducts(item);
+            },
+            width: SizeConfig.screenWidth,
+          )
+        // child:  SearchBar(
+        //     textStyle: Theme.of(context).textTheme.subtitle2,
+        //     cancellationWidget:const Text('Clear'),
+        //     placeHolder: NeedListToDisplay(documentID: widget.documentID,),
+        //     onSearch: WalmartProductSearch().getProducts,
+        //     onItemFound: (WalmartProducts product, int index) {
+        //       return CheckboxListTile(
+        //         title: Text(product.query),
+        //         controlAffinity: ListTileControlAffinity.trailing,
+        //         value: _selectedProducts.contains(product.query),
+        //         onChanged: (bool selected){
+        //           setState(() {
+        //             _onSelectedProduct(selected, product.query);
+        //             if(selected ==true) {
+        //               try {
+        //                 // print(widget.documentID);
+        //                 CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
+        //                 // DatabaseService().addItemToNeedList(
+        //                 //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
+        //                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
+        //               } catch (e) {
+        //                 print(e.toString());
+        //               }
+        //             } else{
+        //                 // TODO: change to delete
+        //                 _onSelectedProduct(selected, product.query);
+        //             }
+        //           });
+        //         },
+        //         activeColor: Colors.green,
+        //         checkColor: Colors.blueGrey,
+        //       );
+        //     }),
       ),
     );
   }
