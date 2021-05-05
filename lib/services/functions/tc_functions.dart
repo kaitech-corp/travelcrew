@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_webservice/places.dart';
-
 import '../locator.dart';
 
 class TCFunctions {
@@ -86,7 +85,8 @@ class TCFunctions {
   }
 
   dynamic getLocation(dynamic lat, dynamic lng){
-    return Location(lat,lng);
+    // return Location(lat,lng);
+    return Location(lat: lat, lng: lng);
   }
 
   String formatTimestamp (Timestamp timestamp){
