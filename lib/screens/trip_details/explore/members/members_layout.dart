@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
@@ -103,6 +104,9 @@ class _MembersLayoutState extends State<MembersLayout> {
             setState(() {
               _showImage = false;
             });
+          },
+          onTap: (){
+            navigationService.navigateTo(UserProfilePageRoute, arguments: member);
           },
           child: ListTile(
             leading: Container(

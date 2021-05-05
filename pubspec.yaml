@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  add_2_calendar: ^1.4.0
+  add_2_calendar: ^2.1.0
   apple_sign_in: ^0.1.0
   clipboard: ^0.1.2+8
   cloud_firestore: ^0.16.0+1
