@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
@@ -10,7 +9,6 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
 import '../../services/widgets/loading.dart';
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/widgets/image_popup.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
@@ -64,6 +65,8 @@ class ImageAnimation extends StatefulWidget{
 class _ImageAnimationState extends State<ImageAnimation> {
 
     double _height = SizeConfig.screenHeight*.4;
+    var _showImage = false;
+    String _image;
     @override
     void initState() {
       super.initState();
@@ -90,9 +93,9 @@ class _ImageAnimationState extends State<ImageAnimation> {
     @override
     Widget build(BuildContext context) {
       return Hero(
-        tag: widget.tripDetails.urlToImage,
-        transitionOnUserGestures: true,
-        child: CustomHangingImage(urlToImage: widget.tripDetails.urlToImage,height: _height,),
+      tag: widget.tripDetails.urlToImage,
+      transitionOnUserGestures: true,
+      child: CustomHangingImage(urlToImage: widget.tripDetails.urlToImage,height: _height,),
       );
     }
   }
