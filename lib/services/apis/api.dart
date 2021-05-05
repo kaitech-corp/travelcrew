@@ -18,7 +18,7 @@ class APIService {
   // Base API request to get response
   Future<List<Countries>> getCountries() async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(_baseUrl, headers: _headers);
+    final response = await http.get(Uri.parse(_baseUrl), headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
@@ -98,7 +98,7 @@ class PublicHolidayAPI {
   // Base API request to get response
   Future<List<Holiday>> getHolidays(String code) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(_baseUrl +'/'+ DateTime.now().year.toString()+'/'+ code, headers: _headers);
+    final response = await http.get(Uri.parse(_baseUrl +'/'+ DateTime.now().year.toString()+'/'+ code), headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
@@ -128,7 +128,7 @@ class RestCountries {
   // Base API request to get response
   Future<List<Countries>> getCountry( String name) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(_baseUrl + name, headers: _headers);
+    final response = await http.get(Uri.parse(_baseUrl + name), headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
@@ -158,7 +158,7 @@ class WalmartProductSearch {
   // Base API request to get response
   Future<List<WalmartProducts>> getProducts(String name) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(_baseUrl + name, headers: _headers);
+    final response = await http.get(Uri.parse('_baseUrl + name'), headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
@@ -232,7 +232,7 @@ class PlacesNearby {
     }
     var query = '?location=${lat.substring(0,9)}%2C${lng.substring(0,9)}&type=$place&radius=10000&language=en';
     print(query);
-    final response = await http.get(_baseUrl + query, headers: _headers);
+    final response = await http.get(Uri.parse(_baseUrl + query), headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
 
