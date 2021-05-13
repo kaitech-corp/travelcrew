@@ -20,6 +20,7 @@ class NotificationsTextSection extends StatelessWidget{
     var notificationType = {
       'Activity' : notificationType1(context),
       'Lodging' : notificationType1(context),
+      'Travel' :notificationType1(context),
       'joinRequest': notificationType2(context),
       'Follow' : notificationType3(context),
       'Welcome': notificationType4(context),

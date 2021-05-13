@@ -282,14 +282,21 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.blue,
-              Colors.lightBlueAccent
+              Colors.blue.shade50,
+              Colors.lightBlueAccent.shade200
             ]
         ),
       ):
       BoxDecoration(
-          color: Color(0xAA2D3D49),
-          borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.grey.shade700,
+              Color(0xAA2D3D49)
+            ]
+        ),
       ),
       child: Column(
         children: [
@@ -298,7 +305,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
             child: Tooltip(
               message: '${trip.tripName}',
               child: ListTile(
-                title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis,),
+                title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.black), maxLines: 2, overflow: TextOverflow.ellipsis,),
                 subtitle: Text("${trip.travelType}",
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),
                 trailing: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.headline5,),

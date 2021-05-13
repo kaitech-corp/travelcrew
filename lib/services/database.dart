@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
@@ -55,7 +56,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version2_0_2').get();
+      var ref = await versionCollection.doc('version2_0_3').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -68,6 +69,18 @@ class DatabaseService {
 
   }
 
+  // Future<bool> retrieveTokenFromDevice() async {
+  //   bool tokenSaved;
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String token = (prefs.getString('token') ?? '');
+  //   tokenSaved = token.isNotEmpty;
+  //   return tokenSaved;
+  // }
+  //
+  // saveTokenToDevice(String fcmToken) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('token', fcmToken);
+  // }
   // Saves tokens for push notifications. Saves only after user navigates to the main screen.
   saveDeviceToken() async {
     // Get the current user

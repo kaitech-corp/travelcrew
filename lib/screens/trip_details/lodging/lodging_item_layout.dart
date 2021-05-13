@@ -43,15 +43,15 @@ class LodgingItemLayout extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
-                  if(lodging.startTime.isNotEmpty) Text('${lodging.startTime ?? ''} - ${lodging.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+                  if(lodging.startTime?.isNotEmpty ?? false) Text('${lodging.startTime ?? ''} - ${lodging.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
                   const Padding(
                     padding: EdgeInsets.only(bottom: 8.0),
                   ),
-                  if(lodging.comment.isNotEmpty) Text(lodging.comment,style: Theme.of(context).textTheme.subtitle1,),
+                  if(lodging.comment?.isNotEmpty ?? false) Text(lodging.comment,style: Theme.of(context).textTheme.subtitle1,),
                   const Padding(
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
-                  if(lodging.link.isNotEmpty) LinkPreviewer(link: lodging.link),
+                  if(lodging.link?.isNotEmpty ?? false) FlutterLinkView(link: lodging.link),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +59,7 @@ class LodgingItemLayout extends StatelessWidget {
                       Text('${lodging.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
                       Row(
                         children: [
-                          if(lodging.link.isNotEmpty) Icon(Icons.link),
+                          if(lodging.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
                           IconButton(
                               icon: favorite(userService.currentUserID),
                               onPressed: () {
