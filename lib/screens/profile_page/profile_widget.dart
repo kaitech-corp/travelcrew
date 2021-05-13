@@ -132,7 +132,7 @@ class ProfileWidget extends StatelessWidget {
                                 user.topDestinations[1],style: Theme.of(context).textTheme.subtitle1,) : Text(
                                 'Destination 2',style: Theme.of(context).textTheme.subtitle1,),
                               (user.topDestinations[2].isNotEmpty) ?  Text(
-                                user.topDestinations[2],style: Theme.of(context).textTheme.subtitle1,) : Text(
+                                user.topDestinations[2] ,style: Theme.of(context).textTheme.subtitle1,maxLines: 1,) : Text(
                                 'Destination 3',style: Theme.of(context).textTheme.subtitle1,),
                             ],
                           ),

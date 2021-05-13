@@ -127,8 +127,6 @@ class _TCUserCardState extends State<TCUserCard> {
         ),
       );
   }
-
-
 }
 
 class BlockedPopupMenu extends StatelessWidget {

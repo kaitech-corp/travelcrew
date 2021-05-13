@@ -44,21 +44,44 @@ class TappableCrewTripTile extends StatelessWidget {
         child: Container(
           height: trip.urlToImage.isNotEmpty ? size* .31 : size*.11,
           width: double.infinity,
+          decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
+          BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            // borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+            gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Colors.blue.shade50,
+                  Colors.lightBlueAccent.shade200
+                ]
+            ),
+          ): BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.grey.shade700,
+                  Color(0xAA2D3D49)
+                ]
+            ),
+          ),
           child: Stack(
             overflow: Overflow.clip,
             children: [
-              (ThemeProvider.themeOf(context).id == 'light_theme') ? Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: SizeConfig.screenWidth*.025,
-                  width: (SizeConfig.screenWidth*.8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(30),topLeft: Radius.circular(30)),
-                    color: Colors.blue,
-                  )
-                ),
-              ) :
-              Container(),
+              // (ThemeProvider.themeOf(context).id == 'light_theme') ? Align(
+              //   alignment: Alignment.bottomCenter,
+              //   child: Container(
+              //     height: SizeConfig.screenWidth*.025,
+              //     width: (SizeConfig.screenWidth*.8),
+              //     decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.only(topRight: Radius.circular(30),topLeft: Radius.circular(30)),
+              //       color: Colors.white,
+              //     )
+              //   ),
+              // ) :
+              // Container(),
               Positioned.fill(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
