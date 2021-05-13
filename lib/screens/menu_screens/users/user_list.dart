@@ -1,8 +1,8 @@
 // import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 // import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/components/search_bar/gf_search_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -65,24 +65,19 @@ class _UserListState extends State<UserList> {
           },)
         ],
       ),
-      body: _isSearching ? GFSearchBar(
-        // onSearch: userSearchList,
-        // textStyle: Theme.of(context).textTheme.subtitle1,
-        searchList: allUsersList,
-        searchQueryBuilder: (query, list){
-          return allUsersList.where((user) =>
-          user.displayName.toLowerCase().contains(query.toLowerCase())
-              || user.firstName.toLowerCase().contains(query.toLowerCase()) ||
-              user.lastName.toLowerCase().contains(query.toLowerCase()) || user.displayName.toLowerCase().contains(query.toLowerCase())
-          ).toList();
-        },
-        // placeHolder: ListView.builder(
-        //     controller: controller,
-        //     itemCount: allUsersList.length ?? 0,
-        //     itemBuilder: (context, index){
-        //       return TCUserCard(allUsers: allUsersList[index]);
-        //     }),
-        onItemSelected: (user){
+      body: _isSearching ? SearchBar(
+        onSearch: userSearchList,
+        textStyle: Theme.of(context).textTheme.subtitle1,
+        placeHolder: DraggableScrollbar.semicircle(
+          controller: controller,
+          child: ListView.builder(
+              controller: controller,
+              itemCount: allUsersList.length ?? 0,
+              itemBuilder: (context, index){
+                return TCUserCard(allUsers: allUsersList[index]);
+              }),
+        ),
+        onItemFound: (UserPublicProfile user, int index){
           return TCUserCard(allUsers: user);
         },
       ): DraggableScrollbar.semicircle(
@@ -96,7 +91,5 @@ class _UserListState extends State<UserList> {
 
       ),
     );
-
-
   }
 }

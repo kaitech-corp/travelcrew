@@ -158,11 +158,12 @@ class WalmartProductSearch {
   // Base API request to get response
   Future<List<WalmartProducts>> getProducts(String name) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
-    final response = await http.get(Uri.parse('_baseUrl + name'), headers: _headers);
+    final response = await http.get(Uri.parse('$_baseUrl + $name'), headers: _headers);
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
 
+      // print(result);
       Iterable list = result['specific'];
       return list.map((stat) => WalmartProducts.fromJSON(stat)).toList();
     } else {

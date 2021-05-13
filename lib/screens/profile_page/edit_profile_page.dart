@@ -182,6 +182,9 @@ class _SignupScreenState extends State {
                                           children: [
                                             TextFormField(
                                                 initialValue: (user.topDestinations[0].isNotEmpty) ? user.topDestinations[0] : '',
+                                                inputFormatters: [
+                                                  new LengthLimitingTextInputFormatter(30),
+                                                ],
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 1'),
@@ -189,6 +192,9 @@ class _SignupScreenState extends State {
                                                     setState(() => destination1 = val.trim())),
                                             TextFormField(
                                                 initialValue: (user.topDestinations[1].isNotEmpty) ? user.topDestinations[1] : '',
+                                                inputFormatters: [
+                                                  new LengthLimitingTextInputFormatter(30),
+                                                ],
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 2'),
@@ -196,6 +202,9 @@ class _SignupScreenState extends State {
                                                     setState(() => destination2 = val.trim())),
                                             TextFormField(
                                                 initialValue: (user.topDestinations[2].isNotEmpty) ? user.topDestinations[2] : '',
+                                                inputFormatters: [
+                                                  new LengthLimitingTextInputFormatter(30),
+                                                ],
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration:
                                                 const InputDecoration(labelText: 'Destination 3'),
