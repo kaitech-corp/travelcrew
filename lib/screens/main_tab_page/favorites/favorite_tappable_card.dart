@@ -19,7 +19,7 @@ class FavoriteTappableTripCard extends StatelessWidget {
     return Card(
       color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
+        borderRadius: const BorderRadius.only(topRight: Radius.circular(50.0)),
       ),
       margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
       key: Key(trip.documentId),
@@ -29,6 +29,30 @@ class FavoriteTappableTripCard extends StatelessWidget {
           navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
         },
         child: Container(
+          // margin: const EdgeInsets.only(left: 15,right: 15, bottom: 20, top: 10),
+          decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
+          BoxDecoration(
+            borderRadius: const BorderRadius.only(topRight: Radius.circular(50.0)),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.blue.shade50,
+                  Colors.lightBlueAccent.shade200
+                ]
+            ),
+          ):
+          BoxDecoration(
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.grey.shade700,
+                  Color(0xAA2D3D49)
+                ]
+            ),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

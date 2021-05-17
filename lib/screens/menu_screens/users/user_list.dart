@@ -91,7 +91,5 @@ class _UserListState extends State<UserList> {
 
       ),
     );
-
-
   }
 }

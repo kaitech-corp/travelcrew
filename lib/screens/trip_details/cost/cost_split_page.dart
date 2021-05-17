@@ -4,32 +4,72 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/cost/progress_bar.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import '../../../services/widgets/loading.dart';
 
-class CostPage extends StatelessWidget{
+class CostPage extends StatefulWidget{
 
   final Trip tripDetails;
   CostPage({this.tripDetails});
 
   @override
+  _CostPageState createState() => _CostPageState();
+}
+
+class _CostPageState extends State<CostPage> {
+
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Split', ),
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(8),
-          child: Container(
-            child: BringListCostDisplay(tripDocID: tripDetails.documentId,),
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Split',style: Theme.of(context).textTheme.headline3,),
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: IconThemeWidget(icon: Icons.flight,),),
+                Tab(icon: IconThemeWidget(icon: Icons.hotel,),),
+                Tab(icon: IconThemeWidget(icon: Icons.directions_bike,),),
+                Tab(icon: IconThemeWidget(icon: Icons.shopping_basket,),)
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              SingleChildScrollView(
+              padding: const EdgeInsets.all(8),
+              child: Container(
+                child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
+              ),
+            ),
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
+                ),
+              ),
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
+                ),
+              ),
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
+                ),
+              ),
+            ]
           ),
         ),
       )
     );
   }
-
 }
 
 class BringListCostDisplay extends StatelessWidget{

@@ -6,6 +6,7 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 
 class TravelCrewAlertDialogs {
   var userService = locator<UserService>();
@@ -62,10 +63,11 @@ class TravelCrewAlertDialogs {
               child: const Text('Report',),
               onPressed: () {
                 navigationService.pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ReportContent(type: type, tripDetails: tripDetails, userAccount: userProfile, activity: activityData, lodging: lodgingData,)),
-                );
+                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile, activityData, tripDetails, lodgingData));
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => ReportContent(type: type, tripDetails: tripDetails, userAccount: userProfile, activity: activityData, lodging: lodgingData,)),
+                // );
               },
             ),
             TextButton(

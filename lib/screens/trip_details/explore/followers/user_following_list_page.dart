@@ -26,6 +26,7 @@ class _FollowingListState extends State<FollowingList> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      // key: ObjectKey(currentUserProfile.followers),
       appBar: AppBar(
         title: Text('Followers',style: Theme.of(context).textTheme.headline3,),
       ),

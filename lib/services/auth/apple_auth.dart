@@ -1,28 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 
 class AppleAuthService {
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   // Determine if Apple SignIn is available
-  Future<bool> get appleSignInAvailable => AppleSignIn.isAvailable();
+  Future<bool> get appleSignInAvailable => SignInWithApple.isAvailable();
 
   /// Sign in with Apple
   Future<auth.User> appleSignIn() async {
     try {
 
-      final AuthorizationResult appleResult = await AppleSignIn.performRequests([
-        AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
-      ]);
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [AppleIDAuthorizationScopes.email,AppleIDAuthorizationScopes.fullName]
 
-      if (appleResult.error != null) {
+      );
+
+      if (appleCredential != null) {
         // handle errors from Apple here
       }
 
       final auth.OAuthCredential credential = auth.OAuthProvider('apple.com').credential(
-        accessToken: String.fromCharCodes(appleResult.credential.authorizationCode),
-        idToken: String.fromCharCodes(appleResult.credential.identityToken),
+        accessToken: appleCredential.authorizationCode,
+        idToken: appleCredential.identityToken,
       );
 
       auth.UserCredential firebaseResult = await _auth.signInWithCredential(credential);

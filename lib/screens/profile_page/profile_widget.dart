@@ -132,7 +132,7 @@ class ProfileWidget extends StatelessWidget {
                                 user.topDestinations[1],style: Theme.of(context).textTheme.subtitle1,) : Text(
                                 'Destination 2',style: Theme.of(context).textTheme.subtitle1,),
                               (user.topDestinations[2].isNotEmpty) ?  Text(
-                                user.topDestinations[2],style: Theme.of(context).textTheme.subtitle1,) : Text(
+                                user.topDestinations[2] ,style: Theme.of(context).textTheme.subtitle1,maxLines: 1,) : Text(
                                 'Destination 3',style: Theme.of(context).textTheme.subtitle1,),
                             ],
                           ),
@@ -232,14 +232,14 @@ class FollowerBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => Container(
-            padding: const EdgeInsets.all(10),
-            height: SizeConfig.screenHeight*.7,
-            child: FollowList(isFollowers: false,user: user,),
-          ),
-        );
+        // showModalBottomSheet(
+        //   context: context,
+        //   builder: (context) => Container(
+        //     padding: const EdgeInsets.all(10),
+        //     height: SizeConfig.screenHeight*.7,
+        //     child: FollowList(isFollowers: false,user: user,),
+        //   ),
+        // );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
