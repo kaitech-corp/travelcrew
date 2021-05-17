@@ -232,14 +232,14 @@ class FollowerBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => Container(
-            padding: const EdgeInsets.all(10),
-            height: SizeConfig.screenHeight*.7,
-            child: FollowList(isFollowers: false,user: user,),
-          ),
-        );
+        // showModalBottomSheet(
+        //   context: context,
+        //   builder: (context) => Container(
+        //     padding: const EdgeInsets.all(10),
+        //     height: SizeConfig.screenHeight*.7,
+        //     child: FollowList(isFollowers: false,user: user,),
+        //   ),
+        // );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -15,10 +15,12 @@ import 'package:travelcrew/services/navigation/navigation_service.dart';
 import 'package:travelcrew/services/push_notifications.dart';
 import 'package:travelcrew/services/navigation/router.dart';
 import 'models/custom_objects.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DotEnv.load(fileName: ".env");
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/auth/apple_auth.dart';
@@ -45,8 +46,17 @@ class LoginPage extends StatefulWidget {
                  children: <Widget>[
                    Flexible(
                      flex: 4,
+                       child: Container(
+                         margin: EdgeInsets.only(top: SizeConfig.screenWidth*.1),
+                         height: SizeConfig.screenHeight*25,
+                         padding: const EdgeInsets.all(8.0),
+                         child: AutoSizeText("Travel Crew",style: TextStyle(fontFamily:'RockSalt', fontSize: 48, color: Colors.blue), maxLines: 2,textAlign: TextAlign.center,),
+                       ),
                        // child: ImageBanner("assets/images/travelPics.png")),
-                     child: Image.asset(TCLogo),
+                     // child: Padding(
+                     //   padding: const EdgeInsets.all(8.0),
+                     //   child: Image.asset(TCLogo, fit: BoxFit.fitWidth,),
+                     // ),
                    ),
                    Container(
                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),

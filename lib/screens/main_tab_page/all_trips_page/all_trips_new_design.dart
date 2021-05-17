@@ -305,6 +305,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
             child: Tooltip(
               message: '${trip.tripName}',
               child: ListTile(
+                contentPadding: EdgeInsets.only(left: 15,right: 5),
                 title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', fontSize: 18, color: Colors.black), maxLines: 2, overflow: TextOverflow.ellipsis,),
                 subtitle: Text("${trip.travelType}",
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.headline5, maxLines: 1, overflow: TextOverflow.ellipsis,),

@@ -8,8 +8,6 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 class Settings extends StatefulWidget{
 
-
-
   @override
   _SettingsState createState() => _SettingsState();
 }
