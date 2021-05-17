@@ -4,6 +4,7 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -101,7 +102,7 @@ class LodgingItemLayout extends StatelessWidget {
       onSelected: (value){
         switch (value){
           case "Edit": {
-            navigationService.navigateTo(EditLodgingRoute,arguments: lodging);
+            navigationService.navigateTo(EditLodgingRoute,arguments: EditLodgingArguments(lodging, trip));
           }
           break;
           case "View": {

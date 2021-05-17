@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 // import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 
 class ProgressBarWidget extends StatelessWidget {
@@ -11,16 +12,16 @@ class ProgressBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return FAProgressBar(
-    //   currentValue: currentValue,
-    //   maxValue: maxValue,
-    //   animatedDuration:
-    //   Duration(milliseconds: 1500),
-    //   displayText: '',
-    //   border: Border.all(color: Colors.grey),
-    //   progressColor: Colors.green,
-    //   borderRadius: 20,
-    // );
+    return FAProgressBar(
+      currentValue: currentValue,
+      maxValue: maxValue,
+      animatedDuration:
+      Duration(milliseconds: 1500),
+      displayText: '',
+      border: Border.all(color: Colors.grey),
+      progressColor: Colors.green,
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+    );
   }
 
 }
