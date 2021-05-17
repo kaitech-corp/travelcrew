@@ -4,6 +4,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -99,7 +100,7 @@ class ActivityItemLayout extends StatelessWidget {
       onSelected: (value){
         switch (value){
           case "Edit": {
-            navigationService.navigateTo(EditActivityRoute, arguments: activity);
+            navigationService.navigateTo(EditActivityRoute, arguments: EditActivityArguments(activity, trip));
           }
           break;
           case "View": {
