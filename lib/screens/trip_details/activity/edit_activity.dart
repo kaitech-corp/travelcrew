@@ -243,7 +243,7 @@ class _EditActivityState extends State<EditActivity> {
                             }
                           },
                             child: Text(
-                              'Add',
+                              'Save',
                               style: Theme.of(context).textTheme.subtitle1,
                             )
                         ),

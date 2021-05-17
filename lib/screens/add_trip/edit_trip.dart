@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -22,7 +23,7 @@ class EditTripData extends StatefulWidget {
 class _EditTripDataState extends State<EditTripData> {
   final _formKey = GlobalKey<FormState>();
   File _image;
-  // final ImagePicker _picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
   String startDate;
   String endDate;
   Timestamp startDateTimeStamp;
@@ -82,12 +83,12 @@ class _EditTripDataState extends State<EditTripData> {
   File urlToImage;
 
   Future getImage() async {
-    // var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
 
-    // setState(() {
-    //   _image = File(image.path);
-    //   urlToImage = _image;
-    // });
+    setState(() {
+      _image = File(image.path);
+      urlToImage = _image;
+    });
   }
 
 
@@ -116,6 +117,9 @@ class _EditTripDataState extends State<EditTripData> {
                             children: [
                               TextFormField(
                                   textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    new LengthLimitingTextInputFormatter(75),
+                                  ],
                                   decoration:
                                   const InputDecoration(labelText: 'Trip Name or Location'),
                                   initialValue: tripName,
@@ -132,6 +136,9 @@ class _EditTripDataState extends State<EditTripData> {
                               ),
                               TextFormField(
                                   textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    new LengthLimitingTextInputFormatter(30),
+                                  ],
                                   decoration:
                                   const InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
                                   initialValue: travelType,
@@ -163,7 +170,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     },
                                   ),
                                   Container(
-                                    // child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
                                     padding: const EdgeInsets.only(top: 5, bottom: 5),),
                                 ],
                               ):

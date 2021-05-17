@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/screens/authenticate/authenticate.dart';
@@ -21,6 +22,7 @@ class Wrapper extends StatelessWidget{
       return Authenticate();
     } else {
       DatabaseService().saveDeviceToken();
+      FirebaseCrashlytics.instance.setUserIdentifier(user.uid);
        return FutureBuilder(
          builder: (context, data) {
            if (data.data == false) {
