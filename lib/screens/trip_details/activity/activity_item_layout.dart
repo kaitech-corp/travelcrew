@@ -4,6 +4,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -32,55 +33,53 @@ class ActivityItemLayout extends StatelessWidget {
               if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
             },
             child: Container(
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Text('${activity.activityType}',style: Theme.of(context).textTheme.headline4,maxLines: 2,),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 4.0),
-                      ),
-                      if(activity.startTime.isNotEmpty) Text('${activity.startTime ?? ''} - ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                      ),
-                      if(activity.comment.isNotEmpty) Tooltip(message:activity.comment,child: Text(activity.comment,style: Theme.of(context).textTheme.subtitle1,maxLines: 10,overflow: TextOverflow.ellipsis,)),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 4.0),
-                      ),
+              margin: const EdgeInsets.all(8.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text('${activity.activityType}',style: Theme.of(context).textTheme.headline4,maxLines: 2,),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 4.0),
+                    ),
+                    if(activity.startTime?.isNotEmpty ?? false) Text('${activity.startTime ?? ''} - ${activity.endTime ?? ''}',style: Theme.of(context).textTheme.headline6,),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                    ),
+                    if(activity.comment?.isNotEmpty ?? false) Tooltip(message:activity.comment,child: Text(activity.comment,style: Theme.of(context).textTheme.subtitle1,maxLines: 10,overflow: TextOverflow.ellipsis,)),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 4.0),
+                    ),
 
-                      if(activity.link.isNotEmpty) LinkPreviewer(link: activity.link),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text('${activity.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
-                          Row(
-                            children: [
-                              if(activity.link.isNotEmpty) Icon(Icons.link),
-                              IconButton(
-                                  icon: favorite(userService.currentUserID),
-                                  onPressed: () {
-                                    String fieldID = activity.fieldID;
-                                    if (!activity.voters.contains(userService.currentUserID)) {
-                                      return CloudFunction().addVoterToActivity(trip.documentId, fieldID);
-                                      // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
-                                    } else {
-                                      return CloudFunction().removeVoterFromActivity(trip.documentId, fieldID);
-                                      // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
-                                    }
+                    if(activity.link?.isNotEmpty ?? false) FlutterLinkView(link: activity.link),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('${activity.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
+                        Row(
+                          children: [
+                            if(activity.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
+                            IconButton(
+                                icon: favorite(userService.currentUserID),
+                                onPressed: () {
+                                  String fieldID = activity.fieldID;
+                                  if (!activity.voters.contains(userService.currentUserID)) {
+                                    return CloudFunction().addVoterToActivity(trip.documentId, fieldID);
+                                    // return DatabaseService(tripDocID: trip.documentId).addVoteToActivity(uid, fieldID);
+                                  } else {
+                                    return CloudFunction().removeVoterFromActivity(trip.documentId, fieldID);
+                                    // return DatabaseService(tripDocID: trip.documentId).removeVoteFromActivity(uid, fieldID);
                                   }
-                              ),
-                              Text('${activity.voters.length}',style: Theme.of(context).textTheme.subtitle1,),
-                              menuButton(context),
-                            ],
-                          ),
-                        ],
-                      ),
-                      if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
-                    ]
-                ),
+                                }
+                            ),
+                            Text('${activity.voters.length}',style: Theme.of(context).textTheme.subtitle1,),
+                            menuButton(context),
+                          ],
+                        ),
+                      ],
+                    ),
+                    if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
+                  ]
               ),
             ),
           ),
@@ -101,7 +100,7 @@ class ActivityItemLayout extends StatelessWidget {
       onSelected: (value){
         switch (value){
           case "Edit": {
-            navigationService.navigateTo(EditActivityRoute, arguments: activity);
+            navigationService.navigateTo(EditActivityRoute, arguments: EditActivityArguments(activity, trip));
           }
           break;
           case "View": {

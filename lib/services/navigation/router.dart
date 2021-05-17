@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/admin/admin_page.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
@@ -42,7 +43,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ActivityRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Activity(),
+        viewToShow: Activity(trip: args,),
       );
     case AddNewActivityRoute:
       return _getPageRoute(
@@ -67,7 +68,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ChatRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Chat(),
+        viewToShow: Chat(trip: args,),
       );
     case CostPageRoute:
       return _getPageRoute(
@@ -90,14 +91,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: DMChatListPage(),
       );
     case EditActivityRoute:
+      EditActivityArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: EditActivity(activity: args,),
+        viewToShow: EditActivity(activity: arguments.activity,trip: arguments.trip,),
       );
     case EditLodgingRoute:
+      EditLodgingArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: EditLodging(),
+        viewToShow: EditLodging(trip: arguments.trip,lodging: arguments.lodging,),
       );
     case EditProfilePageRoute:
       return _getPageRoute(
@@ -134,11 +137,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: FollowingList(tripDetails: args,),
       );
-    // case GooglePlacesRoute:
-    //   return _getPageRoute(
-    //     routeName: settings.name,
-    //     viewToShow: GooglePlaces(),
-    //   );
+    case GooglePlacesRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: GooglePlaces(),
+      );
     case HelpPageRoute:
       return _getPageRoute(
         routeName: settings.name,
@@ -147,7 +150,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case LodgingRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Lodging(),
+        viewToShow: Lodging(trip: args,),
       );
     case MainTabPageRoute:
       return _getPageRoute(
@@ -155,9 +158,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: MainTabPage(),
       );
     case MembersLayoutRoute:
+      MembersLayoutArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: MembersLayout(),
+        viewToShow: MembersLayout(members: arguments.members,tripDetails: arguments.tripDetails,ownerID: arguments.ownerID,),
       );
     case MenuDrawerRoute:
       return _getPageRoute(
@@ -170,9 +174,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: Notifications(),
       );
     case ReportContentRoute:
+      ReportArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: ReportContent(),
+        viewToShow: ReportContent(activity: arguments.activity,
+          lodging: arguments.lodging,tripDetails: arguments.tripDetails,
+          type: arguments.type,userAccount: arguments.userAccount,),
       );
     case SettingsRoute:
       return _getPageRoute(
@@ -230,10 +237,39 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   }
 }
 
-PageRoute _getPageRoute({String routeName, Widget viewToShow}) {
+PageRoute _getPageRoute({String routeName, Widget viewToShow }) {
   return MaterialPageRoute(
       settings: RouteSettings(
         name: routeName,
       ),
       builder: (_) => viewToShow);
+}
+
+class EditActivityArguments{
+  final Trip trip;
+  final ActivityData activity;
+
+  EditActivityArguments(this.activity, this.trip);
+}
+class EditLodgingArguments{
+  final Trip trip;
+  final LodgingData lodging ;
+
+  EditLodgingArguments(this.lodging, this.trip);
+}
+class MembersLayoutArguments{
+  final List<Members> members;
+  final Trip tripDetails;
+  final String ownerID;
+
+  MembersLayoutArguments(this.members, this.tripDetails, this.ownerID);
+}
+class ReportArguments{
+  final String type;
+  final UserPublicProfile userAccount;
+  final ActivityData activity;
+  final LodgingData lodging;
+  final Trip tripDetails;
+
+  ReportArguments(this.type, this.userAccount, this.activity,this.tripDetails,this.lodging);
 }
