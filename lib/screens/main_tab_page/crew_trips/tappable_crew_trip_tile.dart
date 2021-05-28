@@ -18,7 +18,6 @@ class TappableCrewTripTile extends StatelessWidget {
   final heroTag;
 
 
-
   TappableCrewTripTile({this.trip, this.heroTag});
 
   // Trace trace = FirebasePerformance.instance.newTrace('CrewTrips');

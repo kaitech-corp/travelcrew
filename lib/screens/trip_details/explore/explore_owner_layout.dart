@@ -155,16 +155,16 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CostPage(tripDetails: widget.tripDetails,)),);
-                                },
-                                child: Text("Split"),
-                                // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
-                              ),
+                              // RaisedButton(
+                              //   shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.circular(20),
+                              //   ),
+                              //   onPressed: () {
+                              //     Navigator.push(context, MaterialPageRoute(builder: (context) => CostPage(tripDetails: widget.tripDetails,)),);
+                              //   },
+                              //   child: Text("Split"),
+                              //   // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
+                              // ),
                               CrewModalBottomSheet(tripDetails: widget.tripDetails),
                             ],
                           ),

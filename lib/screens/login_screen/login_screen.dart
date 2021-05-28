@@ -173,7 +173,7 @@ class LoginPage extends StatefulWidget {
                              textColor: Colors.lightBlue,
                              onPressed: () {
                               navigationService.navigateTo(SignUpScreenRoute);
-                             }
+                              }
                            ),
                          ],
                        ),
