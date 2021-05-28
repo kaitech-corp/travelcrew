@@ -56,7 +56,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version2_0_3').get();
+      var ref = await versionCollection.doc('version2_0_5').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -1071,13 +1071,13 @@ class DatabaseService {
 
     try {
       final now = DateTime.now().toUtc();
-      var tomorrow = DateTime(now.year, now.month, now.day + 2);
+      var past = DateTime(now.year, now.month, now.day - 2);
         List<Trip> trips = snapshot.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
           return Trip.fromData(data);
         }).toList();
       List<Trip> crewTrips = trips.where((trip) =>
-          trip.endDateTimeStamp.toDate().isAfter(tomorrow)).toList();
+          trip.endDateTimeStamp.toDate().compareTo(past) == 1).toList();
       return crewTrips;
     } catch (e) {
       CloudFunction().logError(e.toString());
@@ -1090,12 +1090,14 @@ class DatabaseService {
 
     try {
       final now = DateTime.now().toUtc();
-      var yesterday = DateTime(now.year, now.month, now.day - 1);
+      var past = DateTime(now.year, now.month, now.day - 1);
       List<Trip> trips = snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return Trip.fromData(data);
       }).toList();
-      List<Trip> crewTrips = trips.where((trip) => yesterday.isAfter(trip.endDateTimeStamp.toDate())).toList().reversed.toList();
+      List<Trip> crewTrips = trips.where((trip) =>
+          trip.endDateTimeStamp.toDate().compareTo(past) == -1)
+          .toList().reversed.toList();
       return crewTrips;
     } catch (e) {
       CloudFunction().logError(e.toString());
