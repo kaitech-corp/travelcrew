@@ -1,13 +1,14 @@
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/cost/progress_bar.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
-import '../../../services/widgets/loading.dart';
 
 class CostPage extends StatefulWidget{
 
@@ -20,136 +21,357 @@ class CostPage extends StatefulWidget{
 
 class _CostPageState extends State<CostPage> {
 
+  List<ExpansionItem> expansionItems = List<ExpansionItem>.generate(10, (int index)=> ExpansionItem(isExpanded: false,));
+
+  
+  @override
+  void initState() {
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
-      child: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Split',style: Theme.of(context).textTheme.headline3,),
-            bottom: TabBar(
-              tabs: [
-                Tab(icon: IconThemeWidget(icon: Icons.flight,),),
-                Tab(icon: IconThemeWidget(icon: Icons.hotel,),),
-                Tab(icon: IconThemeWidget(icon: Icons.directions_bike,),),
-                Tab(icon: IconThemeWidget(icon: Icons.shopping_basket,),)
-              ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Split',style: Theme.of(context).textTheme.headline3,),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(8),
+          child: Container(
+            // height: SizeConfig.screenHeight,
+            // width: SizeConfig.screenWidth,
+            child: StreamBuilder(
+              builder: (context, streamData){
+                if(streamData.hasData){
+                  List<SplitObject> items = streamData.data;
+                  for (var i = 0; i < items.length; i++){
+                    try {
+                      expansionItems[i].item =items[i];
+                      expansionItems[i].headerValue =items[i].itemName;
+                    } catch (e) {
+                      if(e.toString().contains('RangeError')) {
+                        expansionItems.add(ExpansionItem(
+                            item: items[i], headerValue: items[i].itemName));
+                      }
+                    }
+                  }
+                  expansionItems = expansionItems.getRange(0, items.length).toList();
+
+                  return _buildListPanel(expansionItems);
+                } else if(streamData.hasData && streamData.connectionState == ConnectionState.done){
+                  return ListTile(
+                    title: const Text('No items have been split.'),
+                  );
+                } else {
+                  return Loading();
+                }
+              },
+              stream: DatabaseService(tripDocID: widget.tripDetails?.documentId).splitItemData,
             ),
-          ),
-          body: TabBarView(
-            children: [
-              SingleChildScrollView(
-              padding: const EdgeInsets.all(8),
-              child: Container(
-                child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
-              ),
-            ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
-                ),
-              ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
-                ),
-              ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  child: BringListCostDisplay(tripDocID: widget.tripDetails.documentId,),
-                ),
-              ),
-            ]
           ),
         ),
       )
     );
   }
-}
 
-class BringListCostDisplay extends StatelessWidget{
+  Widget _buildListPanel(List<ExpansionItem> expansionItems){
 
-  final String tripDocID;
-  BringListCostDisplay({this.tripDocID});
+    return ExpansionPanelList(
+      expansionCallback: (int index, bool isExpanded){
+        setState(() {
+          expansionItems[index].isExpanded = !isExpanded;
+        });
+      },
+      children: expansionItems.map<ExpansionPanel>((ExpansionItem item){
+        return ExpansionPanel(
+            headerBuilder: (BuildContext context, bool isExpanded){
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onLongPress: (){
+                  if (userService.currentUserID == item.item.purchasedByUID) {
+                    SplitPackage().editSplitDialog(context, item.item);
+                  }
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.item.itemName, style: Theme
+                          .of(context)
+                          .textTheme
+                          .headline1,),
+                      Text('Total: \$${item.item.itemTotal.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle2),
+                      Text('Remaining: \$${item.item?.amountRemaining.toStringAsFixed(2) ?? item.item.itemTotal.toStringAsFixed(2)}  (${item.item.userSelectedList.length}pp)',style: Theme.of(context).textTheme.subtitle2),
+                      // Text('Description: ${item.itemType}',style: Theme.of(context).textTheme.subtitle2),
+                      FutureBuilder(
+                        builder: (context, snapshot){
+                          if(snapshot.hasData){
+                            UserPublicProfile user = snapshot.data;
+                            return Text('Purchased by: ${user.displayName}',style: Theme.of(context).textTheme.subtitle2);
+                          } else {
+                            return Container();
+                          }
+                        },
+                        future: DatabaseService().getUserProfile(item.item.purchasedByUID),
+                      ),
+                      Text('Last Updated: ${TCFunctions().formatTimestamp(item.item.lastUpdated,wTime: true)}',style: Theme.of(context).textTheme.subtitle2),
+                    ],
+                  ),
+              ),
+            );
+            },
+            body: costDetailsStream(item.item, item.item.purchasedByUID),
+          isExpanded: item.isExpanded,
+        );
+      }).toList(),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget costDetailsStream(SplitObject splitObject, String purchasedByUID) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-        height: MediaQuery.of(context).size.height,
-        child: bringList(),
+        height: SizeConfig.screenHeight*.4,
+        width: SizeConfig.screenWidth,
+        child: StreamBuilder2(
+          streams: Tuple2(DatabaseService(itemDocID: splitObject.itemDocID,tripDocID: splitObject.tripDocID).costDataList,DatabaseService().getcrewList(widget.tripDetails.accessUsers),),
+          builder: (context, snapshots){
+            if(snapshots.item1.hasData && snapshots.item2.hasData){
+              List<CostObject> userCostData = snapshots.item1.data;
+              List<String> uidList = [];
+              userCostData.forEach((element) {
+                if (!uidList.contains(element.uid)) {
+                  uidList.add(element.uid);
+                }
+              });
+
+              var amountRemaining = SplitPackage().sumRemainingBalance(userCostData);
+              ///Update remaining balance by checking if each outstanding balance adds up correctly
+              if(amountRemaining != splitObject.amountRemaining){
+                DatabaseService().updateRemainingBalance(splitObject,amountRemaining, uidList);
+              }
+              List<UserPublicProfile> userPublicData = snapshots.item2.data;
+                return ListView.builder(
+                  itemCount: userCostData.length,
+                    itemBuilder: (context, index){
+                    CostObject costObject = userCostData[index];
+                    UserPublicProfile userPublicProfile = userPublicData.firstWhere((element) => element.uid == costObject.uid);
+                    UserPublicProfile purchasedByUser = userPublicData.firstWhere((element) => element.uid == purchasedByUID);
+                    if(userPublicProfile.uid != purchasedByUID) {
+                      return InkWell(
+                        onTap: (){
+                          showModalBottomSheet(
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                            ),
+                            builder: (context) => UserSplitCostDetailsBottomSheet(user: userPublicProfile, costObject: costObject,purchasedByUser: purchasedByUser,splitObject: splitObject,),
+                          );
+                        },
+                        child: Card(
+                          // color: Colors.blue,
+                          child: Container(
+                            height: SizeConfig.screenHeight * .1,
+                            width: SizeConfig.screenWidth,
+                            decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
+                            BoxDecoration(
+                              // borderRadius: BorderRadius.circular(30),
+                              // borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+                              gradient: LinearGradient(
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.topRight,
+                                  colors: [
+                                    Colors.blue.shade50,
+                                    Colors.lightBlueAccent.shade200
+                                  ]
+                              ),
+                            ): BoxDecoration(
+                              // borderRadius: BorderRadius.circular(30),
+                              gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.grey.shade700,
+                                    Color(0xAA2D3D49)
+                                  ]
+                              ),
+                            ),
+                            padding: EdgeInsets.all(4),
+                            child: ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: userPublicProfile.urlToImage.isNotEmpty ?
+                                Image.network(userPublicProfile.urlToImage,height: 50, width: 50,fit: BoxFit.fill,):
+                                Image.asset(profileImagePlaceholder,height: 50,width: 50,fit: BoxFit.fill,),
+                              ),
+                              title: Text('${userPublicProfile.displayName}',
+                                style: Theme.of(context).textTheme.subtitle1),
+                              subtitle: (costObject.paid == false) ?
+                              Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1) :
+                              Text('Paid',style: Theme.of(context).textTheme.subtitle1),
+                              trailing: (costObject.uid == userService.currentUserID && costObject.paid == false) ?
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15),
+                                        )
+                                    )),
+                                child: Text('Paid'),
+                                onPressed: (){
+                                  DatabaseService().markAsPaid(costObject,splitObject);
+                                },
+                              ) : null,
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  });
+              } else {
+                return const Text('Empty');
+              }
+            },
+
+            ),
       ),
     );
   }
+}
 
-  Widget bringList() {
-    return StreamBuilder(
-      builder: (context, items) {
-        if (items.hasData) {
-          return ListView.builder(
-            itemCount: items.data.length,
-            itemBuilder: (context, index) {
-              Bringing item = items.data[index];
-              return Card(
-                child: Column(
-                  children: [
-                    ListTile(
-                      key: Key(item.documentID),
-                      onLongPress: (){
-                        TravelCrewAlertDialogs().deleteBringinItemAlert(context, tripDocID, item.documentID);
-                      },
-                      leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
-                      title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                      subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
-                      trailing: Text('\$100'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ProgressBarWidget(currentValue: 20, maxValue: 100,)
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ExpandablePanel(
-                        header: Text('Details', style: Theme.of(context).textTheme.headline2,),
-                        // collapsed:
-                        expanded: Container(
-                          height: SizeConfig.screenHeight*.3,
-                          width: SizeConfig.screenWidth,
-                          child: ListView.builder(
-                            itemCount: 3,
-                              itemBuilder: (context, index){
-                              return ListTile(
-                                title: Text('User $index'),
-                                trailing: Text('\$33.33'),
-                              );
-                              }),
-                        )
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        } else {
-          return Loading();
-        }
-      },
-      stream: DatabaseService().getBringingList(tripDocID),
-      // future: ,
+class UserSplitCostDetailsBottomSheet extends StatelessWidget {
+  const UserSplitCostDetailsBottomSheet({
+    Key key,
+    @required this.user,
+    @required this.costObject,
+    this.splitObject,
+    this.purchasedByUser,
+  }) : super(key: key);
+
+  final UserPublicProfile user;
+  final CostObject costObject;
+  final SplitObject splitObject;
+  final UserPublicProfile purchasedByUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
+      BoxDecoration(
+        // borderRadius: BorderRadius.circular(30),
+        // borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+        gradient: LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [
+              Colors.blue.shade50,
+              Colors.lightBlueAccent.shade200
+            ]
+        ),
+      ): BoxDecoration(
+        // borderRadius: BorderRadius.circular(30),
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.grey.shade700,
+              Color(0xAA2D3D49)
+            ]
+        ),
+      ),
+      padding: const EdgeInsets.all(10),
+      height: SizeConfig.screenHeight*.5,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: SizeConfig.screenWidth/6,
+            backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
+          ),
+          Text(user.displayName,style: Theme.of(context).textTheme.headline1),
+          Container(height: 10,),
+          Text('Payment details for:',style: Theme.of(context).textTheme.headline2, textAlign: TextAlign.center,),
+          Text('"${splitObject.itemName}"',style: Theme.of(context).textTheme.headline2, textAlign: TextAlign.center,maxLines: 5,),
+          ListTile(
+            title: (costObject.paid == false) ?
+            Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1) :
+            Text('Paid',style: Theme.of(context).textTheme.subtitle1),
+            subtitle: (userService.currentUserID == purchasedByUser.uid) ?
+            Text('Paid to: You',style: Theme.of(context).textTheme.subtitle2) :
+            Text('Paid to: ${purchasedByUser.displayName}',style: Theme.of(context).textTheme.subtitle2),
+            trailing: (user.uid == userService.currentUserID || userService.currentUserID == purchasedByUser.uid) ?
+            PaymentDetailsMenuButton(costObject: costObject,splitObject: splitObject,) : null,
+          ),
+          (user.uid == userService.currentUserID || userService.currentUserID == purchasedByUser.uid) ? ElevatedButton(
+              onPressed: (){
+                DatabaseService().markAsPaid(costObject,splitObject);
+              },
+              child: const Text('Paid'),
+          ) : Container(),
+        ],
+      ),
     );
   }
-  favorite(Bringing item){
-    if (item.voters?.contains(currentUserProfile.uid) ?? false){
-      return const Icon(Icons.favorite,color: Colors.red);
-    } else {
-      return const Icon(Icons.favorite_border,color: Colors.red);
-    }
+}
+
+class PaymentDetailsMenuButton extends StatelessWidget {
+  const PaymentDetailsMenuButton({
+    Key key,
+    @required this.costObject,
+    this.splitObject,
+
+  }) : super(key: key);
+
+  final CostObject costObject;
+  final SplitObject splitObject;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+        icon: IconThemeWidget(icon: Icons.edit,),
+        onSelected: (value) {
+          switch (value) {
+            case "Edit":
+              {
+
+              }
+              break;
+            case "Delete":
+              {
+                DatabaseService().deleteCostObject(costObject, splitObject);
+                navigationService.pop();
+              }
+              break;
+            default:
+              {
+
+              }
+              break;
+          }
+        },
+        padding: EdgeInsets.zero,
+        itemBuilder: (context) =>
+        [
+          // const PopupMenuItem(
+          //   value: 'Edit',
+          //   child: ListTile(
+          //     leading: IconThemeWidget(icon: Icons.edit),
+          //     title: const Text('Edit'),
+          //   ),
+          // ),
+          const PopupMenuItem(
+            value: 'Delete',
+            child: ListTile(
+              leading: IconThemeWidget(icon: Icons.delete),
+              title: const Text('Remove'),
+            ),
+          ),
+        ],
+      );
   }
 }

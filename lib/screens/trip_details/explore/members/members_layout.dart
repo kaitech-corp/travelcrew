@@ -13,11 +13,10 @@ import '../../../../services/widgets/loading.dart';
 
 class MembersLayout extends StatefulWidget{
 
-  final List<Members> members;
   final Trip tripDetails;
   final String ownerID;
 
-  MembersLayout({Key key, this.members, this.tripDetails, this.ownerID}) : super(key: key);
+  MembersLayout({Key key, this.tripDetails, this.ownerID}) : super(key: key);
 
   @override
   _MembersLayoutState createState() => _MembersLayoutState();

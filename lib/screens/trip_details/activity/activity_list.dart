@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/services/database.dart';
 
 import '../../../services/widgets/loading.dart';
 import 'activity_item_layout.dart';
@@ -33,6 +35,7 @@ class _ActivityListState extends State<ActivityList> {
         itemCount: activityList != null ? activityList.length : 0,
         itemBuilder: (context, index){
           return ActivityItemLayout(activity: activityList[index],trip: widget.trip,);
-        });
+            }
+        );
   }
 }

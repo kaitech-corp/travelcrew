@@ -3,24 +3,28 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/screens/authenticate/wrapper.dart';
+import 'package:travelcrew/services/apis/splitwise.dart';
 import 'package:travelcrew/services/auth/auth.dart';
+import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/navigation_service.dart';
 import 'package:travelcrew/services/push_notifications.dart';
 import 'package:travelcrew/services/navigation/router.dart';
 import 'models/custom_objects.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DotEnv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
+  // SplitwiseAPI();
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -44,18 +48,20 @@ class TravelCrew extends StatefulWidget{
 
 class _TravelCrewState extends State<TravelCrew> {
   FirebaseAnalytics analytics = FirebaseAnalytics();
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
     setupLocator();
     if (Platform.isIOS) {
-      _fcm.onIosSettingsRegistered.listen((data) {
-        // save the token  OR subscribe to a topic here
+      FBMessaging().requestPermissions();
+    } else {
+      FBMessaging().androidFCMSetting();
+      FirebaseMessaging.onBackgroundMessage((message) async {
+        print("onMessage: $message");
+        FBMessaging().firebaseMessagingBackgroundHandler(message);
       });
-
-      _fcm.requestNotificationPermissions(IosNotificationSettings());
     }
   }
   @override
@@ -81,8 +87,24 @@ class _TravelCrewState extends State<TravelCrew> {
               headline6: const TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14),
               subtitle1: const TextStyle(fontWeight: FontWeight.bold),
               subtitle2: const TextStyle(fontWeight: FontWeight.w600),
-              button: const TextStyle(fontWeight: FontWeight.bold),
+              button: const TextStyle(fontWeight: FontWeight.bold,color: Colors.black),
             ),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      )
+                  ),
+                  textStyle: MaterialStateProperty.all<TextStyle>(
+                    TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,),
+                  ),
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                    Colors.black
+                  )
+              ),
+              ),
+
               buttonColor: Colors.blue,
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                   foregroundColor: Colors.white,
@@ -128,6 +150,21 @@ class _TravelCrewState extends State<TravelCrew> {
               subtitle2: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
               button: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        )
+                    ),
+                    textStyle: MaterialStateProperty.all<TextStyle>(
+                      TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,),
+                    ),
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Colors.black
+                    )
+                ),
+              ),
                 buttonColor: Colors.greenAccent,
                 dialogBackgroundColor: Colors.grey[600],
                 floatingActionButtonTheme: FloatingActionButtonThemeData(

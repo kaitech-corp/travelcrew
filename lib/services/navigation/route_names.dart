@@ -11,6 +11,7 @@ const String DMChatListPageRoute = "DMChatListPage";
 const String EditActivityRoute = "EditActivity";
 const String EditLodgingRoute = "EditLodging";
 const String EditProfilePageRoute = "EditProfilePage";
+const String EditTransportationRoute = "EditTransportation";
 const String EditTripDataRoute = "EditTripData";
 const String ExploreRoute = "Explore";
 const String ExploreBasicRoute = "ExploreBasic";

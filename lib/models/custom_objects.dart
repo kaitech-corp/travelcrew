@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
 
 class User {
   final String displayName;
@@ -564,12 +565,11 @@ class CountDownDate {
   CountDownDate({this.daysLeft,this.initialDayCount,this.gaugeCount});
 }
 
-class SplitItem {
-  final String fieldID;
-  final String totalAmount;
-  final List<String> ids;
-  final List<String> paid;
 
-  SplitItem({this.fieldID, this.totalAmount, this.ids, this.paid});
+class ExpansionItem {
+  String headerValue;
+  bool isExpanded;
+  SplitObject item;
 
+  ExpansionItem({this.item,this.headerValue,this.isExpanded = false});
 }

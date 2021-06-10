@@ -1,5 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
@@ -11,6 +13,7 @@ import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
+import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
@@ -55,62 +58,86 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
   @override
   void initState() {
     super.initState();
-      FirebaseMessaging().configure(
-      onMessage:
-          (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        // showSimpleNotification(
-        // if(message['aps']['category'] == 'chat') {
-        //   Fluttertoast.showToast(
-        //       msg: message['aps']['alert']['title'],
-        //       toastLength: Toast.LENGTH_LONG,
-        //       gravity: ToastGravity.TOP,
-        //       timeInSecForIosWeb: 2,
-        //   );
-        // }
-
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-
-      },
-      onResume: (Map<String, dynamic> message) async {
-        // print("onResume: $message");
-        print(message['aps']['alert']['title']);
-
-        var type = message['aps']['category'];
-        switch (type){
-          case 'chat':{
-            navigationService.pushReplacementNamed(WrapperRoute);
-            // Navigator.pushReplacementNamed(context, '/wrapper');
-          }
-          break;
-          case 'notifications':{
-            navigationService.pushReplacementNamed(WrapperRoute);
-            // Navigator.pushReplacementNamed(context, '/wrapper');
-          }
-          break;
-          default: {
-            showDialog(
-              context: context,
-              builder: (context) =>
-                  AlertDialog(
-                    content: ListTile(
-                      title: Text(message['aps']['alert']['title']),
-                      subtitle: Text(message['aps']['alert']['body']),
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: const Text('Ok'),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
+      RemoteNotification message =  event.notification;
+      // print(message.title);
+      Fluttertoast.showToast(
+              msg: message.title,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 2,
             );
-          }
-        }
+    });
+    // if(message['aps']['category'] == 'chat')
+    // {
+    //   Fluttertoast.showToast(
+    //     msg: message['aps']['alert']['title'],
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.TOP,
+    //     timeInSecForIosWeb: 2,
+    //   );
+    // };
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
+      // print("onMessage: $event");
+      navigationService.navigateTo(DMChatListPageRoute);
+    });
 
-      },
-    );
+    //   FirebaseMessaging().configure(
+    //   onMessage:
+    //       (Map<String, dynamic> message) async {
+    //     print("onMessage: $message");
+    //     // showSimpleNotification(
+    //     // if(message['aps']['category'] == 'chat') {
+    //     //   Fluttertoast.showToast(
+    //     //       msg: message['aps']['alert']['title'],
+    //     //       toastLength: Toast.LENGTH_LONG,
+    //     //       gravity: ToastGravity.TOP,
+    //     //       timeInSecForIosWeb: 2,
+    //     //   );
+    //     // }
+    //
+    //   },
+    //   onLaunch: (Map<String, dynamic> message) async {
+    //
+    //   },
+    //   onResume: (Map<String, dynamic> message) async {
+    //     // print("onResume: $message");
+    //     print(message['aps']['alert']['title']);
+    //
+    //     var type = message['aps']['category'];
+    //     switch (type){
+    //       case 'chat':{
+    //         navigationService.pushReplacementNamed(WrapperRoute);
+    //         // Navigator.pushReplacementNamed(context, '/wrapper');
+    //       }
+    //       break;
+    //       case 'notifications':{
+    //         navigationService.pushReplacementNamed(WrapperRoute);
+    //         // Navigator.pushReplacementNamed(context, '/wrapper');
+    //       }
+    //       break;
+    //       default: {
+    //         showDialog(
+    //           context: context,
+    //           builder: (context) =>
+    //               AlertDialog(
+    //                 content: ListTile(
+    //                   title: Text(message['aps']['alert']['title']),
+    //                   subtitle: Text(message['aps']['alert']['body']),
+    //                 ),
+    //                 actions: <Widget>[
+    //                   FlatButton(
+    //                     child: const Text('Ok'),
+    //                     onPressed: () => Navigator.of(context).pop(),
+    //                   ),
+    //                 ],
+    //               ),
+    //         );
+    //       }
+    //     }
+    //
+    //   },
+    // );
   }
 
   @override
