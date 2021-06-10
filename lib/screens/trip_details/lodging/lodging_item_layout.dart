@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
@@ -10,7 +11,7 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/widgets/link_previewer.dart';
-// import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+
 
 
 class LodgingItemLayout extends StatelessWidget {
@@ -60,6 +61,8 @@ class LodgingItemLayout extends StatelessWidget {
                       Text('${lodging.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
                       Row(
                         children: [
+                          SplitPackage().SplitItemExist(context,
+                              SplitObject(itemDocID:lodging.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: lodging.lodgingType,itemDescription: lodging.comment ), trip: trip),
                           if(lodging.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
                           IconButton(
                               icon: favorite(userService.currentUserID),
@@ -109,8 +112,9 @@ class LodgingItemLayout extends StatelessWidget {
             if(lodging.link.isNotEmpty) TCFunctions().launchURL(lodging.link);
           }
           break;
-          case "Finalize": {
-
+          case "Split": {
+            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:lodging.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: lodging.lodgingType,itemDescription: lodging.comment ),
+                trip: trip);
           }
           break;
           default: {
@@ -135,13 +139,13 @@ class LodgingItemLayout extends StatelessWidget {
             title: const Text('View Link'),
           ),
         ),
-        // const PopupMenuItem(
-        //   value: 'Finalize',
-        //   child: ListTile(
-        //     leading: IconThemeWidget(icon: Icons.check_circle_outline),
-        //     title: const Text('Finalize'),
-        //   ),
-        // ),
+        const PopupMenuItem(
+          value: 'Split',
+          child: ListTile(
+            leading: IconThemeWidget(icon:Icons.attach_money),
+            title: const Text('Split'),
+          ),
+        ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
@@ -166,6 +170,11 @@ class LodgingItemLayout extends StatelessWidget {
             }
           }
           break;
+          case "Split": {
+            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:lodging.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: lodging.lodgingType,itemDescription: lodging.comment ),
+                trip: trip);
+          }
+          break;
           default: {
 
           }
@@ -186,6 +195,13 @@ class LodgingItemLayout extends StatelessWidget {
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
             title: const Text('View Link'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Split',
+          child: ListTile(
+            leading: IconThemeWidget(icon:Icons.attach_money),
+            title: const Text('Split'),
           ),
         ),
       ],

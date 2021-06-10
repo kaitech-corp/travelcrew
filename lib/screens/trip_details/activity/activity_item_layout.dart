@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/navigation/router.dart';
@@ -21,6 +22,7 @@ class ActivityItemLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
 
     return Center(
         key: Key(activity.fieldID),
@@ -58,6 +60,8 @@ class ActivityItemLayout extends StatelessWidget {
                         Text('${activity.displayName}',style: ReusableThemeColor().greenOrBlueTextColor(context),),
                         Row(
                           children: [
+                          SplitPackage().SplitItemExist(context,
+                          SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment ), trip: trip),
                             if(activity.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
                             IconButton(
                                 icon: favorite(userService.currentUserID),
@@ -107,8 +111,9 @@ class ActivityItemLayout extends StatelessWidget {
             if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
           }
           break;
-          case "Finalize": {
-            TravelCrewAlertDialogs().finalizeOptionAlert(context, activity.fieldID);
+          case "Split": {
+            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment ),
+                trip: trip);
 
           }
           break;
@@ -142,6 +147,13 @@ class ActivityItemLayout extends StatelessWidget {
         //   ),
         // ),
         const PopupMenuItem(
+          value: 'Split',
+          child: ListTile(
+            leading: IconThemeWidget(icon:Icons.attach_money),
+            title: const Text('Split'),
+          ),
+        ),
+        const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
@@ -165,6 +177,17 @@ class ActivityItemLayout extends StatelessWidget {
             }
           }
           break;
+          case "Split": {
+            // if (false) {
+              SplitPackage().SplitItemExist(context,
+                  SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment ),
+                  trip: trip
+              );
+            // } else {
+            //   TravelCrewAlertDialogs().itemHasBeenSplitAlertDialog(context);
+            // }
+          }
+          break;
           default: {
           }
           break;
@@ -184,6 +207,13 @@ class ActivityItemLayout extends StatelessWidget {
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.link),
             title: const Text('View Link'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Split',
+          child: ListTile(
+            leading: IconThemeWidget(icon:Icons.attach_money),
+            title: const Text('Split'),
           ),
         ),
       ],

@@ -9,9 +9,11 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/cost/cost_split_page.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/navigation/navigation_service.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/image_popup.dart';
@@ -22,7 +24,7 @@ import 'package:clipboard/clipboard.dart';
 import 'ImageAnimation.dart';
 
 
-
+// enum Response{}
 
 class ExploreOwnerLayout extends StatefulWidget {
 
@@ -77,6 +79,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
     expandController2.dispose();
     expandController3.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,16 +159,13 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
-                              // RaisedButton(
-                              //   shape: RoundedRectangleBorder(
-                              //     borderRadius: BorderRadius.circular(20),
-                              //   ),
-                              //   onPressed: () {
-                              //     Navigator.push(context, MaterialPageRoute(builder: (context) => CostPage(tripDetails: widget.tripDetails,)),);
-                              //   },
-                              //   child: Text("Split"),
-                              //   // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
-                              // ),
+                              ElevatedButton(
+                                onPressed: (){
+                                  navigationService.navigateTo(CostPageRoute,arguments: widget.tripDetails);
+                            },
+                                child: Text("Split",),
+                                // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
+                              ),
                               CrewModalBottomSheet(tripDetails: widget.tripDetails),
                             ],
                           ),
@@ -368,6 +369,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
     );
   }
 }
+
+
 
 class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({
