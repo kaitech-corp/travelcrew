@@ -33,6 +33,7 @@ import 'package:travelcrew/screens/trip_details/explore/members/members_layout.d
 import 'package:travelcrew/screens/trip_details/lodging/add_new_lodging.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
+import 'package:travelcrew/screens/trip_details/transportation/edit_transportation.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -107,6 +108,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: EditProfilePage(),
       );
+    case EditTransportationRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: EditTransportation(transportationData: args,),
+      );
     case EditTripDataRoute:
       return _getPageRoute(
         routeName: settings.name,
@@ -161,7 +167,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       MembersLayoutArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: MembersLayout(members: arguments.members,tripDetails: arguments.tripDetails,ownerID: arguments.ownerID,),
+        viewToShow: MembersLayout(tripDetails: arguments.tripDetails,ownerID: arguments.ownerID,),
       );
     case MenuDrawerRoute:
       return _getPageRoute(

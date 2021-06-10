@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/navigation_service.dart';
-import 'package:travelcrew/services/push_notifications.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'analytics_service.dart';
 
@@ -19,10 +20,11 @@ class DatabaseService {
 
   final String uid;
   var tripDocID;
+  var itemDocID;
   var userID;
-  DatabaseService({this.tripDocID, this.uid, this.userID});
+  DatabaseService({this.tripDocID, this.uid, this.userID, this.itemDocID});
   final AnalyticsService _analyticsService = AnalyticsService();
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
 
   //  All collection references
@@ -50,13 +52,15 @@ class DatabaseService {
   final CollectionReference tokensCollection = FirebaseFirestore.instance.collection('tokens');
   final CollectionReference addReviewCollection = FirebaseFirestore.instance.collection('addReview');
   final CollectionReference versionCollection = FirebaseFirestore.instance.collection('version');
+  final CollectionReference splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
+  final CollectionReference costDetailsCollection = FirebaseFirestore.instance.collection('costDetails');
 
 
   // Shows latest app version to display in main menu.
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version2_0_5').get();
+      var ref = await versionCollection.doc('version2_0_6').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -69,22 +73,9 @@ class DatabaseService {
 
   }
 
-  // Future<bool> retrieveTokenFromDevice() async {
-  //   bool tokenSaved;
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String token = (prefs.getString('token') ?? '');
-  //   tokenSaved = token.isNotEmpty;
-  //   return tokenSaved;
-  // }
-  //
-  // saveTokenToDevice(String fcmToken) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('token', fcmToken);
-  // }
-  // Saves tokens for push notifications. Saves only after user navigates to the main screen.
   saveDeviceToken() async {
     // Get the current user
-    String uid = userService.currentUserID;
+    String uid = FirebaseAuth.instance.currentUser.uid;
     // FirebaseUser user = await _auth.currentUser();
 
     // Get the token for this device
@@ -94,7 +85,7 @@ class DatabaseService {
       var ref = await tokensCollection.doc(uid).collection('tokens')
           .doc(fcmToken).get();
       // Save it to Firestore
-      if (!ref.exists) {
+      if (!ref.exists || ref.id != fcmToken) {
         if (fcmToken != null) {
           var tokens = tokensCollection
               .doc(uid)
@@ -140,7 +131,191 @@ class DatabaseService {
     }
   }
 
+  Future createSplitItem(SplitObject splitObject) async{
+    var ref = splitItemCollection.doc(splitObject.tripDocID)
+        .collection('Item').doc(splitObject.itemDocID);
+    var ref2 = await ref.get();
+    if(!ref2.exists) {
+      try {
+        splitObject.userSelectedList.forEach((element) {
+          createSplitItemCostDetailsPerUser(splitObject, element);
+        });
+        return await ref.set(splitObject.toJson());
 
+      } catch (e) {
+        print('Error from create split item function: $e');
+      }
+    } else {
+      try {
+        splitObject.userSelectedList.forEach((element) {
+          createSplitItemCostDetailsPerUser(splitObject, element);
+        });
+        return await ref.update(splitObject.toJson());
+
+      } catch (e) {
+        print('Error from create split item function: $e');
+      }
+    }
+  }
+
+  /// delete SplitObject
+  deleteSplitObject(SplitObject splitObject){
+    var ref2 = splitItemCollection.doc(splitObject.tripDocID)
+        .collection('Item').doc(splitObject.itemDocID);
+    try {
+      try {
+        splitObject.userSelectedList.forEach((element) {
+          costDetailsCollection.doc(splitObject.itemDocID).collection('Users').doc(element).delete();
+        });
+      } catch (e) {
+        CloudFunction().logError('Error deleting user cost details documents: ${e.toString()}');
+      }
+      return ref2.delete();
+
+
+    } catch (e) {
+      print('Error marking cost data as paid: $e');
+    }
+    // }
+  }
+
+  // Check Split Item exists
+  Future<bool> checkSplitItemExist(String itemDocID) async{
+    var ref = await splitItemCollection.doc(tripDocID)
+        .collection('Item').doc(itemDocID).get();
+    if(ref.exists) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /// Stream in split item
+  List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot snapshot) {
+    try {
+      List<SplitObject> splitItemData =  snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data();
+        return SplitObject.fromData(data);
+      }).toList();
+
+      return splitItemData;
+    } catch (e) {
+      CloudFunction().logError(e.toString());
+      return null;
+    }
+  }
+
+  Stream<List<SplitObject>> get splitItemData {
+    return splitItemCollection.doc(tripDocID).collection('Item').snapshots().map(_splitItemDataFromSnapshot);
+  }
+
+  Future createSplitItemCostDetailsPerUser(SplitObject splitObject, String userUID) async{
+
+    var costObject = CostObject(
+        tripDocID: splitObject.tripDocID,
+        itemDocID: splitObject.itemDocID,
+        lastUpdated: Timestamp.now(),
+        paid: (userUID == splitObject.purchasedByUID) ? true : false,
+        uid: userUID,
+        amountOwe: SplitPackage().standardSplit(splitObject.userSelectedList.length, splitObject.itemTotal));
+
+    var ref = costDetailsCollection.doc(costObject.itemDocID).collection('Users').doc(costObject.uid);
+    // var ref2 = await ref.get();
+    // if(!ref2.exists) {
+      try {
+        return ref.set(costObject.toJson());
+      } catch (e) {
+        print('Error from create split item function: $e');
+      }
+    // }
+  }
+
+  /// Edit Cost Details
+  // Future editCostDetailsPerUser() async{
+  //
+  //
+  //   var ref = costDetailsCollection.doc(costObject.itemDocID).collection('Users').doc(costObject.uid);
+  //   // var ref2 = await ref.get();
+  //   // if(!ref2.exists) {
+  //   try {
+  //     return ref.update(costObject.toJson());
+  //   } catch (e) {
+  //     print('Error editing cost details function: $e');
+  //   }
+  //   // }
+  // }
+
+  /// Mark as paid
+   markAsPaid(CostObject costObject, SplitObject splitObject){
+    var ref = costDetailsCollection.doc(costObject.itemDocID).collection('Users').doc(costObject.uid);
+    var ref2 = splitItemCollection.doc(splitObject.tripDocID)
+        .collection('Item').doc(splitObject.itemDocID);
+
+      try {
+         ref.update({
+          'paid': !costObject.paid,
+          'datePaid': FieldValue.serverTimestamp(),
+        }
+        );
+        return ref2.update({
+          'lastUpdated':FieldValue.serverTimestamp(),
+        });
+      } catch (e) {
+        print('Error marking cost data as paid: $e');
+      }
+  }
+
+  /// Update remaining balance
+  updateRemainingBalance(SplitObject splitObject, double amountRemaining, List<String> uidList){
+    var ref = splitItemCollection.doc(splitObject.tripDocID)
+        .collection('Item').doc(splitObject.itemDocID);
+    try {
+      ref.update({
+        'amountRemaining': amountRemaining,
+        'lastUpdated': FieldValue.serverTimestamp(),
+        'userSelectedList': uidList,
+      });
+
+
+    } catch (e) {
+      print('Error marking cost data as paid: $e');
+    }
+  }
+  /// deleteCostObject and recreate the split object with remaining members
+  deleteCostObject(CostObject costObject, SplitObject splitObject){
+    var ref = costDetailsCollection.doc(costObject.itemDocID).collection('Users').doc(costObject.uid);
+    var ref2 = splitItemCollection.doc(splitObject.tripDocID)
+        .collection('Item').doc(splitObject.itemDocID);
+    try {
+       splitObject.userSelectedList.remove(costObject.uid);
+       ref.delete();
+       ref2.update({
+         'userSelectedList':FieldValue.arrayRemove([costObject.uid])
+       });
+       return createSplitItem(splitObject);
+
+       } catch (e) {
+      print('Error marking cost data as paid: $e');
+    }
+    // }
+  }
+/// Stream in Cost Details
+  List<CostObject> _costObjectDataFromSnapshot(QuerySnapshot snapshot) {
+    try {
+      List<CostObject> costObjectData =  snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data();
+        return CostObject.fromData(data);
+      }).toList();
+
+      return costObjectData;
+    } catch (e) {
+      CloudFunction().logError(e.toString());
+      return null;
+    }
+  }
+
+  Stream<List<CostObject>> get costDataList {
+    return costDetailsCollection.doc(itemDocID).collection('Users').snapshots().map(_costObjectDataFromSnapshot);
+  }
 
   //Checks whether user has a Public Profile on Firestore to know whether to
   // send user to complete profile page or not.
@@ -1495,7 +1670,7 @@ class DatabaseService {
 
     return ref.docs.contains(docID);
   }
-  
+
 }
 
 

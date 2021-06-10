@@ -1,7 +1,8 @@
  import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -10,7 +11,8 @@ class TransportationItemLayout extends StatelessWidget {
 
 
   final TransportationData transportationData;
-  TransportationItemLayout({this.transportationData});
+  final Trip trip;
+  TransportationItemLayout({this.transportationData, this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +48,10 @@ class TransportationItemLayout extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     (transportationData.canCarpool) ? Text('Open to Carpool',style: Theme.of(context).textTheme.headline6,) : Text(''),
-                    // menuButton(context, transportationData),
-                    if(currentUserProfile.uid == transportationData.uid) IconButton(icon: IconThemeWidget(icon:Icons.delete), onPressed: (){
-                      TravelCrewAlertDialogs().deleteTransportationAlert(context, transportationData);
-                    })
+                    menuButton(context, transportationData),
+                    // if(currentUserProfile.uid == transportationData.uid) IconButton(icon: IconThemeWidget(icon:Icons.delete), onPressed: (){
+                    //   TravelCrewAlertDialogs().deleteTransportationAlert(context, transportationData);
+                    // })
                   ],
                 ),
                 if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
@@ -61,14 +63,22 @@ class TransportationItemLayout extends StatelessWidget {
   }
   Widget menuButton(BuildContext context, TransportationData transportationData){
     return transportationData.uid == currentUserProfile.uid ? PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
           case "Edit": {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) =>
-            //       EditLodging(lodging: lodging, trip: trip,)),
-            // );
+            navigationService.navigateTo(EditTransportationRoute, arguments: transportationData);
+          }
+          break;
+          case "Split": {
+            SplitPackage().splitItemAlert(context,
+                SplitObject(
+                    itemDocID:transportationData.fieldID,
+                    tripDocID: trip.documentId,
+                    users: trip.accessUsers,
+                    itemName: transportationData.mode,
+                    itemDescription: transportationData.comment ),
+                trip: trip);
           }
           break;
           case "Delete": {
@@ -88,6 +98,13 @@ class TransportationItemLayout extends StatelessWidget {
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.edit),
             title: const Text('Edit'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Split',
+          child: ListTile(
+            leading: IconThemeWidget(icon:Icons.attach_money),
+            title: const Text('Split'),
           ),
         ),
          const PopupMenuItem(

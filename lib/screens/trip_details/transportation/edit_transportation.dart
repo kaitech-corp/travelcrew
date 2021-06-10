@@ -7,8 +7,8 @@ import 'package:travelcrew/services/constants/constants.dart';
 
 
 class EditTransportation extends StatefulWidget {
-  final Trip trip;
-  EditTransportation({this.trip});
+  final TransportationData transportationData;
+  EditTransportation({this.transportationData});
 
   @override
   _EditTransportationState createState() => _EditTransportationState();
@@ -190,7 +190,7 @@ class _EditTransportationState extends State<EditTransportation> {
                                         if (form.validate()) {
                                           CloudFunction().addTransportation(
                                             mode: dropdownValue,
-                                            tripDocID: widget.trip.documentId,
+                                            tripDocID: widget.transportationData.tripDocID,
                                             canCarpool: canCarpool,
                                             carpoolingWith: carpoolingWith,
                                             airline: airline,
