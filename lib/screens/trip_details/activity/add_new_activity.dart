@@ -204,7 +204,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                                     endTime.value
                                 );
                               } on Exception catch (e) {
-                                CloudFunction().logError(e.toString());
+                                CloudFunction().logError('Error adding new activity:  ${e.toString()}');
                               }
                               try {
                                 String action = 'Send notifications for edited activity';
@@ -222,7 +222,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                                           }
                                 });
                               } on Exception catch (e) {
-                                CloudFunction().logError(e.toString());
+                                CloudFunction().logError('Error sending notifications for new activity:  ${e.toString()}');
                               }
 
                               setState(() {

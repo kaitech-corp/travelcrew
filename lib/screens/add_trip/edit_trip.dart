@@ -345,7 +345,7 @@ class _EditTripDataState extends State<EditTripData> {
                                                 tripName,
                                                 tripGeoPoint);
                                           } on Exception catch (e) {
-                                            CloudFunction().logError(e.toString());
+                                            CloudFunction().logError('Error in edit trip function: ${e.toString()}');
                                           }
                                           _showDialog(context);
                                         }

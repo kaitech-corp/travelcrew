@@ -67,20 +67,9 @@ class TappableCrewTripTile extends StatelessWidget {
             ),
           ),
           child: Stack(
-            overflow: Overflow.clip,
+            clipBehavior: Clip.hardEdge,
+            // overflow: Overflow.clip,
             children: [
-              // (ThemeProvider.themeOf(context).id == 'light_theme') ? Align(
-              //   alignment: Alignment.bottomCenter,
-              //   child: Container(
-              //     height: SizeConfig.screenWidth*.025,
-              //     width: (SizeConfig.screenWidth*.8),
-              //     decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.only(topRight: Radius.circular(30),topLeft: Radius.circular(30)),
-              //       color: Colors.white,
-              //     )
-              //   ),
-              // ) :
-              // Container(),
               Positioned.fill(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

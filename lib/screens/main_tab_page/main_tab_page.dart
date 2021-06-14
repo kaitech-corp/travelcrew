@@ -13,12 +13,10 @@ import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
-import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/push_notifications.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'crew_trips/private_trips.dart';
 

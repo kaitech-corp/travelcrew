@@ -88,7 +88,7 @@ class _ChatState extends State<Chat> {
                                       .addNewChatMessage(
                                       displayName, message, uid, status);
                                 } on Exception catch (e) {
-                                  CloudFunction().logError(e.toString());
+                                  CloudFunction().logError('Error saving new chat message (Chat.dart):  ${e.toString()}');
                                 }
                               }
                             },
