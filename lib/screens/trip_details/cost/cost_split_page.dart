@@ -103,8 +103,8 @@ class _CostPageState extends State<CostPage> {
                           .of(context)
                           .textTheme
                           .headline1,),
-                      Text('Total: \$${item.item.itemTotal.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle2),
-                      Text('Remaining: \$${item.item?.amountRemaining.toStringAsFixed(2) ?? item.item.itemTotal.toStringAsFixed(2)}  (${item.item.userSelectedList.length}pp)',style: Theme.of(context).textTheme.subtitle2),
+                      Text('Total: \$${item.item.itemTotal.toStringAsFixed(2)}',style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Cantata One',color: Colors.green)),
+                      Text('Remaining: \$${item.item?.amountRemaining.toStringAsFixed(2) ?? item.item.itemTotal.toStringAsFixed(2)}  (${item.item.userSelectedList.length}pp)',style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Cantata One',color: Colors.red)),
                       // Text('Description: ${item.itemType}',style: Theme.of(context).textTheme.subtitle2),
                       FutureBuilder(
                         builder: (context, snapshot){
@@ -117,7 +117,7 @@ class _CostPageState extends State<CostPage> {
                         },
                         future: DatabaseService().getUserProfile(item.item.purchasedByUID),
                       ),
-                      Text('Last Updated: ${TCFunctions().formatTimestamp(item.item.lastUpdated,wTime: true)}',style: Theme.of(context).textTheme.subtitle2),
+                      Text('Last Updated: ${TCFunctions().formatTimestamp(item.item.lastUpdated,wTime: true)}',style: Theme.of(context).textTheme.headline6),
                     ],
                   ),
               ),
@@ -170,61 +170,48 @@ class _CostPageState extends State<CostPage> {
                             builder: (context) => UserSplitCostDetailsBottomSheet(user: userPublicProfile, costObject: costObject,purchasedByUser: purchasedByUser,splitObject: splitObject,),
                           );
                         },
-                        child: Card(
-                          // color: Colors.blue,
-                          child: Container(
-                            height: SizeConfig.screenHeight * .1,
-                            width: SizeConfig.screenWidth,
-                            decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
-                            BoxDecoration(
-                              // borderRadius: BorderRadius.circular(30),
-                              // borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
-                              gradient: LinearGradient(
-                                  begin: Alignment.bottomLeft,
-                                  end: Alignment.topRight,
-                                  colors: [
-                                    Colors.blue.shade50,
-                                    Colors.lightBlueAccent.shade200
-                                  ]
-                              ),
-                            ): BoxDecoration(
-                              // borderRadius: BorderRadius.circular(30),
-                              gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Colors.grey.shade700,
-                                    Color(0xAA2D3D49)
-                                  ]
-                              ),
+                        child: Container(
+                          height: SizeConfig.screenHeight * .1,
+                          width: SizeConfig.screenWidth,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: Colors.grey[100],
+                              )
+                            )
+                          ),
+                          padding: EdgeInsets.all(4),
+                          child: ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: userPublicProfile.urlToImage.isNotEmpty ?
+                              Image.network(userPublicProfile.urlToImage,height: 50, width: 50,fit: BoxFit.fill,):
+                              Image.asset(profileImagePlaceholder,height: 50,width: 50,fit: BoxFit.fill,),
                             ),
-                            padding: EdgeInsets.all(4),
-                            child: ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(25),
-                                child: userPublicProfile.urlToImage.isNotEmpty ?
-                                Image.network(userPublicProfile.urlToImage,height: 50, width: 50,fit: BoxFit.fill,):
-                                Image.asset(profileImagePlaceholder,height: 50,width: 50,fit: BoxFit.fill,),
-                              ),
-                              title: Text('${userPublicProfile.displayName}',
-                                style: Theme.of(context).textTheme.subtitle1),
-                              subtitle: (costObject.paid == false) ?
-                              Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1) :
-                              Text('Paid',style: Theme.of(context).textTheme.subtitle1),
-                              trailing: (costObject.uid == userService.currentUserID && costObject.paid == false) ?
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15),
-                                        )
-                                    )),
-                                child: Text('Paid'),
-                                onPressed: (){
-                                  DatabaseService().markAsPaid(costObject,splitObject);
-                                },
-                              ) : null,
+                            title: Text('${userPublicProfile.displayName}',
+                              style: Theme.of(context).textTheme.subtitle1),
+                            subtitle: (costObject.paid == false) ?
+                            Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Cantata One',color: Colors.red)) :
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Paid',style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Cantata One',color: Colors.green)),
+                                Text(TCFunctions().formatTimestamp(costObject.datePaid,wTime: true),style: Theme.of(context).textTheme.headline6),
+                              ],
                             ),
+                            trailing: (splitObject.purchasedByUID == userService.currentUserID || costObject.uid == userService.currentUserID && costObject.paid == false) ?
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      )
+                                  )),
+                              child: Text('Paid'),
+                              onPressed: (){
+                                DatabaseService().markAsPaid(costObject,splitObject);
+                              },
+                            ) : null,
                           ),
                         ),
                       );

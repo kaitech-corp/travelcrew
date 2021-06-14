@@ -46,7 +46,7 @@ class SplitObject {
 
 
   SplitObject.fromData(Map<String, dynamic> data):
-      amountRemaining = data['amountRemaining'] ?? null,
+      amountRemaining = data['amountRemaining'] ?? '',
         dateCreated = data['dateCreated'] ?? '',
         details = data['details'] ?? '',
         itemDescription = data['itemDescription'] ?? '',
@@ -286,7 +286,7 @@ class SplitPackage {
                                             splitObject.itemTotal);
                                   } catch (e) {
                                     CloudFunction().logError(
-                                        'Tried saving splitOject data: $e');
+                                        'Tried saving splitObject data: $e');
                                   }
 
                                   DatabaseService()

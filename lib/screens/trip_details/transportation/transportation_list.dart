@@ -5,7 +5,8 @@ import 'package:travelcrew/screens/trip_details/transportation/transportation_it
 
 
 class TransportationList extends StatefulWidget {
-
+  final Trip trip;
+  TransportationList({this.trip});
   @override
   _TransportationListState createState() => _TransportationListState();
 
@@ -28,7 +29,7 @@ class _TransportationListState extends State<TransportationList> {
     return ListView.builder(
         itemCount: modeList != null ? modeList.length : 0,
         itemBuilder: (context, index){
-          return TransportationItemLayout(transportationData: modeList[index],);
+          return TransportationItemLayout(transportationData: modeList[index],trip: widget.trip,);
         });
   }
 }

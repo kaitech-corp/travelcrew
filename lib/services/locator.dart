@@ -41,7 +41,7 @@ class UserProfileService {
     try {
       profile = await DatabaseService().getUserProfile(userService.currentUserID);
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error in User Public Profile service:  ${e.toString()}');
     }
 
     return profile;

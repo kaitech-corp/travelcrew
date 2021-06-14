@@ -48,7 +48,7 @@ class TransportationItemLayout extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     (transportationData.canCarpool) ? Text('Open to Carpool',style: Theme.of(context).textTheme.headline6,) : Text(''),
-                    menuButton(context, transportationData),
+                    menuButton(context),
                     // if(currentUserProfile.uid == transportationData.uid) IconButton(icon: IconThemeWidget(icon:Icons.delete), onPressed: (){
                     //   TravelCrewAlertDialogs().deleteTransportationAlert(context, transportationData);
                     // })
@@ -61,7 +61,7 @@ class TransportationItemLayout extends StatelessWidget {
         ),
     );
   }
-  Widget menuButton(BuildContext context, TransportationData transportationData){
+  Widget menuButton(BuildContext context){
     return transportationData.uid == currentUserProfile.uid ? PopupMenuButton<String>(
       icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
@@ -77,7 +77,9 @@ class TransportationItemLayout extends StatelessWidget {
                     tripDocID: trip.documentId,
                     users: trip.accessUsers,
                     itemName: transportationData.mode,
-                    itemDescription: transportationData.comment ),
+                    itemDescription: 'Transportation',
+                    details: transportationData.comment
+                ),
                 trip: trip);
           }
           break;

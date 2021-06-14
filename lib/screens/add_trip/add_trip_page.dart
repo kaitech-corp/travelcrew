@@ -348,8 +348,8 @@ class _AddTripPageState extends State<AddTripPage> {
                                       googleData2.value?.geoLocation ?? null,
                                       tripName);
                                 }  catch (e) {
-                                  CloudFunction().logError(e.toString());
-                                  _analyticsService.writeError('Error adding new Trip:  ${e.toString()}');
+                                  CloudFunction().logError('Error adding new Trip catch statement:  ${e.toString()}');
+                                  _analyticsService.writeError('Error adding new Trip catch statement:  ${e.toString()}');
                                   try {
                                     DatabaseService().addNewTripData(
                                         accessUsers,
@@ -367,7 +367,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                         null,
                                         tripName);
                                   } on Exception catch (e) {
-                                    CloudFunction().logError(e.toString());
+                                    CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
                                   }
                                 }
 
