@@ -62,7 +62,13 @@ class LodgingItemLayout extends StatelessWidget {
                       Row(
                         children: [
                           SplitPackage().SplitItemExist(context,
-                              SplitObject(itemDocID:lodging.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: lodging.lodgingType,itemDescription: lodging.comment ), trip: trip),
+                              SplitObject(
+                                  itemDocID:lodging.fieldID,
+                                  tripDocID: trip.documentId,
+                                  users: trip.accessUsers,
+                                  itemName: lodging.lodgingType,
+                                  itemDescription: lodging.comment,
+                                  ), trip: trip),
                           if(lodging.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
                           IconButton(
                               icon: favorite(userService.currentUserID),
@@ -113,8 +119,19 @@ class LodgingItemLayout extends StatelessWidget {
           }
           break;
           case "Split": {
-            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:lodging.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: lodging.lodgingType,itemDescription: lodging.comment ),
+            SplitPackage().splitItemAlert(context,
+                SplitObject(
+                    itemDocID:lodging.fieldID,
+                    tripDocID: trip.documentId,
+                    users: trip.accessUsers,
+                    itemName: lodging.lodgingType,
+                    itemDescription: lodging.comment,
+                    amountRemaining: 0),
                 trip: trip);
+          }
+          break;
+          case "Delete": {
+            CloudFunction().deleteTransportation(tripDocID: trip.documentId,fieldID: lodging.fieldID);
           }
           break;
           default: {
@@ -171,7 +188,14 @@ class LodgingItemLayout extends StatelessWidget {
           }
           break;
           case "Split": {
-            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:lodging.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: lodging.lodgingType,itemDescription: lodging.comment ),
+            SplitPackage().splitItemAlert(context,
+                SplitObject(
+                    itemDocID:lodging.fieldID,
+                    tripDocID: trip.documentId,
+                    users: trip.accessUsers,
+                    itemName: lodging.lodgingType,
+                    itemDescription: lodging.comment,
+                    amountRemaining: 0),
                 trip: trip);
           }
           break;

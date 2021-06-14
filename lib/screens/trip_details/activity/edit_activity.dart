@@ -217,7 +217,7 @@ class _EditActivityState extends State<EditActivity> {
                                     endTime.value,
                                 );
                               } on Exception catch (e) {
-                                CloudFunction().logError(e.toString());
+                                CloudFunction().logError('Error saving edited activity data:  ${e.toString()}');
                               }
                               try {
                                 String action = 'Send notifications for edited activity';
@@ -234,7 +234,7 @@ class _EditActivityState extends State<EditActivity> {
                                   }
                                 });
                               } on Exception catch (e) {
-                                CloudFunction().logError(e.toString());
+                                CloudFunction().logError('Error sending notifications for edited activities:  ${e.toString()}');
                               }
                               setState(() {
                                 loading = false;

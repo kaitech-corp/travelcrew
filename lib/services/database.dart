@@ -60,13 +60,13 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version2_0_6').get();
+      var ref = await versionCollection.doc('version2_1_1').get();
       Map<String, dynamic> data = ref.data();
 
 
       return data['version'] ?? '';
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving version:  ${e.toString()}');
       return '';
 
     }
@@ -100,7 +100,7 @@ class DatabaseService {
         }
       }
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error saving token:  ${e.toString()}');
     }
   }
 
@@ -111,7 +111,7 @@ class DatabaseService {
       Map<String, dynamic> data = userData.data();
       return UserPublicProfile.fromData(data);
     } catch(e){
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
     }
   }
 
@@ -127,7 +127,7 @@ class DatabaseService {
         'uid': uid
       });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error updating user data:  ${e.toString()}');
     }
   }
 
@@ -199,7 +199,7 @@ class DatabaseService {
 
       return splitItemData;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
       return null;
     }
   }
@@ -260,7 +260,7 @@ class DatabaseService {
           'lastUpdated':FieldValue.serverTimestamp(),
         });
       } catch (e) {
-        print('Error marking cost data as paid: $e');
+        CloudFunction().logError('Error marking cost data as paid: $e');
       }
   }
 
@@ -277,7 +277,7 @@ class DatabaseService {
 
 
     } catch (e) {
-      print('Error marking cost data as paid: $e');
+      CloudFunction().logError('Error marking cost data as paid: $e');
     }
   }
   /// deleteCostObject and recreate the split object with remaining members
@@ -294,7 +294,7 @@ class DatabaseService {
        return createSplitItem(splitObject);
 
        } catch (e) {
-      print('Error marking cost data as paid: $e');
+      CloudFunction().logError('Error marking cost data as paid: $e');
     }
     // }
   }
@@ -308,7 +308,7 @@ class DatabaseService {
 
       return costObjectData;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error in streaming cost details: ${e.toString()}');
       return null;
     }
   }
@@ -352,9 +352,8 @@ class DatabaseService {
         'topDestinations': ['','',''],
            });
      } catch (e) {
-       print('Error creating Public: ${e.toString()}');
-       _analyticsService.writeError('Error creating Public: ${e.toString()}');
-       CloudFunction().logError(e.toString());
+       _analyticsService.writeError('Error creating Public Profile: ${e.toString()}');
+       CloudFunction().logError('Error creating public profile:  ${e.toString()}');
      }
      if (urlToImage != null) {
        String urlforImage;
@@ -378,7 +377,7 @@ class DatabaseService {
        } catch (e) {
         print('Error updating with image url: ${e.toString()}');
         _analyticsService.writeError('Error updating public profile with image url: ${e.toString()}');
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error saving image for public profile:  ${e.toString()}');
        }
      }
   }
@@ -402,7 +401,7 @@ class DatabaseService {
     } catch (e) {
       print('Error editing Public Profile: ${e.toString()}');
       _analyticsService.writeError('Error editing Public Profile: ${e.toString()}');
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error editing public profile:  ${e.toString()}');
     }
     if (urlToImage != null) {
       String urlforImage;
@@ -425,7 +424,7 @@ class DatabaseService {
       } catch (e) {
         print('Error updating with image url: ${e.toString()}');
         _analyticsService.writeError('Error editing Public Profile with image url: ${e.toString()}');
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error editing Public Profile with image url:  ${e.toString()}');
       }
     }
   }
@@ -470,7 +469,7 @@ class DatabaseService {
       } catch (e){
         print("Error saving trip: ${e.toString()}");
         _analyticsService.writeError('Error saving new public trip:  ${e.toString()}');
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error saving new public trip:  ${e.toString()}');
       }
       try {
         String action = 'Saving member data to new Trip';
@@ -483,7 +482,7 @@ class DatabaseService {
            'urlToImage' : '',
          });
       } catch(e){
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error saving member data to new trip:  ${e.toString()}');
       }
 
     } else {
@@ -515,7 +514,7 @@ class DatabaseService {
       catch (e) {
         print("Error saving private trip: ${e.toString()}");
         _analyticsService.writeError('Error saving new private trip:  ${e.toString()}');
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error saving new private trip:  ${e.toString()}');
       }
       try {
         String action = 'Saving member data to new private Trip';
@@ -528,7 +527,7 @@ class DatabaseService {
           'urlToImage' : '',
         });
       } catch(e){
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error saving member data to new private trip:  ${e.toString()}');
       }
     }
 
@@ -537,7 +536,7 @@ class DatabaseService {
       CloudFunction().logEvent(action);
       await userCollection.doc(userService.currentUserID).update({'trips': FieldValue.arrayUnion([key])});
     }catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error adding user to access users (Public Trip):  ${e.toString()}');
     }
 //     await addTripRef.update({"documentId": addTripRef.id});
 
@@ -561,7 +560,7 @@ class DatabaseService {
             })
           });
         } catch (e) {
-          CloudFunction().logError(e.toString());
+          CloudFunction().logError('Error saving trip image (public):  ${e.toString()}');
         }
       } else {
         try {
@@ -582,7 +581,7 @@ class DatabaseService {
             })
           });
         } catch (e) {
-          CloudFunction().logError(e.toString());
+          CloudFunction().logError('Error saving trip image (private):  ${e.toString()}');
         }
       }
     }
@@ -619,13 +618,13 @@ class DatabaseService {
           CloudFunction().logEvent(action);
            privateTripsCollectionUnordered.doc(trip.documentId).delete();
         } catch (e){
-          CloudFunction().logError(e.toString());
+          CloudFunction().logError('Error deleting private trip after converting to public trip:  ${e.toString()}');
         }
         trip.accessUsers.forEach((member) {
           CloudFunction().addMember(trip.documentId, member);
         });
       } catch (e) {
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error converting to public trip: ${e.toString()}');
         _analyticsService.writeError('Error converting to public trip:  ${e.toString()}');
       }
     } else {
@@ -657,7 +656,7 @@ class DatabaseService {
           CloudFunction().logEvent(action);
            tripsCollectionUnordered.doc(trip.documentId).delete();
         } catch (e){
-          CloudFunction().logError(e.toString());
+          CloudFunction().logError('Deleting public trip after converting it to private: ${e.toString()}');
         }
         trip.accessUsers.forEach((member) {
           CloudFunction().addPrivateMember(trip.documentId, member);
@@ -665,7 +664,7 @@ class DatabaseService {
       }
       catch (e) {
         _analyticsService.writeError('Error converting to private trip:  ${e.toString()}');
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error converting to private trip:  ${e.toString()}');
       }
     }
   }
@@ -705,7 +704,7 @@ class DatabaseService {
         "travelType": travelType,
       });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error editing public trip:  ${e.toString()}');
     }
     try {
       String action = 'Updating image after editing trip';
@@ -726,7 +725,7 @@ class DatabaseService {
         });
       }
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error updating image after editing trip:  ${e.toString()}');
     }
   }
 
@@ -771,7 +770,7 @@ class DatabaseService {
           );
                 }).toList();
         } catch (e) {
-          CloudFunction().logError(e.toString());
+          CloudFunction().logError('Error retrieving bringing list:  ${e.toString()}');
           return snapshot.docs.map((doc) {
             Map<String, dynamic> data = doc.data();
             return Bringing(
@@ -797,7 +796,7 @@ class DatabaseService {
         );
       }).toList();
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving need list:  ${e.toString()}');
       return null;
     }
   }
@@ -820,7 +819,7 @@ class DatabaseService {
         memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error retrieving all members from trip:  ${e.toString()}');
         return null;
       }
     } else {
@@ -837,7 +836,7 @@ class DatabaseService {
           memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
           return memberList;
         } catch (e) {
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error retrieving members from private trip:  ${e.toString()}');
         return null;
       }
     }
@@ -859,7 +858,7 @@ class DatabaseService {
         return null;
       }
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving single trip by docID:  ${e.toString()}');
       return null;
     }
   }
@@ -877,7 +876,7 @@ class DatabaseService {
         return null;
       }
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving single private trip:  ${e.toString()}');
       return null;
     }
   }
@@ -894,7 +893,7 @@ class DatabaseService {
 
       return trips;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving all trip list:  ${e.toString()}');
       return null;
     }
   }
@@ -916,7 +915,7 @@ class DatabaseService {
           return Trip.fromData(data);
         }).toList().reversed.toList();
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving private trip list by uid:  ${e.toString()}');
       return null;
     }
   }
@@ -948,7 +947,7 @@ class DatabaseService {
           'voters': [],
       });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error adding new lodging data:  ${e.toString()}');
     }
 
     // if (urlToImage != null) {
@@ -990,7 +989,7 @@ class DatabaseService {
 
           });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error editing lodging:  ${e.toString()}');
       _analyticsService.writeError('Error editing lodging:  ${e.toString()}');
     }
 
@@ -1042,7 +1041,7 @@ class DatabaseService {
         'endTime': endTime,
       });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error adding new activity:  ${e.toString()}');
       _analyticsService.writeError('Error adding new activity:  ${e.toString()}');
     }
 
@@ -1089,7 +1088,7 @@ class DatabaseService {
 
       });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error editing activity:  ${e.toString()}');
       _analyticsService.writeError('Error editing activity:  ${e.toString()}');
     }
 
@@ -1124,7 +1123,7 @@ class DatabaseService {
       lodgingList.sort((a, b) => b.voters.length.compareTo(a.voters.length));
       return lodgingList;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
       return null;
     }
   }
@@ -1142,7 +1141,7 @@ class DatabaseService {
       activitiesList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
       return activitiesList;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving activity list:  ${e.toString()}');
       return null;
     }
   }
@@ -1195,7 +1194,7 @@ class DatabaseService {
       Map<String, dynamic> data = snapshot.data();
         return UserPublicProfile.fromData(data);
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving specific user public profile:  ${e.toString()}');
       return null;
     }
 
@@ -1219,7 +1218,7 @@ class DatabaseService {
 
       return transportList;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving transportation list:  ${e.toString()}');
       return null;
     }
   }
@@ -1236,7 +1235,7 @@ class DatabaseService {
         return Trip.fromData(data);
       }).toList().reversed.toList();
     } catch (e){
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving private trip list:  ${e.toString()}');
       return null;
     }
   }
@@ -1255,7 +1254,7 @@ class DatabaseService {
           trip.endDateTimeStamp.toDate().compareTo(past) == 1).toList();
       return crewTrips;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving current trip list:  ${e.toString()}');
       return null;
     }
   }
@@ -1275,7 +1274,7 @@ class DatabaseService {
           .toList().reversed.toList();
       return crewTrips;
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving past trip list:  ${e.toString()}');
       return null;
     }
   }
@@ -1324,7 +1323,7 @@ class DatabaseService {
         return NotificationData.fromData(data);
       }).toList();
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving notification list:  ${e.toString()}');
       return null;
     }
   }
@@ -1349,7 +1348,7 @@ class DatabaseService {
           });
     } catch (e) {
       _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error writing new chat:  ${e.toString()}');
     }
   }
 
@@ -1362,7 +1361,7 @@ class DatabaseService {
         chatCollection.doc(tripDocID).collection('messages').doc(snapshot.docs[i].id).update({'status.$uid': true});
       }
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error clearing chat notifications:  ${e.toString()}');
     }
   }
 
@@ -1376,7 +1375,7 @@ class DatabaseService {
       }).toList();
     } catch (e) {
       // AnalyticsService().writeError(e.toString());
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
       return null;
     }
   }
@@ -1387,7 +1386,7 @@ class DatabaseService {
       .orderBy('timestamp', descending: true)
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
       return null;
     }
   }
@@ -1395,7 +1394,7 @@ class DatabaseService {
     try {
       return chatCollection.doc(tripDocID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
     }catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving chat list notifications:  ${e.toString()}');
       return null;
     }
   }
@@ -1483,7 +1482,7 @@ class DatabaseService {
           );
         }).toList();
       } catch (e) {
-        CloudFunction().logError(e.toString());
+        CloudFunction().logError('Error retrieving ad list:  ${e.toString()}');
         return null;
       }
 
@@ -1537,7 +1536,7 @@ class DatabaseService {
           });
     } catch (e) {
       _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error writing new dm chat:  ${e.toString()}');
     }
   }
   // Delete a chat message
@@ -1547,7 +1546,7 @@ class DatabaseService {
       return await dmChatCollection.doc(message.chatID).collection('messages').doc(message.fieldID).delete();
     } catch (e) {
       _analyticsService.writeError('Error deleting new chat:  ${e.toString()}');
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error deleting dm chat message:  ${e.toString()}');
     }
   }
 
@@ -1561,7 +1560,7 @@ class DatabaseService {
         dmChatCollection.doc(chatID).collection('messages').doc(doc.id).update({'status.${userService.currentUserID}': true});
       });
     } catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error clearing dm chat notifications:  ${e.toString()}');
     }
   }
 
@@ -1574,7 +1573,7 @@ class DatabaseService {
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       _analyticsService.writeError(e.toString());
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving dm chat messages:  ${e.toString()}');
       return null;
     }
   }
@@ -1585,7 +1584,7 @@ class DatabaseService {
       return dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false)
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
-      CloudFunction().logError(e.toString());
+      CloudFunction().logError('Error retrieving dm chat notifications:  ${e.toString()}');
       return null;
     }
   }

@@ -30,7 +30,7 @@ class _TransportationState extends State<Transportation> {
         },
         child: Scaffold(
           body: Container(
-            child: TransportationList()
+            child: TransportationList(trip: widget.trip,)
           ),
           floatingActionButton: FloatingActionButton(
 

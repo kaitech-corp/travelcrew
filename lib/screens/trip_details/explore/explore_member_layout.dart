@@ -122,7 +122,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                   SizedBox(height: 15,),
                   Stack(
                     children: [
-                      Tooltip(child: DateGauge(tripDetails: widget.tripDetails),message: 'Date created: ${(TCFunctions().formatTimestamp(widget.tripDetails.dateCreatedTimeStamp))}',),
+                      Tooltip(child: DateGauge(tripDetails: widget.tripDetails),message: 'Date created: ${(TCFunctions().formatTimestamp(widget.tripDetails.dateCreatedTimeStamp,wTime: false))}',),
                       Positioned(
                         bottom: 10,
                         left: 18.0,
@@ -131,6 +131,13 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
+                            ElevatedButton(
+                              onPressed: (){
+                                navigationService.navigateTo(CostPageRoute,arguments: widget.tripDetails);
+                              },
+                              child: Text("Split",),
+                              // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
+                            ),
                             CrewModalBottomSheet(tripDetails: widget.tripDetails),
                           ],
                         ),

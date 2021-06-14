@@ -3,6 +3,7 @@ library flutter_link_preview;
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gbk2utf8/gbk2utf8.dart';
 import 'package:html/dom.dart' hide Text;
@@ -48,6 +49,17 @@ class FlutterLinkPreview extends StatefulWidget {
 
   @override
   _FlutterLinkPreviewState createState() => _FlutterLinkPreviewState();
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('url', url));
+    properties.add(DiagnosticsProperty<Duration>('cache', cache));
+    properties.add(DiagnosticsProperty<Widget Function(InfoBase info)>('builder', builder));
+    properties.add(DiagnosticsProperty<TextStyle>('titleStyle', titleStyle));
+    properties.add(DiagnosticsProperty<TextStyle>('bodyStyle', bodyStyle));
+    properties.add(DiagnosticsProperty<bool>('showMultimedia', showMultimedia));
+    properties.add(DiagnosticsProperty<bool>('useMultithread', useMultithread));
+  }
 }
 
 class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {

@@ -38,10 +38,7 @@ class _ListWidgetState extends State<ListWidget> {
         _selectedIndex = index;
       });
     }
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return ElevatedButton(
       onPressed: () {
         widget.controller = widget.scaffoldKey.currentState.showBottomSheet(
           (BuildContext context) {

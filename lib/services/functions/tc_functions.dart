@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_webservice/places.dart';
 import '../locator.dart';
@@ -89,10 +90,16 @@ class TCFunctions {
     return Location(lat: lat, lng: lng);
   }
 
-  String formatTimestamp (Timestamp timestamp){
-    var format = new DateFormat('yMMMd');
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
-    return format.format(date);
+  String formatTimestamp (Timestamp timestamp, {bool wTime}){
+    try {
+      var format = new DateFormat('yMMMd');
+      var format2 = new DateFormat('yMMMd').add_jm();
+      var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      return (wTime) ? format2.format(date) : format.format(date);
+    } catch (e) {
+      CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
+      return '';
+    }
   }
 
 }

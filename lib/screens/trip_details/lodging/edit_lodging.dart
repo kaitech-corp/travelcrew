@@ -226,7 +226,7 @@ class _EditLodgingState extends State<EditLodging> {
                                     endTime.value,
                                 );
                               } on Exception catch (e) {
-                                CloudFunction().logError(e.toString());
+                                CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
                               }
                               try {
                                 String action = 'Sending notifications for $documentID lodging';
@@ -243,7 +243,7 @@ class _EditLodgingState extends State<EditLodging> {
                                   }
                                 });
                               } catch(e){
-                                CloudFunction().logError(e.toString());
+                                CloudFunction().logError('Error sending notifications for edited lodging:  ${e.toString()}');
                               }
                               setState(() {
                                 loading = false;

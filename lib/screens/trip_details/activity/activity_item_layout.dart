@@ -61,7 +61,7 @@ class ActivityItemLayout extends StatelessWidget {
                         Row(
                           children: [
                           SplitPackage().SplitItemExist(context,
-                          SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment ), trip: trip),
+                          SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment), trip: trip),
                             if(activity.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
                             IconButton(
                                 icon: favorite(userService.currentUserID),
@@ -112,9 +112,13 @@ class ActivityItemLayout extends StatelessWidget {
           }
           break;
           case "Split": {
-            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment ),
+            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment,amountRemaining: 0 ),
                 trip: trip);
 
+          }
+          break;
+          case "Delete": {
+            CloudFunction().deleteTransportation(tripDocID: trip.documentId,fieldID: activity.fieldID);
           }
           break;
           default: {
@@ -180,7 +184,13 @@ class ActivityItemLayout extends StatelessWidget {
           case "Split": {
             // if (false) {
               SplitPackage().SplitItemExist(context,
-                  SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment ),
+                  SplitObject(
+                      itemDocID:activity.fieldID,
+                      tripDocID: trip.documentId,
+                      users: trip.accessUsers,
+                      itemName: activity.activityType,
+                      itemDescription: activity.comment,
+                      amountRemaining: 0.01 ),
                   trip: trip
               );
             // } else {
