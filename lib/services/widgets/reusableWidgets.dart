@@ -128,10 +128,7 @@ class _TimePickersState extends State<TimePickers> {
 //                                SizedBox(height: 16),
               ButtonTheme(
                 minWidth: 150,
-                child: RaisedButton(
-                  shape:  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                child: ElevatedButton(
                   child: Text(
                     'Start Time',style: Theme.of(context).textTheme.subtitle1,
                   ),
@@ -151,10 +148,7 @@ class _TimePickersState extends State<TimePickers> {
 //                                SizedBox(height: 16),
               ButtonTheme(
                 minWidth: 150,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                child: ElevatedButton(
                   child: Text(
                     'End Time',style: Theme.of(context).textTheme.subtitle1
                   ),

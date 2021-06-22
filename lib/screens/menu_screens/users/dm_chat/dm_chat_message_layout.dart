@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 // import 'package:flutter_linkify/flutter_linkify.dart';
@@ -7,6 +8,8 @@ import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../alerts/alert_dialogs.dart';
 
 class DMChatMessageLayout extends StatelessWidget {
 
@@ -27,22 +30,31 @@ class DMChatMessageLayout extends StatelessWidget {
             context: context,
             builder: (context){
               return Container(
-                height: SizeConfig.screenHeight * .2,
-                width: double.infinity,
+                height: SizeConfig.screenHeight * .3,
+                width: SizeConfig.screenWidth,
+                color: Colors.grey.shade200,
+                padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    OutlineButton(
-                      color: Colors.grey,
-                      child: const Text('Delete',style: TextStyle(fontSize: 18),),
+                    OutlinedButton(
+                      // color: Colors.grey,
+                      child: Text('Copy',style: Theme.of(context).textTheme.subtitle1,),
+                      onPressed: (){
+                        FlutterClipboard.copy(message.message).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
+                        navigationService.pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      child: Text('Delete',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){
                         DatabaseService().deleteDMChatMessage(message: message);
                         navigationService.pop();
                       },
                     ),
-                    OutlineButton(
-                      color: Colors.grey,
-                      child: const Text('Close',style: TextStyle(fontSize: 18),),
+                    OutlinedButton(
+                      child: Text('Close',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){
                         navigationService.pop();
                       },
@@ -76,8 +88,8 @@ class DMChatMessageLayout extends StatelessWidget {
                         }
                       },
                       text: message.message ?? '',
-                      style: ChatTextStyle().messageStyle(),
-                      textScaleFactor: 1.2,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      // textScaleFactor: 1.2,
                       maxLines: 50,
                       overflow: TextOverflow.ellipsis,
                       linkStyle: TextStyle(color: Colors.blue),
@@ -119,8 +131,8 @@ class DMChatMessageLayout extends StatelessWidget {
                         }
                       },
                       text: message.message ?? '',
-                      style: ChatTextStyle().messageStyle(),
-                      textScaleFactor: 1.2,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      // textScaleFactor: 1.2,
                       maxLines: 50,
                       overflow: TextOverflow.ellipsis,
                       linkStyle: TextStyle(color: Colors.blue),

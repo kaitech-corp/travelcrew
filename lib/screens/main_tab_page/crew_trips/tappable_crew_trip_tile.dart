@@ -79,7 +79,7 @@ class TappableCrewTripTile extends StatelessWidget {
                     Flexible(
                       flex: 1,
                       child: ListTile(
-                        title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline3,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                        title: Tooltip(message: trip.tripName,child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline5,maxLines: 1,overflow: TextOverflow.ellipsis,)),
                         subtitle:  Text(trip.startDate != null ? '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle2,),
                         trailing: Tooltip(
                           message: 'Members',

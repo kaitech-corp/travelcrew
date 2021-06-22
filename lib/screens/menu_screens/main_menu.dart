@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/auth/auth.dart';
@@ -46,10 +47,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
               DrawerHeader(
                 child:  Row(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('TC',style: Theme.of(context).textTheme.subtitle1),
+                    Text('TC',style: Theme.of(context).textTheme.headline5),
                     CircleAvatar(
-                      radius: SizeConfig.screenWidth/4.0,
+                      radius: SizerUtil.deviceType == DeviceType.tablet ? SizeConfig.screenWidth/8.0 : SizeConfig.screenWidth/4.0,
                       backgroundImage: (currentUserProfile?.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder),
                     ),
                   ],

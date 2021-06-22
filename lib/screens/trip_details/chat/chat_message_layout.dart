@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,9 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../size_config/size_config.dart';
+import '../../alerts/alert_dialogs.dart';
 
 class ChatMessageLayout extends StatelessWidget {
   final ChatData message;
@@ -28,12 +32,23 @@ class ChatMessageLayout extends StatelessWidget {
             context: context,
             builder: (context){
               return Container(
-                height: SizeConfig.screenHeight * .2,
-                width: double.infinity,
+                height: SizeConfig.screenHeight * .3,
+                width: SizeConfig.screenWidth,
+                color: Colors.grey.shade200,
+                padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    OutlineButton(
+                    OutlinedButton(
+                      // color: Colors.grey,
+                      child: Text('Copy',style: Theme.of(context).textTheme.subtitle1,),
+                      onPressed: (){
+                        FlutterClipboard.copy(message.message).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
+                        navigationService.pop();
+                      },
+                    ),
+                    OutlinedButton(
                       // color: Colors.grey,
                       child: Text('Delete',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){
@@ -41,7 +56,8 @@ class ChatMessageLayout extends StatelessWidget {
                         navigationService.pop();
                       },
                     ),
-                    OutlineButton(
+                    SizedBox(width: 15,),
+                    OutlinedButton(
                       // color: Colors.grey,
                       child: Text('Close',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){

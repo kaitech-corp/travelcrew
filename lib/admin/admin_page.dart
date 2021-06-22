@@ -39,7 +39,7 @@ class _AdminPageState extends State<AdminPage> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Admin',style: Theme.of(context).textTheme.headline3,),
+          title: Text('Admin',style: Theme.of(context).textTheme.headline5,),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -47,7 +47,7 @@ class _AdminPageState extends State<AdminPage> {
             height: SizeConfig.screenHeight,
             child: Column(
               children: [
-                Text('Feedback',style: Theme.of(context).textTheme.headline4,),
+                Text('Feedback',style: Theme.of(context).textTheme.headline5,),
                 Flexible(
                   flex: 2,
                   child: Container(
@@ -73,7 +73,7 @@ class _AdminPageState extends State<AdminPage> {
                                 child: ListTile(
                                   key: Key(item.fieldID),
                                   title: Text('${item.message}',style: Theme.of(context).textTheme.subtitle1,),
-                                  subtitle: Text('Submitted: ${item.timestamp.toDate()}',style: Theme.of(context).textTheme.headline6,),
+                                  subtitle: Text('Submitted: ${item.timestamp.toDate()}',style: Theme.of(context).textTheme.subtitle2,),
                                 ),
                               );
                             },
@@ -87,36 +87,17 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
                 ),
-                Text('Custom Notification',style: Theme.of(context).textTheme.headline4, textAlign: TextAlign.center,),
+                Text('Custom Notification',style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center,),
                 Flexible(flex: 2, child: _buildTextField()),
                 Center(
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)
-                    ),
+                  child: ElevatedButton(
                     onPressed: () {
                       if (_message.isNotEmpty) {
                         TravelCrewAlertDialogs().pushCustomNotification(context);
                         CloudFunction().addCustomNotification(_message);
                       }
                     },
-                    textColor: Colors.white,
-                    padding: const EdgeInsets.all(0.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(
-                          colors: <Color>[
-                            Color(0xFF0D47A1),
-                            Color(0xFF1976D2),
-                            Color(0xFF42A5F5),
-                          ],
-                        ),
-                      ),
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20 , 10 ),
-                      child:
-                      const Text('Push', style: TextStyle(fontSize: 20)),
-                    ),
+                    child: const Text('Push', style: TextStyle(fontSize: 20)),
                   ),
                 ),
                 const Padding(padding: EdgeInsets.only(top: 15)),

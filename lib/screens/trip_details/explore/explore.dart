@@ -9,6 +9,7 @@ import 'package:travelcrew/screens/trip_details/transportation/transportation.da
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 import 'explore_owner_layout.dart';
 
 
@@ -33,7 +34,7 @@ class Explore extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           // leading: MenuDrawer(),
-          title: Text('Explore',style: Theme.of(context).textTheme.headline3,),
+          title: Text('Explore',style: Theme.of(context).textTheme.headline5,),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.close),
@@ -44,7 +45,7 @@ class Explore extends StatelessWidget {
             ),
           ],
           bottom: TabBar(
-            labelStyle: Theme.of(context).textTheme.subtitle2,
+            labelStyle: SizeConfig.tablet ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.subtitle2,
             isScrollable: true,
             tabs: [
               const Tab(text: 'Explore',

@@ -139,7 +139,7 @@ class _AddTripPageState extends State<AddTripPage> {
             builder: (context) => Form(
                 key: _formKey,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       TextFormField(
                           enableInteractiveSelection: true,
@@ -216,10 +216,7 @@ class _AddTripPageState extends State<AddTripPage> {
 //                                SizedBox(height: 16),
                             ButtonTheme(
                               minWidth: 150,
-                              child: RaisedButton(
-                                shape:  RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                              child: ElevatedButton(
                                 child: const Text(
                                   'Start Date',
                                 ),
@@ -239,10 +236,7 @@ class _AddTripPageState extends State<AddTripPage> {
 //                                SizedBox(height: 16),
                             ButtonTheme(
                               minWidth: 150,
-                              child: RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                              child: ElevatedButton(
                                 child: const Text(
                                   'End Date',
                                 ),
@@ -280,10 +274,7 @@ class _AddTripPageState extends State<AddTripPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 16.0, horizontal: 16.0),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                        child: ElevatedButton(
                           onPressed: () {
                             getImageAddTrip();
                           },
@@ -315,10 +306,7 @@ class _AddTripPageState extends State<AddTripPage> {
                       Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 16.0, horizontal: 16.0),
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                          child: ElevatedButton(
                             onPressed: () {
                               location = myController.text;
                               ownerID = currentUserProfile.uid;

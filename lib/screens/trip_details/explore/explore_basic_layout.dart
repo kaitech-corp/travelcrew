@@ -28,6 +28,7 @@ class ExploreBasicLayout extends StatelessWidget{
                     tag: tripDetails.urlToImage,
                     transitionOnUserGestures: true,
                     child: FadeInImage.assetNetwork(
+                      fit: BoxFit.fitWidth,
                       placeholder: travelImage,
                       image: tripDetails.urlToImage,
 
@@ -36,11 +37,7 @@ class ExploreBasicLayout extends StatelessWidget{
                   Positioned(
                     right: 5,
                     bottom: 10,
-                      child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          color: Colors.black,
+                      child: ElevatedButton(
                           child: const Text('Request to Join',style: TextStyle(color: Colors.white),),
                           onPressed: ()
                           {

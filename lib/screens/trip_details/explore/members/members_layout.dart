@@ -9,6 +9,7 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 import '../../../../services/widgets/loading.dart';
 
 class MembersLayout extends StatefulWidget{
@@ -73,10 +74,10 @@ class _MembersLayoutState extends State<MembersLayout> {
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: _image.isNotEmpty ? Image.network(_image, height: 300,
-                    width: 300,fit: BoxFit.fill,) : Image.asset(
-                    profileImagePlaceholder,height: 300,
-                    width: 300,fit: BoxFit.fill,),
+                  child: _image.isNotEmpty ? Image.network(_image, height: SizeConfig.screenWidth*.5,
+                    width: SizeConfig.screenWidth*.5,fit: BoxFit.fill,) : Image.asset(
+                    profileImagePlaceholder,height: SizeConfig.screenWidth*.5,
+                    width: SizeConfig.screenWidth*.5,fit: BoxFit.fill,),
                 ),
               ),
             ),
@@ -92,6 +93,9 @@ class _MembersLayoutState extends State<MembersLayout> {
       key: Key(member.uid),
       color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
       child: Container(
+        width: SizeConfig.screenWidth,
+        height: SizeConfig.screenHeight*.09,
+        padding: EdgeInsets.all(2),
         child: GestureDetector(
           onLongPress: (){
             setState(() {
@@ -107,28 +111,30 @@ class _MembersLayoutState extends State<MembersLayout> {
           onTap: (){
             navigationService.navigateTo(UserProfilePageRoute, arguments: member);
           },
-          child: ListTile(
-            leading: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.0),
-                color: Colors.blue,
+          child: Row(
+            children: [
+              Container(
+                child: Center(
+                  child: CircleAvatar(
+                    radius: SizeConfig.blockSizeHorizontal*7,
+                    backgroundImage: (member.urlToImage.isNotEmpty ?? false) ? NetworkImage(member.urlToImage,) : AssetImage(profileImagePlaceholder),
+                  ),
+                ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: member.urlToImage.isNotEmpty ? Image.network(member.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
+              Expanded(
+                child: ListTile(
+                  title: Text("${member.displayName}",style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.start,),
+                  trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? IconThemeWidget(icon:Icons.check)
+                  : IconButton(
+                    icon: IconThemeWidget(icon: Icons.close),
+                    onPressed: (){
+                      TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
+                    },
+                  ),
+                ),
               ),
-            ),
-            title: Text("${member.displayName}",style: Theme.of(context).textTheme.subtitle2,
-              textAlign: TextAlign.start,),
-            trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? IconThemeWidget(icon:Icons.check)
-            : IconButton(
-              icon: IconThemeWidget(icon: Icons.close),
-              onPressed: (){
-                TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
-              },
-            ),
+            ],
           ),
         ),
       ),

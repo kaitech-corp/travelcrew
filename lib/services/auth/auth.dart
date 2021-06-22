@@ -4,6 +4,8 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/database.dart';
 
+import '../functions/cloud_functions.dart';
+
 
 class AuthService {
 
@@ -58,12 +60,21 @@ class AuthService {
   //Register with email and password
 
   // Sign out
-  Future logOut() async {
+  void logOut() async {
+    // try {
+    //   AppleAuthService().appleSignOut();
+    // } catch(e){
+    //   CloudFunction().logError('Error signing out: ${e.toString()}');
+    // }
+    // try {
+    //   GoogleAuthService().signOutGoogle();
+    // } catch(e){
+    //   CloudFunction().logError('Error signing out: ${e.toString()}');
+    // }
     try {
-       return await _auth.signOut();
+      _auth.signOut();
     } catch(e){
-      print(e.toString());
-      return null;
+      CloudFunction().logError('Error signing out: ${e.toString()}');
     }
   }
 

@@ -156,7 +156,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                             iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                           ),
                           child: ExpandablePanel(
-                            header: Text('Trip Details', style: Theme.of(context).textTheme.headline2,),
+                            header: Text('Trip Details', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                             // collapsed:
                             expanded: Padding(
                               padding: EdgeInsets.all(_detailsPadding),
@@ -207,7 +207,11 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                                                FittedBox(fit: BoxFit.fitWidth,child: Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,)),
+                                                FittedBox(
+                                                    fit: BoxFit.fitWidth,
+                                                    child: Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',
+                                                      style: Theme.of(context).textTheme.subtitle1,
+                                                      textAlign: TextAlign.center,)),
                                               ],
                                             ),
                                           ),
@@ -299,7 +303,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                             iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                           ),
                           child: ExpandablePanel(
-                            header: Text('Bringing', style: Theme.of(context).textTheme.headline2,),
+                            header: Text('Bringing', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6),
                             // collapsed:
                             expanded: BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
                           ),
@@ -319,7 +323,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                             iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                           ),
                           child: ExpandablePanel(
-                            header: Text('Need', style: Theme.of(context).textTheme.headline2,),
+                            header: Text('Need', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6),
                             // collapsed:
                             expanded: NeedListToDisplay(documentID: widget.tripDetails.documentId,),
                           ),
@@ -351,7 +355,9 @@ class MemberPopupMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${tripDetails.tripName}'.toUpperCase(),
-        style: TextStyle(fontSize: 20.0),maxLines: 2,overflow: TextOverflow.ellipsis,),
+        style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,),
       trailing: PopupMenuButton<String>(
         icon: IconThemeWidget(icon: Icons.more_horiz,),
         onSelected: (value){

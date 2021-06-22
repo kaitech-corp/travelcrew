@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:travelcrew/models/custom_objects.dart';
 
 import '../analytics_service.dart';
+import '../functions/cloud_functions.dart';
 
 
 class GoogleAuthService {
@@ -47,13 +48,16 @@ class GoogleAuthService {
 
       return 'signInWithGoogle succeeded: $user';
     } catch (e){
-      print(e.toString());
+      return e.toString();
     }
   }
 
   void signOutGoogle() async {
-    await googleSignIn.signOut();
+    try {
+      await googleSignIn.signOut();
+    }catch (e) {
+      CloudFunction().logError('Error signing out of Google: ${e.toString()}');
+    }
 
-    print("User Sign Out");
   }
 }

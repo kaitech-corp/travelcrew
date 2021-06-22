@@ -134,7 +134,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
 //                       maxHeight: 300,
 //                     ),
 //                   ),
-//                   RaisedButton(
+//                   ElevatedButton(
 //                     shape: RoundedRectangleBorder(
 //                       borderRadius: BorderRadius.circular(20),
 //                     ),
@@ -150,10 +150,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                       vertical: 30.0, horizontal: 30.0),
                       child: ButtonTheme(
                   minWidth: 150,
-                  child: RaisedButton(
-                      shape:  RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                  child: ElevatedButton(
                       child: Text('CheckIn/Checkout',style: Theme.of(context).textTheme.subtitle1,
                       ),
                       onPressed: () {
@@ -168,10 +165,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 Container(
                   padding: const EdgeInsets.symmetric(
                       vertical: 30.0, horizontal: 30.0),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                  child: ElevatedButton(
                     onPressed: () async{
                       final form = _formKey.currentState;
                       if (form.validate()) {

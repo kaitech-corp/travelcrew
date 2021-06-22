@@ -11,6 +11,7 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/widgets/link_previewer.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 
 
@@ -41,7 +42,7 @@ class LodgingItemLayout extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text('${lodging.lodgingType}',style: Theme.of(context).textTheme.headline4,),
+                  Text('${lodging.lodgingType}',style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                   const Padding(
                     padding: EdgeInsets.only(bottom: 4.0),
                   ),
@@ -131,11 +132,11 @@ class LodgingItemLayout extends StatelessWidget {
           }
           break;
           case "Delete": {
-            CloudFunction().deleteTransportation(tripDocID: trip.documentId,fieldID: lodging.fieldID);
+            CloudFunction().removeLodging(trip.documentId,lodging.fieldID);
           }
           break;
           default: {
-            CloudFunction().removeLodging(trip.documentId, lodging.fieldID);
+
           }
           break;
         }

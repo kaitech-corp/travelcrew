@@ -13,7 +13,7 @@ class HelpPage extends StatelessWidget{
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Help & Feedback',style: Theme.of(context).textTheme.headline3,),
+          title: Text('Help & Feedback',style: Theme.of(context).textTheme.headline5,),
         ),
         body: Container(
           margin: const EdgeInsets.all(16),
@@ -26,10 +26,7 @@ class HelpPage extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('About',style: Theme.of(context).textTheme.subtitle1,),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                    ),
+                  ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -41,10 +38,7 @@ class HelpPage extends StatelessWidget{
                       TCFunctions().launchURL(urlToTerms);
                     },
                   ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
+                  ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -63,10 +57,7 @@ class HelpPage extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Feedback',style: Theme.of(context).textTheme.subtitle1,),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
+                  ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

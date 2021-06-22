@@ -469,10 +469,7 @@ class _CustomListState extends State<CustomList> {
                       height: 1,
                       color: Colors.grey,
                     ),
-                    RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+                    ElevatedButton(
                         onPressed: () {
                           final form = _formKey.currentState;
                           if (form.validate()) {

@@ -89,14 +89,14 @@ class _MyHomePageState extends State<MyHomePage> {
               TextField(controller: _controller),
               Row(
                 children: <Widget>[
-                  RaisedButton(
+                  ElevatedButton(
                     onPressed: () {
                       setState(() {});
                     },
                     child: const Text("get"),
                   ),
                   const SizedBox(width: 15),
-                  RaisedButton(
+                  ElevatedButton(
                     onPressed: () {
                       _index++;
                       if (_index >= _urls.length) _index = 0;
@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text("next"),
                   ),
                   const SizedBox(width: 15),
-                  RaisedButton(
+                  ElevatedButton(
                     onPressed: () {
                       _controller.clear();
                     },

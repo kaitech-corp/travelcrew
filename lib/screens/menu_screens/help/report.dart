@@ -149,14 +149,12 @@ class _ReportContentState extends State<ReportContent> {
                 if(widget.tripDetails != null) Center(child: Text('Reporting: ${widget.tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle1,)),
                 const SizedBox(height: 30),
                 Center(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       CloudFunction().reportUser(collection, docID, offenderID, _message, itemType, urlToImage);
                       navigationService.pop();
                       TravelCrewAlertDialogs().submittedAlert(context);
                     },
-                    textColor: Colors.white,
-                    padding: const EdgeInsets.all(0.0),
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),

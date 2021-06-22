@@ -42,7 +42,7 @@ class _DMChatState extends State<DMChat> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.user.displayName,style: Theme.of(context).textTheme.headline3,overflow: TextOverflow.ellipsis,),
+            title: Text(widget.user.displayName,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,),
           ),
           body: Column(
             children: <Widget>[
@@ -65,7 +65,8 @@ class _DMChatState extends State<DMChat> {
                         new Flexible(
                           child: new TextField(
                             decoration: new InputDecoration.collapsed(
-                                hintText: "Starts typing ...",
+                                hintText: "Start typing ...",
+                              border: InputBorder.none,
                             ),
                             controller: _chatController,
 //                    onSubmitted: _handleSubmit,
@@ -73,6 +74,7 @@ class _DMChatState extends State<DMChat> {
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                             style: ChatTextStyle().messageStyle(),
+
                           ),
                         ),
                         new Container(

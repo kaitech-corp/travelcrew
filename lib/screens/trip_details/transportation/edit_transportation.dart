@@ -89,7 +89,7 @@ class _EditTransportationState extends State<EditTransportation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline3,),),
+        appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline5,),),
         body: Container(
             child: SingleChildScrollView(
                 padding:
@@ -184,7 +184,7 @@ class _EditTransportationState extends State<EditTransportation> {
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
-                                  child: RaisedButton(
+                                  child: ElevatedButton(
                                       onPressed: () {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {

@@ -18,6 +18,7 @@ import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
+import '../../size_config/size_config.dart';
 import 'crew_trips/private_trips.dart';
 
 
@@ -80,62 +81,6 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       navigationService.navigateTo(DMChatListPageRoute);
     });
 
-    //   FirebaseMessaging().configure(
-    //   onMessage:
-    //       (Map<String, dynamic> message) async {
-    //     print("onMessage: $message");
-    //     // showSimpleNotification(
-    //     // if(message['aps']['category'] == 'chat') {
-    //     //   Fluttertoast.showToast(
-    //     //       msg: message['aps']['alert']['title'],
-    //     //       toastLength: Toast.LENGTH_LONG,
-    //     //       gravity: ToastGravity.TOP,
-    //     //       timeInSecForIosWeb: 2,
-    //     //   );
-    //     // }
-    //
-    //   },
-    //   onLaunch: (Map<String, dynamic> message) async {
-    //
-    //   },
-    //   onResume: (Map<String, dynamic> message) async {
-    //     // print("onResume: $message");
-    //     print(message['aps']['alert']['title']);
-    //
-    //     var type = message['aps']['category'];
-    //     switch (type){
-    //       case 'chat':{
-    //         navigationService.pushReplacementNamed(WrapperRoute);
-    //         // Navigator.pushReplacementNamed(context, '/wrapper');
-    //       }
-    //       break;
-    //       case 'notifications':{
-    //         navigationService.pushReplacementNamed(WrapperRoute);
-    //         // Navigator.pushReplacementNamed(context, '/wrapper');
-    //       }
-    //       break;
-    //       default: {
-    //         showDialog(
-    //           context: context,
-    //           builder: (context) =>
-    //               AlertDialog(
-    //                 content: ListTile(
-    //                   title: Text(message['aps']['alert']['title']),
-    //                   subtitle: Text(message['aps']['alert']['body']),
-    //                 ),
-    //                 actions: <Widget>[
-    //                   FlatButton(
-    //                     child: const Text('Ok'),
-    //                     onPressed: () => Navigator.of(context).pop(),
-    //                   ),
-    //                 ],
-    //               ),
-    //         );
-    //       }
-    //     }
-    //
-    //   },
-    // );
   }
 
   @override
@@ -152,15 +97,15 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           // appBar: TravelCrewAppBar(bottomTabBar: true,),
           drawer: MenuDrawer(),
           body: (_selectedIndex == 0) ? Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: [
               CustomAppBar(bottomNav: true,),
               Padding(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight/2*.32),
+                padding: EdgeInsets.only(top: SizeConfig.screenHeight*.175),
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: TabBar(
-                    labelStyle: Theme.of(context).textTheme.headline2,
+                    labelStyle: Theme.of(context).textTheme.headline6,
                     isScrollable: true,
                     tabs: [
                       const Tab(text: 'Current',),
@@ -180,7 +125,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             children: [
               CustomAppBar(bottomNav: false,),
               Padding(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight/2*.335),
+                padding: EdgeInsets.only(top: SizeConfig.screenHeight*.1785),
                 child: Center(
                   child: _widgetOptions.elementAt(_selectedIndex),
                 ),

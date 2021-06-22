@@ -10,7 +10,7 @@ import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.d
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
-import 'package:travelcrew/screens/menu_screens/dm_chats/chats_page.dart';
+import 'package:travelcrew/screens/menu_screens/users/dm_chat/chats_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/help.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
