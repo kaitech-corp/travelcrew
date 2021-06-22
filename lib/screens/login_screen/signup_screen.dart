@@ -58,7 +58,7 @@ class _SignupScreenState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Sign Up!',style: Theme.of(context).textTheme.headline3,)),
+        appBar: AppBar(title: Text('Sign Up!',style: Theme.of(context).textTheme.headline5,)),
         body: SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -66,7 +66,7 @@ class _SignupScreenState extends State {
                   builder: (context) => Form(
                       key: _formKey,
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          // crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             TextFormField(
                                 style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
@@ -98,7 +98,7 @@ class _SignupScreenState extends State {
                                     labelStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
                                 // ignore: missing_return
                                 validator: (value) {
-                                  // ignore: missing_return, missing_return
+                                  // ignore: missing_return, 
                                   if (value.isEmpty) {
                                     return 'Please enter a display name.';
                                   }
@@ -150,10 +150,7 @@ class _SignupScreenState extends State {
                                   )
                               ),
                             ),
-                            RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)
-                              ),
+                            ElevatedButton(
                               onPressed: () {
                                 getImage();
                               },
@@ -168,16 +165,14 @@ class _SignupScreenState extends State {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(agreement,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
-                                  FlatButton(
+                                  TextButton(
                                     child: const Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold,fontSize: 18)),
-                                    textColor: Colors.lightBlue,
                                     onPressed: (){
                                       navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key1));
                                     },
                                   ),
-                                  FlatButton(
+                                  TextButton(
                                     child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 18)),
-                                    textColor: Colors.lightBlue,
                                     onPressed: (){
                                       navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key1));
                                     },
@@ -188,10 +183,7 @@ class _SignupScreenState extends State {
                             Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 30.0, horizontal: 30.0),
-                                child: RaisedButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20)
-                                    ),
+                                child: ElevatedButton(
                                     onPressed: () async {
                                       final form = _formKey.currentState;
                                       if (form.validate()) {

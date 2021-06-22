@@ -24,7 +24,7 @@ class _SettingsState extends State<Settings> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Settings',style: Theme.of(context).textTheme.headline3,),
+          title: Text('Settings',style: Theme.of(context).textTheme.headline5,),
         ),
         body: Container(
           padding: const EdgeInsets.all(8),
@@ -33,7 +33,7 @@ class _SettingsState extends State<Settings> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text('Theme',style: Theme.of(context).textTheme.headline2,),
+              Text('Theme',style: Theme.of(context).textTheme.headline5,),
               RadioListTile<String>(
                 title: const Text('Light'),
                 value: 'light_theme',
@@ -62,12 +62,21 @@ class _SettingsState extends State<Settings> {
               Container(height: 2, decoration: BoxDecoration(border: Border.all(color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,)),),
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.headline2, textAlign: TextAlign.center,),
+                  Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,)),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
+                    child: SizeConfig.mobile ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _instagramButton(),
+                        _facbookButton(),
+                      ],
+                    ) :
+                    Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _instagramButton(),
                         _facbookButton(),
@@ -84,14 +93,10 @@ class _SettingsState extends State<Settings> {
   }
 
   Widget _instagramButton() {
-    return OutlineButton(
-      splashColor: Colors.grey,
+    return OutlinedButton(
       onPressed: () {
         TCFunctions().launchURL(TC_InstagramPage);
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      highlightElevation: 0,
-      borderSide: const BorderSide(color: Colors.grey),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
         child: Row(
@@ -106,14 +111,10 @@ class _SettingsState extends State<Settings> {
     );
   }
   Widget _facbookButton() {
-    return OutlineButton(
-      splashColor: Colors.grey,
+    return OutlinedButton(
       onPressed: () {
         TCFunctions().launchURL(TC_FacebookPage);
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      highlightElevation: 0,
-      borderSide: const BorderSide(color: Colors.grey),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
         child: Row(

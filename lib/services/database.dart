@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -74,14 +73,13 @@ class DatabaseService {
   }
 
   saveDeviceToken() async {
-    // Get the current user
-    String uid = FirebaseAuth.instance.currentUser.uid;
-    // FirebaseUser user = await _auth.currentUser();
-
-    // Get the token for this device
-    String fcmToken = await _fcm.getToken();
-
     try {
+      // Get the current user
+      // String uid = FirebaseAuth.instance.currentUser.uid;
+      // FirebaseUser user = await _auth.currentUser();
+
+      // Get the token for this device
+      String fcmToken = await _fcm.getToken();
       var ref = await tokensCollection.doc(uid).collection('tokens')
           .doc(fcmToken).get();
       // Save it to Firestore
@@ -324,6 +322,7 @@ class DatabaseService {
     var ref = userCollection.doc(uid);
     var refSnapshot = await ref.get();
     if (refSnapshot.exists){
+      saveDeviceToken();
     }
 
     return refSnapshot.exists;
@@ -1480,7 +1479,7 @@ class DatabaseService {
             clickers: List<String>.from(data['clickers']) ?? null,
             urlToImage: data['urlToImage'] ?? '',
           );
-        }).toList();
+        }).toList().reversed.toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving ad list:  ${e.toString()}');
         return null;

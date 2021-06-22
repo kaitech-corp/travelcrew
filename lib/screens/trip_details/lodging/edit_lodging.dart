@@ -56,7 +56,7 @@ class _EditLodgingState extends State<EditLodging> {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: const Text('Edit Lodging'),
+            title: Text('Edit Lodging',style: Theme.of(context).textTheme.headline5,),
           ),
           body: SingleChildScrollView(
             padding: EdgeInsets.all(10),
@@ -147,10 +147,7 @@ class _EditLodgingState extends State<EditLodging> {
                           ),
                           ButtonTheme(
                             minWidth: 150,
-                            child: RaisedButton(
-                              shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                            child: ElevatedButton(
                               child: Text(
                                 'Edit Time',style: Theme.of(context).textTheme.subtitle1,
                               ),
@@ -184,7 +181,7 @@ class _EditLodgingState extends State<EditLodging> {
 //                         maxHeight: 300,
 //                       ),
 //                     ),
-//                     RaisedButton(
+//                     ElevatedButton(
 //                       onPressed: () {
 //                         getImage();
 //                       },
@@ -195,10 +192,7 @@ class _EditLodgingState extends State<EditLodging> {
                       Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 30.0),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                        child: ElevatedButton(
                           onPressed: () async{
                             final form = _formKey.currentState;
                             if (form.validate()) {

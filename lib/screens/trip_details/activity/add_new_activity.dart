@@ -140,7 +140,7 @@ class AddNewActivityState extends State<AddNewActivity> {
 //                         maxHeight: 300,
 //                       ),
 //                     ),
-//                     RaisedButton(
+//                     ElevatedButton(
 //                       shape: RoundedRectangleBorder(
 //                         borderRadius: BorderRadius.circular(20),
 //                       ),
@@ -155,10 +155,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 30.0),
                         child: ButtonTheme(
-                          child: RaisedButton(
-                            shape:  RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                          child: ElevatedButton(
                             child:  Text(
                               'Start/End Time', style: Theme.of(context).textTheme.subtitle1,
                             ),
@@ -174,10 +171,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                       Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 30.0),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                        child: ElevatedButton(
                           onPressed: () async{
                             final form = _formKey.currentState;
                             if (form.validate()) {

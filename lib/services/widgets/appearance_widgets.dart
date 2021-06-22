@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class ReusableThemeColor {
   Color color(BuildContext context){
@@ -34,6 +35,20 @@ class IconThemeWidget extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return Icon(icon ,color: Theme.of(context).accentIconTheme.color);
+  }
+
+}
+
+class AppBarIconThemeWidget extends StatelessWidget{
+
+  final IconData icon;
+
+  const AppBarIconThemeWidget({Key key, this.icon}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Icon(icon ,color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.greenAccent);
   }
 
 }
@@ -78,4 +93,39 @@ class ChatTextStyle {
   TextStyle timestampStyle(){
     return TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14, color: Colors.black);
   }
+}
+
+class CustomTextScaler {
+
+  Text scaleSubtitle1(String _text, BuildContext context){
+    if(SizeConfig.tablet) {
+      return Text(
+        _text,
+        style: Theme.of(context).textTheme.subtitle1,
+        textScaleFactor: 1.5,
+      );
+    } else {
+      Text(
+        _text,
+        style: Theme.of(context).textTheme.subtitle1,
+      );
+    }
+  }
+
+  Text scaleSubtitle2(String _text, BuildContext context){
+    if(SizeConfig.tablet) {
+      return Text(
+        _text,
+        style: Theme.of(context).textTheme.subtitle2,
+        textScaleFactor: 1.5,
+      );
+    } else {
+      Text(
+        _text,
+        style: Theme.of(context).textTheme.subtitle2,
+      );
+    }
+  }
+
+
 }

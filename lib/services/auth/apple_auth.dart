@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../functions/cloud_functions.dart';
+
 
 class AppleAuthService {
 
@@ -33,9 +35,17 @@ class AppleAuthService {
       // updateUserData(user);
 
       return user;
-    } catch (error) {
-      print(error);
+    } catch (e) {
+      CloudFunction().logError('Error in Apple sign in: ${e.toString()}');
       return null;
+    }
+  }
+
+  void appleSignOut() async {
+    try {
+      await _auth.signOut();
+    } catch(e){
+      CloudFunction().logError('Error in Apple signing out: ${e.toString()}');
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/size_config/size_config.dart';
 
 class TransportationItemLayout extends StatelessWidget {
 
@@ -29,7 +30,7 @@ class TransportationItemLayout extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(transportationData.displayName,style: ReusableThemeColor().greenOrBlueTextColor(context),),
-                    Text(transportationData.mode,style: Theme.of(context).textTheme.headline4,),
+                    Text(transportationData.mode,style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                   ],
                 ),
                 const Padding(padding: EdgeInsets.only(top: 5.0,)),

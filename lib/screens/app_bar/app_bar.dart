@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -57,6 +59,7 @@ class CustomAppBar extends StatelessWidget {
                   Positioned.fill(
                     top: 0,
                     child: AppBar(
+                      toolbarHeight: SizerUtil.deviceType == DeviceType.tablet ? SizeConfig.screenHeight*.1 : SizeConfig.screenHeight*.075,
                       shadowColor: Color(0x00000000),
                       backgroundColor: Color(0x00000000),
                       actions: <Widget>[
@@ -77,7 +80,7 @@ class CustomAppBar extends StatelessWidget {
                         ),
                         // SizedBox(width: SizeConfig.screenWidth/16.0,),
                         IconButton(
-                          icon: const Icon(Icons.chat),
+                          icon: AppBarIconThemeWidget(icon: Icons.chat,),
                           onPressed: (){
                             navigationService.navigateTo(DMChatListPageRoute);
                           },
@@ -86,7 +89,7 @@ class CustomAppBar extends StatelessWidget {
                     ),
                   ),
                 ],
-                overflow: Overflow.visible,
+                clipBehavior: Clip.none,
               )
           )
       ),

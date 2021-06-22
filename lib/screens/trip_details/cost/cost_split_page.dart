@@ -36,7 +36,7 @@ class _CostPageState extends State<CostPage> {
     return GestureDetector(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Split',style: Theme.of(context).textTheme.headline3,),
+          title: Text('Split',style: Theme.of(context).textTheme.headline5,),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(8),
@@ -99,10 +99,8 @@ class _CostPageState extends State<CostPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.item.itemName, style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline1,),
+                      Text(item.item.itemName,
+                        style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                       Text('Total: \$${item.item.itemTotal.toStringAsFixed(2)}',style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Cantata One',color: Colors.green)),
                       Text('Remaining: \$${item.item?.amountRemaining.toStringAsFixed(2) ?? item.item.itemTotal.toStringAsFixed(2)}  (${item.item.userSelectedList.length}pp)',style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Cantata One',color: Colors.red)),
                       // Text('Description: ${item.itemType}',style: Theme.of(context).textTheme.subtitle2),
@@ -117,7 +115,7 @@ class _CostPageState extends State<CostPage> {
                         },
                         future: DatabaseService().getUserProfile(item.item.purchasedByUID),
                       ),
-                      Text('Last Updated: ${TCFunctions().formatTimestamp(item.item.lastUpdated,wTime: true)}',style: Theme.of(context).textTheme.headline6),
+                      Text('Last Updated: ${TCFunctions().formatTimestamp(item.item.lastUpdated,wTime: true)}',style: Theme.of(context).textTheme.subtitle1),
                     ],
                   ),
               ),
@@ -196,7 +194,7 @@ class _CostPageState extends State<CostPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Paid',style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Cantata One',color: Colors.green)),
-                                Text(TCFunctions().formatTimestamp(costObject.datePaid,wTime: true),style: Theme.of(context).textTheme.headline6),
+                                Text(TCFunctions().formatTimestamp(costObject.datePaid,wTime: true),style: Theme.of(context).textTheme.subtitle2),
                               ],
                             ),
                             trailing: (splitObject.purchasedByUID == userService.currentUserID || costObject.uid == userService.currentUserID && costObject.paid == false) ?

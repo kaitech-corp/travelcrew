@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_grid.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import '../../../services/widgets/loading.dart';
+import '../../../size_config/size_config.dart';
 
 class CurrentCrewTrips extends StatefulWidget{
 
@@ -33,7 +35,9 @@ class _CurrentCrewTripsState extends State<CurrentCrewTrips>{
         }
         if(trips.hasData){
           List<Trip> tripList = trips.data;
-          return ListView.builder(
+          return SizeConfig.tablet ?
+          SliverGridView(trips: tripList, length: tripList.length):
+          ListView.builder(
             padding: EdgeInsets.all(0.0),
             itemCount: tripList.length ?? 0,
             itemBuilder: (context, index){
@@ -47,5 +51,7 @@ class _CurrentCrewTripsState extends State<CurrentCrewTrips>{
       stream: DatabaseService().currentCrewTrips,
     );
   }
+
+
 
   }

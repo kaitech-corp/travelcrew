@@ -188,10 +188,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 Container(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 30.0, horizontal: 30.0),
-                                    child: RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
+                                    child: ElevatedButton(
                                         onPressed: () {
                                           final form = _formKey.currentState;
                                           String documentID = widget.trip.documentId;
