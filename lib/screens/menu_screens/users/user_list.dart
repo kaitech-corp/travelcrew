@@ -57,7 +57,7 @@ class _UserListState extends State<UserList> {
 
     return loading ? Loading() : Scaffold(
       appBar: AppBar(
-        title: Text('TC Members',style: Theme.of(context).textTheme.headline3,),
+        title: Text('TC Members',style: Theme.of(context).textTheme.headline5,),
         actions: <Widget>[
           IconButton(icon: const Icon(Icons.search),
           onPressed: (){

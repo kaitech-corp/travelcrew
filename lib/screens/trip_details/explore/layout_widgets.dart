@@ -82,10 +82,7 @@ class SplitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return ElevatedButton(
       onPressed: () {
         navigationService.navigateTo(CostPageRoute, arguments: tripDetails);
       },

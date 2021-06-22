@@ -42,7 +42,7 @@ class LoginPage extends StatefulWidget {
                height: SizeConfig.screenHeight,
                child: Column(
                  mainAxisAlignment: MainAxisAlignment.start,
-                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                  children: <Widget>[
                    Flexible(
                      flex: 4,
@@ -63,7 +63,7 @@ class LoginPage extends StatefulWidget {
                      child: Column(
                        children: [
                          TextFormField(
-                           style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                           style: TextStyle(fontWeight: FontWeight.normal),
                            enableInteractiveSelection: true,
                            keyboardType: TextInputType.emailAddress,
                            validator: (value) {
@@ -81,12 +81,12 @@ class LoginPage extends StatefulWidget {
                            decoration: const InputDecoration(
                              border: OutlineInputBorder(),
                              labelText: "Email",
-                             labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                             labelStyle: TextStyle(fontWeight: FontWeight.normal),
                            ),
                          ),
                          const Padding(padding: EdgeInsets.only(top: 10)),
                          TextFormField(
-                           style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                           style: TextStyle(fontWeight: FontWeight.normal),
                            onChanged: (val){
                              setState(() => password = val);
                              setState(() =>error = '');
@@ -102,7 +102,7 @@ class LoginPage extends StatefulWidget {
                            decoration: const InputDecoration(
                              border: OutlineInputBorder(),
                              labelText: "Password",
-                             labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)
+                             labelStyle: TextStyle(fontWeight: FontWeight.normal)
                            ),
                          ),
                        ],
@@ -113,8 +113,7 @@ class LoginPage extends StatefulWidget {
                      flex: 2,
                      child: Container(
                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-                       child: RaisedButton(
-                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                       child: ElevatedButton(
                          onPressed: () async{
                            final form = _formKey.currentState;
                            if (form.validate()){
@@ -129,10 +128,9 @@ class LoginPage extends StatefulWidget {
                              }
                            }
                          },
-                         color: Colors.lightBlue,
-                         child: const Text(
+                         child: Text(
                              'Login',
-                             style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold,fontSize: 20)
+                             style: Theme.of(context).textTheme.subtitle1
                          ),
                        ),
                      ),
@@ -168,9 +166,8 @@ class LoginPage extends StatefulWidget {
                          crossAxisAlignment: CrossAxisAlignment.center,
                          children: <Widget>[
                            const Text('No account?',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
-                           FlatButton(
+                           TextButton(
                              child: const Text('Sign up here!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
-                             textColor: Colors.lightBlue,
                              onPressed: () {
                               navigationService.navigateTo(SignUpScreenRoute);
                               }
@@ -181,9 +178,8 @@ class LoginPage extends StatefulWidget {
                    ),
                    Flexible(
                      flex: 1,
-                     child: FlatButton(
+                     child: TextButton(
                        child: const Text('Forgot Password?',),
-                       textColor: Colors.lightBlue,
                        onPressed: (){
                          TravelCrewAlertDialogs().resetPasswordDialog(context);
                        },
@@ -212,14 +208,10 @@ class LoginPage extends StatefulWidget {
   }
 
     Widget _signInButton() {
-      return OutlineButton(
-        splashColor: Colors.grey,
+      return OutlinedButton(
         onPressed: () {
           GoogleAuthService().signInWithGoogle();
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        highlightElevation: 0,
-        borderSide: const BorderSide(color: Colors.grey),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: Row(
@@ -235,14 +227,10 @@ class LoginPage extends StatefulWidget {
     }
 
     Widget _signInAppleButton() {
-      return OutlineButton(
-        splashColor: Colors.grey,
+      return OutlinedButton(
         onPressed: () {
           _auth2.appleSignIn();
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        highlightElevation: 0,
-        borderSide: const BorderSide(color: Colors.grey),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: Row(

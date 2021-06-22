@@ -44,7 +44,7 @@ class _CompleteProfileState extends State {
     final user = Provider.of<User>(context);
     _user.email = user.email;
     return Scaffold(
-        appBar: AppBar(title: Text('Welcome!',style: Theme.of(context).textTheme.headline3,)),
+        appBar: AppBar(title: Text('Welcome!',style: Theme.of(context).textTheme.headline5,)),
         body: SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -82,7 +82,7 @@ class _CompleteProfileState extends State {
                                   ? const Text('No image selected.')
                                   : Image.file(_image),
                             ),
-                            RaisedButton(
+                            ElevatedButton(
                               onPressed: () {
                                 getImage();
                               },
@@ -99,16 +99,14 @@ class _CompleteProfileState extends State {
                                   Text("By continuing you are agreeing to our Term's of Service, Privacy Policy.",
                                     style: Theme.of(context).textTheme.subtitle1,
                                     textAlign: TextAlign.center,),
-                                  FlatButton(
+                                  TextButton(
                                     child: Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
-                                    textColor: Colors.lightBlue,
                                     onPressed: (){
                                       navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToTerms, key:key1));
                                     },
                                   ),
-                                  FlatButton(
+                                  TextButton(
                                     child: Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
-                                    textColor: Colors.lightBlue,
                                     onPressed: (){
                                       navigationService.navigateTo(WebViewScreenRoute, arguments: WebViewScreen(url: urlToPrivacyPolicy, key:key1));
                                     },
@@ -119,7 +117,7 @@ class _CompleteProfileState extends State {
                             Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 30.0, horizontal: 30.0),
-                                child: RaisedButton(
+                                child: ElevatedButton(
                                     onPressed: () async {
                                       final form = _formKey.currentState;
                                       if (form.validate()) {

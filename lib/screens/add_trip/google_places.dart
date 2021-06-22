@@ -30,10 +30,7 @@ class _GooglePlacesState extends State<GooglePlaces> {
   Mode _mode = Mode.overlay;
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return ElevatedButton(
       onPressed: _handlePressButton,
       child: const Text("Search"),
     );

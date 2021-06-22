@@ -1,7 +1,3 @@
-// import 'package:add_2_calendar/add_2_calendar.dart';
-// import 'package:expandable/expandable.dart';
-// export 'package:add_2_calendar/src/add_2_cal.dart';
-// export 'package:add_2_calendar/src/model/event.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -181,7 +177,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                               iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                             ),
                             child: ExpandablePanel(
-                              header: Text('Trip Details', style: Theme.of(context).textTheme.headline2,),
+                              header: Text('Trip Details', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                               // collapsed:
                               expanded: Padding(
                                 padding: EdgeInsets.all(_detailsPadding),
@@ -329,7 +325,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                               iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                             ),
                             child: ExpandablePanel(
-                              header: Text('Bringing', style: Theme.of(context).textTheme.headline2,),
+                              header: Text('Bringing', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                               // collapsed:
                               expanded: BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
                             ),
@@ -349,7 +345,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                               iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                             ),
                             child: ExpandablePanel(
-                              header: Text('Need', style: Theme.of(context).textTheme.headline2,),
+                              header: Text('Need', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                               // collapsed:
                               expanded: NeedListToDisplay(documentID: widget.tripDetails.documentId,),
                             ),
@@ -384,7 +380,10 @@ class OwnerPopupMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${tripDetails.tripName}'.toUpperCase(),
-        style: TextStyle(fontSize: 20.0),maxLines: 2,overflow: TextOverflow.ellipsis,),
+        style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
       subtitle: Text('${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
       trailing: PopupMenuButton<String>(
         icon: IconThemeWidget(icon: Icons.more_horiz,),

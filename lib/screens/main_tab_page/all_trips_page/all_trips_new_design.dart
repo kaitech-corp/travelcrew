@@ -51,7 +51,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
                       style: Theme.of(context).textTheme.headline3,
                       children: [
                         TextSpan(text: "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent, fontSize: 28)),
-                        TextSpan(text: " New",style: Theme.of(context).textTheme.headline4,),
+                        TextSpan(text: " New",style: Theme.of(context).textTheme.headline6,),
                       ]
                   ),
                 ),
@@ -61,7 +61,7 @@ class _AllTripsNewDesignState extends State<AllTripsNewDesign> with SingleTicker
                         height: SizeConfig.screenWidth*.025,
                         width: SizeConfig.screenWidth*.025,
                         child: Image.asset(starImage)),
-                    Text('Suggestion',style: Theme.of(context).textTheme.headline6,)
+                    Text('Suggestion',style: Theme.of(context).textTheme.subtitle1,)
                   ],
                 )
               ],
@@ -241,7 +241,7 @@ class _SliverGridListState extends State<SliverGridList> {
             ),
             child: Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
+              child: TextButton(
                 child: favorite(userService.currentUserID, trip),
                 onPressed: () {
                   if (trip.favorite.contains(userService.currentUserID)){
@@ -331,7 +331,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
             flex: 2,
             child: Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
+              child: TextButton(
                 child: favorite(userService.currentUserID, trip),
                 onPressed: () {
                   if (trip.favorite.contains(userService.currentUserID)){

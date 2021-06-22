@@ -53,7 +53,7 @@ class _EditActivityState extends State<EditActivity> {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: const Text('Edit Activity'),
+            title: Text('Edit Activity',style: Theme.of(context).textTheme.headline5,),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(10),
@@ -136,10 +136,7 @@ class _EditActivityState extends State<EditActivity> {
                             ),
                             ButtonTheme(
                               minWidth: 150,
-                              child: RaisedButton(
-                                shape:  RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                              child: ElevatedButton(
                                 child: Text(
                                   'Edit Time',style: Theme.of(context).textTheme.subtitle1,
                                 ),
@@ -174,7 +171,7 @@ class _EditActivityState extends State<EditActivity> {
 //                         maxHeight: 300,
 //                       ),
 //                     ),
-//                     RaisedButton(
+//                     ElevatedButton(
 //                       onPressed: () {
 //                         getImage();
 //                       },
@@ -185,10 +182,7 @@ class _EditActivityState extends State<EditActivity> {
                       Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 30.0),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                        child: ElevatedButton(
                           onPressed: () async{
                             final form = _formKey.currentState;
                             if (form.validate()) {

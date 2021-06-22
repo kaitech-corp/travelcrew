@@ -193,8 +193,7 @@ class _EditTripDataState extends State<EditTripData> {
                                         location = val,
                                       }
                                   ),
-                                  RaisedButton(
-                                    color: Colors.blue[300],
+                                  ElevatedButton(
                                     child: const Text('Edit Location'),
                                     onPressed: (){
                                       setState(() {
@@ -217,7 +216,7 @@ class _EditTripDataState extends State<EditTripData> {
 //                                SizedBox(height: 16),
                                         ButtonTheme(
                                           minWidth: 150,
-                                          child: RaisedButton(
+                                          child: ElevatedButton(
                                             child: const Text(
                                               'Departure Date',
                                             ),
@@ -237,7 +236,7 @@ class _EditTripDataState extends State<EditTripData> {
 //                                SizedBox(height: 16),
                                         ButtonTheme(
                                           minWidth: 150,
-                                          child: RaisedButton(
+                                          child: ElevatedButton(
                                             child: const Text(
                                               'Return Date',
                                             ),
@@ -256,8 +255,7 @@ class _EditTripDataState extends State<EditTripData> {
                                 children: <Widget>[
                                   Text('Departure Date: ${widget.tripDetails.startDate}',style: TextStyle(fontSize: 15),),
                                   Text('Return Date: ${widget.tripDetails.endDate}',style: TextStyle(fontSize: 15)),
-                                  RaisedButton(
-                                    color: Colors.blue[300],
+                                  ElevatedButton(
                                     child: const Text('Edit Dates'),
                                     onPressed: (){
                                       setState(() {
@@ -274,10 +272,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     ? const Text('No image selected.')
                                     : Image.file(_image),
                               ),
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                              ElevatedButton(
                                 onPressed: () {
                                   getImage();
                                 },
@@ -303,10 +298,7 @@ class _EditTripDataState extends State<EditTripData> {
                               Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 16.0, horizontal: 16.0),
-                                  child: RaisedButton(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
+                                  child: ElevatedButton(
                                       onPressed: () {
                                         final form = _formKey.currentState;
                                         if (form.validate()) {

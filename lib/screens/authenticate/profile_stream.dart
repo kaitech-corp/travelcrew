@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/firebase_messaging.dart';
 
 
 class ProfileStream extends StatelessWidget{

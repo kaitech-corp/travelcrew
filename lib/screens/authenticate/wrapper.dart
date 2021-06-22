@@ -21,7 +21,7 @@ class Wrapper extends StatelessWidget{
     if (user == null) {
       return Authenticate();
     } else {
-      DatabaseService().saveDeviceToken();
+      // DatabaseService().saveDeviceToken();
       FirebaseCrashlytics.instance.setUserIdentifier(user.uid);
        return FutureBuilder(
          builder: (context, data) {

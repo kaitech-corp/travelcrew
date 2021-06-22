@@ -57,7 +57,7 @@ class _SignupScreenState extends State {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        appBar: AppBar(title: const Text('Edit Profile')),
+        appBar: AppBar(title: Text('Edit Profile',style: Theme.of(context).textTheme.headline5)),
         body: StreamBuilder<UserPublicProfile>(
             stream: DatabaseService().currentUserPublicProfile,
             builder: (context, snapshot) {
@@ -70,8 +70,26 @@ class _SignupScreenState extends State {
                           builder: (context) => Form(
                               key: _formKey,
                               child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    user.urlToImage == null ? Container(
+                                      child: _image == null
+                                          ? Text('No image selected.')
+                                          : Image.file(_image),
+                                    ):
+                                    CircleAvatar(
+                                      radius: SizeConfig.screenWidth/2.25,
+                                      backgroundImage: _image == null
+                                          ? NetworkImage(user.urlToImage)
+                                          : FileImage(_image,),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        getImage();
+                                      },
+//                              tooltip: 'Pick Image',
+                                      child: const Icon(Icons.add_a_photo),
+                                    ),
                                     TextFormField(
                                         decoration:
                                         const InputDecoration(labelText: 'First Name'),
@@ -108,7 +126,7 @@ class _SignupScreenState extends State {
                                         textCapitalization: TextCapitalization.words,
                                         // ignore: missing_return
                                         validator: (value) {
-                                          // ignore: missing_return, missing_return
+                                          // ignore: missing_return, 
                                           if (value.isEmpty) {
                                             return 'Please enter a display name.';
                                           }
@@ -121,7 +139,7 @@ class _SignupScreenState extends State {
                                         const InputDecoration(labelText: 'Hometown'),
                                         // ignore: missing_return
                                         // validator: (value) {
-                                        //   // ignore: missing_return, missing_retur
+                                        //   // ignore: missing_return, 
                                         //
                                         // },
                                         onSaved: (val) =>
@@ -133,7 +151,7 @@ class _SignupScreenState extends State {
                                         iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                                       ),
                                       child: ExpandablePanel(
-                                        header: Text('Social Media', style: Theme.of(context).textTheme.headline2,),
+                                        header: Text('Social Media', style: Theme.of(context).textTheme.headline5,),
                                         // collapsed:
                                         expanded: Column(
                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -144,7 +162,7 @@ class _SignupScreenState extends State {
                                                 const InputDecoration(labelText: 'Instagram'),
                                                 // ignore: missing_return
                                                 validator: (value) {
-                                                  // ignore: missing_return, missing_return
+                                                  // ignore: missing_return, 
                                                   if (value.isNotEmpty && !value.contains('https://www.instagram.com/')) {
                                                     return 'i.e. https://www.instagram.com/username';
                                                   }
@@ -157,7 +175,7 @@ class _SignupScreenState extends State {
                                                 const InputDecoration(labelText: 'Facebook Link'),
                                                 // ignore: missing_return
                                                 validator: (value) {
-                                                  // ignore: missing_return, missing_return
+                                                  // ignore: missing_return, 
                                                   if (value.isNotEmpty && !value.contains('https://www.facebook.com/')) {
                                                     return 'i.e. https://www.facebook.com/username';
                                                   }
@@ -175,7 +193,7 @@ class _SignupScreenState extends State {
                                         iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                                       ),
                                       child: ExpandablePanel(
-                                        header: Text('Destination Wish List', style: Theme.of(context).textTheme.headline2,),
+                                        header: Text('Destination Wish List', style: Theme.of(context).textTheme.headline5,),
                                         // collapsed:
                                         expanded: Column(
                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -214,58 +232,27 @@ class _SignupScreenState extends State {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 50,),
-                                    user.urlToImage == null ? Container(
-                                      child: _image == null
-                                          ? Text('No image selected.')
-                                          : Image.file(_image),
-                                    ):
-                                    CircleAvatar(
-                                      radius: SizeConfig.screenWidth/2.25,
-                                      backgroundImage: _image == null
-                                          ? NetworkImage(user.urlToImage)
-                                          : FileImage(_image,),
-                                    ),
-                                    Container(
-                                      width: 30,
-                                      child: RaisedButton(
-                                        shape: CircleBorder(
-                                        ),
-                                        onPressed: () {
-                                          getImage();
-                                        },
-//                              tooltip: 'Pick Image',
-                                        child: const Icon(Icons.add_a_photo),
-                                      ),
-                                    ),
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 30.0, horizontal: 30.0),
-                                        width: 30,
-                                        child: RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20)
-                                            ),
-                                            onPressed: () async {
-                                              final form = _formKey.currentState;
-                                              form.save();
-                                              _user.topDestinations =[destination1,destination2,destination3];
-                                              print(_user.hometown);
-                                              if (form.validate()) {
-                                                try {
-                                                  String action = 'Editing Public Profile page from page';
-                                                  CloudFunction().logEvent(action);
-                                                  DatabaseService(uid: user.uid).editPublicProfileData(_user,_image);
-                                                } on Exception catch (e) {
-                                                  CloudFunction().logError('Editing Public Profile page from page: ${e.toString()}');
-                                                  Navigator.pop(context);
-                                                }
-                                              }
-                                              // await locator.reset().whenComplete(() => setupLocator());
+                                    const SizedBox(height: 15,),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          final form = _formKey.currentState;
+                                          form.save();
+                                          _user.topDestinations =[destination1,destination2,destination3];
+                                          print(_user.hometown);
+                                          if (form.validate()) {
+                                            try {
+                                              String action = 'Editing Public Profile page from page';
+                                              CloudFunction().logEvent(action);
+                                              DatabaseService(uid: user.uid).editPublicProfileData(_user,_image);
+                                            } on Exception catch (e) {
+                                              CloudFunction().logError('Editing Public Profile page from page: ${e.toString()}');
                                               Navigator.pop(context);
-                                            },
-                                            child: const Text('Save'))
-                                    ),
+                                            }
+                                          }
+                                          // await locator.reset().whenComplete(() => setupLocator());
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Save')),
                                     const SizedBox(height: 10,),
                                     Column(
                                       mainAxisSize: MainAxisSize.min,

@@ -72,7 +72,7 @@ class ProfileWidget extends StatelessWidget {
                             // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               IconThemeWidget(icon: Icons.person,),
-                              Flexible(child: Text(user.displayName,style: Theme.of(context).textTheme.subtitle2,overflow: TextOverflow.ellipsis,maxLines: 2,)),
+                              Flexible(child: Text(user.displayName,style: Theme.of(context).textTheme.subtitle1,overflow: TextOverflow.ellipsis,maxLines: 2,)),
                             ],
                           ),
                           Row(
@@ -84,7 +84,7 @@ class ProfileWidget extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    (user.hometown.isNotEmpty) ? Text(user.hometown, style: Theme.of(context).textTheme.subtitle2,
+                                    (user.hometown.isNotEmpty) ? Text(user.hometown, style: Theme.of(context).textTheme.subtitle1,
                                       maxLines: 2,overflow: TextOverflow.ellipsis,softWrap: true,) :
                                     Text('Hometown',style: Theme.of(context).textTheme.subtitle2),
                                   ],
@@ -105,7 +105,7 @@ class ProfileWidget extends StatelessWidget {
           Flexible(
             flex: 3,
             child: Card(
-                margin: EdgeInsets.fromLTRB(50.0,0,50.0,0),
+                margin: EdgeInsets.fromLTRB(SizeConfig.screenWidth/7.0,0,SizeConfig.screenWidth/7.0,0),
                 color: ReusableThemeColor().cardColor(context),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)
@@ -147,7 +147,7 @@ class ProfileWidget extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)
                 ),
-                margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
+                margin: EdgeInsets.fromLTRB(SizeConfig.screenWidth/7.0,0,SizeConfig.screenWidth/7.0,0),
                 color: ReusableThemeColor().cardColor(context),
                 child: Container(
                     padding: EdgeInsets.all(8.0),
@@ -383,12 +383,11 @@ class _FollowListState extends State<FollowList> {
   }
 
   Widget trailingButton(UserPublicProfile member) {
-    return (!currentUserProfile.following.contains(member.uid)) ? FlatButton(
+    return (!currentUserProfile.following.contains(member.uid)) ? ElevatedButton(
       child: Text('Follow Back', style: Theme
           .of(context)
           .textTheme
           .subtitle1),
-      shape: Border.all(width: 1, color: Colors.greenAccent),
       onPressed: () {
         // Send a follow request notification to user
         var message = 'Follow request from ${currentUserProfile.displayName}';
@@ -404,12 +403,11 @@ class _FollowListState extends State<FollowList> {
           }
         }
       },
-    ) : FlatButton(
+    ) : ElevatedButton(
       child: Text('Unfollow', style: Theme
           .of(context)
           .textTheme
           .subtitle1),
-      shape: Border.all(width: 1, color: Colors.white),
       onPressed: () {
         if (currentUserProfile.blockedList.contains(member.uid)) {} else {
           TravelCrewAlertDialogs().unFollowAlert(context,member.uid);
