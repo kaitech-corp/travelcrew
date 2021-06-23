@@ -32,6 +32,7 @@ class Explore extends StatelessWidget {
         key: scaffoldKey,
         drawer: MenuDrawer(),
         appBar: AppBar(
+          // backgroundColor: Colors.lightBlue,
           centerTitle: true,
           // leading: MenuDrawer(),
           title: Text('Explore',style: Theme.of(context).textTheme.headline5,),
