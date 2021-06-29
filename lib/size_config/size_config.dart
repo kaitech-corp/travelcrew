@@ -16,6 +16,7 @@ class SizeConfig {
   static bool tablet;
   static bool mobile;
 
+
   void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;
