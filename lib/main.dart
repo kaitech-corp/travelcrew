@@ -19,13 +19,11 @@ import 'package:travelcrew/services/navigation/router.dart';
 import 'models/custom_objects.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'size_config/size_config.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  // SplitwiseAPI();
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
