@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/admin/admin_bloc.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
@@ -39,7 +40,7 @@ class _AdminPageState extends State<AdminPage> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Admin',style: Theme.of(context).textTheme.headline5,),
+          title: Text(admin,style: Theme.of(context).textTheme.headline5,),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -47,7 +48,7 @@ class _AdminPageState extends State<AdminPage> {
             height: SizeConfig.screenHeight,
             child: Column(
               children: [
-                Text('Feedback',style: Theme.of(context).textTheme.headline5,),
+                Text(feedback,style: Theme.of(context).textTheme.headline5,),
                 Flexible(
                   flex: 2,
                   child: Container(
@@ -73,7 +74,7 @@ class _AdminPageState extends State<AdminPage> {
                                 child: ListTile(
                                   key: Key(item.fieldID),
                                   title: Text('${item.message}',style: Theme.of(context).textTheme.subtitle1,),
-                                  subtitle: Text('Submitted: ${item.timestamp.toDate()}',style: Theme.of(context).textTheme.subtitle2,),
+                                  subtitle: Text('$submitted: ${item.timestamp.toDate()}',style: Theme.of(context).textTheme.subtitle2,),
                                 ),
                               );
                             },
@@ -87,7 +88,7 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
                 ),
-                Text('Custom Notification',style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center,),
+                Text(customNotification,style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center,),
                 Flexible(flex: 2, child: _buildTextField()),
                 Center(
                   child: ElevatedButton(
@@ -97,7 +98,7 @@ class _AdminPageState extends State<AdminPage> {
                         CloudFunction().addCustomNotification(_message);
                       }
                     },
-                    child: const Text('Push', style: TextStyle(fontSize: 20)),
+                    child: const Text(push, style: TextStyle(fontSize: 20)),
                   ),
                 ),
                 const Padding(padding: EdgeInsets.only(top: 15)),
@@ -111,11 +112,11 @@ class _AdminPageState extends State<AdminPage> {
 
 
   Widget _buildTextField() {
-    final maxLines = 5;
+
 
     return Container(
       margin: EdgeInsets.all(12),
-      height: maxLines * 24.0,
+      height: textBoxHeight,
       child: TextField(
         autocorrect: true,
         enableInteractiveSelection: true,
@@ -123,7 +124,7 @@ class _AdminPageState extends State<AdminPage> {
         maxLines: maxLines,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          hintText: "Enter a message",
+          hintText: enterMessage,
           filled: true,
         ),
         onChanged: (String value) {
