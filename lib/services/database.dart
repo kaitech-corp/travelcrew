@@ -65,7 +65,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version2_1_1').get();
+      var ref = await versionCollection.doc('version3_0_0').get();
       Map<String, dynamic> data = ref.data();
 
 
