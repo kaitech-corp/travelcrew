@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget {
   }) : super(key: key);
   final heroTag;
   final  bool bottomNav;
-  final double hgt = SizeConfig.screenHeight*.06;
+
   @override
   Widget build(BuildContext context) {
     return ClipPath(

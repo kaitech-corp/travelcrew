@@ -42,7 +42,7 @@ class _SettingsState extends State<Settings> {
                   setState(() {
                     themeID = value;
                     ThemeProvider.controllerOf(context).setTheme(value);
-                    navigationService.pushNamedAndRemoveUntil(WrapperRoute);
+                    navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
                   });
                 },
               ),
@@ -54,7 +54,7 @@ class _SettingsState extends State<Settings> {
                   setState(() {
                     themeID = value;
                     ThemeProvider.controllerOf(context).setTheme(value);
-                    navigationService.pushNamedAndRemoveUntil(WrapperRoute);
+                    navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
                   });
                 },
               ),

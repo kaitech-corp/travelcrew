@@ -20,6 +20,7 @@ const String FeedbackPageRoute = "FeedbackPage";
 const String FollowingListRoute = 'FollowingList';
 const String GooglePlacesRoute = "GooglePlaces";
 const String HelpPageRoute = "HelpPage";
+const String LaunchIconBadgerRoute = "LaunchIconBadger";
 const String LodgingRoute = "Lodging";
 const String MainTabPageRoute = "MainTabPage";
 const String MembersLayoutRoute = "MembersLayout";

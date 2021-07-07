@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:travelcrew/repositories/user_repository.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/auth/apple_auth.dart';
 import 'package:travelcrew/services/auth/auth.dart';
@@ -13,6 +14,10 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 class LoginPage extends StatefulWidget {
 
+  final UserRepository _userRepository;
+  const LoginPage({Key key, UserRepository userRepository})
+      : _userRepository = userRepository,
+        super(key: key);
   @override
   _LoginPageState createState() => _LoginPageState();
 

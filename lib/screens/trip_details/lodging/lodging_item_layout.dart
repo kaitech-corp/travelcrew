@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/lodging_model.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/widgets/link_previewer.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 

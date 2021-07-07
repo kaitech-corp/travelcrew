@@ -124,69 +124,69 @@ class Need {
   Need({this.displayName, this.documentID, this.item});
 }
 
-class Trip {
-  final List<String> accessUsers;
-  final String comment;
-  final Timestamp dateCreatedTimeStamp;
-  final String displayName;
-  final String documentId;
-  final String endDate;
-  final Timestamp endDateTimeStamp;
-  final List<String> favorite;
-  final bool ispublic;
-  final GeoPoint tripGeoPoint;
-  final String tripName;
-  final String location;
-  final String ownerID;
-  final String startDate;
-  final Timestamp startDateTimeStamp;
-  final String travelType;
-  final String urlToImage;
-
-  Trip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
-
-  Trip.fromData(Map<String, dynamic> data)
-      : accessUsers = List<String>.from(data['accessUsers']),
-        comment = data['comment'],
-        dateCreatedTimeStamp = data['dateCreatedTimeStamp'],
-        displayName = data['displayName'],
-        documentId = data['documentId'],
-        endDate = data['endDate'],
-        endDateTimeStamp = data['endDateTimeStamp'],
-        favorite = List<String>.from(data['favorite']),
-        ispublic = data['ispublic'],
-        tripGeoPoint = data['tripGeoPoint'],
-        tripName = data['tripName'],
-        location = data['location'],
-        ownerID = data['ownerID'],
-        startDate = data['startDate'],
-        startDateTimeStamp = data['startDateTimeStamp'],
-        travelType = data['travelType'],
-        urlToImage = data['urlToImage'];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'accessUsers': accessUsers,
-      'comment': comment,
-      'dateCreatedTimeStamp': dateCreatedTimeStamp,
-      'displayName': displayName,
-      'documentId': documentId,
-      'endDate': endDate,
-      'endDateTimeStamp': endDateTimeStamp,
-      'favorite': favorite,
-      'ispublic': ispublic,
-      'tripGeoPoint': tripGeoPoint,
-      'tripName': tripName,
-      'location': location,
-      'ownerID': ownerID,
-      'startDate': startDate,
-      'startDateTimeStamp': startDateTimeStamp,
-      'travelType': travelType,
-      'urlToImage': urlToImage,
-    };
-  }
-
-}
+// class Trip {
+//   final List<String> accessUsers;
+//   final String comment;
+//   final Timestamp dateCreatedTimeStamp;
+//   final String displayName;
+//   final String documentId;
+//   final String endDate;
+//   final Timestamp endDateTimeStamp;
+//   final List<String> favorite;
+//   final bool ispublic;
+//   final GeoPoint tripGeoPoint;
+//   final String tripName;
+//   final String location;
+//   final String ownerID;
+//   final String startDate;
+//   final Timestamp startDateTimeStamp;
+//   final String travelType;
+//   final String urlToImage;
+//
+//   Trip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
+//
+//   Trip.fromData(Map<String, dynamic> data)
+//       : accessUsers = List<String>.from(data['accessUsers']),
+//         comment = data['comment'],
+//         dateCreatedTimeStamp = data['dateCreatedTimeStamp'],
+//         displayName = data['displayName'],
+//         documentId = data['documentId'],
+//         endDate = data['endDate'],
+//         endDateTimeStamp = data['endDateTimeStamp'],
+//         favorite = List<String>.from(data['favorite']),
+//         ispublic = data['ispublic'],
+//         tripGeoPoint = data['tripGeoPoint'],
+//         tripName = data['tripName'],
+//         location = data['location'],
+//         ownerID = data['ownerID'],
+//         startDate = data['startDate'],
+//         startDateTimeStamp = data['startDateTimeStamp'],
+//         travelType = data['travelType'],
+//         urlToImage = data['urlToImage'];
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'accessUsers': accessUsers,
+//       'comment': comment,
+//       'dateCreatedTimeStamp': dateCreatedTimeStamp,
+//       'displayName': displayName,
+//       'documentId': documentId,
+//       'endDate': endDate,
+//       'endDateTimeStamp': endDateTimeStamp,
+//       'favorite': favorite,
+//       'ispublic': ispublic,
+//       'tripGeoPoint': tripGeoPoint,
+//       'tripName': tripName,
+//       'location': location,
+//       'ownerID': ownerID,
+//       'startDate': startDate,
+//       'startDateTimeStamp': startDateTimeStamp,
+//       'travelType': travelType,
+//       'urlToImage': urlToImage,
+//     };
+//   }
+//
+// }
 
 class TransportationData {
   final String mode;
@@ -255,148 +255,148 @@ class TransportationData {
 
 }
 
-class LodgingData {
-  final String comment;
-  final String displayName;
-  final String endTime;
-  final String fieldID;
-  final String link;
-  final String lodgingType;
-  final String startTime;
-  final String uid;
-  final String urlToImage;
-  final int vote;
-  final List<String> voters;
+// class LodgingData {
+//   final String comment;
+//   final String displayName;
+//   final String endTime;
+//   final String fieldID;
+//   final String link;
+//   final String lodgingType;
+//   final String startTime;
+//   final String uid;
+//   final String urlToImage;
+//   final int vote;
+//   final List<String> voters;
+//
+//   LodgingData({this.endTime, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.lodgingType, this.uid, this.urlToImage, this.vote, this.voters});
+//
+//   LodgingData.fromData(Map<String, dynamic> data)
+//       : comment = data['comment'],
+//         displayName = data['displayName'],
+//         endTime = data['endTime'],
+//         fieldID = data['fieldID'],
+//         link = data['link'],
+//         lodgingType = data['lodgingType'],
+//         startTime = data['startTime'],
+//         uid = data['uid'],
+//         urlToImage = data['urlToImage'],
+//         vote = data['vote'],
+//         voters = List<String>.from(data['voters']);
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'comment': comment,
+//       'displayName': displayName,
+//       'endTime': endTime,
+//       'fieldID': fieldID,
+//       'link': link,
+//       'lodgingType': lodgingType,
+//       'startTime': startTime,
+//       'uid': uid,
+//       'urlToImage': urlToImage,
+//       'vote': vote,
+//       'voters': voters,
+//     };
+//   }
+//
+// }
 
-  LodgingData({this.endTime, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.lodgingType, this.uid, this.urlToImage, this.vote, this.voters});
-
-  LodgingData.fromData(Map<String, dynamic> data)
-      : comment = data['comment'],
-        displayName = data['displayName'],
-        endTime = data['endTime'],
-        fieldID = data['fieldID'],
-        link = data['link'],
-        lodgingType = data['lodgingType'],
-        startTime = data['startTime'],
-        uid = data['uid'],
-        urlToImage = data['urlToImage'],
-        vote = data['vote'],
-        voters = List<String>.from(data['voters']);
-
-  Map<String, dynamic> toJson() {
-    return {
-      'comment': comment,
-      'displayName': displayName,
-      'endTime': endTime,
-      'fieldID': fieldID,
-      'link': link,
-      'lodgingType': lodgingType,
-      'startTime': startTime,
-      'uid': uid,
-      'urlToImage': urlToImage,
-      'vote': vote,
-      'voters': voters,
-    };
-  }
-
-}
-
-class ActivityData {
-  final String comment;
-  final String displayName;
-  final String endTime;
-  final String fieldID;
-  final String link;
-  final String activityType;
-  final String startTime;
-  final String uid;
-  final String urlToImage;
-  final int vote;
-  final List<String> voters;
-
-  ActivityData({this.endTime, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.activityType, this.uid, this.urlToImage, this.vote, this.voters});
-
-  ActivityData.fromData(Map<String, dynamic> data)
-      : comment = data['comment'],
-        displayName = data['displayName'],
-        endTime = data['endTime'],
-        fieldID = data['fieldID'],
-        link = data['link'],
-        activityType = data['activityType'],
-        startTime = data['startTime'],
-        uid = data['uid'],
-        urlToImage = data['urlToImage'],
-        vote = data['vote'],
-        voters = List<String>.from(data['voters']);
-
-  Map<String, dynamic> toJson() {
-    return {
-      'comment': comment,
-      'displayName': displayName,
-      'endTime': endTime,
-      'fieldID': fieldID,
-      'link': link,
-      'activityType': activityType,
-      'startTime': startTime,
-      'uid': uid,
-      'urlToImage': urlToImage,
-      'vote': vote,
-      'voters': voters,
-    };
-  }
-
-}
+// class ActivityData {
+//   final String comment;
+//   final String displayName;
+//   final String endTime;
+//   final String fieldID;
+//   final String link;
+//   final String activityType;
+//   final String startTime;
+//   final String uid;
+//   final String urlToImage;
+//   final int vote;
+//   final List<String> voters;
+//
+//   ActivityData({this.endTime, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.activityType, this.uid, this.urlToImage, this.vote, this.voters});
+//
+//   ActivityData.fromData(Map<String, dynamic> data)
+//       : comment = data['comment'],
+//         displayName = data['displayName'],
+//         endTime = data['endTime'],
+//         fieldID = data['fieldID'],
+//         link = data['link'],
+//         activityType = data['activityType'],
+//         startTime = data['startTime'],
+//         uid = data['uid'],
+//         urlToImage = data['urlToImage'],
+//         vote = data['vote'],
+//         voters = List<String>.from(data['voters']);
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'comment': comment,
+//       'displayName': displayName,
+//       'endTime': endTime,
+//       'fieldID': fieldID,
+//       'link': link,
+//       'activityType': activityType,
+//       'startTime': startTime,
+//       'uid': uid,
+//       'urlToImage': urlToImage,
+//       'vote': vote,
+//       'voters': voters,
+//     };
+//   }
+//
+// }
 
 
 
-class NotificationData {
-  final String documentID;
-  final String displayName;
-  final String ownerID;
-  final String ownerDisplayName;
-  final String fieldID;
-  final String firstname;
-  final bool ispublic;
-  final String lastname;
-  final String message;
-  final Timestamp timestamp;
-  final String type;
-  final String uid;
-
-  NotificationData({this.ownerID, this.ownerDisplayName, this.displayName, this.firstname, this.ispublic, this.lastname,this.fieldID, this.message, this.timestamp, this.documentID, this.type, this.uid});
-
-  NotificationData.fromData(Map<String, dynamic> data)
-      : documentID = data['documentID'],
-        displayName = data['displayName'],
-        ownerID = data['ownerID'],
-        ownerDisplayName = data['ownerDisplayName'],
-        fieldID = data['fieldID'],
-        firstname = data['firstname'],
-        ispublic = data['ispublic'],
-        lastname = data['lastname'],
-        message = data['message'],
-        timestamp = data['timestamp'],
-        type = data['type'],
-        uid = data['uid'];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'documentID': documentID,
-      'displayName': displayName,
-      'ownerID': ownerID,
-      'ownerDisplayName': ownerDisplayName,
-      'fieldID': fieldID,
-      'firstname': firstname,
-      'ispublic': ispublic,
-      'lastname': lastname,
-      'message': message,
-      'timestamp': timestamp,
-      'type': type,
-      'uid': uid,
-    };
-  }
-
-}
+// class NotificationData {
+//   final String documentID;
+//   final String displayName;
+//   final String ownerID;
+//   final String ownerDisplayName;
+//   final String fieldID;
+//   final String firstname;
+//   final bool ispublic;
+//   final String lastname;
+//   final String message;
+//   final Timestamp timestamp;
+//   final String type;
+//   final String uid;
+//
+//   NotificationData({this.ownerID, this.ownerDisplayName, this.displayName, this.firstname, this.ispublic, this.lastname,this.fieldID, this.message, this.timestamp, this.documentID, this.type, this.uid});
+//
+//   NotificationData.fromData(Map<String, dynamic> data)
+//       : documentID = data['documentID'],
+//         displayName = data['displayName'],
+//         ownerID = data['ownerID'],
+//         ownerDisplayName = data['ownerDisplayName'],
+//         fieldID = data['fieldID'],
+//         firstname = data['firstname'],
+//         ispublic = data['ispublic'],
+//         lastname = data['lastname'],
+//         message = data['message'],
+//         timestamp = data['timestamp'],
+//         type = data['type'],
+//         uid = data['uid'];
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'documentID': documentID,
+//       'displayName': displayName,
+//       'ownerID': ownerID,
+//       'ownerDisplayName': ownerDisplayName,
+//       'fieldID': fieldID,
+//       'firstname': firstname,
+//       'ispublic': ispublic,
+//       'lastname': lastname,
+//       'message': message,
+//       'timestamp': timestamp,
+//       'type': type,
+//       'uid': uid,
+//     };
+//   }
+//
+// }
 
 class ChatData {
   final String displayName;

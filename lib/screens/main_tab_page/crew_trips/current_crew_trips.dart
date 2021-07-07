@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_grid.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/tappable_crew_trip_tile.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
@@ -22,7 +23,7 @@ class _CurrentCrewTripsState extends State<CurrentCrewTrips>{
   @override
   void initState() {
     super.initState();
-    new Future.delayed(const Duration(seconds: 2));
+    // new Future.delayed(const Duration(seconds: 2));
   }
 
   @override
