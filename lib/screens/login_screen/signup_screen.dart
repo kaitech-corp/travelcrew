@@ -58,7 +58,7 @@ class _SignupScreenState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Sign Up!',style: Theme.of(context).textTheme.headline5,)),
+        appBar: AppBar(title: Text('Register',style: Theme.of(context).textTheme.headline5,)),
         body: SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -193,7 +193,7 @@ class _SignupScreenState extends State {
                                         if (result == null){
                                           setState(() => error = 'Sign in credentials are not valid!');
                                         }
-                                        navigationService.navigateTo(WrapperRoute);
+                                        navigationService.navigateTo(LaunchIconBadgerRoute);
                                       }
                                     },
                                     child: const Text('Sign Up!',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 20)))),

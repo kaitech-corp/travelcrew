@@ -1,36 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/blocs/all_trips_bloc/all_trips_bloc.dart';
+import 'package:travelcrew/blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trips_bloc.dart';
+import 'package:travelcrew/blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_bloc.dart';
+import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
+import 'package:travelcrew/blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
+import 'package:travelcrew/blocs/notifications_bloc/notification_bloc.dart';
+import 'package:travelcrew/blocs/notifications_bloc/notification_event.dart';
+import 'package:travelcrew/blocs/notifications_bloc/notification_state.dart';
+import 'package:travelcrew/repositories/trip_repository.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
-import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
 
 
-class ProfileStream extends StatelessWidget{
-  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+class ProfileStream extends StatefulWidget {
+  final String uid;
+
+  const ProfileStream({Key key, this.uid,}) : super(key: key);
 
   @override
+  _ProfileStreamState createState() => _ProfileStreamState();
+}
 
+class _ProfileStreamState extends State<ProfileStream> {
+  NotificationBloc bloc;
+
+  @override
+  void initState() {
+    bloc = BlocProvider.of<NotificationBloc>(context);
+    bloc.add(LoadingNotificationData());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    // _firebaseMessaging.requestPermission();
-
-
-    final user = Provider.of<User>(context);
-
-    return StreamProvider<UserPublicProfile>.value(
-      value: DatabaseService(uid: user.uid).currentUserPublicProfile,
-      child: build2(context),
-    );
-  }
-//Pulls in notifications to show badge count.
-  Widget build2(BuildContext context) {
-    final user = Provider.of<User>(context);
-
-    return StreamProvider<List<NotificationData>>.value(
-      value: DatabaseService(uid: user.uid).notificationList,
-      child: Container (
-        child: MainTabPage(),
-      ),
-    );
+    return Container(
+        child: MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => CurrentCrewTripBloc(tripRepository: TripRepository()..refresh() )),
+              BlocProvider(create: (context) => PastCrewTripBloc(tripRepository: TripRepository()..refreshPastTrips() )),
+              BlocProvider(create: (context) => PrivateTripBloc(tripRepository: TripRepository()..refreshPrivateTrips() )),
+              BlocProvider(create: (context) => AllTripBloc(tripRepository: TripRepository()..refreshAllTrips() )),
+              BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: TripRepository()..refreshFavoriteTrips() )),
+            ],
+            child: BlocBuilder<NotificationBloc, NotificationState>(
+                builder: (context, state){
+                  if(state is NotificationLoadingState){
+                    return Loading();
+                  } else if (state is NotificationHasDataState){
+                    FlutterAppBadger.updateBadgeCount(state.data.length);
+                    return MainTabPage(notifications: state.data,);
+                  } else {
+                    return MainTabPage(notifications: null,);
+                  }}
+            )));
   }
 }
+

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/lodging_model.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/services/auth/auth.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -146,7 +149,7 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes',),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, uid,tripDetails.ispublic);
-                navigationService.pushNamedAndRemoveUntil(WrapperRoute);
+                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
             TextButton(
@@ -174,7 +177,7 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
-                navigationService.pushNamedAndRemoveUntil(WrapperRoute);
+                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
             TextButton(
@@ -208,7 +211,7 @@ class TravelCrewAlertDialogs {
               child: const Text('Yes'),
               onPressed: () {
                 DatabaseService().convertTrip(tripDetails);
-                navigationService.pushNamedAndRemoveUntil(WrapperRoute);
+                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
             TextButton(

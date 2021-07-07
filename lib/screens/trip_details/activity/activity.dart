@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity_list.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';

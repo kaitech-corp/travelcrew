@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/admin/admin_page.dart';
+import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/lodging_model.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
-import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/login_screen/signup_screen.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
 import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
 import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
-import 'package:travelcrew/screens/menu_screens/users/dm_chat/chats_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/help.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/menu_screens/settings.dart';
+import 'package:travelcrew/screens/menu_screens/users/dm_chat/chats_page.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/screens/menu_screens/users/user_profile_page.dart';
 import 'package:travelcrew/screens/menu_screens/users/users.dart';
@@ -36,6 +38,7 @@ import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
 import 'package:travelcrew/screens/trip_details/transportation/edit_transportation.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/launch_icon_badger.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -153,6 +156,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: HelpPage(),
       );
+    case LaunchIconBadgerRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: LaunchIconBadger(),
+      );
     case LodgingRoute:
       return _getPageRoute(
         routeName: settings.name,
@@ -211,17 +219,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: ProfilePage(),
-      );
-    // case WebViewScreenRoute:
-    //   WebViewScreen argument = args;
-    //   return _getPageRoute(
-    //     routeName: settings.name,
-    //     viewToShow: WebViewScreen(url: argument.url, key: argument.key,),
-    //   );
-    case WrapperRoute:
-      return _getPageRoute(
-        routeName: settings.name,
-        viewToShow: Wrapper(),
       );
     default:
       return MaterialPageRoute(

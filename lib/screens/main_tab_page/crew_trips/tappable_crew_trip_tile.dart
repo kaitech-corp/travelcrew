@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
@@ -136,8 +137,7 @@ class TappableCrewTripTile extends StatelessWidget {
           if(chats.hasError){
             CloudFunction().logError('Error streaming chats for notifications on Crew cards: ${chats.error.toString()}');
           }
-          if(chats.hasData){
-            if(chats.data.length > 0) {
+          if(chats.hasData && chats.data.length > 0){
               return Tooltip(
                 message: 'New Messages',
                 child: BadgeIcon(
@@ -145,9 +145,6 @@ class TappableCrewTripTile extends StatelessWidget {
                   badgeCount: chats.data.length,
                 ),
               );
-            } else {
-              return Container();
-            }
           } else {
             return Container();
           }
@@ -163,8 +160,7 @@ class TappableCrewTripTile extends StatelessWidget {
         if(items.hasError){
           CloudFunction().logError('Error streaming need list for Crew trip cards: ${items.error.toString()}');
         }
-        if(items.hasData){
-          if(items.data.length > 0) {
+        if(items.hasData && items.data.length > 0){
             return Tooltip(
               message: 'Need List',
               child: BadgeIcon(
@@ -172,9 +168,6 @@ class TappableCrewTripTile extends StatelessWidget {
                 badgeCount: items.data.length,
               ),
             );
-          } else {
-            return Container();
-          }
         } else {
           return Container();
         }

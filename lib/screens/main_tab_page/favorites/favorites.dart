@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorite_list.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:provider/provider.dart';

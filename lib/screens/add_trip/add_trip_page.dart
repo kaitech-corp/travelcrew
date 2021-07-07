@@ -19,10 +19,7 @@ class AddTripPage extends StatefulWidget {
   //When using google places this object will pass on the location.
   final String addedLocation;
 
-  // var currentUserProfile;
-
   AddTripPage({Key key, this.addedLocation}) : super(key: key);
-
 
 
   @override
@@ -30,11 +27,11 @@ class AddTripPage extends StatefulWidget {
 }
 
 final AnalyticsService _analyticsService = AnalyticsService();
-
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 final myController = TextEditingController();
 final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData);
+
 class _AddTripPageState extends State<AddTripPage> {
   @override
   void initState() {
@@ -47,15 +44,13 @@ class _AddTripPageState extends State<AddTripPage> {
   }
 
 
-
   final _formKey = GlobalKey<FormState>();
-  File _image;
   final ImagePicker _picker = ImagePicker();
-  bool gotDataBool = false;
 
+  File _image;
+  bool gotDataBool = false;
   DateTime _fromDateDepart = DateTime.now();
   DateTime _fromDateReturn = DateTime.now();
-
 
   String get _labelTextDepart {
     startDate = DateFormat.yMMMd().format(_fromDateDepart);
@@ -96,7 +91,6 @@ class _AddTripPageState extends State<AddTripPage> {
       });
     }
   }
-
 
   String comment = '';
   String displayName = '';

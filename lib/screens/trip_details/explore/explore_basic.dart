@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic_layout.dart';
 import 'package:travelcrew/size_config/size_config.dart';

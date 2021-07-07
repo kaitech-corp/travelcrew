@@ -61,16 +61,6 @@ class AuthService {
 
   // Sign out
   void logOut() async {
-    // try {
-    //   AppleAuthService().appleSignOut();
-    // } catch(e){
-    //   CloudFunction().logError('Error signing out: ${e.toString()}');
-    // }
-    // try {
-    //   GoogleAuthService().signOutGoogle();
-    // } catch(e){
-    //   CloudFunction().logError('Error signing out: ${e.toString()}');
-    // }
     try {
       _auth.signOut();
     } catch(e){
