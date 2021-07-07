@@ -1,29 +1,33 @@
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/notification_model.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/app_bar/app_bar.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/past_crew_trips.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
-import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
-import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
-import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
+import 'package:travelcrew/ui/all_trips/all_trips_page.dart';
+import 'package:travelcrew/ui/favorites/favorites_page.dart';
+import 'package:travelcrew/ui/my_trips_tab/current_trips/current_trips_page.dart';
+import 'package:travelcrew/ui/my_trips_tab/past_trips/past_trip_page.dart';
+import 'package:travelcrew/ui/my_trips_tab/private_trips/private_trip_page.dart';
+import 'package:travelcrew/ui/notifications/notification_page.dart';
+
 import '../../size_config/size_config.dart';
-import 'crew_trips/private_trips.dart';
+
 
 
 class MainTabPage extends StatefulWidget {
-  MainTabPage({Key key}) : super(key: key);
+
+  final List<NotificationData> notifications;
+
+  MainTabPage({Key key, this.notifications}) :  super(key: key);
 
 
   @override
@@ -32,27 +36,6 @@ class MainTabPage extends StatefulWidget {
 }
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
-  int _selectedIndex = 0;
-  final List<Widget> _widgetOptions = <Widget>[
-    TabBarView(
-      children: [
-        CurrentCrewTrips(),
-        PrivateTripList(),
-        PastCrewTrips(),
-      ],
-    ),
-    AllTripsPage(),
-    AddTripPage(),
-    // SuggestionsPage(),
-    Favorites(),
-    Notifications(),];
-
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   void initState() {
@@ -67,25 +50,37 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               timeInSecForIosWeb: 2,
             );
     });
-    // if(message['aps']['category'] == 'chat')
-    // {
-    //   Fluttertoast.showToast(
-    //     msg: message['aps']['alert']['title'],
-    //     toastLength: Toast.LENGTH_LONG,
-    //     gravity: ToastGravity.TOP,
-    //     timeInSecForIosWeb: 2,
-    //   );
-    // };
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       // print("onMessage: $event");
       navigationService.navigateTo(DMChatListPageRoute);
     });
-
   }
+
+  int _selectedIndex = 0;
+  final List<Widget> _widgetOptions = <Widget>[
+    TabBarView(
+      children: [
+        CurrentTrips(),
+        PrivateTrips(),
+        PastTrips(),
+      ],
+    ),
+    AllTrips(),
+    AddTripPage(),
+    // SuggestionsPage(),
+    FavoritesPage(),
+    NotificationPage(),];
+
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  
 
   @override
   Widget build(BuildContext context) {
-    final notifications = Provider.of<List<NotificationData>>(context);
 
     return GestureDetector(
       onTap: () {
@@ -94,7 +89,6 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
-          // appBar: TravelCrewAppBar(bottomTabBar: true,),
           drawer: MenuDrawer(),
           body: (_selectedIndex == 0) ? Stack(
             clipBehavior: Clip.none,
@@ -142,7 +136,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               IconThemeWidget(icon:Icons.favorite_border),
               BadgeIcon(
                 icon: IconThemeWidget(icon:Icons.notifications_active),
-                badgeCount: notifications != null ? notifications.length : 0,
+                badgeCount: widget.notifications != null ? widget.notifications.length : 0,
               ),
             ],
             onTap: _onItemTapped,

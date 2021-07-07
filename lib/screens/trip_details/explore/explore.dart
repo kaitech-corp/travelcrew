@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/blocs/activities_bloc/activity_bloc.dart';
+import 'package:travelcrew/blocs/lodging_bloc/lodging_bloc.dart';
+import 'package:travelcrew/models/trip_model.dart';
+import 'package:travelcrew/repositories/activity_repository.dart';
+import 'package:travelcrew/repositories/lodging_repository.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat.dart';
@@ -10,6 +15,7 @@ import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
+import 'package:travelcrew/ui/trip_details/activity/activity/activity_page.dart';
 import 'explore_owner_layout.dart';
 
 
@@ -24,17 +30,13 @@ class Explore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // final chatNotifications = Provider.of<List<ChatData>>(context);
-
     return DefaultTabController(
       length: 5,
       child: Scaffold(
         key: scaffoldKey,
         drawer: MenuDrawer(),
         appBar: AppBar(
-          // backgroundColor: Colors.lightBlue,
           centerTitle: true,
-          // leading: MenuDrawer(),
           title: Text('Explore',style: Theme.of(context).textTheme.headline5,),
           actions: <Widget>[
             IconButton(
@@ -62,14 +64,20 @@ class Explore extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            checkOwner(userService.currentUserID),
-            Transportation(trip: trip,),
-            Lodging(trip: trip,),
-            Activity(trip: trip,),
-            Chat(trip: trip,),
+        body: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => ActivityBloc(activityRepository: ActivityRepository()..refresh(trip.documentId))),
+            BlocProvider(create: (context) => LodgingBloc(lodgingRepository: LodgingRepository()..refresh(trip.documentId))),
           ],
+          child: TabBarView(
+            children: [
+              checkOwner(userService.currentUserID),
+              Transportation(trip: trip,),
+              Lodging(trip: trip,),
+              ActivityPage(trip: trip,),
+              Chat(trip: trip,),
+            ],
+          ),
         )
       ),
     );

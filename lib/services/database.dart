@@ -1,14 +1,20 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:travelcrew/models/activity_model.dart';
+import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/lodging_model.dart';
+import 'package:travelcrew/models/notification_model.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/navigation_service.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
+
 import 'analytics_service.dart';
 
 var userService = locator<UserService>();

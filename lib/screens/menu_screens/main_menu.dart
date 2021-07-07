@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
+import 'package:travelcrew/repositories/user_repository.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/auth/auth.dart';
@@ -94,11 +98,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
               ListTile(
                 leading: IconThemeWidget(icon:Icons.exit_to_app),
-                title: Text('Signout',style: Theme.of(context).textTheme.subtitle1),
+                title: Text('Logout',style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  navigationService.pushNamedAndRemoveUntil(WrapperRoute);
                   // locator.reset();
-                  _auth.logOut();
+                  BlocProvider.of<AuthenticationBloc>(context)
+                      .add(AuthenticationLoggedOut());
                 },
               ),
               Align(

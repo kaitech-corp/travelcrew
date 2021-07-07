@@ -4,12 +4,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/authenticate/wrapper.dart';
 import 'package:travelcrew/screens/trip_details/activity/web_view_screen.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/launch_icon_badger.dart';
 
 class CompleteProfile extends StatefulWidget {
 
@@ -132,7 +132,7 @@ class _CompleteProfileState extends State {
                                         DatabaseService().updateUserPublicProfileData(_user.displayName, _user.firstName, _user.lastName, email, 0, 0, user.uid, _image);
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => Wrapper()),
+                                          MaterialPageRoute(builder: (context) => LaunchIconBadger()),
                                         );
                                       }
                                     },

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -349,7 +350,7 @@ class _EditTripDataState extends State<EditTripData> {
   }
   _showDialog(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Submitting form')));
-    navigationService.pushNamedAndRemoveUntil(WrapperRoute);
+    navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
   }
 }
 
