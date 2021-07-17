@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
@@ -9,7 +8,7 @@ import 'package:travelcrew/screens/authenticate/profile_stream.dart';
 import 'package:travelcrew/services/database.dart';
 
 class LaunchIconBadger extends StatefulWidget{
-  // final auth.User user;
+
 
   const LaunchIconBadger({Key key,}) : super(key: key);
   @override
@@ -56,18 +55,6 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
     );
   }
 
-  //     return StreamBuilder(
-  //         builder: (context, notifications){
-  //           if(notifications.hasData && notifications.data.length != null && notifications.data.length > 0){
-  //               FlutterAppBadger.updateBadgeCount(notifications.data.length);
-  //               return ProfileStream(uid: userService.currentUserID);
-  //             } else{
-  //             FlutterAppBadger.updateBadgeCount(0);
-  //             return ProfileStream(uid: userService.currentUserID,);
-  //           }
-  //         },
-  //         stream: DatabaseService().notificationList,);
-  // }
   }
 
 

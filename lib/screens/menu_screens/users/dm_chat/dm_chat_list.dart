@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
+import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_message_layout.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
 
 
 

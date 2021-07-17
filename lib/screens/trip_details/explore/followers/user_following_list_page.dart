@@ -27,9 +27,8 @@ class _FollowingListState extends State<FollowingList> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      // key: ObjectKey(currentUserProfile.followers),
       appBar: AppBar(
-        title: Text('Followers',style: Theme.of(context).textTheme.headline3,),
+        title: Text('Followers',style: Theme.of(context).textTheme.headline5,),
       ),
       body: StreamBuilder(
         stream: DatabaseService().retrieveFollowingList(),
@@ -107,7 +106,8 @@ class _FollowingListState extends State<FollowingList> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25),
-                  child: user.urlToImage != null ? Image.network(user.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): null,
+                  child: user.urlToImage != null ? Image.network(user.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): Image.asset(
+                    profileImagePlaceholder, height: 75,width: 75,fit: BoxFit.fill,),
                 ),
               ),
               title: Text('${user.firstName} ${user.lastName}'),
@@ -125,7 +125,6 @@ class _FollowingListState extends State<FollowingList> {
                       type: type,
                       ispublic: widget.tripDetails.ispublic,
                       uidToUse: user.uid);
-                  // DatabaseService().addNewNotificationData(ownerID: user.uid, message: message, documentID:tripDetails.documentId, type:type, ispublic: tripDetails.ispublic);
                   _showDialog(context);
                 },
               ) : const Icon(Icons.check_box),

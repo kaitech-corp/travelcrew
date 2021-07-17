@@ -1,8 +1,12 @@
-
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:travelcrew/blocs/public_profile_bloc/public_profile_bloc.dart';
+import 'package:travelcrew/blocs/public_profile_bloc/public_profile_event.dart';
+import 'package:travelcrew/blocs/public_profile_bloc/public_profile_state.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/notification_model.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/app_bar/app_bar.dart';
@@ -12,16 +16,13 @@ import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'package:travelcrew/ui/all_trips/all_trips_page.dart';
-import 'package:travelcrew/ui/favorites/favorites_page.dart';
-import 'package:travelcrew/ui/my_trips_tab/current_trips/current_trips_page.dart';
-import 'package:travelcrew/ui/my_trips_tab/past_trips/past_trip_page.dart';
-import 'package:travelcrew/ui/my_trips_tab/private_trips/private_trip_page.dart';
-import 'package:travelcrew/ui/notifications/notification_page.dart';
-
 import '../../size_config/size_config.dart';
-
-
+import 'all_trips/all_trips_page.dart';
+import 'favorites/favorites_page.dart';
+import 'my_trips_tab/current_trips/current_trips_page.dart';
+import 'my_trips_tab/past_trips/past_trip_page.dart';
+import 'my_trips_tab/private_trips/private_trip_page.dart';
+import 'notifications/notification_page.dart';
 
 class MainTabPage extends StatefulWidget {
 
@@ -36,13 +37,13 @@ class MainTabPage extends StatefulWidget {
 }
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
+  PublicProfileBloc bloc;
 
   @override
   void initState() {
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       RemoteNotification message =  event.notification;
-      // print(message.title);
       Fluttertoast.showToast(
               msg: message.title,
               toastLength: Toast.LENGTH_LONG,
@@ -51,10 +52,16 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             );
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
-      // print("onMessage: $event");
       navigationService.navigateTo(DMChatListPageRoute);
     });
+    bloc = BlocProvider.of<PublicProfileBloc>(context);
+    bloc.add(LoadingPublicProfileData());
   }
+
+  void dispose(){
+    bloc.close();
+    super.dispose();
+}
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
@@ -90,42 +97,87 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
         length: 3,
         child: Scaffold(
           drawer: MenuDrawer(),
-          body: (_selectedIndex == 0) ? Stack(
-            clipBehavior: Clip.none,
-            children: [
-              CustomAppBar(bottomNav: true,),
-              Padding(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight*.175),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: TabBar(
-                    labelStyle: Theme.of(context).textTheme.headline6,
-                    isScrollable: true,
-                    tabs: [
-                      const Tab(text: 'Current',),
-                      const Tab(text: 'Private',),
-                      const Tab(text: 'Past',),
+          body: BlocBuilder<PublicProfileBloc, PublicProfileState>(
+              builder: (context, state){
+                if(state is PublicProfileLoadingState){
+                  return (_selectedIndex == 0) ? Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      CustomAppBar(bottomNav: true,),
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.screenHeight*.175),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: TabBar(
+                            labelStyle: Theme.of(context).textTheme.headline6,
+                            isScrollable: true,
+                            tabs: [
+                              const Tab(text: 'Current',),
+                              const Tab(text: 'Private',),
+                              const Tab(text: 'Past',),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.screenHeight/2*.45),
+                        child: _widgetOptions.elementAt(_selectedIndex),
+                      ),
                     ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight/2*.45),
-                child: _widgetOptions.elementAt(_selectedIndex),
-              ),
-            ],
-          ):
-          Stack(
-            children: [
-              CustomAppBar(bottomNav: false,),
-              Padding(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight*.1785),
-                child: Center(
-                  child: _widgetOptions.elementAt(_selectedIndex),
-                ),
-              ),
-            ],
-          ),
+                  ):
+                  Stack(
+                    children: [
+                      CustomAppBar(bottomNav: false,),
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.screenHeight*.1785),
+                        child: Center(
+                          child: _widgetOptions.elementAt(_selectedIndex),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state is PublicProfileHasDataState){
+                  UserPublicProfile profile = state.data;
+                  return (_selectedIndex == 0) ? Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      CustomAppBar(bottomNav: true,currentUserProfile: profile,),
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.screenHeight*.175),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: TabBar(
+                            labelStyle: Theme.of(context).textTheme.headline6,
+                            isScrollable: true,
+                            tabs: [
+                              const Tab(text: 'Current',),
+                              const Tab(text: 'Private',),
+                              const Tab(text: 'Past',),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.screenHeight/2*.45),
+                        child: _widgetOptions.elementAt(_selectedIndex),
+                      ),
+                    ],
+                  ):
+                  Stack(
+                    children: [
+                      CustomAppBar(bottomNav: false,currentUserProfile: profile,),
+                      Padding(
+                        padding: EdgeInsets.only(top: SizeConfig.screenHeight*.1785),
+                        child: Center(
+                          child: _widgetOptions.elementAt(_selectedIndex),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              }),
           bottomNavigationBar: CurvedNavigationBar(
             backgroundColor: ReusableThemeColor().bottomNavColor(context),
             color: ReusableThemeColor().color(context),
@@ -147,3 +199,4 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     );
   }
 }
+

@@ -17,7 +17,8 @@ import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_state.dart';
 import 'package:travelcrew/blocs/bloc_observer/custom_bloc_observer.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
-import 'package:travelcrew/screens/login_screen/complete_profile_page.dart';
+import 'package:travelcrew/screens/login/complete_profile_page.dart';
+import 'package:travelcrew/screens/login/login_screen.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -26,7 +27,7 @@ import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/launch_icon_badger.dart';
 import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'package:travelcrew/ui/login/login_screen.dart';
+
 
 
 
@@ -67,7 +68,6 @@ class TravelCrew extends StatefulWidget{
 
 class _TravelCrewState extends State<TravelCrew> {
   FirebaseAnalytics analytics = FirebaseAnalytics();
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   @override
   void initState() {
@@ -79,7 +79,6 @@ class _TravelCrewState extends State<TravelCrew> {
     } else {
       FBMessaging().androidFCMSetting();
       FirebaseMessaging.onBackgroundMessage((message) async {
-        // print("onMessage: $message");
         FBMessaging().firebaseMessagingBackgroundHandler(message);
       });
     }
@@ -325,9 +324,10 @@ class _TravelCrewState extends State<TravelCrew> {
                           if (state is AuthenticationFailure) {
                             return LoginScreen();
                           }
-
                           if (state is AuthenticationSuccess) {
-                            return FutureBuilder(
+                            print(state.firebaseUser);
+                            print(state.firebaseUser.uid);
+                          return FutureBuilder(
                               builder: (context, data) {
                                 if (data.data == false) {
                                   return CompleteProfile();
@@ -338,13 +338,9 @@ class _TravelCrewState extends State<TravelCrew> {
                               },
                               future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
                             );
+                          } else {
+                            return LoginScreen();
                           }
-                          return Scaffold(
-                            appBar: AppBar(),
-                            body: Container(
-                              child: Loading(),
-                            ),
-                          );
                         }),
                     debugShowCheckedModeBanner: false,
                     theme: ThemeProvider

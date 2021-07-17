@@ -13,15 +13,7 @@ class CloudFunction {
       .currentUserProfileDirect();
   final AnalyticsService _analyticsService = AnalyticsService();
 
-  //Add blank profile info
 
-  // void updateTrips(){
-  //   final HttpsCallable updateTrips = FirebaseFunctions.instance.getHttpsCallable(
-  //       functionName: 'updateTrips');
-  //   updateTrips({
-  //
-  //   });
-  // }
   void addCustomMember() {
     final HttpsCallable addCustomMember = FirebaseFunctions.instance
         .httpsCallable(

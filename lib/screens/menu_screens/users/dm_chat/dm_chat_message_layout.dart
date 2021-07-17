@@ -1,14 +1,13 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-// import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
+import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../alerts/alert_dialogs.dart';
 
 class DMChatMessageLayout extends StatelessWidget {
@@ -36,10 +35,8 @@ class DMChatMessageLayout extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     OutlinedButton(
-                      // color: Colors.grey,
                       child: Text('Copy',style: Theme.of(context).textTheme.subtitle1,),
                       onPressed: (){
                         FlutterClipboard.copy(message.message).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
@@ -20,21 +19,21 @@ class ExploreBasicLayout extends StatelessWidget{
     return  Scaffold(
         body: SingleChildScrollView(
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Stack(
                 children: [
-                  Hero(
+                  tripDetails.urlToImage.isNotEmpty ? Hero(
                     tag: tripDetails.urlToImage,
                     transitionOnUserGestures: true,
                     child: FadeInImage.assetNetwork(
                       fit: BoxFit.fitWidth,
                       placeholder: travelImage,
-                      image: tripDetails.urlToImage,
+                      image: tripDetails?.urlToImage,
 
                     ),
-                  ),
+                  ):
+                  Image.asset(travelImage,fit: BoxFit.fitWidth,),
                   Positioned(
                     right: 5,
                     bottom: 10,
@@ -87,10 +86,8 @@ class ExploreBasicLayout extends StatelessWidget{
               ),
 
               if(tripDetails.comment.isNotEmpty) Container(
-                // margin: const EdgeInsets.all(5.0),
                 padding: const EdgeInsets.all(18.0),
                 decoration: BoxDecoration(
-                    // border: Border.all(color: Colors.blueAccent)
                 ),
                 child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
               ),

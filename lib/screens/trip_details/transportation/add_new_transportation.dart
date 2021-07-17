@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 
 
 
@@ -17,49 +16,6 @@ class AddNewModeOfTransport extends StatefulWidget {
 }
 class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   final _formKey = GlobalKey<FormState>();
-  // File _image;
-  // final ImagePicker _picker = ImagePicker();
-  //
-  // DateTime _fromDateDepart = DateTime.now();
-  // DateTime _fromDateReturn = DateTime.now();
-  //
-  // String get _labelTextDepart {
-  //   startDate = DateFormat.yMMMd().format(_fromDateDepart);
-  //   startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
-  //   return DateFormat.yMMMd().format(_fromDateDepart);
-  // }
-  // String get _labelTextReturn {
-  //   endDate = DateFormat.yMMMd().format(_fromDateReturn);
-  //   endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
-  //   return DateFormat.yMMMd().format(_fromDateReturn);
-  // }
-  //
-  // Future<void> _showDatePickerDepart() async {
-  //   final picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: _fromDateDepart,
-  //     firstDate: DateTime(2015, 1),
-  //     lastDate: DateTime(2100),
-  //   );
-  //   if (picked != null && picked != _fromDateDepart) {
-  //     setState(() {
-  //       _fromDateDepart = picked;
-  //     });
-  //   }
-  // }
-  // Future<void> _showDatePickerReturn() async {
-  //   final picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: _fromDateReturn,
-  //     firstDate: DateTime(2015, 1),
-  //     lastDate: DateTime(2100),
-  //   );
-  //   if (picked != null && picked != _fromDateReturn) {
-  //     setState(() {
-  //       _fromDateReturn = picked;
-  //     });
-  //   }
-  // }
 
   String comment = '';
   String displayName = '';
@@ -68,24 +24,8 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   String carpoolingWith = '';
   String airline = '';
   String flightNumber = '';
-
-  // File urlToImage;
-  // String startDate = '';
-  // String endDate = '';
-  // Timestamp startDateTimeStamp;
-  // Timestamp endDateTimeStamp;
-
-
   String dropdownValue = 'Driving';
-  //
-  // Future getImage() async {
-  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
-  //
-  //   setState(() {
-  //     _image = File(image.path);
-  //     urlToImage = _image;
-  //   });
-  // }
+
 
 
   @override
@@ -108,11 +48,8 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                               children: [
                             DropdownButton<String>(
                             value: dropdownValue,
-                            // icon: Icon(Icons.arrow_downward),
-                            // iconSize: 24,
                               isExpanded: true,
                             elevation: 16,
-                            // style: Theme.of(context).textTheme.headline4,
                             underline: Container(
                               height: 2,
                               color: Colors.blueAccent,

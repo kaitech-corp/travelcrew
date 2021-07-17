@@ -25,18 +25,9 @@ class EditLodging extends StatefulWidget {
 class _EditLodgingState extends State<EditLodging> {
 
   final _formKey = GlobalKey<FormState>();
-
   File _image;
-  // final ImagePicker _picker = ImagePicker();
   bool timePickerVisible = false;
 
-  // Future getImage() async {
-  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
-  //
-  //   setState(() {
-  //     _image = File(image.path);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -162,34 +153,6 @@ class _EditLodgingState extends State<EditLodging> {
                           ),
                         ],
                       ),
-//                     const Padding(
-//                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-//                     ),
-//                     widget.lodging.urlToImage == null ? Container(
-//                       child: _image == null
-//                           ? const Text('No image selected.')
-//                           : Image.file(_image),
-//                       constraints: BoxConstraints(
-//                         maxWidth: MediaQuery.of(context).size.width,
-//                         maxHeight: 300,
-//                       ),
-//                     ):
-//                     Container(
-//                       child: _image == null
-//                           ? Image.network(widget.lodging.urlToImage)
-//                           : Image.file(_image),
-//                       constraints: BoxConstraints(
-//                         maxWidth: MediaQuery.of(context).size.width,
-//                         maxHeight: 300,
-//                       ),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         getImage();
-//                       },
-// //                              tooltip: 'Pick Image',
-//                       child: const Icon(Icons.add_a_photo),
-//                     ),
                       const SizedBox(height: 30),
                       Container(
                         padding: const EdgeInsets.symmetric(

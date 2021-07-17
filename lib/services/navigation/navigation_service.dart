@@ -21,4 +21,5 @@ class NavigationService {
     return _navigationKey.currentState
         .pushNamed(routeName, arguments: arguments);
   }
+
 }

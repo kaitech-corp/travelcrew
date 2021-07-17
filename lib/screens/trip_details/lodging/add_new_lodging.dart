@@ -1,12 +1,13 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+
 import '../../../services/widgets/loading.dart';
 
 
@@ -26,19 +27,9 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   String lodgingType = '';
   String comment = '';
   String link = '';
-  // File _image;
   File urlToImage;
   bool timePickerVisible = false;
-  // final ImagePicker _picker = ImagePicker();
-  //
-  // Future getImage() async {
-  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
-  //
-  //   setState(() {
-  //     _image = File(image.path);
-  //     urlToImage = _image;
-  //   });
-  // }
+
 
 
   @override
@@ -125,26 +116,6 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     const Padding(
                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     ),
-//                   Container(
-//                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-//                     child: _image == null
-//                         ? Text('No image selected.')
-//                         : Image.file(_image),
-//                     constraints: BoxConstraints(
-//                       maxWidth: MediaQuery.of(context).size.width,
-//                       maxHeight: 300,
-//                     ),
-//                   ),
-//                   ElevatedButton(
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(20),
-//                     ),
-//                     onPressed: () {
-//                       getImage();
-//                     },
-// //                              tooltip: 'Pick Image',
-//                     child: Icon(Icons.add_a_photo),
-//                   ),
                 timePickerVisible ? TimePickers()
                     : Container(
                   padding: const EdgeInsets.symmetric(
@@ -230,6 +201,4 @@ class _AddNewLodgingState extends State<AddNewLodging> {
       ),
     );
   }
-
-
 }

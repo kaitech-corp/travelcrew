@@ -23,7 +23,7 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
   Stream<GoogleLoginState> _mapAppleLoginPressedToState() async* {
     yield GoogleLoginState.loading();
     try {
-      await UserRepository().signInWithGoogle();
+      await _userRepository.signInWithGoogle();
       yield GoogleLoginState.success();
     } catch (_) {
       yield GoogleLoginState.failure();
