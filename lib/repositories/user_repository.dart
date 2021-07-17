@@ -43,6 +43,11 @@ class UserRepository {
     return currentUser != null;
   }
 
+  // Reset Password
+  Future<void> resetPassword(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
   User getUser()  {
     return  _firebaseAuth.currentUser;
   }
@@ -55,15 +60,10 @@ class UserRepository {
 
   Future<void> signInWithApple() async {
     try {
-
+      print('Got here');
       final appleCredential = await SignInWithApple.getAppleIDCredential(
           scopes: [AppleIDAuthorizationScopes.email,AppleIDAuthorizationScopes.fullName]
-
       );
-
-      if (appleCredential != null) {
-        // handle errors from Apple here
-      }
 
       final OAuthCredential credential = OAuthProvider('apple.com').credential(
         accessToken: appleCredential.authorizationCode,

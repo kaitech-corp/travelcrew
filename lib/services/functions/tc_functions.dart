@@ -29,7 +29,7 @@ class TCFunctions {
     var now = new DateTime.now();
     var createdDate = new DateTime.fromMillisecondsSinceEpoch(dateCreatedTimeStamp);
     var startDate = new DateTime.fromMillisecondsSinceEpoch(startDateTimeStamp);
-    var daysLeft = (startDate.difference(now).inDays > 0) ? startDate.difference(now).inDays.toDouble() : 0.0;
+    var daysLeft = (startDate.difference(now).inDays > 0) ? (startDate.difference(now).inHours/24.0).ceil().toDouble() : 0.0;
     var initialDayCount = startDate.difference(createdDate).inDays.toDouble();
     var gaugeCount = initialDayCount - daysLeft;
     gaugeCount = (gaugeCount>0) ? gaugeCount : initialDayCount;
@@ -81,12 +81,10 @@ class TCFunctions {
       _y.remove(userService.currentUserID);
       _idList.add(_y[0]);
     });
-    // print(_idList);
     return _idList;
   }
 
   dynamic getLocation(dynamic lat, dynamic lng){
-    // return Location(lat,lng);
     return Location(lat: lat, lng: lng);
   }
 

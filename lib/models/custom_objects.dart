@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/models/split_model.dart';
 
 class User {
   final String displayName;
@@ -188,72 +188,72 @@ class Need {
 //
 // }
 
-class TransportationData {
-  final String mode;
-  final String airline;
-  final String airportCode;
-  final bool canCarpool;
-  final String carpoolingWith;
-  final String comment;
-  final String departureDate;
-  final String departureDateArrivalTime;
-  final String departureDateDepartTime;
-  final String displayName;
-  final String fieldID;
-  final String flightNumber;
-  final String location;
-  final String returnDateArrivalTime;
-  final String returnDateDepartTime;
-  final String returnDate;
-  final String uid;
-  final String tripDocID;
-
-  TransportationData({this.tripDocID,this.fieldID,this.uid, this.comment, this.canCarpool, this.carpoolingWith,this.mode, this.airportCode, this.displayName, this.location, this.airline, this.departureDate,this.departureDateArrivalTime, this.departureDateDepartTime, this.flightNumber, this.returnDate, this.returnDateArrivalTime, this.returnDateDepartTime });
-
-  TransportationData.fromData(Map<String, dynamic> data)
-      : mode = data['mode'],
-        airline = data['airline'],
-        airportCode = data['airportCode'],
-        canCarpool = data['canCarpool'],
-        carpoolingWith = data['carpoolingWith'],
-        comment = data['comment'],
-        departureDate = data['departureDate'],
-        departureDateArrivalTime = data['departureDateArrivalTime'],
-        departureDateDepartTime = data['departureDateDepartTime'],
-        displayName = data['displayName'],
-        fieldID = data['fieldID'],
-        flightNumber = data['flightNumber'],
-        location = data['location'],
-        returnDateArrivalTime = data['returnDateArrivalTime'],
-        returnDateDepartTime = data['returnDateDepartTime'],
-        returnDate = data['returnDate'],
-        tripDocID = data['tripDocID'],
-        uid = data['uid'];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'mode': mode,
-      'airline': airline,
-      'airportCode': airportCode,
-      'canCarpool': canCarpool,
-      'carpoolingWith': carpoolingWith,
-      'comment': comment,
-      'departureDate': departureDate,
-      'departureDateArrivalTime': departureDateArrivalTime,
-      'departureDateDepartTime': departureDateDepartTime,
-      'displayName': displayName,
-      'fieldID': fieldID,
-      'flightNumber': flightNumber,
-      'location': location,
-      'returnDateArrivalTime': returnDateArrivalTime,
-      'returnDateDepartTime': returnDateDepartTime,
-      'returnDate': returnDate,
-      'tripDocID': tripDocID,
-      'uid': uid,
-    };
-  }
-
-}
+// class TransportationData {
+//   final String mode;
+//   final String airline;
+//   final String airportCode;
+//   final bool canCarpool;
+//   final String carpoolingWith;
+//   final String comment;
+//   final String departureDate;
+//   final String departureDateArrivalTime;
+//   final String departureDateDepartTime;
+//   final String displayName;
+//   final String fieldID;
+//   final String flightNumber;
+//   final String location;
+//   final String returnDateArrivalTime;
+//   final String returnDateDepartTime;
+//   final String returnDate;
+//   final String uid;
+//   final String tripDocID;
+//
+//   TransportationData({this.tripDocID,this.fieldID,this.uid, this.comment, this.canCarpool, this.carpoolingWith,this.mode, this.airportCode, this.displayName, this.location, this.airline, this.departureDate,this.departureDateArrivalTime, this.departureDateDepartTime, this.flightNumber, this.returnDate, this.returnDateArrivalTime, this.returnDateDepartTime });
+//
+//   TransportationData.fromData(Map<String, dynamic> data)
+//       : mode = data['mode'],
+//         airline = data['airline'],
+//         airportCode = data['airportCode'],
+//         canCarpool = data['canCarpool'],
+//         carpoolingWith = data['carpoolingWith'],
+//         comment = data['comment'],
+//         departureDate = data['departureDate'],
+//         departureDateArrivalTime = data['departureDateArrivalTime'],
+//         departureDateDepartTime = data['departureDateDepartTime'],
+//         displayName = data['displayName'],
+//         fieldID = data['fieldID'],
+//         flightNumber = data['flightNumber'],
+//         location = data['location'],
+//         returnDateArrivalTime = data['returnDateArrivalTime'],
+//         returnDateDepartTime = data['returnDateDepartTime'],
+//         returnDate = data['returnDate'],
+//         tripDocID = data['tripDocID'],
+//         uid = data['uid'];
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'mode': mode,
+//       'airline': airline,
+//       'airportCode': airportCode,
+//       'canCarpool': canCarpool,
+//       'carpoolingWith': carpoolingWith,
+//       'comment': comment,
+//       'departureDate': departureDate,
+//       'departureDateArrivalTime': departureDateArrivalTime,
+//       'departureDateDepartTime': departureDateDepartTime,
+//       'displayName': displayName,
+//       'fieldID': fieldID,
+//       'flightNumber': flightNumber,
+//       'location': location,
+//       'returnDateArrivalTime': returnDateArrivalTime,
+//       'returnDateDepartTime': returnDateDepartTime,
+//       'returnDate': returnDate,
+//       'tripDocID': tripDocID,
+//       'uid': uid,
+//     };
+//   }
+//
+// }
 
 // class LodgingData {
 //   final String comment;
@@ -398,47 +398,47 @@ class TransportationData {
 //
 // }
 
-class ChatData {
-  final String displayName;
-  final String fieldID;
-  final String message;
-  // final List<Status> status;
-  final Timestamp timestamp;
-  final String uid;
-  final String chatID;
-
-
-  ChatData({this.fieldID, this.displayName, this.message, this.timestamp, this.uid, this.chatID});
-
-  ChatData.fromData(Map<String, dynamic> data)
-      : chatID = data['chatID'] ?? '',
-        displayName = data['displayName'] ?? '',
-        fieldID = data['fieldID'] ?? '',
-        message = data['message'] ?? '',
-        timestamp = data['timestamp'] ?? '',
-        // status = List<Status>.from(data['status']) ?? [],
-        uid = data['uid'];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'chatID': chatID,
-      'displayName': displayName,
-      'fieldID': fieldID,
-      'message': message,
-      'timestamp': timestamp,
-      // 'status': status,
-      'uid': uid,
-    };
-  }
-
-}
-class Status {
-  final String uid;
-  final bool status;
-
-  Status.fromMap(Map<String, dynamic> data) : uid = data["uid"], status = data["read"];
-  Status({this.uid, this.status,});
-}
+// class ChatData {
+//   final String displayName;
+//   final String fieldID;
+//   final String message;
+//   // final List<Status> status;
+//   final Timestamp timestamp;
+//   final String uid;
+//   final String chatID;
+//
+//
+//   ChatData({this.fieldID, this.displayName, this.message, this.timestamp, this.uid, this.chatID});
+//
+//   ChatData.fromData(Map<String, dynamic> data)
+//       : chatID = data['chatID'] ?? '',
+//         displayName = data['displayName'] ?? '',
+//         fieldID = data['fieldID'] ?? '',
+//         message = data['message'] ?? '',
+//         timestamp = data['timestamp'] ?? '',
+//         // status = List<Status>.from(data['status']) ?? [],
+//         uid = data['uid'];
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'chatID': chatID,
+//       'displayName': displayName,
+//       'fieldID': fieldID,
+//       'message': message,
+//       'timestamp': timestamp,
+//       // 'status': status,
+//       'uid': uid,
+//     };
+//   }
+//
+// }
+// class Status {
+//   final String uid;
+//   final bool status;
+//
+//   Status.fromMap(Map<String, dynamic> data) : uid = data["uid"], status = data["read"];
+//   Status({this.uid, this.status,});
+// }
 
 class Countries {
   final String name;

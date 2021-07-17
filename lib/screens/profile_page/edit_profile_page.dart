@@ -137,11 +137,6 @@ class _SignupScreenState extends State {
                                         initialValue: user.hometown ?? '',
                                         decoration:
                                         const InputDecoration(labelText: 'Hometown'),
-                                        // ignore: missing_return
-                                        // validator: (value) {
-                                        //   // ignore: missing_return, 
-                                        //
-                                        // },
                                         onSaved: (val) =>
                                             setState(() => _user.hometown = val.trim())),
                                     SizedBox(height: 20,),

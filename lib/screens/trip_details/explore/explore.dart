@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/blocs/activities_bloc/activity_bloc.dart';
+import 'package:travelcrew/blocs/chat_bloc/chat_bloc.dart';
 import 'package:travelcrew/blocs/lodging_bloc/lodging_bloc.dart';
+import 'package:travelcrew/blocs/transportation_bloc/transportation_bloc.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/activity_repository.dart';
+import 'package:travelcrew/repositories/chat_repository.dart';
 import 'package:travelcrew/repositories/lodging_repository.dart';
+import 'package:travelcrew/repositories/transportation_repository.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/screens/trip_details/activity/activity.dart';
-import 'package:travelcrew/screens/trip_details/chat/chat.dart';
+import 'package:travelcrew/screens/trip_details/activity/activity_page.dart';
+import 'package:travelcrew/screens/trip_details/chat/chat_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.dart';
-import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
-import 'package:travelcrew/screens/trip_details/transportation/transportation.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/screens/trip_details/lodging/lodging_page.dart';
+import 'package:travelcrew/screens/trip_details/transportation/transportation_page.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'package:travelcrew/ui/trip_details/activity/activity/activity_page.dart';
+
 import 'explore_owner_layout.dart';
 
 
@@ -67,15 +71,17 @@ class Explore extends StatelessWidget {
         body: MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => ActivityBloc(activityRepository: ActivityRepository()..refresh(trip.documentId))),
+            BlocProvider(create: (context) => ChatBloc(chatRepository: ChatRepository()..refresh(trip.documentId))),
             BlocProvider(create: (context) => LodgingBloc(lodgingRepository: LodgingRepository()..refresh(trip.documentId))),
+            BlocProvider(create: (context) => TransportationBloc(transportationRepository: TransportationRepository()..refresh(trip.documentId))),
           ],
           child: TabBarView(
             children: [
               checkOwner(userService.currentUserID),
-              Transportation(trip: trip,),
-              Lodging(trip: trip,),
+              TransportationPage(trip: trip,),
+              LodgingPage(trip: trip,),
               ActivityPage(trip: trip,),
-              Chat(trip: trip,),
+              ChatPage(trip: trip,),
             ],
           ),
         )

@@ -7,13 +7,13 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 class TripRepository {
   final Query tripCollection = FirebaseFirestore.instance.collection("trips").orderBy('endDateTimeStamp').where('ispublic', isEqualTo: true);
 
+
   final _loadedDataCurrentTrips = StreamController<List<Trip>>.broadcast();
   final _loadedDataPastTrips = StreamController<List<Trip>>.broadcast();
   final _loadedDataPrivateTrips = StreamController<List<Trip>>.broadcast();
   final _loadedDataAllTrips = StreamController<List<Trip>>.broadcast();
   final _loadedDataFavoriteTrips = StreamController<List<Trip>>.broadcast();
 
-  final List<Trip> _cache = [];
 
   void dispose() {
     _loadedDataCurrentTrips.close();

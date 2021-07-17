@@ -42,16 +42,7 @@ class _BringingListState extends State<BringingList> {
 
     return SingleChildScrollView(
       child: Container(
-        // constraints: BoxConstraints.expand(),
         height: MediaQuery.of(context).size.height,
-        // child: FloatingSearchBar(
-        //   hint: 'Search',
-        //   onQueryChanged: (item){
-        //     return WalmartProductSearch().getProducts(item);
-        //     },
-        //   width: SizeConfig.screenWidth,
-        // )
-
         child: SearchBar(
           textStyle: Theme.of(context).textTheme.subtitle2,
           cancellationWidget: const Text('Clear'),
@@ -269,8 +260,8 @@ class NeedListToDisplay extends StatelessWidget{
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-        height: SizeConfig.screenHeight*.2,
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        height: SizeConfig.screenHeight*.6,
         child: needList(context),
       ),
     );
@@ -335,8 +326,8 @@ class BringListToDisplay extends StatelessWidget{
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-        height: SizeConfig.screenHeight*.2,
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        height: SizeConfig.screenHeight*.6,
         child: bringList(),
       ),
     );
