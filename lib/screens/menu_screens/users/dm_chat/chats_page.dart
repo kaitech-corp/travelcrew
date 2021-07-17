@@ -49,9 +49,7 @@ class DMChatListPage extends StatelessWidget{
         height: SizeConfig.screenHeight*.09,
         padding: EdgeInsets.all(2),
         child: Row(
-          // mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
               child: Center(

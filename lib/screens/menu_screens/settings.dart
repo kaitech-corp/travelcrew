@@ -62,8 +62,6 @@ class _SettingsState extends State<Settings> {
               Container(height: 2, decoration: BoxDecoration(border: Border.all(color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,)),),
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,)),
                   Padding(
@@ -72,14 +70,14 @@ class _SettingsState extends State<Settings> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _instagramButton(),
-                        _facbookButton(),
+                        _facebookButton(),
                       ],
                     ) :
                     Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _instagramButton(),
-                        _facbookButton(),
+                        _facebookButton(),
+                        _twitterButton(),
                       ],
                     ),
                   ),
@@ -110,7 +108,7 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
-  Widget _facbookButton() {
+  Widget _facebookButton() {
     return OutlinedButton(
       onPressed: () {
         TCFunctions().launchURL(TC_FacebookPage);
@@ -123,6 +121,25 @@ class _SettingsState extends State<Settings> {
           children: <Widget>[
             Image(image: AssetImage(facebook_logo), height: 25.0),
             Text(' Facebook',style: Theme.of(context).textTheme.subtitle2,)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _twitterButton() {
+    return OutlinedButton(
+      onPressed: () {
+        TCFunctions().launchURL(TC_TwitterPage);
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(image: AssetImage(twitter_logo), height: 25.0),
+            Text(' Twitter',style: Theme.of(context).textTheme.subtitle2,)
           ],
         ),
       ),

@@ -1,45 +1,55 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/admin/admin_page.dart';
+import 'package:travelcrew/blocs/all_users_bloc/all_users_bloc.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
+import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
+import 'package:travelcrew/repositories/all_users_repository.dart';
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
-import 'package:travelcrew/screens/login_screen/signup_screen.dart';
-import 'package:travelcrew/screens/main_tab_page/all_trips_page/all_trips_page.dart';
-import 'package:travelcrew/screens/main_tab_page/crew_trips/current_crew_trips.dart';
-import 'package:travelcrew/screens/main_tab_page/favorites/favorites.dart';
+import 'package:travelcrew/screens/login/signup_screen.dart';
+import 'package:travelcrew/screens/main_tab_page/all_trips/all_trips_page.dart';
+import 'package:travelcrew/screens/main_tab_page/favorites/favorites_page.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
-import 'package:travelcrew/screens/main_tab_page/notifications/notifications.dart';
+import 'package:travelcrew/screens/main_tab_page/my_trips_tab/current_trips/current_trips_page.dart';
+import 'package:travelcrew/screens/main_tab_page/notifications/notification_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/help.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/menu_screens/settings.dart';
+import 'package:travelcrew/screens/menu_screens/users/all_users/all_users_page.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/chats_page.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/screens/menu_screens/users/user_profile_page.dart';
-import 'package:travelcrew/screens/menu_screens/users/users.dart';
 import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
-import 'package:travelcrew/screens/trip_details/activity/activity.dart';
+import 'package:travelcrew/screens/trip_details/activity/activity_page.dart';
+
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
-import 'package:travelcrew/screens/trip_details/chat/chat.dart';
-import 'package:travelcrew/screens/trip_details/cost/cost_split_page.dart';
+import 'package:travelcrew/screens/trip_details/chat/chat_page.dart';
+
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/add_new_lodging.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
-import 'package:travelcrew/screens/trip_details/lodging/lodging.dart';
+import 'package:travelcrew/screens/trip_details/lodging/lodging_page.dart';
+import 'package:travelcrew/screens/trip_details/split/split_details_page.dart';
+import 'package:travelcrew/screens/trip_details/split/split_page.dart';
+
 import 'package:travelcrew/screens/trip_details/transportation/edit_transportation.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/launch_icon_badger.dart';
 import 'package:travelcrew/size_config/size_config.dart';
+
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   final args = settings.arguments;
@@ -47,7 +57,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ActivityRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Activity(trip: args,),
+        viewToShow: ActivityPage(trip: args,),
       );
     case AddNewActivityRoute:
       return _getPageRoute(
@@ -67,22 +77,23 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AllTripsPageRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: AllTripsPage(),
+        viewToShow: AllTrips(),
       );
     case ChatRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Chat(trip: args,),
+        viewToShow: ChatPage(trip: args,),
       );
     case CostPageRoute:
+      Trip arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: CostPage(tripDetails: args,),
+        viewToShow: SplitPage(tripDetails: arguments,),
       );
     case CurrentCrewTripsRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: CurrentCrewTrips(),
+        viewToShow: CurrentTrips(),
       );
     case DMChatRoute:
       return _getPageRoute(
@@ -134,7 +145,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case FavoritesRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Favorites(),
+        viewToShow: FavoritesPage(),
       );
     case FeedbackPageRoute:
       return _getPageRoute(
@@ -164,7 +175,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case LodgingRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Lodging(trip: args,),
+        viewToShow: LodgingPage(trip: args,),
       );
     case MainTabPageRoute:
       return _getPageRoute(
@@ -185,7 +196,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case NotificationsRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Notifications(),
+        viewToShow: NotificationPage(),
       );
     case ReportContentRoute:
       ReportArguments arguments = settings.arguments;
@@ -205,10 +216,21 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: SignUpScreen(),
       );
+    case SplitDetailsPageRoute:
+      SplitDetailsArguments arguments = settings.arguments;
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: SplitDetailsPage(
+          tripDetails: arguments.trip,
+          purchasedByUID: arguments.purchasedByUID,
+          splitObject: arguments.splitObject,),
+      );
     case UsersRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Users(),
+        viewToShow: BlocProvider(
+            create: (context) => AllUserBloc(allUserRepository: AllUserRepository()..refresh()),
+            child: AllUserPage()),
       );
     case UserProfilePageRoute:
       return _getPageRoute(
@@ -245,7 +267,7 @@ PageRoute _getPageRoute({String routeName, Widget viewToShow }) {
       settings: RouteSettings(
         name: routeName,
       ),
-      builder: (_) => viewToShow);
+      builder: (BuildContext context) => viewToShow);
 }
 
 class EditActivityArguments{
@@ -275,4 +297,17 @@ class ReportArguments{
   final Trip tripDetails;
 
   ReportArguments(this.type, this.userAccount, this.activity,this.tripDetails,this.lodging);
+}
+class SplitArguments{
+  final Trip trip;
+
+  SplitArguments(this.trip);
+}
+class SplitDetailsArguments{
+  final SplitObject splitObject;
+  final String purchasedByUID;
+  final Trip trip;
+
+  SplitDetailsArguments({this.splitObject, this.purchasedByUID, this.trip});
+
 }

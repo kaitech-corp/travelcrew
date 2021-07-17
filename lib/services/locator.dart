@@ -16,7 +16,6 @@ void setupLocator() {
   locator.registerSingleton(UserService());
   locator.registerSingleton(UserProfileService());
   locator.registerLazySingleton(() => NavigationService());
-  // locator.registerSingleton(UserProfileServiceStream());
 }
 
 class UserService {

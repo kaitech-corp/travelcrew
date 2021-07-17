@@ -69,7 +69,6 @@ class _DMChatState extends State<DMChat> {
                               border: InputBorder.none,
                             ),
                             controller: _chatController,
-//                    onSubmitted: _handleSubmit,
                           textCapitalization: TextCapitalization.sentences,
                             keyboardType: TextInputType.multiline,
                             maxLines: null,

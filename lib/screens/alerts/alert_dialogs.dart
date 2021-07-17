@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
+import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/auth/auth.dart';
+import 'package:travelcrew/repositories/user_repository.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -458,7 +459,7 @@ class TravelCrewAlertDialogs {
                   final form = _formKey.currentState;
                   if (form.validate()) {
                     form.save();
-                    AuthService().resetPassword(email);
+                    UserRepository().resetPassword(email);
                     submittedAlert(context);
                     navigationService.pop();
                   }

@@ -9,7 +9,11 @@ import 'package:travelcrew/blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
 import 'package:travelcrew/blocs/notifications_bloc/notification_bloc.dart';
 import 'package:travelcrew/blocs/notifications_bloc/notification_event.dart';
 import 'package:travelcrew/blocs/notifications_bloc/notification_state.dart';
+import 'package:travelcrew/blocs/public_profile_bloc/public_profile_bloc.dart';
+import 'package:travelcrew/blocs/trip_ad_bloc/trip_ad_bloc.dart';
+import 'package:travelcrew/repositories/trip_ad_repository.dart';
 import 'package:travelcrew/repositories/trip_repository.dart';
+import 'package:travelcrew/repositories/user_profile_repository.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
 import 'package:travelcrew/services/widgets/loading.dart';
 
@@ -48,6 +52,8 @@ class _ProfileStreamState extends State<ProfileStream> {
               BlocProvider(create: (context) => PrivateTripBloc(tripRepository: TripRepository()..refreshPrivateTrips() )),
               BlocProvider(create: (context) => AllTripBloc(tripRepository: TripRepository()..refreshAllTrips() )),
               BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: TripRepository()..refreshFavoriteTrips() )),
+              BlocProvider(create: (context) => PublicProfileBloc(profileRepository: PublicProfileRepository()..refresh(widget.uid))),
+              BlocProvider(create: (context) => TripAdBloc(tripAdRepository: TripAdRepository()..refresh())),
             ],
             child: BlocBuilder<NotificationBloc, NotificationState>(
                 builder: (context, state){

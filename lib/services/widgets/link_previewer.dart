@@ -1,4 +1,3 @@
-// import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
@@ -115,33 +114,4 @@ class FlutterLinkView extends StatelessWidget{
       },
     );
   }
-
 }
-
-// class AnyLinkPreviewer extends StatelessWidget {
-//   const AnyLinkPreviewer({
-//     Key key,
-//     @required this.link,
-//   }) : super(key: key);
-//
-//   final String link;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return AnyLinkPreview(
-//       link: link,
-//       // displayDirection: UIDirection.UIDirectionHorizontal,
-//       showMultimedia: true,
-//       // bodyMaxLines: 5,
-//       // bodyTextOverflow: TextOverflow.ellipsis,
-//       // titleStyle: TextStyle(
-//       //   color: Colors.black,
-//       //   fontWeight: FontWeight.bold,
-//       //   fontSize: 15,
-//       // ),
-//       // bodyStyle: TextStyle(color: Colors.grey, fontSize: 12),
-//
-//
-//     );
-//   }
-// }

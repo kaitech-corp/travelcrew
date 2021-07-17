@@ -21,8 +21,6 @@ class ProfileWidget extends StatelessWidget {
   }) : super(key: key);
 
 
-
-
   @override
   Widget build(BuildContext context) {
     double profileSize = SizeConfig.screenWidth * .45;
@@ -46,7 +44,6 @@ class ProfileWidget extends StatelessWidget {
                       transitionOnUserGestures: true,
                       child:
                       Container(
-                        // margin: EdgeInsets.only(bottom: defaultSize), //10
                           height: profileSize,
                           width: profileSize,
                         child: CircleAvatar(
@@ -69,7 +66,6 @@ class ProfileWidget extends StatelessWidget {
                           SizedBox(height: SizeConfig.screenHeight*.01,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               IconThemeWidget(icon: Icons.person,),
                               Flexible(child: Text(user.displayName,style: Theme.of(context).textTheme.subtitle1,overflow: TextOverflow.ellipsis,maxLines: 2,)),
@@ -101,7 +97,6 @@ class ProfileWidget extends StatelessWidget {
             ),
           ),
           Flexible(flex:2,child: FollowerBar(user: user)),
-          // SizedBox(height: 10,),
           Flexible(
             flex: 3,
             child: Card(
@@ -112,7 +107,6 @@ class ProfileWidget extends StatelessWidget {
                 ),
                 child: Container(
                     padding: EdgeInsets.all(8.0),
-                    // height: SizeConfig.screenHeight*.18,
                     width: SizeConfig.screenWidth,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +145,6 @@ class ProfileWidget extends StatelessWidget {
                 color: ReusableThemeColor().cardColor(context),
                 child: Container(
                     padding: EdgeInsets.all(8.0),
-                    // height: SizeConfig.screenHeight*.1,
                     width: SizeConfig.screenWidth,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,14 +225,6 @@ class FollowerBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        // showModalBottomSheet(
-        //   context: context,
-        //   builder: (context) => Container(
-        //     padding: const EdgeInsets.all(10),
-        //     height: SizeConfig.screenHeight*.7,
-        //     child: FollowList(isFollowers: false,user: user,),
-        //   ),
-        // );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

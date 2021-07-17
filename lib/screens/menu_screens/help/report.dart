@@ -118,7 +118,6 @@ class _ReportContentState extends State<ReportContent> {
           ),
           body: Container(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-            // height: MediaQuery.of(context).size.height,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

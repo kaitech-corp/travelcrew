@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
-// import 'package:travelcrew/services/widgets/image_popup.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
@@ -42,7 +40,6 @@ class CustomHangingImage extends StatelessWidget {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 250),
         height: height, //150
-        // color: Color(0xAA2D3D49),
         decoration: BoxDecoration(
             image: DecorationImage(image: NetworkImage(urlToImage),
                 fit: BoxFit.cover)

@@ -1,24 +1,22 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/trip_model.dart';
-
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
+import 'package:travelcrew/screens/trip_details/split/split_page.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/image_popup.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'package:clipboard/clipboard.dart';
 import 'ImageAnimation.dart';
 
-
-// enum Response{}
 
 class ExploreOwnerLayout extends StatefulWidget {
 
@@ -47,7 +45,6 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
   @override
   void initState() {
     super.initState();
-    // controller.addListener(onScroll);
     expandController.addListener(onExpand);
     expandController2.addListener(onExpand);
     expandController3.addListener(onExpand);
@@ -79,7 +76,6 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
   @override
   Widget build(BuildContext context) {
 
-    // double _height = 3.0;
     double _detailsPadding = SizeConfig.screenWidth*.05;
     var _showImage = false;
     String _image;
@@ -153,16 +149,47 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
-                              ElevatedButton(
-                                onPressed: (){
-                                  navigationService.navigateTo(CostPageRoute,arguments: widget.tripDetails);
-                            },
-                                child: Text("Split",),
-                                // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
-                              ),
+                              SplitPage(tripDetails: widget.tripDetails),
                               CrewModalBottomSheet(tripDetails: widget.tripDetails),
                             ],
                           ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                              ),
+                              builder: (context) => Container(
+                                    padding: const EdgeInsets.all(10),
+                                    height: SizeConfig.screenHeight*.7,
+                                    child: BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
+                                ),
+                            );
+                          },
+                          child: Text("Bringing"),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                              ),
+                              builder: (context) => Container(
+                                    padding: const EdgeInsets.all(10),
+                                    height: SizeConfig.screenHeight*.7,
+                                    child: NeedListToDisplay(documentID: widget.tripDetails.documentId,),
+                                ),
+                            );
+                          },
+                          child: Text("Need"),
                         ),
                       ],
                     ),
@@ -184,7 +211,6 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                 padding: EdgeInsets.all(_detailsPadding),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  // crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,6 +220,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                             FlutterClipboard.copy(widget.tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
                                           },
                                           child: Card(
+                                            shadowColor: Colors.blueGrey,
+                                            elevation: 15,
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(10),
                                             ),
@@ -213,6 +241,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                           ),
                                         ),
                                         Card(
+                                          shadowColor: Colors.blueGrey,
+                                          elevation: 15,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10),
                                           ),
@@ -241,6 +271,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Card(
+                                          shadowColor: Colors.blueGrey,
+                                          elevation: 15,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10),
                                           ),
@@ -259,6 +291,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                           ),
                                         ),
                                         Card(
+                                          shadowColor: Colors.blueGrey,
+                                          elevation: 15,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10),
                                           ),
@@ -284,6 +318,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                       ],
                                     ),
                                     if(widget.tripDetails.comment.isNotEmpty) Card(
+                                      shadowColor: Colors.blueGrey,
+                                      elevation: 15,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
@@ -309,46 +345,6 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                                   ],
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,8.0),
-                      child: ExpandableNotifier(
-                        controller: expandController2,
-                        child: ScrollOnExpand(
-                          scrollOnExpand: true,
-                          child: ExpandableTheme(
-                            data: ExpandableThemeData(
-                              iconSize: 25.0,
-                              iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
-                            ),
-                            child: ExpandablePanel(
-                              header: Text('Bringing', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
-                              // collapsed:
-                              expanded: BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,25),
-                      child: ExpandableNotifier(
-                        controller: expandController3,
-                        child: ScrollOnExpand(
-                          scrollOnExpand: true,
-                          child: ExpandableTheme(
-                            data: ExpandableThemeData(
-                              iconSize: 25.0,
-                              iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
-                            ),
-                            child: ExpandablePanel(
-                              header: Text('Need', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
-                              // collapsed:
-                              expanded: NeedListToDisplay(documentID: widget.tripDetails.documentId,),
                             ),
                           ),
                         ),

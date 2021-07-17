@@ -1,19 +1,20 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
-// import 'package:flutter_link_preview/flutter_link_preview.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'loading.dart';
+
 import '../constants/constants.dart';
+import 'loading.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 
@@ -323,7 +324,6 @@ class CrewModalBottomSheet extends StatelessWidget {
         );
       },
       child: Text("Crew ${tripDetails.accessUsers.length} "),
-      // Text('Crew ${tripDetails.accessUsers.length} ${Icons.people}'),
     );
   }
 }
@@ -438,12 +438,6 @@ class RecentTripTile extends StatelessWidget{
                       ): null,
                       color: (ThemeProvider.themeOf(context).id == 'light_theme') ? null : Color(0xFF424242),//5C6BC0 0xAA2D3D49
                     ),
-
-                    // BoxDecoration(
-                    //   borderRadius: BorderRadius.circular(20.0),
-                    //   color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xFF424242),//5C6BC0 0xAA2D3D49
-                    // ),
-                    // color: Colors.grey,
                     height: 125,
                     width: 125,
                     child: ListTile(

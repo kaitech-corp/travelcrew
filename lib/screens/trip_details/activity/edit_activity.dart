@@ -24,17 +24,9 @@ class EditActivity extends StatefulWidget {
 class _EditActivityState extends State<EditActivity> {
 
   final _formKey = GlobalKey<FormState>();
-  // final ImagePicker _picker = ImagePicker();
   File _image;
   bool timePickerVisible = false;
 
-  // Future getImage() async {
-  //   var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
-  //
-  //   setState(() {
-  //     _image = File(image.path);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -152,34 +144,6 @@ class _EditActivityState extends State<EditActivity> {
                           ],
                         ),
                       ),
-//                     const Padding(
-//                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-//                     ),
-//                     widget.activity.urlToImage == null ? Container(
-//                       child: _image == null
-//                           ? Text('No image selected.')
-//                           : Image.file(_image),
-//                       constraints: BoxConstraints(
-//                         maxWidth: MediaQuery.of(context).size.width,
-//                         maxHeight: 300,
-//                       ),
-//                     ):
-//                     Container(
-//                       child: _image == null
-//                           ? Image.network(widget.activity.urlToImage)
-//                           : Image.file(_image),
-//                       constraints: BoxConstraints(
-//                         maxWidth: MediaQuery.of(context).size.width,
-//                         maxHeight: 300,
-//                       ),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         getImage();
-//                       },
-// //                              tooltip: 'Pick Image',
-//                       child: Icon(Icons.add_a_photo),
-//                     ),
                       const SizedBox(height: 30),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -195,10 +159,8 @@ class _EditActivityState extends State<EditActivity> {
                                 startTime.value = startTimeSaved;
                                 endTime.value = endTimeSaved;
                               }
-
                               setState(() => loading =true);
                               String message = 'An activity has been modified within ${widget.trip.tripName}';
-
                               try {
                                 String action = 'Saving edited activity data';
                                 CloudFunction().logEvent(action);

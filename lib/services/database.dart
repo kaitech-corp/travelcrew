@@ -4,9 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:travelcrew/models/activity_model.dart';
+import 'package:travelcrew/models/chat_model.dart';
+import 'package:travelcrew/models/cost_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/notification_model.dart';
+import 'package:travelcrew/models/split_model.dart';
+import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
 import 'package:travelcrew/services/constants/constants.dart';
@@ -80,9 +84,6 @@ class DatabaseService {
 
   saveDeviceToken() async {
     try {
-      // Get the current user
-      // String uid = FirebaseAuth.instance.currentUser.uid;
-      // FirebaseUser user = await _auth.currentUser();
 
       // Get the token for this device
       String fcmToken = await _fcm.getToken();
@@ -361,7 +362,7 @@ class DatabaseService {
        CloudFunction().logError('Error creating public profile:  ${e.toString()}');
      }
      if (urlToImage != null) {
-       String urlforImage;
+       String urlForImage;
        
        try {
          String action = 'Saving and updating User profile picture';
@@ -375,8 +376,8 @@ class DatabaseService {
          
          return await ref.update({
            'urlToImage': await storageReference.getDownloadURL().then((fileURL) {
-             urlforImage = fileURL;
-             return urlforImage;
+             urlForImage = fileURL;
+             return urlForImage;
            })
          });
        } catch (e) {
@@ -409,7 +410,7 @@ class DatabaseService {
       CloudFunction().logError('Error editing public profile:  ${e.toString()}');
     }
     if (urlToImage != null) {
-      String urlforImage;
+      String urlForImage;
 
       try {
         String action = 'Saving user profile picture after editing Public Profile page';
@@ -422,8 +423,8 @@ class DatabaseService {
 
         return await ref.update({
           'urlToImage': await storageReference.getDownloadURL().then((fileURL) {
-            urlforImage = fileURL;
-            return urlforImage;
+            urlForImage = fileURL;
+            return urlForImage;
           })
         });
       } catch (e) {
@@ -550,7 +551,7 @@ class DatabaseService {
         try {
           String action = 'Saving Trip image';
           CloudFunction().logEvent(action);
-          String urlforImage;
+          String urlForImage;
           Reference storageReference = FirebaseStorage.instance
               .ref()
               .child('trips/$key');
@@ -560,8 +561,8 @@ class DatabaseService {
           return await tripsCollectionUnordered.doc(key).update({
             "urlToImage": await storageReference.getDownloadURL().then((
                 fileURL) {
-              urlforImage = fileURL;
-              return urlforImage;
+              urlForImage = fileURL;
+              return urlForImage;
             })
           });
         } catch (e) {
@@ -571,7 +572,7 @@ class DatabaseService {
         try {
           String action = 'Saving private trip image';
           CloudFunction().logEvent(action);
-          String urlforImage;
+          String urlForImage;
           Reference storageReference = FirebaseStorage.instance
               .ref()
               .child('trips/$key');
@@ -581,8 +582,8 @@ class DatabaseService {
           return await privateTripsCollectionUnordered.doc(key).update({
             "urlToImage": await storageReference.getDownloadURL().then((
                 fileURL) {
-              urlforImage = fileURL;
-              return urlforImage;
+              urlForImage = fileURL;
+              return urlForImage;
             })
           });
         } catch (e) {
@@ -715,7 +716,7 @@ class DatabaseService {
       String action = 'Updating image after editing trip';
       CloudFunction().logEvent(action);
       if (urlToImage != null) {
-        String urlforImage;
+        String urlForImage;
         Reference storageReference = FirebaseStorage.instance
             .ref()
             .child('trips/${addTripRef.id}');
@@ -724,8 +725,8 @@ class DatabaseService {
 
         return await addTripRef.update({
           "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-            urlforImage = fileURL;
-            return urlforImage;
+            urlForImage = fileURL;
+            return urlForImage;
           })
         });
       }
@@ -956,7 +957,7 @@ class DatabaseService {
     }
 
     // if (urlToImage != null) {
-    //   String urlforImage;
+    //   String urlForImage;
     //   StorageReference storageReference = FirebaseStorage.instance
     //       .ref()
     //       .child('lodging/$key');
@@ -966,8 +967,8 @@ class DatabaseService {
     //
     //   return await addNewLodgingRef.update({
     //     "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //       urlforImage = fileURL;
-    //       return urlforImage;
+    //       urlForImage = fileURL;
+    //       return urlForImage;
     //     })
     //   });
     // }
@@ -1000,7 +1001,7 @@ class DatabaseService {
 
     // try {
     //   if (urlToImage != null) {
-    //     String urlforImage;
+    //     String urlForImage;
     //     StorageReference storageReference = FirebaseStorage.instance
     //         .ref()
     //         .child('lodging/$fieldID');
@@ -1010,8 +1011,8 @@ class DatabaseService {
     //
     //     return await editLodgingRef.update({
     //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //         urlforImage = fileURL;
-    //         return urlforImage;
+    //         urlForImage = fileURL;
+    //         return urlForImage;
     //       })
     //     });
     //   }
@@ -1052,7 +1053,7 @@ class DatabaseService {
 
     // try {
     //   if (urlToImage != null) {
-    //     String urlforImage;
+    //     String urlForImage;
     //     StorageReference storageReference = FirebaseStorage.instance
     //         .ref()
     //         .child('activity/$key');
@@ -1062,8 +1063,8 @@ class DatabaseService {
     //
     //     return await addNewActivityRef.update({
     //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //         urlforImage = fileURL;
-    //         return urlforImage;
+    //         urlForImage = fileURL;
+    //         return urlForImage;
     //       })
     //     });
     //   }
@@ -1099,7 +1100,7 @@ class DatabaseService {
 
     // try {
     //   if (urlToImage != null) {
-    //     String urlforImage;
+    //     String urlForImage;
     //     StorageReference storageReference = FirebaseStorage.instance
     //         .ref()
     //         .child('activity/$fieldID');
@@ -1109,8 +1110,8 @@ class DatabaseService {
     //
     //     return await addNewActivityRef.update({
     //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //         urlforImage = fileURL;
-    //         return urlforImage;
+    //         urlForImage = fileURL;
+    //         return urlForImage;
     //       })
     //     });
     //   }
