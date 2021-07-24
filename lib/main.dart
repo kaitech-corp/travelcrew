@@ -33,7 +33,6 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 void main() async {
 
-
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp();

@@ -34,7 +34,7 @@ class _LodgingPageState extends State<LodgingPage> {
 
   @override
   void dispose() {
-    bloc.close();
+    // bloc.close();
     super.dispose();
   }
 

@@ -19,7 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          HangingImageTheme3(user: currentUserProfile,),
+
           StreamBuilder(
             builder: (context, userData){
               if(userData.hasError){
@@ -27,9 +27,15 @@ class _ProfilePageState extends State<ProfilePage> {
               }
               if(userData.hasData){
                 UserPublicProfile user = userData.data;
-                return ProfileWidget(user: user);
+
+                return Stack(
+                    children: [
+                      HangingImageTheme3(user: user,),
+                      ProfileWidget(user: user)
+                    ]);
               } else {
-                return ProfileWidget(user: currentUserProfile);
+                UserPublicProfile blankUser;
+                return ProfileWidget(user:blankUser);
               }
             },
             stream: DatabaseService().currentUserPublicProfile,

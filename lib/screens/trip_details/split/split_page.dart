@@ -7,12 +7,13 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/split_repository.dart';
-import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/screens/trip_details/split/split_package.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
+import '../../../services/database.dart';
 import 'bloc_builder.dart';
 import 'details_bottom_sheet.dart';
 
@@ -32,24 +33,9 @@ class _SplitPageState extends State<SplitPage> {
   @override
   Widget build(BuildContext context) {
 
-    return ElevatedButton(
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-          ),
-          builder: (context) => BlocProvider(
-            create: (context) => SplitBloc(splitRepository: SplitRepository()..refresh(widget.tripDetails.documentId)),
-            child: Container(
-                padding: const EdgeInsets.all(10),
-                height: SizeConfig.screenHeight*.7,
-                child: SplitBlocBuilder(trip: widget.tripDetails,)
-            ),
-          ),
-        );
-      },
-      child: Text("Split"),
+    return BlocProvider(
+      create: (context) => SplitBloc(splitRepository: SplitRepository()..refresh(widget.tripDetails.documentId)),
+      child: SplitBlocBuilder(trip: widget.tripDetails,),
     );
   }
 

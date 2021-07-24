@@ -43,7 +43,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Add Lodging'),
+          title: Text('Add Lodging',style: Theme.of(context).textTheme.headline5,),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(10),
@@ -52,7 +52,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
               key: _formKey,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                 TextFormField(
                   onChanged: (val){
@@ -82,7 +82,6 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     setState(() => link = val);
                   },
                   enableInteractiveSelection: true,
-                  maxLines: 2,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
@@ -132,72 +131,63 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                       },
                   ),
                 ),
-                    ),
-                const SizedBox(height: 30),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 30.0, horizontal: 30.0),
-                  child: ElevatedButton(
-                    onPressed: () async{
-                      final form = _formKey.currentState;
-                      if (form.validate()) {
-                        String displayName = currentUserProfile.displayName;
-                        String documentID = widget.trip.documentId;
-                        String uid = userService.currentUserID;
-                        String tripName = widget.trip.location;
-                        String message = 'A new lodging has been added to ${widget.trip.tripName}';
-                        bool ispublic = widget.trip.ispublic;
-                        try {
-                          String action = 'Saving new lodging for $documentID';
-                          CloudFunction().logEvent(action);
-                          await DatabaseService().addNewLodgingData(
-                              comment.trim(),
-                              displayName,
-                              documentID,
-                              link,
-                              lodgingType,
-                              uid,
-                              urlToImage,
-                              tripName,
-                              startTime.value,
-                              endTime.value,
-                          );
-                        } on Exception catch (e) {
-                          CloudFunction().logError('Error adding new Lodging:  ${e.toString()}');
-                        }
-                        try {
-                          String action = 'Sending notifications for $documentID lodging';
-                          CloudFunction().logEvent(action);
-                          widget.trip.accessUsers.forEach((f)  {
-                            if(f != currentUserProfile.uid){
-                              CloudFunction().addNewNotification(
-                                message: message,
-                                documentID: documentID,
-                                type: 'Lodging',
-                                uidToUse: f,
-                                ownerID: currentUserProfile.uid,
-                                ispublic: ispublic,
-                              );
-                            }
-                          });
-                        } on Exception catch (e) {
-                          CloudFunction().logError('Error sending notifications for new lodging:  ${e.toString()}');
-                        }
-                        navigationService.pop();
-                      }
-                    },
-
-                    child: Text(
-                        'Add',
-                        style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ),
                 ),
-            ]
-            ),
+                  ]),
             ),
           ),
-        )
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            final form = _formKey.currentState;
+            if (form.validate()) {
+              String displayName = currentUserProfile.displayName;
+              String documentID = widget.trip.documentId;
+              String uid = userService.currentUserID;
+              String tripName = widget.trip.location;
+              String message = 'A new lodging has been added to ${widget.trip.tripName}';
+              bool ispublic = widget.trip.ispublic;
+              try {
+                String action = 'Saving new lodging for $documentID';
+                CloudFunction().logEvent(action);
+                await DatabaseService().addNewLodgingData(
+                  comment.trim(),
+                  displayName,
+                  documentID,
+                  link,
+                  lodgingType,
+                  uid,
+                  urlToImage,
+                  tripName,
+                  startTime.value,
+                  endTime.value,
+                );
+              } on Exception catch (e) {
+                CloudFunction().logError('Error adding new Lodging:  ${e.toString()}');
+              }
+              try {
+                String action = 'Sending notifications for $documentID lodging';
+                CloudFunction().logEvent(action);
+                widget.trip.accessUsers.forEach((f)  {
+                  if(f != currentUserProfile.uid){
+                    CloudFunction().addNewNotification(
+                      message: message,
+                      documentID: documentID,
+                      type: 'Lodging',
+                      uidToUse: f,
+                      ownerID: currentUserProfile.uid,
+                      ispublic: ispublic,
+                    );
+                  }
+                });
+              } on Exception catch (e) {
+                CloudFunction().logError('Error sending notifications for new lodging:  ${e.toString()}');
+              }
+              navigationService.pop();
+            }
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

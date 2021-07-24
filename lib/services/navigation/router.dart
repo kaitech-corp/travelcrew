@@ -37,12 +37,14 @@ import 'package:travelcrew/screens/trip_details/chat/chat_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
+import 'package:travelcrew/screens/trip_details/explore/lists/addToListPage.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
 import 'package:travelcrew/screens/trip_details/lodging/add_new_lodging.dart';
 import 'package:travelcrew/screens/trip_details/lodging/edit_lodging.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging_page.dart';
 import 'package:travelcrew/screens/trip_details/split/split_details_page.dart';
 import 'package:travelcrew/screens/trip_details/split/split_page.dart';
+import 'package:travelcrew/screens/trip_details/transportation/add_new_transportation.dart';
 
 import 'package:travelcrew/screens/trip_details/transportation/edit_transportation.dart';
 import 'package:travelcrew/services/constants/constants.dart';
@@ -68,6 +70,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: AddNewLodging(trip: args,),
+      );
+    case AddNewTransportationRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: AddNewModeOfTransport(trip: args,),
       );
     case AdminPageRoute:
       return _getPageRoute(
@@ -171,6 +178,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: LaunchIconBadger(),
+      );
+    case AddToListPageRoute:
+      AddToListPageArguments arguments = settings.arguments;
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: AddToListPage(
+          controller: arguments.controller,
+          scaffoldKey: arguments.scaffoldKey,
+          tripDetails: arguments.tripDetails,),
       );
     case LodgingRoute:
       return _getPageRoute(
@@ -281,6 +297,13 @@ class EditLodgingArguments{
   final LodgingData lodging ;
 
   EditLodgingArguments(this.lodging, this.trip);
+}
+class AddToListPageArguments{
+  final Trip tripDetails;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final PersistentBottomSheetController controller;
+
+  AddToListPageArguments({this.tripDetails, this.scaffoldKey, this.controller});
 }
 class MembersLayoutArguments{
   final List<Members> members;

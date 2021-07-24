@@ -12,7 +12,7 @@ import 'package:travelcrew/models/notification_model.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/screens/trip_details/split/split_package.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -65,7 +65,7 @@ class DatabaseService {
   final CollectionReference costDetailsCollection = FirebaseFirestore.instance.collection('costDetails');
 
 
-  // Shows latest app version to display in main menu.
+  /// Shows latest app version to display in main menu.
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
@@ -112,15 +112,19 @@ class DatabaseService {
 
   Future getUserProfile(String uid) async{
     try{
+      print(uid);
       var userData = await userPublicProfileCollection.doc(uid).get();
-      Map<String, dynamic> data = userData.data();
-      return UserPublicProfile.fromData(data);
+      if(userData.exists) {
+        Map<String, dynamic> data = userData.data();
+        print(userData.data());
+        return UserPublicProfile.fromData(data);
+      }
     } catch(e){
       CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
     }
   }
 
-  //Updates user info after signup
+  ///Updates user info after signup
   Future updateUserData(String firstName, String lastName, String email, String uid) async {
     try {
       String action = 'Updating User data.';
@@ -334,6 +338,7 @@ class DatabaseService {
 
     return refSnapshot.exists;
     }
+
 //Updates public profile after sign up
   Future updateUserPublicProfileData(String displayName, String firstName, String lastName, String email, int tripsCreated, int tripsJoined, String uid, File urlToImage) async {
     var ref = userPublicProfileCollection.doc(uid);
@@ -391,19 +396,19 @@ class DatabaseService {
   // Edit Public Profile page
   Future editPublicProfileData(UserPublicProfile userProfile, File urlToImage) async {
     var ref = userPublicProfileCollection.doc(uid);
-    print(userProfile.hometown);
     try {
       String action = 'Editing Public Profile page';
       CloudFunction().logEvent(action);
-      await ref.update({
+      await ref.update(
+      {
         'displayName': userProfile.displayName,
-        'firstName': userProfile.firstName,
-        'lastName' : userProfile.lastName,
-        'hometown': userProfile.hometown,
-        'instagramLink': userProfile.instagramLink,
-        'facebookLink': userProfile.facebookLink,
-        'topDestinations': userProfile.topDestinations,
-      });
+    'firstName': userProfile.firstName,
+    'lastName' : userProfile.lastName,
+    'hometown': userProfile.hometown,
+    'instagramLink': userProfile.instagramLink,
+    'facebookLink': userProfile.facebookLink,
+    'topDestinations': userProfile.topDestinations,
+    });
     } catch (e) {
       print('Error editing Public Profile: ${e.toString()}');
       _analyticsService.writeError('Error editing Public Profile: ${e.toString()}');
@@ -439,13 +444,11 @@ class DatabaseService {
 
 
   // Add new trip
-  Future addNewTripData(List<String> accessUsers, String comment,
-      String endDate, String firstName, String lastName, Timestamp endDateTimeStamp, Timestamp startDateTimeStamp, bool ispublic, String location,
-      String startDate, String travelType, File urlToImage, GeoPoint geoPoint, String tripName)
+  Future addNewTripData(Trip trip, File urlToImage)
   async {
 
     var key = tripsCollectionUnordered.doc().id;
-    if (ispublic) {
+    if (trip.ispublic) {
       var addTripRef =  tripsCollectionUnordered.doc(key);
       try {
         String action = 'Adding new trip';
@@ -453,21 +456,21 @@ class DatabaseService {
          addTripRef.set(
             {
               'favorite': [],
-              'accessUsers': accessUsers,
-              'comment': comment,
+              'accessUsers': [userService.currentUserID],
+              'comment': trip.comment,
               'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
               'displayName': currentUserProfile.displayName,
               'documentId': key,
-              'endDate': endDate,
-              'endDateTimeStamp': endDateTimeStamp,
-              'ispublic': ispublic,
-              'location': location,
+              'endDate': trip.endDate,
+              'endDateTimeStamp': trip.endDateTimeStamp,
+              'ispublic': trip.ispublic,
+              'location': trip.location,
               'ownerID': userService.currentUserID,
-              'startDate': startDate,
-              'startDateTimeStamp': startDateTimeStamp,
-              'tripName': tripName,
-              'tripGeoPoint': geoPoint,
-              'travelType': travelType,
+              'startDate': trip.startDate,
+              'startDateTimeStamp': trip.startDateTimeStamp,
+              'tripName': trip.tripName,
+              'tripGeoPoint': trip.tripGeoPoint,
+              'travelType': trip.travelType,
               'urlToImage': '',
             });
 
@@ -482,8 +485,8 @@ class DatabaseService {
         CloudFunction().logEvent(action);
          addTripRef.collection('Members').doc(userService.currentUserID).set({
            'displayName' : currentUserProfile.displayName,
-           'firstName': firstName,
-           'lastname' : lastName,
+           'firstName': currentUserProfile.firstName,
+           'lastname' : currentUserProfile.lastName,
            'uid' : userService.currentUserID,
            'urlToImage' : '',
          });
@@ -498,21 +501,21 @@ class DatabaseService {
         CloudFunction().logEvent(action);
          addTripRef.set({
           'favorite': [],
-          'accessUsers': accessUsers,
-          'comment': comment,
+          'accessUsers': trip.accessUsers,
+          'comment': trip.comment,
            'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
           'displayName': currentUserProfile.displayName,
           'documentId': key,
-          'endDate': endDate,
-          'endDateTimeStamp': endDateTimeStamp,
-          'ispublic': ispublic,
-          'location': location,
+          'endDate': trip.endDate,
+          'endDateTimeStamp': trip.endDateTimeStamp,
+          'ispublic': trip.ispublic,
+          'location': trip.location,
           'ownerID': userService.currentUserID,
-          'startDate': startDate,
-           'startDateTimeStamp': startDateTimeStamp,
-           'tripName': tripName,
-           'tripGeoPoint': geoPoint,
-          'travelType': travelType,
+          'startDate': trip.startDate,
+           'startDateTimeStamp': trip.startDateTimeStamp,
+           'tripName': trip.tripName,
+           'tripGeoPoint': trip.tripGeoPoint,
+          'travelType': trip.travelType,
           'urlToImage': '',
         });
          _analyticsService.createPrivateTrip(true);
@@ -527,8 +530,8 @@ class DatabaseService {
         CloudFunction().logEvent(action);
         addTripRef.collection('Members').doc(userService.currentUserID).set({
           'displayName' : currentUserProfile.displayName,
-          'firstName': firstName,
-          'lastName' : lastName,
+          'firstName': currentUserProfile.firstName,
+          'lastName' : currentUserProfile.lastName,
           'uid' : userService.currentUserID,
           'urlToImage' : '',
         });
@@ -547,7 +550,7 @@ class DatabaseService {
 //     await addTripRef.update({"documentId": addTripRef.id});
 
     if (urlToImage != null) {
-      if(ispublic) {
+      if(trip.ispublic) {
         try {
           String action = 'Saving Trip image';
           CloudFunction().logEvent(action);
@@ -736,7 +739,7 @@ class DatabaseService {
   }
 
   Future<UserPublicProfile> followingList() async{
-    var ref = await userPublicProfileCollection.doc(currentUserProfile.uid).get();
+    var ref = await userPublicProfileCollection.doc(userService.currentUserID).get();
     if(ref.exists){
       Map<String, dynamic> data = ref.data();
       return UserPublicProfile(
@@ -955,23 +958,6 @@ class DatabaseService {
     } catch (e) {
       CloudFunction().logError('Error adding new lodging data:  ${e.toString()}');
     }
-
-    // if (urlToImage != null) {
-    //   String urlForImage;
-    //   StorageReference storageReference = FirebaseStorage.instance
-    //       .ref()
-    //       .child('lodging/$key');
-    //   StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-    //   await uploadTask.onComplete;
-    //   print('File Uploaded');
-    //
-    //   return await addNewLodgingRef.update({
-    //     "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //       urlForImage = fileURL;
-    //       return urlForImage;
-    //     })
-    //   });
-    // }
   }
 
   // Edit Lodging
@@ -998,27 +984,6 @@ class DatabaseService {
       CloudFunction().logError('Error editing lodging:  ${e.toString()}');
       _analyticsService.writeError('Error editing lodging:  ${e.toString()}');
     }
-
-    // try {
-    //   if (urlToImage != null) {
-    //     String urlForImage;
-    //     StorageReference storageReference = FirebaseStorage.instance
-    //         .ref()
-    //         .child('lodging/$fieldID');
-    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-    //     await uploadTask.onComplete;
-    //     print('File Uploaded');
-    //
-    //     return await editLodgingRef.update({
-    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //         urlForImage = fileURL;
-    //         return urlForImage;
-    //       })
-    //     });
-    //   }
-    // } catch (e) {
-    //   print('Error updating lodging image: ${e.toString()}');
-    // }
   }
 
 
@@ -1051,26 +1016,6 @@ class DatabaseService {
       _analyticsService.writeError('Error adding new activity:  ${e.toString()}');
     }
 
-    // try {
-    //   if (urlToImage != null) {
-    //     String urlForImage;
-    //     StorageReference storageReference = FirebaseStorage.instance
-    //         .ref()
-    //         .child('activity/$key');
-    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-    //     await uploadTask.onComplete;
-    //     print('File Uploaded');
-    //
-    //     return await addNewActivityRef.update({
-    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //         urlForImage = fileURL;
-    //         return urlForImage;
-    //       })
-    //     });
-    //   }
-    // } catch (e) {
-    //   print('Error updating activity image: ${e.toString()}');
-    // }
   }
 
   // Edit activity
@@ -1097,27 +1042,6 @@ class DatabaseService {
       CloudFunction().logError('Error editing activity:  ${e.toString()}');
       _analyticsService.writeError('Error editing activity:  ${e.toString()}');
     }
-
-    // try {
-    //   if (urlToImage != null) {
-    //     String urlForImage;
-    //     StorageReference storageReference = FirebaseStorage.instance
-    //         .ref()
-    //         .child('activity/$fieldID');
-    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
-    //     await uploadTask.onComplete;
-    //     print('File Uploaded');
-    //
-    //     return await addNewActivityRef.update({
-    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
-    //         urlForImage = fileURL;
-    //         return urlForImage;
-    //       })
-    //     });
-    //   }
-    // } catch (e) {
-    //   print('Error updating activity image: ${e.toString()}');
-    // }
   }
   //Get Lodging items
   List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
@@ -1212,10 +1136,13 @@ class DatabaseService {
         .map(_userPublicProfileSnapshot);
   }
 
+  Stream<UserPublicProfile> get specificUserPublicProfile {
+    return userPublicProfileCollection.doc(userID).snapshots()
+        .map(_userPublicProfileSnapshot);
+  }
+
   // Get
   List<TransportationData> _transportListFromSnapshot(QuerySnapshot snapshot) {
-    // var list2 = List();
-    // List<TransportationData> listOfModes = List();
     try {
       List<TransportationData> transportList =  snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
@@ -1356,6 +1283,27 @@ class DatabaseService {
       _analyticsService.writeError('Error writing new chat:  ${e.toString()}');
       CloudFunction().logError('Error writing new chat:  ${e.toString()}');
     }
+
+    // try {
+    //   if (urlToImage != null) {
+    //     String urlForImage;
+    //     StorageReference storageReference = FirebaseStorage.instance
+    //         .ref()
+    //         .child('activity/$key');
+    //     StorageUploadTask uploadTask = storageReference.putFile(urlToImage);
+    //     await uploadTask.onComplete;
+    //     print('File Uploaded');
+    //
+    //     return await addNewActivityRef.update({
+    //       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
+    //         urlForImage = fileURL;
+    //         return urlForImage;
+    //       })
+    //     });
+    //   }
+    // } catch (e) {
+    //   print('Error updating activity image: ${e.toString()}');
+    // }
   }
 
 // Clear chat notifications.
@@ -1380,7 +1328,6 @@ class DatabaseService {
         return ChatData.fromData(data);
       }).toList();
     } catch (e) {
-      // AnalyticsService().writeError(e.toString());
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
       return null;
     }
@@ -1429,26 +1376,6 @@ class DatabaseService {
   }
 
 
-  //Read feedback data from users. Only shown on admin page.
-  // Future<List<TCFeedback>> feedback() async {
-  //   try {
-  //     var ref = await feedbackCollection.get();
-  //     List<TCFeedback> feedback = ref.docs.map((doc) {
-  //       Map<String, dynamic> data = doc.data();
-  //       return TCFeedback(
-  //         fieldID: data['fieldID'] ?? '',
-  //         message: data['message'] ?? '',
-  //         uid: data['uid'] ?? '',
-  //         timestamp: data['timestamp'] ?? null,
-  //       );
-  //     }).toList();
-  //     feedback.sort((a,b) => b.timestamp.compareTo(a.timestamp));
-  //
-  //     return feedback;
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
 
   // Future<List<TCReports>> reports() async {
   //   try {

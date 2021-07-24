@@ -19,6 +19,7 @@ class CurrentCrewTripBloc extends Bloc<TripEvent, TripState> {
   Stream<TripState> mapEventToState(TripEvent event) async*{
     if(event is LoadingData){
       if(_subscription != null){
+
         await _subscription?.cancel();
       }
       _subscription = tripRepository.trips().asBroadcastStream().listen((trip) { add(HasDataEvent(trip)); });

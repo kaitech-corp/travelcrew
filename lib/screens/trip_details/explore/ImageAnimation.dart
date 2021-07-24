@@ -52,9 +52,8 @@ class CustomHangingImage extends StatelessWidget {
 class ImageAnimation extends StatefulWidget{
   final Trip tripDetails;
   final expandController;
-  final expandController2;
-  final expandController3;
-  const ImageAnimation({Key key, this.tripDetails, this.expandController, this.expandController2, this.expandController3}) : super(key: key);
+
+  const ImageAnimation({Key key, this.tripDetails, this.expandController,}) : super(key: key);
 
   @override
   _ImageAnimationState createState() => _ImageAnimationState();
@@ -67,17 +66,13 @@ class _ImageAnimationState extends State<ImageAnimation> {
     void initState() {
       super.initState();
       widget.expandController.addListener(onExpand);
-      widget.expandController2.addListener(onExpand);
-      widget.expandController3.addListener(onExpand);
     }
 
 
     onExpand(){
       if(mounted){
       setState(() {
-        if (widget.expandController.expanded ||
-            widget.expandController2.expanded ||
-            widget.expandController3.expanded) {
+        if (widget.expandController.expanded) {
           _height = defaultSize.toDouble() * 15.0;
         } else {
           _height = SizeConfig.screenHeight*.4;

@@ -146,8 +146,8 @@ class _SignupScreenState extends State {
                                         iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                                       ),
                                       child: ExpandablePanel(
-                                        header: Text('Social Media', style: Theme.of(context).textTheme.headline5,),
-                                        // collapsed:
+                                        header: Text('Social Media', style: Theme.of(context).textTheme.headline6,),
+                                        collapsed:Container(),
                                         expanded: Column(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
@@ -188,8 +188,8 @@ class _SignupScreenState extends State {
                                         iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
                                       ),
                                       child: ExpandablePanel(
-                                        header: Text('Destination Wish List', style: Theme.of(context).textTheme.headline5,),
-                                        // collapsed:
+                                        header: Text('Destination Wish List', style: Theme.of(context).textTheme.headline6,),
+                                        collapsed: Container(),
                                         expanded: Column(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
@@ -233,7 +233,6 @@ class _SignupScreenState extends State {
                                           final form = _formKey.currentState;
                                           form.save();
                                           _user.topDestinations =[destination1,destination2,destination3];
-                                          print(_user.hometown);
                                           if (form.validate()) {
                                             try {
                                               String action = 'Editing Public Profile page from page';
@@ -244,7 +243,6 @@ class _SignupScreenState extends State {
                                               Navigator.pop(context);
                                             }
                                           }
-                                          // await locator.reset().whenComplete(() => setupLocator());
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Save')),

@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:travelcrew/repositories/notification_repository.dart';
-import 'package:travelcrew/repositories/trip_repository.dart';
 import 'notification_state.dart';
 import 'notification_event.dart';
 

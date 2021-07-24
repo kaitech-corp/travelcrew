@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
@@ -14,7 +15,7 @@ import '../../services/widgets/loading.dart';
 
 class ProfileWidget extends StatelessWidget {
   final UserPublicProfile user;
-
+  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   ProfileWidget({
     Key key,
     @required this.user,
