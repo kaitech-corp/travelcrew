@@ -118,28 +118,30 @@ class _EditTransportationState extends State<EditTransportation> {
                                   comment = val;
                                 },
                               ),
-//
-
-                              Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0, horizontal: 16.0),
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        final form = _formKey.currentState;
-                                        if (form.validate()) {
-                                          CloudFunction().addTransportation(
-                                            mode: dropdownValue,
-                                            tripDocID: widget.transportationData.tripDocID,
-                                            canCarpool: canCarpool,
-                                            carpoolingWith: carpoolingWith,
-                                            airline: airline,
-                                            comment: comment,
-                                            flightNumber: flightNumber,);
-                                          Navigator.pop(context);
-                                        }
-                                      },
-                                      child: Text('Add'))),
-                            ]))))));
+                            ]),
+                    ),
+                )
+            )
+        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final form = _formKey.currentState;
+          if (form.validate()) {
+            CloudFunction().addTransportation(
+              mode: dropdownValue,
+              tripDocID: widget.transportationData.tripDocID,
+              canCarpool: canCarpool,
+              carpoolingWith: carpoolingWith,
+              airline: airline,
+              comment: comment,
+              flightNumber: flightNumber,);
+            Navigator.pop(context);
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }
 }
 

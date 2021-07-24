@@ -5,9 +5,11 @@ import 'package:travelcrew/blocs/transportation_bloc/transportation_event.dart';
 import 'package:travelcrew/blocs/transportation_bloc/transportation_state.dart';
 import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/transportation/add_new_transportation.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/screens/trip_details/transportation/transportation_card.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/loading.dart';
+
+import '../../../services/database.dart';
 
 
 class TransportationPage extends StatefulWidget {
@@ -23,7 +25,6 @@ class TransportationPage extends StatefulWidget {
 
 class _TransportationPageState extends State<TransportationPage> {
   TransportationBloc bloc;
-
   @override
   void initState() {
     bloc = BlocProvider.of<TransportationBloc>(context);
@@ -33,7 +34,7 @@ class _TransportationPageState extends State<TransportationPage> {
 
   @override
   void dispose() {
-    bloc.close();
+    // bloc.close();
     super.dispose();
   }
 
@@ -65,10 +66,7 @@ class _TransportationPageState extends State<TransportationPage> {
         floatingActionButton: FloatingActionButton(
 
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddNewModeOfTransport(trip: widget.trip,)),
-            );
+            navigationService.navigateTo(AddNewTransportationRoute,arguments: widget.trip);
           },
           child: Icon(Icons.add),
         ),

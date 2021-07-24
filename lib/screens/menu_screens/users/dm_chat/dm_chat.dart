@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_list.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 
@@ -22,7 +23,7 @@ class DMChat extends StatefulWidget {
 class _DMChatState extends State<DMChat> {
 
   final TextEditingController _chatController = new TextEditingController();
-
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   Future<void> clearChat(String uid) async {
     await DatabaseService(userID: widget.user.uid).clearDMChatNotifications();
   }

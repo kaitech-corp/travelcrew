@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-import 'lists/item_lists.dart';
+import 'item_lists.dart';
 
-class ListWidget extends StatefulWidget{
+class AddToListPage extends StatefulWidget{
 
   final Trip tripDetails;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  PersistentBottomSheetController controller;
+  final PersistentBottomSheetController controller;
 
-  ListWidget({Key key, this.tripDetails, this.scaffoldKey,this.controller}) : super(key: key);
+  AddToListPage({Key key, this.tripDetails, this.scaffoldKey,this.controller}) : super(key: key);
 
   @override
-  _ListWidgetState createState() => _ListWidgetState();
+  _AddToListPageState createState() => _AddToListPageState();
 }
 
-class _ListWidgetState extends State<ListWidget> {
+class _AddToListPageState extends State<AddToListPage> {
   int _selectedIndex = 0;
 
   @override
@@ -37,11 +35,7 @@ class _ListWidgetState extends State<ListWidget> {
         _selectedIndex = index;
       });
     }
-    return ElevatedButton(
-      onPressed: () {
-        widget.controller = widget.scaffoldKey.currentState.showBottomSheet(
-          (BuildContext context) {
-            return DefaultTabController(
+    return DefaultTabController(
               length: 3,
               child: Scaffold(
                 resizeToAvoidBottomInset: false,
@@ -63,29 +57,5 @@ class _ListWidgetState extends State<ListWidget> {
                 ),
               ),
             );
-          }
-        );
-      },
-      child: const Text('Add to List'),
-    );
-  }
-}
-
-class SplitButton extends StatelessWidget {
-
-  final Trip tripDetails;
-
-  const SplitButton({
-    Key key, this.tripDetails,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        navigationService.navigateTo(CostPageRoute, arguments: tripDetails);
-      },
-      child: const Text('Split'),
-    );
   }
 }

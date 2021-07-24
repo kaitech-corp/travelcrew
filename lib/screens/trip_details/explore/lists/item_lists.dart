@@ -1,14 +1,15 @@
+import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/apis/api.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/size_config/size_config.dart';
+
 import '../../../../services/widgets/loading.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 
 
 class BringingList extends StatefulWidget{
@@ -197,10 +198,7 @@ class _NeedListState extends State<NeedList> {
                     _onSelectedProduct(selected, product.query);
                     if(selected ==true) {
                       try {
-                        // print(widget.documentID);
                         CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
-                        // DatabaseService().addItemToNeedList(
-                        //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
                       } catch (e) {
                         print(e.toString());
@@ -258,15 +256,6 @@ class NeedListToDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        height: SizeConfig.screenHeight*.6,
-        child: needList(context),
-      ),
-    );
-  }
-    Widget needList(context){
 
     void _onSelectedItems(Need item) {
       CloudFunction().addItemToBringingList(documentID, item.item);
@@ -300,7 +289,7 @@ class NeedListToDisplay extends StatelessWidget{
                 child: ListTile(
                   leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
                   title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                  subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
+                  subtitle: Text('Suggested by: ${item.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                   trailing: const Icon(Icons.add),
                   onTap: (){
                       _onSelectedItems(item);
@@ -324,16 +313,6 @@ class BringListToDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        height: SizeConfig.screenHeight*.6,
-        child: bringList(),
-      ),
-    );
-  }
-
-  Widget bringList() {
     return StreamBuilder(
       builder: (context, items) {
         if(items.hasError){

@@ -20,7 +20,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   String comment = '';
   String displayName = '';
   String documentId = '';
-  bool canCarpool = true;
+  bool canCarpool = false;
   String carpoolingWith = '';
   String airline = '';
   String flightNumber = '';
@@ -46,27 +46,27 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                            DropdownButton<String>(
-                            value: dropdownValue,
-                              isExpanded: true,
-                            elevation: 16,
-                            underline: Container(
-                              height: 2,
-                              color: Colors.blueAccent,
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                dropdownValue = newValue;
-                              });
-                            },
-                            items: modes
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
+                                DropdownButton<String>(
+                                  value: dropdownValue,
+                                  isExpanded: true,
+                                  elevation: 16,
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.blueAccent,
+                                  ),
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      dropdownValue = newValue;
+                                    });
+                                  },
+                                  items: modes
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
                                 if(dropdownValue == 'Driving') SwitchListTile(
                                     title: const Text('Open to Carpooling?'),
                                     value: canCarpool,
@@ -121,59 +121,58 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                     comment = val;
                                   },
                                 ),
-//
+                              ]),
+                      )
+                  )
+              ),
+          ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            final form = _formKey.currentState;
+            String documentID = widget.trip.documentId;
+            String message = 'A new travel method has been added to ${widget.trip.tripName}';
+            if (form.validate()) {
+              try {
+                String action = 'Saving new transportation data';
+                CloudFunction().logEvent(action);
+                CloudFunction().addTransportation(
+                  mode: dropdownValue,
+                  tripDocID: widget.trip.documentId,
+                  canCarpool: canCarpool,
+                  carpoolingWith: carpoolingWith,
+                  airline: airline.trim(),
+                  comment: comment.trim(),
+                  flightNumber: flightNumber.trim(),);
+              } on Exception catch (e) {
+                CloudFunction().logError('Error adding new Transportation item:  ${e.toString()}');
+              }
 
-                                Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 30.0, horizontal: 30.0),
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          final form = _formKey.currentState;
-                                          String documentID = widget.trip.documentId;
-                                          String message = 'A new travel method has been added to ${widget.trip.tripName}';
-                                          if (form.validate()) {
-                                            try {
-                                              String action = 'Saving new transportation data';
-                                              CloudFunction().logEvent(action);
-                                              CloudFunction().addTransportation(
-                                                  mode: dropdownValue,
-                                                  tripDocID: widget.trip.documentId,
-                                                  canCarpool: canCarpool,
-                                                  carpoolingWith: carpoolingWith,
-                                                  airline: airline.trim(),
-                                                  comment: comment.trim(),
-                                                  flightNumber: flightNumber.trim(),);
-                                            } on Exception catch (e) {
-                                              CloudFunction().logError('Error adding new Transportation item:  ${e.toString()}');
-                                            }
 
-
-                                            try {
-                                              String action = 'Sending notifications to access users for $documentId';
-                                              CloudFunction().logEvent(action);
-                                              widget.trip.accessUsers.forEach((f) {
-                                                if(f != userService.currentUserID){
-                                                  CloudFunction().addNewNotification(
-                                                    message: message,
-                                                    documentID: documentID,
-                                                    type: 'Travel',
-                                                    uidToUse: f,
-                                                    ownerID: userService.currentUserID,
-                                                    ispublic: widget.trip.ispublic,
-                                                  );
-                                                }
-                                              });
-                                            } on Exception catch (e) {
-                                              CloudFunction().logError('Error sending notifications for new Transportation item:  ${e.toString()}');
-                                            }
-                                            navigationService.pop();
-                                          }
-                                        },
-                                      child: Text(
-                                        'Add',
-                                        style: Theme.of(context).textTheme.subtitle1,
-                                      ),)),
-                                ])))))),
+              try {
+                String action = 'Sending notifications to access users for $documentId';
+                CloudFunction().logEvent(action);
+                widget.trip.accessUsers.forEach((f) {
+                  if(f != userService.currentUserID){
+                    CloudFunction().addNewNotification(
+                      message: message,
+                      documentID: documentID,
+                      type: 'Travel',
+                      uidToUse: f,
+                      ownerID: userService.currentUserID,
+                      ispublic: widget.trip.ispublic,
+                    );
+                  }
+                });
+              } on Exception catch (e) {
+                CloudFunction().logError('Error sending notifications for new Transportation item:  ${e.toString()}');
+              }
+              navigationService.pop();
+            }
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      ),
     );
   }
 }

@@ -106,7 +106,7 @@ class _EditTripDataState extends State<EditTripData> {
 
     return Scaffold(
         appBar: AppBar(
-            title: const Text('Edit Trip')),
+            title: Text('Edit Trip', style: Theme.of(context).textTheme.headline5,)),
         body: Container(
             child: SingleChildScrollView(
                 padding:
@@ -115,7 +115,7 @@ class _EditTripDataState extends State<EditTripData> {
                     builder: (context) => Form(
                         key: _formKey,
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               TextFormField(
                                   textCapitalization: TextCapitalization.words,
@@ -297,60 +297,64 @@ class _EditTripDataState extends State<EditTripData> {
                                   comment = val;
                                 },
                               ),
-                              Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0, horizontal: 16.0),
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        final form = _formKey.currentState;
-                                        if (form.validate()) {
-                                          if(!dateChangeVisible){
-                                            startDateTimeStamp = widget.tripDetails.startDateTimeStamp;
-                                            endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
-                                            endDate = widget.tripDetails.endDate;
-                                            startDate = widget.tripDetails.startDate;
-                                          } else
-                                            {
-                                              startDate = DateFormat.yMMMd().format(_fromDateDepart);
-                                              startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
-                                              endDate = DateFormat.yMMMd().format(_fromDateReturn);
-                                              endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
-                                            }
-                                          if(locationChangeVisible){
-                                            location = myController.text;
-                                            if(googleData2.value != null){
-                                              tripGeoPoint = googleData2.value.geoLocation;
-                                            } 
-                                          }
-                                          try {
-                                            String action = 'Saving edited Trip data';
-                                            CloudFunction().logEvent(action);
-                                            DatabaseService().editTripData(
-                                                comment,
-                                                documentID,
-                                                endDate,
-                                                endDateTimeStamp,
-                                                ispublic,
-                                                location,
-                                                startDate,
-                                                startDateTimeStamp,
-                                                travelType,
-                                                urlToImage,
-                                                tripName,
-                                                tripGeoPoint);
-                                          } on Exception catch (e) {
-                                            CloudFunction().logError('Error in edit trip function: ${e.toString()}');
-                                          }
-                                          _showDialog(context);
-                                        }
-                                        myController.clear();
-                                        googleData2.dispose();
-                                      },
-                                      child: const Text('Save'))),
-                            ]))))));
+                            ]),
+                    )))
+        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final form = _formKey.currentState;
+          if (form.validate()) {
+            if(!dateChangeVisible){
+              startDateTimeStamp = widget.tripDetails.startDateTimeStamp;
+              endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
+              endDate = widget.tripDetails.endDate;
+              startDate = widget.tripDetails.startDate;
+            } else
+            {
+              startDate = DateFormat.yMMMd().format(_fromDateDepart);
+              startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
+              endDate = DateFormat.yMMMd().format(_fromDateReturn);
+              endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
+            }
+            if(locationChangeVisible){
+              location = myController.text;
+              if(googleData2.value != null){
+                tripGeoPoint = googleData2.value.geoLocation;
+              }
+            }
+            navigationService.pop();
+            try {
+              String action = 'Saving edited Trip data';
+              CloudFunction().logEvent(action);
+              DatabaseService().editTripData(
+                  comment,
+                  documentID,
+                  endDate,
+                  endDateTimeStamp,
+                  ispublic,
+                  location,
+                  startDate,
+                  startDateTimeStamp,
+                  travelType,
+                  urlToImage,
+                  tripName,
+                  tripGeoPoint);
+            } on Exception catch (e) {
+              CloudFunction().logError('Error in edit trip function: ${e.toString()}');
+            }
+            _showDialog(context);
+          }
+
+          myController.clear();
+          googleData2.dispose();
+        },
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }
   _showDialog(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Submitting form')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Saving')));
     navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
   }
 }

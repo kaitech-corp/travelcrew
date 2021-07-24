@@ -6,7 +6,7 @@ import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 
 
@@ -22,7 +22,7 @@ class EditActivity extends StatefulWidget {
 
 }
 class _EditActivityState extends State<EditActivity> {
-
+  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final _formKey = GlobalKey<FormState>();
   File _image;
   bool timePickerVisible = false;
@@ -30,8 +30,6 @@ class _EditActivityState extends State<EditActivity> {
 
   @override
   Widget build(BuildContext context) {
-    bool loading = false;
-
 
     String displayName = widget.activity.displayName;
     String link = widget.activity.link;
@@ -41,7 +39,7 @@ class _EditActivityState extends State<EditActivity> {
     String endTimeSaved = widget.activity.endTime;
 
 
-    return loading ? Loading() : GestureDetector(
+    return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
@@ -50,17 +48,14 @@ class _EditActivityState extends State<EditActivity> {
             title: Text('Edit Activity',style: Theme.of(context).textTheme.headline5,),
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(16),
             child: Builder(
               builder: (context) => Form(
                 key: _formKey,
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Container(
-                        // padding: const EdgeInsets.all(10),
-                      ),
                       TextFormField(
                         onSaved: (val){
                           setState(() => activityType = val);
@@ -86,7 +81,6 @@ class _EditActivityState extends State<EditActivity> {
                           setState(() => link = val);
                         },
                         enableInteractiveSelection: true,
-                        maxLines: 2,
                         initialValue: link,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -144,73 +138,63 @@ class _EditActivityState extends State<EditActivity> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 30.0, horizontal: 30.0),
-                        child: ElevatedButton(
-                          onPressed: () async{
-                            final form = _formKey.currentState;
-                            if (form.validate()) {
-                              form.save();
-                              String documentID = widget.trip.documentId;
-                              String fieldID = widget.activity.fieldID;
-                              if(!timePickerVisible){
-                                startTime.value = startTimeSaved;
-                                endTime.value = endTimeSaved;
-                              }
-                              setState(() => loading =true);
-                              String message = 'An activity has been modified within ${widget.trip.tripName}';
-                              try {
-                                String action = 'Saving edited activity data';
-                                CloudFunction().logEvent(action);
-                                DatabaseService().editActivityData(
-                                    comment,
-                                    displayName,
-                                    documentID,
-                                    link,
-                                    activityType,
-                                    _image, fieldID,
-                                    startTime.value,
-                                    endTime.value,
-                                );
-                              } on Exception catch (e) {
-                                CloudFunction().logError('Error saving edited activity data:  ${e.toString()}');
-                              }
-                              try {
-                                String action = 'Send notifications for edited activity';
-                                CloudFunction().logEvent(action);
-                                widget.trip.accessUsers.forEach((f) {
-                                  if(f != currentUserProfile.uid){
-                                    CloudFunction().addNewNotification(
-                                      message: message,
-                                      documentID: documentID,
-                                      type: 'Activity',
-                                      uidToUse: f,
-                                      ownerID: currentUserProfile.uid,
-                                    );
-                                  }
-                                });
-                              } on Exception catch (e) {
-                                CloudFunction().logError('Error sending notifications for edited activities:  ${e.toString()}');
-                              }
-                              setState(() {
-                                loading = false;
-                              });
-                              navigationService.pop();
-                            }
-                          },
-                            child: Text(
-                              'Save',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            )
-                        ),
-                      ),
                     ]
                 ),
               ),
             ),
-          )
+          ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async{
+            final form = _formKey.currentState;
+            if (form.validate()) {
+              form.save();
+              String documentID = widget.trip.documentId;
+              String fieldID = widget.activity.fieldID;
+              if(!timePickerVisible){
+                startTime.value = startTimeSaved;
+                endTime.value = endTimeSaved;
+              }
+              String message = 'An activity has been modified within ${widget.trip.tripName}';
+              try {
+                String action = 'Saving edited activity data';
+                CloudFunction().logEvent(action);
+                DatabaseService().editActivityData(
+                  comment,
+                  displayName,
+                  documentID,
+                  link,
+                  activityType,
+                  _image, fieldID,
+                  startTime.value,
+                  endTime.value,
+                );
+              } on Exception catch (e) {
+                CloudFunction().logError('Error saving edited activity data:  ${e.toString()}');
+              }
+
+              try {
+                String action = 'Send notifications for edited activity';
+                CloudFunction().logEvent(action);
+                widget.trip.accessUsers.forEach((f) {
+                  if(f != currentUserProfile.uid){
+                    CloudFunction().addNewNotification(
+                      message: message,
+                      documentID: documentID,
+                      type: 'Activity',
+                      uidToUse: f,
+                      ownerID: currentUserProfile.uid,
+                    );
+                  }
+                });
+              } catch (e) {
+                CloudFunction().logError('Error sending notifications for edited activities:  ${e.toString()}');
+              }
+            }
+            navigationService.pop();
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

@@ -15,7 +15,7 @@ class ChatData {
         _displayName = data['displayName'] ?? '',
         _fieldID = data['fieldID'] ?? '',
         _message = data['message'] ?? '',
-        _timestamp = data['timestamp'] ?? '',
+        _timestamp = data['timestamp'] ?? null,
         _uid = data['uid'];
 
   Map<String, dynamic> toJson() {

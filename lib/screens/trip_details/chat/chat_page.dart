@@ -5,8 +5,10 @@ import 'package:travelcrew/blocs/chat_bloc/chat_event.dart';
 import 'package:travelcrew/blocs/chat_bloc/chat_state.dart';
 import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
+import 'package:travelcrew/repositories/current_user_profile_repository.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_card.dart';
@@ -26,7 +28,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   ChatBloc bloc;
-
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final TextEditingController _chatController = new TextEditingController();
 
   Future<void> clearChat(String uid) async {
@@ -37,12 +39,13 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     bloc = BlocProvider.of<ChatBloc>(context);
     bloc.add(LoadingChatData());
+    CurrentUserProfileRepository().refresh();
     super.initState();
   }
 
   @override
   void dispose() {
-    bloc.close();
+    // bloc.close();
     super.dispose();
   }
 
@@ -50,7 +53,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     clearChat(userService.currentUserID);
-
 
     return GestureDetector(
       onTap: () {

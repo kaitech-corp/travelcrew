@@ -40,6 +40,19 @@ class TCFunctions {
     );
   }
 
+  String checkDate(int startDateTimeStamp, int endDateTimeStamp){
+    var now = new DateTime.now();
+    var startDate = DateTime.fromMillisecondsSinceEpoch(startDateTimeStamp);
+    var endDate = DateTime.fromMillisecondsSinceEpoch(endDateTimeStamp);
+    if(startDate.difference(now).inDays > 0){
+      return 'before';
+    } else if(endDate.difference(now).inDays > 0){
+      return 'during';
+    } else{
+      return 'after';
+    }
+  }
+
   String readTimestamp(int timestamp) {
     var now = new DateTime.now();
     var format = new DateFormat('HH:mm a');

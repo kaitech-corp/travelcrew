@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class Settings extends StatefulWidget{
@@ -33,56 +31,54 @@ class _SettingsState extends State<Settings> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text('Theme',style: Theme.of(context).textTheme.headline5,),
-              RadioListTile<String>(
-                title: const Text('Light'),
-                value: 'light_theme',
-                groupValue: themeID,
-                onChanged: (value) {
-                  setState(() {
-                    themeID = value;
-                    ThemeProvider.controllerOf(context).setTheme(value);
-                    navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
-                  });
-                },
-              ),
-              RadioListTile<String>(
-                title: const Text('Dark'),
-                value: 'dark_theme',
-                groupValue: themeID,
-                onChanged: (value) {
-                  setState(() {
-                    themeID = value;
-                    ThemeProvider.controllerOf(context).setTheme(value);
-                    navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
-                  });
-                },
-              ),
-
-              Container(height: 2, decoration: BoxDecoration(border: Border.all(color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,)),),
+              // Text('Theme',style: Theme.of(context).textTheme.headline5,),
+              // RadioListTile<String>(
+              //   title: const Text('Light'),
+              //   value: 'light_theme',
+              //   groupValue: themeID,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       themeID = value;
+              //       ThemeProvider.controllerOf(context).setTheme(value);
+              //       navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+              //     });
+              //   },
+              // ),
+              // RadioListTile<String>(
+              //   title: const Text('Dark'),
+              //   value: 'dark_theme',
+              //   groupValue: themeID,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       themeID = value;
+              //       ThemeProvider.controllerOf(context).setTheme(value);
+              //       navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+              //     });
+              //   },
+              // ),
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
                 children: [
-                  Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,)),
+                  Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,)),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SizeConfig.mobile ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Container(height: SizeConfig.screenWidth*.1,),
                         _instagramButton(),
+                        Container(height: SizeConfig.screenWidth*.1,),
                         _facebookButton(),
-                      ],
-                    ) :
-                    Column(
-                      children: [
-                        _instagramButton(),
-                        _facebookButton(),
+                        Container(height: SizeConfig.screenWidth*.1,),
                         _twitterButton(),
                       ],
                     ),
                   ),
                 ],
               ),
+              Container(
+                height: 2,
+                decoration: BoxDecoration(border: Border.all(color: Colors.black),)),
             ],
           ),
         ),

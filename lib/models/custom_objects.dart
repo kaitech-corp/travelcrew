@@ -573,3 +573,10 @@ class ExpansionItem {
 
   ExpansionItem({this.item,this.headerValue,this.isExpanded = false});
 }
+
+class UserPurchaseDetails{
+  String uid;
+  double total;
+
+  UserPurchaseDetails({this.total,this.uid});
+}
