@@ -225,14 +225,15 @@ class HangingImageTheme extends StatelessWidget {
 }
 
 class HangingImageTheme3 extends StatelessWidget {
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final double hgt = SizeConfig.screenHeight*.06;
+  final UserPublicProfile user;
 
   HangingImageTheme3({
     Key key, this.user,
   }) : super(key: key);
 
-  final double hgt = SizeConfig.screenHeight*.06;
-  final UserPublicProfile user;
   @override
   Widget build(BuildContext context) {
     return ClipPath(
