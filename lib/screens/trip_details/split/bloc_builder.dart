@@ -197,8 +197,8 @@ class QuickDataCards extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
-            color: Colors.green,
-            // elevation: 10,
+            color: Colors.transparent,
+            elevation: 0,
             child: StreamBuilder(
               builder: (context, userData){
                 if(userData.hasData){
@@ -206,11 +206,12 @@ class QuickDataCards extends StatelessWidget {
                   return Container(
                     padding: EdgeInsets.all(SizeConfig.defaultPadding),
                     height: SizeConfig.screenWidth*.35,
-                    width: SizeConfig.screenWidth*.4,
+                    width: SizeConfig.screenWidth*.5,
                     child: Column(
                       children: [
                         Text('${user.displayName}',style: Theme.of(context).textTheme.subtitle1,),
                         Text('Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                        Container(height: 2,color: Colors.black,)
                       ],
                     ),
                   );
