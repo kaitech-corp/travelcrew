@@ -56,10 +56,10 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
             radius: SizeConfig.screenWidth/6,
             backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
           ),
-          Text(user.displayName,style: Theme.of(context).textTheme.headline1),
+          Text(user.displayName,style: Theme.of(context).textTheme.headline5),
           Container(height: 10,),
-          Text('Payment details for:',style: Theme.of(context).textTheme.headline2, textAlign: TextAlign.center,),
-          Text('"${splitObject.itemName}"',style: Theme.of(context).textTheme.headline2, textAlign: TextAlign.center,maxLines: 5,),
+          Text('Payment details for:',style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
+          Text('"${splitObject.itemName}"',style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,maxLines: 5,),
           ListTile(
             title: (costObject.paid == false) ?
             Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1) :

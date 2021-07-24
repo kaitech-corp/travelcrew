@@ -56,6 +56,7 @@ class SplitObject {
       'itemDocID':itemDocID,
       'itemName':itemName,
       'itemTotal':itemTotal,
+      'itemType':itemType,
       'lastUpdated':lastUpdated,
       'purchasedByUID':purchasedByUID,
       'tripDocID':tripDocID,

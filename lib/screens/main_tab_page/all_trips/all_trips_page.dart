@@ -287,7 +287,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
     splashColor: Colors.blue.withAlpha(30),
 
     child: Container (
-      margin: const EdgeInsets.only(left: 15,right: 15, bottom: 20, top: 10),
+      margin: const EdgeInsets.only(left: 15,right: 15, bottom: 15, top: 10),
       decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
       BoxDecoration(
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
@@ -312,38 +312,15 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
-            flex: 4,
-            child: Tooltip(
-              message: '${trip.tripName}',
-              child: ListTile(
-                contentPadding: EdgeInsets.only(left: 15,right: 5),
-                title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 2, overflow: TextOverflow.ellipsis,),
-                subtitle: Text("${trip.travelType}",
-                  textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,),
-                trailing: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle1,),
-                onTap: () {
-                  _analyticsService.viewedTrip();
-                  navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
-                },
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 2,
+          Tooltip(
+            message: '${trip.tripName}',
             child: ListTile(
-              title: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,),
-              onTap: () {
-                navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
-              },
-            ),
-          ),
-          Flexible(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: TextButton(
+              contentPadding: EdgeInsets.only(left: 15,right: 5),
+              title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 2, overflow: TextOverflow.ellipsis,),
+              subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,),
+              trailing: TextButton(
                 child: favorite(userService.currentUserID, trip),
                 onPressed: () {
                   if (trip.favorite.contains(userService.currentUserID)){
@@ -353,7 +330,19 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                   }
                 },
               ),
+              onTap: () {
+                _analyticsService.viewedTrip();
+                navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
+              },
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 15,right: 5),
+            child: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            // child:
           ),
           const Padding(padding: EdgeInsets.only(bottom: 10)),
         ],

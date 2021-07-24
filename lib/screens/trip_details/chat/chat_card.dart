@@ -102,7 +102,7 @@ class ChatCard extends StatelessWidget {
                   ),
                   Container(
                       margin:EdgeInsets.fromLTRB(10,0,10,10),
-                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: TextStyle(color: Colors.black,fontStyle: FontStyle.italic, fontFamily: 'Cantata One'))),
+                      child: Text(readTimestamp(message.timestamp?.millisecondsSinceEpoch ?? null), textScaleFactor: .75,style: TextStyle(color: Colors.black,fontStyle: FontStyle.italic, fontFamily: 'Cantata One'))),
                 ],
               )
           ),
@@ -147,7 +147,7 @@ class ChatCard extends StatelessWidget {
                   ),
                   Container(
                       margin:EdgeInsets.fromLTRB(10,0,10,10),
-                      child: Text(readTimestamp(message.timestamp.millisecondsSinceEpoch ?? ''), textScaleFactor: .75,style: TextStyle(color: Colors.black,fontStyle: FontStyle.italic, fontFamily: 'Cantata One'),)),
+                      child: Text(readTimestamp(message.timestamp?.millisecondsSinceEpoch ?? null), textScaleFactor: .75,style: TextStyle(color: Colors.black,fontStyle: FontStyle.italic, fontFamily: 'Cantata One'),)),
                 ],
               )
           ),
@@ -157,21 +157,25 @@ class ChatCard extends StatelessWidget {
   }
   //
   String readTimestamp(int timestamp) {
-    var now = new DateTime.now();
-    var format = new DateFormat('HH:mm a');
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
-    var diff = date.difference(now);
-    var time = '';
-    if (diff.inDays == 0) {
-      time = format.format(date);
-    } else {
-      if ((diff.inDays).abs() == 1) {
-        time = '1 DAY AGO';
+    if (timestamp != null) {
+      var now = new DateTime.now();
+      var format = new DateFormat('HH:mm a');
+      var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
+      var diff = date.difference(now);
+      var time = '';
+      if (diff.inDays == 0) {
+        time = format.format(date);
       } else {
-        time = (diff.inDays).abs().toString() + ' DAYS AGO';
+        if ((diff.inDays).abs() == 1) {
+          time = '1 DAY AGO';
+        } else {
+          time = (diff.inDays).abs().toString() + ' DAYS AGO';
+        }
       }
+      
+      return time;
+    } else {
+      return '';
     }
-
-    return time;
   }
 }

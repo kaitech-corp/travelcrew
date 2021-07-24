@@ -7,6 +7,8 @@ import 'package:travelcrew/repositories/notification_repository.dart';
 import 'package:travelcrew/screens/authenticate/profile_stream.dart';
 import 'package:travelcrew/services/database.dart';
 
+
+
 class LaunchIconBadger extends StatefulWidget{
 
 

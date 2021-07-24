@@ -27,7 +27,7 @@ class _CurrentTripsState extends State<CurrentTrips>{
 
   @override
   void dispose() {
-    blocCurrent.close();
+    // blocCurrent.close();
     super.dispose();
   }
 

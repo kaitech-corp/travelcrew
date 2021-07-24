@@ -52,7 +52,7 @@ class _EditLodgingState extends State<EditLodging> {
             title: Text('Edit Lodging',style: Theme.of(context).textTheme.headline5,),
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(16),
             child: Builder(
               builder: (context) => Form(
                 key: _formKey,
@@ -88,7 +88,6 @@ class _EditLodgingState extends State<EditLodging> {
                           setState(() => link = val);
                         },
                         enableInteractiveSelection: true,
-                        maxLines: 2,
                         initialValue: link,
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -153,74 +152,67 @@ class _EditLodgingState extends State<EditLodging> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 30),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 30.0, horizontal: 30.0),
-                        child: ElevatedButton(
-                          onPressed: () async{
-                            final form = _formKey.currentState;
-                            if (form.validate()) {
-                              form.save();
-                              String documentID = widget.trip.documentId;
-                              String fieldID = widget.lodging.fieldID;
-                              if(!timePickerVisible){
-                                startTime.value = startTimeSaved;
-                                endTime.value = endTimeSaved;
-                              }
-
-                              setState(() => loading =true);
-                              String message = 'A lodging option has been modified within ${widget.trip.tripName}';
-
-                              try {
-                                DatabaseService().editLodgingData(
-                                    comment,
-                                    displayName,
-                                    documentID,
-                                    link,
-                                    lodgingType,
-                                    _image,
-                                    fieldID,
-                                    startTime.value,
-                                    endTime.value,
-                                );
-                              } on Exception catch (e) {
-                                CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
-                              }
-                              try {
-                                String action = 'Sending notifications for $documentID lodging';
-                                CloudFunction().logEvent(action);
-                                widget.trip.accessUsers.forEach((f) {
-                                  if (f != currentUserProfile.uid) {
-                                    CloudFunction().addNewNotification(
-                                      message: message,
-                                      documentID: documentID,
-                                      type: 'Lodging',
-                                      uidToUse: f,
-                                      ownerID: currentUserProfile.uid,
-                                    );
-                                  }
-                                });
-                              } catch(e){
-                                CloudFunction().logError('Error sending notifications for edited lodging:  ${e.toString()}');
-                              }
-                              setState(() {
-                                loading = false;
-                              });
-                              navigationService.pop();
-                            }
-                          },
-                          child: Text(
-                              'Save',
-                              style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                        ),
-                      ),
                     ]
                 ),
               ),
             ),
-          )
+          ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async{
+            final form = _formKey.currentState;
+            if (form.validate()) {
+              form.save();
+              String documentID = widget.trip.documentId;
+              String fieldID = widget.lodging.fieldID;
+              if(!timePickerVisible){
+                startTime.value = startTimeSaved;
+                endTime.value = endTimeSaved;
+              }
+
+              setState(() => loading =true);
+              String message = 'A lodging option has been modified within ${widget.trip.tripName}';
+
+              try {
+                DatabaseService().editLodgingData(
+                  comment,
+                  displayName,
+                  documentID,
+                  link,
+                  lodgingType,
+                  _image,
+                  fieldID,
+                  startTime.value,
+                  endTime.value,
+                );
+              } on Exception catch (e) {
+                CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
+              }
+              try {
+                String action = 'Sending notifications for $documentID lodging';
+                CloudFunction().logEvent(action);
+                widget.trip.accessUsers.forEach((f) {
+                  if (f != currentUserProfile.uid) {
+                    CloudFunction().addNewNotification(
+                      message: message,
+                      documentID: documentID,
+                      type: 'Lodging',
+                      uidToUse: f,
+                      ownerID: currentUserProfile.uid,
+                    );
+                  }
+                });
+              } catch(e){
+                CloudFunction().logError('Error sending notifications for edited lodging:  ${e.toString()}');
+              }
+              setState(() {
+                loading = false;
+              });
+              navigationService.pop();
+            }
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

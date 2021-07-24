@@ -26,6 +26,7 @@ class AllUserRepository {
         }).toList();
         userList.sort((a,b) => a.displayName.compareTo(b.displayName));
         userList = userList.where((user) => user.uid != userService.currentUserID).toList();
+
         return userList;
       } catch (e) {
         CloudFunction().logError('Error retrieving stream of all users: ${e.toString()}');

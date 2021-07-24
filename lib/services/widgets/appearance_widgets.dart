@@ -53,6 +53,75 @@ class AppBarIconThemeWidget extends StatelessWidget{
 
 }
 
+class SplitIconWidget extends StatelessWidget{
+
+  final String type;
+
+  const SplitIconWidget({Key key, this.type}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    switch (type){
+      case "Activity":
+        return Container(
+            height: SizeConfig.screenWidth*.2,
+            width: SizeConfig.screenWidth*.2,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  // radius: 15,
+                    colors:  [Colors.yellow[100], Colors.yellow[50]],
+                    stops: const [0.4,1.0]
+                )
+            ),
+            child: Icon(Icons.directions_bike ,color: Colors.amber.shade600));
+      case "Lodging":
+        // return CircleAvatar(backgroundColor: Colors.orange,radius: 30,);
+        return Container(
+          height: SizeConfig.screenWidth*.2,
+            width: SizeConfig.screenWidth*.2,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  // radius: 15,
+                    colors:  [Colors.orange[100], Colors.orange[50]],
+                    stops: const [0.4,1.0]
+                )
+            ),
+            child: Icon(Icons.hotel ,color: Colors.orangeAccent,)
+        );
+      case "Transportation":
+        return Container(
+            height: SizeConfig.screenWidth*.2,
+            width: SizeConfig.screenWidth*.2,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  // radius: 15,
+                    colors:  [Colors.purple[100], Colors.purple[50]],
+                    stops: const [0.4,1.0]
+                )
+            ),
+            child: Icon(Icons.flight ,color: Colors.purpleAccent));
+      default:
+        return Container(
+            height: SizeConfig.screenWidth*.2,
+            width: SizeConfig.screenWidth*.2,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  // radius: 15,
+                    colors:  [Colors.green.shade100, Colors.green.shade50],
+                    stops: const [0.4,1.0]
+                )
+            ),
+            child: Icon(Icons.monetization_on ,color: Colors.green));
+    }
+  }
+
+}
+
 // Icon color for Trip Details
 class TripDetailsIconThemeWidget extends StatelessWidget{
 
@@ -83,7 +152,6 @@ class BottomNavIconThemeWidget extends StatelessWidget{
 }
 
 
-
 class ChatTextStyle {
 
   TextStyle messageStyle(){
@@ -93,39 +161,4 @@ class ChatTextStyle {
   TextStyle timestampStyle(){
     return TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14, color: Colors.black);
   }
-}
-
-class CustomTextScaler {
-
-  Text scaleSubtitle1(String _text, BuildContext context){
-    if(SizeConfig.tablet) {
-      return Text(
-        _text,
-        style: Theme.of(context).textTheme.subtitle1,
-        textScaleFactor: 1.5,
-      );
-    } else {
-      Text(
-        _text,
-        style: Theme.of(context).textTheme.subtitle1,
-      );
-    }
-  }
-
-  Text scaleSubtitle2(String _text, BuildContext context){
-    if(SizeConfig.tablet) {
-      return Text(
-        _text,
-        style: Theme.of(context).textTheme.subtitle2,
-        textScaleFactor: 1.5,
-      );
-    } else {
-      Text(
-        _text,
-        style: Theme.of(context).textTheme.subtitle2,
-      );
-    }
-  }
-
-
 }

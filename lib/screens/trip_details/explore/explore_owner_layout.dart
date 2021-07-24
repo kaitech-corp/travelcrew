@@ -1,21 +1,21 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/explore/layout_widgets.dart';
-import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
-import 'package:travelcrew/screens/trip_details/split/split_page.dart';
+import 'package:travelcrew/screens/trip_details/explore/lists/ListPage.dart';
+import 'package:travelcrew/screens/trip_details/explore/lists/addToListPage.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/image_popup.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/widgets/trip_details_widget.dart';
 import 'package:travelcrew/size_config/size_config.dart';
+
 import 'ImageAnimation.dart';
+import 'members/members_layout.dart';
 
 
 class ExploreOwnerLayout extends StatefulWidget {
@@ -24,7 +24,7 @@ class ExploreOwnerLayout extends StatefulWidget {
   final heroTag;
 
   final GlobalKey<ScaffoldState> scaffoldKey;
-  PersistentBottomSheetController controller;
+  final PersistentBottomSheetController controller;
 
   ExploreOwnerLayout({this.tripDetails, this.heroTag, this.scaffoldKey, this.controller});
 
@@ -35,27 +35,20 @@ class ExploreOwnerLayout extends StatefulWidget {
 class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
   final expandController = ExpandableController();
-  final expandController2 = ExpandableController();
-  final expandController3 = ExpandableController();
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
-  double _tripDetailsBoxSize = SizeConfig.screenHeight*.18;
-  double _tripDetailsCardEdgeInset = 8.0;
+
   @override
   void initState() {
     super.initState();
     expandController.addListener(onExpand);
-    expandController2.addListener(onExpand);
-    expandController3.addListener(onExpand);
   }
 
   onExpand(){
     if(mounted){
       setState(() {
-        if (expandController.expanded ||
-            expandController2.expanded ||
-            expandController3.expanded) {
+        if (expandController.expanded) {
           _padding = SizeConfig.defaultSize.toDouble() * 10.0;
         } else {
           _padding = SizeConfig.screenHeight*.35;
@@ -67,8 +60,6 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
   void dispose() {
     super.dispose();
     expandController.dispose();
-    expandController2.dispose();
-    expandController3.dispose();
   }
 
 
@@ -118,14 +109,12 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                             });
                           },
                           child: ImageAnimation(tripDetails: widget.tripDetails,
-                            expandController: expandController,
-                            expandController2: expandController2,
-                            expandController3: expandController3,),
+                            expandController: expandController,),
                         ),
                         AnimatedPadding(
                             duration: Duration(milliseconds: 250),
                             padding: EdgeInsets.only(top: _padding),
-                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,)),
+                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey)),
                       ],
                     ):
                     Stack(
@@ -133,223 +122,16 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                         HangingImageTheme(),
                         Padding(
                             padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
-                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,)),
+                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,)),
                       ],
                     ),
                     Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
-                    SizedBox(height: 15,),
-                    Stack(
-                      children: [
-                        DateGauge(tripDetails: widget.tripDetails),
-                        Positioned(
-                          bottom: 10,
-                          left: 18.0,
-                          right: 18.0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ListWidget(tripDetails: widget.tripDetails,controller: widget.controller,scaffoldKey: widget.scaffoldKey,),
-                              SplitPage(tripDetails: widget.tripDetails),
-                              CrewModalBottomSheet(tripDetails: widget.tripDetails),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-                              ),
-                              builder: (context) => Container(
-                                    padding: const EdgeInsets.all(10),
-                                    height: SizeConfig.screenHeight*.7,
-                                    child: BringListToDisplay(tripDocID: widget.tripDetails.documentId,),
-                                ),
-                            );
-                          },
-                          child: Text("Bringing"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-                              ),
-                              builder: (context) => Container(
-                                    padding: const EdgeInsets.all(10),
-                                    height: SizeConfig.screenHeight*.7,
-                                    child: NeedListToDisplay(documentID: widget.tripDetails.documentId,),
-                                ),
-                            );
-                          },
-                          child: Text("Need"),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ExpandableNotifier(
-                        controller: expandController,
-                        child: ScrollOnExpand(
-                          scrollOnExpand: true,
-                          child: ExpandableTheme(
-                            data: ExpandableThemeData(
-                              iconSize: 25.0,
-                              iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
-                            ),
-                            child: ExpandablePanel(
-                              header: Text('Trip Details', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
-                              // collapsed:
-                              expanded: Padding(
-                                padding: EdgeInsets.all(_detailsPadding),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (){
-                                            FlutterClipboard.copy(widget.tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
-                                          },
-                                          child: Card(
-                                            shadowColor: Colors.blueGrey,
-                                            elevation: 15,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                            child: Container(
-                                              padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                              height: _tripDetailsBoxSize,
-                                              width: _tripDetailsBoxSize,
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  TripDetailsIconThemeWidget(icon: Icons.location_pin,),
-                                                  Text('${widget.tripDetails.location}',style: Theme.of(context).textTheme.subtitle1,maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Card(
-                                          shadowColor: Colors.blueGrey,
-                                          elevation: 15,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                          child: InkWell(
-                                            onTap: (){
-                                              Add2Calendar.addEvent2Cal(event);
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                              height: _tripDetailsBoxSize,
-                                              width: _tripDetailsBoxSize,
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                                                  Text('${TCFunctions().dateToMonthDay(widget.tripDetails.startDate)} - ${widget.tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Card(
-                                          shadowColor: Colors.blueGrey,
-                                          elevation: 15,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                          child: Container(
-                                            padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                            height: _tripDetailsBoxSize,
-                                            width: _tripDetailsBoxSize,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                TripDetailsIconThemeWidget(icon: Icons.label,),
-                                                Text('${widget.tripDetails.travelType}',style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Card(
-                                          shadowColor: Colors.blueGrey,
-                                          elevation: 15,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                          child: InkWell(
-                                            onTap: (){
-                                              TravelCrewAlertDialogs().convertTripAlert(context, widget.tripDetails);
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                              height: _tripDetailsBoxSize,
-                                              width: _tripDetailsBoxSize,
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  widget.tripDetails.ispublic ? TripDetailsIconThemeWidget(icon: Icons.public,) : TripDetailsIconThemeWidget(icon: Icons.public_off,),
-                                                  widget.tripDetails.ispublic ? Text('Public',style: Theme.of(context).textTheme.subtitle1,) : Text('Private',style: Theme.of(context).textTheme.subtitle1,),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    if(widget.tripDetails.comment.isNotEmpty) Card(
-                                      shadowColor: Colors.blueGrey,
-                                      elevation: 15,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-                                      child: InkWell(
-                                        onTap: (){
-
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(_tripDetailsCardEdgeInset),
-                                          // height: _tripDetailsBoxSize,
-                                          width: double.infinity,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              TripDetailsIconThemeWidget(icon: Icons.comment,),
-                                              Text(widget.tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    TripDetailsWidget(
+                      expandController: expandController,
+                      tripDetails: widget.tripDetails,
+                      event: event,
+                      detailsPadding: _detailsPadding,
+                    )
                   ],
                 ),]
               ),
@@ -362,12 +144,88 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
 
 
+
 class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({
     Key key,
     @required this.tripDetails,
-    @required this.event,
+    @required this.event, this.scaffoldKey, this.controller,
 
+  }) : super(key: key);
+
+  final Trip tripDetails;
+  final Event event;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final PersistentBottomSheetController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text('${tripDetails.tripName}'.toUpperCase(),
+            style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text('${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
+          trailing: PopupMenuButtonWidget(tripDetails: tripDetails, event: event),
+        ),
+        Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
+        ButtonBar(
+          alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+            onPressed: (){
+              MapsLauncher.launchQuery(tripDetails.location);
+              },
+            icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
+          IconButton(
+            onPressed: (){
+              scaffoldKey.currentState.showBottomSheet(
+                      (BuildContext context) {
+                    return ListPage(tripDetails: tripDetails,
+                      );
+                  });},
+            icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
+          IconButton(
+            onPressed: (){
+              scaffoldKey.currentState.showBottomSheet(
+                      (BuildContext context) {
+                    return AddToListPage(tripDetails: tripDetails,
+                      controller: controller,
+                      scaffoldKey: scaffoldKey,);
+                  });
+
+            },
+            icon: TripDetailsIconThemeWidget(icon: Icons.shopping_cart,),),
+          IconButton(
+            onPressed: (){
+              showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                ),
+                builder: (context) => Container(
+                  padding: const EdgeInsets.all(10),
+                  height: SizeConfig.screenHeight*.7,
+                  child: MembersLayout(tripDetails: tripDetails,ownerID: userService.currentUserID,),
+                ),
+              );},
+            icon: TripDetailsIconThemeWidget(icon: Icons.people,)),
+
+        ],
+        )
+      ],
+    );
+  }
+}
+
+class PopupMenuButtonWidget extends StatelessWidget {
+  const PopupMenuButtonWidget({
+    Key key,
+    @required this.tripDetails,
+    @required this.event,
   }) : super(key: key);
 
   final Trip tripDetails;
@@ -375,93 +233,80 @@ class OwnerPopupMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text('${tripDetails.tripName}'.toUpperCase(),
-        style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text('${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
-      trailing: PopupMenuButton<String>(
-        icon: IconThemeWidget(icon: Icons.more_horiz,),
-        onSelected: (value) {
-          switch (value) {
-            case "Edit":
-              {
-                navigationService.navigateTo(EditTripDataRoute, arguments: tripDetails);
-              }
-              break;
-            case "Delete":
-              {
-                TravelCrewAlertDialogs().deleteTripAlert(context, tripDetails);
-              }
-              break;
-            case "Calendar":
-              {
-                Add2Calendar.addEvent2Cal(event);
-              }
-              break;
-            case "Invite":
-              {
-                navigationService.navigateTo(FollowingListRoute, arguments: tripDetails);
-              }
-              break;
-            case "Convert":
-              {
-                TravelCrewAlertDialogs().convertTripAlert(context, tripDetails);
-              }
-              break;
-            default:
-              {
-
-              }
-              break;
-          }
-        },
-        padding: EdgeInsets.zero,
-        itemBuilder: (context) =>
-        [
-          const PopupMenuItem(
-            value: 'Edit',
-            child: ListTile(
-              leading: IconThemeWidget(icon: Icons.edit),
-              title: const Text('Edit'),
-            ),
+    return PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (value) {
+        switch (value) {
+          case "Edit":
+            {
+              navigationService.navigateTo(EditTripDataRoute, arguments: tripDetails);
+            }
+            break;
+          case "Calendar":
+            {
+              Add2Calendar.addEvent2Cal(event);
+            }
+            break;
+          case "Invite":
+            {
+              navigationService.navigateTo(FollowingListRoute, arguments: tripDetails);
+            }
+            break;
+          case "Convert":
+            {
+              TravelCrewAlertDialogs().convertTripAlert(context, tripDetails);
+            }
+            break;
+          default:
+            {
+              TravelCrewAlertDialogs().deleteTripAlert(context, tripDetails);
+            }
+            break;
+        }
+      },
+      padding: EdgeInsets.zero,
+      itemBuilder: (context) =>
+      [
+        const PopupMenuItem(
+          value: 'Edit',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.edit),
+            title: const Text('Edit'),
           ),
-          const PopupMenuItem(
-            value: 'Calendar',
-            child: ListTile(
-              leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-              title: const Text('Save to Calendar'),
-            ),
+        ),
+        const PopupMenuItem(
+          value: 'Calendar',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
+            title: const Text('Save to Calendar'),
           ),
-          const PopupMenuItem(
-            value: 'Invite',
-            child: ListTile(
-              leading: IconThemeWidget(icon: Icons.person_add),
-              title: const Text('Invite'),
-            ),
+        ),
+        const PopupMenuItem(
+          value: 'Invite',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.person_add),
+            title: const Text('Invite'),
           ),
-          PopupMenuItem(
-            value: 'Convert',
-            child: ListTile(
-              leading: tripDetails.ispublic ? IconThemeWidget(icon: Icons
-                  .do_not_disturb_on) : IconThemeWidget(icon: Icons
-                  .do_not_disturb_off),
-              title: tripDetails.ispublic
-                  ? const Text('Make Private')
-                  : const Text('Make Public'),
-            ),
+        ),
+        PopupMenuItem(
+          value: 'Convert',
+          child: ListTile(
+            leading: tripDetails.ispublic ? IconThemeWidget(icon: Icons
+                .do_not_disturb_on) : IconThemeWidget(icon: Icons
+                .do_not_disturb_off),
+            title: tripDetails.ispublic
+                ? const Text('Make Private')
+                : const Text('Make Public'),
           ),
-          const PopupMenuItem(
-            value: 'Delete',
-            child: ListTile(
-              leading: IconThemeWidget(icon: Icons.exit_to_app),
-              title: const Text('Delete Trip'),
-            ),
+        ),
+        const PopupMenuItem(
+          value: 'Delete',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.exit_to_app),
+            title: const Text('Delete Trip'),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

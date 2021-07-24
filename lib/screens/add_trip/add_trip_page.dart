@@ -1,16 +1,19 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'dart:async';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 
 GoogleData googleData;
 
@@ -33,6 +36,7 @@ final myController = TextEditingController();
 final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData);
 
 class _AddTripPageState extends State<AddTripPage> {
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   @override
   void initState() {
     super.initState();
@@ -302,12 +306,6 @@ class _AddTripPageState extends State<AddTripPage> {
                               vertical: 16.0, horizontal: 16.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              location = myController.text;
-                              ownerID = currentUserProfile.uid;
-                              List<String> accessUsers = [currentUserProfile.uid];
-                              displayName = currentUserProfile.displayName;
-                              firstName = currentUserProfile.firstName;
-                              lastName = currentUserProfile.lastName;
                               final form = _formKey.currentState;
                               form.save();
                               if (form.validate()) {
@@ -315,44 +313,25 @@ class _AddTripPageState extends State<AddTripPage> {
                                   String action = 'Saving new Trip data';
                                   CloudFunction().logEvent(action);
                                   DatabaseService().addNewTripData(
-                                      accessUsers,
-                                      comment,
-                                      endDate,
-                                      firstName,
-                                      lastName,
-                                      endDateTimeStamp,
-                                      startDateTimeStamp,
-                                      ispublic,
-                                      location,
-                                      startDate,
-                                      travelType,
+                                      Trip(
+                                        comment: comment,
+                                        endDate: endDate,
+                                        endDateTimeStamp:endDateTimeStamp,
+                                        startDateTimeStamp: startDateTimeStamp,
+                                        ispublic: ispublic,
+                                        location: myController.text ?? '',
+                                        startDate: startDate,
+                                        travelType: travelType,
+                                        tripGeoPoint: googleData2.value?.geoLocation ?? null,
+                                        tripName: tripName,
+                                      ),
                                       urlToImage,
-                                      googleData2.value?.geoLocation ?? null,
-                                      tripName);
+                                      );
                                 }  catch (e) {
                                   CloudFunction().logError('Error adding new Trip catch statement:  ${e.toString()}');
                                   _analyticsService.writeError('Error adding new Trip catch statement:  ${e.toString()}');
-                                  try {
-                                    DatabaseService().addNewTripData(
-                                        accessUsers,
-                                        comment,
-                                        endDate,
-                                        firstName,
-                                        lastName,
-                                        endDateTimeStamp,
-                                        startDateTimeStamp,
-                                        ispublic,
-                                        '',
-                                        startDate,
-                                        travelType,
-                                        urlToImage,
-                                        null,
-                                        tripName);
-                                  } on Exception catch (e) {
-                                    CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
-                                  }
+                                  TravelCrewAlertDialogs().newTripErrorDialog(context);
                                 }
-
                                 myController.text = '';
                                 myController.clear();
                                 form.reset();

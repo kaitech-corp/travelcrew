@@ -4,13 +4,14 @@ import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/screens/trip_details/split/split_package.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/global_card.dart';
 import 'package:travelcrew/services/widgets/link_previewer.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -27,16 +28,14 @@ class ActivityCard extends StatelessWidget {
 
     return Center(
         key: Key(activity.fieldID),
-        child: Card(
-          margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-          color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-          child: InkWell(
+        child: GlobalCard(
+          widget: InkWell(
             splashColor: Colors.blue.withAlpha(30),
             onTap: () {
               if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
             },
             child: Container(
-              margin: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(16.0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
@@ -65,7 +64,13 @@ class ActivityCard extends StatelessWidget {
                         Row(
                           children: [
                             SplitPackage().splitItemExist(context,
-                                SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment), trip: trip),
+                                SplitObject(
+                                    itemDocID:activity.fieldID,
+                                    tripDocID: trip.documentId,
+                                    users: trip.accessUsers,
+                                    itemName: activity.activityType,
+                                    itemDescription: activity.comment,
+                                    itemType: "Activity"), trip: trip),
                             if(activity.link.isNotEmpty) IconThemeWidget(icon:Icons.link),
                             IconButton(
                                 icon: favorite(userService.currentUserID),
@@ -116,7 +121,14 @@ class ActivityCard extends StatelessWidget {
           }
           break;
           case "Split": {
-            SplitPackage().splitItemAlert(context,SplitObject(itemDocID:activity.fieldID,tripDocID: trip.documentId,users: trip.accessUsers,itemName: activity.activityType,itemDescription: activity.comment,amountRemaining: 0 ),
+            SplitPackage().splitItemAlert(context,
+                SplitObject(itemDocID:activity.fieldID,
+                    tripDocID: trip.documentId,
+                    users: trip.accessUsers,
+                    itemName: activity.activityType,
+                    itemDescription: activity.comment,
+                    amountRemaining: 0,
+                    itemType: "Activity" ),
                 trip: trip);
 
           }
@@ -186,7 +198,8 @@ class ActivityCard extends StatelessWidget {
                     users: trip.accessUsers,
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
-                    amountRemaining: 0.01 ),
+                    amountRemaining: 0.01,
+                    itemType: "Activity" ),
                 trip: trip
             );
           }

@@ -1,6 +1,7 @@
 const String ActivityRoute = "Activity";
 const String AddNewActivityRoute = 'AddNewActivity';
 const String AddNewLodgingRoute = 'AddNewLodging';
+const String AddNewTransportationRoute = 'AddNewTransportation';
 const String AdminPageRoute = "AdminPage";
 const String AllTripsPageRoute = "AllTripsPage";
 const String ChatRoute = "Chat";
@@ -34,6 +35,8 @@ const String UsersRoute = "AllUsersPage";
 const String UserProfilePageRoute = "UserProfilePage";
 const String ProfilePageRoute = "ProfilePage";
 const String WebViewScreenRoute = "WebViewScreen";
-const String WrapperRoute = "Wrapper";
+const String ProfileStreamRoute = "ProfileStream";
+const String CompleteProfileRoute = "CompleteProfile";
+const String AddToListPageRoute = "AddToListPage";
 
 

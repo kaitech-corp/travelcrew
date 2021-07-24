@@ -3,36 +3,39 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/screens/trip_details/split/split_package.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/global_card.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class TransportationCard extends StatelessWidget {
 
-
+  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final TransportationData transportationData;
   final Trip trip;
   TransportationCard({this.transportationData, this.trip});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
-      child: InkWell(
+    return GlobalCard(
+      widget: InkWell(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(transportationData.displayName,style: ReusableThemeColor().greenOrBlueTextColor(context),),
-                  Text(transportationData.mode,style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
+                  Text(transportationData.mode,
+                    style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 :
+                    Theme.of(context).textTheme.headline6,),
+                  menuButton(context),
+
                 ],
               ),
               const Padding(padding: EdgeInsets.only(top: 5.0,)),
@@ -41,7 +44,8 @@ class TransportationCard extends StatelessWidget {
                 children: [
                   Tooltip(
                       message: 'Airline and Flight Number',
-                      child: Text('${transportationData.airline}: ${transportationData.flightNumber}',style: Theme.of(context).textTheme.subtitle1,)),
+                      child: Text('${transportationData.airline}: ${transportationData.flightNumber}',
+                        style: Theme.of(context).textTheme.subtitle1,)),
                 ],
               ),
               const Padding(padding: EdgeInsets.only(top: 5)),
@@ -49,8 +53,14 @@ class TransportationCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  (transportationData.canCarpool) ? Text('Open to Carpool',style: Theme.of(context).textTheme.headline6,) : Text(''),
-                  menuButton(context),
+                  (transportationData.canCarpool) ?
+                  Text('Open to Carpool',
+                    style: Theme.of(context).textTheme.headline6,) :
+                  Text(''),
+                  Text(transportationData.displayName,
+                    style: ReusableThemeColor().greenOrBlueTextColor(context),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,),
                 ],
               ),
               if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
@@ -61,7 +71,7 @@ class TransportationCard extends StatelessWidget {
     );
   }
   Widget menuButton(BuildContext context){
-    return transportationData.uid == currentUserProfile.uid ? PopupMenuButton<String>(
+    return transportationData.uid == currentUserProfile?.uid ?? '' ? PopupMenuButton<String>(
       icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
@@ -77,16 +87,14 @@ class TransportationCard extends StatelessWidget {
                     users: trip.accessUsers,
                     itemName: transportationData.mode,
                     itemDescription: 'Transportation',
-                    details: transportationData.comment
+                    details: transportationData.comment,
+                    itemType: "Transportation"
                 ),
                 trip: trip);
           }
           break;
-          case "Delete": {
-            CloudFunction().deleteTransportation(tripDocID: transportationData.tripDocID,fieldID: transportationData.fieldID);
-          }
-          break;
           default: {
+            CloudFunction().deleteTransportation(tripDocID: transportationData.tripDocID,fieldID: transportationData.fieldID);
 
           }
           break;
@@ -118,6 +126,7 @@ class TransportationCard extends StatelessWidget {
       ],
     ):
     PopupMenuButton<String>(
+      icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
           case "report":

@@ -12,12 +12,11 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 class CustomAppBar extends StatelessWidget {
 
-  final UserPublicProfile currentUserProfile;
   final heroTag;
   final  bool bottomNav;
 
   CustomAppBar({
-    Key key, this.bottomNav, this.heroTag, this.currentUserProfile
+    Key key, this.bottomNav, this.heroTag,
   }) : super(key: key);
 
 
@@ -70,13 +69,27 @@ class CustomAppBar extends StatelessWidget {
                             onTap: (){
                               navigationService.navigateTo(ProfilePageRoute);
                             },
-                            child: Hero(
-                              tag: currentUserProfile?.uid ?? '1234',
-                              transitionOnUserGestures: true,
-                              child: CircleAvatar(
-                                radius: SizeConfig.screenWidth/8.0,
-                                backgroundImage: (currentUserProfile?.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder),
-                              ),
+                            child: StreamBuilder(
+                              builder: (context, profile){
+                                if(profile.hasData){
+                                  UserPublicProfile currentUser = profile.data;
+                                  return Hero(
+                                    tag: currentUser.uid,
+                                    transitionOnUserGestures: true,
+                                    child: CircleAvatar(
+                                      radius: SizeConfig.screenWidth/8.0,
+                                      backgroundImage: (currentUser.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUser.urlToImage,) : AssetImage(profileImagePlaceholder),
+                                    ),
+                                  );} else{
+                                  return Hero(
+                                    tag: '1234',
+                                    transitionOnUserGestures: true,
+                                    child: CircleAvatar(
+                                      radius: SizeConfig.screenWidth/8.0,
+                                      backgroundImage: AssetImage(profileImagePlaceholder),
+                                    ),
+                                  );
+                                }},stream: DatabaseService().currentUserPublicProfile,
                             ),
                           ),
                         ),

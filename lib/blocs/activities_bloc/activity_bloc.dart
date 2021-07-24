@@ -15,6 +15,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
 
   ActivityState get initialState => ActivityLoadingState();
 
+
   @override
   Stream<ActivityState> mapEventToState(ActivityEvent event) async*{
     if(event is LoadingActivityData){

@@ -53,6 +53,7 @@ dependencies:
   image_picker: ^0.7.4
   in_app_review: ^2.0.2
   intl: ^0.17.0
+  maps_launcher: ^2.0.0
   modal_bottom_sheet: ^2.0.0
   multiple_stream_builder: ^2.0.0
   provider: ^5.0.0
@@ -67,6 +68,7 @@ dependencies:
   cupertino_icons: ^1.0.3
   rxdart: ^0.26.0
   observable: ^0.23.0
+  eva_icons_flutter: ^3.0.0
 
 
 dev_dependencies:

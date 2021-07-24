@@ -4,7 +4,7 @@ import 'package:travelcrew/models/cost_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/cost/split_package.dart';
+import 'package:travelcrew/screens/trip_details/split/split_package.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -94,17 +94,17 @@ class SplitDetailsPage extends StatelessWidget{
                                 ),
                                 trailing: (splitObject.purchasedByUID == userService.currentUserID || costObject.uid == userService.currentUserID && costObject.paid == false) ?
                                 ElevatedButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15),
-                                          )
-                                      )),
+                                  // style: ButtonStyle(
+                                  //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  //         RoundedRectangleBorder(
+                                  //           borderRadius: BorderRadius.circular(15),
+                                  //         )
+                                  //     )),
                                   child: Text('Paid'),
                                   onPressed: (){
                                     DatabaseService().markAsPaid(costObject,splitObject);
                                   },
-                                ) : Container(),
+                                ) : null,
                               ),
                             ),
                           );

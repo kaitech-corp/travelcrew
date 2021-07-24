@@ -9,6 +9,7 @@ import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -224,6 +225,8 @@ class HangingImageTheme extends StatelessWidget {
 }
 
 class HangingImageTheme3 extends StatelessWidget {
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
   HangingImageTheme3({
     Key key, this.user,
   }) : super(key: key);
@@ -340,57 +343,84 @@ class DateGauge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+
     CountDownDate countDownDate = TCFunctions().dateGauge(
         tripDetails.dateCreatedTimeStamp.millisecondsSinceEpoch,
         tripDetails.startDateTimeStamp.millisecondsSinceEpoch);
+    CountDownDate countDownDateReturn = TCFunctions().dateGauge(
+        tripDetails.startDateTimeStamp.millisecondsSinceEpoch,
+        tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
+    String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp.millisecondsSinceEpoch, tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
 
-    return (countDownDate.daysLeft != 0) ? GestureDetector(
-      child: Align(
-        alignment: Alignment.center,
-        child: Container(
-          height: SizeConfig.screenHeight*.2,
-          width: SizeConfig.screenWidth*.8,
-          child: SfRadialGauge(
-            animationDuration: 1250,
-              enableLoadingAnimation: true,
-              axes: <RadialAxis>[
-                RadialAxis(
-                    minimum: 0.0,
-                    maximum: countDownDate.initialDayCount,
-                    showLabels: false,
-                    showTicks: false,
-                    startAngle: 180,
-                    endAngle: 0,
-                    axisLineStyle: AxisLineStyle(
-                      thickness: 0.2,
-                      cornerStyle: CornerStyle.bothCurve,
-                      color: Color.fromARGB(30, 0, 169, 181),
-                      thicknessUnit: GaugeSizeUnit.factor,
-                    ),
-                    pointers: <GaugePointer>[
-                      RangePointer(
-                        value: countDownDate.gaugeCount,
-                        cornerStyle: CornerStyle.bothCurve,
-                        width: 0.2,
-                        sizeUnit: GaugeSizeUnit.factor,
-                        color: ReusableThemeColor().bottomNavColor(context),
-                      )
-                    ],
-                    annotations: <GaugeAnnotation>[
-                      GaugeAnnotation(
-                          positionFactor: 0.1,
-                          angle: 90,
-                          widget: Text(
-                            countDownDate.daysLeft.toStringAsFixed(0) + ' Days Left',
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ))
-                    ])
-              ]
-          ),
-        ),
+    switch (result){
+      case 'before':
+        return Gauge(countDownDate: countDownDate, color: ReusableThemeColor().bottomNavColor(context),);
+      case 'during':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Trip has started.'),
+            Gauge(countDownDate: countDownDateReturn, color: Colors.blue,),
+          ],
+        );
+        default:
+        return Gauge(countDownDate: CountDownDate(daysLeft: 0,initialDayCount: 1,gaugeCount: 1),color: Colors.blue,);
+    }
+  }
+}
+
+class Gauge extends StatelessWidget {
+  const Gauge({
+    Key key,
+    @required this.countDownDate,@required this.color
+  }) : super(key: key);
+
+  final CountDownDate countDownDate;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: SizeConfig.screenHeight*.2,
+      width: SizeConfig.screenWidth*.5,
+      child: SfRadialGauge(
+        animationDuration: 1250,
+          enableLoadingAnimation: true,
+          axes: <RadialAxis>[
+            RadialAxis(
+                minimum: 0.0,
+                maximum: countDownDate.initialDayCount,
+                showLabels: false,
+                showTicks: false,
+                startAngle: 180,
+                endAngle: 0,
+                axisLineStyle: AxisLineStyle(
+                  thickness: 0.2,
+                  cornerStyle: CornerStyle.bothCurve,
+                  color: Color.fromARGB(30, 0, 169, 181),
+                  thicknessUnit: GaugeSizeUnit.factor,
+                ),
+                pointers: <GaugePointer>[
+                  RangePointer(
+                    value: countDownDate.gaugeCount,
+                    cornerStyle: CornerStyle.bothCurve,
+                    width: 0.2,
+                    sizeUnit: GaugeSizeUnit.factor,
+                    color: color,
+                  )
+                ],
+                annotations: <GaugeAnnotation>[
+                  GaugeAnnotation(
+                      positionFactor: 0.1,
+                      angle: 90,
+                      widget: Text(
+                        countDownDate.daysLeft.toStringAsFixed(0) + ' Days Left',
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ))
+                ])
+          ]
       ),
-    ):
-        Container(height:75,);
+    );
   }
 }
 
@@ -409,50 +439,55 @@ class RecentTripTile extends StatelessWidget{
             List<Trip> trips = streamData.data;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: trips.length,
+              itemCount: (trips.length > 10) ? 10 : trips.length,
               itemBuilder: (context, index){
                 Trip trip = trips[index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: (trip.urlToImage.isNotEmpty) ?
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                      child: Image.network(
-                        trip.urlToImage,
-                        fit: BoxFit.cover,
-                        height: 125,
-                        width: 125,
-                      )):
-                  Container(
-                    decoration: BoxDecoration(
+                return InkWell(
+                  onTap: (){
+                    navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
-                      gradient: (ThemeProvider.themeOf(context).id == 'light_theme') ? LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.blue,
-                            Colors.lightBlueAccent
-                          ]
-                      ): null,
-                      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? null : Color(0xFF424242),//5C6BC0 0xAA2D3D49
                     ),
-                    height: 125,
-                    width: 125,
-                    child: ListTile(
-                      title: Text('${trip.tripName}',style: Theme
-                          .of(context)
-                          .textTheme
-                          .subtitle1,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,),
-                      subtitle: Text('${trip.location}',style: Theme
-                          .of(context)
-                          .textTheme
-                          .subtitle2,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,),
+                    child: (trip.urlToImage.isNotEmpty) ?
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                        child: Image.network(
+                          trip.urlToImage,
+                          fit: BoxFit.cover,
+                          height: 125,
+                          width: 125,
+                        )):
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        gradient: (ThemeProvider.themeOf(context).id == 'light_theme') ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.blue,
+                              Colors.lightBlueAccent
+                            ]
+                        ): null,
+                        color: (ThemeProvider.themeOf(context).id == 'light_theme') ? null : Color(0xFF424242),//5C6BC0 0xAA2D3D49
+                      ),
+                      height: 125,
+                      width: 125,
+                      child: ListTile(
+                        title: Text('${trip.tripName}',style: Theme
+                            .of(context)
+                            .textTheme
+                            .subtitle1,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,),
+                        subtitle: Text('${trip.location}',style: Theme
+                            .of(context)
+                            .textTheme
+                            .subtitle2,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,),
+                      ),
                     ),
                   ),
                 );

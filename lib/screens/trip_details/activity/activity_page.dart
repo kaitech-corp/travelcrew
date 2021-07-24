@@ -34,7 +34,7 @@ class _ActivityPageState extends State<ActivityPage> {
 
   @override
   void dispose() {
-    bloc.close();
+    // bloc.close();
     super.dispose();
   }
 

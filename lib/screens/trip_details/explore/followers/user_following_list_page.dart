@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:travelcrew/services/locator.dart';
+
 import '../../../../services/widgets/loading.dart';
 
 
@@ -20,6 +22,7 @@ class FollowingList extends StatefulWidget{
 
 class _FollowingListState extends State<FollowingList> {
 
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   var _showImage = false;
   String _image;
 
@@ -106,8 +109,8 @@ class _FollowingListState extends State<FollowingList> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25),
-                  child: user.urlToImage != null ? Image.network(user.urlToImage,height: 75, width: 75,fit: BoxFit.fill,): Image.asset(
-                    profileImagePlaceholder, height: 75,width: 75,fit: BoxFit.fill,),
+                  child: user.urlToImage?.isNotEmpty ?? false  ? Image.network(user.urlToImage,fit: BoxFit.fill,):
+                  Image.asset(profileImagePlaceholder,fit: BoxFit.fill,),
                 ),
               ),
               title: Text('${user.firstName} ${user.lastName}'),

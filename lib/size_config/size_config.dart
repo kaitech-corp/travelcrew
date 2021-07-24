@@ -15,6 +15,7 @@ class SizeConfig {
   static double safeBlockVertical;
   static bool tablet;
   static bool mobile;
+  static double defaultPadding;
 
 
   void init(BuildContext context) {
@@ -38,5 +39,6 @@ class SizeConfig {
     safeBlockVertical = (screenHeight - _safeAreaVertical)/100;
     tablet = SizerUtil.deviceType == DeviceType.tablet;
     mobile = SizerUtil.deviceType == DeviceType.mobile;
+    defaultPadding = blockSizeHorizontal*4;
   }
 }

@@ -3,6 +3,7 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
@@ -21,6 +22,8 @@ class TCUserCard extends StatefulWidget{
 }
 
 class _TCUserCardState extends State<TCUserCard> {
+
+  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {

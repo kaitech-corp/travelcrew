@@ -42,4 +42,3 @@ const canvasColor = Color(0xFFFAFAFA);
 //Drawer Menu
 const currentVersion = 'v1.5.0';
 
-

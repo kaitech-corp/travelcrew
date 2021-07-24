@@ -273,6 +273,10 @@ class TravelCrewAlertDialogs {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  newTripErrorDialog(BuildContext context,) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Unable to create trip at this time.')));
+  }
+
   Future<void> submitFeedbackAlert(BuildContext context) {
     return showDialog<void>(
       context: context,
