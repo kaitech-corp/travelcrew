@@ -7,6 +7,7 @@ const String AllTripsPageRoute = "AllTripsPage";
 const String ChatRoute = "Chat";
 const String CostPageRoute = "SplitPage";
 const String CurrentCrewTripsRoute = "CurrentCrewTrips";
+const String DetailsPageRoute = "DetailsPage";
 const String DMChatRoute = "DMChat";
 const String DMChatListPageRoute = "DMChatListPage";
 const String EditActivityRoute = "EditActivity";

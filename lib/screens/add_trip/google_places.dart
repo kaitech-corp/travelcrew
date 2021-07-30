@@ -9,17 +9,16 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 
 
-
-
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: dotenv.env['kGoogleApiKey']);
 
 class GooglePlaces extends StatefulWidget{
 
   final GlobalKey<ScaffoldState> homeScaffoldKey;
   final GlobalKey<ScaffoldState> searchScaffoldKey;
+  final TextEditingController controller;
 
 
-  GooglePlaces({this.homeScaffoldKey, this.searchScaffoldKey});
+  GooglePlaces({this.homeScaffoldKey, this.searchScaffoldKey,this.controller});
 
   @override
   _GooglePlacesState createState() => _GooglePlacesState();
@@ -60,20 +59,6 @@ class _GooglePlacesState extends State<GooglePlaces> {
         ],
       );
 
-      // Prediction p = await PlacesAutocomplete.show(
-      //     offset: 0,
-      //     radius: 1000,
-      //     types: [],
-      //     strictbounds: false,
-      //     region: "",
-      //     context: context,
-      //     apiKey: env[kGoogleApiKey],
-      //     mode: _mode, // Mode.fullscreen
-      //     language: "en",
-      //     components: [Component(Component.country, "ar")]
-      // );
-      // print(p.toString());
-
       displayPrediction(p, widget.homeScaffoldKey.currentState);
     } catch (e) {
       print("Error: ${e.toString()}");
@@ -93,11 +78,19 @@ class _GooglePlacesState extends State<GooglePlaces> {
       final lat = detail.result.geometry.location.lat;
       final lng = detail.result.geometry.location.lng;
 
+      if (widget.controller != null) {
+        widget.controller.text = detail.result.formattedAddress;
+      }
       myController.text= detail.result.formattedAddress;
       googleData2.value = GoogleData(
         location: detail.result.formattedAddress,
         geoLocation: new GeoPoint(lat, lng),
       );
+
+      // ValueListenableBuilder(
+      //   v
+      // )
+
 
     }
   }

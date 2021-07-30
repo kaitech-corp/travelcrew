@@ -1,14 +1,14 @@
-import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
+import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/calendar_widget.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-
-import '../../../services/widgets/loading.dart';
 
 
 
@@ -22,22 +22,51 @@ class AddNewLodging extends StatefulWidget {
 
 }
 class _AddNewLodgingState extends State<AddNewLodging> {
-  bool loading = false;
+
+  final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  final searchScaffoldKey = GlobalKey<ScaffoldState>();
+
+  final ValueNotifier<String> startTime = ValueNotifier('');
+  final ValueNotifier<String> endTime = ValueNotifier('');
+  final ValueNotifier<Timestamp> startDateTimeStamp = ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimeStamp = ValueNotifier(Timestamp.now());
+  final TextEditingController controller = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+  String displayName = '';
+  String documentID = '';
   String lodgingType = '';
   String comment = '';
   String link = '';
-  File urlToImage;
+  String uid = '';
+  bool ispublic;
   bool timePickerVisible = false;
 
+  @override
+  void initState() {
+    endDateTimeStamp.value =  widget.trip.endDateTimeStamp;
+    startDateTimeStamp.value = widget.trip.startDateTimeStamp;
+    displayName = currentUserProfile.displayName;
+    documentID = widget.trip.documentId;
+    uid = userService.currentUserID;
+    ispublic = widget.trip.ispublic;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    endTime.dispose();
+    startTime.dispose();
+    controller.dispose();
+    super.dispose();
+  }
 
 
   @override
   Widget build(BuildContext context) {
 
 
-    return loading ? Loading() :
-    GestureDetector(
+    return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
@@ -54,74 +83,104 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                TextFormField(
-                  onChanged: (val){
-                    setState(() => lodgingType = val);
-                  },
-                  enableInteractiveSelection: true,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: TextFormField(
+                    onChanged: (val){
+                      setState(() => lodgingType = val);
+                    },
+                    enableInteractiveSelection: true,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                      ),
+                      labelText: "Hotel, Airbnb, etc",
                     ),
-                    labelText: "Hotel, Airbnb, etc",
-                  ),
-                  textCapitalization: TextCapitalization.words,
-                  // ignore: missing_return
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a lodging type.';
-                    }
-                  },
-                ),
-                    const Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    ),
-
-                TextFormField(
-                  onChanged: (val){
-                    setState(() => link = val);
-                  },
-                  enableInteractiveSelection: true,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
-                    ),
-                    labelText: "Link",
-                  ),
-                  // ignore: missing_return
-                  validator: (value) {
-                    if ( value.trim().isNotEmpty && !value.startsWith('https')){
-                      return 'Please enter a valid link including https.';
-                    }
-                  },
-                ),
-                    const Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    ),
-                TextFormField(
-                  onChanged: (val){
-                    setState(() => comment = val);
-                  },
-                  enableInteractiveSelection: true,
-                  textCapitalization: TextCapitalization.sentences,
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
-                    ),
-                    labelText: "Description",
+                    textCapitalization: TextCapitalization.words,
+                    // ignore: missing_return
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter a lodging type.';
+                      }
+                    },
                   ),
                 ),
-                    const Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: TextFormField(
+                    onChanged: (val){
+                      setState(() => link = val);
+                    },
+                    enableInteractiveSelection: true,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                      ),
+                      labelText: "Link",
                     ),
-                timePickerVisible ? TimePickers()
-                    : Container(
+                    // ignore: missing_return
+                    validator: (value) {
+                      if ( value.trim().isNotEmpty && !value.startsWith('https')){
+                        return 'Please enter a valid link including https.';
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: TextFormField(
+                    onChanged: (val){
+                      setState(() => comment = val);
+                    },
+                    enableInteractiveSelection: true,
+                    textCapitalization: TextCapitalization.sentences,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                      ),
+                      labelText: "Description",
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: TextFormField(
+                    controller: controller,
+                    enableInteractiveSelection: true,
+                    // maxLines: 2,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                      ),
+                      labelText: "Address",
+                    ),
+                    // ignore: missing_return
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 16.0),
+                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controller,),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Schedule',style: Theme.of(context).textTheme.headline6,),
+                ),
+                    Container(height: 2,color: Colors.black,),
+                CalendarWidget(
+                  startDateTimeStamp: startDateTimeStamp,
+                  endDateTimeStamp: endDateTimeStamp,
+                  showBoth: true,),
+                timePickerVisible ? TimePickers(lodging: true,) :
+                Container(
                   padding: const EdgeInsets.symmetric(
                       vertical: 30.0, horizontal: 30.0),
-                      child: ButtonTheme(
-                  minWidth: 150,
-                  child: ElevatedButton(
+                  child: ButtonTheme(
+                    minWidth: 150,
+                    child: ElevatedButton(
                       child: Text('CheckIn/Checkout',style: Theme.of(context).textTheme.subtitle1,
                       ),
                       onPressed: () {
@@ -129,8 +188,8 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                           timePickerVisible = true;
                         });
                       },
+                    ),
                   ),
-                ),
                 ),
                   ]),
             ),
@@ -140,27 +199,26 @@ class _AddNewLodgingState extends State<AddNewLodging> {
           onPressed: () async {
             final form = _formKey.currentState;
             if (form.validate()) {
-              String displayName = currentUserProfile.displayName;
-              String documentID = widget.trip.documentId;
-              String uid = userService.currentUserID;
-              String tripName = widget.trip.location;
+
               String message = 'A new lodging has been added to ${widget.trip.tripName}';
-              bool ispublic = widget.trip.ispublic;
+
               try {
                 String action = 'Saving new lodging for $documentID';
                 CloudFunction().logEvent(action);
-                await DatabaseService().addNewLodgingData(
-                  comment.trim(),
-                  displayName,
-                  documentID,
-                  link,
-                  lodgingType,
-                  uid,
-                  urlToImage,
-                  tripName,
-                  startTime.value,
-                  endTime.value,
-                );
+                await DatabaseService().addNewLodgingData(documentID,
+                    LodgingData(
+                      comment: comment.trim(),
+                      displayName: displayName,
+                      endTime: endTime.value,
+                      endDateTimestamp: endDateTimeStamp.value,
+                      link: link,
+                      location: controller.text,
+                      lodgingType: lodgingType,
+                      startTime: startTime.value,
+                      startDateTimestamp: startDateTimeStamp.value,
+                      uid: uid,
+                      voters: [],
+                    ));
               } on Exception catch (e) {
                 CloudFunction().logError('Error adding new Lodging:  ${e.toString()}');
               }

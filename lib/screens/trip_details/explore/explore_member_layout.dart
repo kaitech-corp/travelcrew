@@ -14,7 +14,7 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 import 'ImageAnimation.dart';
 import 'lists/addToListPage.dart';
-import 'lists/item_lists.dart';
+import 'lists/listPage.dart';
 import 'members/members_layout.dart';
 
 
@@ -154,17 +154,11 @@ class MemberPopupMenuButton extends StatelessWidget {
               icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
             IconButton(
               onPressed: (){
-                showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-                    ),
-                    builder: (context) => Container(
-                      padding: const EdgeInsets.all(10),
-                      height: SizeConfig.screenHeight*.7,
-                      child: BringListToDisplay(tripDocID: tripDetails.documentId,),
-
-                    ));},
+                scaffoldKey.currentState.showBottomSheet(
+                        (BuildContext context) {
+                      return ListPage(tripDetails: tripDetails,
+                      );
+                    });},
               icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
             IconButton(
               onPressed: (){

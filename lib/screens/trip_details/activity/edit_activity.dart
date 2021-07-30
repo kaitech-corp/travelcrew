@@ -1,12 +1,14 @@
-import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
+import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/calendar_widget.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 
 
@@ -23,22 +25,61 @@ class EditActivity extends StatefulWidget {
 }
 class _EditActivityState extends State<EditActivity> {
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+  final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  final searchScaffoldKey = GlobalKey<ScaffoldState>();
+
+  final TextEditingController controllerType = TextEditingController();
+  final TextEditingController controllerLink = TextEditingController();
+  final TextEditingController controllerComment = TextEditingController();
+  final TextEditingController controllerLocation = TextEditingController();
+  final ValueNotifier<String> startTime = ValueNotifier('');
+  final ValueNotifier<String> endTime = ValueNotifier('');
+  final ValueNotifier<Timestamp> startDateTimestamp =ValueNotifier(Timestamp.now());
+
   final _formKey = GlobalKey<FormState>();
-  File _image;
+
+  bool calendarVisible = false;
   bool timePickerVisible = false;
+
+  String displayName;
+  String documentID;
+  String fieldID;
+
+
+  @override
+  void initState() {
+    documentID = widget.trip.documentId;
+    fieldID = widget.activity.fieldID;
+    startDateTimestamp.value = widget.activity?.dateTimestamp ?? widget.trip.startDateTimeStamp;
+    controllerComment.text = widget.activity.comment;
+    controllerLink.text = widget.activity.link;
+    controllerLocation.text = widget.activity.location;
+    controllerType.text = widget.activity.activityType;
+    startTime.value = widget.activity.startTime;
+    endTime.value = widget.activity.endTime;
+    displayName = widget.activity.displayName;
+
+    super.initState();
+  }
+  @override
+  void dispose() {
+    controllerComment.dispose();
+    controllerLink.dispose();
+    controllerLocation.dispose();
+    controllerType.dispose();
+    endTime.dispose();
+    startTime.dispose();
+    super.dispose();
+  }
 
 
   @override
   Widget build(BuildContext context) {
-
-    String displayName = widget.activity.displayName;
-    String link = widget.activity.link;
-    String activityType = widget.activity.activityType;
-    String comment = widget.activity.comment;
-    String startTimeSaved = widget.activity.startTime;
-    String endTimeSaved = widget.activity.endTime;
-
-
+    print('Start Here');
+    print(documentID);
+    print(controllerLocation.text);
+    print(fieldID);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -53,15 +94,11 @@ class _EditActivityState extends State<EditActivity> {
               builder: (context) => Form(
                 key: _formKey,
                 child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       TextFormField(
-                        onSaved: (val){
-                          setState(() => activityType = val);
-                        },
+                        controller: controllerType,
                         enableInteractiveSelection: true,
-                        initialValue: activityType,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: "snorkeling, festival, restaurant, etc",
@@ -77,11 +114,8 @@ class _EditActivityState extends State<EditActivity> {
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       ),
                       TextFormField(
-                        onSaved: (val){
-                          setState(() => link = val);
-                        },
+                        controller: controllerLink,
                         enableInteractiveSelection: true,
-                        initialValue: link,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: "Link",
@@ -97,47 +131,72 @@ class _EditActivityState extends State<EditActivity> {
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       ),
                       TextFormField(
-                        onSaved: (val){
-                          setState(() => comment = val);
-                        },
+                        controller: controllerComment,
                         enableInteractiveSelection: true,
                         obscureText: false,
-                        initialValue: comment,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: "Description",
                         ),
                       ),
-                      timePickerVisible ?
-                      TimePickers():
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-                                Text('Start: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
-                                Padding(padding: EdgeInsets.only(top: 2)),
-                                Text('End: $endTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
-                              ],
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        child: TextFormField(
+                          controller: controllerLocation,
+                          enableInteractiveSelection: true,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
                             ),
-                            ButtonTheme(
-                              minWidth: 150,
-                              child: ElevatedButton(
-                                child: Text(
-                                  'Edit Time',style: Theme.of(context).textTheme.subtitle1,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    timePickerVisible = true;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
+                            labelText: "Location (i.e. Address )",
+                          ),
+                          // ignore: missing_return
                         ),
                       ),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 16.0),
+                          child: GooglePlaces(
+                            homeScaffoldKey: homeScaffoldKey,
+                            searchScaffoldKey: searchScaffoldKey,
+                            controller: controllerLocation,),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Schedule',style: Theme.of(context).textTheme.headline6,),
+                      ),
+                      Container(height: 2,color: Colors.black,),
+                      const Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      ),
+                      calendarVisible ? CalendarWidget(startDateTimeStamp: startDateTimestamp,showBoth: false,):
+                      ElevatedButton(
+                        child:  Text(
+                          'Edit Date', style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            calendarVisible = true;
+                          });
+                        },
+                      ),
+                      const Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      ),
+                      timePickerVisible ? TimePickers(lodging: false,startTime: startTime,endTime: endTime,)
+                          : ElevatedButton(
+                            child:  Text(
+                              'Start/End Time', style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                timePickerVisible = true;
+                              });
+                            },
+                          ),
                     ]
                 ),
               ),
@@ -147,26 +206,22 @@ class _EditActivityState extends State<EditActivity> {
           onPressed: () async{
             final form = _formKey.currentState;
             if (form.validate()) {
-              form.save();
-              String documentID = widget.trip.documentId;
-              String fieldID = widget.activity.fieldID;
-              if(!timePickerVisible){
-                startTime.value = startTimeSaved;
-                endTime.value = endTimeSaved;
-              }
+              // form.save();
               String message = 'An activity has been modified within ${widget.trip.tripName}';
               try {
                 String action = 'Saving edited activity data';
                 CloudFunction().logEvent(action);
                 DatabaseService().editActivityData(
-                  comment,
-                  displayName,
-                  documentID,
-                  link,
-                  activityType,
-                  _image, fieldID,
-                  startTime.value,
-                  endTime.value,
+                  comment: controllerComment.text,
+                  displayName: displayName,
+                  documentID: documentID,
+                  link: controllerLink.text,
+                  activityType: controllerType.text,
+                  fieldID: fieldID,
+                  location: controllerLocation.text,
+                  dateTimestamp: startDateTimestamp.value,
+                  startTime: startTime.value,
+                  endTime: endTime.value,
                 );
               } on Exception catch (e) {
                 CloudFunction().logError('Error saving edited activity data:  ${e.toString()}');

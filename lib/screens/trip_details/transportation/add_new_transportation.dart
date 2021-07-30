@@ -35,7 +35,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
-          appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline3,),),
+          appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline5,),),
           body: Container(
               child: SingleChildScrollView(
                   padding:

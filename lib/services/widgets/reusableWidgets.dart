@@ -5,7 +5,6 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -77,22 +76,40 @@ class ImageBanner extends StatelessWidget{
 
 class TimePickers extends StatefulWidget{
 
+  final bool lodging;
+  final ValueNotifier<String> startTime;
+  final ValueNotifier<String> endTime;
+
+  const TimePickers({Key key, this.lodging, this.startTime, this.endTime}) : super(key: key);
+
 
   @override
   _TimePickersState createState() => _TimePickersState();
+
 }
 
 class _TimePickersState extends State<TimePickers> {
+  TimeOfDay timeStart;
+  TimeOfDay timeEnd;
+
+  @override
+  void initState() {
+    timeStart = widget.lodging ? TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,15,0)): TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,9,0));
+    timeEnd = widget.lodging ? TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,11,0)): TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,15,0));
+    super.initState();
+  }
+
+
 
   String get _labelTextTimeStart {
     String _startTime = timeStart.format(context);
-    startTime.value = _startTime;
+    widget.startTime.value = _startTime;
     return _startTime;
   }
   String get _labelTextTimeEnd {
     String _endTime = timeEnd.format(context);
-    endTime.value = _endTime;
-    return endTime.value;
+    widget.endTime.value = _endTime;
+    return _endTime;
   }
 
   Future<void> showTimePickerStart(BuildContext context) async {
@@ -123,18 +140,24 @@ class _TimePickersState extends State<TimePickers> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.only(top: 5),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(_labelTextTimeStart,style: Theme.of(context).textTheme.subtitle1,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    TripDetailsIconThemeWidget(icon: Icons.access_time,),
+                    SizedBox(width: 8,),
+                    Text(_labelTextTimeStart,style: Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
 //                                SizedBox(height: 16),
               ButtonTheme(
                 minWidth: 150,
                 child: ElevatedButton(
-                  child: Text(
-                    'Start Time',style: Theme.of(context).textTheme.subtitle1,
-                  ),
+                  child:widget.lodging ? Text('Check In') :Text('Start Time',),
                   onPressed: () async {
                     showTimePickerStart(context);
                   },
@@ -145,16 +168,23 @@ class _TimePickersState extends State<TimePickers> {
         ),
         Container(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(_labelTextTimeEnd,style: Theme.of(context).textTheme.subtitle1,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    TripDetailsIconThemeWidget(icon: Icons.access_time,),
+                    SizedBox(width: 8,),
+                    Text(_labelTextTimeEnd,style: Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
 //                                SizedBox(height: 16),
               ButtonTheme(
                 minWidth: 150,
                 child: ElevatedButton(
-                  child: Text(
-                    'End Time',style: Theme.of(context).textTheme.subtitle1
-                  ),
+                  child: widget.lodging ? Text('Checkout') :Text('End Time',),
                   onPressed: () {
                     showTimePickerEnd(context);
                   },

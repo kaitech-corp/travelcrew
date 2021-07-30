@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
@@ -24,47 +23,37 @@ class TransportationCard extends StatelessWidget {
     return GlobalCard(
       widget: InkWell(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 4.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(transportationData.mode,
-                    style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 :
-                    Theme.of(context).textTheme.headline6,),
-                  menuButton(context),
-
-                ],
-              ),
-              const Padding(padding: EdgeInsets.only(top: 5.0,)),
-              if(transportationData.mode == 'Flying') Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Tooltip(
-                      message: 'Airline and Flight Number',
-                      child: Text('${transportationData.airline}: ${transportationData.flightNumber}',
-                        style: Theme.of(context).textTheme.subtitle1,)),
-                ],
-              ),
-              const Padding(padding: EdgeInsets.only(top: 5)),
-              if(transportationData.comment.isNotEmpty) Text(transportationData.comment,style: Theme.of(context).textTheme.subtitle1,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  (transportationData.canCarpool) ?
-                  Text('Open to Carpool',
-                    style: Theme.of(context).textTheme.headline6,) :
-                  Text(''),
-                  Text(transportationData.displayName,
-                    style: ReusableThemeColor().greenOrBlueTextColor(context),
+              ListTile(
+                visualDensity: VisualDensity(horizontal: 0,vertical: -4),
+                title: Text(transportationData.mode,
+                  style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 :
+                  Theme.of(context).textTheme.headline6,),
+                subtitle: Text(transportationData.displayName,
+                  style: Theme.of(context).textTheme.subtitle1,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,),
-                ],
+                trailing: menuButton(context),
               ),
-              if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
-            ],
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if(transportationData.mode == 'Flying') Tooltip(
+                        message: 'Airline and Flight Number',
+                        child: Text('${transportationData.airline}: ${transportationData.flightNumber}',
+                          style: Theme.of(context).textTheme.subtitle1,)),
+                    if(transportationData.canCarpool) Text('Open to Carpool',
+                      style: Theme.of(context).textTheme.subtitle2,),
+                    if(transportationData.comment.isNotEmpty) Text(transportationData.comment,style: Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+              ],
           ),
         ),
       ),
@@ -131,7 +120,7 @@ class TransportationCard extends StatelessWidget {
         switch (value){
           case "report":
             {
-
+              // TravelCrewAlertDialogs().reportAlert(t)
             }
             break;
           default: {

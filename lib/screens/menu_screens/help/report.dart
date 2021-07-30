@@ -42,7 +42,6 @@ class _ReportContentState extends State<ReportContent> {
           collection = 'activities';
           docID = widget.activity.fieldID;
           offenderID = widget.activity.uid;
-          urlToImage = widget.activity.urlToImage;
         });
       }
       break;
@@ -51,7 +50,6 @@ class _ReportContentState extends State<ReportContent> {
           collection = 'lodging';
           docID = widget.lodging.fieldID;
           offenderID = widget.lodging.uid;
-          urlToImage = widget.lodging.urlToImage;
         });
       }
       break;

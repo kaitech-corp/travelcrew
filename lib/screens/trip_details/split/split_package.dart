@@ -87,15 +87,17 @@ class SplitPackage {
         builder: (context, response){
           if(response.hasData && response.data == false){
             return IconButton(
+              visualDensity: VisualDensity(horizontal: 0,vertical: -4),
                 icon: IconThemeWidget(icon: Icons.monetization_on_outlined,),
                 onPressed: (){
                   splitDialog(context,splitObject,trip: trip);
                 });
           } else {
             return IconButton(
+                visualDensity: VisualDensity(horizontal: 0,vertical: -4),
                 icon: IconThemeWidget(icon: Icons.monetization_on,),
                 onPressed: (){
-                  navigationService.navigateTo(CostPageRoute,arguments: trip);
+
                 });
           }
         },
