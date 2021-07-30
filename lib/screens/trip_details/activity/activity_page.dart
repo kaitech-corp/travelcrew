@@ -51,7 +51,7 @@ class _ActivityPageState extends State<ActivityPage> {
                 return Loading();
               } else if (state is ActivityHasDataState){
                 List<ActivityData> activityList = state.data;
-                return Container(
+            return Container(
                   child: ListView.builder(
                       itemCount: activityList != null ? activityList.length : 0,
                       itemBuilder: (context, index){

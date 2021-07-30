@@ -254,6 +254,10 @@ class TravelCrewAlertDialogs {
       },
     );
   }
+
+  void invitationDialog(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Invitation sent.')));
+  }
   void showRequestDialog(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Request Submitted. Once accepted by owner this trip will appear under "My Crew"')));
   }

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
@@ -14,6 +13,7 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import 'package:travelcrew/services/widgets/calendar_widget.dart';
 
 GoogleData googleData;
 
@@ -37,6 +37,13 @@ final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData);
 
 class _AddTripPageState extends State<AddTripPage> {
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
+  final ValueNotifier<String> startDate = ValueNotifier('');
+  final ValueNotifier<String> endDate = ValueNotifier('');
+  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier(Timestamp.now());
+
+
   @override
   void initState() {
     super.initState();
@@ -47,68 +54,32 @@ class _AddTripPageState extends State<AddTripPage> {
     }
   }
 
+  @override
+  void dispose() {
+    startDate.dispose();
+    startDateTimestamp.dispose();
+    endDate.dispose();
+    endDateTimestamp.dispose();
+    super.dispose();
+  }
+
 
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
 
   File _image;
   bool gotDataBool = false;
-  DateTime _fromDateDepart = DateTime.now();
-  DateTime _fromDateReturn = DateTime.now();
 
-  String get _labelTextDepart {
-    startDate = DateFormat.yMMMd().format(_fromDateDepart);
-    startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
-    return DateFormat.yMMMd().format(_fromDateDepart);
-  }
-  String get _labelTextReturn {
-    endDate = DateFormat.yMMMd().format(_fromDateReturn);
-    endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
-    return DateFormat.yMMMd().format(_fromDateReturn);
-  }
-
-  Future<void> _showDatePickerDepart() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _fromDateDepart,
-      firstDate: DateTime(2015, 1),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _fromDateDepart) {
-      setState(() {
-        _fromDateDepart = picked;
-        _fromDateReturn = picked;
-
-      });
-    }
-  }
-  Future<void> _showDatePickerReturn() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _fromDateReturn,
-      firstDate: DateTime(2015, 1),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _fromDateReturn) {
-      setState(() {
-        _fromDateReturn = picked;
-      });
-    }
-  }
 
   String comment = '';
   String displayName = '';
   String documentId = '';
-  String endDate = '';
   String firstName = '';
   String lastName = '';
-  Timestamp startDateTimeStamp;
-  Timestamp endDateTimeStamp;
   bool ispublic = true;
   String tripName = '';
   String location = '';
   String ownerID = '';
-  String startDate = '';
   String travelType = '';
   File urlToImage;
 
@@ -206,46 +177,13 @@ class _AddTripPageState extends State<AddTripPage> {
                             vertical: 16.0, horizontal: 16.0),
                         child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
                       ),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text(_labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
-//                                SizedBox(height: 16),
-                            ButtonTheme(
-                              minWidth: 150,
-                              child: ElevatedButton(
-                                child: const Text(
-                                  'Start Date',
-                                ),
-                                onPressed: () async {
-                                  _showDatePickerDepart();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text(_labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
-//                                SizedBox(height: 16),
-                            ButtonTheme(
-                              minWidth: 150,
-                              child: ElevatedButton(
-                                child: const Text(
-                                  'End Date',
-                                ),
-                                onPressed: () {
-                                  _showDatePickerReturn();
-                                },
-                                //
-                              ),
-                            ),
-                          ],
-                        ),
+                      CalendarWidget(
+                        startDate: startDate,
+                        startDateTimeStamp: startDateTimestamp,
+                        endDate: endDate,
+                        endDateTimeStamp: endDateTimestamp,
+                        context: context,
+                        showBoth: true,
                       ),
                       SwitchListTile(
                           title: const Text('Public'),
@@ -314,13 +252,14 @@ class _AddTripPageState extends State<AddTripPage> {
                                   CloudFunction().logEvent(action);
                                   DatabaseService().addNewTripData(
                                       Trip(
+                                        accessUsers: [userService.currentUserID],
                                         comment: comment,
-                                        endDate: endDate,
-                                        endDateTimeStamp:endDateTimeStamp,
-                                        startDateTimeStamp: startDateTimeStamp,
+                                        endDate: endDate.value,
+                                        endDateTimeStamp:endDateTimestamp.value,
+                                        startDateTimeStamp: startDateTimestamp.value,
                                         ispublic: ispublic,
                                         location: myController.text ?? '',
-                                        startDate: startDate,
+                                        startDate: startDate.value,
                                         travelType: travelType,
                                         tripGeoPoint: googleData2.value?.geoLocation ?? null,
                                         tripName: tripName,

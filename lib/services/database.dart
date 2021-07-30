@@ -31,7 +31,8 @@ class DatabaseService {
   var tripDocID;
   var itemDocID;
   var userID;
-  DatabaseService({this.tripDocID, this.uid, this.userID, this.itemDocID});
+  final String fieldID;
+  DatabaseService({this.tripDocID, this.uid, this.userID, this.itemDocID,this.fieldID});
   final AnalyticsService _analyticsService = AnalyticsService();
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
@@ -852,6 +853,22 @@ class DatabaseService {
 
 
   }
+  /// Get Trip Stream
+  Trip _tripFromSnapshot(DocumentSnapshot snapshot) {
+    try {
+
+        Map<String, dynamic> data = snapshot.data();
+        return Trip.fromData(data);
+    } catch (e) {
+      CloudFunction().logError('Error retrieving current trip list:  ${e.toString()}');
+      return null;
+    }
+  }
+
+  Stream<Trip> get singleTripData {
+    return tripsCollectionUnordered.doc(tripDocID)
+      .snapshots().map(_tripFromSnapshot);}
+
 
   // Get Trip
   Future<Trip> getTrip(String documentID) async {
@@ -931,9 +948,7 @@ class DatabaseService {
 
   // Add new lodging
 
-  Future addNewLodgingData(String comment, String displayName, String documentID,
-      String link, String lodgingType, String uid, File urlToImage, String tripName,
-      String startTime, String endTime) async {
+  Future addNewLodgingData(String documentID, LodgingData lodging) async {
 
     var key = lodgingCollection.doc().id;
     print(documentID);
@@ -942,18 +957,9 @@ class DatabaseService {
       String action = 'Add new lodging for $documentID';
       CloudFunction().logEvent(action);
       var addNewLodgingRef = lodgingCollection.doc(documentID).collection('lodging').doc(key);
-      addNewLodgingRef.set(
-        {'comment': comment,
-          'displayName': displayName,
-          'endTime': endTime,
-          'fieldID': key,
-          'link': link,
-          'lodgingType' : lodgingType,
-          'tripName': tripName,
-          'startTime': startTime,
-          'uid': uid,
-          'urlToImage': '',
-          'voters': [],
+      addNewLodgingRef.set(lodging.toJson());
+      addNewLodgingRef.update({
+        'fieldID': key,
       });
     } catch (e) {
       CloudFunction().logError('Error adding new lodging data:  ${e.toString()}');
@@ -961,9 +967,17 @@ class DatabaseService {
   }
 
   // Edit Lodging
-  Future editLodgingData(String comment, String displayName, String documentID,
-      String link, String lodgingType, File urlToImage, String fieldID,
-      String startTime, String endTime) async {
+  Future editLodgingData(
+      {String comment,
+      String documentID,
+      String link,
+      String lodgingType,
+      String fieldID,
+      String location,
+      Timestamp endDateTimestamp,
+      Timestamp startDateTimestamp,
+      String startTime,
+      String endTime}) async {
 
     var editLodgingRef = lodgingCollection.doc(documentID).collection('lodging').doc(fieldID);
 
@@ -972,12 +986,13 @@ class DatabaseService {
       CloudFunction().logEvent(action);
       editLodgingRef.update(
           {'comment': comment,
-            'displayName': displayName,
             'link': link,
             'lodgingType' : lodgingType,
-            'urlToImage': '',
             'startTime': startTime,
             'endTime': endTime,
+            'startDateTimestamp': startDateTimestamp,
+            'endDateTimestamp': endDateTimestamp,
+            'location': location
 
           });
     } catch (e) {
@@ -988,9 +1003,7 @@ class DatabaseService {
 
 
 // Add new activity
-  Future addNewActivityData(String comment, String displayName, String documentID,
-      String link, String activityType, String uid, File urlToImage, String tripName,
-      String startTime, String endTime) async {
+  Future addNewActivityData(ActivityData activityData, String documentID) async {
     var key = activitiesCollection.doc().id;
 
     var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(key);
@@ -998,30 +1011,31 @@ class DatabaseService {
     try {
       String action = 'Add new activity for $documentID';
       CloudFunction().logEvent(action);
-      addNewActivityRef.set(
-      {'comment': comment,
-        'displayName': displayName,
+      addNewActivityRef.set(activityData.toJson());
+      addNewActivityRef.update({
         'fieldID': key,
-        'link': link,
-        'activityType' : activityType,
-        'tripName': tripName,
-        'uid': uid,
-        'urlToImage': '',
-        'voters': [],
-        'startTime': startTime,
-        'endTime': endTime,
+        'dateTimestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       CloudFunction().logError('Error adding new activity:  ${e.toString()}');
       _analyticsService.writeError('Error adding new activity:  ${e.toString()}');
     }
+    
 
   }
 
   // Edit activity
-  Future editActivityData(String comment, String displayName, String documentID,
-      String link, String activityType, File urlToImage, String fieldID,
-      String startTime, String endTime) async {
+  Future editActivityData(
+      {String comment,
+      String displayName,
+      String documentID,
+      String link,
+      String activityType,
+      String fieldID,
+      String location,
+      Timestamp dateTimestamp,
+      String startTime,
+      String endTime}) async {
 
     var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(fieldID);
 
@@ -1036,6 +1050,8 @@ class DatabaseService {
         'urlToImage': '',
         'startTime': startTime,
         'endTime': endTime,
+        'location': location,
+        'dateTimestamp': dateTimestamp,
 
       });
     } catch (e) {
@@ -1062,6 +1078,26 @@ class DatabaseService {
     return lodgingCollection.doc(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
   }
 
+  //Get Lodging item
+  LodgingData _lodgingFromSnapshot(DocumentSnapshot snapshot){
+    if(snapshot.exists){
+      try {
+          Map<String, dynamic> data = snapshot.data();
+          return LodgingData.fromData(data);
+      } catch (e) {
+        CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
+        return null;
+      }
+    } else{
+      return null;
+    }
+
+  }
+  //Get specific Lodging
+  Stream<LodgingData> get lodging {
+    return lodgingCollection.doc(tripDocID).collection('lodging').doc(fieldID).snapshots().map(_lodgingFromSnapshot);
+  }
+
   List<ActivityData> _activitiesListFromSnapshot(QuerySnapshot snapshot){
     try {
       List<ActivityData> activitiesList = snapshot.docs.map((doc){
@@ -1078,6 +1114,24 @@ class DatabaseService {
 
   Stream<List<ActivityData>> get activityList {
     return activitiesCollection.doc(tripDocID).collection('activity').snapshots().map(_activitiesListFromSnapshot);
+  }
+  //Get Activity item
+  ActivityData _activityFromSnapshot(DocumentSnapshot snapshot){
+    if(snapshot.exists){
+      try {
+        Map<String, dynamic> data = snapshot.data();
+        return ActivityData.fromData(data);
+      } catch (e) {
+        CloudFunction().logError('Error retrieving single activity:  ${e.toString()}');
+        return null;
+      }
+    } else{
+      return null;
+    }
+
+  }
+  Stream<ActivityData> get activity {
+    return activitiesCollection.doc(tripDocID).collection('activity').doc(fieldID).snapshots().map(_activityFromSnapshot);
   }
 
   //Get all users

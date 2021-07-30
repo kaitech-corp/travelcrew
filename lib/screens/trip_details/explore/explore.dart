@@ -77,15 +77,15 @@ class Explore extends StatelessWidget {
             BlocProvider(create: (context) => TransportationBloc(transportationRepository: TransportationRepository()..refresh(trip.documentId))),
           ],
           child: TabBarView(
-            children: [
-              checkOwner(userService.currentUserID),
-              SplitPage(tripDetails: trip),
-              TransportationPage(trip: trip,),
-              LodgingPage(trip: trip,),
-              ActivityPage(trip: trip,),
-              ChatPage(trip: trip,),
-            ],
-          ),
+                    children: [
+                      checkOwner(userService.currentUserID),
+                      SplitPage(tripDetails: trip),
+                      TransportationPage(trip: trip,),
+                      LodgingPage(trip: trip,),
+                      ActivityPage(trip: trip,),
+                      ChatPage(trip: trip,),
+                    ],
+                  )
         )
       ),
     );
@@ -100,7 +100,23 @@ class Explore extends StatelessWidget {
 
    checkOwner(String uid) {
   if (trip.ownerID == uid){
-  return ExploreOwnerLayout(tripDetails: trip,controller: controller,scaffoldKey: scaffoldKey,);
+    return StreamBuilder(
+        stream: DatabaseService(tripDocID: trip.documentId).singleTripData,
+        builder: (context, document){
+          if(document.hasData){
+            Trip tripDetails = document.data;
+            return ExploreOwnerLayout(
+              tripDetails: tripDetails,
+              controller: controller,
+              scaffoldKey: scaffoldKey,);
+          } else {
+            return ExploreOwnerLayout(
+              tripDetails: trip,
+              controller: controller,
+              scaffoldKey: scaffoldKey,);
+          }
+        }
+    );
   } else {
   return ExploreMemberLayout(tripDetails: trip,controller: controller,scaffoldKey: scaffoldKey,);
   }

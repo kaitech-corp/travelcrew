@@ -5,12 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/widgets/calendar_widget.dart';
 
 import 'add_trip_page.dart';
 
@@ -23,66 +23,61 @@ class EditTripData extends StatefulWidget {
   _EditTripDataState createState() => _EditTripDataState();
 }
 class _EditTripDataState extends State<EditTripData> {
-  final _formKey = GlobalKey<FormState>();
-  File _image;
-  final ImagePicker _picker = ImagePicker();
-  String startDate;
-  String endDate;
-  Timestamp startDateTimeStamp;
-  Timestamp endDateTimeStamp;
 
-  DateTime _fromDateDepart = DateTime.now();
-  DateTime _fromDateReturn = DateTime.now();
+
+  final _formKey = GlobalKey<FormState>();
+  final ImagePicker _picker = ImagePicker();
+
+  final ValueNotifier<String> startDate = ValueNotifier('');
+  final ValueNotifier<String> endDate = ValueNotifier('');
+  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier(Timestamp.now());
+
+  final TextEditingController controllerLocation = TextEditingController();
+  final TextEditingController controllerTripName = TextEditingController();
+  final TextEditingController controllerType = TextEditingController();
+  final TextEditingController controllerComment = TextEditingController();
+
 
   bool dateChangeVisible = false;
   bool locationChangeVisible = false;
 
-  String get _labelTextDepart {
-
-    return DateFormat.yMMMd().format(_fromDateDepart);
-  }
-  String get _labelTextReturn {
-
-    return DateFormat.yMMMd().format(_fromDateReturn);
-  }
-
-  Future<void> _showDatePickerDepart() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _fromDateDepart,
-      firstDate: DateTime(2015, 1),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _fromDateDepart) {
-      setState(() {
-        _fromDateDepart = picked;
-        if(_fromDateReturn.isBefore(_fromDateDepart)){
-          _fromDateReturn = picked;
-        }
-        startDate = DateFormat.yMMMd().format(_fromDateDepart);
-        startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
-      });
-    }
-  }
-  Future<void> _showDatePickerReturn() async {
-    final picked = await showDatePicker(
-      fieldLabelText: 'Return Date',
-      context: context,
-      initialDate: _fromDateReturn,
-      firstDate: DateTime(2015, 1),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _fromDateReturn) {
-      setState(() {
-        _fromDateReturn = picked;
-        endDate = DateFormat.yMMMd().format(_fromDateReturn);
-        endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
-      });
-    }
-  }
-
-
+  File _image;
   File urlToImage;
+  String documentID;
+  bool ispublic = true;
+  GeoPoint tripGeoPoint;
+
+  @override
+  void initState() {
+    super.initState();
+    controllerLocation.text = widget.tripDetails?.location ?? '';
+    controllerTripName.text = widget.tripDetails?.tripName ?? '';
+    controllerType.text = widget.tripDetails?.travelType ?? '';
+    controllerComment.text = widget.tripDetails.comment;
+    startDate.value = widget.tripDetails.startDate;
+    endDate.value = widget.tripDetails.endDate;
+    endDateTimestamp.value = widget.tripDetails.endDateTimeStamp;
+    startDateTimestamp.value = widget.tripDetails.startDateTimeStamp;
+    ispublic = widget.tripDetails.ispublic;
+    documentID = widget.tripDetails.documentId;
+
+
+
+  }
+
+  @override
+  void dispose() {
+    startDateTimestamp.dispose();
+    endDateTimestamp.dispose();
+    controllerLocation.dispose();
+    controllerType.dispose();
+    controllerTripName.dispose();
+    controllerComment.dispose();
+    googleData2.dispose();
+    super.dispose();
+  }
+
 
   Future getImage() async {
     var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
@@ -96,13 +91,7 @@ class _EditTripDataState extends State<EditTripData> {
 
   @override
   Widget build(BuildContext context) {
-    String documentID = widget.tripDetails.documentId;
-    String comment = widget.tripDetails.comment;
-    bool ispublic = widget.tripDetails.ispublic;
-    String location = widget.tripDetails.location;
-    String travelType = widget.tripDetails.travelType;
-    String tripName = widget.tripDetails.tripName;
-    GeoPoint tripGeoPoint = widget.tripDetails.tripGeoPoint;
+
 
     return Scaffold(
         appBar: AppBar(
@@ -118,48 +107,40 @@ class _EditTripDataState extends State<EditTripData> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               TextFormField(
+                                controller: controllerTripName,
                                   textCapitalization: TextCapitalization.words,
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(75),
                                   ],
                                   decoration:
                                   const InputDecoration(labelText: 'Trip Name or Location'),
-                                  initialValue: tripName,
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return 'Please enter a trip name';
                                     }
                                   },
-                                  onChanged: (val) =>
-                                  {
-                                    tripName = val,
-                                  }
                               ),
                               TextFormField(
+                                controller: controllerType,
                                   textCapitalization: TextCapitalization.words,
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(30),
                                   ],
                                   decoration:
                                   const InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
-                                  initialValue: travelType,
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return 'Please enter a type.';
                                     }
                                   },
-                                  onChanged: (val) =>
-                                  {
-                                    travelType = val,
-                                  }
                               ),
                               locationChangeVisible ?
                               Column(
                                 children: [
                                   TextFormField(
-                                    controller: myController,
+                                    controller: controllerLocation,
                                     enableInteractiveSelection: true,
                                     textCapitalization: TextCapitalization.words,
                                     decoration: const InputDecoration(labelText:'Location'),
@@ -172,28 +153,18 @@ class _EditTripDataState extends State<EditTripData> {
                                     },
                                   ),
                                   Container(
-                                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controllerLocation,),
                                     padding: const EdgeInsets.only(top: 5, bottom: 5),),
                                 ],
                               ):
                               Column(
                                 children: [
                                   TextFormField(
+                                    controller: controllerLocation,
                                       textCapitalization: TextCapitalization.words,
                                       enabled: false,
                                       decoration:
                                       const InputDecoration(labelText: 'Location'),
-                                      initialValue: location,
-                                      // ignore: missing_return
-                                      // validator: (value) {
-                                      //   if (value.isEmpty) {
-                                      //     return 'Please enter a location.';
-                                      //   }
-                                      // },
-                                      onChanged: (val) =>
-                                      {
-                                        location = val,
-                                      }
                                   ),
                                   ElevatedButton(
                                     child: const Text('Edit Location'),
@@ -208,49 +179,13 @@ class _EditTripDataState extends State<EditTripData> {
                               const Padding(
                                 padding: const EdgeInsets.only(top: 10),
                               ),
-                              dateChangeVisible ? Column(
-                                children: <Widget>[
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        Text(_labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
-//                                SizedBox(height: 16),
-                                        ButtonTheme(
-                                          minWidth: 150,
-                                          child: ElevatedButton(
-                                            child: const Text(
-                                              'Departure Date',
-                                            ),
-                                            onPressed: () async {
-                                              _showDatePickerDepart();
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        Text(_labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
-//                                SizedBox(height: 16),
-                                        ButtonTheme(
-                                          minWidth: 150,
-                                          child: ElevatedButton(
-                                            child: const Text(
-                                              'Return Date',
-                                            ),
-                                            onPressed: () {
-                                              _showDatePickerReturn();
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                              dateChangeVisible ? CalendarWidget(
+                                startDate: startDate,
+                                startDateTimeStamp: startDateTimestamp,
+                                endDate: endDate,
+                                endDateTimeStamp: endDateTimestamp,
+                                context: context,
+                                showBoth: true,
                               ):
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -286,16 +221,13 @@ class _EditTripDataState extends State<EditTripData> {
                                 child: Text('Description',style: Theme.of(context).textTheme.subtitle1,),
                               ),
                               TextFormField(
+                                controller: controllerComment,
                                 cursorColor: Colors.grey,
-                                initialValue: comment,
                                 maxLines: 3,
                                 textCapitalization: TextCapitalization.words,
                                 decoration: const InputDecoration(
                                     border: const OutlineInputBorder(),
                                     hintText: 'Add a short description.'),
-                                onChanged: (val){
-                                  comment = val;
-                                },
                               ),
                             ]),
                     )))
@@ -304,20 +236,20 @@ class _EditTripDataState extends State<EditTripData> {
         onPressed: () {
           final form = _formKey.currentState;
           if (form.validate()) {
-            if(!dateChangeVisible){
-              startDateTimeStamp = widget.tripDetails.startDateTimeStamp;
-              endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
-              endDate = widget.tripDetails.endDate;
-              startDate = widget.tripDetails.startDate;
-            } else
-            {
-              startDate = DateFormat.yMMMd().format(_fromDateDepart);
-              startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
-              endDate = DateFormat.yMMMd().format(_fromDateReturn);
-              endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
-            }
+            // if(!dateChangeVisible){
+            //   startDateTimeStamp = widget.tripDetails.startDateTimeStamp;
+            //   endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
+            //   endDate = widget.tripDetails.endDate;
+            //   startDate = widget.tripDetails.startDate;
+            // } else
+            // {
+            //   startDate = DateFormat.yMMMd().format(_fromDateDepart);
+            //   startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
+            //   endDate = DateFormat.yMMMd().format(_fromDateReturn);
+            //   endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
+            // }
             if(locationChangeVisible){
-              location = myController.text;
+              // location = myController.text;
               if(googleData2.value != null){
                 tripGeoPoint = googleData2.value.geoLocation;
               }
@@ -327,26 +259,23 @@ class _EditTripDataState extends State<EditTripData> {
               String action = 'Saving edited Trip data';
               CloudFunction().logEvent(action);
               DatabaseService().editTripData(
-                  comment,
+                  controllerComment.text,
                   documentID,
-                  endDate,
-                  endDateTimeStamp,
+                  endDate.value,
+                  endDateTimestamp.value,
                   ispublic,
-                  location,
-                  startDate,
-                  startDateTimeStamp,
-                  travelType,
+                  controllerLocation.text,
+                  startDate.value,
+                  startDateTimestamp.value,
+                  controllerType.text,
                   urlToImage,
-                  tripName,
+                  controllerTripName.text,
                   tripGeoPoint);
             } on Exception catch (e) {
               CloudFunction().logError('Error in edit trip function: ${e.toString()}');
             }
             _showDialog(context);
           }
-
-          myController.clear();
-          googleData2.dispose();
         },
         child: const Icon(Icons.add),
       ),

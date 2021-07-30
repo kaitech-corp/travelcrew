@@ -1,4 +1,5 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/admin/admin_page.dart';
@@ -7,6 +8,7 @@ import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/split_model.dart';
+import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/all_users_repository.dart';
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
@@ -28,12 +30,12 @@ import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
 import 'package:travelcrew/screens/menu_screens/users/user_profile_page.dart';
 import 'package:travelcrew/screens/profile_page/edit_profile_page.dart';
 import 'package:travelcrew/screens/profile_page/profile_page.dart';
+import 'package:travelcrew/screens/signup/signup_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity_page.dart';
-
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_page.dart';
-
+import 'package:travelcrew/screens/trip_details/explore/details/detail_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';
@@ -45,7 +47,6 @@ import 'package:travelcrew/screens/trip_details/lodging/lodging_page.dart';
 import 'package:travelcrew/screens/trip_details/split/split_details_page.dart';
 import 'package:travelcrew/screens/trip_details/split/split_page.dart';
 import 'package:travelcrew/screens/trip_details/transportation/add_new_transportation.dart';
-
 import 'package:travelcrew/screens/trip_details/transportation/edit_transportation.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
@@ -101,6 +102,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: CurrentTrips(),
+      );
+    case DetailsPageRoute:
+      DetailsPageArguments arguments = settings.arguments;
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: DetailsPage(
+          trip: arguments.trip,
+          activity: arguments.activity,
+          lodging: arguments.lodging,
+          type: arguments.type,
+          transport: arguments.transport,
+        ),
       );
     case DMChatRoute:
       return _getPageRoute(
@@ -230,7 +243,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SignUpScreenRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: SignUpScreen(),
+        viewToShow: SignupScreen(),
       );
     case SplitDetailsPageRoute:
       SplitDetailsArguments arguments = settings.arguments;
@@ -297,6 +310,21 @@ class EditLodgingArguments{
   final LodgingData lodging ;
 
   EditLodgingArguments(this.lodging, this.trip);
+}
+class DetailsPageArguments{
+  final ActivityData activity;
+  final LodgingData lodging;
+  final TransportationData transport;
+  final Trip trip;
+  final String type;
+
+  DetailsPageArguments({
+    this.activity,
+    this.lodging,
+    this.transport,
+    this.trip,
+    this.type});
+
 }
 class AddToListPageArguments{
   final Trip tripDetails;

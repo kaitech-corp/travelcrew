@@ -16,5 +16,17 @@ class Validators {
     // return _passwordRegExp.hasMatch(password);
     return true;
   }
+  static isValidFirstName(String firstName) {
+    return firstName.trim().isNotEmpty;
+    return true;
+  }
+  static isValidLastName(String lastName) {
+    return lastName.trim().isNotEmpty;
+    return true;
+  }
+  static isValidDisplayName(String displayName) {
+    return displayName.trim().isNotEmpty;
+    return true;
+  }
 
 }

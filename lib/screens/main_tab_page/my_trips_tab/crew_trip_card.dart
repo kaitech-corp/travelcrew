@@ -39,8 +39,7 @@ class CrewTripCard extends StatelessWidget {
         child: Container(
           height: trip.urlToImage.isNotEmpty ? size* .31 : size*.11,
           width: double.infinity,
-          decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
-          BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
@@ -48,16 +47,6 @@ class CrewTripCard extends StatelessWidget {
                 colors: [
                   Colors.blue.shade50,
                   Colors.lightBlueAccent.shade200
-                ]
-            ),
-          ): BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.grey.shade700,
-                  Color(0xAA2D3D49)
                 ]
             ),
           ),

@@ -192,9 +192,6 @@ class _SignupScreenState extends State {
                                         form.save();
                                         _showDialog(context);
                                         await UserRepository().signUp(_user.email, password, _user.firstName, _user.lastName, _user.displayName, _image);
-                                        // if (result == null){
-                                        //   setState(() => error = 'Sign in credentials are not valid!');
-                                        // }
                                         navigationService.navigateTo(LaunchIconBadgerRoute);
                                       }
                                     },
