@@ -1,7 +1,7 @@
 ---
 name: travelcrew
 description: First Flutter App
-version: 3.0.0+55
+version: 3.0.0+59
 publish_to: none
 
 environment:
@@ -23,7 +23,6 @@ dependencies:
   cloud_firestore: ^2.0.0
   cloud_functions: ^1.0.6
   curved_navigation_bar: ^0.4.0-nullsafety.0
-  device_calendar: ^4.0.0-dev.12864
   draggable_scrollbar: ^0.1.0
   equatable: ^2.0.3
   expandable: ^5.0.1

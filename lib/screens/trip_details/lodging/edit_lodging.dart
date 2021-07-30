@@ -1,13 +1,13 @@
-import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
+import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
+import 'package:travelcrew/services/widgets/calendar_widget.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 
 
@@ -24,26 +24,52 @@ class EditLodging extends StatefulWidget {
 }
 class _EditLodgingState extends State<EditLodging> {
 
+  final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  final searchScaffoldKey = GlobalKey<ScaffoldState>();
+
+  final ValueNotifier<String> startTime = ValueNotifier('');
+  final ValueNotifier<String> endTime = ValueNotifier('');
+  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier(Timestamp.now());
+  final TextEditingController controller = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
-  File _image;
+  String link;
+  String lodgingType;
+  String comment;
+  String documentID;
+  String fieldID;
+  bool calendarVisible = false;
   bool timePickerVisible = false;
 
 
   @override
+  void initState() {
+    controller.text = widget.lodging?.location ?? '';
+    endDateTimestamp.value = widget.lodging?.endDateTimestamp ?? widget.trip.endDateTimeStamp;
+    startDateTimestamp.value = widget.lodging?.startDateTimestamp ?? widget.trip.startDateTimeStamp;
+    link = widget.lodging.link;
+    lodgingType = widget.lodging.lodgingType;
+    comment = widget.lodging.comment;
+    startTime.value = widget.lodging.startTime;
+    endTime.value = widget.lodging.endTime;
+    documentID = widget.trip.documentId;
+    fieldID = widget.lodging.fieldID;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+   controller.dispose();
+   endDateTimestamp.dispose();
+   startDateTimestamp.dispose();
+   super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    bool loading = false;
 
-
-    String displayName = widget.lodging.displayName;
-    String link = widget.lodging.link;
-    String lodgingType = widget.lodging.lodgingType;
-    String comment = widget.lodging.comment;
-    String startTimeSaved = widget.lodging.startTime;
-    String endTimeSaved = widget.lodging.endTime;
-
-
-    return loading ? Loading() :
-    GestureDetector(
+    return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
@@ -58,7 +84,7 @@ class _EditLodgingState extends State<EditLodging> {
                 key: _formKey,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       TextFormField(
                         onSaved: (val){
@@ -122,35 +148,61 @@ class _EditLodgingState extends State<EditLodging> {
                         ),
                         maxLines: 5,
                       ),
-                      SizedBox(height: 20,),
-                      timePickerVisible ?
-                      TimePickers():
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Check in: $startTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
-                              Text('Checkout: $endTimeSaved',style: Theme.of(context).textTheme.subtitle1,),
-                            ],
-                          ),
-                          ButtonTheme(
-                            minWidth: 150,
-                            child: ElevatedButton(
-                              child: Text(
-                                'Edit Time',style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  timePickerVisible = true;
-                                });
-                              },
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        child: TextFormField(
+                          controller: controller,
+                          enableInteractiveSelection: true,
+                          // maxLines: 2,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
                             ),
+                            labelText: "Address",
                           ),
-                        ],
+                          // ignore: missing_return
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 16.0),
+                          child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controller,),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Schedule',style: Theme.of(context).textTheme.headline6,),
+                      ),
+                      Container(height: 2,color: Colors.black,),
+                      calendarVisible ? CalendarWidget(
+                        startDateTimeStamp: startDateTimestamp,
+                        endDateTimeStamp: endDateTimestamp,
+                        showBoth: true,):
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          child: Text('Edit Dates',style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              calendarVisible = true;
+                            });
+                          },
+                        ),
+                      ),
+                      timePickerVisible ? TimePickers(lodging: true,) :
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          child: Text('CheckIn/Checkout',style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              timePickerVisible = true;
+                            });
+                          },
+                        ),
                       ),
                     ]
                 ),
@@ -162,27 +214,20 @@ class _EditLodgingState extends State<EditLodging> {
             final form = _formKey.currentState;
             if (form.validate()) {
               form.save();
-              String documentID = widget.trip.documentId;
-              String fieldID = widget.lodging.fieldID;
-              if(!timePickerVisible){
-                startTime.value = startTimeSaved;
-                endTime.value = endTimeSaved;
-              }
-
-              setState(() => loading =true);
               String message = 'A lodging option has been modified within ${widget.trip.tripName}';
 
               try {
                 DatabaseService().editLodgingData(
-                  comment,
-                  displayName,
-                  documentID,
-                  link,
-                  lodgingType,
-                  _image,
-                  fieldID,
-                  startTime.value,
-                  endTime.value,
+                  comment: comment,
+                  documentID: documentID,
+                  endDateTimestamp: endDateTimestamp.value,
+                  endTime: endTime.value,
+                  fieldID: fieldID,
+                  link: link,
+                  location: controller.text,
+                  lodgingType: lodgingType,
+                  startDateTimestamp: startDateTimestamp.value,
+                  startTime: startTime.value,
                 );
               } on Exception catch (e) {
                 CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
@@ -204,9 +249,6 @@ class _EditLodgingState extends State<EditLodging> {
               } catch(e){
                 CloudFunction().logError('Error sending notifications for edited lodging:  ${e.toString()}');
               }
-              setState(() {
-                loading = false;
-              });
               navigationService.pop();
             }
           },

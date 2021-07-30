@@ -97,7 +97,7 @@ class FlutterLinkView extends StatelessWidget{
                 const SizedBox(height: 8),
                 Text(
                   webInfo.description,
-                  maxLines: 5,
+                  maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],

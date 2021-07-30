@@ -25,6 +25,11 @@ class TCFunctions {
     return dateTime.split(',')[0];
   }
 
+  String dateToMonthDayFromTimestamp(Timestamp timestamp){
+    var dateTime = formatTimestamp(timestamp, wTime: false);
+    return dateTime.split(',')[0];
+  }
+
   CountDownDate dateGauge(int dateCreatedTimeStamp, int startDateTimeStamp){
     var now = new DateTime.now();
     var createdDate = new DateTime.fromMillisecondsSinceEpoch(dateCreatedTimeStamp);

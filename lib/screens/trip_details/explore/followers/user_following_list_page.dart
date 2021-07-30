@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
@@ -128,7 +129,7 @@ class _FollowingListState extends State<FollowingList> {
                       type: type,
                       ispublic: widget.tripDetails.ispublic,
                       uidToUse: user.uid);
-                  _showDialog(context);
+                  TravelCrewAlertDialogs().invitationDialog(context);
                 },
               ) : const Icon(Icons.check_box),
             ),
@@ -137,7 +138,5 @@ class _FollowingListState extends State<FollowingList> {
       );
   }
 
-  _showDialog(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Invite sent.')));
-  }
+
 }

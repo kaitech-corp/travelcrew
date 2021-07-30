@@ -82,6 +82,7 @@ class _LoginFormState extends State<LoginForm> {
               child: Column(
                 children: [
                   BlocBuilder<LoginBloc, LoginState>(
+                    bloc: _loginBloc,
                       builder: (context, state) {
                         return Column(
                             children: <Widget>[
@@ -158,10 +159,8 @@ class _LoginFormState extends State<LoginForm> {
                               )]);
                       }),
                   BlocBuilder<AppleLoginBloc, AppleLoginState>(
-                      builder: (context, state) { return FutureBuilder(
-                        future:  UserRepository().appleSignInAvailable,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == true) {
+                      builder: (context, state) {
+                          if (UserRepository().appleSignInAvailable) {
                             return OutlinedButton(
                               onPressed: () {
                                 if (isAppleLoginButtonEnabled(state)) {
@@ -187,7 +186,6 @@ class _LoginFormState extends State<LoginForm> {
                             return Container();
                           }
                         },
-                      );}
                   ),
                     BlocBuilder<GoogleLoginBloc, GoogleLoginState>(
                         builder: (context, state){

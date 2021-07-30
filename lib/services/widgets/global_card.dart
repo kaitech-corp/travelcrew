@@ -16,7 +16,19 @@ class GlobalCard extends StatelessWidget{
       ),
       elevation: 10,
       shadowColor: Colors.black26,
-      child: widget,
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Colors.blue.shade50,
+                  Colors.lightBlueAccent.shade200
+                ]
+            ),
+          ),
+          child: widget),
     );
   }
 

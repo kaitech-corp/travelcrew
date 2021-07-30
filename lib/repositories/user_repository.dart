@@ -1,4 +1,5 @@
-import 'dart:io';
+
+import 'dart:io' show File, Platform;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -28,10 +29,7 @@ class UserRepository {
     await DatabaseService(uid: user.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, 0, 0, user.uid, urlToImage);
     await _analyticsService.logSignUp();
 
-    return await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    return result;
   }
 
   Future<void> signOut() async {
@@ -56,7 +54,7 @@ class UserRepository {
 
   }
 
-  Future<bool> get appleSignInAvailable => SignInWithApple.isAvailable();
+  bool get appleSignInAvailable => Platform.isIOS;
 
   Future<void> signInWithApple() async {
     try {
