@@ -8,7 +8,7 @@ import 'package:travelcrew/screens/trip_details/split/split_package.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+
 import 'details_bottom_sheet.dart';
 
 class SplitDetailsPage extends StatelessWidget{
