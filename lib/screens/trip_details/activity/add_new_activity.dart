@@ -48,7 +48,6 @@ class AddNewActivityState extends State<AddNewActivity> {
   String location = '';
   File urlToImage;
   bool timePickerVisible = false;
-  DateTime _activityDate;
 
   @override
   void initState() {

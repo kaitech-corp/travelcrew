@@ -27,6 +27,8 @@ const signInWithApple = ' Sign in with Apple';
 double sizeFromHangingTheme = SizeConfig.screenHeight*.13;
 const urls = [];
 
+const defaultDuration = Duration(seconds: 3);
+
 const placeTypes = [
   'bar',
   'cafe',

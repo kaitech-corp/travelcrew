@@ -47,7 +47,6 @@ class _AddTripPageState extends State<AddTripPage> {
   @override
   void initState() {
     super.initState();
-
     myController.clear();
     if(widget.addedLocation != null){
       myController.text = widget.addedLocation;
@@ -60,6 +59,7 @@ class _AddTripPageState extends State<AddTripPage> {
     startDateTimestamp.dispose();
     endDate.dispose();
     endDateTimestamp.dispose();
+    // myController.dispose();
     super.dispose();
   }
 
