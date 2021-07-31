@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
@@ -19,6 +20,7 @@ import 'package:travelcrew/blocs/bloc_observer/custom_bloc_observer.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
 import 'package:travelcrew/screens/login/complete_profile_page.dart';
 import 'package:travelcrew/screens/login/login_screen.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -318,29 +320,37 @@ class _TravelCrewState extends State<TravelCrew> {
               builder: (themeContext) =>
                   MaterialApp(
                     home: BlocBuilder<AuthenticationBloc,AuthenticationState>(
-                        builder: (context,state){
-                          SizeConfig().init(context);
-                          if (state is AuthenticationFailure) {
-                            return LoginScreen();
-                          }
-                          if (state is AuthenticationSuccess) {
-                            print(state.firebaseUser);
-                            print(state.firebaseUser.uid);
-                          return FutureBuilder(
-                              builder: (context, data) {
-                                if (data.data == false) {
-                                  return CompleteProfile();
-                                } else if (data.data == null){
-                                  return Loading();
-                                }
-                                return LaunchIconBadger();
-                              },
-                              future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
-                            );
-                          } else {
-                            return LoginScreen();
-                          }
-                        }),
+                            builder: (context,state){
+                              SizeConfig().init(context);
+                              if (state is AuthenticationFailure) {
+                                return LoginScreen();
+                              }
+                              if (state is AuthenticationSuccess) {
+                                print(state.firebaseUser);
+                                print(state.firebaseUser.uid);
+                              return FutureBuilder(
+                                  builder: (context, data) {
+                                    if (data.data == false) {
+                                      return CompleteProfile();
+                                    } else if (data.data == null){
+                                      return Loading();
+                                    }
+                                    return LaunchIconBadger();
+                                  },
+                                  future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
+                                );
+                              } else {
+                                return LoginScreen();
+                              }
+                            }),
+                      // ),
+                    //   onStart: (index, key) => print('On started $index'),
+                    //   onComplete: (index, key) => print('On completed $index'),
+                    //   onFinish: () => print('Finished completely'),
+                    //   autoPlay: true,
+                    //   autoPlayDelay: defaultDuration,
+                    //
+                    // ),
                     debugShowCheckedModeBanner: false,
                     theme: ThemeProvider
                         .themeOf(themeContext)

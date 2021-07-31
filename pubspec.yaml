@@ -59,6 +59,7 @@ dependencies:
   shared_preferences: ^2.0.5
   sign_in_with_apple: ^3.0.0
   sizer: ^2.0.13
+  showcaseview: ^1.1.0
   social_share: ^2.1.1
   syncfusion_flutter_gauges: ^19.1.59
   theme_provider: ^0.5.0

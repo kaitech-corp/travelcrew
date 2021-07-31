@@ -18,15 +18,12 @@ class Validators {
   }
   static isValidFirstName(String firstName) {
     return firstName.trim().isNotEmpty;
-    return true;
   }
   static isValidLastName(String lastName) {
     return lastName.trim().isNotEmpty;
-    return true;
   }
   static isValidDisplayName(String displayName) {
     return displayName.trim().isNotEmpty;
-    return true;
   }
 
 }

@@ -13,7 +13,6 @@ import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/all_users_repository.dart';
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
-import 'package:travelcrew/screens/login/signup_screen.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips/all_trips_page.dart';
 import 'package:travelcrew/screens/main_tab_page/favorites/favorites_page.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';

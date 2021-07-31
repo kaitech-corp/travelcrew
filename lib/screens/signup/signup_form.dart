@@ -141,30 +141,6 @@ class _LoginFormState extends State<SignupForm> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    controller: _firstNameController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: "First Name",
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  TextFormField(
-                    controller: _lastNameController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: "Last Name",
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  TextFormField(
-                    controller: _displayNameController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: "Display Name",
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       icon: Icon(Icons.email),
@@ -188,6 +164,30 @@ class _LoginFormState extends State<SignupForm> {
                     validator: (_) {
                       return !state.isPasswordValid ? 'Invalid Password' : null;
                     },
+                  ),
+                  TextFormField(
+                    controller: _displayNameController,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: "Display Name",
+                    ),
+                    keyboardType: TextInputType.name,
+                  ),
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: "First Name",
+                    ),
+                    keyboardType: TextInputType.name,
+                  ),
+                  TextFormField(
+                    controller: _lastNameController,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: "Last Name",
+                    ),
+                    keyboardType: TextInputType.name,
                   ),
                   SizedBox(height: 8,),
                   imagePicked
@@ -223,13 +223,13 @@ class _LoginFormState extends State<SignupForm> {
                       children: <Widget>[
                         Text(agreement,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
                         TextButton(
-                          child: const Text('Terms of Service',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold,fontSize: 18)),
+                          child:  Text('Terms of Service',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,fontSize: 18,)),
                           onPressed: (){
                             TCFunctions().launchURL(urlToTerms);
                           },
                         ),
                         TextButton(
-                          child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, fontSize: 18)),
+                          child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold, fontSize: 18)),
                           onPressed: (){
                             TCFunctions().launchURL(urlToPrivacyPolicy);
                           },

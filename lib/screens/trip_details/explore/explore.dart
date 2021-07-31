@@ -34,6 +34,8 @@ class Explore extends StatelessWidget {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   PersistentBottomSheetController controller;
 
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

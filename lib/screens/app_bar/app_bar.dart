@@ -4,9 +4,11 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
+import 'package:travelcrew/services/widgets/showcase_widget.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 
@@ -19,6 +21,7 @@ class CustomAppBar extends StatelessWidget {
     Key key, this.bottomNav, this.heroTag,
   }) : super(key: key);
 
+  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +30,7 @@ class CustomAppBar extends StatelessWidget {
       child: Container(
           height: SizeConfig.screenHeight*.22,
           width: double.infinity,
-          decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
-          BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -47,11 +49,7 @@ class CustomAppBar extends StatelessWidget {
                 blurRadius: 10.0,
               ),
             ],
-          ): BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(spaceImage),
-                fit: BoxFit.cover,
-              )),
+          ),
           child: Padding(
               padding: EdgeInsets.fromLTRB(8.0,0,8.0,0),
               child:
@@ -69,31 +67,16 @@ class CustomAppBar extends StatelessWidget {
                             onTap: (){
                               navigationService.navigateTo(ProfilePageRoute);
                             },
-                            child: StreamBuilder(
-                              builder: (context, profile){
-                                if(profile.hasData){
-                                  UserPublicProfile currentUser = profile.data;
-                                  return Hero(
-                                    tag: currentUser.uid,
-                                    transitionOnUserGestures: true,
-                                    child: CircleAvatar(
-                                      radius: SizeConfig.screenWidth/8.0,
-                                      backgroundImage: (currentUser.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUser.urlToImage,) : AssetImage(profileImagePlaceholder),
-                                    ),
-                                  );} else{
-                                  return Hero(
-                                    tag: '1234',
-                                    transitionOnUserGestures: true,
-                                    child: CircleAvatar(
-                                      radius: SizeConfig.screenWidth/8.0,
-                                      backgroundImage: AssetImage(profileImagePlaceholder),
-                                    ),
-                                  );
-                                }},stream: DatabaseService().currentUserPublicProfile,
+                            child: Hero(
+                              tag: currentUserProfile?.uid ?? '',
+                              transitionOnUserGestures: true,
+                              child: CircleAvatar(
+                                radius: SizeConfig.screenWidth/8.0,
+                                backgroundImage: (currentUserProfile?.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder),
+                              ),
                             ),
                           ),
                         ),
-                        // SizedBox(width: SizeConfig.screenWidth/16.0,),
                         IconButton(
                           icon: AppBarIconThemeWidget(icon: Icons.chat,),
                           onPressed: (){

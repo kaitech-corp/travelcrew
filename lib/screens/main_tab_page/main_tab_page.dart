@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:travelcrew/models/notification_model.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/app_bar/app_bar.dart';
@@ -10,6 +11,7 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/widgets/showcase_widget.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import '../../size_config/size_config.dart';
@@ -33,9 +35,38 @@ class MainTabPage extends StatefulWidget {
 }
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
+  // GlobalKey keyOne = GlobalKey();
+  // GlobalKey keyTwo = GlobalKey();
+  // GlobalKey keyThree = GlobalKey();
+  // GlobalKey keyFour = GlobalKey();
+  // GlobalKey keyFive = GlobalKey();
+  // GlobalKey keySix = GlobalKey();
+  // GlobalKey keySeven = GlobalKey();
+  // GlobalKey keyEight = GlobalKey();
+  // GlobalKey keyNine = GlobalKey();
+  // GlobalKey keyTen = GlobalKey();
+  // GlobalKey keyEleven = GlobalKey();
+  // GlobalKey keyTwelve = GlobalKey();
+
   @override
   void initState() {
     super.initState();
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) =>
+    //     ShowCaseWidget.of(context)
+    //         .startShowCase([
+    //       keyOne,
+    //       keyTwo,
+    //       keyThree,
+    //       keyFour,
+    //       keyFive,
+    //       // keySix,
+    //       keySeven,
+    //       keyEight,
+    //       keyNine,
+    //       keyTen]
+    //     ));
+
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       RemoteNotification message =  event.notification;
       Fluttertoast.showToast(

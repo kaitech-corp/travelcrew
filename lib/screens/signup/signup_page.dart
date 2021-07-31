@@ -58,7 +58,7 @@ class SignupScreen extends StatelessWidget {
                       'Signup',
                       style: TextStyle(
                         fontSize: 40,
-                        color: Color(0xff6a515e),
+                        color: Colors.blue,
                       ),
                     ),
                   ),
