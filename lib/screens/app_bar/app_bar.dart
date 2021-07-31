@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:theme_provider/theme_provider.dart';
-import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-import 'package:travelcrew/services/widgets/showcase_widget.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 
