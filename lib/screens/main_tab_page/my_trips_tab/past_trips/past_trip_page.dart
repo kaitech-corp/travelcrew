@@ -25,11 +25,7 @@ class _PastTripsState extends State<PastTrips>{
     bloc.add(LoadingData());
   }
 
-  @override
-  void dispose() {
-    bloc.close();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

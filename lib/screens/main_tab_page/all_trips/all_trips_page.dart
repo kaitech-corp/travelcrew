@@ -105,8 +105,8 @@ class _SliverGridListState extends State<SliverGridList> {
 
   @override
   void dispose() {
-    allTripBloc.close();
-    tripAdBloc.close();
+    // allTripBloc.close();
+    // tripAdBloc.close();
     super.dispose();
   }
 

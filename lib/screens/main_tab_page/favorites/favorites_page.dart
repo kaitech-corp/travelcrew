@@ -28,11 +28,6 @@ class _FavoriteTripState extends State<FavoritesPage> {
   }
 
   @override
-  void dispose() {
-    bloc.close();
-    super.dispose();
-  }
-  @override
   Widget build(BuildContext context) {
 
 

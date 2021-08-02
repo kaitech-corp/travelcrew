@@ -32,11 +32,6 @@ class _LodgingPageState extends State<LodgingPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // bloc.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

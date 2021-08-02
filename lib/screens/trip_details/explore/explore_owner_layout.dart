@@ -38,6 +38,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
+  double tabletSize = SizeConfig.defaultSize.toDouble() * 13.0;
+  double mobileSize = SizeConfig.defaultSize.toDouble() * 10.0;
 
   @override
   void initState() {
@@ -49,7 +51,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
     if(mounted){
       setState(() {
         if (expandController.expanded) {
-          _padding = SizeConfig.defaultSize.toDouble() * 10.0;
+          _padding = SizeConfig.tablet ? tabletSize : mobileSize;
         } else {
           _padding = SizeConfig.screenHeight*.35;
         }

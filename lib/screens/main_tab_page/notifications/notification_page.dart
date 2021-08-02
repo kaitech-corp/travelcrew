@@ -27,11 +27,7 @@ class _NotificationPageState extends State<NotificationPage> {
     super.initState();
   }
   
-  @override
-  void dispose() {
-    bloc.close();
-    super.dispose();
-  }
+
   
   @override
   Widget build(BuildContext context) {

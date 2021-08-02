@@ -35,11 +35,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    bloc.close();
-    super.dispose();
-  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -209,8 +205,15 @@ class QuickDataCards extends StatelessWidget {
                     width: SizeConfig.screenWidth*.5,
                     child: Column(
                       children: [
-                        Text('${user.displayName}',style: Theme.of(context).textTheme.subtitle1,),
-                        Text('Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                        Text('${user.displayName}',
+                          style: SizeConfig.tablet ?
+                          Theme.of(context).textTheme.headline5:
+                          Theme.of(context).textTheme.subtitle1,),
+                        Text('Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',
+                          style: SizeConfig.tablet ?
+                          Theme.of(context).textTheme.headline5:
+                          Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.center,),
                         Container(height: 2,color: Colors.black,)
                       ],
                     ),
