@@ -44,3 +44,13 @@ const canvasColor = Color(0xFFFAFAFA);
 //Drawer Menu
 const currentVersion = 'v1.5.0';
 
+/// AdminPage
+const admin = 'Admin';
+const feedback = 'Feedback';
+const submitted = 'Submitted';
+const customNotification = 'Custom Notification';
+const push = 'Push';
+const enterMessage = "Enter a message";
+
+const maxLines = 5;
+const textBoxHeight = 120.0;

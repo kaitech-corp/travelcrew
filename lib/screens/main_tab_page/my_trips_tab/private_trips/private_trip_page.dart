@@ -25,11 +25,7 @@ class _PrivateTripsState extends State<PrivateTrips>{
     bloc.add(LoadingData());
   }
 
-  @override
-  void dispose() {
-    bloc.close();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

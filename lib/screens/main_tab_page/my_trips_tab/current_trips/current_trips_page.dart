@@ -25,11 +25,7 @@ class _CurrentTripsState extends State<CurrentTrips>{
     blocCurrent.add(LoadingData());
   }
 
-  @override
-  void dispose() {
-    // blocCurrent.close();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

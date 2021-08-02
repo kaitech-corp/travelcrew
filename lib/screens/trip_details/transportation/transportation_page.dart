@@ -32,11 +32,6 @@ class _TransportationPageState extends State<TransportationPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // bloc.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
