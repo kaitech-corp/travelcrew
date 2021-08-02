@@ -43,11 +43,6 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // bloc.close();
-    super.dispose();
-  }
 
 
   @override
