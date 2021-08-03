@@ -1,3 +1,4 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/split_model.dart';
@@ -15,8 +16,9 @@ class ActivityMenuButton extends StatelessWidget{
 
   final ActivityData activity;
   final Trip trip;
+  final Event event;
 
-  const ActivityMenuButton({Key key, this.activity, this.trip}) : super(key: key);
+  const ActivityMenuButton({Key key, this.activity, this.trip,this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +47,13 @@ class ActivityMenuButton extends StatelessWidget{
 
           }
           break;
-          case "Delete": {
-            CloudFunction().removeActivity(trip.documentId,activity.fieldID);
-          }
+          case "Calendar":
+            {
+              Add2Calendar.addEvent2Cal(event);
+            }
           break;
           default: {
+            CloudFunction().removeActivity(trip.documentId,activity.fieldID);
           }
           break;
         }
@@ -68,6 +72,13 @@ class ActivityMenuButton extends StatelessWidget{
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
             title: const Text('View Link'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Calendar',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
+            title: const Text('Save to Calendar'),
           ),
         ),
         const PopupMenuItem(
@@ -116,6 +127,11 @@ class ActivityMenuButton extends StatelessWidget{
             );
           }
           break;
+          case "Calendar":
+            {
+              Add2Calendar.addEvent2Cal(event);
+            }
+            break;
           default: {
           }
           break;
@@ -142,6 +158,13 @@ class ActivityMenuButton extends StatelessWidget{
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
             title: const Text('Split'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Calendar',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
+            title: const Text('Save to Calendar'),
           ),
         ),
       ],
