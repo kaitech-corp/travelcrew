@@ -3,6 +3,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:travelcrew/models/activity_model.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity_menu_button.dart';
@@ -22,13 +23,9 @@ class ActivityDetails extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final Event event = Event(
-        title: activity.activityType,
-        description: activity.comment,
-        location: activity.location,
-        startDate: activity.dateTimestamp?.toDate() ?? DateTime.now(),
-        endDate: activity.dateTimestamp?.toDate() ?? DateTime.now(),
-      );
+
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +35,7 @@ class ActivityDetails extends StatelessWidget{
         child: Container(
           height: SizeConfig.screenHeight,
           width: SizeConfig.screenWidth,
-          child: ActivityDataLayout(fieldID: activity.fieldID, trip: trip, event: event),
+          child: ActivityDataLayout(fieldID: activity.fieldID, trip: trip),
         ),
       )
     );
@@ -50,12 +47,10 @@ class ActivityDataLayout extends StatelessWidget {
     Key key,
     @required this.fieldID,
     @required this.trip,
-    @required this.event,
   }) : super(key: key);
 
   final String fieldID;
   final Trip trip;
-  final Event event;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +59,13 @@ class ActivityDataLayout extends StatelessWidget {
       builder: (context, document){
         if(document.hasData){
           ActivityData activity = document.data;
+          DateTimeModel timeModel = TCFunctions().addDateAndTime(
+              startDate: activity.dateTimestamp,
+              startTime: activity.startTime,
+              endTime: activity.endTime,
+              hasEndDate: false);
+
+          Event event = TCFunctions().createEvent(activity: activity,type: "Activity",timeModel: timeModel);
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -82,7 +84,7 @@ class ActivityDataLayout extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,),
                       subtitle: Text('${activity.displayName}',
                         style: Theme.of(context).textTheme.subtitle1,),
-                      trailing: ActivityMenuButton(activity: activity,trip: trip,),
+                      trailing: ActivityMenuButton(activity: activity,trip: trip,event: event),
                     ),
                     Divider(color: Colors.black,thickness: 2,),
                     activity.dateTimestamp != null ?? false ? ListTile(
@@ -112,7 +114,7 @@ class ActivityDataLayout extends StatelessWidget {
                     ),
                     activity.location?.isNotEmpty ?? false ? ListTile(
                       leading: TripDetailsIconThemeWidget(icon: Icons.map,),
-                      title: Text(activity.location,style: Theme.of(context).textTheme.subtitle1,),
+                      title: Text(activity.location,style: TextStyle(color: Colors.blue),),
                       onTap: (){
                         MapsLauncher.launchQuery(activity.location);
                       },

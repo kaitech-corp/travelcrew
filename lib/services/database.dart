@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/models/cost_model.dart';
@@ -24,6 +25,7 @@ import 'analytics_service.dart';
 var userService = locator<UserService>();
 var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 var navigationService = locator<NavigationService>();
+ValueNotifier<String> urlToImage = ValueNotifier('');
 
 class DatabaseService {
 

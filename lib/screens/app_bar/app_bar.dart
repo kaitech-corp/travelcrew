@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
@@ -11,14 +10,14 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 class CustomAppBar extends StatelessWidget {
 
-  final heroTag;
+
   final  bool bottomNav;
 
   CustomAppBar({
-    Key key, this.bottomNav, this.heroTag,
+    Key key, this.bottomNav,
   }) : super(key: key);
 
-  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +64,13 @@ class CustomAppBar extends StatelessWidget {
                               navigationService.navigateTo(ProfilePageRoute);
                             },
                             child: Hero(
-                              tag: currentUserProfile?.uid ?? '',
+                              tag: userService.currentUserID,
                               transitionOnUserGestures: true,
                               child: CircleAvatar(
                                 radius: SizeConfig.screenWidth/8.0,
-                                backgroundImage: (currentUserProfile?.urlToImage?.isNotEmpty ?? false) ? NetworkImage(currentUserProfile.urlToImage,) : AssetImage(profileImagePlaceholder),
+                                backgroundImage: (urlToImage.value.isNotEmpty ?? false) ?
+                                NetworkImage(urlToImage.value,) :
+                                AssetImage(profileImagePlaceholder),
                               ),
                             ),
                           ),

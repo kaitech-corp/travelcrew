@@ -1,6 +1,10 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -9,6 +13,152 @@ import '../locator.dart';
 class TCFunctions {
 
   var userService = locator<UserService>();
+
+  TimeOfDay stringToTimeOfDay(String time) {
+    final format = DateFormat.jm(); //"6:00 AM"
+
+    return TimeOfDay.fromDateTime(format.parse(time));
+  }
+  
+  Event createEvent(
+      {ActivityData activity,
+      DateTimeModel timeModel,
+      LodgingData lodging,
+      String type}){
+
+    if(type == "Activity") {
+      Event event = Event(
+        title: activity.activityType,
+        description: activity.comment,
+        location: activity.location,
+        startDate: timeModel.startDate,
+        endDate: timeModel.endDate,
+      );
+      return event;
+    } else{
+      Event event = Event(
+        title: lodging.lodgingType,
+        description: lodging.comment,
+        location: lodging.location,
+        startDate: timeModel.startDate,
+        endDate: timeModel.endDate,
+        // allDay: true,
+      );
+      return event;
+    }
+
+  }
+
+
+  DateTimeModel addDateAndTime(
+      {Timestamp startDate,
+      Timestamp endDate,
+      String startTime,
+      String endTime,
+      bool hasEndDate}){
+
+    if(hasEndDate){
+      try {
+        TimeOfDay _startTime = TimeOfDay.now();
+        TimeOfDay _endTime = TimeOfDay.now();
+        Timestamp _startDateX = Timestamp.now();
+        Timestamp _endDateX = Timestamp.now();
+
+        _startTime = stringToTimeOfDay(startTime) ?? TimeOfDay.now();
+        _endTime = stringToTimeOfDay(endTime) ?? TimeOfDay.now();
+
+        _startDateX = startDate ?? Timestamp.now();
+        _endDateX = endDate ?? Timestamp.now();
+
+        DateTime _startDate = DateTime(
+            _startDateX.toDate().year,
+            _startDateX.toDate().month,
+            _startDateX.toDate().day,
+            _startTime.hour,
+            _startTime.minute
+        );
+        DateTime _endDate = DateTime(
+            _endDateX.toDate().year,
+            _endDateX.toDate().month,
+            _endDateX.toDate().day,
+            _endTime.hour,
+            _endTime.minute
+        );
+        return DateTimeModel(endDate: _endDate,startDate: _startDate);
+      } catch (e) {
+        TimeOfDay _startTime = TimeOfDay.now();
+        TimeOfDay _endTime = TimeOfDay.now();
+        Timestamp _startDateX = Timestamp.now();
+        Timestamp _endDateX = Timestamp.now();
+
+        DateTime _startDate = DateTime(
+            _startDateX.toDate().year,
+            _startDateX.toDate().month,
+            _startDateX.toDate().day,
+            _startTime.hour,
+            _startTime.minute
+        );
+        DateTime _endDate = DateTime(
+            _endDateX.toDate().year,
+            _endDateX.toDate().month,
+            _endDateX.toDate().day,
+            _endTime.hour,
+            _endTime.minute
+        );
+        return DateTimeModel(endDate: _endDate,startDate: _startDate);
+      }
+    } else {
+      try {
+        TimeOfDay _startTime = TimeOfDay.now();
+        TimeOfDay _endTime = TimeOfDay.now();
+        Timestamp _startDateX = Timestamp.now();
+        Timestamp _endDateX = Timestamp.now();
+
+        _startTime = stringToTimeOfDay(startTime) ?? TimeOfDay.now();
+        _endTime = stringToTimeOfDay(endTime) ?? TimeOfDay.now();
+        _startDateX = startDate;
+        _endDateX = startDate;
+
+
+        DateTime _startDate = DateTime(
+            _startDateX.toDate().year,
+            _startDateX.toDate().month,
+            _startDateX.toDate().day,
+            _startTime.hour,
+            _startTime.minute
+        );
+        DateTime _endDate = DateTime(
+            _endDateX.toDate().year,
+            _endDateX.toDate().month,
+            _endDateX.toDate().day,
+            _endTime.hour,
+            _endTime.minute
+        );
+        return DateTimeModel(endDate: _endDate,startDate: _startDate);
+      } catch (e) {
+        TimeOfDay _startTime = TimeOfDay.now();
+        TimeOfDay _endTime = TimeOfDay.now();
+        Timestamp _startDateX = Timestamp.now();
+        Timestamp _endDateX = Timestamp.now();
+
+        DateTime _startDate = DateTime(
+            _startDateX.toDate().year,
+            _startDateX.toDate().month,
+            _startDateX.toDate().day,
+            _startTime.hour,
+            _startTime.minute
+        );
+        DateTime _endDate = DateTime(
+            _endDateX.toDate().year,
+            _endDateX.toDate().month,
+            _endDateX.toDate().day,
+            _endTime.hour,
+            _endTime.minute
+        );
+        return DateTimeModel(endDate: _endDate,startDate: _startDate);
+      }
+    }
+  }
 
 
   int calculateTimeDifference(DateTime date) {
