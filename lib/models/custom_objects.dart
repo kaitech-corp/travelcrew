@@ -580,3 +580,10 @@ class UserPurchaseDetails{
 
   UserPurchaseDetails({this.total,this.uid});
 }
+
+class DateTimeModel{
+  DateTime startDate;
+  DateTime endDate;
+
+  DateTimeModel({this.endDate,this.startDate});
+}

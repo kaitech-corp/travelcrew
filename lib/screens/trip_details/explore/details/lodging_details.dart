@@ -2,6 +2,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
@@ -54,6 +55,14 @@ class LodgingDataLayout extends StatelessWidget {
       builder: (context, document){
         if(document.hasData){
           LodgingData lodging = document.data;
+          DateTimeModel timeModel = TCFunctions().addDateAndTime(
+              startDate: lodging.startDateTimestamp,
+              endDate: lodging.endDateTimestamp,
+              startTime: lodging.startTime,
+              endTime: lodging.endTime,
+              hasEndDate: true);
+
+          Event event = TCFunctions().createEvent(lodging: lodging, timeModel: timeModel,type: "Lodging");
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -72,7 +81,7 @@ class LodgingDataLayout extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,),
                       subtitle: Text('Creator: ${lodging.displayName}',
                         style: Theme.of(context).textTheme.subtitle1,),
-                      trailing: LodgingMenuButton(lodging: lodging,trip: trip,),
+                      trailing: LodgingMenuButton(lodging: lodging,trip: trip,event: event,),
                     ),
                     Divider(color: Colors.black,thickness: 2,),
                     lodging.startDateTimestamp != null ?? false ? ListTile(
@@ -83,13 +92,7 @@ class LodgingDataLayout extends StatelessWidget {
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       onTap: (){
-                         Event event = Event(
-                          title: lodging.lodgingType,
-                          description: lodging.comment,
-                          location: lodging.location,
-                          startDate: lodging.startDateTimestamp?.toDate() ?? trip.startDateTimeStamp.toDate(),
-                          endDate: lodging.endDateTimestamp?.toDate() ?? trip.endDateTimeStamp.toDate(),
-                        );
+
                         Add2Calendar.addEvent2Cal(event);
                       },
                     ):
@@ -120,7 +123,7 @@ class LodgingDataLayout extends StatelessWidget {
 
                     lodging.location?.isNotEmpty ?? false ? ListTile(
                       leading: TripDetailsIconThemeWidget(icon: Icons.map,),
-                      title: Text(lodging.location,style: Theme.of(context).textTheme.subtitle1,),
+                      title: Text(lodging.location,style: TextStyle(color: Colors.blue)),
                       onTap: (){
                         MapsLauncher.launchQuery(lodging.location);
                       },

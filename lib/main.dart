@@ -324,8 +324,6 @@ class _TravelCrewState extends State<TravelCrew> {
                                 return LoginScreen();
                               }
                               if (state is AuthenticationSuccess) {
-                                print(state.firebaseUser);
-                                print(state.firebaseUser.uid);
                               return FutureBuilder(
                                   builder: (context, data) {
                                     if (data.data == false) {
