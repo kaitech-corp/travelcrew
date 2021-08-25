@@ -125,6 +125,12 @@ class NotificationsCard extends StatelessWidget{
             _showDialog(context);
           },
         ),
+        onTap: () async {
+          if(notification.ispublic){
+            Trip trip = await DatabaseService().getTrip(notification.documentID);
+            navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
+          }
+        },
       ),
     );
   }

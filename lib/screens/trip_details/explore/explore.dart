@@ -35,7 +35,6 @@ class Explore extends StatelessWidget {
   PersistentBottomSheetController controller;
 
 
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

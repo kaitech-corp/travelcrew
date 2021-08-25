@@ -101,6 +101,10 @@ class LodgingMenuButton  extends StatelessWidget{
       icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value){
+          case "Edit": {
+            navigationService.navigateTo(EditLodgingRoute,arguments: EditLodgingArguments(lodging, trip));
+          }
+          break;
           case "report":
             {
               TravelCrewAlertDialogs().reportAlert(context: context, lodgingData: lodging, type: 'lodging');
@@ -143,6 +147,13 @@ class LodgingMenuButton  extends StatelessWidget{
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.report),
             title: const Text('Report'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'Edit',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.edit),
+            title: const Text('Edit'),
           ),
         ),
         const PopupMenuItem(

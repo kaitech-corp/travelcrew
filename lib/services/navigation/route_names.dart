@@ -4,6 +4,7 @@ const String AddNewLodgingRoute = 'AddNewLodging';
 const String AddNewTransportationRoute = 'AddNewTransportation';
 const String AdminPageRoute = "AdminPage";
 const String AllTripsPageRoute = "AllTripsPage";
+const String BasketListPageRoute = 'BasketListPage';
 const String ChatRoute = "Chat";
 const String CostPageRoute = "SplitPage";
 const String CurrentCrewTripsRoute = "CurrentCrewTrips";

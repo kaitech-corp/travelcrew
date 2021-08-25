@@ -216,6 +216,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                     ActivityData(
                         activityType: activityType,
                         comment: comment.trim(),
+                        dateTimestamp: (startDateTimestamp.value == null) ? null : startDateTimestamp.value,
                         displayName: currentUserProfile.displayName,
                         endTime: endTime.value,
                         fieldID: '',

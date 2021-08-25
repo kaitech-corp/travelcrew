@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
 import 'package:travelcrew/services/apis/api.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/widgets/basket_icon.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import '../../../../services/widgets/loading.dart';
@@ -15,7 +17,8 @@ import '../../../../services/widgets/loading.dart';
 class BringingList extends StatefulWidget{
 
   final String documentID;
-  BringingList({this.documentID});
+  final BasketController controller;
+  BringingList({this.documentID,this.controller});
 
   @override
   _BringingListState createState() => _BringingListState();
@@ -24,16 +27,18 @@ class BringingList extends StatefulWidget{
 class _BringingListState extends State<BringingList> {
   List _selectedProducts = [];
 
-  void _onSelectedProduct(bool selected, productName) {
+  void _onSelectedProduct(bool selected, WalmartProducts product) {
     if (selected == true) {
       setState(() {
-        _selectedProducts.add(productName);
-        CloudFunction().addItemToBringingList(widget.documentID, productName);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Item added")));
+        _selectedProducts.add(product.query);
+        CloudFunction().addItemToBringingList(widget.documentID, product.query,product.type);
+        widget.controller.addWalmartProductsToCart(product);
+
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Item added")));
       });
     } else {
       setState(() {
-        _selectedProducts.remove(productName);
+        _selectedProducts.remove(product.query);
       });
     }
   }
@@ -44,19 +49,23 @@ class _BringingListState extends State<BringingList> {
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
+        color: Colors.blue.shade100,
         child: SearchBar(
           textStyle: Theme.of(context).textTheme.subtitle2,
           cancellationWidget: const Text('Clear'),
             placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
             onSearch: WalmartProductSearch().getProducts,
+            crossAxisCount: 2,
             onItemFound: (WalmartProducts product, int index) {
+              // return
               return CheckboxListTile(
                 title: Text(product.query),
+                // subtitle: Text(product.department[0]['name'] ?? 'Unknown'),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
                 onChanged: (bool selected){
                   setState(() {
-                    _onSelectedProduct(selected, product.query);
+                    _onSelectedProduct(selected, product);
                   });
                 },
                 activeColor: Colors.green,
@@ -146,13 +155,13 @@ class _NeedListState extends State<NeedList> {
     if(query.length >2){
       setState(() async {
         queryResults = await WalmartProductSearch().getProducts(query);
-        print(queryResults.length);
+
       });
     }
     else if (item != null){
       setState(() async {
         queryResults = await WalmartProductSearch().getProducts(item);
-        print(queryResults.length);
+
       });
     }
   }
@@ -198,10 +207,10 @@ class _NeedListState extends State<NeedList> {
                     _onSelectedProduct(selected, product.query);
                     if(selected ==true) {
                       try {
-                        CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
+                        CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName,'');
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
                       } catch (e) {
-                        print(e.toString());
+
                       }
                     } else{
                         // TODO: change to delete
@@ -227,13 +236,12 @@ class _NeedListState extends State<NeedList> {
           _onSelectedProduct(selected, product.query);
           if(selected ==true) {
             try {
-              // print(widget.documentID);
-              CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName);
+              CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName,'');
               // DatabaseService().addItemToNeedList(
               //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
             } catch (e) {
-              print(e.toString());
+
             }
           } else{
             // TODO: change to delete
@@ -258,7 +266,7 @@ class NeedListToDisplay extends StatelessWidget{
   Widget build(BuildContext context) {
 
     void _onSelectedItems(Need item) {
-      CloudFunction().addItemToBringingList(documentID, item.item);
+      CloudFunction().addItemToBringingList(documentID, item.item,item.type);
       CloudFunction().removeItemFromNeedList(documentID, item.documentID);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: const Text("Item added to Bringing list")));
@@ -314,7 +322,8 @@ class BringListToDisplay extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      builder: (context, items) {
+      stream: DatabaseService().getBringingList(tripDocID),
+      builder: (context, items){
         if(items.hasError){
           CloudFunction().logError('Error streaming items in bringing list to display: ${items.error.toString()}');
         }
@@ -328,7 +337,7 @@ class BringListToDisplay extends StatelessWidget{
                 onLongPress: (){
                   TravelCrewAlertDialogs().deleteBringinItemAlert(context, tripDocID, item.documentID);
                 },
-                leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
+                leading: BasketIcon(item.type),
                 title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
                 subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
                 trailing: IconButton(
@@ -352,8 +361,7 @@ class BringListToDisplay extends StatelessWidget{
           return Loading();
         }
       },
-      stream: DatabaseService().getBringingList(tripDocID),
-      // future: ,
+
     );
   }
   favorite(Bringing item){
@@ -444,10 +452,10 @@ class _CustomListState extends State<CustomList> {
                           final form = _formKey.currentState;
                           if (form.validate()) {
                             if(option == 'Bringing'){
-                              CloudFunction().addItemToBringingList(widget.documentID, item);
+                              CloudFunction().addItemToBringingList(widget.documentID, item,'');
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added to Bringing list")));
                             } else{
-                              CloudFunction().addItemToNeedList(widget.documentID, item, currentUserProfile.displayName);
+                              CloudFunction().addItemToNeedList(widget.documentID, item, currentUserProfile.displayName,'');
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added to Need list")));
                             }
                             form.reset();

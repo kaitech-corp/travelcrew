@@ -7,50 +7,50 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_bloc.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_event.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_state.dart';
+import 'package:travelcrew/blocs/complete_profile_bloc/complete_profile_bloc.dart';
+import 'package:travelcrew/blocs/complete_profile_bloc/complete_profile_event.dart';
+import 'package:travelcrew/blocs/complete_profile_bloc/complete_profile_state.dart';
 import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/gradient_button.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
-class SignupForm extends StatefulWidget {
+class CompleteProfileForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<SignupForm> {
+class _LoginFormState extends State<CompleteProfileForm> {
 
   File image;
-  
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _displayNameController = TextEditingController();
   final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
 
   final ImagePicker _picker = ImagePicker();
-  
+
 
   bool imagePicked = false;
+
+
+  CompleteProfileBloc _completeProfileBloc;
+
   bool get isPopulated =>
-      _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+      _firstNameController.text.isNotEmpty || _lastNameController.text.isNotEmpty || _displayNameController.text.isNotEmpty || _urlToImage.value.path.isNotEmpty;
 
-  bool isButtonEnabled(SignupState state) {
-    return state.isFormValid && isPopulated && !state.isSubmitting;
+  bool isButtonEnabled(CompleteProfileState state) {
+    return  isPopulated && !state.isSubmitting;
   }
-
-  SignupBloc _signupBloc;
 
 
   @override
   void initState() {
     super.initState();
-    _signupBloc = BlocProvider.of<SignupBloc>(context);
-    _emailController.addListener(_onEmailChange);
-    _passwordController.addListener(_onPasswordChange);
+    _completeProfileBloc = BlocProvider.of<CompleteProfileBloc>(context);
     _displayNameController.addListener(_onDisplayNameChange);
     _firstNameController.addListener(_onFirstNameChange);
     _lastNameController.addListener(_onLastNameChange);
@@ -62,9 +62,7 @@ class _LoginFormState extends State<SignupForm> {
     _urlToImage.dispose();
     _lastNameController.dispose();
     _firstNameController.dispose();
-    _passwordController.dispose();
     _displayNameController.dispose();
-    _emailController.dispose();
     super.dispose();
   }
 
@@ -82,89 +80,63 @@ class _LoginFormState extends State<SignupForm> {
       sourcePath: imagePath, maxHeight: 1080, maxWidth: 1080,);
 
     if (croppedImage != null) {
-        _urlToImage.value = croppedImage;
+      _urlToImage.value = croppedImage;
     } else {
-        _urlToImage.value = File(image.path);
+      _urlToImage.value = File(image.path);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignupBloc, SignupState>(
+    return BlocListener<CompleteProfileBloc, CompleteProfileState>(
       listener: (context, state) {
         if (state.isFailure) {
           ScaffoldMessenger.of(context)
-            .showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Signup Failure'),
-                    Icon(Icons.error),
-                  ],
-                ),
-                backgroundColor: Color(0xffffae88),
+              .showSnackBar(
+            SnackBar(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('CompleteProfile Failure'),
+                  Icon(Icons.error),
+                ],
               ),
-            );
+              backgroundColor: Color(0xffffae88),
+            ),
+          );
         }
-
         if (state.isSubmitting) {
           ScaffoldMessenger.of(context)
               .showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Registering...'),
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    )
-                  ],
-                ),
-                backgroundColor: Color(0xffffae88),
+            SnackBar(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Registering...'),
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )
+                ],
               ),
-            );
+              backgroundColor: Color(0xffffae88),
+            ),
+          );
         }
-
         if (state.isSuccess) {
           BlocProvider.of<AuthenticationBloc>(context).add(
             AuthenticationLoggedIn(),
           );
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          navigationService.navigateTo(LaunchIconBadgerRoute);
         }
       },
-      child: BlocBuilder<SignupBloc, SignupState>(
+      child: BlocBuilder<CompleteProfileBloc, CompleteProfileState>(
         builder: (context, state) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
               child: Column(
                 children: <Widget>[
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: "Email",
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: "Password",
-                    ),
-                    obscureText: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
-                    },
-                  ),
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
@@ -249,10 +221,12 @@ class _LoginFormState extends State<SignupForm> {
                     onPressed: () {
                       if (isButtonEnabled(state)) {
                         _onFormSubmitted();
+                      } else{
+                        _onFormSubmittedEmpty();
                       }
                     },
                     text: Text(
-                      'Signup',
+                      'Continue',
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -274,37 +248,35 @@ class _LoginFormState extends State<SignupForm> {
     );
   }
 
-  void _onEmailChange() {
-    _signupBloc.add(SignupEmailChanged(email: _emailController.text));
-  }
-
-  void _onPasswordChange() {
-    _signupBloc
-        .add(SignupPasswordChanged(password: _passwordController.text));
-  }
   void _onFirstNameChange() {
-    _signupBloc.add(SignupFirstNameChanged(firstName: _firstNameController.text));
+    _completeProfileBloc.add(CompleteProfileFirstNameChanged(firstName: _firstNameController.text));
   }
 
   void _onLastNameChange() {
-    _signupBloc.add(SignupLastNameChanged(lastName: _lastNameController.text));
+    _completeProfileBloc.add(CompleteProfileLastNameChanged(lastName: _lastNameController.text));
   }
 
   void _onDisplayNameChange() {
-    _signupBloc.add(SignupDisplayNameChanged(displayName: _displayNameController.text));
+    _completeProfileBloc.add(CompleteProfileDisplayNameChanged(displayName: _displayNameController.text));
   }
 
   void _onImageChange() {
-    _signupBloc.add(SignupImageChanged(urlToImage: _urlToImage.value));
+    _completeProfileBloc.add(CompleteProfileImageChanged(urlToImage: _urlToImage.value));
   }
 
   void _onFormSubmitted() {
-    _signupBloc.add(SignupSubmitted(
-        email: _emailController.text,
-        password: _passwordController.text,
+    _completeProfileBloc.add(CompleteProfileSubmitted(
         displayName: _displayNameController.text,
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
+        urlToImage: _urlToImage.value));
+  }
+
+  void _onFormSubmittedEmpty() {
+    _completeProfileBloc.add(CompleteProfileSubmitted(
+        displayName: '',
+        firstName: '',
+        lastName: '',
         urlToImage: _urlToImage.value));
   }
 }
