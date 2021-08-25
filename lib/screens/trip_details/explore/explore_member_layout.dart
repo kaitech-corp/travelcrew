@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
 import 'package:travelcrew/screens/trip_details/explore/ImageAnimation.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
 import 'package:travelcrew/services/widgets/trip_details_widget.dart';
@@ -25,7 +27,8 @@ class ExploreMemberLayout extends StatefulWidget{
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
 
-  ExploreMemberLayout({this.tripDetails, this.scaffoldKey, this.controller});
+
+  ExploreMemberLayout({this.tripDetails, this.scaffoldKey, this.controller,});
 
   @override
   _ExploreMemberLayoutState createState() => _ExploreMemberLayoutState();
@@ -34,6 +37,7 @@ class ExploreMemberLayout extends StatefulWidget{
 class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
 
   final expandController = ExpandableController();
+  final basketController = BasketController();
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
@@ -92,7 +96,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       AnimatedPadding(
                           duration: Duration(milliseconds: 250),
                           padding: EdgeInsets.only(top: _padding),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,)),
+                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                     ],
                   ):
                   Stack(
@@ -100,7 +104,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       HangingImageTheme(),
                       Padding(
                           padding: EdgeInsets.only(top:  SizeConfig.screenHeight*.16),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey)),
+                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                     ],
                   ),
                   Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
@@ -123,7 +127,7 @@ class MemberPopupMenuButton extends StatelessWidget {
   const MemberPopupMenuButton({
     Key key,
     @required this.tripDetails,
-    @required this.event, this.scaffoldKey, this.controller,
+    @required this.event, this.scaffoldKey, this.controller,this.basketController,
 
   }) : super(key: key);
 
@@ -131,13 +135,14 @@ class MemberPopupMenuButton extends StatelessWidget {
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
+  final BasketController basketController;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-          title: Text('${tripDetails.tripName}'.toUpperCase(),
+          title: Text('${tripDetails.tripName}',
             style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,),
@@ -154,23 +159,9 @@ class MemberPopupMenuButton extends StatelessWidget {
               icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
             IconButton(
               onPressed: (){
-                scaffoldKey.currentState.showBottomSheet(
-                        (BuildContext context) {
-                      return ListPage(tripDetails: tripDetails,
-                      );
-                    });},
+                navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(tripDetails: tripDetails,basketController: basketController));
+                },
               icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
-            IconButton(
-              onPressed: (){
-                scaffoldKey.currentState.showBottomSheet(
-                        (BuildContext context) {
-                      return AddToListPage(tripDetails: tripDetails,
-                        controller: controller,
-                        scaffoldKey: scaffoldKey,);
-                    });
-
-              },
-              icon: TripDetailsIconThemeWidget(icon: Icons.shopping_cart,),),
             IconButton(
                 onPressed: (){
                   showModalBottomSheet(

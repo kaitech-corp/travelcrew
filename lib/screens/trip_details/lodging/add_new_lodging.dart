@@ -174,7 +174,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   startDateTimeStamp: startDateTimeStamp,
                   endDateTimeStamp: endDateTimeStamp,
                   showBoth: true,),
-                timePickerVisible ? TimePickers(lodging: true,) :
+                timePickerVisible ? TimePickers(lodging: true,startTime: startTime,endTime: endTime,) :
                 Container(
                   padding: const EdgeInsets.symmetric(
                       vertical: 30.0, horizontal: 30.0),

@@ -33,6 +33,8 @@ import 'package:travelcrew/screens/signup/signup_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/activity_page.dart';
 import 'package:travelcrew/screens/trip_details/activity/add_new_activity.dart';
 import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
+import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
+import 'package:travelcrew/screens/trip_details/basket_list/list_page.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/details/detail_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
@@ -85,6 +87,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: AllTrips(),
+      );
+    case BasketListPageRoute:
+      BasketListArguments arguments = settings.arguments;
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: BasketListPage(
+          tripDetails: arguments.tripDetails,
+          controller: arguments.basketController,
+        ),
       );
     case ChatRoute:
       return _getPageRoute(
@@ -196,7 +207,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: AddToListPage(
-          controller: arguments.controller,
+          // controller: arguments.controller,
           scaffoldKey: arguments.scaffoldKey,
           tripDetails: arguments.tripDetails,),
       );
@@ -359,5 +370,13 @@ class SplitDetailsArguments{
   final Trip trip;
 
   SplitDetailsArguments({this.splitObject, this.purchasedByUID, this.trip});
+
+}
+
+class BasketListArguments{
+  final Trip tripDetails;
+  final BasketController basketController;
+
+  BasketListArguments({this.tripDetails, this.basketController});
 
 }

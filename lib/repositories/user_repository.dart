@@ -58,7 +58,6 @@ class UserRepository {
 
   Future<void> signInWithApple() async {
     try {
-      print('Got here');
       final appleCredential = await SignInWithApple.getAppleIDCredential(
           scopes: [AppleIDAuthorizationScopes.email,AppleIDAuthorizationScopes.fullName]
       );
@@ -100,11 +99,20 @@ class UserRepository {
       assert(user.uid == currentUser.uid);
       await _analyticsService.logLoginGoogle();
 
-      return await _firebaseAuth.signInWithCredential(
-          credential);
+      // return await _firebaseAuth.signInWithCredential(
+      //     credential);
     } catch (e){
       return e.toString();
     }
+  }
+
+  Future<void>updateUserPublicProfile(String firstname, String lastName, String displayName, File urlToImage) async {
+    final currentUser =  _firebaseAuth.currentUser;
+    if(displayName.isEmpty){
+      displayName = 'User${currentUser.uid.substring(currentUser.uid.length - 5)}';
+    }
+    await DatabaseService(uid: currentUser.uid).updateUserData(firstname, lastName, currentUser.email, currentUser.uid);
+    return await DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(displayName, firstname, lastName,currentUser.email, 0, 0, currentUser.uid, urlToImage);
   }
 
 }

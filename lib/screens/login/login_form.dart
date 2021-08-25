@@ -270,6 +270,7 @@ class _LoginFormState extends State<LoginForm> {
     }
 
     if (state.isSuccess) {
+      print('Successful');
       BlocProvider.of<AuthenticationBloc>(context).add(
         AuthenticationLoggedIn(),
       );

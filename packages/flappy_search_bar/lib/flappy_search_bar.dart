@@ -407,10 +407,12 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                             border: InputBorder.none,
                             hintText: widget.hintText,
                             hintStyle: widget.hintStyle,
+                            fillColor: Colors.white,
+                            filled: true,
                           ),
                         ),
                         data: Theme.of(context).copyWith(
-                          primaryColor: widget.iconActiveColor,
+                          primaryColor: Colors.white,
                         ),
                       ),
                     ),

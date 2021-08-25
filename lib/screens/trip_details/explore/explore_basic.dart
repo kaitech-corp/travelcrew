@@ -28,7 +28,13 @@ class ExploreBasic extends StatelessWidget {
           child: MenuDrawer(),),
           appBar: AppBar(
             centerTitle: true,
-            title: Text('${trip.tripName}'.toUpperCase(),style: SizeConfig.tablet ? Theme.of(context).textTheme.headline5: Theme.of(context).textTheme.headline6),
+            title: Tooltip(
+              message: trip.tripName,
+              child: Text('${trip.tripName}'.toUpperCase(),
+                  style: SizeConfig.tablet ?
+                  Theme.of(context).textTheme.headline5:
+                  Theme.of(context).textTheme.headline6),
+            ),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.close),

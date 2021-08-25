@@ -60,7 +60,7 @@ class ExploreBasicLayout extends StatelessWidget{
                 ],
               ),
               ListTile(
-                title: Text('${tripDetails.location}'.toUpperCase(),style: TextStyle(fontSize: 20.0)),
+                title: Text('${tripDetails.location}',style: TextStyle(fontSize: 20.0)),
                 subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                 trailing: IconButton(
                   icon: const Icon(Icons.report,),

@@ -28,6 +28,9 @@ double sizeFromHangingTheme = SizeConfig.screenHeight*.13;
 const urls = [];
 
 const defaultDuration = Duration(seconds: 3);
+const listAnimationDuration = Duration(milliseconds: 500);
+var cartBarHeight = SizeConfig.screenHeight*.12;
+double basketHeaderHeight = 85;
 
 const placeTypes = [
   'bar',
@@ -40,6 +43,7 @@ const placeTypes = [
 
 //Colors
 const canvasColor = Color(0xFFFAFAFA);
+const double defaultPadding = 20;
 
 //Drawer Menu
 const currentVersion = 'v1.5.0';

@@ -17,7 +17,7 @@ import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_state.dart';
 import 'package:travelcrew/blocs/bloc_observer/custom_bloc_observer.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
-import 'package:travelcrew/screens/login/complete_profile_page.dart';
+import 'package:travelcrew/screens/complete_profile/complete_profile_page.dart';
 import 'package:travelcrew/screens/login/login_screen.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/firebase_messaging.dart';
@@ -58,9 +58,9 @@ void main() async {
 }
 
 class TravelCrew extends StatefulWidget{
+  final UserRepository userRepository;
 
-
-  TravelCrew({UserRepository userRepository});
+  TravelCrew({this.userRepository });
   @override
   _TravelCrewState createState() => _TravelCrewState();
 }
@@ -324,14 +324,15 @@ class _TravelCrewState extends State<TravelCrew> {
                                 return LoginScreen();
                               }
                               if (state is AuthenticationSuccess) {
-                              return FutureBuilder(
+                                return FutureBuilder(
                                   builder: (context, data) {
-                                    if (data.data == false) {
-                                      return CompleteProfile();
-                                    } else if (data.data == null){
-                                      return Loading();
+                                    if (data.data == true) {
+
+                                      return LaunchIconBadger();
+                                    } else if (data.data == false){
+                                      return CompleteProfile(userRepository: widget.userRepository,);
                                     }
-                                    return LaunchIconBadger();
+                                    return Loading();
                                   },
                                   future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
                                 );

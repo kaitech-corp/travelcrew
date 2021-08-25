@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:travelcrew/blocs/all_trips_bloc/all_trips_bloc.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trip_event.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trip_state.dart';
+import 'package:travelcrew/blocs/all_trips_bloc/all_trips_bloc.dart';
 import 'package:travelcrew/blocs/trip_ad_bloc/trip_ad_bloc.dart';
 import 'package:travelcrew/blocs/trip_ad_bloc/trip_ad_event.dart';
 import 'package:travelcrew/blocs/trip_ad_bloc/trip_ad_state.dart';
@@ -317,8 +317,8 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
           Tooltip(
             message: '${trip.tripName}',
             child: ListTile(
-              contentPadding: EdgeInsets.only(left: 15,right: 5),
-              title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 2, overflow: TextOverflow.ellipsis,),
+              contentPadding: const EdgeInsets.only(left: 15,right: 5),
+              title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis,),
               subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,),
               trailing: TextButton(
                 child: favorite(userService.currentUserID, trip),

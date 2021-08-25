@@ -163,13 +163,41 @@ class WalmartProductSearch {
       // If server returns an OK response, parse the JSON.
       final result = json.decode(response.body);
 
-      // print(result);
+      print(result);
       Iterable list = result['specific'];
       return list.map((stat) => WalmartProducts.fromJSON(stat)).toList();
     } else {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load json data: ${response.statusCode}');
     }
+  }
+}
+
+class ImageSearch {
+
+
+  Future<String> getImage(String item) {
+    // const request = require('request');
+
+    var options = {
+      'method': 'POST',
+      'url': 'https://texttoimage.p.rapidapi.com/image',
+      'headers': {
+        'content-type': 'application/json',
+        'x-rapidapi-key': '7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac',
+        'x-rapidapi-host': 'texttoimage.p.rapidapi.com',
+        'useQueryString': true
+      },
+      'body': {'search_text': '$item', 'num_images': 1},
+      'json': true
+    };
+
+    // final req = http.Request(options, function (error, response, body) {
+    // if (error) throw new Error(error);
+    //
+    // console.log(body);
+    // });
+
   }
 }
 
