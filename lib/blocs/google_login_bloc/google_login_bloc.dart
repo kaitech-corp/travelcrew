@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
 import 'google_login_event.dart';
 import 'google_login_state.dart';
@@ -23,7 +25,8 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
   Stream<GoogleLoginState> _mapAppleLoginPressedToState() async* {
     yield GoogleLoginState.loading();
     try {
-      await UserRepository().signInWithGoogle();
+      await _userRepository.signInWithGoogle();
+      AuthenticationBloc().add(AuthenticationStarted());
       yield GoogleLoginState.success();
     } catch (_) {
       yield GoogleLoginState.failure();

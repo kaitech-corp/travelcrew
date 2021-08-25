@@ -72,7 +72,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version3_0_0').get();
+      var ref = await versionCollection.doc('version3_0_2').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -115,11 +115,10 @@ class DatabaseService {
 
   Future getUserProfile(String uid) async{
     try{
-      print(uid);
+
       var userData = await userPublicProfileCollection.doc(uid).get();
       if(userData.exists) {
         Map<String, dynamic> data = userData.data();
-        print(userData.data());
         return UserPublicProfile.fromData(data);
       }
     } catch(e){
@@ -338,8 +337,19 @@ class DatabaseService {
     if (refSnapshot.exists){
       saveDeviceToken();
     }
+    retrieveProfileImage();
 
     return refSnapshot.exists;
+    }
+
+    Future<void> retrieveProfileImage() async{
+      var ref2 = userPublicProfileCollection.doc(uid);
+      var refSnapshot2 = await ref2.get();
+
+      if (refSnapshot2.exists) {
+        Map<String, dynamic> data = refSnapshot2.data();
+        urlToImage.value = UserPublicProfile.fromData(data).urlToImage;
+      }
     }
 
 //Updates public profile after sign up
@@ -369,7 +379,7 @@ class DatabaseService {
        _analyticsService.writeError('Error creating Public Profile: ${e.toString()}');
        CloudFunction().logError('Error creating public profile:  ${e.toString()}');
      }
-     if (urlToImage != null) {
+     if (urlToImage != null && urlToImage.path.isNotEmpty ?? false) {
        String urlForImage;
        
        try {
@@ -771,41 +781,36 @@ class DatabaseService {
   }
 
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
-        try {
+        // try {
           return snapshot.docs.map((doc) {
             Map<String, dynamic> data = doc.data();
-              return Bringing(
-              displayName: data['displayName'] ?? '',
-              item: data['item'] ?? '',
-              documentID: data['documentID'] ?? '',
-              voters: List<String>.from(data['voters']) ?? [],
-          );
+              return Bringing.fromData(data);
                 }).toList();
-        } catch (e) {
-          CloudFunction().logError('Error retrieving bringing list:  ${e.toString()}');
-          return snapshot.docs.map((doc) {
-            Map<String, dynamic> data = doc.data();
-            return Bringing(
-              displayName: data['displayName'] ?? '',
-              item: data['item'] ?? '',
-              documentID: data['documentID'] ?? '',
-            );
-          }).toList();
-        }
+        // } catch (e) {
+        //   CloudFunction().logError('Error retrieving bringing list:  ${e.toString()}');
+        //   return snapshot.docs.map((doc) {
+        //     Map<String, dynamic> data = doc.data();
+        //     return Bringing(
+        //       displayName: data['displayName'] ?? '',
+        //       item: data['item'] ?? '',
+        //       documentID: data['documentID'] ?? '',
+        //     );
+        //   }).toList();
+        // }
   }
   Stream<List<Bringing>> getBringingList(String docID){
     return bringListCollection.doc(docID).collection('Items').snapshots().map(_retrieveBringingItems);
+  }
+
+  Stream<List<Bringing>> get bringingList{
+    return bringListCollection.doc(tripDocID).collection('Items').snapshots().map(_retrieveBringingItems);
   }
 
   List<Need> _retrieveNeedItems(QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        return Need(
-            displayName: data['displayName'] ?? '',
-            item: data['item'] ?? '',
-            documentID: data['documentID'] ?? ''
-        );
+        return Need.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving need list:  ${e.toString()}');
@@ -871,6 +876,24 @@ class DatabaseService {
     return tripsCollectionUnordered.doc(tripDocID)
       .snapshots().map(_tripFromSnapshot);}
 
+  Future<List<Bringing>> getItems() async {
+
+    var ref = await bringListCollection.doc(tripDocID).collection("Items").get();
+    try {
+      String action = 'Get bringing items by document ID';
+      CloudFunction().logEvent(action);
+        List<Bringing> items = ref.docs.map((doc) {
+          Map<String, dynamic> data = doc.data();
+          return Bringing.fromData(data);
+        }).toList();
+      return items;
+    } catch (e) {
+      CloudFunction().logError('Error retrieving bringing items docID:  ${e.toString()}');
+      return null;
+    }
+
+
+  }
 
   // Get Trip
   Future<Trip> getTrip(String documentID) async {
@@ -953,7 +976,6 @@ class DatabaseService {
   Future addNewLodgingData(String documentID, LodgingData lodging) async {
 
     var key = lodgingCollection.doc().id;
-    print(documentID);
 
     try {
       String action = 'Add new lodging for $documentID';
@@ -1009,6 +1031,7 @@ class DatabaseService {
     var key = activitiesCollection.doc().id;
 
     var addNewActivityRef = activitiesCollection.doc(documentID).collection('activity').doc(key);
+
 
     try {
       String action = 'Add new activity for $documentID';

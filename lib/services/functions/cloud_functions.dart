@@ -235,12 +235,13 @@ class CloudFunction {
     });
   }
 
-  void addItemToBringingList(String tripDocID, String item) async {
+  void addItemToBringingList(String tripDocID, String item,String type) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addItemToBringingList');
     functionData({
       'displayName': currentUserProfile.displayName,
       'item': item,
       'tripDocID': tripDocID,
+      'type': type
     });
   }
 
@@ -253,12 +254,13 @@ class CloudFunction {
   }
 
   void addItemToNeedList(String tripDocID, String item,
-      String displayName) async {
+      String displayName,String type) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addItemToNeedList');
     functionData({
       'displayName': displayName,
       'item': item,
       'tripDocID': tripDocID,
+      'type': type
     });
   }
 

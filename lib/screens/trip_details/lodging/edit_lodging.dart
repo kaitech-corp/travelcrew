@@ -191,7 +191,7 @@ class _EditLodgingState extends State<EditLodging> {
                           },
                         ),
                       ),
-                      timePickerVisible ? TimePickers(lodging: true,) :
+                      timePickerVisible ? TimePickers(lodging: true,startTime: startTime,endTime: endTime,) :
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(

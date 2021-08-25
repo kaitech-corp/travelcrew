@@ -23,7 +23,7 @@ class AppleLoginBloc extends Bloc<AppleLoginEvent, AppleLoginState> {
   Stream<AppleLoginState> _mapAppleLoginPressedToState() async* {
     yield AppleLoginState.loading();
     try {
-      await UserRepository().signInWithApple();
+      await _userRepository.signInWithApple();
       yield AppleLoginState.success();
     } catch (_) {
       yield AppleLoginState.failure();

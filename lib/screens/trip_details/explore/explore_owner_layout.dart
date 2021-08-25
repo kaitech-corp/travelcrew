@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
+import 'package:travelcrew/screens/trip_details/basket_list/list_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/ListPage.dart';
 import 'package:travelcrew/screens/trip_details/explore/lists/addToListPage.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
+import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/image_popup.dart';
 import 'package:travelcrew/services/widgets/reusableWidgets.dart';
@@ -26,7 +29,8 @@ class ExploreOwnerLayout extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
 
-  ExploreOwnerLayout({this.tripDetails, this.heroTag, this.scaffoldKey, this.controller});
+
+  ExploreOwnerLayout({this.tripDetails, this.heroTag, this.scaffoldKey, this.controller,});
 
   @override
   _ExploreOwnerLayoutState createState() => _ExploreOwnerLayoutState();
@@ -35,6 +39,7 @@ class ExploreOwnerLayout extends StatefulWidget {
 class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
   final expandController = ExpandableController();
+  final basketController = BasketController();
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
@@ -116,7 +121,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                         AnimatedPadding(
                             duration: Duration(milliseconds: 250),
                             padding: EdgeInsets.only(top: _padding),
-                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey)),
+                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                       ],
                     ):
                     Stack(
@@ -124,7 +129,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                         HangingImageTheme(),
                         Padding(
                             padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
-                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,)),
+                            child: OwnerPopupMenuButton(tripDetails: widget.tripDetails, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                       ],
                     ),
                     Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
@@ -151,7 +156,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({
     Key key,
     @required this.tripDetails,
-    @required this.event, this.scaffoldKey, this.controller,
+    @required this.event, this.scaffoldKey, this.controller,this.basketController
 
   }) : super(key: key);
 
@@ -159,13 +164,14 @@ class OwnerPopupMenuButton extends StatelessWidget {
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
+  final BasketController basketController;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-          title: Text('${tripDetails.tripName}'.toUpperCase(),
+          title: Text('${tripDetails.tripName}',
             style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -184,23 +190,10 @@ class OwnerPopupMenuButton extends StatelessWidget {
             icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
           IconButton(
             onPressed: (){
-              scaffoldKey.currentState.showBottomSheet(
-                      (BuildContext context) {
-                    return ListPage(tripDetails: tripDetails,
-                      );
-                  });},
-            icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
-          IconButton(
-            onPressed: (){
-              scaffoldKey.currentState.showBottomSheet(
-                      (BuildContext context) {
-                    return AddToListPage(tripDetails: tripDetails,
-                      controller: controller,
-                      scaffoldKey: scaffoldKey,);
-                  });
+              navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(tripDetails: tripDetails,basketController: basketController));
 
             },
-            icon: TripDetailsIconThemeWidget(icon: Icons.shopping_cart,),),
+            icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
           IconButton(
             onPressed: (){
               showModalBottomSheet(
