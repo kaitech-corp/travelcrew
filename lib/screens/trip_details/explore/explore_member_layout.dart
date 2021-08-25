@@ -15,8 +15,6 @@ import 'package:travelcrew/services/widgets/trip_details_widget.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import 'ImageAnimation.dart';
-import 'lists/addToListPage.dart';
-import 'lists/listPage.dart';
 import 'members/members_layout.dart';
 
 
