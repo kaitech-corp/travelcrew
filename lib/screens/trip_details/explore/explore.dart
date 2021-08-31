@@ -4,11 +4,13 @@ import 'package:travelcrew/blocs/activities_bloc/activity_bloc.dart';
 import 'package:travelcrew/blocs/chat_bloc/chat_bloc.dart';
 import 'package:travelcrew/blocs/lodging_bloc/lodging_bloc.dart';
 import 'package:travelcrew/blocs/public_profile_bloc/public_profile_bloc.dart';
+import 'package:travelcrew/blocs/split_bloc/split_bloc.dart';
 import 'package:travelcrew/blocs/transportation_bloc/transportation_bloc.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/activity_repository.dart';
 import 'package:travelcrew/repositories/chat_repository.dart';
 import 'package:travelcrew/repositories/lodging_repository.dart';
+import 'package:travelcrew/repositories/split_repository.dart';
 import 'package:travelcrew/repositories/transportation_repository.dart';
 import 'package:travelcrew/repositories/user_profile_repository.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
@@ -76,6 +78,7 @@ class Explore extends StatelessWidget {
             BlocProvider(create: (context) => ChatBloc(chatRepository: ChatRepository()..refresh(trip.documentId))),
             BlocProvider(create: (context) => LodgingBloc(lodgingRepository: LodgingRepository()..refresh(trip.documentId))),
             BlocProvider(create: (context) => TransportationBloc(transportationRepository: TransportationRepository()..refresh(trip.documentId))),
+            BlocProvider(create: (context) => SplitBloc(splitRepository: SplitRepository()..refresh(trip.documentId))),
           ],
           child: TabBarView(
                     children: [

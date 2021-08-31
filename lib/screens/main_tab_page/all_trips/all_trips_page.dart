@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trip_event.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trip_state.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trips_bloc.dart';
@@ -94,6 +93,9 @@ class _SliverGridListState extends State<SliverGridList> {
   AllTripBloc allTripBloc;
   TripAdBloc tripAdBloc;
 
+  int crossAxisCount = 3;
+  int count = 3;
+
   @override
   void initState() {
     super.initState();
@@ -112,6 +114,12 @@ class _SliverGridListState extends State<SliverGridList> {
 
   @override
   Widget build(BuildContext context) {
+    if(SizeConfig.tablet){
+      setState(() {
+        crossAxisCount = 4;
+        count = 2;
+      });
+    }
 
 
     return BlocBuilder<AllTripBloc, TripState>(
@@ -131,7 +139,7 @@ class _SliverGridListState extends State<SliverGridList> {
                       child: CustomScrollView(
                         slivers: [
                           SliverStaggeredGrid.countBuilder(
-                            crossAxisCount: 3,
+                            crossAxisCount: crossAxisCount,
                             mainAxisSpacing: 1,
                             crossAxisSpacing: 1,
                             itemCount: combinedList.length,
@@ -145,12 +153,12 @@ class _SliverGridListState extends State<SliverGridList> {
                             staggeredTileBuilder: (index) {
                               if (combinedList[index] is Trip) {
                                 if (combinedList[index].urlToImage.isNotEmpty) {
-                                  return StaggeredTile.count(3, 3);
+                                  return StaggeredTile.count(count, count.toDouble());
                                 } else {
-                                  return StaggeredTile.count(3, 1);
+                                  return StaggeredTile.count(count, 1);
                                 }
                               } else {
-                                return StaggeredTile.count(3, 3);
+                                return StaggeredTile.count(count, count.toDouble());
                               }
                             },
                           )
@@ -169,7 +177,7 @@ class _SliverGridListState extends State<SliverGridList> {
                       child: CustomScrollView(
                         slivers: [
                           SliverStaggeredGrid.countBuilder(
-                            crossAxisCount: 3,
+                            crossAxisCount: crossAxisCount,
                             mainAxisSpacing: 1,
                             crossAxisSpacing: 1,
                             itemCount: combinedList.length,
@@ -183,12 +191,12 @@ class _SliverGridListState extends State<SliverGridList> {
                             staggeredTileBuilder: (index) {
                               if (combinedList[index] is Trip) {
                                 if (combinedList[index].urlToImage.isNotEmpty) {
-                                  return StaggeredTile.count(3, 3);
+                                  return StaggeredTile.count(count, count.toDouble());
                                 } else {
-                                  return StaggeredTile.count(3, 1);
+                                  return StaggeredTile.count(count, 1);
                                 }
                               } else {
-                                return StaggeredTile.count(3, 3);
+                                return StaggeredTile.count(count, count.toDouble());
                               }
                             },
                           )
@@ -218,7 +226,6 @@ class _SliverGridListState extends State<SliverGridList> {
         return Icon(Icons.favorite_border, color: Colors.white,);
       }
     }
-
     return InkWell(
       key: Key(trip.documentId),
       splashColor: Colors.blue.withAlpha(30),
@@ -228,17 +235,6 @@ class _SliverGridListState extends State<SliverGridList> {
           _analyticsService.viewedTrip();
           navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
         },
-        // onLongPress: (){
-        //   setState(() {
-        //     widget._showCard = true;
-        //     widget.tripPopUp = trip;
-        //   });
-        // },
-        // onLongPressEnd: (details) {
-        //   setState(() {
-        //     widget._showCard = false;
-        //   });
-        // },
         child: Hero(
           tag: trip.urlToImage,
           transitionOnUserGestures: true,
@@ -249,7 +245,7 @@ class _SliverGridListState extends State<SliverGridList> {
                 image: NetworkImage(trip.urlToImage,),
                 fit: BoxFit.fill,
               ),
-              color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Color(0xAA91AFD0) : Color(0xAA2D3D49), //
+              color: Color(0xAA91AFD0), //
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
             ),
             child: Align(
@@ -288,8 +284,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
 
     child: Container (
       margin: const EdgeInsets.only(left: 15,right: 15, bottom: 15, top: 10),
-      decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
-      BoxDecoration(
+      decoration:BoxDecoration(
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
         gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -299,52 +294,42 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
               Colors.lightBlueAccent.shade200
             ]
         ),
-      ):
-      BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.grey.shade700,
-              Color(0xAA2D3D49)
-            ]
-        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Tooltip(
-            message: '${trip.tripName}',
-            child: ListTile(
-              contentPadding: const EdgeInsets.only(left: 15,right: 5),
-              title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis,),
-              subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,),
-              trailing: TextButton(
-                child: favorite(userService.currentUserID, trip),
-                onPressed: () {
-                  if (trip.favorite.contains(userService.currentUserID)){
-                    CloudFunction().removeFavoriteFromTrip(trip.documentId);
-                  } else {
-                    CloudFunction().addFavoriteTrip(trip.documentId);
-                  }
+          Align(
+            alignment: Alignment.topLeft,
+            child: Tooltip(
+              message: '${trip.tripName}',
+              child: ListTile(
+                contentPadding: const EdgeInsets.only(left: 15,right: 5),
+                title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis,textScaleFactor: (SizeConfig.tablet) ? 2:1,),
+                subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,textScaleFactor: (SizeConfig.tablet) ? 2:1,),
+                trailing: TextButton(
+                  child: favorite(userService.currentUserID, trip),
+                  onPressed: () {
+                    if (trip.favorite.contains(userService.currentUserID)){
+                      CloudFunction().removeFavoriteFromTrip(trip.documentId);
+                    } else {
+                      CloudFunction().addFavoriteTrip(trip.documentId);
+                    }
+                  },
+                ),
+                onTap: () {
+                  _analyticsService.viewedTrip();
+                  navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
                 },
               ),
-              onTap: () {
-                _analyticsService.viewedTrip();
-                navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
-              },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 15,right: 5),
-            child: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
-          ),
           Align(
-            alignment: Alignment.bottomRight,
-            // child:
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15,right: 5),
+              child: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,textScaleFactor: (SizeConfig.tablet) ? 2:1,),
+            ),
           ),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
         ],
       ),
     ),

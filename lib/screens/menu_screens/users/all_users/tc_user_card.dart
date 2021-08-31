@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/database.dart';
@@ -49,57 +48,66 @@ class _TCUserCardState extends State<TCUserCard> {
                           .uid,
                       transitionOnUserGestures: true,
                       child: CircleAvatar(
-                        radius: SizeConfig.tablet ? SizeConfig.blockSizeHorizontal*8 : SizeConfig.blockSizeHorizontal*12,
+                        radius: SizeConfig.tablet ? SizeConfig.blockSizeHorizontal*8 : SizeConfig.blockSizeHorizontal*11,
                         backgroundImage: widget.allUsers.urlToImage.isNotEmpty ? NetworkImage(widget.allUsers.urlToImage,) : AssetImage(profileImagePlaceholder),
                       ),
                     )
                 ),
               ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                child: Stack(
+                  // crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    ListTile(
-                      // leading:
-                      title: Text("${widget.allUsers.displayName}",style: SizeConfig.mobile ? Theme.of(context).textTheme.subtitle1 : Theme.of(context).textTheme.headline5),
-                      subtitle: Text('${widget.allUsers.firstName} ${widget.allUsers.lastName}',
-                        textAlign: TextAlign.start,style: SizeConfig.mobile ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
-                      trailing: !(currentUserProfile.blockedList.contains(widget.allUsers.uid) ?? false) ? UnblockedPopupMenu(allUsers: widget.allUsers):
-                      BlockedPopupMenu(allUsers: widget.allUsers),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: ListTile(
+                        // leading:
+                        title: Text("${widget.allUsers.displayName}",style: SizeConfig.mobile ? Theme.of(context).textTheme.subtitle1 : Theme.of(context).textTheme.headline5),
+                        subtitle: Text('${widget.allUsers.firstName} ${widget.allUsers.lastName}',
+                          textAlign: TextAlign.start,style: SizeConfig.mobile ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                        trailing: !(currentUserProfile.blockedList.contains(widget.allUsers.uid) ?? false) ? UnblockedPopupMenu(allUsers: widget.allUsers):
+                        BlockedPopupMenu(allUsers: widget.allUsers),
+                      ),
                     ),
                     widget.allUsers.followers.contains(userService.currentUserID) ?
-                    Padding(
-                      padding: const EdgeInsets.only(right:8.0),
-                      child: ElevatedButton(
-                        child: Text('Unfollow',style: Theme.of(context).textTheme.subtitle1),
-                        onPressed: () {
-                          if(currentUserProfile.blockedList.contains(widget.allUsers.uid)){
-                          } else {
-                            TravelCrewAlertDialogs().unFollowAlert(context, widget.allUsers.uid);
-                          }
-                        },
-                      ),
-                    ) :
-                    Padding(
-                      padding: const EdgeInsets.only(right:8.0),
-                      child: ElevatedButton(
-                        child: Text('Follow',style: Theme.of(context).textTheme.subtitle1),
-                        onPressed: () {
-                          // Send a follow request notification to user
-                          var message = 'Follow request from ${currentUserProfile.displayName}';
-                          var type = 'Follow';
-                          if(userService.currentUserID != widget.allUsers.uid) {
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: ElevatedButton(
+                          child: Text('Unfollow',style: Theme.of(context).textTheme.subtitle1),
+                          onPressed: () {
                             if(currentUserProfile.blockedList.contains(widget.allUsers.uid)){
                             } else {
-                              CloudFunction().addNewNotification(message: message,
-                                  ownerID: widget.allUsers.uid,
-                                  documentID: widget.allUsers.uid,
-                                  type: type,
-                                  uidToUse: currentUserProfile.uid);
-                              TravelCrewAlertDialogs().followRequestDialog(context);
+                              TravelCrewAlertDialogs().unFollowAlert(context, widget.allUsers.uid);
                             }
-                          }
-                        },
+                          },
+                        ),
+                      ),
+                    ) :
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: ElevatedButton(
+                          child: Text('Follow',style: Theme.of(context).textTheme.subtitle1),
+                          onPressed: () {
+                            // Send a follow request notification to user
+                            var message = 'Follow request from ${currentUserProfile.displayName}';
+                            var type = 'Follow';
+                            if(userService.currentUserID != widget.allUsers.uid) {
+                              if(currentUserProfile.blockedList.contains(widget.allUsers.uid)){
+                              } else {
+                                CloudFunction().addNewNotification(message: message,
+                                    ownerID: widget.allUsers.uid,
+                                    documentID: widget.allUsers.uid,
+                                    type: type,
+                                    uidToUse: currentUserProfile.uid);
+                                TravelCrewAlertDialogs().followRequestDialog(context);
+                              }
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -164,7 +172,7 @@ class UnblockedPopupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black,
+      color: Colors.white,
       icon: IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value) {

@@ -2,7 +2,6 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -44,7 +43,7 @@ class TripDetailsWidget extends StatelessWidget {
               child: ExpandableTheme(
                 data: ExpandableThemeData(
                   iconSize: 25.0,
-                  iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
+                  iconColor: Colors.black,
                 ),
                 child: ExpandablePanel(
                   header: Text('Trip Details', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),

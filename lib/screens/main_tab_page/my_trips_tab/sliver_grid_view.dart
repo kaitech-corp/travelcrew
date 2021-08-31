@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -61,15 +60,14 @@ class TappableCrewTripGrid extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       child:
       InkWell(
         onTap: (){
           navigationService.navigateTo(ExploreRoute, arguments: trip);
         },
         child: Container(
-          decoration: (ThemeProvider.themeOf(context).id == 'light_theme') ?
-          BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
@@ -77,16 +75,6 @@ class TappableCrewTripGrid extends StatelessWidget {
                 colors: [
                   Colors.blue.shade50,
                   Colors.lightBlueAccent.shade200
-                ]
-            ),
-          ): BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.grey.shade700,
-                  Color(0xAA2D3D49)
                 ]
             ),
           ),
@@ -99,19 +87,19 @@ class TappableCrewTripGrid extends StatelessWidget {
                 padding: const EdgeInsets.all(4.0),
                 child: Tooltip(
                     message: trip.tripName,
-                    child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 2,overflow: TextOverflow.ellipsis,)),
+                    child: Text(trip.tripName ?? trip.location,style: Theme.of(context).textTheme.headline4,maxLines: 2,overflow: TextOverflow.ellipsis,textScaleFactor: 1.2,)),
               ),
               Flexible(
                 flex: 2,
                 child: ListTile(
-                  title: Text(trip.startDate != null ? '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,),
+                  title: Text(trip.startDate != null ? '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}' : 'Dates',style: Theme.of(context).textTheme.subtitle1,textScaleFactor: 2,),
                   trailing: Tooltip(
                     message: 'Members',
                     child: Wrap(
                       // mainAxisAlignment: MainAxisAlignment.end,
                       spacing: 3,
                       children: <Widget>[
-                        Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle1,),
+                        Text('${trip.accessUsers.length} ',style: Theme.of(context).textTheme.subtitle1,textScaleFactor: 2,),
                         IconThemeWidget(icon:Icons.people,),
                       ],
                     ),

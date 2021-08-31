@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
@@ -143,7 +142,7 @@ class _SignupScreenState extends State {
                                     ExpandableTheme(
                                       data: ExpandableThemeData(
                                         iconSize: 20.0,
-                                        iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
+                                        iconColor: Colors.black,
                                       ),
                                       child: ExpandablePanel(
                                         header: Text('Social Media', style: Theme.of(context).textTheme.headline6,),
@@ -185,7 +184,7 @@ class _SignupScreenState extends State {
                                     ExpandableTheme(
                                       data: ExpandableThemeData(
                                         iconSize: 20.0,
-                                        iconColor: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white,
+                                        iconColor: Colors.black,
                                       ),
                                       child: ExpandablePanel(
                                         header: Text('Destination Wish List', style: Theme.of(context).textTheme.headline6,),
