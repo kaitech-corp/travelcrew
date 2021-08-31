@@ -33,38 +33,9 @@ class MainTabPage extends StatefulWidget {
 }
 class _MyStatefulWidgetState extends State<MainTabPage> {
 
-  // GlobalKey keyOne = GlobalKey();
-  // GlobalKey keyTwo = GlobalKey();
-  // GlobalKey keyThree = GlobalKey();
-  // GlobalKey keyFour = GlobalKey();
-  // GlobalKey keyFive = GlobalKey();
-  // GlobalKey keySix = GlobalKey();
-  // GlobalKey keySeven = GlobalKey();
-  // GlobalKey keyEight = GlobalKey();
-  // GlobalKey keyNine = GlobalKey();
-  // GlobalKey keyTen = GlobalKey();
-  // GlobalKey keyEleven = GlobalKey();
-  // GlobalKey keyTwelve = GlobalKey();
-
-
   @override
   void initState() {
     super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) =>
-    //     ShowCaseWidget.of(context)
-    //         .startShowCase([
-    //       keyOne,
-    //       keyTwo,
-    //       keyThree,
-    //       keyFour,
-    //       keyFive,
-    //       // keySix,
-    //       keySeven,
-    //       keyEight,
-    //       keyNine,
-    //       keyTen]
-    //     ));
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       RemoteNotification message =  event.notification;

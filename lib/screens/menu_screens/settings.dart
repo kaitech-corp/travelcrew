@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -13,7 +12,6 @@ class Settings extends StatefulWidget{
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    String themeID = ThemeProvider.themeOf(context).id;
 
     return GestureDetector(
       onTap: () {
@@ -31,31 +29,6 @@ class _SettingsState extends State<Settings> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              // Text('Theme',style: Theme.of(context).textTheme.headline5,),
-              // RadioListTile<String>(
-              //   title: const Text('Light'),
-              //   value: 'light_theme',
-              //   groupValue: themeID,
-              //   onChanged: (value) {
-              //     setState(() {
-              //       themeID = value;
-              //       ThemeProvider.controllerOf(context).setTheme(value);
-              //       navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
-              //     });
-              //   },
-              // ),
-              // RadioListTile<String>(
-              //   title: const Text('Dark'),
-              //   value: 'dark_theme',
-              //   groupValue: themeID,
-              //   onChanged: (value) {
-              //     setState(() {
-              //       themeID = value;
-              //       ThemeProvider.controllerOf(context).setTheme(value);
-              //       navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
-              //     });
-              //   },
-              // ),
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
                 children: [

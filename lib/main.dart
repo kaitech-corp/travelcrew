@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sizer/sizer.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_state.dart';
@@ -85,282 +85,147 @@ class _TravelCrewState extends State<TravelCrew> {
   @override
   Widget build(BuildContext context) {
     FirebaseCrashlytics.instance.log('App Started');
-
     return Sizer(
       builder: (context,orientation, deviceType) {
-        return ThemeProvider(
-          saveThemesOnChange: true,
-          themes: [
-            AppTheme(
-              id: 'light_theme',
-              description: 'sky theme',
-              data: ThemeData(
-                fontFamily: 'Cantata One',
-                textTheme: TextTheme(
-                  headline1: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                  headline2: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                  headline3: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontStyle: FontStyle.italic),
-                  headline4: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                  headline5: const TextStyle(fontWeight: FontWeight.bold,
+        return MaterialApp(
+                builder: (context, widget) {
+                  return ResponsiveWrapper.builder(
+                    BouncingScrollWrapper.builder(context, widget),
+                    maxWidth: 1200,
+                    minWidth: 400,
+                    defaultScale: true,
+                    breakpoints: [
+                      ResponsiveBreakpoint.resize(400, name: MOBILE),
+                      ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                      ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+                    ],
+                    // background: Container(color: Color(0xFFF5F5F5))
+                  );
+                },
+                home: BlocBuilder<AuthenticationBloc,AuthenticationState>(
+                        builder: (context,state){
+                          SizeConfig().init(context);
+                          if (state is AuthenticationFailure) {
+                            return LoginScreen();
+                          }
+                          if (state is AuthenticationSuccess) {
+                            return FutureBuilder(
+                              builder: (context, data) {
+                                if (data.data == true) {
+
+                                  return LaunchIconBadger();
+                                } else if (data.data == false){
+                                  return CompleteProfile(userRepository: widget.userRepository,);
+                                }
+                                return Loading();
+                              },
+                              future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
+                            );
+                          } else {
+                            return LoginScreen();
+                          }
+                        }),
+                debugShowCheckedModeBanner: false,
+                theme:  ThemeData(
+                  fontFamily: 'Cantata One',
+                  textTheme: TextTheme(
+                    headline1: const TextStyle(fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    headline2: const TextStyle(fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    headline3: const TextStyle(fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontStyle: FontStyle.italic),
+                    headline4: const TextStyle(fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    headline5: const TextStyle(fontWeight: FontWeight.bold,
                       color: Colors.black,),
-                  headline6: const TextStyle(fontWeight: FontWeight.bold,
-                      ),
-                  subtitle1: const TextStyle(fontWeight: FontWeight.bold),
-                  subtitle2: const TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,),
-                  button: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all<
-                          RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )
+                    headline6: const TextStyle(fontWeight: FontWeight.bold,
+                    ),
+                    subtitle1: const TextStyle(fontWeight: FontWeight.bold),
+                    subtitle2: const TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,),
+                    button: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            )
+                        ),
+                        textStyle: MaterialStateProperty.all<TextStyle>(
+                          TextStyle(fontFamily: 'Cantata One',
+                            fontWeight: FontWeight.bold,),
+                        ),
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                            Colors.black
+                        )
+                    ),
+                  ),
+                  outlinedButtonTheme: OutlinedButtonThemeData(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: const BorderSide(color: Colors.grey),
+                        ),
                       ),
                       textStyle: MaterialStateProperty.all<TextStyle>(
                         TextStyle(fontFamily: 'Cantata One',
                           fontWeight: FontWeight.bold,),
                       ),
-                      foregroundColor: MaterialStateProperty.all<Color>(
-                          Colors.black
-                      )
+                    ),
                   ),
-                ),
-                outlinedButtonTheme: OutlinedButtonThemeData(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Colors.grey),
+                  textButtonTheme: TextButtonThemeData(
+                    style: ButtonStyle(
+                      textStyle: MaterialStateProperty.all<TextStyle>(
+                        TextStyle(fontFamily: 'Cantata One',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.lightBlue),
                       ),
                     ),
-                    textStyle: MaterialStateProperty.all<TextStyle>(
-                      TextStyle(fontFamily: 'Cantata One',
-                        fontWeight: FontWeight.bold,),
-                    ),
                   ),
-                ),
-                textButtonTheme: TextButtonThemeData(
-                  style: ButtonStyle(
-                    textStyle: MaterialStateProperty.all<TextStyle>(
-                      TextStyle(fontFamily: 'Cantata One',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.lightBlue),
-                    ),
+                  primaryIconTheme: IconThemeData(
+                      size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
+                      color: Colors.black
                   ),
-                ),
-                primaryIconTheme: IconThemeData(
-                  size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
-                  color: Colors.black
-                ),
-                buttonColor: Colors.blue,
-                floatingActionButtonTheme: FloatingActionButtonThemeData(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue
-                ),
-                bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                    backgroundColor: Color(0xFF121212),
-                    selectedItemColor: Colors.blueAccent,
-                    unselectedItemColor: Color(0xFF121212)
-                ),
-                canvasColor: Color(0xFFFAFAFA),
-                accentIconTheme: IconThemeData(
-                    color: Colors.black
-                ),
-                brightness: Brightness.light,
-                primaryColor: Colors.white,
-                accentColor: Colors.blueAccent,
-                inputDecorationTheme: InputDecorationTheme(
-                  labelStyle: TextStyle(color: Colors.black),
-                  fillColor: Colors.grey[300],
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
+                  buttonColor: Colors.blue,
+                  floatingActionButtonTheme: FloatingActionButtonThemeData(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue
                   ),
-                ),
-                iconTheme: IconThemeData(
-                    color: Colors.white,
-                  size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
-                ),
-              ),
-            ),
-            AppTheme(
-              id: 'dark_theme',
-              description: 'space theme',
-              data: ThemeData(
-                fontFamily: 'Cantata One',
-                textTheme: TextTheme(
-                  headline1: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  headline2: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  headline3: const TextStyle(fontWeight: FontWeight.w700,
-                      color: Colors.greenAccent,
-                      fontStyle: FontStyle.italic),
-                  headline4: const TextStyle(fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  headline5: const TextStyle(fontWeight: FontWeight.w600,
-                    color: Colors.white,),
-                  headline6: const TextStyle(fontWeight: FontWeight.normal,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white),
-                  subtitle1: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                  subtitle2: const TextStyle(
-                      fontWeight: FontWeight.w600, color: Colors.white),
-                  button: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        )
-                    ),
-                    textStyle: MaterialStateProperty.all<TextStyle>(
-                      TextStyle(fontFamily: 'Cantata One',
-                        fontWeight: FontWeight.bold,),
-                    ),
-                    foregroundColor: MaterialStateProperty.all<Color>(
-                        Colors.black
-                    ),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.greenAccent
-                    ),
+                  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                      backgroundColor: Color(0xFF121212),
+                      selectedItemColor: Colors.blueAccent,
+                      unselectedItemColor: Color(0xFF121212)
                   ),
-                ),
-                outlinedButtonTheme: OutlinedButtonThemeData(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    textStyle: MaterialStateProperty.all<TextStyle>(
-                      TextStyle(fontFamily: 'Cantata One',
-                        fontWeight: FontWeight.bold,),
-                    ),
+                  canvasColor: Color(0xFFFAFAFA),
+                  accentIconTheme: IconThemeData(
+                      color: Colors.black
                   ),
-                ),
-                textButtonTheme: TextButtonThemeData(
-                  style: ButtonStyle(
-                    textStyle: MaterialStateProperty.all<TextStyle>(
-                      TextStyle(fontFamily: 'Cantata One',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.greenAccent),
-                    ),
-                  ),
-                ),
-                primaryIconTheme: IconThemeData(
-                    size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
-                    color: Colors.greenAccent
-                ),
-                buttonColor: Colors.greenAccent,
-                dialogBackgroundColor: Colors.grey[600],
-                floatingActionButtonTheme: FloatingActionButtonThemeData(
-                    foregroundColor: Colors.white
-                ),
-                bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                    backgroundColor: Color(0xFF121212),
-                    selectedItemColor: Colors.greenAccent,
-                    unselectedItemColor: Colors.white
-                ),
-                tabBarTheme: TabBarTheme(
-                    labelColor: Colors.greenAccent,
-                    unselectedLabelColor: Colors.white
-                ),
-                inputDecorationTheme: InputDecorationTheme(
-                    labelStyle: TextStyle(color: Colors.white),
-                    fillColor: Colors.black,
-                    hintStyle: TextStyle(color: Colors.white),
+                  brightness: Brightness.light,
+                  primaryColor: Colors.white,
+                  accentColor: Colors.blueAccent,
+                  inputDecorationTheme: InputDecorationTheme(
+                    labelStyle: TextStyle(color: Colors.black),
+                    fillColor: Colors.grey[300],
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: Colors.black),
                     ),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)
-                    )
-                ),
-                cardColor: Colors.black12,
-                unselectedWidgetColor: Colors.white,
-                canvasColor: Color(0xFF121212),
-                accentIconTheme: IconThemeData(
-                    color: Colors.white
-                ),
-                brightness: Brightness.light,
-                primaryColor: Color(0xFF121212),
-                accentColor: Colors.blueAccent,
-                iconTheme: IconThemeData(
-                    color: Colors.white
-                ),
-                popupMenuTheme: PopupMenuThemeData(
-                  color: Color(0xFF121212),
-                ),
-                dialogTheme: DialogTheme(
-                  titleTextStyle: TextStyle(fontFamily: 'Cantata One',
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,),
-                  contentTextStyle: TextStyle(
-                      fontFamily: 'Cantata One', color: Colors.white),
-                ),
-
-              ),
-            ),
-          ],
-          child: ThemeConsumer(
-            child: Builder(
-              builder: (themeContext) =>
-                  MaterialApp(
-                    home: BlocBuilder<AuthenticationBloc,AuthenticationState>(
-                            builder: (context,state){
-                              SizeConfig().init(context);
-                              if (state is AuthenticationFailure) {
-                                return LoginScreen();
-                              }
-                              if (state is AuthenticationSuccess) {
-                                return FutureBuilder(
-                                  builder: (context, data) {
-                                    if (data.data == true) {
-
-                                      return LaunchIconBadger();
-                                    } else if (data.data == false){
-                                      return CompleteProfile(userRepository: widget.userRepository,);
-                                    }
-                                    return Loading();
-                                  },
-                                  future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
-                                );
-                              } else {
-                                return LoginScreen();
-                              }
-                            }),
-                      // ),
-                    //   onStart: (index, key) => print('On started $index'),
-                    //   onComplete: (index, key) => print('On completed $index'),
-                    //   onFinish: () => print('Finished completely'),
-                    //   autoPlay: true,
-                    //   autoPlayDelay: defaultDuration,
-                    //
-                    // ),
-                    debugShowCheckedModeBanner: false,
-                    theme: ThemeProvider
-                        .themeOf(themeContext)
-                        .data,
-                    navigatorKey: locator<NavigationService>().navigationKey,
-                    onGenerateRoute: generateRoute,
-                    navigatorObservers: [
-                      FirebaseAnalyticsObserver(analytics: analytics)
-                    ],
                   ),
-            ),
-          ),
-        );
+                  iconTheme: IconThemeData(
+                    color: Colors.white,
+                    size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
+                  ),
+                ),
+                navigatorKey: locator<NavigationService>().navigationKey,
+                onGenerateRoute: generateRoute,
+                navigatorObservers: [
+                  FirebaseAnalyticsObserver(analytics: analytics)
+                ],
+              );
       }
     );
   }

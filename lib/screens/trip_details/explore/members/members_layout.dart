@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
@@ -92,7 +91,7 @@ class _MembersLayoutState extends State<MembersLayout> {
 
     return Card(
       key: Key(member.uid),
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       child: Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight*.09,

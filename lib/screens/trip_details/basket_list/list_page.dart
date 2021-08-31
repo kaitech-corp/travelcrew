@@ -34,6 +34,7 @@ class BasketListPage extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(title: Text('Explore',style: Theme.of(context).textTheme.headline5,),),
       backgroundColor: canvasColor,
       body: SafeArea(
         bottom: false,

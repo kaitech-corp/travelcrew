@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -30,7 +29,7 @@ class CrewTripCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       child:
       InkWell(
         onTap: (){
