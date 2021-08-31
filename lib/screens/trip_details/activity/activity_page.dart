@@ -32,11 +32,6 @@ class _ActivityPageState extends State<ActivityPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // bloc.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

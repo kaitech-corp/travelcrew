@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
@@ -80,7 +79,6 @@ class ActivityCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if(ThemeProvider.themeOf(context).id != 'light_theme') Container(height: 1,color: Colors.grey,)
                   ]
               ),
             ),

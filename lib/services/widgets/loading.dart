@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 class Loading extends StatelessWidget{
@@ -9,7 +8,7 @@ class Loading extends StatelessWidget{
     return Container(
       height: SizeConfig.screenHeight,
       width: SizeConfig.screenWidth,
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black,
+      color: Colors.white,
       child: Center(
         child: SpinKitChasingDots(
           color: Colors.blue,

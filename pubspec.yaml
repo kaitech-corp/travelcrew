@@ -62,13 +62,13 @@ dependencies:
   showcaseview: ^1.1.0
   social_share: ^2.1.1
   syncfusion_flutter_gauges: ^19.1.59
-  theme_provider: ^0.5.0
   url_launcher: ^6.0.3
   webview_flutter: ^2.0.4
   cupertino_icons: ^1.0.3
   rxdart: ^0.26.0
   observable: ^0.23.0
   eva_icons_flutter: ^3.0.0
+  responsive_framework: ^0.1.4
 
 
 dev_dependencies:

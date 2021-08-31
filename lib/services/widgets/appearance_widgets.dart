@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
+
 import 'package:travelcrew/size_config/size_config.dart';
 
 class ReusableThemeColor {
   Color color(BuildContext context){
-    return (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Color(0xFF121212);
+    return  Colors.white;
   }
   Color colorOpposite(BuildContext context){
-    return (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.white;
+    return Colors.black;
   }
   // 212121
   Color cardColor(BuildContext context){
-    return (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Color(0xFF121212);
+    return Colors.white;
   }
 
   //Bottom Navigation background color
   Color bottomNavColor(BuildContext context){
-    return (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.blue : Colors.greenAccent;
+    return Colors.blue;
   }
 
   TextStyle greenOrBlueTextColor(BuildContext context){
-    return (ThemeProvider.themeOf(context).id == 'light_theme') ?
-    TextStyle(color: Colors.blue,fontSize: 16,fontFamily: 'Cantata One',fontWeight: FontWeight.bold) : TextStyle(color: Colors.greenAccent,fontSize: 16,fontFamily: 'Cantata One',fontWeight: FontWeight.bold);
+    return
+    TextStyle(color: Colors.blue,fontSize: 16,fontFamily: 'Cantata One',fontWeight: FontWeight.bold);
   }
 }
 
@@ -48,7 +48,7 @@ class AppBarIconThemeWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Icon(icon ,color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.black : Colors.greenAccent);
+    return Icon(icon ,color: Colors.black);
   }
 
 }
@@ -132,7 +132,7 @@ class TripDetailsIconThemeWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Icon(icon ,color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.blue : Colors.greenAccent);
+    return Icon(icon ,color: Colors.blue);
   }
 
 }

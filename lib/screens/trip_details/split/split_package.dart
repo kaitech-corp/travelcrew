@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/cost_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/split_model.dart';
@@ -400,7 +399,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
 
     return Card(
       key: Key(member.uid),
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       child: Container(
         child: GestureDetector(
           onLongPress: (){

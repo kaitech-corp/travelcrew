@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
@@ -245,7 +244,7 @@ class HangingImageTheme extends StatelessWidget {
         // color:
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
+            image: AssetImage(skyImage),
             fit: BoxFit.cover,
           ),
         ),
@@ -273,7 +272,7 @@ class HangingImageTheme3 extends StatelessWidget {
           // color:
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: (ThemeProvider.themeOf(context).id == 'light_theme') ? AssetImage(skyImage) : AssetImage(spaceImage),
+              image: AssetImage(skyImage),
               fit: BoxFit.cover,
             ),
           ),
@@ -493,15 +492,14 @@ class RecentTripTile extends StatelessWidget{
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.0),
-                        gradient: (ThemeProvider.themeOf(context).id == 'light_theme') ? LinearGradient(
+                        gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
                               Colors.blue,
                               Colors.lightBlueAccent
                             ]
-                        ): null,
-                        color: (ThemeProvider.themeOf(context).id == 'light_theme') ? null : Color(0xFF424242),//5C6BC0 0xAA2D3D49
+                        ),
                       ),
                       height: 125,
                       width: 125,

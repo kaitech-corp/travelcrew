@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 import 'package:travelcrew/models/notification_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
@@ -35,7 +34,7 @@ class NotificationsCard extends StatelessWidget{
 // Activity or Lodging Notifications
   Widget notificationType1(BuildContext context){
     return Card(
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
@@ -56,7 +55,7 @@ class NotificationsCard extends StatelessWidget{
   Widget notificationType2(BuildContext context) {
 
     return Card(
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
@@ -77,7 +76,7 @@ class NotificationsCard extends StatelessWidget{
   Widget notificationType3(BuildContext context) {
 
     return Card(
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
@@ -99,7 +98,7 @@ class NotificationsCard extends StatelessWidget{
 // Welcome or Follow back Notification
   Widget notificationType4(BuildContext context){
     return Card(
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
@@ -111,7 +110,7 @@ class NotificationsCard extends StatelessWidget{
   Widget notificationType5(BuildContext context) {
 
     return Card(
-      color: (ThemeProvider.themeOf(context).id == 'light_theme') ? Colors.white : Colors.black12,
+      color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text('${notification.message}'),
