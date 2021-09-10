@@ -38,6 +38,7 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
                   Timestamp.fromDate(DateTime.parse(trip))),
               style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.black54),)),
       ),
+      itemComparator: (a,b) =>(a.startDateTimeStamp.compareTo(b.startDateTimeStamp)),
       itemBuilder: (context, trip){
         return CrewTripCard(trip: trip,);
       },

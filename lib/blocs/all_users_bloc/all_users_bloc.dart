@@ -30,9 +30,8 @@ class AllUserBloc extends Bloc<AllUserEvent, AllUserState> {
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    allUserRepository.dispose();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }
