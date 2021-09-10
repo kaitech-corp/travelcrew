@@ -159,7 +159,7 @@ class ChatCard extends StatelessWidget {
   String readTimestamp(int timestamp) {
     if (timestamp != null) {
       var now = new DateTime.now();
-      var format = new DateFormat('HH:mm a');
+      var format = new DateFormat.jm();
       var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
       var diff = date.difference(now);
       var time = '';

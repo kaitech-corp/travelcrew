@@ -13,7 +13,11 @@ import 'package:travelcrew/blocs/notifications_bloc/notification_state.dart';
 import 'package:travelcrew/blocs/trip_ad_bloc/trip_ad_bloc.dart';
 import 'package:travelcrew/repositories/current_user_profile_repository.dart';
 import 'package:travelcrew/repositories/trip_ad_repository.dart';
-import 'package:travelcrew/repositories/trip_repository.dart';
+import 'package:travelcrew/repositories/trip_repositories/all_trip_repository.dart';
+import 'package:travelcrew/repositories/trip_repositories/current_trip_repository.dart';
+import 'package:travelcrew/repositories/trip_repositories/favorite_trip_repository.dart';
+import 'package:travelcrew/repositories/trip_repositories/past_trip_repository.dart';
+import 'package:travelcrew/repositories/trip_repositories/private_trip_repository.dart';
 import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/loading.dart';
@@ -45,11 +49,11 @@ class _ProfileStreamState extends State<ProfileStream> {
     return Container(
         child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: (context) => CurrentCrewTripBloc(tripRepository: TripRepository()..refresh() )),
-              BlocProvider(create: (context) => PastCrewTripBloc(tripRepository: TripRepository()..refreshPastTrips() )),
-              BlocProvider(create: (context) => PrivateTripBloc(tripRepository: TripRepository()..refreshPrivateTrips() )),
-              BlocProvider(create: (context) => AllTripBloc(tripRepository: TripRepository()..refreshAllTrips() )),
-              BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: TripRepository()..refreshFavoriteTrips() )),
+              BlocProvider(create: (context) => CurrentCrewTripBloc(tripRepository: CurrentTripRepository()..refresh() )),
+              BlocProvider(create: (context) => PastCrewTripBloc(tripRepository: PastTripRepository()..refresh() )),
+              BlocProvider(create: (context) => PrivateTripBloc(tripRepository: PrivateTripRepository()..refresh() )),
+              BlocProvider(create: (context) => AllTripBloc(tripRepository: AllTripRepository()..refresh() )),
+              BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: FavoriteTripRepository()..refresh() )),
               BlocProvider(create: (context) => CurrentProfileBloc(currentUserProfileRepository: CurrentUserProfileRepository()..refresh())),
               BlocProvider(create: (context) => TripAdBloc(tripAdRepository: TripAdRepository()..refresh())),
             ],

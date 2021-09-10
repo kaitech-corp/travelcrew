@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/services/database.dart';
@@ -21,7 +22,7 @@ class ChatRepository {
     try {
       return snapshot.docs.map((doc){
         Map<String, dynamic> data = doc.data();
-        return ChatData.fromData(data);
+          return ChatData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');

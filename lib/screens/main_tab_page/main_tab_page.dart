@@ -47,7 +47,18 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             );
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
-      navigationService.navigateTo(DMChatListPageRoute);
+      RemoteNotification message =  event.notification;
+      if(message.body?.isNotEmpty ?? false){
+        DatabaseService().getTrip(message.body).then((value) => {
+          if(value != null){
+            navigationService.navigateTo(ExploreRoute,arguments: value)
+          } else{
+            navigationService.navigateTo(DMChatListPageRoute)
+          }
+        });
+      } else{
+        navigationService.navigateTo(DMChatListPageRoute);
+      }
     });
   }
 
@@ -60,8 +71,9 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     TabBarView(
       children: [
         CurrentTrips(),
-        PrivateTrips(),
         PastTrips(),
+        PrivateTrips(),
+
       ],
     ),
     AllTrips(),
@@ -101,8 +113,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                             isScrollable: true,
                             tabs: [
                               const Tab(text: 'Current',),
-                              const Tab(text: 'Private',),
                               const Tab(text: 'Past',),
+                              const Tab(text: 'Private',),
                             ],
                           ),
                         ),

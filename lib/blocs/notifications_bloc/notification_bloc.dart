@@ -28,9 +28,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    notificationRepository.dispose();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }

@@ -29,9 +29,8 @@ class TransportationBloc extends Bloc<TransportationEvent, TransportationState> 
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    transportationRepository.dispose();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }
