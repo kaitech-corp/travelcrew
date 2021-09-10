@@ -40,7 +40,7 @@ class TransportationCard extends StatelessWidget {
               ),
               // Container(height: 2,color: Colors.black,padding: const EdgeInsets.only(left: 16,right: 16),),
               Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding: const EdgeInsets.only(left: 16.0,top: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

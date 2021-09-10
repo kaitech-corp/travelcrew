@@ -162,3 +162,37 @@ class ChatTextStyle {
     return TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, fontSize: 14, color: Colors.black);
   }
 }
+
+
+class TransportationIcon extends StatelessWidget{
+  final String mode;
+
+  TransportationIcon(this.mode);
+
+  @override
+  Widget build(BuildContext context) {
+    switch (mode) {
+      case 'Driving':
+        return Icon(Icons.drive_eta);
+      break;
+      case 'Carpooling':
+        return Icon(Icons.directions_car_rounded);
+        break;
+      case 'Bike/Scooter':
+        return Icon(Icons.directions_bike);
+        break;
+      case 'Train':
+        return Icon(Icons.directions_railway_sharp);
+        break;
+      case 'Uber/Lift':
+        return Icon(Icons.directions_car_outlined);
+        break;
+      case 'Bus':
+        return Icon(Icons.directions_bus_rounded);
+      break;
+      default:
+        return Icon(Icons.local_airport);
+        break;
+    }
+  }
+}
