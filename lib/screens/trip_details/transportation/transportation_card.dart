@@ -38,8 +38,9 @@ class TransportationCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,),
                 trailing: menuButton(context),
               ),
+              // Container(height: 2,color: Colors.black,padding: const EdgeInsets.only(left: 16,right: 16),),
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

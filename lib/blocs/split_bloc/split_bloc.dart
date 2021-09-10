@@ -28,9 +28,9 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    splitRepository.dispose();
+  Future<void> close() async {
+    await _subscription?.cancel();
+    // splitRepository.dispose();
     return super.close();
   }
 }

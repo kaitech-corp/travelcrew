@@ -177,6 +177,26 @@ class TCFunctions {
 
   String dateToMonthDayFromTimestamp(Timestamp timestamp){
     var dateTime = formatTimestamp(timestamp, wTime: false);
+    // print(dateTime);
+    return dateTime.split(',')[0];
+  }
+  String chatViewGroupByDateTime(Timestamp timestamp){
+    var dateTime = formatTimestamp(timestamp, wTime: true);
+    // print(dateTime);
+    return dateTime;
+  }
+
+  String chatViewGroupByDateTimeOnlyTime(Timestamp timestamp){
+    var dateTime = formatTimestampTimeOnly(timestamp);
+    // print(dateTime);
+    return dateTime;
+  }
+
+
+
+  String dateToYearMonthFromTimestamp(Timestamp timestamp){
+    var dateTime = formatTimestampYM(timestamp, wTime: false);
+    // print(dateTime);
     return dateTime.split(',')[0];
   }
 
@@ -260,6 +280,30 @@ class TCFunctions {
     try {
       var format = new DateFormat('yMMMd');
       var format2 = new DateFormat('yMMMd').add_jm();
+      var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      return (wTime) ? format2.format(date) : format.format(date);
+    } catch (e) {
+      CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
+      return '';
+    }
+  }
+
+  String formatTimestampTimeOnly (Timestamp timestamp){
+    try {
+      var format = new DateFormat.jm();
+
+      var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      return format.format(date);
+    } catch (e) {
+      CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
+      return '';
+    }
+  }
+
+  String formatTimestampYM (Timestamp timestamp, {bool wTime}){
+    try {
+      var format = new DateFormat('yMMM');
+      var format2 = new DateFormat('yMMM').add_jm();
       var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return (wTime) ? format2.format(date) : format.format(date);
     } catch (e) {

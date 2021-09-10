@@ -24,7 +24,6 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/size_config/size_config.dart';
-
 import 'explore_owner_layout.dart';
 
 
@@ -33,8 +32,8 @@ class Explore extends StatelessWidget {
   final Trip trip;
   Explore({this.trip,});
 
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  PersistentBottomSheetController controller;
+  static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  static PersistentBottomSheetController controller;
 
 
   @override
