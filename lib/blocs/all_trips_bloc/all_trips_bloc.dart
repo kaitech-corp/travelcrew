@@ -2,12 +2,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/repositories/trip_repository.dart';
+import 'package:travelcrew/repositories/trip_repositories/all_trip_repository.dart';
 import 'all_trip_event.dart';
 import 'all_trip_state.dart';
 
 class AllTripBloc extends Bloc<TripEvent, TripState> {
-  final TripRepository tripRepository;
+  final AllTripRepository tripRepository;
   StreamSubscription _subscription;
 
 
@@ -21,7 +21,7 @@ class AllTripBloc extends Bloc<TripEvent, TripState> {
       if(_subscription != null){
         await _subscription?.cancel();
       }
-      _subscription = tripRepository.tripsAll().asBroadcastStream().listen((trip) { add(HasDataEvent(trip)); });
+      _subscription = tripRepository.trips().asBroadcastStream().listen((trip) { add(HasDataEvent(trip)); });
     }
     else if(event is HasDataEvent){
       yield TripHasDataState(event.data);

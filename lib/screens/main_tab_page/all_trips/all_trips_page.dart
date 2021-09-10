@@ -24,24 +24,22 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 import 'ad_card.dart';
 
-class AllTrips extends StatefulWidget{
-
-
+class AllTrips extends StatefulWidget {
   @override
   _AllTripsState createState() => _AllTripsState();
 }
+
 final AnalyticsService _analyticsService = AnalyticsService();
 
-class _AllTripsState extends State<AllTrips> with SingleTickerProviderStateMixin<AllTrips>{
-
+class _AllTripsState extends State<AllTrips>
+    with SingleTickerProviderStateMixin<AllTrips> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
         height: SizeConfig.screenHeight,
-        margin: EdgeInsets.only(left:8.0, right: 8.0),
+        margin: EdgeInsets.only(left: 8.0, right: 8.0),
         child: Column(
           children: [
             Row(
@@ -51,18 +49,28 @@ class _AllTripsState extends State<AllTrips> with SingleTickerProviderStateMixin
                   text: TextSpan(
                       style: Theme.of(context).textTheme.headline3,
                       children: [
-                        TextSpan(text: "What's",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent, fontSize: 28)),
-                        TextSpan(text: " New",style: Theme.of(context).textTheme.headline6,),
-                      ]
-                  ),
+                        TextSpan(
+                            text: "What's",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.greenAccent,
+                                fontSize: 28)),
+                        TextSpan(
+                          text: " New",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ]),
                 ),
                 Row(
                   children: [
                     Container(
-                        height: SizeConfig.screenWidth*.025,
-                        width: SizeConfig.screenWidth*.025,
+                        height: SizeConfig.screenWidth * .025,
+                        width: SizeConfig.screenWidth * .025,
                         child: Image.asset(starImage)),
-                    Text('Suggestion',style: Theme.of(context).textTheme.subtitle1,)
+                    Text(
+                      'Suggestion',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    )
                   ],
                 )
               ],
@@ -75,9 +83,7 @@ class _AllTripsState extends State<AllTrips> with SingleTickerProviderStateMixin
   }
 }
 
-
 class SliverGridList extends StatefulWidget {
-
   // var tripPopUp;
 
   // bool _showCard = false;
@@ -87,8 +93,8 @@ class SliverGridList extends StatefulWidget {
 }
 
 class _SliverGridListState extends State<SliverGridList> {
-
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  var currentUserProfile =
+      locator<UserProfileService>().currentUserProfileDirect();
 
   AllTripBloc allTripBloc;
   TripAdBloc tripAdBloc;
@@ -105,109 +111,112 @@ class _SliverGridListState extends State<SliverGridList> {
     tripAdBloc.add(LoadingTripAdData());
   }
 
-  @override
-  void dispose() {
-    // allTripBloc.close();
-    // tripAdBloc.close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // allTripBloc.close();
+  //   // tripAdBloc.close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    if(SizeConfig.tablet){
+    if (SizeConfig.tablet) {
       setState(() {
         crossAxisCount = 4;
         count = 2;
       });
     }
 
-
     return BlocBuilder<AllTripBloc, TripState>(
-      builder: (context, state){
-        if(state is TripLoadingState){
-          return Loading();
-        } else if (state is TripHasDataState){
+      builder: (context, state) {
+        if (state is TripLoadingState) {
+          return Expanded(child: Loading());
+        } else if (state is TripHasDataState) {
           List<Trip> tripList = state.data;
-          return BlocBuilder<TripAdBloc,TripAdState>(
+          return BlocBuilder<TripAdBloc, TripAdState>(
               builder: (context, state) {
-                if (state is TripAdLoadingState) {
-                  List<dynamic> combinedList = [];
-                  combinedList.addAll(tripList);
-                  return Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverStaggeredGrid.countBuilder(
-                            crossAxisCount: crossAxisCount,
-                            mainAxisSpacing: 1,
-                            crossAxisSpacing: 1,
-                            itemCount: combinedList.length,
-                            itemBuilder: (context, index) {
-                              return combinedList[index] is Trip ?
-                              (combinedList[index].urlToImage.isEmpty ?
-                              cardWithoutImage(context, combinedList[index]) :
-                              cardWithImage(context, combinedList[index]))
-                                  : AdCard(tripAds: combinedList[index]);
-                            },
-                            staggeredTileBuilder: (index) {
-                              if (combinedList[index] is Trip) {
-                                if (combinedList[index].urlToImage.isNotEmpty) {
-                                  return StaggeredTile.count(count, count.toDouble());
-                                } else {
-                                  return StaggeredTile.count(count, 1);
-                                }
-                              } else {
-                                return StaggeredTile.count(count, count.toDouble());
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (state is TripAdHasDataState) {
-                  List<TripAds> adList = state.data;
-                  List<dynamic> combinedList = [];
-                  combinedList.addAll(tripList);
-                  combinedList.addAll(adList);
-                  return Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverStaggeredGrid.countBuilder(
-                            crossAxisCount: crossAxisCount,
-                            mainAxisSpacing: 1,
-                            crossAxisSpacing: 1,
-                            itemCount: combinedList.length,
-                            itemBuilder: (context, index) {
-                              return combinedList[index] is Trip ?
-                              (combinedList[index].urlToImage.isEmpty ?
-                              cardWithoutImage(context, combinedList[index]) :
-                              cardWithImage(context, combinedList[index]))
-                                  : AdCard(tripAds: combinedList[index]);
-                            },
-                            staggeredTileBuilder: (index) {
-                              if (combinedList[index] is Trip) {
-                                if (combinedList[index].urlToImage.isNotEmpty) {
-                                  return StaggeredTile.count(count, count.toDouble());
-                                } else {
-                                  return StaggeredTile.count(count, 1);
-                                }
-                              } else {
-                                return StaggeredTile.count(count, count.toDouble());
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }else {
-                  return Container();
-                }
-              });
+            if (state is TripAdLoadingState) {
+              List<dynamic> combinedList = [];
+              combinedList.addAll(tripList);
+              return Expanded(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverStaggeredGrid.countBuilder(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 1,
+                        crossAxisSpacing: 1,
+                        itemCount: combinedList.length,
+                        itemBuilder: (context, index) {
+                          return combinedList[index] is Trip
+                              ? (combinedList[index].urlToImage.isEmpty
+                                  ? cardWithoutImage(
+                                      context, combinedList[index])
+                                  : cardWithImage(context, combinedList[index]))
+                              : AdCard(tripAds: combinedList[index]);
+                        },
+                        staggeredTileBuilder: (index) {
+                          if (combinedList[index] is Trip) {
+                            if (combinedList[index].urlToImage.isNotEmpty) {
+                              return StaggeredTile.count(
+                                  count, count.toDouble());
+                            } else {
+                              return StaggeredTile.count(count, 1);
+                            }
+                          } else {
+                            return StaggeredTile.count(count, count.toDouble());
+                          }
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else if (state is TripAdHasDataState) {
+              List<TripAds> adList = state.data;
+              List<dynamic> combinedList = [];
+              combinedList.addAll(tripList);
+              combinedList.addAll(adList);
+              return Expanded(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverStaggeredGrid.countBuilder(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 1,
+                        crossAxisSpacing: 1,
+                        itemCount: combinedList.length,
+                        itemBuilder: (context, index) {
+                          return combinedList[index] is Trip
+                              ? (combinedList[index].urlToImage.isEmpty
+                                  ? cardWithoutImage(
+                                      context, combinedList[index])
+                                  : cardWithImage(context, combinedList[index]))
+                              : AdCard(tripAds: combinedList[index]);
+                        },
+                        staggeredTileBuilder: (index) {
+                          if (combinedList[index] is Trip) {
+                            if (combinedList[index].urlToImage.isNotEmpty) {
+                              return StaggeredTile.count(
+                                  count, count.toDouble());
+                            } else {
+                              return StaggeredTile.count(count, 1);
+                            }
+                          } else {
+                            return StaggeredTile.count(count, count.toDouble());
+                          }
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
+          });
         } else {
           return Container();
         }
@@ -215,45 +224,53 @@ class _SliverGridListState extends State<SliverGridList> {
     );
   }
 
-
   Widget cardWithImage(BuildContext context, Trip trip) {
-
-
-    favorite(String uid, Trip trip){
-      if (trip.favorite.contains(uid)){
-        return Icon(Icons.favorite, color: Colors.white,);
+    favorite(String uid, Trip trip) {
+      if (trip.favorite.contains(uid)) {
+        return Icon(
+          Icons.favorite,
+          color: Colors.white,
+        );
       } else {
-        return Icon(Icons.favorite_border, color: Colors.white,);
+        return Icon(
+          Icons.favorite_border,
+          color: Colors.white,
+        );
       }
     }
+
     return InkWell(
       key: Key(trip.documentId),
       splashColor: Colors.blue.withAlpha(30),
-
       child: GestureDetector(
         onTap: () {
           _analyticsService.viewedTrip();
-          navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
+          navigationService.navigateTo(ExploreBasicRoute, arguments: trip);
         },
         child: Hero(
           tag: trip.urlToImage,
           transitionOnUserGestures: true,
-          child: Container (
-            margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
+          child: Container(
+            margin:
+                const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(trip.urlToImage,),
+                image: NetworkImage(
+                  trip.urlToImage,
+                ),
                 fit: BoxFit.fill,
               ),
               color: Color(0xAA91AFD0), //
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40)),
             ),
             child: Align(
               alignment: Alignment.bottomRight,
               child: TextButton(
                 child: favorite(userService.currentUserID, trip),
                 onPressed: () {
-                  if (trip.favorite.contains(userService.currentUserID)){
+                  if (trip.favorite.contains(userService.currentUserID)) {
                     CloudFunction().removeFavoriteFromTrip(trip.documentId);
                   } else {
                     CloudFunction().addFavoriteTrip(trip.documentId);
@@ -267,33 +284,34 @@ class _SliverGridListState extends State<SliverGridList> {
     );
   }
 }
+
 Widget cardWithoutImage(BuildContext context, Trip trip) {
-
-  favorite(String uid, Trip trip){
-    if (trip.favorite.contains(uid)){
-
-      return Icon(Icons.favorite, color: Colors.white,);
+  favorite(String uid, Trip trip) {
+    if (trip.favorite.contains(uid)) {
+      return Icon(
+        Icons.favorite,
+        color: Colors.white,
+      );
     } else {
-      return Icon(Icons.favorite_border, color: Colors.white,);
+      return Icon(
+        Icons.favorite_border,
+        color: Colors.white,
+      );
     }
   }
 
   return InkWell(
     key: Key(trip.documentId),
     splashColor: Colors.blue.withAlpha(30),
-
-    child: Container (
-      margin: const EdgeInsets.only(left: 15,right: 15, bottom: 15, top: 10),
-      decoration:BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+    child: Container(
+      margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 10),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.blue.shade50,
-              Colors.lightBlueAccent.shade200
-            ]
-        ),
+            colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
       ),
       child: Stack(
         // crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,13 +321,25 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
             child: Tooltip(
               message: '${trip.tripName}',
               child: ListTile(
-                contentPadding: const EdgeInsets.only(left: 15,right: 5),
-                title: Text((trip.tripName),style: TextStyle(fontFamily:'RockSalt', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis,textScaleFactor: (SizeConfig.tablet) ? 2:1,),
-                subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1, maxLines: 1, overflow: TextOverflow.ellipsis,textScaleFactor: (SizeConfig.tablet) ? 2:1,),
+                contentPadding: const EdgeInsets.only(left: 15, right: 5),
+                title: Text(
+                  (trip.tripName),
+                  style: TextStyle(fontFamily: 'RockSalt', color: Colors.black),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
+                ),
+                subtitle: Text(
+                  '${trip.displayName}',
+                  style: Theme.of(context).textTheme.subtitle1,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
+                ),
                 trailing: TextButton(
                   child: favorite(userService.currentUserID, trip),
                   onPressed: () {
-                    if (trip.favorite.contains(userService.currentUserID)){
+                    if (trip.favorite.contains(userService.currentUserID)) {
                       CloudFunction().removeFavoriteFromTrip(trip.documentId);
                     } else {
                       CloudFunction().addFavoriteTrip(trip.documentId);
@@ -318,7 +348,8 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                 ),
                 onTap: () {
                   _analyticsService.viewedTrip();
-                  navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
+                  navigationService.navigateTo(ExploreBasicRoute,
+                      arguments: trip);
                 },
               ),
             ),
@@ -326,8 +357,12 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
           Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 15,right: 5),
-              child: Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,textScaleFactor: (SizeConfig.tablet) ? 2:1,),
+              padding: const EdgeInsets.only(left: 15, right: 5),
+              child: Text(
+                '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',
+                style: Theme.of(context).textTheme.subtitle2,
+                textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
+              ),
             ),
           ),
         ],
@@ -335,4 +370,3 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
     ),
   );
 }
-

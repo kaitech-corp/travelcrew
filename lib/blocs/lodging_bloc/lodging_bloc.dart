@@ -29,9 +29,8 @@ class LodgingBloc extends Bloc<LodgingEvent, LodgingState> {
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    lodgingRepository.dispose();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }

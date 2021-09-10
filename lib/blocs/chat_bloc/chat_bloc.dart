@@ -29,9 +29,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    chatRepository.dispose();
-    return super.close();
+  Future<void> close() async {
+    await _subscription?.cancel();
+    // chatRepository.dispose();
+    super.close();
   }
 }

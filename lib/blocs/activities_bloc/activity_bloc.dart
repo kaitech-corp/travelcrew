@@ -29,9 +29,8 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
     }
   }
   @override
-  Future<Function> close(){
-    _subscription?.cancel();
-    activityRepository.dispose();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }

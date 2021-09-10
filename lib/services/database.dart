@@ -72,7 +72,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version3_0_3').get();
+      var ref = await versionCollection.doc('version3_0_4').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -1356,6 +1356,7 @@ class DatabaseService {
             'message': message,
             'status': status,
             'timestamp': FieldValue.serverTimestamp(),
+            'tripDocID':tripDocID,
             'uid': uid,
           });
     } catch (e) {
