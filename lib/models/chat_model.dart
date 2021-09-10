@@ -7,6 +7,7 @@ class ChatData {
   final Timestamp _timestamp;
   final String _uid;
   final String _chatID;
+  final String _tripDocID;
 
 
 
@@ -15,7 +16,8 @@ class ChatData {
         _displayName = data['displayName'] ?? '',
         _fieldID = data['fieldID'] ?? '',
         _message = data['message'] ?? '',
-        _timestamp = data['timestamp'] ?? null,
+        _timestamp = data['timestamp'] ?? Timestamp.now(),
+        _tripDocID = data['tripDocID'] ?? '',
         _uid = data['uid'];
 
   Map<String, dynamic> toJson() {
@@ -25,6 +27,7 @@ class ChatData {
       'fieldID': _fieldID,
       'message': _message,
       'timestamp': _timestamp,
+      'tripDocID': _tripDocID,
       'uid': _uid,
     };
   }
