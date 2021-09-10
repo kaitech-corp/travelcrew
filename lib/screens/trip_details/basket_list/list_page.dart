@@ -20,7 +20,7 @@ class BasketListPage extends StatelessWidget{
 
 
 
-  bool pressed = false;
+  static bool pressed = false;
 
   void _onVerticalGesture(DragUpdateDetails details) {
     if (details.primaryDelta < -0.7) {
