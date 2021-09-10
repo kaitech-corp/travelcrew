@@ -72,6 +72,7 @@ dependencies:
   syncfusion_flutter_gauges: ^19.1.59
   url_launcher: ^6.0.3
   webview_flutter: ^2.0.4
+  faker: ^2.0.0
 
 
 

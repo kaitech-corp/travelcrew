@@ -49,7 +49,7 @@ class ProfileWidget extends StatelessWidget {
                           width: profileSize,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth/1.8,
-                          backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
+                          backgroundImage: user.urlToImage?.isNotEmpty ?? false ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
                         ),
                       ),
                     ),
