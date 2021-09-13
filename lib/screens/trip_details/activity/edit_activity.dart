@@ -36,6 +36,7 @@ class _EditActivityState extends State<EditActivity> {
   final ValueNotifier<String> startTime = ValueNotifier('');
   final ValueNotifier<String> endTime = ValueNotifier('');
   final ValueNotifier<Timestamp> startDateTimestamp =ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp =ValueNotifier(Timestamp.now());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -51,7 +52,8 @@ class _EditActivityState extends State<EditActivity> {
   void initState() {
     documentID = widget.trip.documentId;
     fieldID = widget.activity.fieldID;
-    startDateTimestamp.value = widget.activity?.dateTimestamp ?? widget.trip.startDateTimeStamp;
+    startDateTimestamp.value = widget.activity?.startDateTimestamp ?? widget.trip.startDateTimeStamp;
+    endDateTimestamp.value = widget.activity?.endDateTimestamp ?? widget.trip.startDateTimeStamp;
     controllerComment.text = widget.activity.comment;
     controllerLink.text = widget.activity.link;
     controllerLocation.text = widget.activity.location;
@@ -70,6 +72,8 @@ class _EditActivityState extends State<EditActivity> {
     controllerType.dispose();
     endTime.dispose();
     startTime.dispose();
+    startDateTimestamp.dispose();
+    endDateTimestamp.dispose();
     super.dispose();
   }
 
@@ -172,7 +176,10 @@ class _EditActivityState extends State<EditActivity> {
                       const Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       ),
-                      calendarVisible ? CalendarWidget(startDateTimeStamp: startDateTimestamp,showBoth: false,):
+                      calendarVisible ? CalendarWidget(
+                        startDateTimeStamp: startDateTimestamp,
+                        endDateTimeStamp:endDateTimestamp,
+                        showBoth: true,):
                       ElevatedButton(
                         child:  Text(
                           'Edit Date', style: Theme.of(context).textTheme.subtitle1,
@@ -219,7 +226,8 @@ class _EditActivityState extends State<EditActivity> {
                   activityType: controllerType.text,
                   fieldID: fieldID,
                   location: controllerLocation.text,
-                  dateTimestamp: startDateTimestamp.value,
+                  startDateTimestamp: (startDateTimestamp.value == null) ? widget.trip.startDateTimeStamp : startDateTimestamp.value,
+                  endDateTimestamp: (endDateTimestamp.value == null) ? widget.trip.startDateTimeStamp : endDateTimestamp.value,
                   startTime: startTime.value,
                   endTime: endTime.value,
                 );

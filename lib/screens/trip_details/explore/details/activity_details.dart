@@ -87,10 +87,11 @@ class ActivityDataLayout extends StatelessWidget {
                       trailing: ActivityMenuButton(activity: activity,trip: trip,event: event),
                     ),
                     Divider(color: Colors.black,thickness: 2,),
-                    activity.dateTimestamp != null ?? false ? ListTile(
+                    activity.startDateTimestamp != null ?? false ? ListTile(
                       leading: TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
                       title: Text(
-                        '${TCFunctions().formatTimestamp(activity.dateTimestamp,wTime: false)}',
+                        "${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp)} - "
+                            "${TCFunctions().formatTimestamp(activity.endDateTimestamp,wTime: false)}",
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       onTap: (){
@@ -133,7 +134,7 @@ class ActivityDataLayout extends StatelessWidget {
                           message:activity.comment,
                           child: Text(activity.comment,
                             style: Theme.of(context).textTheme.subtitle1,
-                            maxLines: 10,
+                            maxLines: 7,
                             overflow: TextOverflow.ellipsis,)
                       ),
                     ):
@@ -151,14 +152,16 @@ class ActivityDataLayout extends StatelessWidget {
                 ),
               ),
               activity.link?.isNotEmpty ?? false ?
-              Container(
-                padding: EdgeInsets.all(SizeConfig.defaultPadding),
-                width: double.infinity,
-                child: InkWell(
-                  child: FlutterLinkView(link: activity.link),
-                  onTap: (){
-                    TCFunctions().launchURL(activity.link);
-                  },),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(SizeConfig.defaultPadding),
+                  width: double.infinity,
+                  child: InkWell(
+                    child: FlutterLinkView(link: activity.link),
+                    onTap: (){
+                      TCFunctions().launchURL(activity.link);
+                    },),
+                ),
               ):
               Container(),
 
