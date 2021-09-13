@@ -36,6 +36,7 @@ class AddNewActivityState extends State<AddNewActivity> {
   final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
   final ValueNotifier<Timestamp> startDateTimestamp =ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp =ValueNotifier(Timestamp.now());
   final ValueNotifier<String> startTime = ValueNotifier('');
   final ValueNotifier<String> endTime = ValueNotifier('');
   final TextEditingController controller = TextEditingController();
@@ -174,7 +175,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                         child: Text('Schedule',style: Theme.of(context).textTheme.headline6,),
                       ),
                       Container(height: 2,color: Colors.black,),
-                      CalendarWidget(startDateTimeStamp: startDateTimestamp,showBoth: false,),
+                      CalendarWidget(startDateTimeStamp: startDateTimestamp,endDateTimeStamp:endDateTimestamp,showBoth: true,),
                       const Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       ),
@@ -216,7 +217,8 @@ class AddNewActivityState extends State<AddNewActivity> {
                     ActivityData(
                         activityType: activityType,
                         comment: comment.trim(),
-                        dateTimestamp: (startDateTimestamp.value == null) ? null : startDateTimestamp.value,
+                        startDateTimestamp: (startDateTimestamp.value == null) ? widget.trip.startDateTimeStamp : startDateTimestamp.value,
+                        endDateTimestamp: (endDateTimestamp.value == null) ? widget.trip.startDateTimeStamp : endDateTimestamp.value,
                         displayName: currentUserProfile.displayName,
                         endTime: endTime.value,
                         fieldID: '',
