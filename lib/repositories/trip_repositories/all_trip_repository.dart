@@ -25,6 +25,9 @@ class AllTripRepository {
           Map<String, dynamic> data = doc.data();
           return Trip.fromData(data);
         }).toList();
+        // trips.where((trip) => {
+        //   trip.
+        // })
         trips.sort(
             (a, b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
         trips = trips
