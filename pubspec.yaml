@@ -28,6 +28,7 @@ dependencies:
   equatable: ^2.0.3
   eva_icons_flutter: ^3.0.0
   expandable: ^5.0.1
+  faker: ^2.0.0
   firebase_analytics: ^8.0.3
   firebase_auth: ^1.1.1
   firebase_core: ^1.1.0
@@ -72,16 +73,6 @@ dependencies:
   syncfusion_flutter_gauges: ^19.1.59
   url_launcher: ^6.0.3
   webview_flutter: ^2.0.4
-  faker: ^2.0.0
-
-
-
-
-
-
-
-
-
 
 dev_dependencies:
   flutter_test:
