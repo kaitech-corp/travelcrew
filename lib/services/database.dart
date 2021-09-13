@@ -72,7 +72,7 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       //TODO change version doc for new releases
-      var ref = await versionCollection.doc('version3_0_6').get();
+      var ref = await versionCollection.doc('version3_0_5').get();
       Map<String, dynamic> data = ref.data();
 
 
@@ -1059,6 +1059,8 @@ class DatabaseService {
       String fieldID,
       String location,
       Timestamp dateTimestamp,
+      Timestamp endDateTimestamp,
+      Timestamp startDateTimestamp,
       String startTime,
       String endTime}) async {
 
@@ -1076,7 +1078,8 @@ class DatabaseService {
         'startTime': startTime,
         'endTime': endTime,
         'location': location,
-        'dateTimestamp': dateTimestamp,
+        'endDateTimestamp': endDateTimestamp,
+        'startDateTimestamp': startDateTimestamp,
 
       });
     } catch (e) {
@@ -1686,3 +1689,12 @@ class DatabaseService {
 }
 
 
+// activityList.forEach((activity) {
+// // if(activity.fieldID == '1SsDjx3cWY7Zv2R1zPqC'){
+// if(activity.startDateTimestamp == null && activity.endDateTimestamp == null) {
+// //   activitiesCollection.doc(tripDocID).collection('activity').doc(activity.fieldID).update({
+// //     'endDateTimestamp': FieldValue.serverTimestamp(),
+// //     'startDateTimestamp': FieldValue.serverTimestamp(),
+// //   });
+// }
+// });
