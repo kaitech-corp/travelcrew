@@ -41,7 +41,7 @@ class _NotificationPageState extends State<NotificationPage> {
               List<NotificationData> notifications = state.data;
               return Container (
                 child: ListView.builder(
-                    padding: EdgeInsets.all(0.0),
+                    padding: const EdgeInsets.all(0.0),
                     itemCount: notifications != null ? notifications.length : 0,
                     itemBuilder: (context, index){
                       var item = notifications[index];
