@@ -40,7 +40,7 @@ class ActivityCard extends StatelessWidget {
                   // crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     ListTile(
-                      visualDensity: VisualDensity(horizontal: 0,vertical: -4),
+                      visualDensity: const VisualDensity(horizontal: 0,vertical: -4),
                       title: Text('${activity.activityType}',
                         style: SizeConfig.tablet ?
                         Theme.of(context).textTheme.headline4 :
@@ -66,7 +66,7 @@ class ActivityCard extends StatelessWidget {
                                 itemDescription: activity.comment,
                                 itemType: "Activity"), trip: trip),
                         IconButton(
-                            visualDensity: VisualDensity(horizontal: 0,vertical: -4),
+                            visualDensity: const VisualDensity(horizontal: 0,vertical: -4),
                             icon: favorite(userService.currentUserID),
                             onPressed: () {
                               String fieldID = activity.fieldID;

@@ -1,5 +1,4 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/admin/admin_page.dart';
@@ -36,7 +35,7 @@ import 'package:travelcrew/screens/trip_details/activity/edit_activity.dart';
 import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
 import 'package:travelcrew/screens/trip_details/basket_list/list_page.dart';
 import 'package:travelcrew/screens/trip_details/chat/chat_page.dart';
-import 'package:travelcrew/screens/trip_details/explore/details/detail_page.dart';
+import 'package:travelcrew/screens/trip_details/details/detail_page.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic.dart';
 import 'package:travelcrew/screens/trip_details/explore/followers/user_following_list_page.dart';

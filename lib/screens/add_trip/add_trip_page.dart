@@ -59,7 +59,6 @@ class _AddTripPageState extends State<AddTripPage> {
     startDateTimestamp.dispose();
     endDate.dispose();
     endDateTimestamp.dispose();
-    // myController.dispose();
     super.dispose();
   }
 

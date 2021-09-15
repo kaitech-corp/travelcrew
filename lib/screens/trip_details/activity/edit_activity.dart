@@ -80,10 +80,6 @@ class _EditActivityState extends State<EditActivity> {
 
   @override
   Widget build(BuildContext context) {
-    print('Start Here');
-    print(documentID);
-    print(controllerLocation.text);
-    print(fieldID);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -93,7 +89,7 @@ class _EditActivityState extends State<EditActivity> {
             title: Text('Edit Activity',style: Theme.of(context).textTheme.headline5,),
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Builder(
               builder: (context) => Form(
                 key: _formKey,

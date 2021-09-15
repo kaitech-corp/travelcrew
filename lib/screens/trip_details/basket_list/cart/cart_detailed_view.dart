@@ -5,17 +5,15 @@ import 'package:travelcrew/services/constants/constants.dart';
 
 import 'cart_detailed_view_card.dart';
 
-
 class CartDetailsView extends StatelessWidget {
-
-  const CartDetailsView({Key key, this.controller,this.tripDetails}) : super(key: key);
+  const CartDetailsView({Key key, this.controller, this.tripDetails})
+      : super(key: key);
 
   final BasketController controller;
   final Trip tripDetails;
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,7 +21,7 @@ class CartDetailsView extends StatelessWidget {
           Text("Recently Added:", style: Theme.of(context).textTheme.headline6),
           ...List.generate(
             controller.cart.length,
-                (index) => CartDetailsViewCard(item: controller.cart[index]),
+            (index) => CartDetailsViewCard(item: controller.cart[index]),
           ),
           SizedBox(height: defaultPadding),
         ],
