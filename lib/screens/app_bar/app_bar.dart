@@ -47,7 +47,7 @@ class CustomAppBar extends StatelessWidget {
             ],
           ),
           child: Padding(
-              padding: EdgeInsets.fromLTRB(8.0,0,8.0,0),
+              padding: const EdgeInsets.fromLTRB(8.0,0,8.0,0),
               child:
               Stack(
                 children: [
@@ -55,8 +55,8 @@ class CustomAppBar extends StatelessWidget {
                     top: 0,
                     child: AppBar(
                       toolbarHeight: SizerUtil.deviceType == DeviceType.tablet ? SizeConfig.screenHeight*.1 : SizeConfig.screenHeight*.075,
-                      shadowColor: Color(0x00000000),
-                      backgroundColor: Color(0x00000000),
+                      shadowColor: const Color(0x00000000),
+                      backgroundColor: const Color(0x00000000),
                       actions: <Widget>[
                         Center(
                           child: InkWell(

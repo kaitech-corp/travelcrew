@@ -32,14 +32,6 @@ class _PastTripsState extends State<PastTrips>{
     super.didChangeDependencies();
   }
 
-  // @override
-  // void dispose() {
-  //   bloc.close();
-  //   super.dispose();
-  // }
-
-
-
   @override
   Widget build(BuildContext context) {
 

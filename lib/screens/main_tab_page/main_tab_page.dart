@@ -140,10 +140,10 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             backgroundColor: ReusableThemeColor().bottomNavColor(context),
             color: ReusableThemeColor().color(context),
             items: [
-              IconThemeWidget(icon:Icons.group),
-              IconThemeWidget(icon:Icons.search),
-              IconThemeWidget(icon: Icons.add_outlined,),
-              IconThemeWidget(icon:Icons.favorite_border),
+              const IconThemeWidget(icon:Icons.group),
+              const IconThemeWidget(icon:Icons.search),
+              const IconThemeWidget(icon: Icons.add_outlined,),
+              const IconThemeWidget(icon:Icons.favorite_border),
               BadgeIcon(
                 icon: IconThemeWidget(icon:Icons.notifications_active),
                 badgeCount: widget.notifications != null ? widget.notifications.length : 0,

@@ -152,7 +152,7 @@ class BlockedPopupMenu extends StatelessWidget {
         PopupMenuItem(
           value: 'unblock',
           child: ListTile(
-            leading: IconThemeWidget(icon: Icons.block,),
+            leading: const IconThemeWidget(icon: Icons.block,),
             title: Text('Unblock',style: Theme.of(context).textTheme.subtitle2),
           ),
         ),
@@ -173,7 +173,7 @@ class UnblockedPopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       color: Colors.white,
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
       onSelected: (value){
         switch (value) {
           case "chat":
@@ -203,21 +203,21 @@ class UnblockedPopupMenu extends StatelessWidget {
         PopupMenuItem(
           value: 'chat',
           child: ListTile(
-            leading: IconThemeWidget(icon: Icons.message,),
+            leading: const IconThemeWidget(icon: Icons.message,),
             title: Text('Chat',style: Theme.of(context).textTheme.subtitle2),
           ),
         ),
         PopupMenuItem(
           value: 'block',
           child: ListTile(
-            leading: IconThemeWidget(icon: Icons.block,),
+            leading: const IconThemeWidget(icon: Icons.block,),
             title: Text('Block Account',style: Theme.of(context).textTheme.subtitle2),
           ),
         ),
         PopupMenuItem(
           value: 'report',
           child: ListTile(
-            leading: IconThemeWidget(icon: Icons.report,),
+            leading: const IconThemeWidget(icon: Icons.report,),
             title: Text('Report',style: Theme.of(context).textTheme.subtitle2),
           ),
         ),

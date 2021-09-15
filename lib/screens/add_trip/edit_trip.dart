@@ -236,18 +236,6 @@ class _EditTripDataState extends State<EditTripData> {
         onPressed: () {
           final form = _formKey.currentState;
           if (form.validate()) {
-            // if(!dateChangeVisible){
-            //   startDateTimeStamp = widget.tripDetails.startDateTimeStamp;
-            //   endDateTimeStamp = widget.tripDetails.endDateTimeStamp;
-            //   endDate = widget.tripDetails.endDate;
-            //   startDate = widget.tripDetails.startDate;
-            // } else
-            // {
-            //   startDate = DateFormat.yMMMd().format(_fromDateDepart);
-            //   startDateTimeStamp = Timestamp.fromDate(_fromDateDepart);
-            //   endDate = DateFormat.yMMMd().format(_fromDateReturn);
-            //   endDateTimeStamp = Timestamp.fromDate(_fromDateReturn);
-            // }
             if(locationChangeVisible){
               // location = myController.text;
               if(googleData2.value != null){
