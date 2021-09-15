@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                             colors: [Colors.white, Colors.white.withOpacity(0.4)],
                           ),
                         ),
-                        child: AutoSizeText("Travel Crew",
+                        child: const AutoSizeText("Travel Crew",
                           style: TextStyle(fontFamily:'RockSalt',
                               fontSize: 44,
                               color: Colors.blue),

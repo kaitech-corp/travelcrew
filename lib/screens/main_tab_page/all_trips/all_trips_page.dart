@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:like_button/like_button.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trip_event.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trip_state.dart';
 import 'package:travelcrew/blocs/all_trips_bloc/all_trips_bloc.dart';
@@ -229,12 +230,14 @@ class _SliverGridListState extends State<SliverGridList> {
       if (trip.favorite.contains(uid)) {
         return Icon(
           Icons.favorite,
-          color: Colors.white,
+          color: Colors.red,
+          size: 30,
         );
       } else {
         return Icon(
           Icons.favorite_border,
           color: Colors.white,
+          size: 30,
         );
       }
     }
@@ -265,23 +268,37 @@ class _SliverGridListState extends State<SliverGridList> {
                   topLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40)),
             ),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: TextButton(
-                child: favorite(userService.currentUserID, trip),
-                onPressed: () {
-                  if (trip.favorite.contains(userService.currentUserID)) {
-                    CloudFunction().removeFavoriteFromTrip(trip.documentId);
-                  } else {
-                    CloudFunction().addFavoriteTrip(trip.documentId);
-                  }
-                },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 4.0),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  child: favorite(userService.currentUserID, trip),
+                  onPressed: () {
+                    if (trip.favorite.contains(userService.currentUserID)) {
+                      CloudFunction().removeFavoriteFromTrip(trip.documentId);
+                    } else {
+                      CloudFunction().addFavoriteTrip(trip.documentId);
+                    }
+                  },
+                ),
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  bool onLikedButtonTapped(Trip trip, bool isLiked) {
+    if (trip.favorite.contains(userService.currentUserID)) {
+            CloudFunction().removeFavoriteFromTrip(trip.documentId);
+
+            return false;
+          } else {
+            CloudFunction().addFavoriteTrip(trip.documentId);
+            return true;
+          }
   }
 }
 
@@ -290,12 +307,14 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
     if (trip.favorite.contains(uid)) {
       return Icon(
         Icons.favorite,
-        color: Colors.white,
+        color: Colors.red,
+        size: 30,
       );
     } else {
       return Icon(
         Icons.favorite_border,
         color: Colors.white,
+        size: 30,
       );
     }
   }
@@ -324,7 +343,7 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                 contentPadding: const EdgeInsets.only(left: 15, right: 5),
                 title: Text(
                   (trip.tripName),
-                  style: TextStyle(fontFamily: 'RockSalt', color: Colors.black),
+                  style: const TextStyle(fontFamily: 'RockSalt', color: Colors.black),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textScaleFactor: (SizeConfig.tablet) ? 2 : 1,

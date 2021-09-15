@@ -168,7 +168,11 @@ class TCFunctions {
 
   String appReviewDocID() {
     DateTime now = DateTime.now();
-    return DateFormat('yM').format(now).replaceAll('/', 'x');
+    if(now.month < 6){
+      return DateFormat('y').format(now) + 'first';
+    } else{
+      return DateFormat('y').format(now) + 'second';
+    }
   }
 
   String dateToMonthDay(String dateTime){

@@ -101,7 +101,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                   Icon(Icons.error),
                 ],
               ),
-              backgroundColor: Color(0xffffae88),
+              backgroundColor: const Color(0xffffae88),
             ),
           );
         }
@@ -118,7 +118,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                   )
                 ],
               ),
-              backgroundColor: Color(0xffffae88),
+              backgroundColor: const Color(0xffffae88),
             ),
           );
         }
@@ -141,7 +141,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: const Icon(Icons.person),
                       labelText: "Display Name",
                     ),
                     keyboardType: TextInputType.name,
@@ -150,7 +150,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: const Icon(Icons.person),
                       labelText: "First Name",
                     ),
                     keyboardType: TextInputType.name,
@@ -159,7 +159,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: const Icon(Icons.person),
                       labelText: "Last Name",
                     ),
                     keyboardType: TextInputType.name,
@@ -198,7 +198,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                       children: <Widget>[
                         Text(agreement,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
                         TextButton(
-                          child:  Text('Terms of Service',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,fontSize: 18,)),
+                          child:  const Text('Terms of Service',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,fontSize: 18,)),
                           onPressed: (){
                             TCFunctions().launchURL(urlToTerms);
                           },
@@ -225,7 +225,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                         _onFormSubmittedEmpty();
                       }
                     },
-                    text: Text(
+                    text: const Text(
                       'Continue',
                       style: TextStyle(
                         color: Colors.white,

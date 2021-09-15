@@ -2,6 +2,7 @@ import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nil/nil.dart';
 import 'package:travelcrew/blocs/all_users_bloc/all_users_bloc.dart';
 import 'package:travelcrew/blocs/all_users_bloc/all_users_event.dart';
 import 'package:travelcrew/blocs/all_users_bloc/all_users_state.dart';
@@ -98,7 +99,7 @@ class _AllUserPageState extends State<AllUserPage> {
 
               );
             } else {
-              return Container();
+              return nil;
             }
           }),
     );
