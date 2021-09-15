@@ -89,7 +89,7 @@ class _LoginFormState extends State<LoginForm> {
                               TextFormField(
                                 controller: _emailController,
                                 decoration: InputDecoration(
-                                  icon: Icon(Icons.email),
+                                  icon: const Icon(Icons.email),
                                   labelText: "Email",
                                 ),
                                 keyboardType: TextInputType.emailAddress,
@@ -102,7 +102,7 @@ class _LoginFormState extends State<LoginForm> {
                               TextFormField(
                                 controller: _passwordController,
                                 decoration: InputDecoration(
-                                  icon: Icon(Icons.lock),
+                                  icon: const Icon(Icons.lock),
                                   labelText: "Password",
                                 ),
                                 obscureText: true,
@@ -123,13 +123,13 @@ class _LoginFormState extends State<LoginForm> {
                                     _onFormSubmitted();
                                   }
                                 },
-                                text: Text(
+                                text: const Text(
                                   'Login',
                                   style: TextStyle(
                                     color: Colors.white,
                                   ),
                                 ),
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.check,
                                   color: Colors.white,
                                 ),
@@ -143,13 +143,13 @@ class _LoginFormState extends State<LoginForm> {
                                 onPressed: () {
                                   navigationService.navigateTo(SignUpScreenRoute);
                                 },
-                                text: Text(
+                                text: const Text(
                                   'Register',
                                   style: TextStyle(
                                     color: Colors.white,
                                   ),
                                 ),
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.arrow_forward,
                                   color: Colors.white,
                                 ),
@@ -204,7 +204,7 @@ class _LoginFormState extends State<LoginForm> {
                             children: <Widget>[
                               Image(image: AssetImage(google_logo), height: 25.0),
                               Text(signInWithGoogle,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                 ),)
                             ],
@@ -241,8 +241,8 @@ class _LoginFormState extends State<LoginForm> {
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Login Failure'),
-                Icon(Icons.error),
+                const Text('Login Failure'),
+                const Icon(Icons.error),
               ],
             ),
             backgroundColor: Color(0xffffae88),
@@ -258,7 +258,7 @@ class _LoginFormState extends State<LoginForm> {
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Logging In...'),
+                const Text('Logging In...'),
                 CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
@@ -270,7 +270,6 @@ class _LoginFormState extends State<LoginForm> {
     }
 
     if (state.isSuccess) {
-      print('Successful');
       BlocProvider.of<AuthenticationBloc>(context).add(
         AuthenticationLoggedIn(),
       );

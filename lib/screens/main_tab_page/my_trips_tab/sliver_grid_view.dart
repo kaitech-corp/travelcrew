@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/image_layout/image_layout_trips.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -155,10 +156,10 @@ class TappableCrewTripGrid extends StatelessWidget {
               ),
             );
           } else {
-            return Container();
+            return nil;
           }
         } else {
-          return Container();
+          return nil;
         }
       },
       stream: DatabaseService(tripDocID: trip.documentId, uid: userService.currentUserID).chatListNotification,
@@ -181,7 +182,7 @@ class TappableCrewTripGrid extends StatelessWidget {
               ),
             );
         } else {
-          return Container();
+          return nil;
         }
       },
       stream: DatabaseService().getNeedList(trip.documentId),

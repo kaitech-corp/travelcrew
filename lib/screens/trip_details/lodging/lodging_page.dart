@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nil/nil.dart';
 import 'package:travelcrew/blocs/lodging_bloc/lodging_bloc.dart';
 import 'package:travelcrew/blocs/lodging_bloc/lodging_event.dart';
 import 'package:travelcrew/blocs/lodging_bloc/logding_state.dart';
@@ -54,7 +55,7 @@ class _LodgingPageState extends State<LodgingPage> {
                       }),
                 );
               } else {
-                return Container();
+                return nil;
               }
             }),
         floatingActionButton: FloatingActionButton(
