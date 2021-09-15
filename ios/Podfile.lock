@@ -371,7 +371,7 @@ CHECKOUT OPTIONS:
     :tag: 7.11.0
 
 SPEC CHECKSUMS:
-  add_2_calendar: c201b1c7dc0299280f1b1a8158aa80e15a8f8912
+  add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   cloud_firestore: 01f3fc4bb5c46b400a329320ea7f61a73817a657
   cloud_functions: 4fd0494a73f7f04056ff0d5014e4f4251c954697

@@ -22,7 +22,7 @@ class CompleteProfile extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Color(0xff6a515e),
         ),
       ),
@@ -54,7 +54,7 @@ class CompleteProfile extends StatelessWidget {
                         // colors: [canvasColor, Colors.blueAccent.shade100],
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Complete Profile',
                       style: TextStyle(
                         fontSize: 40,

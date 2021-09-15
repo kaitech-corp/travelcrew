@@ -41,7 +41,6 @@ class _ChatPageState extends State<ChatPage> {
     super.didChangeDependencies();
   }
 
-
   @override
   Widget build(BuildContext context) {
     clearChat(userService.currentUserID);
@@ -59,9 +58,10 @@ class _ChatPageState extends State<ChatPage> {
               return Column(
                 children: <Widget>[
                   Expanded(
-                    child:
-                    GroupedListChatView(data: state.data,documentId: widget.trip.documentId,)
-                  ),
+                      child: GroupedListChatView(
+                    data: state.data,
+                    documentId: widget.trip.documentId,
+                  )),
                   const Divider(
                     height: 1.0,
                   ),
@@ -139,5 +139,3 @@ class _ChatPageState extends State<ChatPage> {
     return status;
   }
 }
-
-

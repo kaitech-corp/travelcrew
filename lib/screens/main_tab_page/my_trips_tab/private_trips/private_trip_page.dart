@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nil/nil.dart';
 import 'package:provider/provider.dart';
 import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
 import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_state.dart';
@@ -34,13 +35,6 @@ class _PrivateTripsState extends State<PrivateTrips>{
     super.didChangeDependencies();
   }
 
-  // @override
-  // void dispose() {
-  //  bloc.close();
-  //   super.dispose();
-  // }
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -51,15 +45,10 @@ class _PrivateTripsState extends State<PrivateTrips>{
           } else if (state is TripHasDataState){
             return SizeConfig.tablet ?
             SliverGridView(trips: state.data, length: state.data.length):
-            Provider<List<Trip>>.value(
-                value: state.data,
-                updateShouldNotify: (oldData, newData) => oldData != newData,
-                child:
-                GroupedListTripView(data: state.data, isPast: true,)
-            )
+            GroupedListTripView(data: state.data, isPast: true,)
             ;
           } else {
-            return Container();
+            return nil;
           }
         });
   }

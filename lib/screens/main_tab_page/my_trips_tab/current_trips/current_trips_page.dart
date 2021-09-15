@@ -52,13 +52,6 @@ class _CurrentTripsState extends State<CurrentTrips>{
         return SizeConfig.tablet ?
         SliverGridView(trips: state.data, length: state.data.length):
         GroupedListTripView(data: state.data, isPast: false,);
-        // ListView.builder(
-        //   padding: EdgeInsets.all(0.0),
-        //   itemCount: state.data.length ?? 0,
-        //   itemBuilder: (context, index){
-        //     return CrewTripCard(trip: state.data[index]);
-        //   },
-        // );
         } else {
             return nil;
         }

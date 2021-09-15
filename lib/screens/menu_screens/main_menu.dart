@@ -48,8 +48,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   if (profile.hasData) {
                     UserPublicProfile currentUser = profile.data;
                     return Stack(
-                      // mainAxisAlignment: MainAxisAlignment.start,
-                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Align(
                             alignment: Alignment.topLeft,
@@ -85,7 +83,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             radius: SizerUtil.deviceType == DeviceType.tablet
                                 ? SizeConfig.screenWidth / 8.0
                                 : SizeConfig.screenWidth / 4.0,
-                            backgroundImage: AssetImage(profileImagePlaceholder),
+                            backgroundImage:
+                                AssetImage(profileImagePlaceholder),
                           ),
                         ),
                       ],
