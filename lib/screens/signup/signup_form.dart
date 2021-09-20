@@ -254,12 +254,12 @@ class _LoginFormState extends State<SignupForm> {
                     text: Text(
                       'Signup',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                     icon: Icon(
                       Icons.check,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(
