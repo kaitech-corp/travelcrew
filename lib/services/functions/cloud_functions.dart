@@ -14,6 +14,18 @@ class CloudFunction {
   final AnalyticsService _analyticsService = AnalyticsService();
 
 
+  Future<String> splitwiseAPI() async{
+    final HttpsCallable callable = FirebaseFunctions.instance
+        .httpsCallable(
+        'splitwise_api');
+    callable({
+      'name': 'Randy'
+    });
+    final name = await callable();
+    print(name.data);
+    return name.data;
+  }
+
   void addCustomMember() {
     final HttpsCallable addCustomMember = FirebaseFunctions.instance
         .httpsCallable(
