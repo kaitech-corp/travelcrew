@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import 'package:provider/provider.dart';
 import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
 import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_state.dart';
 import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_event.dart';
-import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/services/widgets/loading.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 import '../grouped_list_builder.dart';
