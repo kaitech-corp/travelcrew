@@ -113,47 +113,53 @@ class _LoginFormState extends State<LoginForm> {
                                 },
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 25,
                               ),
-                              GradientButton(
-                                width: 150,
-                                height: 45,
-                                onPressed: () {
-                                  if (isLoginWithEmailAndPasswordButtonEnabled(state)) {
-                                    _onFormSubmitted();
-                                  }
-                                },
-                                text: const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    color: Colors.white,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GradientButton(
+                                    width: 150,
+                                    height: 45,
+                                    onPressed: () {
+                                      if (isLoginWithEmailAndPasswordButtonEnabled(state)) {
+                                        _onFormSubmitted();
+                                      }
+                                    },
+                                    text: const Text(
+                                      'Login',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    icon: const Icon(
+                                      Icons.check,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                icon: const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                ),
+                                  GradientButton(
+                                    width: 150,
+                                    height: 45,
+                                    onPressed: () {
+                                      navigationService.navigateTo(SignUpScreenRoute);
+                                    },
+                                    text: const Text(
+                                      'Register',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    icon: const Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 height: 10,
                               ),
-                              GradientButton(
-                                width: 150,
-                                height: 45,
-                                onPressed: () {
-                                  navigationService.navigateTo(SignUpScreenRoute);
-                                },
-                                text: const Text(
-                                  'Register',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                icon: const Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                ),
-                              ),
+
                               SizedBox(
                                 height: 30,
                               )]);
@@ -161,12 +167,13 @@ class _LoginFormState extends State<LoginForm> {
                   BlocBuilder<AppleLoginBloc, AppleLoginState>(
                       builder: (context, state) {
                           if (UserRepository().appleSignInAvailable) {
-                            return OutlinedButton(
+                            return ElevatedButton(
                               onPressed: () {
                                 if (isAppleLoginButtonEnabled(state)) {
                                   _onPressedAppleSignIn();
                                 }
                               },
+                              style: ElevatedButtonTheme.of(context).style.copyWith(backgroundColor: MaterialStateProperty.all(canvasColor)),
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                                 child: Row(
@@ -190,12 +197,13 @@ class _LoginFormState extends State<LoginForm> {
                     BlocBuilder<GoogleLoginBloc, GoogleLoginState>(
                         builder: (context, state){
 
-                      return OutlinedButton(
+                      return ElevatedButton(
                         onPressed: () {
                           if (isGoogleLoginButtonEnabled(state)) {
                             _onPressedGoogleSignIn();
                           }
                         },
+                        style: ElevatedButtonTheme.of(context).style.copyWith(backgroundColor: MaterialStateProperty.all(canvasColor)),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                           child: Row(

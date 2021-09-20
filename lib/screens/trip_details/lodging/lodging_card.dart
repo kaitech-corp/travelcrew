@@ -10,6 +10,7 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/navigation/router.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'package:travelcrew/services/widgets/favorite_widget.dart';
 import 'package:travelcrew/services/widgets/global_card.dart';
 import 'package:travelcrew/services/widgets/link_previewer.dart';
 import 'package:travelcrew/size_config/size_config.dart';
@@ -63,7 +64,7 @@ class LodgingCard extends StatelessWidget {
                           ), trip: trip),
                       IconButton(
                           visualDensity: VisualDensity(horizontal: 0,vertical: -4),
-                          icon: favorite(userService.currentUserID),
+                          icon: FavoriteWidget(uid: userService.currentUserID,voters:lodging.voters ,),
                           onPressed: () {
                             String fieldID = lodging.fieldID;
                             String uid = userService.currentUserID;
@@ -81,12 +82,5 @@ class LodgingCard extends StatelessWidget {
             ),
           ),
         ));
-  }
-  favorite(String uid){
-    if (lodging.voters.contains(uid)){
-      return BadgeIcon(icon: const Icon(Icons.favorite,color: Colors.red,),badgeCount: lodging.voters.length,);
-    } else {
-      return const Icon(Icons.favorite_border,color: Colors.red);
-    }
   }
 }
