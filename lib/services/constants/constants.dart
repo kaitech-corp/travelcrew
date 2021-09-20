@@ -26,6 +26,7 @@ const signInWithGoogle = ' Sign in with Google';
 const signInWithApple = ' Sign in with Apple';
 double sizeFromHangingTheme = SizeConfig.screenHeight*.13;
 const urls = [];
+const splitWiseToken = 'splitWiseToken';
 
 const defaultDuration = Duration(seconds: 3);
 const listAnimationDuration = Duration(milliseconds: 500);

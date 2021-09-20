@@ -9,6 +9,7 @@ import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/analytics_service.dart';
+import 'package:travelcrew/services/apis/splitwise.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -243,6 +244,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               vertical: 16.0, horizontal: 16.0),
                           child: ElevatedButton(
                             onPressed: () {
+                              // splitWiseAPI();
                               final form = _formKey.currentState;
                               form.save();
                               if (form.validate()) {
