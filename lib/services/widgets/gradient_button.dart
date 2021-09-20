@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 
 class GradientButton extends StatelessWidget {
   final double width;
@@ -21,7 +22,8 @@ class GradientButton extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Colors.greenAccent, Color(0xff8f93ea)],
+          colors: [Colors.blueAccent, canvasColor,],
+          // colors: [Colors.greenAccent, Color(0xff8f93ea)],
         ),
       ),
       child: MaterialButton(
