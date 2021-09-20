@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/services/apis/splitwise.dart';
+import 'package:travelcrew/services/apis/splitwise/splitwise_alert.dart';
 import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -10,6 +14,17 @@ class Settings extends StatefulWidget{
 }
 
 class _SettingsState extends State<Settings> {
+
+  bool isSwitched = false;
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -32,6 +47,41 @@ class _SettingsState extends State<Settings> {
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
                 children: [
+                  Text('Linked Accounts',style: Theme.of(context).textTheme.headline6,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text('Splitwise:',style: Theme.of(context).textTheme.subtitle1,),
+                      Switch(value: isSwitched, onChanged: (value){
+                        setState(() {
+                          isSwitched = value;
+                          if (value == true) {
+                            // var name =  CloudFunction().splitwiseAPI();
+                            // splitWiseAPI();
+                            // _showDialog(context, name);
+                          }
+
+                        });
+                        },
+                        activeTrackColor: Colors.greenAccent,
+                        activeColor: Colors.green,
+                      )
+                    ],
+                  ),
+                  Container(height: 20,),
+                  // FutureBuilder(
+                  //   future: CloudFunction().splitwiseAPI(),
+                  //     builder: (context, response){
+                  //     if(response.hasData){
+                  //       return Text(response.data);
+                  //     } else {
+                  //       return Text("Nothing");
+                  //     }
+                  //     }),
+                  // Container(height: 20,),
+                  Container(
+                      height: 2,
+                      decoration: BoxDecoration(border: Border.all(color: Colors.black),)),
                   Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,)),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -114,4 +164,30 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
+  Future<void> _showDialog(BuildContext context, dynamic name) {
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Paste verifier token.',),
+            // content: Text('You will no longer have access to this Trip'),
+            actions: <Widget>[
+              TextFormField(
+                controller: myController,
+
+              ),
+              TextButton(
+                child:  Text('$name',),
+                onPressed: () {
+
+                  // print(myController.text);
+                  // splitWiseAPI(verifier: myController.text);
+                  // navigationService.pop();
+                },
+              ),
+            ],
+          );
+        });}
+
 }
