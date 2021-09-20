@@ -47,28 +47,28 @@ class _SettingsState extends State<Settings> {
               Padding(padding: EdgeInsets.only(top: 25)),
               Column(
                 children: [
-                  Text('Linked Accounts',style: Theme.of(context).textTheme.headline6,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text('Splitwise:',style: Theme.of(context).textTheme.subtitle1,),
-                      Switch(value: isSwitched, onChanged: (value){
-                        setState(() {
-                          isSwitched = value;
-                          if (value == true) {
-                            // var name =  CloudFunction().splitwiseAPI();
-                            // splitWiseAPI();
-                            // _showDialog(context, name);
-                          }
-
-                        });
-                        },
-                        activeTrackColor: Colors.greenAccent,
-                        activeColor: Colors.green,
-                      )
-                    ],
-                  ),
-                  Container(height: 20,),
+                  // Text('Linked Accounts',style: Theme.of(context).textTheme.headline6,),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //   children: [
+                  //     Text('Splitwise:',style: Theme.of(context).textTheme.subtitle1,),
+                  //     Switch(value: isSwitched, onChanged: (value){
+                  //       setState(() {
+                  //         isSwitched = value;
+                  //         if (value == true) {
+                  //           // var name =  CloudFunction().splitwiseAPI();
+                  //           // splitWiseAPI();
+                  //           // _showDialog(context, name);
+                  //         }
+                  //
+                  //       });
+                  //       },
+                  //       activeTrackColor: Colors.greenAccent,
+                  //       activeColor: Colors.green,
+                  //     )
+                  //   ],
+                  // ),
+                  // Container(height: 20,),
                   // FutureBuilder(
                   //   future: CloudFunction().splitwiseAPI(),
                   //     builder: (context, response){
@@ -79,9 +79,9 @@ class _SettingsState extends State<Settings> {
                   //     }
                   //     }),
                   // Container(height: 20,),
-                  Container(
-                      height: 2,
-                      decoration: BoxDecoration(border: Border.all(color: Colors.black),)),
+                  // Container(
+                  //     height: 2,
+                  //     decoration: BoxDecoration(border: Border.all(color: Colors.black),)),
                   Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,)),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
