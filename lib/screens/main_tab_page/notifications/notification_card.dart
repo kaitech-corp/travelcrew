@@ -55,20 +55,26 @@ class NotificationsCard extends StatelessWidget{
 // Join Request
   Widget notificationType2(BuildContext context) {
 
-    return Card(
-      color: Colors.white,
-      key: Key(notification.fieldID),
-      child: ListTile(
-        title: Text('${notification.message}'),
-        subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
-        trailing: IconButton(
-          icon: IconThemeWidget(icon:Icons.add_circle),
-          onPressed: () async{
-            String fieldID = notification.fieldID;
-            CloudFunction().joinTrip(notification.documentID, notification.ispublic,notification.uid);
-            CloudFunction().removeNotificationData(fieldID);
-            _showDialog(context);
-          },
+    return InkWell(
+      onTap: () async {
+        Trip trip = await DatabaseService().getTrip(notification.documentID);
+        navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
+      },
+      child: Card(
+        color: Colors.white,
+        key: Key(notification.fieldID),
+        child: ListTile(
+          title: Text('${notification.message}'),
+          subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
+          trailing: IconButton(
+            icon: IconThemeWidget(icon:Icons.add_circle),
+            onPressed: () async{
+              String fieldID = notification.fieldID;
+              CloudFunction().joinTrip(notification.documentID, notification.ispublic,notification.uid);
+              CloudFunction().removeNotificationData(fieldID);
+              _showDialog(context);
+            },
+          ),
         ),
       ),
     );
@@ -136,17 +142,19 @@ class NotificationsCard extends StatelessWidget{
   }
   // Chat Notification
   Widget notificationType6(BuildContext context){
-    return Card(
-      color: Colors.white,
-      key: Key(notification.fieldID),
-      child: ListTile(
-        onTap: () async {
-          Trip trip = await DatabaseService().getTrip(notification.documentID);
-          navigationService.navigateTo(ExploreRoute,arguments: trip);
+    return InkWell(
+      onTap: () async {
+        Trip trip = await DatabaseService().getTrip(notification.documentID);
+        navigationService.navigateTo(ExploreRoute,arguments: trip);
 
-        },
-        title: Text('${notification.message}'),
-        subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
+      },
+      child: Card(
+        color: Colors.white,
+        key: Key(notification.fieldID),
+        child: ListTile(
+          title: Text('${notification.message}'),
+          subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
+        ),
       ),
     );
   }
