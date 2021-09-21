@@ -156,70 +156,75 @@ class _LoginFormState extends State<LoginForm> {
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
 
                               SizedBox(
                                 height: 30,
-                              )]);
+                              )
+                            ]);
                       }),
-                  BlocBuilder<AppleLoginBloc, AppleLoginState>(
-                      builder: (context, state) {
-                          if (UserRepository().appleSignInAvailable) {
+                  IntrinsicWidth(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        BlocBuilder<AppleLoginBloc, AppleLoginState>(
+                            builder: (context, state) {
+                                if (UserRepository().appleSignInAvailable) {
+                                  return ElevatedButton(
+                                    onPressed: () {
+                                      if (isAppleLoginButtonEnabled(state)) {
+                                        _onPressedAppleSignIn();
+                                      }
+                                    },
+                                    style: ElevatedButtonTheme.of(context).style.copyWith(backgroundColor: MaterialStateProperty.all(canvasColor)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Image(image: AssetImage(apple_logo), height: 25.0),
+                                          Text(signInWithApple,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),)
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              },
+                        ),
+                          BlocBuilder<GoogleLoginBloc, GoogleLoginState>(
+                              builder: (context, state){
+
                             return ElevatedButton(
                               onPressed: () {
-                                if (isAppleLoginButtonEnabled(state)) {
-                                  _onPressedAppleSignIn();
+                                if (isGoogleLoginButtonEnabled(state)) {
+                                  _onPressedGoogleSignIn();
                                 }
                               },
                               style: ElevatedButtonTheme.of(context).style.copyWith(backgroundColor: MaterialStateProperty.all(canvasColor)),
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Image(image: AssetImage(apple_logo), height: 25.0),
-                                    Text(signInWithApple,
-                                      style: TextStyle(
+                                    Image(image: AssetImage(google_logo), height: 25.0),
+                                    Text(signInWithGoogle,
+                                      style: const TextStyle(
                                         color: Colors.black,
                                       ),)
                                   ],
                                 ),
                               ),
                             );
-                          } else {
-                            return Container();
-                          }
-                        },
+                          }),
+                      ],
+                    ),
                   ),
-                    BlocBuilder<GoogleLoginBloc, GoogleLoginState>(
-                        builder: (context, state){
-
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (isGoogleLoginButtonEnabled(state)) {
-                            _onPressedGoogleSignIn();
-                          }
-                        },
-                        style: ElevatedButtonTheme.of(context).style.copyWith(backgroundColor: MaterialStateProperty.all(canvasColor)),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image(image: AssetImage(google_logo), height: 25.0),
-                              Text(signInWithGoogle,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),)
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
 
                     Align(
                       alignment: Alignment.bottomCenter,
