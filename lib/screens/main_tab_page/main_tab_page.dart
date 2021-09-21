@@ -3,10 +3,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:travelcrew/models/notification_model.dart';
+import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 import 'package:travelcrew/screens/app_bar/app_bar.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
@@ -39,6 +41,10 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       RemoteNotification message =  event.notification;
+      String tripDocID = event.data['docID'];
+      if (tripDocID?.isNotEmpty ?? false) {
+        CloudFunction().addNewNotification(type: 'Chat',message: message.title,documentID: tripDocID,ownerID: userService.currentUserID);
+      }
       Fluttertoast.showToast(
               msg: message.title,
               toastLength: Toast.LENGTH_LONG,
@@ -47,15 +53,15 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             );
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
-      RemoteNotification message =  event.notification;
-      if(message.body?.isNotEmpty ?? false){
-        DatabaseService().getTrip(message.body).then((value) => {
-          if(value != null){
-            navigationService.navigateTo(ExploreRoute,arguments: value)
-          } else{
-            navigationService.navigateTo(DMChatListPageRoute)
-          }
-        });
+      // RemoteNotification message =  event.notification;
+      String tripDocID = event.data['docID'];
+      if(tripDocID?.isNotEmpty ?? false){
+        Trip trip = await DatabaseService().getTrip(tripDocID);
+        try {
+          navigationService.navigateTo(ExploreRoute, arguments: trip);
+        } catch (e) {
+          CloudFunction().logError('onMessageOpenedApp- Not a valid trip:  ${e.toString()}');
+        }
       } else{
         navigationService.navigateTo(DMChatListPageRoute);
       }
