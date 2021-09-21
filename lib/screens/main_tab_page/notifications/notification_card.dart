@@ -27,7 +27,7 @@ class NotificationsCard extends StatelessWidget{
       'Welcome': notificationType4(context),
       'Invite' : notificationType5(context),
       'Follow_back': notificationType4(context),
-      'Chat': notificationType1(context)
+      'Chat': notificationType6(context)
     };
 
     return notificationType[notification.type];
@@ -109,6 +109,7 @@ class NotificationsCard extends StatelessWidget{
   }
 // Invitation Notification
   Widget notificationType5(BuildContext context) {
+
     return Card(
       color: Colors.white,
       key: Key(notification.fieldID),
@@ -130,6 +131,22 @@ class NotificationsCard extends StatelessWidget{
             navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
           }
         },
+      ),
+    );
+  }
+  // Chat Notification
+  Widget notificationType6(BuildContext context){
+    return Card(
+      color: Colors.white,
+      key: Key(notification.fieldID),
+      child: ListTile(
+        onTap: () async {
+          Trip trip = await DatabaseService().getTrip(notification.documentID);
+          navigationService.navigateTo(ExploreRoute,arguments: trip);
+
+        },
+        title: Text('${notification.message}'),
+        subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
       ),
     );
   }
