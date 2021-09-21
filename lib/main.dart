@@ -12,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sizer/sizer.dart';
-import 'package:splitwise_api/splitwise_api.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
 import 'package:travelcrew/blocs/authentication_bloc/authentication_state.dart';
