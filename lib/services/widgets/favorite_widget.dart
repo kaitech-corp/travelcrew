@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 
 class FavoriteWidget extends StatelessWidget {
