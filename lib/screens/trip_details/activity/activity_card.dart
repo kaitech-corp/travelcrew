@@ -8,7 +8,6 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/navigation/route_names.dart';
 import 'package:travelcrew/services/navigation/router.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/services/widgets/favorite_widget.dart';
 import 'package:travelcrew/services/widgets/global_card.dart';
 import 'package:travelcrew/services/widgets/link_previewer.dart';
