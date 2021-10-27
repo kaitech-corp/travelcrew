@@ -1,104 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_list.dart';
 import 'package:travelcrew/services/locator.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 import 'package:travelcrew/services/database.dart';
 
-
 class DMChat extends StatefulWidget {
-
-
   final UserPublicProfile user;
   DMChat({this.user});
 
   @override
   State<StatefulWidget> createState() {
-
     return _DMChatState();
   }
 }
 
 class _DMChatState extends State<DMChat> {
-
-  final TextEditingController _chatController = new TextEditingController();
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final TextEditingController _chatController = TextEditingController();
+  var currentUserProfile =
+      locator<UserProfileService>().currentUserProfileDirect();
   Future<void> clearChat(String uid) async {
     await DatabaseService(userID: widget.user.uid).clearDMChatNotifications();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     clearChat(widget.user.uid);
 
-
-    return StreamProvider.value(
+    return StreamProvider<List<ChatData>>.value(
+      initialData: [],
       value: DatabaseService(userID: widget.user.uid).dmChatList,
       child: GestureDetector(
         onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
+          FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.user.displayName,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,),
+            title: Text(
+              widget.user.displayName,
+              style: Theme.of(context).textTheme.headline5,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           body: Column(
             children: <Widget>[
               Flexible(
-                  child: DMChatList(user: widget.user,)
-              ),
+                  child: DMChatList(
+                user: widget.user,
+              )),
               const Divider(
                 height: 1.0,
               ),
               Container(
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
                 ),
                 child: IconTheme(
                   data: const IconThemeData(color: Colors.blue),
                   child: Container(
                     margin: const EdgeInsets.fromLTRB(25, 0, 0, 25),
-                    child: new Row(
+                    child: Row(
                       children: <Widget>[
-                        new Flexible(
-                          child: new TextField(
-                            decoration: new InputDecoration.collapsed(
-                                hintText: "Start typing ...",
+                        Flexible(
+                          child: TextField(
+                            decoration: const InputDecoration.collapsed(
+                              hintText: 'Start typing ...',
                               border: InputBorder.none,
                             ),
                             controller: _chatController,
-                          textCapitalization: TextCapitalization.sentences,
+                            textCapitalization: TextCapitalization.sentences,
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                             style: ChatTextStyle().messageStyle(),
-
                           ),
                         ),
-                        new Container(
+                        Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: new IconButton(
+                          child: IconButton(
                             icon: const Icon(Icons.send),
                             onPressed: () async {
                               if (_chatController.text != '') {
-                                String message = _chatController.text;
-                                var status = createStatus();
+                                final String message = _chatController.text;
+                                final status = createStatus();
                                 _chatController.clear();
-                                String displayName = currentUserProfile.displayName;
-                                String uid = userService.currentUserID;
-                                await DatabaseService(
-                                    userID: widget.user.uid)
+                                final String displayName =
+                                    currentUserProfile.displayName;
+                                final String uid = userService.currentUserID;
+                                await DatabaseService(userID: widget.user.uid)
                                     .addNewDMChatMessage(
-                                    displayName, message, uid, status);
+                                        displayName, message, uid, status);
                               }
                             },
                           ),
                         )
                       ],
                     ),
-
                   ),
                 ),
               ),
@@ -108,12 +106,12 @@ class _DMChatState extends State<DMChat> {
       ),
     );
   }
-  createStatus() {
-    List<String> _members = [userService.currentUserID, widget.user.uid];
-    Map<String, bool> status = {};
-    var users = _members.where((f) => f != userService.currentUserID);
+
+  Map<String, bool> createStatus() {
+    final List<String> _members = [userService.currentUserID, widget.user.uid];
+    final Map<String, bool> status = {};
+    final users = _members.where((f) => f != userService.currentUserID);
     users.forEach((f) => status[f] = false);
     return status;
   }
 }
-

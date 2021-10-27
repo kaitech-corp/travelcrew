@@ -28,7 +28,7 @@ class TransportationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                visualDensity: const VisualDensity(vertical: -4),
                 title: Text(
                   transportationData.mode,
                   style: SizeConfig.tablet
@@ -43,7 +43,6 @@ class TransportationCard extends StatelessWidget {
                 ),
                 trailing: menuButton(context),
               ),
-              // Container(height: 2,color: Colors.black,padding: const EdgeInsets.only(left: 16,right: 16),),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, top: 8),
                 child: Column(
@@ -79,18 +78,18 @@ class TransportationCard extends StatelessWidget {
   Widget menuButton(BuildContext context) {
     return transportationData.uid == currentUserProfile?.uid ?? ''
         ? PopupMenuButton<String>(
-            icon: IconThemeWidget(
+            icon: const IconThemeWidget(
               icon: Icons.more_horiz,
             ),
             onSelected: (value) {
               switch (value) {
-                case "Edit":
+                case 'Edit':
                   {
                     navigationService.navigateTo(EditTransportationRoute,
                         arguments: transportationData);
                   }
                   break;
-                case "Split":
+                case 'Split':
                   {
                     SplitPackage().splitItemAlert(
                         context,
@@ -101,7 +100,7 @@ class TransportationCard extends StatelessWidget {
                             itemName: transportationData.mode,
                             itemDescription: 'Transportation',
                             details: transportationData.comment,
-                            itemType: "Transportation"),
+                            itemType: 'Transportation'),
                         trip: trip);
                   }
                   break;
@@ -115,37 +114,37 @@ class TransportationCard extends StatelessWidget {
               }
             },
             padding: EdgeInsets.zero,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
                 value: 'Edit',
                 child: ListTile(
                   leading: IconThemeWidget(icon: Icons.edit),
-                  title: const Text('Edit'),
+                  title: Text('Edit'),
                 ),
               ),
-              const PopupMenuItem(
+              const PopupMenuItem<String>(
                 value: 'Split',
                 child: ListTile(
                   leading: IconThemeWidget(icon: Icons.attach_money),
-                  title: const Text('Split'),
+                  title: Text('Split'),
                 ),
               ),
-              const PopupMenuItem(
+              const PopupMenuItem<String>(
                 value: 'Delete',
                 child: ListTile(
                   leading: IconThemeWidget(icon: Icons.delete),
-                  title: const Text('Delete'),
+                  title: Text('Delete'),
                 ),
               ),
             ],
           )
         : PopupMenuButton<String>(
-            icon: IconThemeWidget(
+            icon: const IconThemeWidget(
               icon: Icons.more_horiz,
             ),
             onSelected: (value) {
               switch (value) {
-                case "report":
+                case 'report':
                   {
                     // TravelCrewAlertDialogs().reportAlert(t)
                   }
@@ -156,12 +155,12 @@ class TransportationCard extends StatelessWidget {
               }
             },
             padding: EdgeInsets.zero,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
                 value: 'report',
                 child: ListTile(
                   leading: IconThemeWidget(icon: Icons.report),
-                  title: const Text('Report'),
+                  title: Text('Report'),
                 ),
               ),
             ],

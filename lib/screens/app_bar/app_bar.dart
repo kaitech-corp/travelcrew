@@ -10,10 +10,9 @@ import 'package:travelcrew/size_config/size_config.dart';
 
 class CustomAppBar extends StatelessWidget {
 
-
   final  bool bottomNav;
 
-  CustomAppBar({
+  const CustomAppBar({
     Key key, this.bottomNav,
   }) : super(key: key);
 
@@ -36,11 +35,11 @@ class CustomAppBar extends StatelessWidget {
                 ]
             ),
             boxShadow: [
-              BoxShadow(
+              const BoxShadow(
                 color: Colors.black,
                 blurRadius: 10.0,
               ),
-              BoxShadow(
+              const BoxShadow(
                 color: Colors.blueAccent,
                 blurRadius: 10.0,
               ),
@@ -48,44 +47,35 @@ class CustomAppBar extends StatelessWidget {
           ),
           child: Padding(
               padding: const EdgeInsets.fromLTRB(8.0,0,8.0,0),
-              child:
-              Stack(
-                children: [
-                  Positioned.fill(
-                    top: 0,
-                    child: AppBar(
-                      toolbarHeight: SizerUtil.deviceType == DeviceType.tablet ? SizeConfig.screenHeight*.1 : SizeConfig.screenHeight*.075,
-                      shadowColor: const Color(0x00000000),
-                      backgroundColor: const Color(0x00000000),
-                      actions: <Widget>[
-                        Center(
-                          child: InkWell(
-                            onTap: (){
-                              navigationService.navigateTo(ProfilePageRoute);
-                            },
-                            child: Hero(
-                              tag: userService.currentUserID,
-                              transitionOnUserGestures: true,
-                              child: CircleAvatar(
-                                radius: SizeConfig.screenWidth/8.0,
-                                backgroundImage: (urlToImage.value.isNotEmpty ?? false) ?
-                                NetworkImage(urlToImage.value,) :
-                                AssetImage(profileImagePlaceholder),
-                              ),
-                            ),
-                          ),
+              child: AppBar(
+                toolbarHeight: SizerUtil.deviceType == DeviceType.tablet ? SizeConfig.screenHeight*.1 : SizeConfig.screenHeight*.075,
+                shadowColor: const Color(0x00000000),
+                backgroundColor: const Color(0x00000000),
+                actions: <Widget>[
+                  Center(
+                    child: InkWell(
+                      onTap: (){
+                        navigationService.navigateTo(ProfilePageRoute);
+                      },
+                      child: Hero(
+                        tag: userService.currentUserID,
+                        transitionOnUserGestures: true,
+                        child: CircleAvatar(
+                          radius: SizeConfig.screenWidth/8.0,
+                          backgroundImage: (urlToImage.value.isNotEmpty ?? false) ?
+                          NetworkImage(urlToImage.value,) :
+                          AssetImage(profileImagePlaceholder),
                         ),
-                        IconButton(
-                          icon: AppBarIconThemeWidget(icon: Icons.chat,),
-                          onPressed: (){
-                            navigationService.navigateTo(DMChatListPageRoute);
-                          },
-                        ),
-                      ],
+                      ),
                     ),
                   ),
+                  IconButton(
+                    icon: const AppBarIconThemeWidget(icon: Icons.chat,),
+                    onPressed: (){
+                      navigationService.navigateTo(DMChatListPageRoute);
+                    },
+                  ),
                 ],
-                clipBehavior: Clip.none,
               )
           )
       ),

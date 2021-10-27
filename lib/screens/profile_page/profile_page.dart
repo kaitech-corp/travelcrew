@@ -23,11 +23,12 @@ class _ProfilePageState extends State<ProfilePage> {
           StreamBuilder(
             builder: (context, userData) {
               if (userData.hasError) {
-                CloudFunction().logError(
-                    'Error streaming user data for Profile Page: ${userData.error.toString()}');
+                CloudFunction()
+                    .logError('Error streaming user data for Profile Page: '
+                    '${userData.error.toString()}');
               }
               if (userData.hasData) {
-                UserPublicProfile user = userData.data;
+                final UserPublicProfile user = userData.data;
 
                 return Stack(children: [
                   HangingImageTheme3(
@@ -36,8 +37,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ProfileWidget(user: user)
                 ]);
               } else {
-                var faker = Faker();
-                UserPublicProfile blankUser = UserPublicProfile(
+                final Faker faker = Faker();
+                final UserPublicProfile blankUser = UserPublicProfile(
                     uid: faker.phoneNumber.toString(),
                     email: '',
                     urlToImage: faker.image.toString(),
@@ -45,7 +46,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     lastName: faker.person.lastName(),
                     displayName: faker.person.name(),
                     hometown: faker.address.city(),
-                    topDestinations: [faker.address.country(),faker.address.country(),faker.address.country()],
+                    topDestinations: [
+                      faker.address.country(),
+                      faker.address.country(),
+                      faker.address.country()],
                     blockedList: [],
                     followers: [],
                     following: [],

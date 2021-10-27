@@ -13,6 +13,7 @@ import 'package:travelcrew/size_config/size_config.dart';
 final ValueNotifier chatNotifier = ValueNotifier(int);
 
 class MenuDrawer extends StatefulWidget {
+
   @override
   _MenuDrawerState createState() => _MenuDrawerState();
 }
@@ -27,12 +28,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
 
   @override
-  void dispose() {
-    // chatNotifier.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -43,10 +38,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
             child: ListView(
           children: <Widget>[
             DrawerHeader(
-              child: StreamBuilder(
+              child: StreamBuilder<UserPublicProfile>(
                 builder: (context, profile) {
                   if (profile.hasData) {
-                    UserPublicProfile currentUser = profile.data;
+                    final UserPublicProfile currentUser = profile.data;
                     return Stack(
                       children: [
                         Align(
@@ -84,7 +79,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                 ? SizeConfig.screenWidth / 8.0
                                 : SizeConfig.screenWidth / 4.0,
                             backgroundImage:
-                                AssetImage(profileImagePlaceholder),
+                                const AssetImage(profileImagePlaceholder),
                           ),
                         ),
                       ],
@@ -95,7 +90,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
             ),
             ListTile(
-              leading: IconThemeWidget(icon: Icons.people),
+              leading: const IconThemeWidget(icon: Icons.people),
               title: Text('TC Members',
                   style: Theme.of(context).textTheme.subtitle1),
               onTap: () {
@@ -103,7 +98,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               },
             ),
             ListTile(
-              leading: IconThemeWidget(
+              leading: const IconThemeWidget(
                 icon: Icons.message,
               ),
               title:
@@ -113,7 +108,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               },
             ),
             ListTile(
-              leading: IconThemeWidget(icon: Icons.info),
+              leading: const IconThemeWidget(icon: Icons.info),
               title: Text('Help & Feedback',
                   style: Theme.of(context).textTheme.subtitle1),
               onTap: () {
@@ -121,7 +116,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               },
             ),
             ListTile(
-              leading: IconThemeWidget(icon: Icons.settings),
+              leading: const IconThemeWidget(icon: Icons.settings),
               title: Text('Settings',
                   style: Theme.of(context).textTheme.subtitle1),
               onTap: () {
@@ -130,7 +125,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ),
             if (userService.currentUserID.contains('XCVzgl7xIG3'))
               ListTile(
-                leading: IconThemeWidget(icon: Icons.admin_panel_settings),
+                leading: const IconThemeWidget(
+                    icon: Icons.admin_panel_settings),
                 title:
                     Text('Admin', style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
@@ -139,7 +135,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 },
               ),
             ListTile(
-              leading: IconThemeWidget(icon: Icons.exit_to_app),
+              leading: const IconThemeWidget(icon: Icons.exit_to_app),
               title:
                   Text('Logout', style: Theme.of(context).textTheme.subtitle1),
               onTap: () {
@@ -159,14 +155,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
 
   Widget currentVersion(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<String>(
       future: DatabaseService().getVersion(),
       builder: (context, data) {
         if (data.hasData) {
-          var version = data.data;
+          final String version = data.data;
           return Text(version, style: Theme.of(context).textTheme.subtitle1);
         } else {
-          return Text('');
+          return const Text('');
         }
       },
     );
