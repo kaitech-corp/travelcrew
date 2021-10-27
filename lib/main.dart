@@ -71,6 +71,7 @@ class _TravelCrewState extends State<TravelCrew> {
 
   @override
   void initState() {
+    DatabaseService().getUserNotificationSettings();
     super.initState();
 
     setupLocator();
@@ -188,6 +189,8 @@ class _TravelCrewState extends State<TravelCrew> {
                       ),
                     ),
                   ),
+                  appBarTheme: AppBarTheme(
+                    iconTheme: IconThemeData(color: Colors.black),),
                   primaryIconTheme: IconThemeData(
                       size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
                       color: Colors.black

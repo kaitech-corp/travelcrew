@@ -19,7 +19,7 @@ class GradientButton extends StatelessWidget {
       height: this.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(80),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [Colors.blueAccent, canvasColor,],

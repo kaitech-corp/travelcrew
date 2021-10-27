@@ -5,6 +5,7 @@ import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/user_profile_repository.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
 import 'package:travelcrew/screens/trip_details/explore/explore_basic_layout.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
@@ -28,6 +29,7 @@ class ExploreBasic extends StatelessWidget {
           child: MenuDrawer(),),
           appBar: AppBar(
             centerTitle: true,
+            backgroundColor: canvasColor,
             title: Tooltip(
               message: trip.tripName,
               child: Text('${trip.tripName}'.toUpperCase(),

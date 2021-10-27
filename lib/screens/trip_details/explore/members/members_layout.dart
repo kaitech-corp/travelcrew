@@ -40,17 +40,19 @@ class _MembersLayoutState extends State<MembersLayout> {
   Widget getMember(BuildContext context, Trip tripDetails){
     return Stack(
       children: [
-        StreamBuilder(
+        StreamBuilder<List<UserPublicProfile>>(
           builder: (context, userData){
             if(userData.hasError){
-              CloudFunction().logError('Error streaming user data for members layout: ${userData.error.toString()}');
+              CloudFunction()
+                  .logError('Error streaming user data '
+                  'for members layout: ${userData.error.toString()}');
             }
             if(userData.hasData){
-              List<UserPublicProfile> crew = userData.data;
+              final List<UserPublicProfile> crew = userData.data;
               return ListView.builder(
                     itemCount: crew.length,
-                    itemBuilder: (context, index) {
-                      UserPublicProfile member = crew[index];
+                    itemBuilder: (BuildContext context, int index) {
+                      final UserPublicProfile member = crew[index];
                       return userCard(context, member, tripDetails);
                     },
                   );
@@ -74,10 +76,17 @@ class _MembersLayoutState extends State<MembersLayout> {
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: _image.isNotEmpty ? Image.network(_image, height: SizeConfig.screenWidth*.5,
-                    width: SizeConfig.screenWidth*.5,fit: BoxFit.fill,) : Image.asset(
-                    profileImagePlaceholder,height: SizeConfig.screenWidth*.5,
-                    width: SizeConfig.screenWidth*.5,fit: BoxFit.fill,),
+                  child: _image.isNotEmpty
+                      ? Image.network(
+                    _image,
+                    height: SizeConfig.screenWidth*.5,
+                    width: SizeConfig.screenWidth*.5,
+                    fit: BoxFit.fill,)
+                      : Image.asset(
+                    profileImagePlaceholder,
+                    height: SizeConfig.screenWidth*.5,
+                    width: SizeConfig.screenWidth*.5,
+                    fit: BoxFit.fill,),
                 ),
               ),
             ),
@@ -113,23 +122,26 @@ class _MembersLayoutState extends State<MembersLayout> {
           },
           child: Row(
             children: [
-              Container(
-                child: Center(
-                  child: CircleAvatar(
-                    radius: SizeConfig.blockSizeHorizontal*7,
-                    backgroundImage: (member.urlToImage.isNotEmpty ?? false) ? NetworkImage(member.urlToImage,) : AssetImage(profileImagePlaceholder),
-                  ),
+              Center(
+                child: CircleAvatar(
+                  radius: SizeConfig.blockSizeHorizontal*7,
+                  backgroundImage: (member.urlToImage.isNotEmpty ?? false)
+                      ? NetworkImage(member.urlToImage,)
+                      : AssetImage(profileImagePlaceholder),
                 ),
               ),
               Expanded(
                 child: ListTile(
-                  title: Text("${member.displayName}",style: Theme.of(context).textTheme.subtitle1,
+                  title: Text(member.displayName,
+                    style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.start,),
-                  trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID) ? IconThemeWidget(icon:Icons.check)
+                  trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID)
+                      ? const IconThemeWidget(icon:Icons.check)
                   : IconButton(
-                    icon: IconThemeWidget(icon: Icons.close),
+                    icon: const IconThemeWidget(icon: Icons.close),
                     onPressed: (){
-                      TravelCrewAlertDialogs().removeMemberAlert(context, tripDetails, member,);
+                      TravelCrewAlertDialogs()
+                          .removeMemberAlert(context, tripDetails, member,);
                     },
                   ),
                 ),

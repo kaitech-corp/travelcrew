@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:nil/nil.dart';
 import 'package:travelcrew/models/cost_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/split_model.dart';
@@ -32,7 +33,7 @@ class _SplitPageState extends State<SplitPage> {
 
   Widget costDetailsStream(SplitObject splitObject, String purchasedByUID) {
     return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
         height: SizeConfig.screenHeight * .4,
         width: SizeConfig.screenWidth,
         child: StreamBuilder2(
@@ -75,7 +76,7 @@ class _SplitPageState extends State<SplitPage> {
                         onTap: () {
                           showModalBottomSheet(
                             context: context,
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(20),
                                     topRight: Radius.circular(20))),
@@ -96,7 +97,7 @@ class _SplitPageState extends State<SplitPage> {
                                   top: BorderSide(
                             color: Colors.grey[100],
                           ))),
-                          padding: EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(3),
                           child: ListTile(
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(25),
@@ -114,12 +115,12 @@ class _SplitPageState extends State<SplitPage> {
                                       fit: BoxFit.fill,
                                     ),
                             ),
-                            title: Text('${userPublicProfile.displayName}',
+                            title: Text(userPublicProfile.displayName,
                                 style: Theme.of(context).textTheme.subtitle1),
                             subtitle: (costObject.paid == false)
-                                ? Text(
-                                    'Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
-                                    style: TextStyle(
+                                ? Text('Owe: \$${costObject.amountOwe
+                                .toStringAsFixed(2)}',
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontFamily: 'Cantata One',
                                         color: Colors.red))
@@ -127,7 +128,7 @@ class _SplitPageState extends State<SplitPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Paid',
+                                      const Text('Paid',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Cantata One',
@@ -153,18 +154,18 @@ class _SplitPageState extends State<SplitPage> {
                                             RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ))),
-                                    child: Text('Paid'),
                                     onPressed: () {
                                       DatabaseService()
                                           .markAsPaid(costObject, splitObject);
                                     },
+                                    child: const Text('Paid'),
                                   )
-                                : Container(),
+                                : nil,
                           ),
                         ),
                       );
                     } else {
-                      return Container();
+                      return nil;
                     }
                   });
             } else {

@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -23,7 +22,6 @@ class CompleteProfileForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<CompleteProfileForm> {
-
   File image;
 
   final TextEditingController _firstNameController = TextEditingController();
@@ -33,19 +31,19 @@ class _LoginFormState extends State<CompleteProfileForm> {
 
   final ImagePicker _picker = ImagePicker();
 
-
   bool imagePicked = false;
-
 
   CompleteProfileBloc _completeProfileBloc;
 
   bool get isPopulated =>
-      _firstNameController.text.isNotEmpty || _lastNameController.text.isNotEmpty || _displayNameController.text.isNotEmpty || _urlToImage.value.path.isNotEmpty;
+      _firstNameController.text.isNotEmpty ||
+      _lastNameController.text.isNotEmpty ||
+      _displayNameController.text.isNotEmpty ||
+      _urlToImage.value.path.isNotEmpty;
 
   bool isButtonEnabled(CompleteProfileState state) {
-    return  isPopulated && !state.isSubmitting;
+    return isPopulated && !state.isSubmitting;
   }
-
 
   @override
   void initState() {
@@ -67,7 +65,8 @@ class _LoginFormState extends State<CompleteProfileForm> {
   }
 
   getImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+    var image =
+        await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
 
     _cropImage(image.path, image);
     setState(() {
@@ -75,9 +74,12 @@ class _LoginFormState extends State<CompleteProfileForm> {
     });
   }
 
-  _cropImage(imagePath, image) async{
+  _cropImage(imagePath, image) async {
     File croppedImage = await ImageCropper.cropImage(
-      sourcePath: imagePath, maxHeight: 1080, maxWidth: 1080,);
+      sourcePath: imagePath,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
 
     if (croppedImage != null) {
       _urlToImage.value = croppedImage;
@@ -91,14 +93,13 @@ class _LoginFormState extends State<CompleteProfileForm> {
     return BlocListener<CompleteProfileBloc, CompleteProfileState>(
       listener: (context, state) {
         if (state.isFailure) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('CompleteProfile Failure'),
-                  Icon(Icons.error),
+                  const Text('CompleteProfile Failure'),
+                  const Icon(Icons.error),
                 ],
               ),
               backgroundColor: const Color(0xffffae88),
@@ -106,14 +107,13 @@ class _LoginFormState extends State<CompleteProfileForm> {
           );
         }
         if (state.isSubmitting) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Registering...'),
-                  CircularProgressIndicator(
+                  const Text('Registering...'),
+                  const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                 ],
@@ -131,7 +131,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
         }
       },
       child: BlocBuilder<CompleteProfileBloc, CompleteProfileState>(
-        builder: (context, state) {
+        builder: (BuildContext context, CompleteProfileState state) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
@@ -140,49 +140,48 @@ class _LoginFormState extends State<CompleteProfileForm> {
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.person),
-                      labelText: "Display Name",
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: 'Display Name',
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.person),
-                      labelText: "First Name",
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: 'First Name',
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.person),
-                      labelText: "Last Name",
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: 'Last Name',
                     ),
                     keyboardType: TextInputType.name,
                   ),
-                  SizedBox(height: 8,),
+                  SizedBox(
+                    height: 8,
+                  ),
                   imagePicked
                       ? Container(
-                    height: (SizeConfig.screenWidth/3)*2.5,
-                    // width: (SizeConfig.screenWidth/3)*1.9,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        // color: Colors.orange,
-                        image: DecorationImage(
-                            image: FileImage(_urlToImage.value),
-                            fit: BoxFit.cover
+                          height: (SizeConfig.screenWidth / 3) * 2.5,
+                          // width: (SizeConfig.screenWidth/3)*1.9,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              // color: Colors.orange,
+                              image: DecorationImage(
+                                  image: FileImage(_urlToImage.value),
+                                  fit: BoxFit.cover)),
                         )
-                    ),
-                  ):
-                  const Text('Select a Profile Picture.',
-                      style: TextStyle(
-                          fontFamily: 'Raleway',
-                          fontWeight: FontWeight.bold)
-                  ),
+                      : const Text('Select a Profile Picture.',
+                          style: TextStyle(
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.bold)),
                   ElevatedButton(
                     onPressed: () {
                       getImage();
@@ -196,23 +195,36 @@ class _LoginFormState extends State<CompleteProfileForm> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text(agreement,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
-                        TextButton(
-                          child:  const Text('Terms of Service',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,fontSize: 18,)),
-                          onPressed: (){
-                            TCFunctions().launchURL(urlToTerms);
-                          },
+                        Text(
+                          agreement,
+                          style: Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.center,
                         ),
                         TextButton(
-                          child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold, fontSize: 18)),
-                          onPressed: (){
+                          onPressed: () {
+                            TCFunctions().launchURL(urlToTerms);
+                          },
+                          child: const Text('Terms of Service',
+                              style: TextStyle(
+                                fontFamily: 'Cantata One',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              )),
+                        ),
+                        TextButton(
+                          onPressed: () {
                             TCFunctions().launchURL(urlToPrivacyPolicy);
                           },
+                          child: const Text('Privacy Policy',
+                              style: TextStyle(
+                                  fontFamily: 'Cantata One',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18)),
                         )
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GradientButton(
@@ -221,7 +233,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     onPressed: () {
                       if (isButtonEnabled(state)) {
                         _onFormSubmitted();
-                      } else{
+                      } else {
                         _onFormSubmittedEmpty();
                       }
                     },
@@ -231,12 +243,12 @@ class _LoginFormState extends State<CompleteProfileForm> {
                         color: Colors.white,
                       ),
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.check,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                 ],
@@ -249,19 +261,23 @@ class _LoginFormState extends State<CompleteProfileForm> {
   }
 
   void _onFirstNameChange() {
-    _completeProfileBloc.add(CompleteProfileFirstNameChanged(firstName: _firstNameController.text));
+    _completeProfileBloc.add(
+        CompleteProfileFirstNameChanged(firstName: _firstNameController.text));
   }
 
   void _onLastNameChange() {
-    _completeProfileBloc.add(CompleteProfileLastNameChanged(lastName: _lastNameController.text));
+    _completeProfileBloc.add(
+        CompleteProfileLastNameChanged(lastName: _lastNameController.text));
   }
 
   void _onDisplayNameChange() {
-    _completeProfileBloc.add(CompleteProfileDisplayNameChanged(displayName: _displayNameController.text));
+    _completeProfileBloc.add(CompleteProfileDisplayNameChanged(
+        displayName: _displayNameController.text));
   }
 
   void _onImageChange() {
-    _completeProfileBloc.add(CompleteProfileImageChanged(urlToImage: _urlToImage.value));
+    _completeProfileBloc
+        .add(CompleteProfileImageChanged(urlToImage: _urlToImage.value));
   }
 
   void _onFormSubmitted() {

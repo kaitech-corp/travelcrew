@@ -6,6 +6,7 @@ import 'package:travelcrew/blocs/lodging_bloc/lodging_bloc.dart';
 import 'package:travelcrew/blocs/public_profile_bloc/public_profile_bloc.dart';
 import 'package:travelcrew/blocs/split_bloc/split_bloc.dart';
 import 'package:travelcrew/blocs/transportation_bloc/transportation_bloc.dart';
+import 'package:travelcrew/models/chat_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/activity_repository.dart';
 import 'package:travelcrew/repositories/chat_repository.dart';
@@ -20,6 +21,7 @@ import 'package:travelcrew/screens/trip_details/explore/explore_member_layout.da
 import 'package:travelcrew/screens/trip_details/lodging/lodging_page.dart';
 import 'package:travelcrew/screens/trip_details/split/split_page.dart';
 import 'package:travelcrew/screens/trip_details/transportation/transportation_page.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
@@ -43,11 +45,12 @@ class Explore extends StatelessWidget {
       child: Scaffold(
         key: scaffoldKey,
         drawer: BlocProvider(
-          create: (context) => PublicProfileBloc(
+          create: (BuildContext context) => PublicProfileBloc(
               profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
           child: MenuDrawer(),),
         appBar: AppBar(
           centerTitle: true,
+          backgroundColor: canvasColor,
           title: Text('Explore',style: Theme.of(context).textTheme.headline5,),
           actions: <Widget>[
             IconButton(
@@ -59,14 +62,16 @@ class Explore extends StatelessWidget {
             ),
           ],
           bottom: TabBar(
-            labelStyle: SizeConfig.tablet ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.subtitle2,
+            labelStyle: SizeConfig.tablet
+                ? Theme.of(context).textTheme.headline6
+                : Theme.of(context).textTheme.subtitle2,
             isScrollable: true,
-            tabs: [
-              const Tab(icon: const Icon(Icons.home,),),
-              const Tab(icon: const Icon(Icons.monetization_on,),),
-              const Tab(icon: const Icon(Icons.flight_takeoff,),),
-              const Tab(icon: const Icon(Icons.hotel,),),
-              const Tab(icon: const Icon(Icons.directions_bike,),),
+            tabs:   <Tab>[
+              const Tab(icon: Icon(Icons.home,),),
+              const Tab(icon: Icon(Icons.monetization_on,),),
+              const Tab(icon: Icon(Icons.flight_takeoff,),),
+              const Tab(icon: Icon(Icons.hotel,),),
+              const Tab(icon: Icon(Icons.directions_bike,),),
               Tab(icon: getChatNotificationBadge()),
             ],
           ),
@@ -80,7 +85,7 @@ class Explore extends StatelessWidget {
             BlocProvider(create: (context) => SplitBloc(splitRepository: SplitRepository()..refresh(trip.documentId))),
           ],
           child: TabBarView(
-                    children: [
+                    children: <Widget>[
                       checkOwner(userService.currentUserID),
                       SplitPage(tripDetails: trip),
                       TransportationPage(trip: trip,),
@@ -101,13 +106,13 @@ class Explore extends StatelessWidget {
     }
   }
 
-   checkOwner(String uid) {
+   Widget checkOwner(String uid) {
   if (trip.ownerID == uid){
-    return StreamBuilder(
+    return StreamBuilder<Trip>(
         stream: DatabaseService(tripDocID: trip.documentId).singleTripData,
         builder: (context, document){
           if(document.hasData){
-            Trip tripDetails = document.data;
+            final Trip tripDetails = document.data;
             return ExploreOwnerLayout(
               tripDetails: tripDetails,
               controller: controller,
@@ -126,14 +131,17 @@ class Explore extends StatelessWidget {
 }
 
 Widget getChatNotificationBadge (){
-    return StreamBuilder(
+    return StreamBuilder<List<ChatData>>(
         builder: (context, chats){
           if(chats.hasError){
-            CloudFunction().logError('Error streaming chats for explore chat notification: ${chats.error.toString()}');
+            CloudFunction()
+                .logError('Error streaming chats for explore'
+                ' chat notification: ${chats.error.toString()}');
           }
           if(chats.hasData){
-            if(chats.data.length > 0) {
-              int chatNotifications = chats.data.length;
+            final List<ChatData> chatList = chats.data;
+            if(chatList.isNotEmpty) {
+              final int chatNotifications = chats.data.length;
               return Tooltip(
                 message: 'Messages',
                 child: BadgeIcon(
@@ -144,13 +152,11 @@ Widget getChatNotificationBadge (){
             } else {
               return BadgeIcon(
                 icon: const Icon(Icons.chat, ),
-                badgeCount: 0,
               );
             }
           } else {
             return BadgeIcon(
               icon: const Icon(Icons.chat, ),
-              badgeCount: 0,
             );
           }
         },
