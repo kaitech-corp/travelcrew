@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
 import 'package:travelcrew/models/cost_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/split_model.dart';
@@ -29,42 +30,64 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
-            colors: [
-              Colors.blue.shade50,
-              Colors.lightBlueAccent.shade200
-            ]
-        ),
+            colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
       ),
       padding: const EdgeInsets.all(10),
-      height: SizeConfig.screenHeight*.5,
+      height: SizeConfig.screenHeight * .5,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: SizeConfig.screenWidth/6,
-            backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : AssetImage(profileImagePlaceholder),
+            radius: SizeConfig.screenWidth / 6,
+            backgroundImage: user.urlToImage.isNotEmpty
+                ? NetworkImage(
+                    user.urlToImage,
+                  )
+                : AssetImage(profileImagePlaceholder),
           ),
-          Text(user.displayName,style: Theme.of(context).textTheme.headline5),
-          Container(height: 10,),
-          Text('Payment details for:',style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-          Text('"${splitObject.itemName}"',style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,maxLines: 5,),
+          Text(user.displayName, style: Theme.of(context).textTheme.headline5),
+          Container(
+            height: 10,
+          ),
+          Text(
+            'Payment details for:',
+            style: Theme.of(context).textTheme.headline6,
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            '"${splitObject.itemName}"',
+            style: Theme.of(context).textTheme.headline6,
+            textAlign: TextAlign.center,
+            maxLines: 5,
+          ),
           ListTile(
-            title: (costObject.paid == false) ?
-            Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle1) :
-            Text('Paid',style: Theme.of(context).textTheme.subtitle1),
-            subtitle: (userService.currentUserID == purchasedByUser.uid) ?
-            Text('Paid to: You',style: Theme.of(context).textTheme.subtitle2) :
-            Text('Paid to: ${purchasedByUser.displayName}',style: Theme.of(context).textTheme.subtitle2),
-            trailing: (user.uid == userService.currentUserID || userService.currentUserID == purchasedByUser.uid) ?
-            PaymentDetailsMenuButton(costObject: costObject,splitObject: splitObject,) : null,
+            title: (costObject.paid == false)
+                ? Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.subtitle1)
+                : Text('Paid', style: Theme.of(context).textTheme.subtitle1),
+            subtitle: (userService.currentUserID == purchasedByUser.uid)
+                ? Text('Paid to: You',
+                    style: Theme.of(context).textTheme.subtitle2)
+                : Text('Paid to: ${purchasedByUser.displayName}',
+                    style: Theme.of(context).textTheme.subtitle2),
+            trailing: (user.uid == userService.currentUserID ||
+                    userService.currentUserID == purchasedByUser.uid)
+                ? PaymentDetailsMenuButton(
+                    costObject: costObject,
+                    splitObject: splitObject,
+                  )
+                : null,
           ),
-          (user.uid == userService.currentUserID || userService.currentUserID == purchasedByUser.uid) ? ElevatedButton(
-            onPressed: (){
-              DatabaseService().markAsPaid(costObject,splitObject);
-            },
-            child: const Text('Paid'),
-          ) : Container(),
+          (user.uid == userService.currentUserID ||
+                  userService.currentUserID == purchasedByUser.uid)
+              ? ElevatedButton(
+                  onPressed: () {
+                    DatabaseService().markAsPaid(costObject, splitObject);
+                  },
+                  child: const Text('Paid'),
+                )
+              : nil,
         ],
       ),
     );

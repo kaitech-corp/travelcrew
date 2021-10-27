@@ -8,6 +8,7 @@ import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/screens/trip_details/lodging/lodging_menu_button.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
 import 'package:travelcrew/services/widgets/appearance_widgets.dart';
@@ -28,6 +29,7 @@ class LodgingDetails extends StatelessWidget {
             'Lodging',
             style: Theme.of(context).textTheme.headline5,
           ),
+          backgroundColor: canvasColor,
         ),
         body: SingleChildScrollView(
           child: Container(

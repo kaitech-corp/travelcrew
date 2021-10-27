@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelcrew/services/analytics_service.dart';
 import 'package:travelcrew/services/locator.dart';
 
@@ -13,17 +15,49 @@ class CloudFunction {
       .currentUserProfileDirect();
   final AnalyticsService _analyticsService = AnalyticsService();
 
-
-  Future<String> splitwiseAPI() async{
+  Future<dynamic> connectSplitwise() async {
+    final HttpsCallable callable = FirebaseFunctions.instance
+        .httpsCallable('connectSplitwise');
+    final results = await callable({
+      'consumerKey': dotenv.env['consumerKey'],
+      'consumerSecret': dotenv.env['consumerSecret'],
+    });
+    return results.data;
+  }
+  //
+  void splitwiseAPI() async {
     final HttpsCallable callable = FirebaseFunctions.instance
         .httpsCallable(
-        'splitwise_api');
-    callable({
-      'name': 'Randy'
+        'connectToSplitwise');
+    final results = await callable({
+      'consumerKey': dotenv.env['consumerKey'],
+      'consumerSecret': dotenv.env['consumerSecret']
     });
-    final name = await callable();
-    print(name.data);
-    return name.data;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('accessToken', results.data);
+    print(results.data);
+  }
+  Future<dynamic> splitwiseGetCurrentUser(String accessToken) async {
+    final HttpsCallable callableGetCurrentUser = FirebaseFunctions.instance
+        .httpsCallable(
+        'getCurrentUser');
+    final results = await callableGetCurrentUser({
+      'consumerKey': dotenv.env['consumerKey'],
+      'consumerSecret': dotenv.env['consumerSecret'],
+      'accessToken': accessToken,
+    });
+    return results.data;
+  }
+  Future<dynamic> splitwiseGetFriends(String accessToken) async {
+    final HttpsCallable callableGetFriends = FirebaseFunctions.instance
+        .httpsCallable(
+        'getFriends');
+    final results = await callableGetFriends({
+      'consumerKey': dotenv.env['consumerKey'],
+      'consumerSecret': dotenv.env['consumerSecret'],
+      'accessToken': accessToken,
+    });
+    return results.data;
   }
 
   void addCustomMember() {
