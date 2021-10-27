@@ -76,7 +76,7 @@ class FlutterLinkView extends StatelessWidget{
               Row(
                 children: <Widget>[
                   Image.network(
-                        webInfo.icon ?? "",
+                        webInfo.icon ?? '',
                         fit: BoxFit.contain,
                         width: 30,
                         height: 30,

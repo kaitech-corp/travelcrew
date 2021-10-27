@@ -27,7 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   ChatBloc bloc;
   var currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
-  final TextEditingController _chatController = new TextEditingController();
+  final TextEditingController _chatController = TextEditingController();
 
   Future<void> clearChat(String uid) async {
     await DatabaseService(tripDocID: widget.trip.documentId, uid: uid)
@@ -46,10 +46,10 @@ class _ChatPageState extends State<ChatPage> {
     clearChat(userService.currentUserID);
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        body: Container(
+        body: SizedBox(
           height: SizeConfig.screenHeight,
           child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
             if (state is ChatLoadingState) {
@@ -66,42 +66,43 @@ class _ChatPageState extends State<ChatPage> {
                     height: 1.0,
                   ),
                   Container(
-                    decoration: new BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                     ),
                     child: IconTheme(
                       data: const IconThemeData(color: Colors.blue),
                       child: Container(
                         margin: const EdgeInsets.fromLTRB(25, 0, 0, 25),
-                        child: new Row(
+                        child: Row(
                           children: <Widget>[
-                            new Flexible(
-                              child: new TextField(
+                            Flexible(
+                              child: TextField(
                                 decoration: InputDecoration.collapsed(
                                     fillColor:
                                         ReusableThemeColor().color(context),
-                                    hintText: "Start typing ..."),
+                                    hintText: 'Start typing ...'),
                                 controller: _chatController,
                                 textCapitalization:
                                     TextCapitalization.sentences,
                               ),
                             ),
-                            new Container(
+                            Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: new IconButton(
+                              child: IconButton(
                                 icon: const Icon(Icons.send),
                                 onPressed: () async {
                                   if (_chatController.text != '') {
-                                    String message = _chatController.text;
-                                    var status = createStatus();
+                                    final String message = _chatController.text;
+                                    final status = createStatus();
                                     _chatController.clear();
-                                    String displayName =
+                                    final String displayName =
                                         currentUserProfile.displayName;
-                                    String uid = userService.currentUserID;
+                                    final String uid =
+                                        userService.currentUserID;
                                     try {
-                                      String action =
-                                          'Saving new message for ${widget.trip.documentId}';
+                                      final String action =
+                                          "Saving message for ${widget.trip.documentId}";
                                       CloudFunction().logEvent(action);
                                       await DatabaseService(
                                               tripDocID: widget.trip.documentId)
@@ -109,7 +110,7 @@ class _ChatPageState extends State<ChatPage> {
                                               message, uid, status);
                                     } on Exception catch (e) {
                                       CloudFunction().logError(
-                                          'Error saving new chat message (Chat.dart):  ${e.toString()}');
+                                          'Error saving chat message (Chat.dart):  ${e.toString()}');
                                     }
                                   }
                                 },
@@ -131,9 +132,9 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  createStatus() {
-    Map<String, bool> status = {};
-    var users =
+  Map<String, bool> createStatus() {
+    final Map<String, bool> status = {};
+    final users =
         widget.trip.accessUsers.where((f) => f != userService.currentUserID);
     users.forEach((f) => status[f] = false);
     return status;

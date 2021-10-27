@@ -3,6 +3,7 @@ import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/constants/constants.dart';
+import 'package:travelcrew/services/widgets/appbar_gradient.dart';
 
 class FeedbackPage extends StatefulWidget{
   @override
@@ -34,6 +35,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           appBar: AppBar(
             centerTitle: true,
             title: Text('Feedback',style: Theme.of(context).textTheme.headline5,),
+            flexibleSpace: AppBarGradient(),
           ),
           body: Container(
             padding: const EdgeInsets.all(8.0),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/admin/admin_page.dart';
 import 'package:travelcrew/blocs/all_users_bloc/all_users_bloc.dart';
+import 'package:travelcrew/blocs/settings_bloc/settings_bloc.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
@@ -10,6 +11,7 @@ import 'package:travelcrew/models/split_model.dart';
 import 'package:travelcrew/models/transportation_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/repositories/all_users_repository.dart';
+import 'package:travelcrew/repositories/user_settings_repository.dart';
 import 'package:travelcrew/screens/add_trip/edit_trip.dart';
 import 'package:travelcrew/screens/add_trip/google_places.dart';
 import 'package:travelcrew/screens/main_tab_page/all_trips/all_trips_page.dart';
@@ -21,7 +23,7 @@ import 'package:travelcrew/screens/menu_screens/help/feedback_page.dart';
 import 'package:travelcrew/screens/menu_screens/help/help.dart';
 import 'package:travelcrew/screens/menu_screens/help/report.dart';
 import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/screens/menu_screens/settings.dart';
+import 'package:travelcrew/screens/menu_screens/settings/settings.dart';
 import 'package:travelcrew/screens/menu_screens/users/all_users/all_users_page.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/chats_page.dart';
 import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
@@ -138,13 +140,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       EditActivityArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: EditActivity(activity: arguments.activity,trip: arguments.trip,),
+        viewToShow: EditActivity(
+          activity: arguments.activity,
+          trip: arguments.trip,),
       );
     case EditLodgingRoute:
       EditLodgingArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: EditLodging(trip: arguments.trip,lodging: arguments.lodging,),
+        viewToShow: EditLodging(
+          trip: arguments.trip,
+          lodging: arguments.lodging,),
       );
     case EditProfilePageRoute:
       return _getPageRoute(
@@ -224,7 +230,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       MembersLayoutArguments arguments = settings.arguments;
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: MembersLayout(tripDetails: arguments.tripDetails,ownerID: arguments.ownerID,),
+        viewToShow: MembersLayout(
+          tripDetails: arguments.tripDetails,
+          ownerID: arguments.ownerID,),
       );
     case MenuDrawerRoute:
       return _getPageRoute(
@@ -247,7 +255,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SettingsRoute:
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: Settings(),
+        viewToShow: BlocProvider(
+            create: (context) => UserSettingsBloc(
+                userSettingsRepository: UserSettingsRepository()..refresh())
+            ,child: Settings()),
       );
     case SignUpScreenRoute:
       return _getPageRoute(
@@ -267,7 +278,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: BlocProvider(
-            create: (context) => AllUserBloc(allUserRepository: AllUserRepository()..refresh()),
+            create: (context) => AllUserBloc(
+                allUserRepository: AllUserRepository()..refresh()),
             child: AllUserPage()),
       );
     case UserProfilePageRoute:
@@ -356,7 +368,12 @@ class ReportArguments{
   final LodgingData lodging;
   final Trip tripDetails;
 
-  ReportArguments(this.type, this.userAccount, this.activity,this.tripDetails,this.lodging);
+  ReportArguments(
+      this.type,
+      this.userAccount,
+      this.activity,
+      this.tripDetails,
+      this.lodging);
 }
 class SplitArguments{
   final Trip trip;
