@@ -39,7 +39,7 @@ class _AllTripsState extends State<AllTrips>
       resizeToAvoidBottomInset: false,
       body: Container(
         height: SizeConfig.screenHeight,
-        margin: EdgeInsets.only(left: 8.0, right: 8.0),
+        margin: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Column(
           children: [
             Row(
@@ -49,23 +49,23 @@ class _AllTripsState extends State<AllTrips>
                   text: TextSpan(
                       style: Theme.of(context).textTheme.headline3,
                       children: [
-                        TextSpan(
+                        const TextSpan(
                             text: "What's",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.greenAccent,
                                 fontSize: 28)),
                         TextSpan(
-                          text: " New",
+                          text: ' New',
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ]),
                 ),
                 Row(
                   children: [
-                    Container(
-                        height: SizeConfig.screenWidth * .025,
-                        width: SizeConfig.screenWidth * .025,
+                    SizedBox(
+                        height: SizeConfig.screenWidth * .03,
+                        width: SizeConfig.screenWidth * .03,
                         child: Image.asset(starImage)),
                     Text(
                       'Suggestion',
@@ -93,7 +93,7 @@ class SliverGridList extends StatefulWidget {
 }
 
 class _SliverGridListState extends State<SliverGridList> {
-  var currentUserProfile =
+  UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
   AllTripBloc allTripBloc;
@@ -110,13 +110,6 @@ class _SliverGridListState extends State<SliverGridList> {
     tripAdBloc = BlocProvider.of<TripAdBloc>(context);
     tripAdBloc.add(LoadingTripAdData());
   }
-
-  // @override
-  // void dispose() {
-  //   // allTripBloc.close();
-  //   // tripAdBloc.close();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -225,15 +218,15 @@ class _SliverGridListState extends State<SliverGridList> {
   }
 
   Widget cardWithImage(BuildContext context, Trip trip) {
-    favorite(String uid, Trip trip) {
+    Icon favorite(String uid, Trip trip) {
       if (trip.favorite.contains(uid)) {
-        return Icon(
+        return const Icon(
           Icons.favorite,
           color: Colors.red,
           size: 30,
         );
       } else {
-        return Icon(
+        return const Icon(
           Icons.favorite_border,
           color: Colors.white,
           size: 30,
@@ -262,7 +255,7 @@ class _SliverGridListState extends State<SliverGridList> {
                 ),
                 fit: BoxFit.fill,
               ),
-              color: Color(0xAA91AFD0), //
+              color: const Color(0xAA91AFD0), //
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40)),
@@ -272,7 +265,6 @@ class _SliverGridListState extends State<SliverGridList> {
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
-                  child: favorite(userService.currentUserID, trip),
                   onPressed: () {
                     if (trip.favorite.contains(userService.currentUserID)) {
                       CloudFunction().removeFavoriteFromTrip(trip.documentId);
@@ -280,6 +272,7 @@ class _SliverGridListState extends State<SliverGridList> {
                       CloudFunction().addFavoriteTrip(trip.documentId);
                     }
                   },
+                  child: favorite(userService.currentUserID, trip),
                 ),
               ),
             ),
@@ -302,15 +295,15 @@ class _SliverGridListState extends State<SliverGridList> {
 }
 
 Widget cardWithoutImage(BuildContext context, Trip trip) {
-  favorite(String uid, Trip trip) {
+  Icon favorite(String uid, Trip trip) {
     if (trip.favorite.contains(uid)) {
-      return Icon(
+      return const Icon(
         Icons.favorite,
         color: Colors.red,
         size: 30,
       );
     } else {
-      return Icon(
+      return const Icon(
         Icons.favorite_border,
         color: Colors.white,
         size: 30,
@@ -355,7 +348,6 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                   textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
                 ),
                 trailing: TextButton(
-                  child: favorite(userService.currentUserID, trip),
                   onPressed: () {
                     if (trip.favorite.contains(userService.currentUserID)) {
                       CloudFunction().removeFavoriteFromTrip(trip.documentId);
@@ -363,6 +355,9 @@ Widget cardWithoutImage(BuildContext context, Trip trip) {
                       CloudFunction().addFavoriteTrip(trip.documentId);
                     }
                   },
+                  child: favorite(
+                    userService.currentUserID,
+                    trip,),
                 ),
                 onTap: () {
                   _analyticsService.viewedTrip();

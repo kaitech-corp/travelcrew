@@ -68,9 +68,6 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     });
   }
 
-  void dispose(){
-    super.dispose();
-}
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
@@ -100,7 +97,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: DefaultTabController(
         length: 3,
@@ -109,33 +106,36 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           body: (_selectedIndex == 0) ? Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      CustomAppBar(bottomNav: true,),
+                      const CustomAppBar(bottomNav: true,),
                       Padding(
-                        padding: EdgeInsets.only(top: SizeConfig.screenHeight*.175),
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.screenHeight*.175),
                         child: Align(
                           alignment: Alignment.topCenter,
                           child: TabBar(
                             labelStyle: Theme.of(context).textTheme.headline6,
                             isScrollable: true,
-                            tabs: [
-                              const Tab(text: 'Current',),
-                              const Tab(text: 'Past',),
-                              const Tab(text: 'Private',),
+                            tabs: const <Widget> [
+                              Tab(text: 'Current',),
+                              Tab(text: 'Past',),
+                              Tab(text: 'Private',),
                             ],
                           ),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: SizeConfig.screenHeight/2*.45),
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.screenHeight/2*.45),
                         child: _widgetOptions.elementAt(_selectedIndex),
                       ),
                     ],
                   ):
                   Stack(
                     children: [
-                      CustomAppBar(bottomNav: false,),
+                      const CustomAppBar(bottomNav: false,),
                       Padding(
-                        padding: EdgeInsets.only(top: SizeConfig.screenHeight*.1785),
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.screenHeight*.1785),
                         child: Center(
                           child: _widgetOptions.elementAt(_selectedIndex),
                         ),
@@ -151,8 +151,9 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               const IconThemeWidget(icon: Icons.add_outlined,),
               const IconThemeWidget(icon:Icons.favorite_border),
               BadgeIcon(
-                icon: IconThemeWidget(icon:Icons.notifications_active),
-                badgeCount: widget.notifications != null ? widget.notifications.length : 0,
+                icon: const IconThemeWidget(icon:Icons.notifications_active),
+                badgeCount: widget.notifications != null ?
+                widget.notifications.length : 0,
               ),
             ],
             onTap: _onItemTapped,

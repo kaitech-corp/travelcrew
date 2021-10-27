@@ -9,16 +9,15 @@ import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/badge_icon.dart';
 import 'package:travelcrew/services/widgets/basket_icon.dart';
+import 'package:travelcrew/services/widgets/favorite_widget.dart';
 import 'package:travelcrew/size_config/size_config.dart';
 
 import '../../../../services/widgets/loading.dart';
 
-
-class BringingList extends StatefulWidget{
-
+class BringingList extends StatefulWidget {
   final String documentID;
   final BasketController controller;
-  BringingList({this.documentID,this.controller});
+  BringingList({this.documentID, this.controller});
 
   @override
   _BringingListState createState() => _BringingListState();
@@ -31,10 +30,9 @@ class _BringingListState extends State<BringingList> {
     if (selected == true) {
       setState(() {
         _selectedProducts.add(product.query);
-        CloudFunction().addItemToBringingList(widget.documentID, product.query,product.type);
+        CloudFunction().addItemToBringingList(
+            widget.documentID, product.query, product.type);
         widget.controller.addWalmartProductsToCart(product);
-
-        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Item added")));
       });
     } else {
       setState(() {
@@ -45,15 +43,17 @@ class _BringingListState extends State<BringingList> {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
         color: Colors.blue.shade100,
         child: SearchBar(
-          textStyle: Theme.of(context).textTheme.subtitle2,
-          cancellationWidget: const Text('Clear'),
-            placeHolder: Text('  i.e. Cups, Doritos, Flashlight',style: Theme.of(context).textTheme.subtitle2,),
+            textStyle: Theme.of(context).textTheme.subtitle2,
+            cancellationWidget: const Text('Clear'),
+            placeHolder: Text(
+              '  i.e. Cups, Doritos, Flashlight',
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
             onSearch: WalmartProductSearch().getProducts,
             crossAxisCount: 2,
             onItemFound: (WalmartProducts product, int index) {
@@ -63,7 +63,7 @@ class _BringingListState extends State<BringingList> {
                 // subtitle: Text(product.department[0]['name'] ?? 'Unknown'),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
-                onChanged: (bool selected){
+                onChanged: (bool selected) {
                   setState(() {
                     _onSelectedProduct(selected, product);
                   });
@@ -75,25 +75,18 @@ class _BringingListState extends State<BringingList> {
       ),
     );
   }
-
 }
 
-class NeedList extends StatefulWidget{
-
-
+class NeedList extends StatefulWidget {
   final String documentID;
   NeedList({this.documentID});
-
-
 
   @override
   _NeedListState createState() => _NeedListState();
 }
 
 class _NeedListState extends State<NeedList> {
-
-
-  List _selectedProducts = [];
+  final List _selectedProducts = [];
 
   void _onSelectedProduct(bool selected, productName) {
     if (selected == true) {
@@ -151,24 +144,17 @@ class _NeedListState extends State<NeedList> {
     addSearchTerm(term);
   }
 
-  searchForQuery([String item]){
-    if(query.length >2){
+  void searchForQuery([String item]) {
+    if (query.length > 2) {
       setState(() async {
         queryResults = await WalmartProductSearch().getProducts(query);
-
       });
-    }
-    else if (item != null){
+    } else if (item != null) {
       setState(() async {
         queryResults = await WalmartProductSearch().getProducts(item);
-
       });
     }
   }
-
-
-
-
 
   @override
   void initState() {
@@ -183,38 +169,36 @@ class _NeedListState extends State<NeedList> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
-      child: Container(
-        // constraints: BoxConstraints.expand(),
+      child: SizedBox(
         height: MediaQuery.of(context).size.height,
-        child:  SearchBar(
+        child: SearchBar(
             textStyle: Theme.of(context).textTheme.subtitle2,
-            cancellationWidget:const Text('Clear'),
-            placeHolder: NeedListToDisplay(documentID: widget.documentID,),
+            cancellationWidget: const Text('Clear'),
+            placeHolder: NeedListToDisplay(
+              documentID: widget.documentID,
+            ),
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
               return CheckboxListTile(
                 title: Text(product.query),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
-                onChanged: (bool selected){
+                onChanged: (bool selected) {
                   setState(() {
                     _onSelectedProduct(selected, product.query);
-                    if(selected ==true) {
+                    if (selected == true) {
                       try {
-                        CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName,'');
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
-                      } catch (e) {
-
-                      }
-                    } else{
-                        // TODO: change to delete
-                        _onSelectedProduct(selected, product.query);
+                        CloudFunction().addItemToNeedList(widget.documentID,
+                            product.query, currentUserProfile.displayName, '');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Item added')));
+                      } catch (e) {}
+                    } else {
+                      // TODO: change to delete
+                      _onSelectedProduct(selected, product.query);
                     }
                   });
                 },
@@ -226,24 +210,27 @@ class _NeedListState extends State<NeedList> {
     );
   }
 
-  Widget productTile(product){
+  Widget productTile(product) {
     return CheckboxListTile(
       title: Text(product.query),
       controlAffinity: ListTileControlAffinity.trailing,
       value: _selectedProducts.contains(product.query),
-      onChanged: (bool selected){
+      onChanged: (bool selected) {
         setState(() {
           _onSelectedProduct(selected, product.query);
-          if(selected ==true) {
+          if (selected == true) {
             try {
-              CloudFunction().addItemToNeedList(widget.documentID, product.query, currentUserProfile.displayName,'');
-              // DatabaseService().addItemToNeedList(
-              //     widget.documentID, product.query, widget.profileService.currentUserProfileDirect().displayName);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added")));
+              CloudFunction().addItemToNeedList(widget.documentID,
+                  product.query, currentUserProfile.displayName, '');
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(
+                  const SnackBar(content: Text('Item added')
+                  ));
             } catch (e) {
-
+              CloudFunction()
+                  .logError('Error adding item to Need List: ${e.toString()}');
             }
-          } else{
+          } else {
             // TODO: change to delete
             _onSelectedProduct(selected, product.query);
           }
@@ -255,52 +242,66 @@ class _NeedListState extends State<NeedList> {
   }
 }
 
-
-
-class NeedListToDisplay extends StatelessWidget{
-  final documentID;
+class NeedListToDisplay extends StatelessWidget {
+  final String documentID;
 
   const NeedListToDisplay({Key key, this.documentID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     void _onSelectedItems(Need item) {
-      CloudFunction().addItemToBringingList(documentID, item.item,item.type);
+      CloudFunction().addItemToBringingList(documentID, item.item, item.type);
       CloudFunction().removeItemFromNeedList(documentID, item.documentID);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text("Item added to Bringing list")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Item added to Bringing list')));
     }
+
     return StreamBuilder(
       builder: (context, items) {
-        if(items.hasError){
-          CloudFunction().logError('Error streaming items in need list to display: ${items.error.toString()}');
+        if (items.hasError) {
+          CloudFunction()
+              .logError('Error streaming items in need '
+              'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
           return ListView.builder(
             itemCount: items.data.length,
             itemBuilder: (context, index) {
-              Need item = items.data[index];
+              final Need item = items.data[index];
               return Dismissible(
                 direction: DismissDirection.endToStart,
                 background: Container(
                   color: Colors.red,
                   padding: const EdgeInsets.only(left: 5, right: 5),
-                  child: Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),
+                  child: const Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      )),
                 ),
                 key: Key(item.documentID),
-                onDismissed: (direction) {
-                  CloudFunction().removeItemFromNeedList(documentID, item.documentID);
-                  // DatabaseService().removeItemFromNeedList(documentID, item.documentID);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item removed")));
+                onDismissed: (DismissDirection direction) {
+                  CloudFunction()
+                      .removeItemFromNeedList(documentID, item.documentID);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Item removed')));
                 },
                 child: ListTile(
-                  leading: CircleAvatar(child: Icon(Icons.shopping_basket),),
-                  title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                  subtitle: Text('Suggested by: ${item.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.shopping_basket),
+                  ),
+                  title: Text(
+                    item.item.toUpperCase(),
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  subtitle: Text(
+                    'Suggested by: ${item.displayName}',
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
                   trailing: const Icon(Icons.add),
-                  onTap: (){
-                      _onSelectedItems(item);
+                  onTap: () {
+                    _onSelectedItems(item);
                   },
                 ),
               );
@@ -314,44 +315,57 @@ class NeedListToDisplay extends StatelessWidget{
     );
   }
 }
-class BringListToDisplay extends StatelessWidget{
 
+class BringListToDisplay extends StatelessWidget {
   final String tripDocID;
   BringListToDisplay({this.tripDocID});
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<List<Bringing>>(
       stream: DatabaseService().getBringingList(tripDocID),
-      builder: (context, items){
-        if(items.hasError){
-          CloudFunction().logError('Error streaming items in bringing list to display: ${items.error.toString()}');
+      builder: (context, items) {
+        if (items.hasError) {
+          CloudFunction()
+              .logError('Error streaming items in bringing '
+              'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
           return ListView.builder(
             itemCount: items.data.length,
-            itemBuilder: (context, index) {
-              Bringing item = items.data[index];
+            itemBuilder: (BuildContext context, int index) {
+              final Bringing item = items.data[index];
               return ListTile(
                 key: Key(item.documentID),
-                onLongPress: (){
-                  TravelCrewAlertDialogs().deleteBringinItemAlert(context, tripDocID, item.documentID);
+                onLongPress: () {
+                  TravelCrewAlertDialogs().deleteBringingItemAlert(
+                      context, tripDocID, item.documentID);
                 },
                 leading: BasketIcon(item.type),
-                title: Text(item.item.toUpperCase(),style: Theme.of(context).textTheme.subtitle1,),
-                subtitle: Text(item.displayName,style: Theme.of(context).textTheme.subtitle2,),
+                title: Text(
+                  item.item.toUpperCase(),
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                subtitle: Text(
+                  item.displayName,
+                  style: Theme.of(context).textTheme.subtitle2,
+                ),
                 trailing: IconButton(
                   icon: BadgeIcon(
-                    icon: favorite(item),
+                    icon: FavoriteWidget(
+                      uid: currentUserProfile.uid,
+                      voters: item.voters,),
                     badgeCount: item.voters?.length ?? 0,
                   ),
-                  onPressed: (){
-                    if (item.voters?.contains(currentUserProfile.uid) ?? false) {
-                      CloudFunction().removeVoterFromBringingItem(tripDocID: tripDocID, documentID: item.documentID);
+                  onPressed: () {
+                    if (item.voters?.contains(currentUserProfile.uid) ??
+                        false) {
+                      CloudFunction().removeVoterFromBringingItem(
+                          tripDocID: tripDocID, documentID: item.documentID);
                     } else {
-                      CloudFunction().addVoterToBringingItem(tripDocID: tripDocID, documentID: item.documentID);
+                      CloudFunction().addVoterToBringingItem(
+                          tripDocID: tripDocID, documentID: item.documentID);
                     }
-
                   },
                 ),
               );
@@ -361,20 +375,13 @@ class BringListToDisplay extends StatelessWidget{
           return Loading();
         }
       },
-
     );
   }
-  favorite(Bringing item){
-    if (item.voters?.contains(currentUserProfile.uid) ?? false){
-      return const Icon(Icons.favorite,color: Colors.red);
-    } else {
-      return const Icon(Icons.favorite_border,color: Colors.red);
-    }
-  }
+
+
 }
 
-class CustomList extends StatefulWidget{
-
+class CustomList extends StatefulWidget {
   final String documentID;
 
   CustomList({Key key, this.documentID}) : super(key: key);
@@ -384,53 +391,52 @@ class CustomList extends StatefulWidget{
 }
 
 class _CustomListState extends State<CustomList> {
-  final _formKey = GlobalKey<FormState>();
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String item;
-
   String option = 'Bringing';
-
-  List optionList = ['Bringing', 'Need'];
+  List<String> optionList = ['Bringing'];
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Column(
-        children: [
-          Padding(padding: EdgeInsets.only(top: 5),),
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.only(top: 5),
+          ),
           Builder(
-              builder: (context) => Form(
+              builder: (BuildContext context) => Form(
                   key: _formKey,
                   child: Column(
                     children: [
-                    TextFormField(
-                      enableInteractiveSelection: true,
-                      maxLines: 1,
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Custom Item',
-                      ),
-                        validator: (value) {
-                          // ignore: missing_return
-                          if (value.isEmpty){
-                            return 'Please enter an item first.';
+                      TextFormField(
+                          enableInteractiveSelection: true,
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Custom Item',
+                          ),
+                          validator: (value) {
                             // ignore: missing_return
-                          }
-                        },
-                        onChanged: (val) =>
-                        {
-                          item = val,
-                        }
-                    ),
-                      const Padding(padding: EdgeInsets.only(top: 20),),
-                      Container(
-                        height: SizeConfig.screenHeight*.15,
+                            if (value.isEmpty) {
+                              return 'Please enter an item first.';
+                              // ignore: missing_return
+                            } else {
+                              return '';
+                            }
+                          },
+                          onChanged: (val) => {
+                                item = val,
+                              }),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                      ),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * .15,
                         child: ListView.builder(
                             itemCount: optionList.length,
-                            itemBuilder: (context, index) {
-                              return RadioListTile(
+                            itemBuilder: (BuildContext context, int index) {
+                              return RadioListTile<String>(
                                   title: Text(optionList[index]),
                                   value: optionList[index],
                                   groupValue: option,
@@ -438,31 +444,42 @@ class _CustomListState extends State<CustomList> {
                                     setState(() {
                                       option = value;
                                     });
-                                  }
-                              );
-                            }
-                        ),
+                                  });
+                            }),
                       ),
-                    Container(
-                      height: 1,
-                      color: Colors.grey,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          final form = _formKey.currentState;
-                          if (form.validate()) {
-                            if(option == 'Bringing'){
-                              CloudFunction().addItemToBringingList(widget.documentID, item,'');
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added to Bringing list")));
-                            } else{
-                              CloudFunction().addItemToNeedList(widget.documentID, item, currentUserProfile.displayName,'');
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Item added to Need list")));
+                      Container(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            final FormState form = _formKey.currentState;
+                            if (form.validate()) {
+                              if (option == 'Bringing') {
+                                CloudFunction().addItemToBringingList(
+                                    widget.documentID, item, '');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Item added to Bringing list')));
+                              }
+                              // else {
+                              //   CloudFunction().addItemToNeedList(
+                              //       widget.documentID,
+                              //       item,
+                              //       currentUserProfile.displayName,
+                              //       '');
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //       const SnackBar(
+                              //           content: Text(
+                              //               'Item added to Need list')));
+                              // }
+                              form.reset();
                             }
-                            form.reset();
-                          }
-                        },
-                        child: const Text('Save'))
-                    ],))),
+                          },
+                          child: const Text('Save'))
+                    ],
+                  ))),
         ],
       ),
     );

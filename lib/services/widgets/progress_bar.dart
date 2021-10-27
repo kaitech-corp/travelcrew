@@ -15,11 +15,11 @@ class ProgressBarWidget extends StatelessWidget {
       currentValue: currentValue,
       maxValue: maxValue,
       animatedDuration:
-      Duration(milliseconds: 1500),
+      const Duration(milliseconds: 1500),
       displayText: '',
       border: Border.all(color: Colors.grey),
       progressColor: Colors.green,
-      borderRadius: BorderRadius.all(Radius.circular(20)),
+      borderRadius: const BorderRadius.all(Radius.circular(20)),
     );
   }
 
