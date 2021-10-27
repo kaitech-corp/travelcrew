@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -21,9 +20,8 @@ class SignupForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<SignupForm> {
-
   File image;
-  
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -32,7 +30,6 @@ class _LoginFormState extends State<SignupForm> {
   final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
 
   final ImagePicker _picker = ImagePicker();
-  
 
   bool imagePicked = false;
   bool get isPopulated =>
@@ -43,7 +40,6 @@ class _LoginFormState extends State<SignupForm> {
   }
 
   SignupBloc _signupBloc;
-
 
   @override
   void initState() {
@@ -69,7 +65,8 @@ class _LoginFormState extends State<SignupForm> {
   }
 
   getImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+    var image =
+        await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
 
     _cropImage(image.path, image);
     setState(() {
@@ -77,14 +74,17 @@ class _LoginFormState extends State<SignupForm> {
     });
   }
 
-  _cropImage(imagePath, image) async{
+  _cropImage(imagePath, image) async {
     File croppedImage = await ImageCropper.cropImage(
-      sourcePath: imagePath, maxHeight: 1080, maxWidth: 1080,);
+      sourcePath: imagePath,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
 
     if (croppedImage != null) {
-        _urlToImage.value = croppedImage;
+      _urlToImage.value = croppedImage;
     } else {
-        _urlToImage.value = File(image.path);
+      _urlToImage.value = File(image.path);
     }
   }
 
@@ -93,37 +93,35 @@ class _LoginFormState extends State<SignupForm> {
     return BlocListener<SignupBloc, SignupState>(
       listener: (context, state) {
         if (state.isFailure) {
-          ScaffoldMessenger.of(context)
-            .showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Signup Failure'),
-                    Icon(Icons.error),
-                  ],
-                ),
-                backgroundColor: Color(0xffffae88),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Text('Signup Failure'),
+                  const Icon(Icons.error),
+                ],
               ),
-            );
+              backgroundColor: const Color(0xffffae88),
+            ),
+          );
         }
 
         if (state.isSubmitting) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Registering...'),
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    )
-                  ],
-                ),
-                backgroundColor: Color(0xffffae88),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const <Widget>[
+                  Text('Registering...'),
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )
+                ],
               ),
-            );
+              backgroundColor: const Color(0xffffae88),
+            ),
+          );
         }
 
         if (state.isSuccess) {
@@ -142,9 +140,9 @@ class _LoginFormState extends State<SignupForm> {
                 children: <Widget>[
                   TextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.email),
-                      labelText: "Email",
+                      labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
                     autovalidate: true,
@@ -155,9 +153,9 @@ class _LoginFormState extends State<SignupForm> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.lock),
-                      labelText: "Password",
+                      labelText: 'Password',
                     ),
                     obscureText: true,
                     autocorrect: false,
@@ -168,49 +166,48 @@ class _LoginFormState extends State<SignupForm> {
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.person),
-                      labelText: "Display Name",
+                      labelText: 'Display Name',
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.person),
-                      labelText: "First Name",
+                      labelText: 'First Name',
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.person),
-                      labelText: "Last Name",
+                      labelText: 'Last Name',
                     ),
                     keyboardType: TextInputType.name,
                   ),
-                  SizedBox(height: 8,),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   imagePicked
                       ? Container(
-                    height: (SizeConfig.screenWidth/3)*2.5,
-                    // width: (SizeConfig.screenWidth/3)*1.9,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        // color: Colors.orange,
-                        image: DecorationImage(
-                            image: FileImage(_urlToImage.value),
-                            fit: BoxFit.cover
+                          height: (SizeConfig.screenWidth / 3) * 2.5,
+                          // width: (SizeConfig.screenWidth/3)*1.9,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              // color: Colors.orange,
+                              image: DecorationImage(
+                                  image: FileImage(_urlToImage.value),
+                                  fit: BoxFit.cover)),
                         )
-                    ),
-                  ):
-                  const Text('Select a Profile Picture.',
-                      style: TextStyle(
-                          fontFamily: 'Raleway',
-                          fontWeight: FontWeight.bold)
-                  ),
+                      : const Text('Select a Profile Picture.',
+                          style: TextStyle(
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.bold)),
                   ElevatedButton(
                     onPressed: () {
                       getImage();
@@ -224,23 +221,36 @@ class _LoginFormState extends State<SignupForm> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text(agreement,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
-                        TextButton(
-                          child:  Text('Terms of Service',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold,fontSize: 18,)),
-                          onPressed: (){
-                            TCFunctions().launchURL(urlToTerms);
-                          },
+                        Text(
+                          agreement,
+                          style: Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.center,
                         ),
                         TextButton(
-                          child: const Text('Privacy Policy',style: TextStyle(fontFamily: 'Cantata One', fontWeight: FontWeight.bold, fontSize: 18)),
-                          onPressed: (){
+                          onPressed: () {
+                            TCFunctions().launchURL(urlToTerms);
+                          },
+                          child: const Text('Terms of Service',
+                              style: TextStyle(
+                                fontFamily: 'Cantata One',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              )),
+                        ),
+                        TextButton(
+                          onPressed: () {
                             TCFunctions().launchURL(urlToPrivacyPolicy);
                           },
+                          child: const Text('Privacy Policy',
+                              style: TextStyle(
+                                  fontFamily: 'Cantata One',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18)),
                         )
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GradientButton(
@@ -251,18 +261,18 @@ class _LoginFormState extends State<SignupForm> {
                         _onFormSubmitted();
                       }
                     },
-                    text: Text(
+                    text: const Text(
                       'Signup',
                       style: TextStyle(
                         color: Colors.black,
                       ),
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.check,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                 ],
@@ -279,11 +289,12 @@ class _LoginFormState extends State<SignupForm> {
   }
 
   void _onPasswordChange() {
-    _signupBloc
-        .add(SignupPasswordChanged(password: _passwordController.text));
+    _signupBloc.add(SignupPasswordChanged(password: _passwordController.text));
   }
+
   void _onFirstNameChange() {
-    _signupBloc.add(SignupFirstNameChanged(firstName: _firstNameController.text));
+    _signupBloc
+        .add(SignupFirstNameChanged(firstName: _firstNameController.text));
   }
 
   void _onLastNameChange() {
@@ -291,7 +302,8 @@ class _LoginFormState extends State<SignupForm> {
   }
 
   void _onDisplayNameChange() {
-    _signupBloc.add(SignupDisplayNameChanged(displayName: _displayNameController.text));
+    _signupBloc.add(
+        SignupDisplayNameChanged(displayName: _displayNameController.text));
   }
 
   void _onImageChange() {

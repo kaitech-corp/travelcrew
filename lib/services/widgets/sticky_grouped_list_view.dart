@@ -22,8 +22,11 @@ class StickyGroupedChatListView extends StatelessWidget {
       reverse: true,
       groupBy: (chat)
       {
-        return DateTime(chat.timestamp.toDate().year, chat.timestamp.toDate().month,
-            chat.timestamp.toDate().day, chat.timestamp.toDate().hour)
+        return DateTime(
+            chat.timestamp.toDate().year,
+            chat.timestamp.toDate().month,
+            chat.timestamp.toDate().day,
+            chat.timestamp.toDate().hour)
             .toString();
       },
       order: StickyGroupedListOrder.DESC,
@@ -31,7 +34,8 @@ class StickyGroupedChatListView extends StatelessWidget {
       groupSeparatorBuilder: (chat) =>
           Padding(
               padding: const EdgeInsets.all(4.0),
-              child:ChatDateDisplay(dateString: chat.timestamp.toDate().toString(),)),
+              child:ChatDateDisplay(
+                dateString: chat.timestamp.toDate().toString(),)),
       itemBuilder: (context, chat){
         return ChatCard(message: chat, tripDocID: documentId,);
       },

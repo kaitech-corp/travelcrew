@@ -22,7 +22,7 @@ class UserPopupProfile extends StatelessWidget{
             color: Colors.white.withOpacity(0.6),
           ),
         ),
-        Container(
+        SizedBox(
           height: 300,
           width: 300,
           child: Center(
