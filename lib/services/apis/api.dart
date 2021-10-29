@@ -2,10 +2,11 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 
 class APIService {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = rapidAPIKey;
   // Base API url
   static const String _baseUrl = "https://ajayakv-rest-countries-v1.p.rapidapi.com/rest/v1/all";
   // Base headers for Response url
@@ -35,7 +36,7 @@ class APIService {
 
 // class Covid19API {
 //   // API key
-//   static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+//   static const _api_key = rapidAPIKey;
 //   // Base API url
 //   static const String _baseUrl = "https://corona-virus-world-and-india-data.p.rapidapi.com/api";
 //   // Base headers for Response url
@@ -85,7 +86,7 @@ class APIService {
 
 class PublicHolidayAPI {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = rapidAPIKey;
   // Base API url
   static const String _baseUrl = "https://public-holiday.p.rapidapi.com/";
   // Base headers for Response url
@@ -115,7 +116,7 @@ class PublicHolidayAPI {
 
 class RestCountries {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = rapidAPIKey;
   // Base API url
   static const String _baseUrl = "https://restcountries-v1.p.rapidapi.com/name/";
   // Base headers for Response url
@@ -145,7 +146,7 @@ class RestCountries {
 
 class WalmartProductSearch {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = rapidAPIKey;
   // Base API url
   static const String _baseUrl = "https://walmart.p.rapidapi.com/auto-complete?term=";
   // Base headers for Response url
@@ -204,7 +205,7 @@ class ImageSearch {
 
 // class Covid19StatsByCountry {
 //   // API key
-//   static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+//   static const _api_key = rapidAPIKey;
 //
 //   // Base API url
 //   static const String _baseUrl = "https://covid-19-tracking.p.rapidapi.com/v1/";
@@ -238,7 +239,7 @@ class ImageSearch {
 
 class PlacesNearby {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = rapidAPIKey;
 
   // Base API url
   static const String _baseUrl = "https://rapidapi.p.rapidapi.com/FindPlacesNearby";
