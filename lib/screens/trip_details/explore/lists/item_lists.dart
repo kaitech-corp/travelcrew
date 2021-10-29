@@ -346,7 +346,7 @@ class BringListToDisplay extends StatelessWidget{
                     badgeCount: item.voters?.length ?? 0,
                   ),
                   onPressed: (){
-                    if (item.voters?.contains(currentUserProfile.uid) ?? false) {
+                    if (item.voters?.contains(userService.currentUserID) ?? false) {
                       CloudFunction().removeVoterFromBringingItem(tripDocID: tripDocID, documentID: item.documentID);
                     } else {
                       CloudFunction().addVoterToBringingItem(tripDocID: tripDocID, documentID: item.documentID);
@@ -365,7 +365,7 @@ class BringListToDisplay extends StatelessWidget{
     );
   }
   favorite(Bringing item){
-    if (item.voters?.contains(currentUserProfile.uid) ?? false){
+    if (item.voters?.contains(userService.currentUserID) ?? false){
       return const Icon(Icons.favorite,color: Colors.red);
     } else {
       return const Icon(Icons.favorite_border,color: Colors.red);
