@@ -205,6 +205,11 @@ class _TravelCrewState extends State<TravelCrew> {
                   accentIconTheme: IconThemeData(
                       color: Colors.black
                   ),
+                  appBarTheme: AppBarTheme(
+                    iconTheme: IconThemeData(
+                      color: Colors.black
+                    )
+                  ),
                   brightness: Brightness.light,
                   primaryColor: Colors.white,
                   accentColor: Colors.blueAccent,

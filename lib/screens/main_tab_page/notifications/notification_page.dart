@@ -8,6 +8,7 @@ import 'package:travelcrew/models/notification_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/widgets/loading.dart';
+import 'package:nil/nil.dart';
 
 import 'notification_card.dart';
 
@@ -45,8 +46,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     itemCount: notifications != null ? notifications.length : 0,
                     itemBuilder: (context, index){
                       var item = notifications[index];
-
-                      return Dismissible(
+                  return Dismissible(
                         direction: DismissDirection.endToStart,
                         // Show a red background as the item is swiped away.
                         background: Container(color: Colors.red,
@@ -70,7 +70,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     }),
               );
             } else {
-              return Container();
+              return nil;
             }
           }),
       floatingActionButton: FloatingActionButton(
