@@ -204,11 +204,12 @@ class AddNewActivityState extends State<AddNewActivity> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async{
+            String documentID = widget.trip.documentId;
+            String message = 'A new activity has been added to ${widget.trip.tripName}';
+            bool ispublic = widget.trip.ispublic;
+
             final form = _formKey.currentState;
             if (form.validate()) {
-              String documentID = widget.trip.documentId;
-              String message = 'A new activity has been added to ${widget.trip.tripName}';
-              bool ispublic = widget.trip.ispublic;
               try {
                 String action = 'Saving new activity';
                 CloudFunction().logEvent(action);

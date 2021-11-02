@@ -26,7 +26,8 @@ class NotificationsCard extends StatelessWidget{
       'Follow' : notificationType3(context),
       'Welcome': notificationType4(context),
       'Invite' : notificationType5(context),
-      'Follow_back': notificationType4(context)
+      'Follow_back': notificationType4(context),
+      'Chat': notificationType1(context)
     };
 
     return notificationType[notification.type];
@@ -108,7 +109,6 @@ class NotificationsCard extends StatelessWidget{
   }
 // Invitation Notification
   Widget notificationType5(BuildContext context) {
-
     return Card(
       color: Colors.white,
       key: Key(notification.fieldID),
