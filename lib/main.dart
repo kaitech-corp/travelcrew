@@ -19,6 +19,7 @@ import 'package:travelcrew/blocs/bloc_observer/custom_bloc_observer.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
 import 'package:travelcrew/screens/complete_profile/complete_profile_page.dart';
 import 'package:travelcrew/screens/login/login_screen.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/locator.dart';
@@ -206,6 +207,7 @@ class _TravelCrewState extends State<TravelCrew> {
                       color: Colors.black
                   ),
                   appBarTheme: AppBarTheme(
+                    backgroundColor: canvasColor,
                     iconTheme: IconThemeData(
                       color: Colors.black
                     )
