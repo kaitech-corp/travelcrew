@@ -1,4 +1,0 @@
-Target dependency graph (2 targets)
-FirebaseFirestore in Pods
-Pods-Runner in Pods, depends on:
-FirebaseFirestore in Pods (explicit)
