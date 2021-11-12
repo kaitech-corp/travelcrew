@@ -5,7 +5,7 @@ import 'package:travelcrew/models/custom_objects.dart';
 
 class APIService {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
   // Base API url
   static const String _baseUrl = "https://ajayakv-rest-countries-v1.p.rapidapi.com/rest/v1/all";
   // Base headers for Response url
@@ -35,7 +35,7 @@ class APIService {
 
 // class Covid19API {
 //   // API key
-//   static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+//   static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
 //   // Base API url
 //   static const String _baseUrl = "https://corona-virus-world-and-india-data.p.rapidapi.com/api";
 //   // Base headers for Response url
@@ -85,7 +85,7 @@ class APIService {
 
 class PublicHolidayAPI {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
   // Base API url
   static const String _baseUrl = "https://public-holiday.p.rapidapi.com/";
   // Base headers for Response url
@@ -115,7 +115,7 @@ class PublicHolidayAPI {
 
 class RestCountries {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
   // Base API url
   static const String _baseUrl = "https://restcountries-v1.p.rapidapi.com/name/";
   // Base headers for Response url
@@ -145,9 +145,9 @@ class RestCountries {
 
 class WalmartProductSearch {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
   // Base API url
-  static const String _baseUrl = "https://walmart.p.rapidapi.com/auto-complete?term=";
+  static const String _baseUrl = "https://walmart.p.rapidapi.com/v2/auto-complete?term=";
   // Base headers for Response url
   static const Map<String, String> _headers = {
 //    "content-type": "application/json",
@@ -164,7 +164,7 @@ class WalmartProductSearch {
       final result = json.decode(response.body);
 
       print(result);
-      Iterable list = result['specific'];
+      Iterable list = result['queries'];
       return list.map((stat) => WalmartProducts.fromJSON(stat)).toList();
     } else {
       // If that response was not OK, throw an error.
@@ -184,7 +184,7 @@ class ImageSearch {
       'url': 'https://texttoimage.p.rapidapi.com/image',
       'headers': {
         'content-type': 'application/json',
-        'x-rapidapi-key': '7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac',
+        'x-rapidapi-key': '17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038',
         'x-rapidapi-host': 'texttoimage.p.rapidapi.com',
         'useQueryString': true
       },
@@ -204,7 +204,7 @@ class ImageSearch {
 
 // class Covid19StatsByCountry {
 //   // API key
-//   static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+//   static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
 //
 //   // Base API url
 //   static const String _baseUrl = "https://covid-19-tracking.p.rapidapi.com/v1/";
@@ -238,7 +238,7 @@ class ImageSearch {
 
 class PlacesNearby {
   // API key
-  static const _api_key = "7e15048daamshd978fd74a858303p11d0abjsnb00aa19756ac";
+  static const _api_key = "17ec4ead55mshd28914e162b040cp14d8bdjsn34067dfbb038";
 
   // Base API url
   static const String _baseUrl = "https://rapidapi.p.rapidapi.com/FindPlacesNearby";

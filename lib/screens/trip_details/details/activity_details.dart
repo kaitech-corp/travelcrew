@@ -204,7 +204,7 @@ class ActivityDataLayout extends StatelessWidget {
                         ),
                       ),
                     )
-                  : nil,
+                  : Container(height: 0,width: 0,),
             ],
           );
         } else {

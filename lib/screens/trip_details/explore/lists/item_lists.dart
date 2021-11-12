@@ -353,12 +353,12 @@ class BringListToDisplay extends StatelessWidget {
                 trailing: IconButton(
                   icon: BadgeIcon(
                     icon: FavoriteWidget(
-                      uid: currentUserProfile.uid,
+                      uid: userService.currentUserID,
                       voters: item.voters,),
                     badgeCount: item.voters?.length ?? 0,
                   ),
                   onPressed: () {
-                    if (item.voters?.contains(currentUserProfile.uid) ??
+                    if (item.voters?.contains(userService.currentUserID) ??
                         false) {
                       CloudFunction().removeVoterFromBringingItem(
                           tripDocID: tripDocID, documentID: item.documentID);

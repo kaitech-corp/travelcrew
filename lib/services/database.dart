@@ -82,7 +82,7 @@ class DatabaseService {
     try {
       ///TODO change version doc for new releases
       final DocumentSnapshot<Object> ref = 
-      await versionCollection.doc('version3_0_5').get();
+      await versionCollection.doc('version3_0_6').get();
       final Map<String, dynamic> data = ref.data();
 
 
@@ -123,7 +123,7 @@ class DatabaseService {
 
   ///Checks current users saved Settings for on their device.
   Future<UserNotificationSettingsData> getUserNotificationSettings ()async{
-    final ref = await notificationCollection.doc(currentUserProfile.uid).get();
+    final ref = await notificationCollection.doc(userService.currentUserID).get();
     if(ref.exists){
       final Map<String, dynamic> settings = ref.data();
       return UserNotificationSettingsData.fromData(settings);
