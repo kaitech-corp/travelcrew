@@ -7,7 +7,7 @@ import 'database.dart';
 import 'navigation/navigation_service.dart';
 
 
-GetIt locator = GetIt.asNewInstance();
+GetIt locator = GetIt.instance;
 final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 
 

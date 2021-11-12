@@ -183,8 +183,9 @@ class WalmartProducts {
   WalmartProducts({this.query,this.type});
 
   WalmartProducts.fromJSON(Map<String, dynamic> jsonMap):
-        query = jsonMap['query'],
-        type = jsonMap['super_deps'][0]['name'] ?? '';
+        query = jsonMap['displayName'],
+        // type = jsonMap['super_deps'][0]['name'] ?? '';
+        type = jsonMap['type'] ?? '';
 
 }
 class Department {
