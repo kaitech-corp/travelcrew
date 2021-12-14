@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travelcrew/models/chat_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat_list.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/database.dart';
+import '../../../../models/chat_model.dart';
+import '../../../../models/custom_objects.dart';
+import 'dm_chat_list.dart';
+import '../../../../services/locator.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
+import '../../../../services/database.dart';
 
 class DMChat extends StatefulWidget {
   final UserPublicProfile user;

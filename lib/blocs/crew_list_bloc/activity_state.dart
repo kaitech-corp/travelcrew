@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:travelcrew/models/activity_model.dart';
+
+import '../../../models/activity_model.dart';
 
 abstract class ActivityState extends Equatable{
   ActivityState();

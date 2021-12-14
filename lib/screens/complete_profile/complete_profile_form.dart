@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
-import 'package:travelcrew/blocs/complete_profile_bloc/complete_profile_bloc.dart';
-import 'package:travelcrew/blocs/complete_profile_bloc/complete_profile_event.dart';
-import 'package:travelcrew/blocs/complete_profile_bloc/complete_profile_state.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/gradient_button.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../blocs/authentication_bloc/authentication_event.dart';
+import '../../blocs/complete_profile_bloc/complete_profile_bloc.dart';
+import '../../blocs/complete_profile_bloc/complete_profile_event.dart';
+import '../../blocs/complete_profile_bloc/complete_profile_state.dart';
+import '../../services/constants/constants.dart';
+import '../../services/database.dart';
+import '../../services/functions/tc_functions.dart';
+import '../../services/navigation/route_names.dart';
+import '../../services/widgets/gradient_button.dart';
+import '../../size_config/size_config.dart';
 
 class CompleteProfileForm extends StatefulWidget {
   @override

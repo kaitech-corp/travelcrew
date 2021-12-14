@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -13,6 +14,7 @@ import 'package:travelcrew/blocs/authentication_bloc/authentication_state.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
 import 'package:travelcrew/screens/complete_profile/complete_profile_page.dart';
 import 'package:travelcrew/screens/login/login_screen.dart';
+import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/firebase_messaging.dart';
 import 'package:travelcrew/services/initializer/project_initializer.dart';
@@ -76,29 +78,34 @@ class _TravelCrewState extends State<TravelCrew> {
                 builder: (context, widget) {
                   return ResponsiveWrapperBuilder(context, widget);
                 },
-                home: BlocBuilder<AuthenticationBloc,AuthenticationState>(
-                        builder: (context,state){
-                          SizeConfig().init(context);
-                          if (state is AuthenticationFailure) {
-                            return LoginScreen();
-                          }
-                          if (state is AuthenticationSuccess) {
-                            return FutureBuilder(
-                              builder: (context, data) {
-                                if (data.data == true) {
+                home: AnimatedSplashScreen(
+                  splash: splashScreenLogo,
+                  animationDuration: Duration(milliseconds: 1000),
+                  splashIconSize: double.maxFinite,
+                  nextScreen: BlocBuilder<AuthenticationBloc,AuthenticationState>(
+                          builder: (context,state){
+                            SizeConfig().init(context);
+                            if (state is AuthenticationFailure) {
+                              return LoginScreen();
+                            }
+                            if (state is AuthenticationSuccess) {
+                              return FutureBuilder(
+                                builder: (context, data) {
+                                  if (data.data == true) {
 
-                                  return LaunchIconBadger();
-                                } else if (data.data == false){
-                                  return CompleteProfile(userRepository: widget.userRepository,);
-                                }
-                                return Loading();
-                              },
-                              future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
-                            );
-                          } else {
-                            return LoginScreen();
-                          }
-                        }),
+                                    return LaunchIconBadger();
+                                  } else if (data.data == false){
+                                    return CompleteProfile(userRepository: widget.userRepository,);
+                                  }
+                                  return Loading();
+                                },
+                                future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
+                              );
+                            } else {
+                              return LoginScreen();
+                            }
+                          }),
+                ),
                 debugShowCheckedModeBanner: false,
                 theme:  ThemeDataBuilder(),
                 navigatorKey: locator<NavigationService>().navigationKey,

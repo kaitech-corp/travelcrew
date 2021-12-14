@@ -4,16 +4,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/add_trip/google_places.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/calendar_widget.dart';
+
+import '../../models/custom_objects.dart';
+import '../../models/trip_model.dart';
+import '../../services/analytics_service.dart';
+import '../../services/database.dart';
+import '../../services/functions/cloud_functions.dart';
+import '../../services/locator.dart';
+import '../../services/widgets/appearance_widgets.dart';
+import '../../services/widgets/calendar_widget.dart';
+import '../alerts/alert_dialogs.dart';
+import 'google_places.dart';
 
 GoogleData googleData;
 

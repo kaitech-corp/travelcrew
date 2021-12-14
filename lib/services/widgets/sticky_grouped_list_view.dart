@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
-import 'package:travelcrew/models/chat_model.dart';
-import 'package:travelcrew/screens/trip_details/chat/chat_card.dart';
-import 'package:travelcrew/services/widgets/chat_date_display.dart';
+import '../../models/chat_model.dart';
+import '../../screens/trip_details/chat/chat_card.dart';
+import '../../services/widgets/chat_date_display.dart';
 
 class StickyGroupedChatListView extends StatelessWidget {
   const StickyGroupedChatListView({

@@ -2,7 +2,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/repositories/activity_repository.dart';
+
+import '../../../repositories/activity_repository.dart';
 import 'activity_event.dart';
 import 'activity_state.dart';
 

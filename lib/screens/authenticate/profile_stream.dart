@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/all_trips_bloc/all_trips_bloc.dart';
-import 'package:travelcrew/blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trips_bloc.dart';
-import 'package:travelcrew/blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_bloc.dart';
-import 'package:travelcrew/blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
-import 'package:travelcrew/blocs/current_profile_bloc/current_profile_bloc.dart';
-import 'package:travelcrew/blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_bloc.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_event.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_state.dart';
-import 'package:travelcrew/blocs/trip_ad_bloc/trip_ad_bloc.dart';
-import 'package:travelcrew/repositories/current_user_profile_repository.dart';
-import 'package:travelcrew/repositories/trip_ad_repository.dart';
-import 'package:travelcrew/repositories/trip_repositories/all_trip_repository.dart';
-import 'package:travelcrew/repositories/trip_repositories/current_trip_repository.dart';
-import 'package:travelcrew/repositories/trip_repositories/favorite_trip_repository.dart';
-import 'package:travelcrew/repositories/trip_repositories/past_trip_repository.dart';
-import 'package:travelcrew/repositories/trip_repositories/private_trip_repository.dart';
-import 'package:travelcrew/screens/main_tab_page/main_tab_page.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
+import '../../blocs/all_trips_bloc/all_trips_bloc.dart';
+import '../../blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trips_bloc.dart';
+import '../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_bloc.dart';
+import '../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
+import '../../blocs/current_profile_bloc/current_profile_bloc.dart';
+import '../../blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
+import '../../blocs/notifications_bloc/notification_bloc.dart';
+import '../../blocs/notifications_bloc/notification_event.dart';
+import '../../blocs/notifications_bloc/notification_state.dart';
+import '../../blocs/trip_ad_bloc/trip_ad_bloc.dart';
+import '../../repositories/current_user_profile_repository.dart';
+import '../../repositories/trip_ad_repository.dart';
+import '../../repositories/trip_repositories/all_trip_repository.dart';
+import '../../repositories/trip_repositories/current_trip_repository.dart';
+import '../../repositories/trip_repositories/favorite_trip_repository.dart';
+import '../../repositories/trip_repositories/past_trip_repository.dart';
+import '../../repositories/trip_repositories/private_trip_repository.dart';
+import '../main_tab_page/main_tab_page.dart';
+import '../../services/locator.dart';
+import '../../services/widgets/loading.dart';
 
 
 

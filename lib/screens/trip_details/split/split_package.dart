@@ -4,17 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:travelcrew/models/cost_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/split_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+
+import '../../../models/cost_model.dart';
+import '../../../models/custom_objects.dart';
+import '../../../models/split_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/constants/constants.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/loading.dart';
+import '../../../size_config/size_config.dart';
 
 ValueNotifier<List<String>> selectedList;
 

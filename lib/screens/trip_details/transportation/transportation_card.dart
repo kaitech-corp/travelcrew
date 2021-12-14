@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/split_model.dart';
-import 'package:travelcrew/models/transportation_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/split/split_package.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/global_card.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+
+import '../../../models/split_model.dart';
+import '../../../models/transportation_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/locator.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/global_card.dart';
+import '../../../size_config/size_config.dart';
+import '../split/split_package.dart';
 
 class TransportationCard extends StatelessWidget {
   final currentUserProfile =

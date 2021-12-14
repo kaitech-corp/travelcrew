@@ -1,8 +1,8 @@
-import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:get_it/get_it.dart';
 
+import '../../models/custom_objects.dart';
+import '../../services/functions/cloud_functions.dart';
 import 'database.dart';
 import 'navigation/navigation_service.dart';
 

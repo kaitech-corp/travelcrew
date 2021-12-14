@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:travelcrew/models/notification_model.dart';
+import '../../../models/notification_model.dart';
 
 
 abstract class NotificationState extends Equatable{

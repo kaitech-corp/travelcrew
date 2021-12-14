@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/chat_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/menu_screens/users/dm_chat/dm_chat.dart';
-import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/widgets/appbar_gradient.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../../models/chat_model.dart';
+import '../../../../models/custom_objects.dart';
+import 'dm_chat.dart';
+import '../../main_menu.dart';
+import '../../../../services/constants/constants.dart';
+import '../../../../services/widgets/appbar_gradient.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
+import '../../../../services/widgets/badge_icon.dart';
+import '../../../../services/functions/cloud_functions.dart';
+import '../../../../services/database.dart';
+import '../../../../size_config/size_config.dart';
 import '../../../../services/widgets/loading.dart';
 
 class DMChatListPage extends StatelessWidget {

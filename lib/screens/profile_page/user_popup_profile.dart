@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/constants/constants.dart';
+import '../../models/custom_objects.dart';
+import '../../services/constants/constants.dart';
 
 class UserPopupProfile extends StatelessWidget{
 

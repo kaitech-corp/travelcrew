@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:travelcrew/models/transportation_model.dart';
+import '../../../models/transportation_model.dart';
 
 abstract class TransportationState extends Equatable{
   TransportationState();

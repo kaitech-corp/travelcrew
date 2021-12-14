@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import 'package:travelcrew/blocs/transportation_bloc/transportation_bloc.dart';
-import 'package:travelcrew/blocs/transportation_bloc/transportation_event.dart';
-import 'package:travelcrew/blocs/transportation_bloc/transportation_state.dart';
-import 'package:travelcrew/models/transportation_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/transportation/transportation_card.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
+import '../../../blocs/transportation_bloc/transportation_bloc.dart';
+import '../../../blocs/transportation_bloc/transportation_event.dart';
+import '../../../blocs/transportation_bloc/transportation_state.dart';
+import '../../../models/transportation_model.dart';
+import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/loading.dart';
+import '../../../size_config/size_config.dart';
+import 'transportation_card.dart';
 
 class TransportationPage extends StatefulWidget {
   final Trip trip;

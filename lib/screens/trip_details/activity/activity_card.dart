@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/activity_model.dart';
-import 'package:travelcrew/models/split_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/activity/activity_menu_button.dart';
-import 'package:travelcrew/screens/trip_details/split/split_package.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/navigation/router.dart';
-import 'package:travelcrew/services/widgets/favorite_widget.dart';
-import 'package:travelcrew/services/widgets/global_card.dart';
-import 'package:travelcrew/services/widgets/link_previewer.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../models/activity_model.dart';
+import '../../../models/split_model.dart';
+import '../../../models/trip_model.dart';
+import 'activity_menu_button.dart';
+import '../split/split_package.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/navigation/router.dart';
+import '../../../services/widgets/favorite_widget.dart';
+import '../../../services/widgets/global_card.dart';
+import '../../../services/widgets/link_previewer.dart';
+import '../../../size_config/size_config.dart';
 
 
 class ActivityCard extends StatelessWidget {

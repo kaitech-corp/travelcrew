@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "logo-normal-5000.png",
+      "filename" : "Icon-256.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "logo-normal-5000 -1.png",
+      "filename" : "Icon-512.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "logo-normal-5000-2.png",
+      "filename" : "Icon-1024.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

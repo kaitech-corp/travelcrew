@@ -1,11 +1,11 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/profile_page/profile_widget.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../models/custom_objects.dart';
+import 'profile_widget.dart';
+import '../../services/functions/cloud_functions.dart';
+import '../../services/database.dart';
+import '../../services/widgets/reusableWidgets.dart';
+import '../../size_config/size_config.dart';
 
 class ProfilePage extends StatefulWidget {
   @override

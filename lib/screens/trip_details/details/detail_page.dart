@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/activity_model.dart';
-import 'package:travelcrew/models/lodging_model.dart';
-import 'package:travelcrew/models/transportation_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
+import '../../../models/activity_model.dart';
+import '../../../models/lodging_model.dart';
+import '../../../models/transportation_model.dart';
+import '../../../models/trip_model.dart';
 
 import 'activity_details.dart';
 import 'lodging_details.dart';

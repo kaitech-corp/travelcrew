@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/transportation_model.dart';
+import '../../../models/transportation_model.dart';
 
 class TransportationDetails extends StatelessWidget{
   final TransportationData transport;

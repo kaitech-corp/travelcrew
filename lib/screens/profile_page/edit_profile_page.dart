@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../models/custom_objects.dart';
+import '../../services/functions/cloud_functions.dart';
+import '../../services/database.dart';
+import '../../size_config/size_config.dart';
 import '../../services/widgets/loading.dart';
 
 class EditProfilePage extends StatefulWidget {

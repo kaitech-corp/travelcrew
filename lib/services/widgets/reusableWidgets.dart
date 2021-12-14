@@ -2,16 +2,16 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/explore/members/members_layout.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
+import '../../models/custom_objects.dart';
+import '../../models/trip_model.dart';
+import '../../screens/trip_details/explore/members/members_layout.dart';
+import '../../services/database.dart';
+import '../../services/functions/tc_functions.dart';
+import '../../services/locator.dart';
+import '../../services/navigation/route_names.dart';
+import '../../services/widgets/appearance_widgets.dart';
+import '../../size_config/size_config.dart';
 import '../constants/constants.dart';
 import 'loading.dart';
 

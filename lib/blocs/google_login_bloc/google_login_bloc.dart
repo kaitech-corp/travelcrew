@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
-import 'package:travelcrew/repositories/user_repository.dart';
+
+import '../../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../../blocs/authentication_bloc/authentication_event.dart';
+import '../../../repositories/user_repository.dart';
 import 'google_login_event.dart';
 import 'google_login_state.dart';
 

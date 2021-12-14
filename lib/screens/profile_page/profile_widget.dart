@@ -1,15 +1,15 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../models/custom_objects.dart';
+import '../alerts/alert_dialogs.dart';
+import '../../services/locator.dart';
+import '../../services/widgets/appearance_widgets.dart';
+import '../../services/functions/cloud_functions.dart';
+import '../../services/constants/constants.dart';
+import '../../services/database.dart';
+import '../../services/widgets/reusableWidgets.dart';
+import '../../services/functions/tc_functions.dart';
+import '../../size_config/size_config.dart';
 import '../../services/widgets/loading.dart';
 
 class ProfileWidget extends StatelessWidget {
