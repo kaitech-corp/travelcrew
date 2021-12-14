@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import 'package:travelcrew/blocs/lodging_bloc/lodging_bloc.dart';
-import 'package:travelcrew/blocs/lodging_bloc/lodging_event.dart';
-import 'package:travelcrew/blocs/lodging_bloc/logding_state.dart';
-import 'package:travelcrew/models/lodging_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
-import 'package:travelcrew/screens/trip_details/lodging/lodging_card.dart';
+import '../../../blocs/lodging_bloc/lodging_bloc.dart';
+import '../../../blocs/lodging_bloc/lodging_event.dart';
+import '../../../blocs/lodging_bloc/lodging_state.dart';
+import '../../../models/lodging_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/database.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/widgets/loading.dart';
+import 'lodging_card.dart';
 
 
 class LodgingPage extends StatefulWidget {

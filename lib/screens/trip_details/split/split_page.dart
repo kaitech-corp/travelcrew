@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:nil/nil.dart';
-import 'package:travelcrew/models/cost_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/split_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/split/split_package.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
+import '../../../models/cost_model.dart';
+import '../../../models/custom_objects.dart';
+import '../../../models/split_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../size_config/size_config.dart';
 import 'bloc_builder.dart';
 import 'details_bottom_sheet.dart';
+import 'split_package.dart';
 
 class SplitPage extends StatefulWidget {
   final Trip tripDetails;

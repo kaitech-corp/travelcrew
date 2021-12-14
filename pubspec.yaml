@@ -1,6 +1,6 @@
 ---
 name: travelcrew
-description: First Flutter App
+description: Travel Crew is a mobile app for friends to share travel plans, organize travel and even create full itineraries together.
 version: 3.0.6+70
 publish_to: none
 
@@ -19,7 +19,7 @@ dependencies:
   geolocator: ^7.0.3
 
   # Auth
-  google_sign_in: ^5.0.2
+  google_sign_in: ^5.2.1
   sign_in_with_apple: ^3.0.0
 
   # Data
@@ -80,6 +80,7 @@ dependencies:
   webview_flutter: ^2.0.4
 
   # UI
+  animated_splash_screen: ^1.1.0
   animations: ^2.0.1
   auto_size_text: ^2.1.0
   cupertino_icons: ^1.0.3
@@ -100,6 +101,7 @@ dependencies:
   intl: ^0.17.0
   nil: ^1.1.1
   showcaseview: ^1.1.0
+
 #  social_share: ^2.1.1
 #  lint: ^1.6.0
 

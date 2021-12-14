@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:travelcrew/models/custom_objects.dart';
+import '../../models/custom_objects.dart';
 
 abstract class AllUserState extends Equatable{
   AllUserState();

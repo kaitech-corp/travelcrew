@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/repositories/user_repository.dart';
 
+import '../../repositories/user_repository.dart';
 import 'apple_login_event.dart';
 import 'apple_login_state.dart';
 

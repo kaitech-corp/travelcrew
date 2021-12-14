@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+
+import '../../size_config/size_config.dart';
 
 const error = 'assets/images/error.jpg';
+const splashScreenLogo = 'assets/images/v1.gif';
 const profileImagePlaceholder = 'assets/images/blank_profile_picture.png';
 const spaceImage = 'assets/images/space3.jpg';
 const skyImage = 'assets/images/sky.jpg';

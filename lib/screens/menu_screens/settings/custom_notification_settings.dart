@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/settings_model.dart';
-import 'package:travelcrew/services/database.dart';
+import '../../../models/settings_model.dart';
+import '../../../services/database.dart';
 
 class CustomNotificationWidget extends StatefulWidget{
   final UserNotificationSettingsData settings;

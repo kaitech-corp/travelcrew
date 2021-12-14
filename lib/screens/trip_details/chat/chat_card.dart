@@ -2,14 +2,13 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
-import 'package:travelcrew/models/chat_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../models/chat_model.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/functions/tc_functions.dart';
 import '../../../size_config/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatCard extends StatelessWidget {
   final ChatData message;

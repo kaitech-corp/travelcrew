@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../models/trip_model.dart';
+import '../../../size_config/size_config.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 

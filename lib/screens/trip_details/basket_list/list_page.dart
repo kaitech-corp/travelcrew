@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/basket_list/cart/basket_header.dart';
-import 'package:travelcrew/screens/trip_details/explore/lists/addToListPage.dart';
-import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../models/trip_model.dart';
+import 'cart/basket_header.dart';
+import '../explore/lists/addToListPage.dart';
+import '../explore/lists/item_lists.dart';
+import '../../../services/constants/constants.dart';
+import '../../../size_config/size_config.dart';
 
 import 'cart/cart_detailed_view.dart';
 import 'cart/cart_short_view.dart';

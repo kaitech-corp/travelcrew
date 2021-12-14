@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/cost_model.dart';
-import 'package:travelcrew/models/split_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import '../../../models/cost_model.dart';
+import '../../../models/split_model.dart';
+import '../../../services/database.dart';
+import '../../../services/widgets/appearance_widgets.dart';
 
 class PaymentDetailsMenuButton extends StatelessWidget {
   const PaymentDetailsMenuButton({

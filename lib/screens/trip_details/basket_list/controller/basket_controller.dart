@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+import '../../../../models/custom_objects.dart';
 
 enum BasketState { normal, cart, add }
 

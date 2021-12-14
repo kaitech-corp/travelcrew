@@ -4,9 +4,9 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/repositories/user_repository.dart';
-import 'package:travelcrew/utils/validators.dart';
 
+import '../../../repositories/user_repository.dart';
+import '../../../utils/validators.dart';
 import 'signup_event.dart';
 import 'signup_state.dart';
 

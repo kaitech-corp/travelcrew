@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+
+import '../../size_config/size_config.dart';
 
 class Loading extends StatelessWidget{
   @override

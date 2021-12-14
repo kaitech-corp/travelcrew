@@ -3,8 +3,9 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/locator.dart';
+
+import '../../services/analytics_service.dart';
+import '../../services/locator.dart';
 
 class CloudFunction {
 

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelcrew/models/settings_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import '../../../models/settings_model.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
 
 class UserSettingsRepository {
 

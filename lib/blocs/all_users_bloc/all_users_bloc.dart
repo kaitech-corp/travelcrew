@@ -2,7 +2,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/repositories/all_users_repository.dart';
+
+import '../../repositories/all_users_repository.dart';
 import 'all_users_event.dart';
 import 'all_users_state.dart';
 

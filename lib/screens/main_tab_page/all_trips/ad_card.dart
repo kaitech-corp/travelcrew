@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../models/custom_objects.dart';
+import '../../../services/constants/constants.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../size_config/size_config.dart';
 
 class AdCard extends StatelessWidget{
 

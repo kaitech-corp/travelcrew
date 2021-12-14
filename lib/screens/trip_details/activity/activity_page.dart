@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:travelcrew/blocs/activities_bloc/activity_bloc.dart';
-import 'package:travelcrew/blocs/activities_bloc/activity_event.dart';
-import 'package:travelcrew/blocs/activities_bloc/activity_state.dart';
-import 'package:travelcrew/models/activity_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
-import 'package:travelcrew/screens/trip_details/activity/activity_card.dart';
+import '../../../blocs/activities_bloc/activity_bloc.dart';
+import '../../../blocs/activities_bloc/activity_event.dart';
+import '../../../blocs/activities_bloc/activity_state.dart';
+import '../../../models/activity_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/widgets/loading.dart';
+import 'activity_card.dart';
 
 class ActivityPage extends StatefulWidget {
 

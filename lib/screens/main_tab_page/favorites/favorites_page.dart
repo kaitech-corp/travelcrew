@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/favorite_trips_bloc/favorite_trip_event.dart';
-import 'package:travelcrew/blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
-import 'package:travelcrew/blocs/favorite_trips_bloc/favorite_trip_state.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../blocs/favorite_trips_bloc/favorite_trip_event.dart';
+import '../../../blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
+import '../../../blocs/favorite_trips_bloc/favorite_trip_state.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/widgets/loading.dart';
+import '../../../size_config/size_config.dart';
 
 import 'favorites_card.dart';
 

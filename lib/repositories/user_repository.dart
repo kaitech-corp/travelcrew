@@ -4,9 +4,9 @@ import 'dart:io' show File, Platform;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import '../../../services/analytics_service.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
 
 class UserRepository {
   final FirebaseAuth _firebaseAuth;

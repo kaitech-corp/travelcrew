@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/public_profile_bloc/public_profile_bloc.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/repositories/user_profile_repository.dart';
-import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/screens/trip_details/explore/explore_basic_layout.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../blocs/public_profile_bloc/public_profile_bloc.dart';
+import '../../../models/trip_model.dart';
+import '../../../repositories/user_profile_repository.dart';
+import '../../menu_screens/main_menu.dart';
+import 'explore_basic_layout.dart';
+import '../../../services/constants/constants.dart';
+import '../../../services/database.dart';
+import '../../../size_config/size_config.dart';
 
 class ExploreBasic extends StatelessWidget {
 

@@ -1,23 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nil/nil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travelcrew/blocs/settings_bloc/setting_state.dart';
-import 'package:travelcrew/blocs/settings_bloc/settings_bloc.dart';
-import 'package:travelcrew/blocs/settings_bloc/settings_event.dart';
-import 'package:travelcrew/models/settings_model.dart';
-import 'package:travelcrew/models/splitwise_models/current_user_model.dart';
-import 'package:travelcrew/models/splitwise_models/friend_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/menu_screens/settings/custom_notification_settings.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/notifications/notifications.dart';
-import 'package:travelcrew/services/widgets/appbar_gradient.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../blocs/settings_bloc/settings_bloc.dart';
+import '../../../blocs/settings_bloc/settings_event.dart';
+import '../../../services/constants/constants.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../services/widgets/appbar_gradient.dart';
+import '../../../size_config/size_config.dart';
 
 class Settings extends StatefulWidget{
 
