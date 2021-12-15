@@ -24,6 +24,8 @@ import '../../../size_config/size_config.dart';
 
 import 'ad_card.dart';
 
+
+/// All public trips
 class AllTrips extends StatefulWidget {
   @override
   _AllTripsState createState() => _AllTripsState();

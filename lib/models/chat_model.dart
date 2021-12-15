@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+///Model for chat data in trip group chat
 class ChatData {
   final String _displayName;
   final String _fieldID;

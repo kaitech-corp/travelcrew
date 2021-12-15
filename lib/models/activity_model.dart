@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+///Model for activity data
 class ActivityData {
   final String activityType;
   final String comment;

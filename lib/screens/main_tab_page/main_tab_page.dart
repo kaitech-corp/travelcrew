@@ -20,6 +20,8 @@ import 'my_trips_tab/past_trips/past_trip_page.dart';
 import 'my_trips_tab/private_trips/private_trip_page.dart';
 import 'notifications/notification_page.dart';
 
+
+/// Main screen
 class MainTabPage extends StatefulWidget {
 
   final List<NotificationData> notifications;

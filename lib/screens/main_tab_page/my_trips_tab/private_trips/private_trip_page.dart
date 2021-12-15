@@ -9,6 +9,8 @@ import '../../../../size_config/size_config.dart';
 import '../grouped_list_builder.dart';
 import '../sliver_grid_view.dart';
 
+
+/// Private trips
 class PrivateTrips extends StatefulWidget{
 
   @override

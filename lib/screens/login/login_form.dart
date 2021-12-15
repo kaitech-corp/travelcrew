@@ -18,6 +18,7 @@ import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/gradient_button.dart';
 
+/// Form for login screen
 class LoginForm extends StatefulWidget {
   final UserRepository _userRepository;
 

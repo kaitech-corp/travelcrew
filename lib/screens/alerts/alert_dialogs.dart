@@ -12,6 +12,7 @@ import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/navigation/router.dart';
 
+/// All alert dialogs
 class TravelCrewAlertDialogs {
   var userService = locator<UserService>();
 

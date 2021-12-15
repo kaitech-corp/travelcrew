@@ -2,6 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+///Model for user settings
 class UserNotificationSettingsData {
   final bool isDirectMessagingOn;
   final bool isPushNotificationsOn;

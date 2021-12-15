@@ -7,6 +7,8 @@ import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../size_config/size_config.dart';
 
+
+/// Favorites card layout
 class FavoritesCard extends StatelessWidget {
 
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();

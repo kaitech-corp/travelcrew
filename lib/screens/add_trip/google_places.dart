@@ -13,6 +13,7 @@ import 'add_trip_page.dart';
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: dotenv.env['kGoogleApiKey']);
 
+/// Google places API
 class GooglePlaces extends StatefulWidget{
 
   final GlobalKey<ScaffoldState> homeScaffoldKey;

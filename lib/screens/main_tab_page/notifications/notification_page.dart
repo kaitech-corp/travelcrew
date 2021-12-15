@@ -12,6 +12,7 @@ import 'package:nil/nil.dart';
 
 import 'notification_card.dart';
 
+/// Notification page
 class NotificationPage extends StatefulWidget{
 
   @override

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+/// Widget for trip image layout
 class ImageLayout extends StatelessWidget{
   final String _assetPath;
 

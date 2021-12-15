@@ -13,7 +13,7 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../../services/database.dart';
 import '../../../size_config/size_config.dart';
 
-
+/// Sliver Grid View for all trips
 class SliverGridView extends StatelessWidget {
   final List<Trip> trips;
   final int length;
@@ -22,7 +22,6 @@ class SliverGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       height: SizeConfig.screenHeight,
       child: CustomScrollView(slivers: <Widget>[
