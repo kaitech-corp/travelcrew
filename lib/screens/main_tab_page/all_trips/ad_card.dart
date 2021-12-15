@@ -6,6 +6,8 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../size_config/size_config.dart';
 
+
+/// Layout for trip Ads
 class AdCard extends StatelessWidget{
 
   final TripAds tripAds;

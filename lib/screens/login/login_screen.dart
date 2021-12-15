@@ -11,7 +11,7 @@ import '../../size_config/size_config.dart';
 
 import 'login_form.dart';
 
-
+/// Login screen
 class LoginScreen extends StatelessWidget {
 
   final UserRepository _userRepository = UserRepository();

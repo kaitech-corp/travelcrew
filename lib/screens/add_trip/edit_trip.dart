@@ -15,7 +15,7 @@ import 'add_trip_page.dart';
 import 'google_places.dart';
 
 
-
+/// Edit trip page
 class EditTripData extends StatefulWidget {
   final Trip tripDetails;
   EditTripData({this.tripDetails});

@@ -7,7 +7,7 @@ import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/reusableWidgets.dart';
 import '../../size_config/size_config.dart';
 
-
+/// Custom app bar
 class CustomAppBar extends StatelessWidget {
 
   final  bool bottomNav;

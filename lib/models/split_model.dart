@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+///Model for split object
 class SplitObject {
   double amountRemaining;
   Timestamp dateCreated;

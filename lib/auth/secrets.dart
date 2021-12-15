@@ -1,1 +1,0 @@
-const rapidAPIKey = "385a918431msh54809c1b3fc67abp107d86jsn416a7e55acdf";

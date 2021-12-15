@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../blocs/all_trips_bloc/all_trips_bloc.dart';
 import '../../blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trips_bloc.dart';
 import '../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_bloc.dart';
@@ -18,12 +19,12 @@ import '../../repositories/trip_repositories/current_trip_repository.dart';
 import '../../repositories/trip_repositories/favorite_trip_repository.dart';
 import '../../repositories/trip_repositories/past_trip_repository.dart';
 import '../../repositories/trip_repositories/private_trip_repository.dart';
-import '../main_tab_page/main_tab_page.dart';
 import '../../services/locator.dart';
 import '../../services/widgets/loading.dart';
+import '../main_tab_page/main_tab_page.dart';
 
 
-
+/// Profile stream to initiate all blocs
 class ProfileStream extends StatefulWidget {
   final String uid;
 

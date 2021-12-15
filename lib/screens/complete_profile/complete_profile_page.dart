@@ -7,6 +7,8 @@ import '../../services/widgets/curved_widget.dart';
 import '../../size_config/size_config.dart';
 import 'complete_profile_form.dart';
 
+
+/// Complete profile page after signup
 class CompleteProfile extends StatelessWidget {
   final UserRepository _userRepository;
 

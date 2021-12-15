@@ -18,6 +18,7 @@ import 'google_places.dart';
 
 GoogleData googleData;
 
+/// Add trip page
 class AddTripPage extends StatefulWidget {
 
   //When using google places this object will pass on the location.

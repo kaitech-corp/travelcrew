@@ -16,6 +16,8 @@ import '../../services/navigation/route_names.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
 
+
+/// Form for complete profile page
 class CompleteProfileForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();

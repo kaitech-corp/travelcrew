@@ -9,6 +9,8 @@ import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 
+
+/// Layout for notifications
 class NotificationsCard extends StatelessWidget{
   final NotificationData notification;
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();

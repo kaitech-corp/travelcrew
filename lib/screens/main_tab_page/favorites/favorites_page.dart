@@ -10,7 +10,7 @@ import '../../../size_config/size_config.dart';
 
 import 'favorites_card.dart';
 
-
+/// Favorites page
 class FavoritesPage extends StatefulWidget {
   @override
   _FavoriteTripState createState() => _FavoriteTripState();

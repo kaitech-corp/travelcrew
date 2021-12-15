@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+///Model for cost data when spliting items
 class CostObject {
   double amountOwe;
   Timestamp datePaid;

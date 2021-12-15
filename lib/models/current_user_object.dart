@@ -1,5 +1,5 @@
 
-
+///Model for current user
 class CurrentUser {
   final List<String> blockedList;
   final String displayName;

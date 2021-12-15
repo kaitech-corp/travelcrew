@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travelcrew/models/split_model.dart';
 
+///Model for user
 class User {
   final String displayName;
   final String email;
@@ -11,6 +12,8 @@ class User {
   User({this.displayName, this.email, this.firstName, this.lastName, this.uid});
 
 }
+
+///Model for user signup
 class UserSignUp {
    String displayName;
    String email;
@@ -21,6 +24,8 @@ class UserSignUp {
    UserSignUp({this.displayName, this.email, this.firstName, this.lastName, this.uid});
 
 }
+
+///Model for user public profile
 class UserPublicProfile {
   List<String> blockedList;
   String displayName;
@@ -79,6 +84,7 @@ class UserPublicProfile {
   }
 }
 
+///Model for members of trip
 class Members {
    String uid;
    String displayName;
@@ -107,6 +113,7 @@ class Members {
 
 }
 
+///Model for item being brought
 class Bringing {
   String item;
   String displayName;
@@ -124,6 +131,7 @@ class Bringing {
         voters = data['voters'] != null ? List<String>.from(data['voters']) : [];
 }
 
+///Model for item needed for trip
 class Need {
   String item;
   String displayName;
@@ -159,7 +167,7 @@ class Countries {
 
 }
 
-
+///Model for Holiday
 class Holiday {
   final String date;
   final String localName;
@@ -176,6 +184,7 @@ Holiday({this.date, this.localName, this.name, this.countryCode});
 
 }
 
+///Model Walmart API
 class WalmartProducts {
    String query;
    String type;
@@ -188,6 +197,8 @@ class WalmartProducts {
         type = jsonMap['type'] ?? '';
 
 }
+
+///Model for department type from Walmart API
 class Department {
   final String name;
   final String id;
@@ -199,6 +210,7 @@ class Department {
         id = jsonMap['id'];
 }
 
+///Model for quantity from Walmart API
 class WalmartProductsItem {
   int quantity;
   final WalmartProducts walmartProducts;
@@ -210,6 +222,7 @@ class WalmartProductsItem {
   }
 }
 
+///Model for user feedback
 class TCFeedback {
   final String message;
   final Timestamp timestamp;
@@ -223,7 +236,7 @@ class TCFeedback {
 class TCReports {
 
 }
-
+///Model for Google Places
 class GoogleData {
   String location;
   GeoPoint geoLocation;
@@ -231,6 +244,7 @@ class GoogleData {
   GoogleData({this.location, this.geoLocation});
 }
 
+///Model for trip ads show
 class TripAds {
   final String tripName;
   final GeoPoint geoPoint;
@@ -256,6 +270,7 @@ class TripAds {
       this.clickers});
 }
 
+///Model for suggestions
 class Suggestions {
   final String url;
   final Timestamp timestamp;
@@ -265,6 +280,7 @@ class Suggestions {
   Suggestions({this.fieldID, this.url, this.timestamp, this.tags});
 }
 
+///Model for map API
 class TrueWay {
 
   final String name;
@@ -281,6 +297,7 @@ class TrueWay {
         website = jsonMap['website'];
 }
 
+///Model for count down date to show on trip page
 class CountDownDate {
 
   double initialDayCount;
@@ -290,22 +307,14 @@ class CountDownDate {
   CountDownDate({this.daysLeft,this.initialDayCount,this.gaugeCount});
 }
 
-
-class ExpansionItem {
-  String headerValue;
-  bool isExpanded;
-  SplitObject item;
-
-  ExpansionItem({this.item,this.headerValue,this.isExpanded = false});
-}
-
+///Model for user purchase details: Split Feature
 class UserPurchaseDetails{
   String uid;
   double total;
 
   UserPurchaseDetails({this.total,this.uid});
 }
-
+///Model for start and end dates
 class DateTimeModel{
   DateTime startDate;
   DateTime endDate;

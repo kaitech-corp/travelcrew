@@ -6,6 +6,7 @@ import '../../../services/functions/tc_functions.dart';
 
 import 'crew_trip_card.dart';
 
+/// Grouped list view for current past and private trips
 class GroupedListTripView extends StatefulWidget {
   final dynamic data;
   final bool isPast;

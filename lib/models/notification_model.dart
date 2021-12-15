@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+///Model for notifications
 class NotificationData {
   final String _documentID;
   final String _displayName;
