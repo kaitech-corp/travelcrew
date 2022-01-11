@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelcrew/models/split_model.dart';
 
 ///Model for user
 class User {

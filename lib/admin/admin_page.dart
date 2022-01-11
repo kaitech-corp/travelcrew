@@ -10,11 +10,15 @@ import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
 
 class AdminPage extends StatefulWidget {
+
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
+
+
   TextEditingController _controller;
 
   @override
