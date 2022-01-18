@@ -76,7 +76,6 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
         CurrentTrips(),
         PastTrips(),
         PrivateTrips(),
-
       ],
     ),
     AllTrips(),
@@ -146,7 +145,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
             backgroundColor: ReusableThemeColor().bottomNavColor(context),
             color: ReusableThemeColor().color(context),
             items: [
-              const IconThemeWidget(icon:Icons.group),
+              const IconThemeWidget(icon:Icons.list_rounded),
               const IconThemeWidget(icon:Icons.search),
               const IconThemeWidget(icon: Icons.add_outlined,),
               const IconThemeWidget(icon:Icons.favorite_border),

@@ -32,3 +32,4 @@ Runner/GeneratedPluginRegistrant.*
 !default.perspectivev3
 /Runner/
 /build/
+/build/Pods.build/Release-iphonesimulator/
