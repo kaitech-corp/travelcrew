@@ -15,9 +15,9 @@ view upcoming trips, vote on lodging and activities and even split expenses!
 ![App UI](doc/IMG_5112.PNG)
 ![App UI](doc/IMG_5113.PNG)
 ![App UI](doc/IMG_5114.PNG)
-![App UI](/IMG_5115.PNG)
-![App UI](/IMG_5116.PNG)
-![App UI](/IMG_5117.PNG)
+![App UI](doc/IMG_5115.PNG)
+![App UI](doc/IMG_5116.PNG)
+![App UI](doc/IMG_5117.PNG)
 
 **Services we are using:**
 
