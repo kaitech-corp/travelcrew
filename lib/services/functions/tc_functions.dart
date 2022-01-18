@@ -1,13 +1,14 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:travelcrew/models/activity_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/lodging_model.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../models/activity_model.dart';
+import '../../models/custom_objects.dart';
+import '../../models/lodging_model.dart';
+import '../../services/functions/cloud_functions.dart';
 import '../locator.dart';
 
 class TCFunctions {

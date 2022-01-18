@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_bloc.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_event.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_state.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/widgets/gradient_button.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../blocs/authentication_bloc/authentication_event.dart';
+import '../../blocs/signup_bloc/signup_bloc.dart';
+import '../../blocs/signup_bloc/signup_event.dart';
+import '../../blocs/signup_bloc/signup_state.dart';
+import '../../services/constants/constants.dart';
+import '../../services/functions/tc_functions.dart';
+import '../../services/widgets/gradient_button.dart';
+import '../../size_config/size_config.dart';
 
 class SignupForm extends StatefulWidget {
   @override

@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/signup_bloc/signup_bloc.dart';
-import 'package:travelcrew/repositories/user_repository.dart';
-import 'package:travelcrew/screens/signup/signup_form.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/widgets/curved_widget.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../blocs/signup_bloc/signup_bloc.dart';
+import '../../repositories/user_repository.dart';
+import 'signup_form.dart';
+import '../../services/constants/constants.dart';
+import '../../services/widgets/curved_widget.dart';
+import '../../size_config/size_config.dart';
 
 class SignupScreen extends StatelessWidget {
   final UserRepository _userRepository;

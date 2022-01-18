@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:travelcrew/models/split_model.dart';
+import '../../../models/split_model.dart';
 
 abstract class SplitEvent extends Equatable {
   @override

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:travelcrew/blocs/authentication_bloc/authentication_event.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../blocs/authentication_bloc/authentication_event.dart';
+import '../../models/custom_objects.dart';
+import '../../services/constants/constants.dart';
+import '../../services/database.dart';
+import '../../services/navigation/route_names.dart';
+import '../../services/widgets/appearance_widgets.dart';
+import '../../size_config/size_config.dart';
 
 final ValueNotifier chatNotifier = ValueNotifier(int);
 

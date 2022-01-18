@@ -1,9 +1,11 @@
 
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/blocs/settings_bloc/setting_state.dart';
-import 'package:travelcrew/blocs/settings_bloc/settings_event.dart';
-import 'package:travelcrew/repositories/user_settings_repository.dart';
+
+import '../../../blocs/settings_bloc/setting_state.dart';
+import '../../../blocs/settings_bloc/settings_event.dart';
+import '../../../repositories/user_settings_repository.dart';
 
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:travelcrew/models/lodging_model.dart';
+import '../../../models/lodging_model.dart';
 
 abstract class LodgingEvent extends Equatable {
   @override

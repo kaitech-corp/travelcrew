@@ -1,8 +1,8 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/explore/lists/item_lists.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import '../../../../models/trip_model.dart';
+import 'item_lists.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
 
 class ListPage extends StatelessWidget{
 

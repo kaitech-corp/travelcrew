@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/notification_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import '../../../models/notification_model.dart';
+import '../../../models/trip_model.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../services/locator.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/widgets/appearance_widgets.dart';
 
+
+/// Layout for notifications
 class NotificationsCard extends StatelessWidget{
   final NotificationData notification;
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();

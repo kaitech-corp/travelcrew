@@ -2,18 +2,16 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:travelcrew/models/notification_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
-import 'package:travelcrew/screens/app_bar/app_bar.dart';
-import 'package:travelcrew/screens/menu_screens/main_menu.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
-import 'package:travelcrew/size_config/size_config.dart';
-
+import '../../models/notification_model.dart';
+import '../../models/trip_model.dart';
+import '../add_trip/add_trip_page.dart';
+import '../app_bar/app_bar.dart';
+import '../menu_screens/main_menu.dart';
+import '../../services/database.dart';
+import '../../services/functions/cloud_functions.dart';
+import '../../services/navigation/route_names.dart';
+import '../../services/widgets/appearance_widgets.dart';
+import '../../services/widgets/badge_icon.dart';
 import '../../size_config/size_config.dart';
 import 'all_trips/all_trips_page.dart';
 import 'favorites/favorites_page.dart';
@@ -22,6 +20,8 @@ import 'my_trips_tab/past_trips/past_trip_page.dart';
 import 'my_trips_tab/private_trips/private_trip_page.dart';
 import 'notifications/notification_page.dart';
 
+
+/// Main screen
 class MainTabPage extends StatefulWidget {
 
   final List<NotificationData> notifications;

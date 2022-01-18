@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:travelcrew/models/chat_model.dart';
-import 'package:travelcrew/services/widgets/chat_date_display.dart';
+import '../../../models/chat_model.dart';
+import '../../../services/widgets/chat_date_display.dart';
 
 import 'chat_card.dart';
 

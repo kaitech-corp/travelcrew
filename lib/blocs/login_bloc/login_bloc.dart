@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/repositories/user_repository.dart';
-import 'package:travelcrew/utils/validators.dart';
+
+import '../../../repositories/user_repository.dart';
+import '../../../utils/validators.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import '../controller/basket_controller.dart';
+import '../../../../services/constants/constants.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
 
 class BasketHeader extends StatelessWidget {
   final BasketController controller;

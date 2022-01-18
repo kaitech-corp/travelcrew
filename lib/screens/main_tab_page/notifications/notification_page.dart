@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_bloc.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_event.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_state.dart';
-import 'package:travelcrew/models/notification_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
+import '../../../blocs/notifications_bloc/notification_bloc.dart';
+import '../../../blocs/notifications_bloc/notification_event.dart';
+import '../../../blocs/notifications_bloc/notification_state.dart';
+import '../../../models/notification_model.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/widgets/loading.dart';
 import 'package:nil/nil.dart';
 
 import 'notification_card.dart';
 
+/// Notification page
 class NotificationPage extends StatefulWidget{
 
   @override

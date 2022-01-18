@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/locator.dart';
+import '../../../models/trip_model.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../../../services/constants/constants.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../services/locator.dart';
 
 class ExploreBasicLayout extends StatelessWidget{
 

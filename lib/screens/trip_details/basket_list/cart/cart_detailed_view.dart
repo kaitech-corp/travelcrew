@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
-import 'package:travelcrew/services/constants/constants.dart';
+import '../../../../models/trip_model.dart';
+import '../controller/basket_controller.dart';
+import '../../../../services/constants/constants.dart';
 
 import 'cart_detailed_view_card.dart';
 

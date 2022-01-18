@@ -2,19 +2,17 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
-import 'package:travelcrew/screens/trip_details/explore/ImageAnimation.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/navigation/router.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-import 'package:travelcrew/services/widgets/trip_details_widget.dart';
-import 'package:travelcrew/size_config/size_config.dart';
-
+import '../../../models/trip_model.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../basket_list/controller/basket_controller.dart';
 import 'ImageAnimation.dart';
+import '../../../services/database.dart';
+import '../../../services/navigation/route_names.dart';
+import '../../../services/navigation/router.dart';
+import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/reusableWidgets.dart';
+import '../../../services/widgets/trip_details_widget.dart';
+import '../../../size_config/size_config.dart';
 import 'members/members_layout.dart';
 
 

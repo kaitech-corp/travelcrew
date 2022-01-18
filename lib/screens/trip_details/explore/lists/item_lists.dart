@@ -1,17 +1,16 @@
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
-import 'package:travelcrew/services/apis/api.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
-import 'package:travelcrew/services/widgets/basket_icon.dart';
-import 'package:travelcrew/services/widgets/favorite_widget.dart';
-import 'package:travelcrew/size_config/size_config.dart';
-
+import '../../../../models/custom_objects.dart';
+import '../../../alerts/alert_dialogs.dart';
+import '../../basket_list/controller/basket_controller.dart';
+import '../../../../services/apis/api.dart';
+import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
+import '../../../../services/widgets/badge_icon.dart';
+import '../../../../services/widgets/basket_icon.dart';
+import '../../../../services/widgets/favorite_widget.dart';
+import '../../../../size_config/size_config.dart';
 import '../../../../services/widgets/loading.dart';
 
 class BringingList extends StatefulWidget {

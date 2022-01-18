@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/chat_bloc/chat_bloc.dart';
-import 'package:travelcrew/blocs/chat_bloc/chat_event.dart';
-import 'package:travelcrew/blocs/chat_bloc/chat_state.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/widgets/loading.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../blocs/chat_bloc/chat_bloc.dart';
+import '../../../blocs/chat_bloc/chat_event.dart';
+import '../../../blocs/chat_bloc/chat_state.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/locator.dart';
+import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/loading.dart';
+import '../../../size_config/size_config.dart';
 
 import 'grouped_list_chat_builder.dart';
 

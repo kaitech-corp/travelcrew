@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelcrew/models/transportation_model.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import '../../../models/transportation_model.dart';
+import '../../../services/functions/cloud_functions.dart';
 
 class TransportationRepository {
 

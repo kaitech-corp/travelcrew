@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/locator.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/size_config/size_config.dart';
+import '../../../../models/custom_objects.dart';
+import '../../../alerts/alert_dialogs.dart';
+import '../../../../services/database.dart';
+import '../../../../services/locator.dart';
+import '../../../../services/navigation/route_names.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
+import '../../../../services/functions/cloud_functions.dart';
+import '../../../../services/constants/constants.dart';
+import '../../../../size_config/size_config.dart';
 
 class TCUserCard extends StatefulWidget {
   final UserPublicProfile allUsers;

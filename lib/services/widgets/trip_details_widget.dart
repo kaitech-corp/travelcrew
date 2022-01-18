@@ -2,12 +2,12 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/widgets/reusableWidgets.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
+import '../../models/trip_model.dart';
+import '../../screens/alerts/alert_dialogs.dart';
+import '../../services/functions/tc_functions.dart';
+import '../../services/widgets/reusableWidgets.dart';
+import '../../size_config/size_config.dart';
 import 'appearance_widgets.dart';
 
 class TripDetailsWidget extends StatelessWidget {

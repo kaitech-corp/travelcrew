@@ -1,3 +1,5 @@
+
+///Model for transportation data
 class TransportationData {
   final String _mode;
   final String _airline;

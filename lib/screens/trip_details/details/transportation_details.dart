@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/transportation_model.dart';
+import '../../../models/transportation_model.dart';
 
 class TransportationDetails extends StatelessWidget{
   final TransportationData transport;
@@ -9,7 +9,6 @@ class TransportationDetails extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+
   }
 }

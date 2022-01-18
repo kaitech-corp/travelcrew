@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/widgets/appbar_gradient.dart';
-import 'package:travelcrew/size_config/size_config.dart';
 
+import '../models/custom_objects.dart';
+import '../screens/alerts/alert_dialogs.dart';
+import '../services/constants/constants.dart';
+import '../services/database.dart';
+import '../services/functions/cloud_functions.dart';
+import '../services/widgets/appbar_gradient.dart';
 import '../services/widgets/loading.dart';
+import '../size_config/size_config.dart';
 
 class AdminPage extends StatefulWidget {
+
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
+
+
   TextEditingController _controller;
 
   @override

@@ -1,7 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+
+import '../../models/custom_objects.dart';
 
 class CountryAPI extends StatelessWidget {
 
@@ -11,7 +12,6 @@ class CountryAPI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text('Country List'),

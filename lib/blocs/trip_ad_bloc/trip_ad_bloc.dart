@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/repositories/trip_ad_repository.dart';
+
+import '../../../repositories/trip_ad_repository.dart';
 import 'trip_ad_event.dart';
 import 'trip_ad_state.dart';
 

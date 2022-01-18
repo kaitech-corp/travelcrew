@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+///Model for trip details
 class Trip {
 
   final List<String> accessUsers;

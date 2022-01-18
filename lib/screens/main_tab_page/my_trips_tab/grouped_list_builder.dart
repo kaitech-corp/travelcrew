@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/functions/tc_functions.dart';
 
 import 'crew_trip_card.dart';
 
+/// Grouped list view for current past and private trips
 class GroupedListTripView extends StatefulWidget {
   final dynamic data;
   final bool isPast;

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import '../../../models/custom_objects.dart';
+import '../../../services/functions/cloud_functions.dart';
 
 class PublicProfileRepository {
 

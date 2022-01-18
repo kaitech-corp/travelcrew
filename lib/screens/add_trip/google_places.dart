@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
+
+import '../../models/custom_objects.dart';
+import 'add_trip_page.dart';
 
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: dotenv.env['kGoogleApiKey']);
 
+/// Google places API
 class GooglePlaces extends StatefulWidget{
 
   final GlobalKey<ScaffoldState> homeScaffoldKey;

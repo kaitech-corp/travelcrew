@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/trip_details/basket_list/controller/basket_controller.dart';
+import '../../../../models/trip_model.dart';
+import '../../basket_list/controller/basket_controller.dart';
 
 import 'item_lists.dart';
 
