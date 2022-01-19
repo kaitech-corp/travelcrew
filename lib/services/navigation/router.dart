@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../admin/admin_page.dart';
 import '../../blocs/all_users_bloc/all_users_bloc.dart';
@@ -312,13 +313,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   }
 }
 
-PageRoute _getPageRoute({String routeName, Widget viewToShow }) {
-  return MaterialPageRoute(
+CupertinoPageRoute _getPageRoute({String routeName, Widget viewToShow }) {
+  return CupertinoPageRoute(
       settings: RouteSettings(
         name: routeName,
       ),
       builder: (BuildContext context) => viewToShow);
 }
+
+
 
 class EditActivityArguments{
   final Trip trip;

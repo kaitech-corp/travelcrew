@@ -38,15 +38,15 @@ dependencies:
   showcaseview: ^1.1.4
 
   # Firebase
-  cloud_firestore: ^2.5.3
-  cloud_functions: ^3.0.3
-  firebase_analytics: ^8.3.2
-  firebase_auth: ^3.1.1
-  firebase_core: ^1.6.0
-  firebase_crashlytics: ^2.2.1
-  firebase_messaging: ^10.0.7
-  firebase_performance: ^0.7.1+1
-  firebase_storage: ^10.0.3
+  cloud_firestore: ^2.5.4
+  cloud_functions: ^3.1.0
+  firebase_analytics: ^8.3.4
+  firebase_auth: ^3.1.5
+  firebase_core: ^1.9.0
+  firebase_crashlytics: ^2.2.5
+  firebase_messaging: ^11.0.0
+  firebase_performance: ^0.7.1+4
+  firebase_storage: ^10.0.7
 
   # Images
   image_cropper: ^1.4.1
@@ -101,6 +101,7 @@ dependencies:
   # Other
   intl: ^0.17.0
   nil: ^1.1.1
+  cached_network_image: ^3.2.0
 
 
 #  social_share: ^2.1.1
