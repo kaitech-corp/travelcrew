@@ -85,7 +85,6 @@ ThemeData ThemeDataBuilder() {
     ),
     brightness: Brightness.light,
     primaryColor: Colors.white,
-    accentColor: Colors.blueAccent,
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: TextStyle(color: Colors.black),
       fillColor: Colors.grey[300],
@@ -96,6 +95,6 @@ ThemeData ThemeDataBuilder() {
     iconTheme: IconThemeData(
       color: Colors.white,
       size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
-    ),
+    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.blueAccent),
   );
 }

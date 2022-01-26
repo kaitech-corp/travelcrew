@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../models/notification_model.dart';
 import '../../../models/trip_model.dart';
 import '../../alerts/alert_dialogs.dart';
@@ -110,7 +112,22 @@ class NotificationsCard extends StatelessWidget{
       color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
-        title: Text('${notification.message}'),
+        title: Linkify(
+          onOpen: (link) async {
+            if (await canLaunch(link.url)) {
+              await launch(link.url);
+            } else {
+              throw 'Could not launch $link';
+            }
+          },
+          text: notification.message ?? '',
+          style: Theme.of(context).textTheme.subtitle1,
+          // textScaleFactor: 1.2,
+          maxLines: 50,
+          overflow: TextOverflow.ellipsis,
+          linkStyle: const TextStyle(color: Colors.blue),
+          textAlign: TextAlign.left,
+        ),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
       ),
     );

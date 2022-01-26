@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travelcrew/services/navigation/route_names.dart';
 
 import '../../models/custom_objects.dart';
 import '../../models/trip_model.dart';
@@ -91,7 +92,7 @@ class _AddTripPageState extends State<AddTripPage> {
   }
 
   Future getImageAddTrip() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+    var image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
 
 
     setState(() {
@@ -280,7 +281,8 @@ class _AddTripPageState extends State<AddTripPage> {
                                   _image = null;
                                   ispublic =true;
                                 });
-                                TravelCrewAlertDialogs().addTripAlert(context);
+                                // TravelCrewAlertDialogs().addTripAlert(context);
+                                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
                               }
                             },
                             child: const Text('Add Trip'),

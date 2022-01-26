@@ -29,6 +29,7 @@ const signInWithApple = ' Sign in with Apple';
 double sizeFromHangingTheme = SizeConfig.screenHeight*.13;
 const urls = [];
 const splitWiseToken = 'splitWiseToken';
+const tabs = ['Explore', 'Split', 'Transportation', 'Lodging', 'Activities', 'Chat'];
 
 const defaultDuration = Duration(seconds: 3);
 const listAnimationDuration = Duration(milliseconds: 500);

@@ -40,9 +40,7 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
       } on PlatformException {
         appBadgeSupported = 'Failed to get badge support.';
       }
-
       if (!mounted) return;
-
       setState(() {
         _appBadgeSupported = appBadgeSupported;
       });

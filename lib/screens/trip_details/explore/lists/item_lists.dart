@@ -391,7 +391,7 @@ class CustomList extends StatefulWidget {
 
 class _CustomListState extends State<CustomList> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String item;
+  final TextEditingController controller = TextEditingController(text: '');
   String option = 'Bringing';
   List<String> optionList = ['Bringing'];
 
@@ -409,6 +409,7 @@ class _CustomListState extends State<CustomList> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: controller,
                           enableInteractiveSelection: true,
                           textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
@@ -420,13 +421,12 @@ class _CustomListState extends State<CustomList> {
                             if (value.isEmpty) {
                               return 'Please enter an item first.';
                               // ignore: missing_return
-                            } else {
-                              return '';
                             }
                           },
-                          onChanged: (val) => {
-                                item = val,
-                              }),
+                          // onChanged: (val) => {
+                          //       item = val,
+                          //     }
+                              ),
                       const Padding(
                         padding: EdgeInsets.only(top: 20),
                       ),
@@ -452,28 +452,18 @@ class _CustomListState extends State<CustomList> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            final FormState form = _formKey.currentState;
+                            final form = _formKey.currentState;
+                            form.save();
                             if (form.validate()) {
-                              if (option == 'Bringing') {
-                                CloudFunction().addItemToBringingList(
-                                    widget.documentID, item, '');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Item added to Bringing list')));
-                              }
-                              // else {
-                              //   CloudFunction().addItemToNeedList(
-                              //       widget.documentID,
-                              //       item,
-                              //       currentUserProfile.displayName,
-                              //       '');
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //       const SnackBar(
-                              //           content: Text(
-                              //               'Item added to Need list')));
-                              // }
+                              CloudFunction().addItemToBringingList(
+                                  widget.documentID, controller.text, '');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Item added to Bringing list')));
                               form.reset();
+                            } else {
+                              print(form.validate());
                             }
                           },
                           child: const Text('Save'))

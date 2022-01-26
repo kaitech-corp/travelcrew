@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 import '../../../blocs/settings_bloc/settings_bloc.dart';
 import '../../../blocs/settings_bloc/settings_event.dart';
 import '../../../services/constants/constants.dart';
@@ -241,6 +243,25 @@ class _SettingsState extends State<Settings> {
                   _twitterButton(),
                 ],
               ),
+              SizedBox(height: 20,),
+              Center(child: Text('Account',style: Theme.of(context).textTheme.headline4,)),
+              Container(
+                  height: 2,
+                  decoration: BoxDecoration(border: Border.all(color: Colors.black),)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text('Delete this account:', style: Theme.of(context).textTheme.subtitle1,),
+                  ),
+                  ElevatedButton(
+                    onPressed: (){
+                      TravelCrewAlertDialogs().disableAccount(context);
+                    },
+                    child: Text('Delete')),
+                ],
+              )
             ],
           ),
         ),

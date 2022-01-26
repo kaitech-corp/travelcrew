@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../models/activity_model.dart';
 import '../../models/custom_objects.dart';
 import '../../models/lodging_model.dart';
@@ -24,7 +27,43 @@ class TravelCrewAlertDialogs {
       ' will not be able to view any of your content. Please note this user will not be removed from '
       'shared trips where neither party is the owner. It is your responsibility to exit such trips.';
 
+  var deleteAccountMessage = "We're sad to see you leave. Please review our "
+      "Privacy Policy on 'Data Retention' before confirming the deletion of this account.";
+
   var forgotPassword = "We'll send you an email with instructions to reset your password.";
+
+
+  Future<void> disableAccount(BuildContext context,) {
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          title: Text('Delete Account',textScaleFactor: 1.5,),
+          content: Text(
+            deleteAccountMessage,),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel',),
+              onPressed: () {
+                navigationService.pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Confirm Delete',),
+              onPressed: () async {
+                await navigationService.pop();
+                await BlocProvider.of<AuthenticationBloc>(context)
+                    .add(AuthenticationLoggedOut());
+                CloudFunction().disableAccount();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> blockAlert(BuildContext context, String blockedUserID) {
 

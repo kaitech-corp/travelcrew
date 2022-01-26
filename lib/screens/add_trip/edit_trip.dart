@@ -80,7 +80,7 @@ class _EditTripDataState extends State<EditTripData> {
 
 
   Future getImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery,imageQuality: 80);
+    var image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
       _image = File(image.path);

@@ -472,5 +472,12 @@ class CloudFunction {
     });
   }
 
+  //Disable account
+  void disableAccount() async {
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable('disableAccount');
+    functionData();
+  }
+
   // void addSplitItem(String )
 }//end CloudFunction
+

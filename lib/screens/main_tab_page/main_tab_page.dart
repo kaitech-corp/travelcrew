@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -85,6 +86,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
 
   void _onItemTapped(int index) {
+    // FirebaseCrashlytics.instance.crash();
     setState(() {
       _selectedIndex = index;
     });

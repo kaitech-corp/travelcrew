@@ -92,7 +92,6 @@ class _TravelCrewState extends State<TravelCrew> {
                               return FutureBuilder(
                                 builder: (context, data) {
                                   if (data.data == true) {
-
                                     return LaunchIconBadger();
                                   } else if (data.data == false){
                                     return CompleteProfile(userRepository: widget.userRepository,);
@@ -111,7 +110,7 @@ class _TravelCrewState extends State<TravelCrew> {
                 navigatorKey: locator<NavigationService>().navigationKey,
                 onGenerateRoute: generateRoute,
                 navigatorObservers: [
-                  FirebaseAnalyticsObserver(analytics: analytics)
+                  FirebaseAnalyticsObserver(analytics: analytics),
                 ],
               );
       }

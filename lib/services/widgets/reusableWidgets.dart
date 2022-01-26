@@ -375,12 +375,12 @@ class DateGauge extends StatelessWidget {
 
 
     CountDownDate countDownDate = TCFunctions().dateGauge(
-        tripDetails.dateCreatedTimeStamp.millisecondsSinceEpoch,
-        tripDetails.startDateTimeStamp.millisecondsSinceEpoch);
+        tripDetails.dateCreatedTimeStamp?.millisecondsSinceEpoch,
+        tripDetails.startDateTimeStamp?.millisecondsSinceEpoch);
     CountDownDate countDownDateReturn = TCFunctions().dateGauge(
-        tripDetails.startDateTimeStamp.millisecondsSinceEpoch,
-        tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
-    String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp.millisecondsSinceEpoch, tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
+        tripDetails.startDateTimeStamp?.millisecondsSinceEpoch,
+        tripDetails.endDateTimeStamp?.millisecondsSinceEpoch);
+    String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp?.millisecondsSinceEpoch, tripDetails.endDateTimeStamp?.millisecondsSinceEpoch);
 
     switch (result){
       case 'before':

@@ -47,28 +47,27 @@ class _ProfileStreamState extends State<ProfileStream> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: MultiBlocProvider(
-            providers: [
-              BlocProvider(create: (context) => CurrentCrewTripBloc(tripRepository: CurrentTripRepository()..refresh() )),
-              BlocProvider(create: (context) => PastCrewTripBloc(tripRepository: PastTripRepository()..refresh() )),
-              BlocProvider(create: (context) => PrivateTripBloc(tripRepository: PrivateTripRepository()..refresh() )),
-              BlocProvider(create: (context) => AllTripBloc(tripRepository: AllTripRepository()..refresh() )),
-              BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: FavoriteTripRepository()..refresh() )),
-              BlocProvider(create: (context) => CurrentProfileBloc(currentUserProfileRepository: CurrentUserProfileRepository()..refresh())),
-              BlocProvider(create: (context) => TripAdBloc(tripAdRepository: TripAdRepository()..refresh())),
-            ],
-            child: BlocBuilder<NotificationBloc, NotificationState>(
-                builder: (context, state){
-                  if(state is NotificationLoadingState){
-                    return Loading();
-                  } else if (state is NotificationHasDataState){
-                    FlutterAppBadger.updateBadgeCount(state.data.length);
-                    return MainTabPage(notifications: state.data,);
-                  } else {
-                    return MainTabPage(notifications: null,);
-                  }}
-            )));
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => CurrentCrewTripBloc(tripRepository: CurrentTripRepository()..refresh() )),
+          BlocProvider(create: (context) => PastCrewTripBloc(tripRepository: PastTripRepository()..refresh() )),
+          BlocProvider(create: (context) => PrivateTripBloc(tripRepository: PrivateTripRepository()..refresh() )),
+          BlocProvider(create: (context) => AllTripBloc(tripRepository: AllTripRepository()..refresh() )),
+          BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: FavoriteTripRepository()..refresh() )),
+          BlocProvider(create: (context) => CurrentProfileBloc(currentUserProfileRepository: CurrentUserProfileRepository()..refresh())),
+          BlocProvider(create: (context) => TripAdBloc(tripAdRepository: TripAdRepository()..refresh())),
+        ],
+        child: BlocBuilder<NotificationBloc, NotificationState>(
+            builder: (context, state){
+              if(state is NotificationLoadingState){
+                return Loading();
+              } else if (state is NotificationHasDataState){
+                FlutterAppBadger.updateBadgeCount(state.data.length);
+                return MainTabPage(notifications: state.data,);
+              } else {
+                return MainTabPage(notifications: null,);
+              }}
+        ));
   }
 }
 
