@@ -3,6 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../models/lodging_model.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to our 'lodging' Firebase collection.
+/// It contains the lodging options for the different locations.
+///
+/// Relies on a remote NoSQL document-oriented database.
 class LodgingRepository {
 
   final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");

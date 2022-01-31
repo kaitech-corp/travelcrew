@@ -4,6 +4,10 @@ import '../../../models/settings_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to our 'settings' Firebase collection.
+/// It contains the settings for each user.
+///
+/// Relies on a remote NoSQL document-oriented database.
 class UserSettingsRepository {
 
   final CollectionReference settingsCollection = FirebaseFirestore.instance.collection('settings');

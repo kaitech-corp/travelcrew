@@ -4,6 +4,10 @@ import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to our 'trips' Firebase collection.
+/// It contains all the trips that the users create.
+///
+/// Relies on a remote NoSQL document-oriented database.
 class TripRepository {
   final Query tripCollection = FirebaseFirestore.instance.collection("trips").orderBy('endDateTimeStamp').where('ispublic', isEqualTo: true);
 
