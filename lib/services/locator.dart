@@ -18,6 +18,7 @@ void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());
 }
 
+/// Provides our user ID via Firebase Authentication.
 class UserService {
   // auth change user stream
 
@@ -30,6 +31,8 @@ class UserService {
     }
   }
 }
+
+/// Provides the user profile of the current user.
 class UserProfileService {
 
   var userService = locator<UserService>();

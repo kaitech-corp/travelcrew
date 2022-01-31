@@ -8,6 +8,9 @@ import '../../../services/analytics_service.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to the info about the current user.
+/// Relies on Firebase authentication.
+/// Allows to sign in with Google or Apple.
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn googleSignIn = GoogleSignIn();

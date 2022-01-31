@@ -7,6 +7,10 @@ import '../../repositories/activity_repository.dart';
 import 'activity_event.dart';
 import 'activity_state.dart';
 
+/// BLoC for activities.
+/// Activities can either be loading or have some data available.
+///
+/// BLoC is a predictable state management library for Dart. See https://bloclibrary.dev
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
   final ActivityRepository activityRepository;
   StreamSubscription _subscription;

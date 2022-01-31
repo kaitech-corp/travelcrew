@@ -3,6 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../models/activity_model.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to our 'activities' Firebase collection.
+/// It contains all the activities that the users create.
+///
+/// Relies on a remote NoSQL document-oriented database.
 class ActivityRepository {
 
   final CollectionReference activitiesCollection =  FirebaseFirestore.instance.collection("activities");

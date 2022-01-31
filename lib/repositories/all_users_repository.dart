@@ -5,6 +5,9 @@ import '../../../models/custom_objects.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to our 'userPublicProfile' Firebase collection.
+///
+/// Relies on a remote NoSQL document-oriented database.
 class AllUserRepository {
 
   final CollectionReference userPublicProfileCollection = FirebaseFirestore.instance.collection("userPublicProfile");

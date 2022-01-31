@@ -5,6 +5,10 @@ import '../../../models/chat_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
+/// Interface to our 'chat' Firebase collection.
+/// It contains the chat messages.
+///
+/// Relies on a remote NoSQL document-oriented database.
 class ChatRepository {
 
   final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
