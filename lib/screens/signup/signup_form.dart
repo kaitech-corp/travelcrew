@@ -145,7 +145,7 @@ class _LoginFormState extends State<SignupForm> {
                       labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    autovalidate: true,
+                    // autovalidate: true,
                     autocorrect: false,
                     validator: (_) {
                       return !state.isEmailValid ? 'Invalid Email' : null;
