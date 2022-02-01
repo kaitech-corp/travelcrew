@@ -1,5 +1,7 @@
 # Travel Crew
 
+[![Test](https://github.com/kaitech-corp/travelcrew/actions/workflows/flutter-action.yml/badge.svg)](https://github.com/kaitech-corp/travelcrew/actions/workflows/flutter-action.yml)
+
 ## [Check it Out!](https://www.travelcrew.app)
 
 ## What is Travel Crew
