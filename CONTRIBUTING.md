@@ -1,11 +1,11 @@
 # Contribute to Travel Crew
 
 Thank you for contributing! Travel Crew is an open-source project, maintained and operated by Kai Technologies Corp. that welcomes contributions from everyone. 
-Please read our [code of conduct]().
+Please read our [code of conduct](https://github.com/kaitech-corp/travelcrew/blob/dev/CODE_OF_CONDUCT.md).
 
 This document outlines the procedures and what to expect when contributing a bug report, a feature request, or new code via a pull request.
 If you want to contribute documentation have a look at the [Wiki](https://github.com/kaitech-corp/travelcrew/wiki).
-To contribute tutorials or help documents, get in touch with the _Documentation leader_, [Randy Nolden](Randy@kaitechcorp.com).
+To contribute tutorials or help documents, get in touch with the _Documentation leader_, Randy Nolden (Randy@kaitechcorp.com).
 
 **Please read** and **follow these guidelines** before submitting a bug report, feature request or pull request.
 It really helps us efficiently process your contribution!
@@ -15,7 +15,7 @@ It really helps us efficiently process your contribution!
 [Request a feature](#feature-requests)   
 [Contribute code](#contributing-code)
 
-## Report a bug
+## <a id='bug-reports'></a>Report a bug
 
 Found a bug? Tell us all about it!
 
@@ -39,7 +39,7 @@ Found a bug? Tell us all about it!
   We're simply a busy bunch, but you will hear back eventually.
 
 
-## Request a feature
+## <a id='feature-requests'></a>Request a feature
 
 We already have a formal [roadmap](https://github.com/kaitech-corp/travelcrew/wiki/RoadMap) for the project but nevertheless we are a community of people who each contributes to sections that we feel are important for the project.
 Feature requests are therefore mostly a way of us discussing/feeling out together where we'd like the project to go.
@@ -57,7 +57,7 @@ Before opening a feature request, please search the issue tracker and confirm an
 - Please don't expect that a general agreement in the discussion that a feature request is a good idea means it will get made immediately.
   As with most open source projects, the fastest way to get a feature made is to make it yourself, or if you are not a programmer, make friends with someone who is, introduce them to Travel Crew, and ask them to make it for you.
 
-## Contribute code
+## <a id='contributing-code'></a>Contribute code
 
 We are more likely to accept your code if we feel like it has been discussed already.
 If you are submitting a new feature, it's best if the feature has been discussed beforehand using [feature request](#feature-requests) or submitting feedback within the Travel Crew App.

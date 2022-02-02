@@ -1,5 +1,5 @@
 
-# MapMap Code of Conduct
+# Travel Crew Code of Conduct
 
 ## Our Pledge
 
