@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:travelcrew/size_config/size_config.dart';
 
 class ReusableThemeColor {

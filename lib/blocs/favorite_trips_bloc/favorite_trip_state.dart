@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../models/trip_model.dart';
 
 abstract class TripState extends Equatable{

@@ -3,11 +3,10 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:nil/nil.dart';
+
 import '../../../models/custom_objects.dart';
 import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
-import '../lodging/lodging_menu_button.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
@@ -15,6 +14,8 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../lodging/lodging_menu_button.dart';
 
 class LodgingDetails extends StatelessWidget {
   final LodgingData lodging;
@@ -211,7 +212,7 @@ class LodgingDataLayout extends StatelessWidget {
                       padding: EdgeInsets.all(SizeConfig.defaultPadding),
                       width: double.infinity,
                       child: InkWell(
-                        child: FlutterLinkView(link: lodging.link),
+                        child: ViewAnyLink(link: lodging.link,function: null,),
                         onTap: () {
                           TCFunctions().launchURL(lodging.link);
                         },

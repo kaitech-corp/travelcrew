@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+
 import '../../../../models/chat_model.dart';
 import '../../../../models/custom_objects.dart';
-import 'dm_chat.dart';
-import '../../main_menu.dart';
 import '../../../../services/constants/constants.dart';
+import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/badge_icon.dart';
-import '../../../../services/functions/cloud_functions.dart';
-import '../../../../services/database.dart';
-import '../../../../size_config/size_config.dart';
 import '../../../../services/widgets/loading.dart';
+import '../../../../size_config/size_config.dart';
+import '../../main_menu.dart';
+import 'dm_chat.dart';
 
 class DMChatListPage extends StatelessWidget {
   @override

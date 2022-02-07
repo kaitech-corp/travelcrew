@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../../models/lodging_model.dart';
 import '../../../../services/functions/cloud_functions.dart';
 

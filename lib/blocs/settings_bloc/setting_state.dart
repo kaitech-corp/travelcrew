@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../models/settings_model.dart';
 
 abstract class UserSettingsState extends Equatable{

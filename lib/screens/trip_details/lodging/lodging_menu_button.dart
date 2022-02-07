@@ -1,16 +1,17 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
+
 import '../../../models/lodging_model.dart';
 import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
-import '../split/split_package.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
 import '../../../services/widgets/appearance_widgets.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../split/split_package.dart';
 
 class LodgingMenuButton  extends StatelessWidget{
 

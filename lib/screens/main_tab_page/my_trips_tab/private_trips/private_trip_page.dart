@@ -6,7 +6,7 @@ import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
-import '../../../../repositories_v2/trip_repositories/past_trip_repository.dart';
+import '../../../../repositories_v2/trip_repositories/private_trip_repository.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../grouped_list_builder.dart';
@@ -22,7 +22,7 @@ class PrivateTrips extends StatefulWidget{
 }
 
 class _PrivateTripsState extends State<PrivateTrips>{
-  GenericBloc<Trip,PastTripRepository> bloc;
+  GenericBloc<Trip,PrivateTripRepository> bloc;
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _PrivateTripsState extends State<PrivateTrips>{
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<Trip,PastTripRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<Trip,PrivateTripRepository>>(context);
     bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();
@@ -41,7 +41,7 @@ class _PrivateTripsState extends State<PrivateTrips>{
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<GenericBloc<Trip,PastTripRepository>, GenericState>(
+    return BlocBuilder<GenericBloc<Trip,PrivateTripRepository>, GenericState>(
         builder: (context, state){
           if(state is LoadingState){
             return Loading();

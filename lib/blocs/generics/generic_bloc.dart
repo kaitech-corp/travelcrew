@@ -1,7 +1,9 @@
 
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:travelcrew/blocs/generics/generics_event.dart';
+
 import '../../repositories_v2/generic_repository.dart';
 import 'generic_state.dart';
 

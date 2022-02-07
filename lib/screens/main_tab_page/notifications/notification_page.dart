@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nil/nil.dart';
 import 'package:provider/provider.dart';
+
 import '../../../blocs/notifications_bloc/notification_bloc.dart';
 import '../../../blocs/notifications_bloc/notification_event.dart';
 import '../../../blocs/notifications_bloc/notification_state.dart';
 import '../../../models/notification_model.dart';
-import '../../alerts/alert_dialogs.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/loading.dart';
-import 'package:nil/nil.dart';
-
+import '../../alerts/alert_dialogs.dart';
 import 'notification_card.dart';
 
 /// Notification page

@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import '../../repositories_v1/user_profile_repository.dart';
+
 import '../../../blocs/public_profile_bloc/public_profile_event.dart';
 import '../../../blocs/public_profile_bloc/public_profile_state.dart';
+import '../../repositories_v1/user_profile_repository.dart';
 
 
 

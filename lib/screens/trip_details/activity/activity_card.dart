@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/activity_model.dart';
 import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
-import 'activity_menu_button.dart';
-import '../split/split_package.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/navigation/route_names.dart';
@@ -12,6 +11,8 @@ import '../../../services/widgets/favorite_widget.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../size_config/size_config.dart';
+import '../split/split_package.dart';
+import 'activity_menu_button.dart';
 
 
 class ActivityCard extends StatelessWidget {
@@ -21,6 +22,7 @@ class ActivityCard extends StatelessWidget {
 
   ActivityCard({this.activity, this.trip});
 
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -28,7 +30,7 @@ class ActivityCard extends StatelessWidget {
         child: GlobalCard(
           widget: InkWell(
             splashColor: Colors.blue.withAlpha(30),
-            onTap: () {
+            onTap: (){
               navigationService.navigateTo(
                   DetailsPageRoute,
                   arguments: DetailsPageArguments(
@@ -65,8 +67,8 @@ class ActivityCard extends StatelessWidget {
                             .subtitle2,) :
                       null,
                     ),
-                    if(activity.link?.isNotEmpty ?? false) FlutterLinkView(
-                        link: activity.link),
+                    if(activity.link?.isNotEmpty ?? false)
+                      ViewAnyLink(link: activity.link,function: ()=>{},),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

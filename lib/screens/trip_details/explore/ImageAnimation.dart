@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
 import '../../../size_config/size_config.dart';
 

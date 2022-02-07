@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../../models/lodging_model.dart';
 import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
-import 'lodging_menu_button.dart';
-import '../split/split_package.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/navigation/route_names.dart';
@@ -13,6 +12,8 @@ import '../../../services/widgets/favorite_widget.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../size_config/size_config.dart';
+import '../split/split_package.dart';
+import 'lodging_menu_button.dart';
 
 
 
@@ -23,6 +24,7 @@ class LodgingCard extends StatelessWidget {
 
   LodgingCard({this.lodging, this.trip});
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -31,8 +33,13 @@ class LodgingCard extends StatelessWidget {
         child: GlobalCard(
           widget: InkWell(
             splashColor: Colors.blue.withAlpha(30),
-            onTap: () {
-              navigationService.navigateTo(DetailsPageRoute,arguments: DetailsPageArguments(type: 'Lodging',lodging: lodging,trip: trip));
+            onTap: (){
+              navigationService.navigateTo(
+                  DetailsPageRoute,
+                  arguments: DetailsPageArguments(
+                      type: 'Lodging',
+                      lodging: lodging,
+                      trip: trip));
             },
             child: Container(
               margin: const EdgeInsets.only(top: 4.0, left: 16.0,right: 16.0),
@@ -47,7 +54,7 @@ class LodgingCard extends StatelessWidget {
                   ),
                   if(lodging.link?.isNotEmpty ?? false) Padding(
                     padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: FlutterLinkView(link: lodging.link),
+                    child: ViewAnyLink(link: lodging.link,function: ()=>{},),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

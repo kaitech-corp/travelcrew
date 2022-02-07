@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../models/transportation_model.dart';
 
 abstract class TransportationEvent extends Equatable {

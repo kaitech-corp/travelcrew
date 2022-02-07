@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../models/notification_model.dart';
 
 

@@ -1,24 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../repositories_v1/user_repository.dart';
-import '../../blocs/apple_login_bloc/apple_login_bloc.dart';
-import '../../blocs/google_login_bloc/google_login_bloc.dart';
+
 import '../../blocs/login_bloc/login_bloc.dart';
+import '../../repositories_v1/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/widgets/curved_widget.dart';
 import '../../size_config/size_config.dart';
-
 import 'login_form.dart';
 
 /// Login screen
 class LoginScreen extends StatelessWidget {
 
   final UserRepository _userRepository = UserRepository();
-
-  // const LoginScreen({Key key, UserRepository userRepository})
-  //     // : _userRepository = userRepository,
-  //       :super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +27,6 @@ class LoginScreen extends StatelessWidget {
         providers: [
           BlocProvider<LoginBloc>(
             create: (context) => LoginBloc(userRepository: _userRepository),),
-          BlocProvider<AppleLoginBloc>(
-            create: (context) => AppleLoginBloc(userRepository: _userRepository),),
-          BlocProvider<GoogleLoginBloc>(
-            create: (context) => GoogleLoginBloc(userRepository: _userRepository),)
         ],
         child: Container(
             height: double.infinity,

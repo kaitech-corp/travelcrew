@@ -1,5 +1,4 @@
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/utils/validators.dart';
@@ -21,6 +20,7 @@ void testIsValidFirstName() {
   const String invalidFirstName = "";
   expect(Validators.isValidFirstName(invalidFirstName), false);
 }
+
 
 void main() {
   group('validators', () {

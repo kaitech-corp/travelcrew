@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../models/notification_model.dart';
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/appearance_widgets.dart';
+import '../../alerts/alert_dialogs.dart';
 
 
 /// Layout for notifications

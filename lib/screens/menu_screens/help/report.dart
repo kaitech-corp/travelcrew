@@ -4,8 +4,8 @@ import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
 import 'package:travelcrew/models/trip_model.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 import 'package:travelcrew/services/database.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 
 class ReportContent extends StatefulWidget {
   final String type;

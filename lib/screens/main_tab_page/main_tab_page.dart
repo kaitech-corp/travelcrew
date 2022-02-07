@@ -1,19 +1,19 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
-import '../add_trip/add_trip_page.dart';
-import '../app_bar/app_bar.dart';
-import '../menu_screens/main_menu.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/badge_icon.dart';
 import '../../size_config/size_config.dart';
+import '../add_trip/add_trip_page.dart';
+import '../app_bar/app_bar.dart';
+import '../menu_screens/main_menu.dart';
 import 'all_trips/all_trips_page.dart';
 import 'favorites/favorites_page.dart';
 import 'my_trips_tab/current_trips/current_trips_page.dart';

@@ -2,10 +2,8 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
-import '../basket_list/controller/basket_controller.dart';
-import 'ImageAnimation.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
@@ -13,6 +11,9 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/reusableWidgets.dart';
 import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
+import '../../alerts/alert_dialogs.dart';
+import '../basket_list/controller/basket_controller.dart';
+import 'ImageAnimation.dart';
 import 'members/members_layout.dart';
 
 

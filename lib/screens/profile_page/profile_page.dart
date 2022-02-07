@@ -1,11 +1,12 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+
 import '../../models/custom_objects.dart';
-import 'profile_widget.dart';
-import '../../services/functions/cloud_functions.dart';
 import '../../services/database.dart';
+import '../../services/functions/cloud_functions.dart';
 import '../../services/widgets/reusableWidgets.dart';
 import '../../size_config/size_config.dart';
+import 'profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   @override

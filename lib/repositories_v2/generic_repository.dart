@@ -1,10 +1,5 @@
 import 'dart:async';
 
-import 'trip_repositories/all_trip_repository.dart';
-import 'trip_repositories/current_trip_repository.dart';
-import 'trip_repositories/favorite_trip_repository.dart';
-import 'trip_repositories/past_trip_repository.dart';
-import 'trip_repositories/private_trip_repository.dart';
 import 'activity_repository.dart';
 import 'all_users_repository.dart';
 import 'chat_repository.dart';
@@ -14,6 +9,11 @@ import 'notification_repository.dart';
 import 'split_repository.dart';
 import 'transportation_repository.dart';
 import 'trip_ad_repository.dart';
+import 'trip_repositories/all_trip_repository.dart';
+import 'trip_repositories/current_trip_repository.dart';
+import 'trip_repositories/favorite_trip_repository.dart';
+import 'trip_repositories/past_trip_repository.dart';
+import 'trip_repositories/private_trip_repository.dart';
 import 'user_profile_repository.dart';
 import 'user_settings_repository.dart';
 

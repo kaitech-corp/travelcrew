@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+
 import '../../repositories_v1/activity_repository.dart';
 import 'activity_event.dart';
 import 'activity_state.dart';

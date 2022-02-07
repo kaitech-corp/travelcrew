@@ -1,5 +1,6 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../repositories_v1/user_repository.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
@@ -32,17 +33,27 @@ class AuthenticationBloc
 
   //AuthenticationLoggedIn
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
-    yield AuthenticationSuccess( await _userRepository.user.first);
+    try {
+      yield AuthenticationSuccess( await _userRepository.user.first);
+    } catch(e){
+      print(e.toString());
+      yield AuthenticationFailure();
+    }
+
   }
 
   // AuthenticationStarted
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
     final isSignedIn = await _userRepository.isSignedIn();
     if (isSignedIn) {
-      final firebaseUser = await _userRepository.user.first;
-      yield AuthenticationSuccess(firebaseUser);
+      try {
+        final firebaseUser = await _userRepository.user.first;
+        yield AuthenticationSuccess(firebaseUser);
+      } catch(e) {
+        print(e.toString());
+      }
     } else {
-      yield AuthenticationFailure();
+
     }
   }
 }

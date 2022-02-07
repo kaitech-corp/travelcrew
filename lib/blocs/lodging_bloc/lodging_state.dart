@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../models/lodging_model.dart';
 
 abstract class LodgingState extends Equatable{

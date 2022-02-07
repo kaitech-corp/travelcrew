@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+
 import '../../../blocs/settings_bloc/settings_bloc.dart';
 import '../../../blocs/settings_bloc/settings_event.dart';
 import '../../../services/constants/constants.dart';

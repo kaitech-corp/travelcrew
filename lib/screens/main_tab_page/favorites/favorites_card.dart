@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../size_config/size_config.dart';
+import '../../alerts/alert_dialogs.dart';
 
 
 /// Favorites card layout

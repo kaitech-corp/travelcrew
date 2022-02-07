@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../models/custom_objects.dart';
 
 abstract class PublicProfileEvent extends Equatable {

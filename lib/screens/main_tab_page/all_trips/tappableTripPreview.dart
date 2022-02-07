@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
-import '../../image_layout/image_layout_trips.dart';
 import '../../../size_config/size_config.dart';
+import '../../image_layout/image_layout_trips.dart';
 
 /// Tappable trip preview
 class TappableTripPreview extends StatelessWidget {

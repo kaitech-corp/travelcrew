@@ -3,11 +3,12 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import '../../../../repositories_v2/all_users_repository.dart';
+
 import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/custom_objects.dart';
+import '../../../../repositories_v2/all_users_repository.dart';
 import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/loading.dart';
 import 'tc_user_card.dart';

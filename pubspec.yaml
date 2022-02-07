@@ -1,7 +1,7 @@
 ---
 name: travelcrew
 description: Travel Crew is a mobile app for friends to share travel plans, organize travel and even create full itineraries together.
-version: 3.0.7+71
+version: 3.0.8+72
 publish_to: none
 
 environment:
@@ -67,15 +67,11 @@ dependencies:
   provider: ^6.0.1
 
   # Self Packaged
-  flutter_link_preview:
-    path: packages/flutter_link_preview
-  gfsearchbar:
-    path: packages/gfsearchbar
   flappy_search_bar:
     path: packages/flappy_search_bar
 
   # Web
-  flutter_link_previewer: ^2.0.1
+  any_link_preview: ^2.0.4
   flutter_linkify: ^5.0.2
   url_launcher: ^6.0.17
   webview_flutter: ^3.0.0
@@ -102,6 +98,7 @@ dependencies:
   intl: ^0.17.0
   nil: ^1.1.1
   cached_network_image: ^3.2.0
+
 
 
 #  social_share: ^2.1.1

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../models/activity_model.dart';
 
 /// State for an activity.
