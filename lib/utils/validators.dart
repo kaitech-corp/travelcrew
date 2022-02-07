@@ -8,22 +8,22 @@ class Validators {
     r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
   );
 
-  static isValidEmail(String email) {
+  /// Checks if an email is valid.
+  static bool isValidEmail(String email) {
     return _emailRegExp.hasMatch(email);
   }
 
-  static isValidPassword(String password) {
+  static bool isValidPassword(String password) {
     // return _passwordRegExp.hasMatch(password);
     return true;
   }
-  static isValidFirstName(String firstName) {
+  static bool isValidFirstName(String firstName) {
     return firstName.trim().isNotEmpty;
   }
-  static isValidLastName(String lastName) {
+  static bool isValidLastName(String lastName) {
     return lastName.trim().isNotEmpty;
   }
-  static isValidDisplayName(String displayName) {
+  static bool isValidDisplayName(String displayName) {
     return displayName.trim().isNotEmpty;
   }
-
 }

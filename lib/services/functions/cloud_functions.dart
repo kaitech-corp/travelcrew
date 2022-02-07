@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/analytics_service.dart';
 import '../../services/locator.dart';
 
+/// Calls our cloud functions.
 class CloudFunction {
 
   final Trace trace = FirebasePerformance.instance.newTrace("test");
@@ -25,7 +26,8 @@ class CloudFunction {
     });
     return results.data;
   }
-  //
+
+  /// FIXME: What does this do?
   void splitwiseAPI() async {
     final HttpsCallable callable = FirebaseFunctions.instance
         .httpsCallable(
@@ -38,6 +40,7 @@ class CloudFunction {
     prefs.setString('accessToken', results.data);
     print(results.data);
   }
+
   Future<dynamic> splitwiseGetCurrentUser(String accessToken) async {
     final HttpsCallable callableGetCurrentUser = FirebaseFunctions.instance
         .httpsCallable(

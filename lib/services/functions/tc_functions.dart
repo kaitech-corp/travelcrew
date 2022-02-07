@@ -11,6 +11,7 @@ import '../../models/lodging_model.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../locator.dart';
 
+/// Utilities related to date and time conversion.
 class TCFunctions {
 
   var userService = locator<UserService>();

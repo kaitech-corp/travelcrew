@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Handles the routes and the navigation in this app.
 class NavigationService {
   GlobalKey<NavigatorState> _navigationKey = GlobalKey<NavigatorState>();
 

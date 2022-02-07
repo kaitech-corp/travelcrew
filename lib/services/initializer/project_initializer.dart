@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
 
+/// Loads the variables from the .env file and sets up Firebase and the BLoC state management.
 void projectInitializer() async {
 
   WidgetsFlutterBinding.ensureInitialized();

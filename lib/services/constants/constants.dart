@@ -45,20 +45,22 @@ const placeTypes = [
   'zoo',
 ];
 
-//Colors
-const canvasColor = Color(0xFFFAFAFA);
+/// Colors
+const Color canvasColor = Color(0xFFFAFAFA);
+
+/// Default padding.
 const double defaultPadding = 20;
 
-//Drawer Menu
-const currentVersion = 'v1.5.0';
+/// Version number for this app - For the Drawer Menu.
+const String currentVersion = 'v1.5.0';
 
 /// AdminPage
-const admin = 'Admin';
-const feedback = 'Feedback';
-const submitted = 'Submitted';
-const customNotification = 'Custom Notification';
-const push = 'Push';
-const enterMessage = "Enter a message";
+const String admin = 'Admin';
+const String feedback = 'Feedback';
+const String submitted = 'Submitted';
+const String customNotification = 'Custom Notification';
+const String push = 'Push';
+const String enterMessage = "Enter a message";
 
-const maxLines = 5;
-const textBoxHeight = 120.0;
+const int maxLines = 5;
+const double textBoxHeight = 120.0;

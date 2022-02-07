@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:travelcrew/models/custom_objects.dart';
 
+/// Retrieves the list of all the countries in the World.
+/// FIXME: This seems to be a duplicate of the RestCountries class.
+/// FIXME: Maybe this should be a base class from which all the other classes in this file inherit.
 class APIService {
   // API key
   static const _api_key = "";
@@ -15,7 +18,7 @@ class APIService {
     "x-rapidapi-key": _api_key,
   };
 
-  // Base API request to get response
+  /// Retrieves the list of all the countries in the World.
   Future<List<Countries>> getCountries() async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
     final response = await http.get(Uri.parse(_baseUrl), headers: _headers);
@@ -83,6 +86,7 @@ class APIService {
 //   }
 // }
 
+/// Retrieves a list of holidays in USA.
 class PublicHolidayAPI {
   // API key
   static const _api_key = "";
@@ -95,7 +99,7 @@ class PublicHolidayAPI {
     "x-rapidapi-key": _api_key,
   };
 
-  // Base API request to get response
+  /// Retrieves a list of holidays in USA.
   Future<List<Holiday>> getHolidays(String code) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
     final response = await http.get(Uri.parse(_baseUrl +'/'+ DateTime.now().year.toString()+'/'+ code), headers: _headers);
@@ -113,6 +117,7 @@ class PublicHolidayAPI {
   }
 }
 
+/// Retrieves the list of all the countries in the World.
 class RestCountries {
   // API key
   static const _api_key = "";
@@ -125,7 +130,7 @@ class RestCountries {
     "x-rapidapi-key": _api_key,
   };
 
-  // Base API request to get response
+  /// Retrieves the list of all the countries in the World.
   Future<List<Countries>> getCountry( String name) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
     final response = await http.get(Uri.parse(_baseUrl + name), headers: _headers);
@@ -143,6 +148,7 @@ class RestCountries {
   }
 }
 
+/// Gets some Walmart product via a search string.
 class WalmartProductSearch {
   // API key
   static const _api_key = "";
@@ -155,7 +161,7 @@ class WalmartProductSearch {
     "x-rapidapi-key": _api_key,
   };
 
-  // Base API request to get response
+  /// Gets some Walmart product via a search string.
   Future<List<WalmartProducts>> getProducts(String name) async {
 //    Uri uri = Uri.https(_baseUrl, endpoint);
     final response = await http.get(Uri.parse('$_baseUrl + $name'), headers: _headers);
@@ -173,9 +179,9 @@ class WalmartProductSearch {
   }
 }
 
+/// Generate an image from a text string.
+/// FIXME: Is this working?
 class ImageSearch {
-
-
   Future<String> getImage(String item) {
     // const request = require('request');
 
@@ -236,6 +242,7 @@ class ImageSearch {
 //   }
 // }
 
+/// Retrieves a list of nearby places for a given latitude and longitude.
 class PlacesNearby {
   // API key
   static const _api_key = "";
@@ -251,7 +258,7 @@ class PlacesNearby {
   };
 
 
-  // Base API request to get response
+  /// Retrieves a list of nearby places for a given latitude and longitude.
   Future<List<TrueWay>> getNearbyPlaces(String place, String lat, String lng) async {
 
     // "/FindPlacesNearby?location=37.783366%2C-122.402325&type=cafe&radius=150&language=en"

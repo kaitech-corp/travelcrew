@@ -9,16 +9,15 @@ import '../services/widgets/appbar_gradient.dart';
 import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
 
+/// The admin page.
+/// FIXME: Document this.
 class AdminPage extends StatefulWidget {
-
-
   @override
   _AdminPageState createState() => _AdminPageState();
 }
 
+/// State for the admin page.
 class _AdminPageState extends State<AdminPage> {
-
-
   TextEditingController _controller;
 
   @override

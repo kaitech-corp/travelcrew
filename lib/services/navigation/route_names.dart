@@ -1,3 +1,4 @@
+/// The route names for this app.
 const String ActivityRoute = "Activity";
 const String AddNewActivityRoute = 'AddNewActivity';
 const String AddNewLodgingRoute = 'AddNewLodging';

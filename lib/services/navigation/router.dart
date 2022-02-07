@@ -58,7 +58,7 @@ import '../../services/navigation/route_names.dart';
 import '../../services/widgets/launch_icon_badger.dart';
 import '../../size_config/size_config.dart';
 
-
+/// The routes for all the widgets in this application.
 Route<dynamic> generateRoute(RouteSettings settings) {
   final args = settings.arguments;
   switch (settings.name) {

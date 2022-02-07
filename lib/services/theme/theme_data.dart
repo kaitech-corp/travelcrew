@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+/// Theme data for our application.
+/// Contains its colors, icons, sizes and fonts.
 ThemeData ThemeDataBuilder() {
   return ThemeData(
     fontFamily: 'Cantata One',
