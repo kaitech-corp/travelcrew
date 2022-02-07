@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repositories_v1/user_repository.dart';
 import '../../blocs/apple_login_bloc/apple_login_bloc.dart';
 import '../../blocs/apple_login_bloc/apple_login_event.dart';
 import '../../blocs/apple_login_bloc/apple_login_state.dart';
@@ -11,7 +12,6 @@ import '../../blocs/google_login_bloc/google_login_state.dart';
 import '../../blocs/login_bloc/login_bloc.dart';
 import '../../blocs/login_bloc/login_event.dart';
 import '../../blocs/login_bloc/login_state.dart';
-import '../../repositories/user_repository.dart';
 import '../alerts/alert_dialogs.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';

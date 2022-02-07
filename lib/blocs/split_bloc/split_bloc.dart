@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-
-import '../../../repositories/split_repository.dart';
+import '../../repositories_v1/split_repository.dart';
 import 'split_event.dart';
 import 'split_state.dart';
 

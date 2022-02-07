@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/blocs/notifications_bloc/notification_bloc.dart';
-import 'package:travelcrew/repositories/notification_repository.dart';
+import 'package:travelcrew/repositories_v1/notification_repository.dart';
 import 'package:travelcrew/screens/authenticate/profile_stream.dart';
 import 'package:travelcrew/services/database.dart';
 

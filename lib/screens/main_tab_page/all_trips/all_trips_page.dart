@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../../blocs/all_trips_bloc/all_trip_event.dart';
-import '../../../blocs/all_trips_bloc/all_trip_state.dart';
-import '../../../blocs/all_trips_bloc/all_trips_bloc.dart';
-import '../../../blocs/trip_ad_bloc/trip_ad_bloc.dart';
-import '../../../blocs/trip_ad_bloc/trip_ad_event.dart';
-import '../../../blocs/trip_ad_bloc/trip_ad_state.dart';
+
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
+import '../../../repositories_v2/trip_ad_repository.dart';
+import '../../../repositories_v2/trip_repositories/all_trip_repository.dart';
 import '../../../services/analytics_service.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
@@ -21,7 +21,6 @@ import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
-
 import 'ad_card.dart';
 
 
@@ -98,8 +97,8 @@ class _SliverGridListState extends State<SliverGridList> {
   UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
-  AllTripBloc allTripBloc;
-  TripAdBloc tripAdBloc;
+  GenericBloc<Trip,AllTripsRepository> allTripBloc;
+  GenericBloc<TripAds,TripAdRepository>  tripAdBloc;
 
   int crossAxisCount = 3;
   int count = 3;
@@ -107,10 +106,10 @@ class _SliverGridListState extends State<SliverGridList> {
   @override
   void initState() {
     super.initState();
-    allTripBloc = BlocProvider.of<AllTripBloc>(context);
-    allTripBloc.add(LoadingData());
-    tripAdBloc = BlocProvider.of<TripAdBloc>(context);
-    tripAdBloc.add(LoadingTripAdData());
+    allTripBloc = BlocProvider.of<GenericBloc<Trip,AllTripsRepository>>(context);
+    allTripBloc.add(LoadingGenericData());
+    tripAdBloc = BlocProvider.of<GenericBloc<TripAds,TripAdRepository>>(context);
+    tripAdBloc.add(LoadingGenericData());
   }
 
   @override
@@ -122,15 +121,15 @@ class _SliverGridListState extends State<SliverGridList> {
       });
     }
 
-    return BlocBuilder<AllTripBloc, TripState>(
+    return BlocBuilder<GenericBloc<Trip,AllTripsRepository>, GenericState>(
       builder: (context, state) {
-        if (state is TripLoadingState) {
+        if (state is LoadingState) {
           return Expanded(child: Loading());
-        } else if (state is TripHasDataState) {
+        } else if (state is HasDataState<Trip>) {
           List<Trip> tripList = state.data;
-          return BlocBuilder<TripAdBloc, TripAdState>(
+          return BlocBuilder<GenericBloc<TripAds,TripAdRepository>, GenericState>(
               builder: (context, state) {
-            if (state is TripAdLoadingState) {
+            if (state is LoadingState) {
               List<dynamic> combinedList = [];
               combinedList.addAll(tripList);
               return Expanded(
@@ -168,7 +167,7 @@ class _SliverGridListState extends State<SliverGridList> {
                   ),
                 ),
               );
-            } else if (state is TripAdHasDataState) {
+            } else if (state is HasDataState) {
               List<TripAds> adList = state.data;
               List<dynamic> combinedList = [];
               combinedList.addAll(tripList);

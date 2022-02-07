@@ -6,10 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
-
 import '../locator.dart';
 
-void ProjectInitializer() async {
+void projectInitializer() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");

@@ -1,9 +1,10 @@
 
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../admin/admin_page.dart';
-import '../../blocs/all_users_bloc/all_users_bloc.dart';
+import '../../blocs/generics/generic_bloc.dart';
 import '../../blocs/settings_bloc/settings_bloc.dart';
 import '../../models/activity_model.dart';
 import '../../models/custom_objects.dart';
@@ -11,8 +12,9 @@ import '../../models/lodging_model.dart';
 import '../../models/split_model.dart';
 import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
-import '../../repositories/all_users_repository.dart';
-import '../../repositories/user_settings_repository.dart';
+import '../../repositories_v1/user_settings_repository.dart';
+import '../../repositories_v2/all_users_repository.dart';
+import '../../repositories_v2/generic_repository.dart';
 import '../../screens/add_trip/edit_trip.dart';
 import '../../screens/add_trip/google_places.dart';
 import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
@@ -279,8 +281,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: BlocProvider(
-            create: (context) => AllUserBloc(
-                allUserRepository: AllUserRepository()..refresh()),
+            create: (context) => GenericBloc<UserPublicProfile, AllUserRepository>(
+                repository: GenericRepository<UserPublicProfile, AllUserRepository>()..refresh()),
             child: AllUserPage()),
       );
     case UserProfilePageRoute:

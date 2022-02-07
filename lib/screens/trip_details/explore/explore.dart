@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../blocs/activities_bloc/activity_bloc.dart';
-import '../../../blocs/chat_bloc/chat_bloc.dart';
-import '../../../blocs/lodging_bloc/lodging_bloc.dart';
+
+import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/public_profile_bloc/public_profile_bloc.dart';
-import '../../../blocs/split_bloc/split_bloc.dart';
-import '../../../blocs/transportation_bloc/transportation_bloc.dart';
+import '../../../models/activity_model.dart';
 import '../../../models/chat_model.dart';
+import '../../../models/lodging_model.dart';
+import '../../../models/split_model.dart';
+import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
-import '../../../repositories/activity_repository.dart';
-import '../../../repositories/chat_repository.dart';
-import '../../../repositories/lodging_repository.dart';
-import '../../../repositories/split_repository.dart';
-import '../../../repositories/transportation_repository.dart';
-import '../../../repositories/user_profile_repository.dart';
-import '../../menu_screens/main_menu.dart';
-import '../activity/activity_page.dart';
-import '../chat/chat_page.dart';
-import 'explore_member_layout.dart';
-import '../lodging/lodging_page.dart';
-import '../split/split_page.dart';
-import '../transportation/transportation_page.dart';
+import '../../../repositories_v1/user_profile_repository.dart';
+import '../../../repositories_v2/activity_repository.dart';
+import '../../../repositories_v2/chat_repository.dart';
+import '../../../repositories_v2/generic_repository.dart';
+import '../../../repositories_v2/lodging_repository.dart';
+import '../../../repositories_v2/split_repository.dart';
+import '../../../repositories_v2/transportation_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
+import '../../menu_screens/main_menu.dart';
+import '../activity/activity_page.dart';
+import '../chat/chat_page.dart';
+import '../lodging/lodging_page.dart';
+import '../split/split_page.dart';
+import '../transportation/transportation_page.dart';
+import 'explore_member_layout.dart';
 import 'explore_owner_layout.dart';
 
 
@@ -78,11 +80,21 @@ class Explore extends StatelessWidget {
         ),
         body: MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => ActivityBloc(activityRepository: ActivityRepository()..refresh(trip.documentId))),
-            BlocProvider(create: (context) => ChatBloc(chatRepository: ChatRepository()..refresh(trip.documentId))),
-            BlocProvider(create: (context) => LodgingBloc(lodgingRepository: LodgingRepository()..refresh(trip.documentId))),
-            BlocProvider(create: (context) => TransportationBloc(transportationRepository: TransportationRepository()..refresh(trip.documentId))),
-            BlocProvider(create: (context) => SplitBloc(splitRepository: SplitRepository()..refresh(trip.documentId))),
+            BlocProvider(create: (context) => GenericBloc<ActivityData,ActivityRepository>(
+                repository: GenericRepository<ActivityData,ActivityRepository>()
+              ..refresh(identifier: trip.documentId))),
+            BlocProvider(create: (context) => GenericBloc<ChatData,ChatRepository>(
+                repository: GenericRepository<ChatData,ChatRepository>()
+                  ..refresh(identifier: trip.documentId))),
+            BlocProvider(create: (context) => GenericBloc<LodgingData,LodgingRepository>(
+                repository: GenericRepository<LodgingData,LodgingRepository>()
+                  ..refresh(identifier: trip.documentId))),
+            BlocProvider(create: (context) => GenericBloc<TransportationData,TransportationRepository>(
+                repository: GenericRepository<TransportationData,TransportationRepository>()
+                  ..refresh(identifier: trip.documentId))),
+            BlocProvider(create: (context) => GenericBloc<SplitObject,SplitRepository>(
+                repository: GenericRepository<SplitObject,SplitRepository>()
+                  ..refresh(identifier: trip.documentId))),
           ],
           child: TabBarView(
                     children: <Widget>[

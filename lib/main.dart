@@ -8,10 +8,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:travelcrew/repositories_v1/user_repository.dart';
 import '../blocs/authentication_bloc/authentication_bloc.dart';
 import '../blocs/authentication_bloc/authentication_event.dart';
 import '../blocs/authentication_bloc/authentication_state.dart';
-import '../repositories/user_repository.dart';
 import '../screens/complete_profile/complete_profile_page.dart';
 import '../screens/login/login_screen.dart';
 import '../services/constants/constants.dart';
@@ -32,7 +32,7 @@ import '../size_config/size_config.dart';
 
 void main() async {
 
-  await ProjectInitializer();
+  await projectInitializer();
 
   final UserRepository userRepository = UserRepository();
 

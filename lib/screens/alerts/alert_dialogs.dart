@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repositories_v1/user_repository.dart';
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../models/activity_model.dart';
@@ -8,7 +9,6 @@ import '../../models/custom_objects.dart';
 import '../../models/lodging_model.dart';
 import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
-import '../../repositories/user_repository.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/database.dart';
 import '../../services/locator.dart';

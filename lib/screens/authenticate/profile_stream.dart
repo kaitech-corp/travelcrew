@@ -2,23 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/all_trips_bloc/all_trips_bloc.dart';
-import '../../blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trips_bloc.dart';
-import '../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_bloc.dart';
-import '../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
-import '../../blocs/current_profile_bloc/current_profile_bloc.dart';
-import '../../blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
+import '../../blocs/generics/generic_bloc.dart';
 import '../../blocs/notifications_bloc/notification_bloc.dart';
 import '../../blocs/notifications_bloc/notification_event.dart';
 import '../../blocs/notifications_bloc/notification_state.dart';
-import '../../blocs/trip_ad_bloc/trip_ad_bloc.dart';
-import '../../repositories/current_user_profile_repository.dart';
-import '../../repositories/trip_ad_repository.dart';
-import '../../repositories/trip_repositories/all_trip_repository.dart';
-import '../../repositories/trip_repositories/current_trip_repository.dart';
-import '../../repositories/trip_repositories/favorite_trip_repository.dart';
-import '../../repositories/trip_repositories/past_trip_repository.dart';
-import '../../repositories/trip_repositories/private_trip_repository.dart';
+import '../../models/custom_objects.dart';
+import '../../models/trip_model.dart';
+import '../../repositories_v2/current_user_profile_repository.dart';
+import '../../repositories_v2/generic_repository.dart';
+import '../../repositories_v2/trip_ad_repository.dart';
+import '../../repositories_v2/trip_repositories/all_trip_repository.dart';
+import '../../repositories_v2/trip_repositories/current_trip_repository.dart';
+import '../../repositories_v2/trip_repositories/favorite_trip_repository.dart';
+import '../../repositories_v2/trip_repositories/past_trip_repository.dart';
+import '../../repositories_v2/trip_repositories/private_trip_repository.dart';
 import '../../services/locator.dart';
 import '../../services/widgets/loading.dart';
 import '../main_tab_page/main_tab_page.dart';
@@ -49,13 +46,13 @@ class _ProfileStreamState extends State<ProfileStream> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => CurrentCrewTripBloc(tripRepository: CurrentTripRepository()..refresh() )),
-          BlocProvider(create: (context) => PastCrewTripBloc(tripRepository: PastTripRepository()..refresh() )),
-          BlocProvider(create: (context) => PrivateTripBloc(tripRepository: PrivateTripRepository()..refresh() )),
-          BlocProvider(create: (context) => AllTripBloc(tripRepository: AllTripRepository()..refresh() )),
-          BlocProvider(create: (context) => FavoriteTripBloc(tripRepository: FavoriteTripRepository()..refresh() )),
-          BlocProvider(create: (context) => CurrentProfileBloc(currentUserProfileRepository: CurrentUserProfileRepository()..refresh())),
-          BlocProvider(create: (context) => TripAdBloc(tripAdRepository: TripAdRepository()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<Trip,CurrentTripRepository>(repository: GenericRepository<Trip, CurrentTripRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<Trip,PastTripRepository>(repository: GenericRepository<Trip, PastTripRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<Trip,PrivateTripRepository>(repository: GenericRepository<Trip, PrivateTripRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<Trip,AllTripsRepository>(repository: GenericRepository<Trip, AllTripsRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<Trip,FavoriteTripRepository>(repository: GenericRepository<Trip, FavoriteTripRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<UserPublicProfile,CurrentUserProfileRepository>(repository: GenericRepository<UserPublicProfile, CurrentUserProfileRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<TripAds,TripAdRepository>(repository: GenericRepository<TripAds, TripAdRepository>()..refresh())),
         ],
         child: BlocBuilder<NotificationBloc, NotificationState>(
             builder: (context, state){

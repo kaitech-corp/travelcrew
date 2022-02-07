@@ -2,10 +2,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-
+import '../../../repositories_v1/trip_repositories/past_trip_repository.dart';
 import '../../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_event.dart';
 import '../../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_state.dart';
-import '../../../repositories/trip_repositories/past_trip_repository.dart';
 
 class PastCrewTripBloc extends Bloc<TripEvent, TripState> {
   final PastTripRepository tripRepository;

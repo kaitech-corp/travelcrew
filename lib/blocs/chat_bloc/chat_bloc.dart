@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/repositories/chat_repository.dart';
+import '../../repositories_v1/chat_repository.dart';
 import 'chat_event.dart';
 import 'chat_state.dart';
 

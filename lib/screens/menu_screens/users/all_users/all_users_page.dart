@@ -3,13 +3,13 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import '../../../../blocs/all_users_bloc/all_users_bloc.dart';
-import '../../../../blocs/all_users_bloc/all_users_event.dart';
-import '../../../../blocs/all_users_bloc/all_users_state.dart';
+import '../../../../repositories_v2/all_users_repository.dart';
+import '../../../../blocs/generics/generic_bloc.dart';
+import '../../../../blocs/generics/generic_state.dart';
+import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/custom_objects.dart';
 import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/loading.dart';
-
 import 'tc_user_card.dart';
 
 
@@ -22,15 +22,15 @@ class AllUserPage extends StatefulWidget {
 
 class _AllUserPageState extends State<AllUserPage> {
 
-  AllUserBloc bloc;
+  GenericBloc<UserPublicProfile,AllUserRepository> bloc;
 
   final ScrollController controller = ScrollController();
   bool _isSearching = false;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<AllUserBloc>(context);
-    bloc.add(LoadingAllUserData());
+    bloc = BlocProvider.of<GenericBloc<UserPublicProfile, AllUserRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -67,12 +67,12 @@ class _AllUserPageState extends State<AllUserPage> {
         ],
         flexibleSpace: AppBarGradient(),
       ),
-      body: BlocBuilder<AllUserBloc, AllUserState>(
+      body: BlocBuilder<GenericBloc<UserPublicProfile, AllUserRepository>, GenericState>(
         // bloc: blocCurrent,
           builder: (context, state){
-            if(state is AllUserLoadingState){
+            if(state is LoadingState){
               return Loading();
-            } else if (state is AllUserHasDataState){
+            } else if (state is HasDataState<UserPublicProfile>){
               List<UserPublicProfile> allUsersList = state.data;
                 allUsersSearchList = allUsersList;
               return _isSearching ? SearchBar(

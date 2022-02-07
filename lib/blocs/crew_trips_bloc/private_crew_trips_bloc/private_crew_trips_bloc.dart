@@ -2,10 +2,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-
+import '../../../repositories_v1/trip_repositories/private_trip_repository.dart';
 import '../../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_event.dart';
 import '../../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_state.dart';
-import '../../../repositories/trip_repositories/private_trip_repository.dart';
 
 class PrivateTripBloc extends Bloc<TripEvent, TripState> {
   final PrivateTripRepository tripRepository;

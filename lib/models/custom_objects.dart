@@ -267,6 +267,18 @@ class TripAds {
       this.favorites,
       this.clicks,
       this.clickers});
+
+  TripAds.fromData(Map<String, dynamic> data):
+    tripName = data['tripName'] ?? '',
+    documentID = data['documentID'] ?? '',
+    geoPoint = data['geoPoint'] ?? null,
+    link = data['link'] ?? '',
+    location = data['location'] ?? '',
+    dateCreated = data['dateCreated'] ?? null,
+    clicks = data['clicks'] ?? 0,
+    favorites = List<String>.from(data['favorites']) ?? null,
+    clickers = List<String>.from(data['clickers']) ?? null,
+    urlToImage = data['urlToImage'] ?? '';
 }
 
 ///Model for suggestions

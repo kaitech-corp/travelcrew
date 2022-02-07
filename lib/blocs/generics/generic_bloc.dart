@@ -2,13 +2,13 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:travelcrew/blocs/generics/generics_event.dart';
-import 'package:travelcrew/repositories/generic_repository/generic_repository.dart';
+import '../../repositories_v2/generic_repository.dart';
 import 'generic_state.dart';
 
 
-class GenericBloc<M> extends Bloc<GenericEvent,GenericState> {
+class GenericBloc<M,R> extends Bloc<GenericEvent,GenericState> {
 
-  final GenericRepository<M> repository;
+  final GenericRepository<M, R> repository;
 
   StreamSubscription _subscription;
 

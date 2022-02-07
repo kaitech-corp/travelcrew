@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import '../../../repositories/trip_repositories/favorite_trip_repository.dart';
+import '../../repositories_v1/trip_repositories/favorite_trip_repository.dart';
 import 'favorite_trip_event.dart';
 import 'favorite_trip_state.dart';
 

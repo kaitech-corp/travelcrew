@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../blocs/favorite_trips_bloc/favorite_trip_event.dart';
-import '../../../blocs/favorite_trips_bloc/favorite_trip_bloc.dart';
-import '../../../blocs/favorite_trips_bloc/favorite_trip_state.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
+import 'package:travelcrew/blocs/generics/generic_state.dart';
+import 'package:travelcrew/blocs/generics/generics_event.dart';
+import 'package:travelcrew/repositories_v2/trip_repositories/favorite_trip_repository.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/loading.dart';
@@ -18,12 +19,12 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoriteTripState extends State<FavoritesPage> {
-  FavoriteTripBloc bloc;
+  GenericBloc<Trip,FavoriteTripRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<FavoriteTripBloc>(context);
-    bloc.add(LoadingData());
+    bloc = BlocProvider.of<GenericBloc<Trip,FavoriteTripRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -31,11 +32,11 @@ class _FavoriteTripState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
 
 
-    return BlocBuilder<FavoriteTripBloc, TripState>(
+    return BlocBuilder<GenericBloc<Trip,FavoriteTripRepository>, GenericState>(
         builder: (context, state){
-          if(state is TripLoadingState){
+          if(state is LoadingState){
             return Loading();
-          } else if (state is TripHasDataState){
+          } else if (state is HasDataState<Trip>){
             List<Trip> trips = state.data;
             return Container(
               height: double.infinity,

@@ -2,9 +2,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import '../../repositories_v1/transportation_repository.dart';
 import '../../../blocs/transportation_bloc/transportation_event.dart';
 import '../../../blocs/transportation_bloc/transportation_state.dart';
-import '../../../repositories/transportation_repository.dart';
 
 
 class TransportationBloc extends Bloc<TransportationEvent, TransportationState> {

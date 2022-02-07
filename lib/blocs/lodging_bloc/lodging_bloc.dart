@@ -2,9 +2,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import '../../repositories_v1/lodging_repository.dart';
 import '../../../blocs/lodging_bloc/lodging_event.dart';
 import '../../../blocs/lodging_bloc/lodging_state.dart';
-import '../../../repositories/lodging_repository.dart';
 
 
 class LodgingBloc extends Bloc<LodgingEvent, LodgingState> {

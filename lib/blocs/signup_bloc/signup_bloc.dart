@@ -4,8 +4,7 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../repositories/user_repository.dart';
+import '../../repositories_v1/user_repository.dart';
 import '../../../utils/validators.dart';
 import 'signup_event.dart';
 import 'signup_state.dart';

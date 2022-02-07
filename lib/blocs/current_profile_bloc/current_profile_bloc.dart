@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:travelcrew/repositories/current_user_profile_repository.dart';
+import '../../repositories_v1/current_user_profile_repository.dart';
 import 'current_profile_event.dart';
 import 'current_profile_state.dart';
 

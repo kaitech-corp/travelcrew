@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repositories_v1/user_repository.dart';
 import '../../blocs/apple_login_bloc/apple_login_bloc.dart';
 import '../../blocs/google_login_bloc/google_login_bloc.dart';
 import '../../blocs/login_bloc/login_bloc.dart';
-import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/widgets/curved_widget.dart';
 import '../../size_config/size_config.dart';

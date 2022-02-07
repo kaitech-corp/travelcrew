@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../repositories/user_repository.dart';
+import '../../repositories_v1/user_repository.dart';
 import 'complete_profile_event.dart';
 import 'complete_profile_state.dart';
 
