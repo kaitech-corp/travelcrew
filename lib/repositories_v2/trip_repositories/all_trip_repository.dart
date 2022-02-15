@@ -5,10 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../blocs/generics/generic_bloc.dart';
 
-class AllTripsRepository {
+class AllTripsRepository extends GenericBlocRepository<Trip> {
 
-  Stream<List<Trip>> allTripsDataStream() {
+  Stream<List<Trip>> data() {
     //Firebase Collection
     final Query tripCollection = FirebaseFirestore.instance
         .collection("trips")

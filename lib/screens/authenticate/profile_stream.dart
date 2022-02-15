@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/blocs/current_profile_bloc/current_profile_bloc.dart';
+import 'package:travelcrew/models/custom_objects.dart';
+import 'package:travelcrew/models/trip_model.dart';
+import 'package:travelcrew/repositories_v1/current_user_profile_repository.dart';
 
 import '../../blocs/generics/generic_bloc.dart';
 import '../../blocs/notifications_bloc/notification_bloc.dart';
 import '../../blocs/notifications_bloc/notification_event.dart';
 import '../../blocs/notifications_bloc/notification_state.dart';
-import '../../models/custom_objects.dart';
-import '../../models/trip_model.dart';
-import '../../repositories_v2/current_user_profile_repository.dart';
-import '../../repositories_v2/generic_repository.dart';
+
 import '../../repositories_v2/trip_ad_repository.dart';
 import '../../repositories_v2/trip_repositories/all_trip_repository.dart';
 import '../../repositories_v2/trip_repositories/current_trip_repository.dart';
@@ -46,13 +47,13 @@ class _ProfileStreamState extends State<ProfileStream> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => GenericBloc<Trip,CurrentTripRepository>(repository: GenericRepository<Trip, CurrentTripRepository>()..refresh())),
-          BlocProvider(create: (context) => GenericBloc<Trip,PastTripRepository>(repository: GenericRepository<Trip, PastTripRepository>()..refresh())),
-          BlocProvider(create: (context) => GenericBloc<Trip,PrivateTripRepository>(repository: GenericRepository<Trip, PrivateTripRepository>()..refresh())),
-          BlocProvider(create: (context) => GenericBloc<Trip,AllTripsRepository>(repository: GenericRepository<Trip, AllTripsRepository>()..refresh())),
-          BlocProvider(create: (context) => GenericBloc<Trip,FavoriteTripRepository>(repository: GenericRepository<Trip, FavoriteTripRepository>()..refresh())),
-          BlocProvider(create: (context) => GenericBloc<UserPublicProfile,CurrentUserProfileRepository>(repository: GenericRepository<UserPublicProfile, CurrentUserProfileRepository>()..refresh())),
-          BlocProvider(create: (context) => GenericBloc<TripAds,TripAdRepository>(repository: GenericRepository<TripAds, TripAdRepository>()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<Trip,CurrentTripRepository>(repository: CurrentTripRepository())),
+          BlocProvider(create: (context) => GenericBloc<Trip,PastTripRepository>(repository: PastTripRepository())),
+          BlocProvider(create: (context) => GenericBloc<Trip,PrivateTripRepository>(repository: PrivateTripRepository())),
+          BlocProvider(create: (context) => GenericBloc<Trip,AllTripsRepository>(repository: AllTripsRepository())),
+          BlocProvider(create: (context) => GenericBloc<Trip,FavoriteTripRepository>(repository: FavoriteTripRepository())),
+          BlocProvider(create: (context) => CurrentProfileBloc(currentUserProfileRepository: CurrentUserProfileRepository()..refresh())),
+          BlocProvider(create: (context) => GenericBloc<TripAds,TripAdRepository>(repository: TripAdRepository())),
         ],
         child: BlocBuilder<NotificationBloc, NotificationState>(
             builder: (context, state){

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../blocs/generics/generic_bloc.dart';
 
 import '../../../models/custom_objects.dart';
 import '../../../services/database.dart';
@@ -9,9 +10,9 @@ import '../../../services/functions/cloud_functions.dart';
 /// Interface to our 'userPublicProfile' Firebase collection.
 ///
 /// Relies on a remote NoSQL document-oriented database.
-class AllUserRepository {
+class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
 
-  Stream<List<UserPublicProfile>> allUsersDataStream() {
+  Stream<List<UserPublicProfile>> data() {
     CollectionReference userPublicProfileCollection = FirebaseFirestore.instance
         .collection("userPublicProfile");
     List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot snapshot) {

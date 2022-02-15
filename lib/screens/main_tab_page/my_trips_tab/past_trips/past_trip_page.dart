@@ -31,7 +31,7 @@ class _PastTripsState extends State<PastTrips>{
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<Trip,PastTripRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<Trip,PastTripRepository>>(context);//dependency injection
     bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();

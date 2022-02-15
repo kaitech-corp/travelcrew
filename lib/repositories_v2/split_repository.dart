@@ -1,13 +1,18 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../blocs/generics/generic_bloc.dart';
 
 import '../../../../models/split_model.dart';
 import '../../../../services/functions/cloud_functions.dart';
 
-class SplitRepository {
+class SplitRepository extends GenericBlocRepository<SplitObject> {
 
-  Stream<List<SplitObject>> splitDataStream(String tripDocID) {
+  final String tripDocID;
+
+  SplitRepository({this.tripDocID});
+
+  Stream<List<SplitObject>> data() {
 
     final CollectionReference splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
 

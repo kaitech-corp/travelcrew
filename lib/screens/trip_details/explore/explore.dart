@@ -15,6 +15,7 @@ import '../../../repositories_v2/chat_repository.dart';
 import '../../../repositories_v2/generic_repository.dart';
 import '../../../repositories_v2/lodging_repository.dart';
 import '../../../repositories_v2/split_repository.dart';
+import '../../../repositories_v2/activity_repository.dart';
 import '../../../repositories_v2/transportation_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
@@ -81,20 +82,16 @@ class Explore extends StatelessWidget {
         body: MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => GenericBloc<ActivityData,ActivityRepository>(
-                repository: GenericRepository<ActivityData,ActivityRepository>()
-              ..refresh(identifier: trip.documentId))),
+                repository: ActivityRepository(tripDocID:trip.documentId)
+              )),
             BlocProvider(create: (context) => GenericBloc<ChatData,ChatRepository>(
-                repository: GenericRepository<ChatData,ChatRepository>()
-                  ..refresh(identifier: trip.documentId))),
+                repository: ChatRepository(tripDocID: trip.documentId))),
             BlocProvider(create: (context) => GenericBloc<LodgingData,LodgingRepository>(
-                repository: GenericRepository<LodgingData,LodgingRepository>()
-                  ..refresh(identifier: trip.documentId))),
+                repository: LodgingRepository(tripDocID: trip.documentId))),
             BlocProvider(create: (context) => GenericBloc<TransportationData,TransportationRepository>(
-                repository: GenericRepository<TransportationData,TransportationRepository>()
-                  ..refresh(identifier: trip.documentId))),
+                repository: TransportationRepository(tripDocID: trip.documentId))),
             BlocProvider(create: (context) => GenericBloc<SplitObject,SplitRepository>(
-                repository: GenericRepository<SplitObject,SplitRepository>()
-                  ..refresh(identifier: trip.documentId))),
+                repository: SplitRepository(tripDocID: trip.documentId))),
           ],
           child: TabBarView(
                     children: <Widget>[

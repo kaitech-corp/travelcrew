@@ -21,11 +21,11 @@ class CurrentTrips extends StatefulWidget{
 }
 
 class _CurrentTripsState extends State<CurrentTrips>{
-  GenericBloc<Trip,CurrentTripRepository> bloc;
+  GenericBloc bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<Trip, CurrentTripRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
@@ -33,7 +33,7 @@ class _CurrentTripsState extends State<CurrentTrips>{
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);//dependency injection
     bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();
@@ -42,6 +42,7 @@ class _CurrentTripsState extends State<CurrentTrips>{
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
+      // bloc: bloc,
       builder: (context, state){
         if(state is LoadingState){
             return Loading();

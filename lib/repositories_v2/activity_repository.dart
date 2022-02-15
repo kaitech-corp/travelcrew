@@ -1,9 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/services/functions/cloud_functions.dart';
 
-class ActivityRepository {
-  Stream<List<ActivityData>> activityDataStream(String tripDocID) {
+class ActivityRepository extends GenericBlocRepository<ActivityData> {
+
+  final String tripDocID;
+
+  ActivityRepository({this.tripDocID});
+
+  @override
+  Stream<List<ActivityData>> data() {
 
     final CollectionReference activitiesCollection =  FirebaseFirestore.instance.collection("activities");
 

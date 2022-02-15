@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 
 import '../../../../models/custom_objects.dart';
 import '../../../../services/functions/cloud_functions.dart';
@@ -8,10 +9,9 @@ import '../../../../services/functions/cloud_functions.dart';
 /// Interface to our 'tripAds' Firebase collection.
 ///
 /// Relies on a remote NoSQL document-oriented database.
-class TripAdRepository {
+class TripAdRepository extends GenericBlocRepository<TripAds> {
 
-
-  Stream<List<TripAds>> tripAdDataStream() {
+  Stream<List<TripAds>> data() {
 
     final CollectionReference adsCollection = FirebaseFirestore.instance.collection('tripAds');
 

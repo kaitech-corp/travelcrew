@@ -7,13 +7,14 @@ import 'package:travelcrew/blocs/generics/generics_event.dart';
 import '../../repositories_v2/generic_repository.dart';
 import 'generic_state.dart';
 
+abstract class GenericBlocRepository<T> {
+  Stream<List<T>> data();
+}
+class GenericBloc<M, R extends GenericBlocRepository<M>> extends Bloc<GenericEvent,GenericState> {
 
-class GenericBloc<M,R> extends Bloc<GenericEvent,GenericState> {
-
-  final GenericRepository<M, R> repository;
+  final R repository;
 
   StreamSubscription _subscription;
-
 
   GenericBloc({this.repository}) : super(LoadingState());
 
@@ -38,3 +39,4 @@ class GenericBloc<M,R> extends Bloc<GenericEvent,GenericState> {
     return super.close();
   }
 }
+

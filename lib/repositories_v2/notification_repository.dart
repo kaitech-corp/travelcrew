@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 
 import '../../../models/notification_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
-class NotificationRepository {
+class NotificationRepository extends GenericBlocRepository<NotificationData>{
 
-  Stream<List<NotificationData>> notificationDataStream() {
+  Stream<List<NotificationData>> data() {
 
     final CollectionReference notificationCollection = FirebaseFirestore.instance.collection('notifications');
 

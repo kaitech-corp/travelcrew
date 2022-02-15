@@ -282,8 +282,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: BlocProvider(
             create: (context) => GenericBloc<UserPublicProfile, AllUserRepository>(
-                repository: GenericRepository<UserPublicProfile, AllUserRepository>()..refresh()),
-            child: AllUserPage()),
+                repository: AllUserRepository())),
       );
     case UserProfilePageRoute:
       return _getPageRoute(

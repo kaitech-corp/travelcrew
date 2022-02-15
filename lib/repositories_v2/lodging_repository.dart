@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 
 import '../../../../models/lodging_model.dart';
 import '../../../../services/functions/cloud_functions.dart';
@@ -9,9 +10,13 @@ import '../../../../services/functions/cloud_functions.dart';
 /// It contains the lodging options for the different locations.
 ///
 /// Relies on a remote NoSQL document-oriented database.
-class LodgingRepository {
+class LodgingRepository extends GenericBlocRepository<LodgingData> {
 
-  Stream<List<LodgingData>> lodgingDataStream(String tripDocID) {
+  final String tripDocID;
+
+  LodgingRepository({this.tripDocID});
+
+  Stream<List<LodgingData>> data() {
 
     final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");
 

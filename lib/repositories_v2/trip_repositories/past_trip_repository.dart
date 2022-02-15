@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
-class PastTripRepository {
+class PastTripRepository extends GenericBlocRepository<Trip> {
 
-  Stream<List<Trip>> pastTripDataStream() {
+  Stream<List<Trip>> data() {
 
     final Query tripCollection = FirebaseFirestore.instance
         .collection("trips")

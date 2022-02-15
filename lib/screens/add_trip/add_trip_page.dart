@@ -195,7 +195,6 @@ class _AddTripPageState extends State<AddTripPage> {
                             setState((){
                               ispublic = val;
                             }),
-
                           }
                       ),
                       (_image != null) ? Align(
@@ -286,7 +285,6 @@ class _AddTripPageState extends State<AddTripPage> {
                               }
                             },
                             child: const Text('Add Trip'),
-
                           )
                       ),
                     ]))));

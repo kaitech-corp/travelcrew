@@ -155,7 +155,6 @@ class _LoginFormState extends State<LoginForm> {
                         children: [
                           (UserRepository().appleSignInAvailable) ? ElevatedButton(
                             onPressed: () {
-
                               if (isAppleLoginButtonEnabled(state)) {
                               _onPressedAppleSignIn();
                               }
