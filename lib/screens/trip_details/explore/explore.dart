@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,14 +10,12 @@ import '../../../models/lodging_model.dart';
 import '../../../models/split_model.dart';
 import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
-import '../../../repositories_v1/user_profile_repository.dart';
-import '../../../repositories_v2/activity_repository.dart';
-import '../../../repositories_v2/chat_repository.dart';
-import '../../../repositories_v2/generic_repository.dart';
-import '../../../repositories_v2/lodging_repository.dart';
-import '../../../repositories_v2/split_repository.dart';
-import '../../../repositories_v2/activity_repository.dart';
-import '../../../repositories_v2/transportation_repository.dart';
+import '../../../repositories/activity_repository.dart';
+import '../../../repositories/chat_repository.dart';
+import '../../../repositories/lodging_repository.dart';
+import '../../../repositories/split_repository.dart';
+import '../../../repositories/transportation_repository.dart';
+import '../../../repositories/user_profile_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -31,15 +30,22 @@ import '../transportation/transportation_page.dart';
 import 'explore_member_layout.dart';
 import 'explore_owner_layout.dart';
 
-
-class Explore extends StatelessWidget {
+/// Explore page for trip
+class Explore extends StatefulWidget {
 
   final Trip trip;
   Explore({this.trip,});
+  
 
+  @override
+  State<Explore> createState() => _ExploreState();
+}
+
+class _ExploreState extends State<Explore> {
+  
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   static PersistentBottomSheetController controller;
-
+  ValueNotifier<String> title = ValueNotifier("Explore");
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +60,7 @@ class Explore extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: canvasColor,
-          title: Text('Explore',style: Theme.of(context).textTheme.headline5,),
+          title: Text(widget.trip.tripName,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,maxLines: 1,),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.close),
@@ -82,25 +88,25 @@ class Explore extends StatelessWidget {
         body: MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => GenericBloc<ActivityData,ActivityRepository>(
-                repository: ActivityRepository(tripDocID:trip.documentId)
+                repository: ActivityRepository(tripDocID:widget.trip.documentId)
               )),
             BlocProvider(create: (context) => GenericBloc<ChatData,ChatRepository>(
-                repository: ChatRepository(tripDocID: trip.documentId))),
+                repository: ChatRepository(tripDocID: widget.trip.documentId))),
             BlocProvider(create: (context) => GenericBloc<LodgingData,LodgingRepository>(
-                repository: LodgingRepository(tripDocID: trip.documentId))),
+                repository: LodgingRepository(tripDocID: widget.trip.documentId))),
             BlocProvider(create: (context) => GenericBloc<TransportationData,TransportationRepository>(
-                repository: TransportationRepository(tripDocID: trip.documentId))),
+                repository: TransportationRepository(tripDocID: widget.trip.documentId))),
             BlocProvider(create: (context) => GenericBloc<SplitObject,SplitRepository>(
-                repository: SplitRepository(tripDocID: trip.documentId))),
+                repository: SplitRepository(tripDocID: widget.trip.documentId))),
           ],
           child: TabBarView(
                     children: <Widget>[
                       checkOwner(userService.currentUserID),
-                      SplitPage(tripDetails: trip),
-                      TransportationPage(trip: trip,),
-                      LodgingPage(trip: trip,),
-                      ActivityPage(trip: trip,),
-                      ChatPage(trip: trip,),
+                      SplitPage(tripDetails: widget.trip,title: title,),
+                      TransportationPage(trip: widget.trip,),
+                      LodgingPage(trip: widget.trip,),
+                      ActivityPage(trip: widget.trip,),
+                      ChatPage(trip: widget.trip,),
                     ],
                   )
         )
@@ -116,9 +122,9 @@ class Explore extends StatelessWidget {
   }
 
    Widget checkOwner(String uid) {
-  if (trip.ownerID == uid){
+  if (widget.trip.ownerID == uid){
     return StreamBuilder<Trip>(
-        stream: DatabaseService(tripDocID: trip.documentId).singleTripData,
+        stream: DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
         builder: (context, document){
           if(document.hasData){
             final Trip tripDetails = document.data;
@@ -128,14 +134,14 @@ class Explore extends StatelessWidget {
               scaffoldKey: scaffoldKey,);
           } else {
             return ExploreOwnerLayout(
-              tripDetails: trip,
+              tripDetails: widget.trip,
               controller: controller,
               scaffoldKey: scaffoldKey,);
           }
         }
     );
   } else {
-  return ExploreMemberLayout(tripDetails: trip,controller: controller,scaffoldKey: scaffoldKey,);
+  return ExploreMemberLayout(tripDetails: widget.trip,controller: controller,scaffoldKey: scaffoldKey,);
   }
 }
 
@@ -169,7 +175,7 @@ Widget getChatNotificationBadge (){
             );
           }
         },
-      stream: DatabaseService(tripDocID: trip.documentId).chatListNotification,
+      stream: DatabaseService(tripDocID: widget.trip.documentId).chatListNotification,
     );
 }
 }
