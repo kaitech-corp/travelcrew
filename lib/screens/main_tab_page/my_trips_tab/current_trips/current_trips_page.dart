@@ -6,7 +6,7 @@ import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
-import '../../../../repositories_v2/trip_repositories/current_trip_repository.dart';
+import '../../../../repositories/trip_repositories/current_trip_repository.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../grouped_list_builder.dart';

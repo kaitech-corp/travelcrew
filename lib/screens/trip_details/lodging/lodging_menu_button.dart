@@ -13,6 +13,7 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../alerts/alert_dialogs.dart';
 import '../split/split_package.dart';
 
+/// Lodging menu button
 class LodgingMenuButton  extends StatelessWidget{
 
   final Trip trip;

@@ -14,6 +14,7 @@ import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
 import '../../basket_list/controller/basket_controller.dart';
 
+/// Bringing List
 class BringingList extends StatefulWidget {
   final String documentID;
   final BasketController controller;

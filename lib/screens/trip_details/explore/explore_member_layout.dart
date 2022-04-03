@@ -16,7 +16,7 @@ import '../basket_list/controller/basket_controller.dart';
 import 'ImageAnimation.dart';
 import 'members/members_layout.dart';
 
-
+/// Layout for members of trip.
 class ExploreMemberLayout extends StatefulWidget{
 
   final Trip tripDetails;

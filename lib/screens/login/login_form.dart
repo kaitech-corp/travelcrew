@@ -7,7 +7,7 @@ import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../blocs/login_bloc/login_bloc.dart';
 import '../../blocs/login_bloc/login_event.dart';
 import '../../blocs/login_bloc/login_state.dart';
-import '../../repositories_v1/user_repository.dart';
+import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';

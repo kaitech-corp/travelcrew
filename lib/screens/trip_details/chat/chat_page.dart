@@ -6,7 +6,7 @@ import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
 import '../../../models/chat_model.dart';
 import '../../../models/trip_model.dart';
-import '../../../repositories_v2/chat_repository.dart';
+import '../../../repositories/chat_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';

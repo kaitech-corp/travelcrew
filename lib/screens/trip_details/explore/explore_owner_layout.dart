@@ -17,7 +17,7 @@ import '../basket_list/controller/basket_controller.dart';
 import 'ImageAnimation.dart';
 import 'members/members_layout.dart';
 
-
+/// Layout for owner of trip.
 class ExploreOwnerLayout extends StatefulWidget {
 
   final Trip tripDetails;

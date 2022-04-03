@@ -11,8 +11,7 @@ import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/reusableWidgets.dart';
 import '../../add_trip/google_places.dart';
 
-
-
+/// Edit lodging data
 class EditLodging extends StatefulWidget {
 
   final LodgingData lodging;

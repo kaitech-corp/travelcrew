@@ -12,6 +12,7 @@ import '../../../services/widgets/global_card.dart';
 import '../../../size_config/size_config.dart';
 import '../split/split_package.dart';
 
+///Transportation card to display details
 class TransportationCard extends StatelessWidget {
   final currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();

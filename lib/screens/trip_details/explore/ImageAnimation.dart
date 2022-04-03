@@ -5,6 +5,7 @@ import '../../../size_config/size_config.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 
+/// Trip image animation of explore page
 class CustomShape2 extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

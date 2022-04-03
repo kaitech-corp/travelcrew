@@ -7,13 +7,13 @@ import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
 import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
-import '../../../repositories_v2/lodging_repository.dart';
+import '../../../repositories/lodging_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/loading.dart';
 import 'lodging_card.dart';
 
-
+/// Lodging page
 class LodgingPage extends StatefulWidget {
 
   final Trip trip;

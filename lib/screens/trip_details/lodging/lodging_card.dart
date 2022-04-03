@@ -15,8 +15,7 @@ import '../../../size_config/size_config.dart';
 import '../split/split_package.dart';
 import 'lodging_menu_button.dart';
 
-
-
+/// Lodging card
 class LodgingCard extends StatelessWidget {
 
   final LodgingData lodging;

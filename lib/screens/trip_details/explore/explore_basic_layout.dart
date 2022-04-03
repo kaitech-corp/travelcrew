@@ -7,6 +7,7 @@ import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
 import '../../alerts/alert_dialogs.dart';
 
+/// Basic Layout for Explore page
 class ExploreBasicLayout extends StatelessWidget{
 
   final Trip tripDetails;

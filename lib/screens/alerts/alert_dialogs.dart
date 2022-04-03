@@ -9,7 +9,7 @@ import '../../models/custom_objects.dart';
 import '../../models/lodging_model.dart';
 import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
-import '../../repositories_v1/user_repository.dart';
+import '../../repositories/user_repository.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/locator.dart';

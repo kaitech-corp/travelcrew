@@ -5,6 +5,7 @@ import '../../../../models/trip_model.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import 'item_lists.dart';
 
+/// List page
 class ListPage extends StatelessWidget{
 
   final Trip tripDetails;

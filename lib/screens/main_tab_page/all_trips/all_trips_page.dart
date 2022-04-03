@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -10,8 +9,8 @@ import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
-import '../../../repositories_v2/trip_ad_repository.dart';
-import '../../../repositories_v2/trip_repositories/all_trip_repository.dart';
+import '../../../repositories/trip_ad_repository.dart';
+import '../../../repositories/trip_repositories/all_trip_repository.dart';
 import '../../../services/analytics_service.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';

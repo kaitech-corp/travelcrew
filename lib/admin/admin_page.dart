@@ -9,8 +9,8 @@ import '../services/widgets/appbar_gradient.dart';
 import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
 
+/// Admin page
 class AdminPage extends StatefulWidget {
-
 
   @override
   _AdminPageState createState() => _AdminPageState();

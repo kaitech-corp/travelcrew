@@ -12,6 +12,7 @@ import '../../../services/functions/tc_functions.dart';
 import 'details_bottom_sheet.dart';
 import 'split_package.dart';
 
+/// Details page for split items
 class SplitDetailsPage extends StatelessWidget {
   final SplitObject splitObject;
   final String purchasedByUID;

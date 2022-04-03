@@ -14,17 +14,22 @@ import 'bloc_builder.dart';
 import 'details_bottom_sheet.dart';
 import 'split_package.dart';
 
+/// Split Page
 class SplitPage extends StatefulWidget {
   final Trip tripDetails;
-  SplitPage({this.tripDetails});
+  final ValueNotifier<String> title;
+
+  SplitPage({this.tripDetails, this.title});
 
   @override
   _SplitPageState createState() => _SplitPageState();
 }
 
 class _SplitPageState extends State<SplitPage> {
+
   @override
   Widget build(BuildContext context) {
+    widget.title.value = "Split";
     return SplitBlocBuilder(
       trip: widget.tripDetails,
     );

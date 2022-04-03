@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 import 'package:travelcrew/blocs/generics/generic_state.dart';
 import 'package:travelcrew/blocs/generics/generics_event.dart';
-import 'package:travelcrew/repositories_v2/trip_repositories/favorite_trip_repository.dart';
 
 import '../../../models/trip_model.dart';
+import '../../../repositories/trip_repositories/favorite_trip_repository.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';

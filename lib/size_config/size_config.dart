@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sizer/sizer.dart';
 
-/// Static values for the size the user interface.
+/// Static values for the size of user interface.
 class SizeConfig {
   static MediaQueryData _mediaQueryData;
   static double screenWidth;

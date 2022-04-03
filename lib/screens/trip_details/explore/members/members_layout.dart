@@ -14,6 +14,7 @@ import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
 
+/// Layout list for members of trip
 class MembersLayout extends StatefulWidget{
 
   final Trip tripDetails;

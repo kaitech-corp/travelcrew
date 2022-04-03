@@ -8,7 +8,7 @@ import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/custom_objects.dart';
-import '../../../../repositories_v2/all_users_repository.dart';
+import '../../../../repositories/all_users_repository.dart';
 import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/loading.dart';
 import 'tc_user_card.dart';
