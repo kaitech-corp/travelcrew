@@ -82,7 +82,7 @@ class DatabaseService {
     try {
       ///TODO change version doc for new releases
       final DocumentSnapshot<Object> ref = 
-      await versionCollection.doc('version3_0_7').get();
+      await versionCollection.doc('version3_0_8').get();
       final Map<String, dynamic> data = ref.data();
 
 
