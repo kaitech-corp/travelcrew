@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/screens/menu_screens/users/all_users/all_users_page.dart';
 
 import '../../admin/admin_page.dart';
 import '../../blocs/generics/generic_bloc.dart';
@@ -12,9 +13,8 @@ import '../../models/lodging_model.dart';
 import '../../models/split_model.dart';
 import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
-import '../../repositories_v1/user_settings_repository.dart';
-import '../../repositories_v2/all_users_repository.dart';
-import '../../repositories_v2/generic_repository.dart';
+import '../../repositories/all_users_repository.dart';
+import '../../repositories/user_settings_repository.dart';
 import '../../screens/add_trip/edit_trip.dart';
 import '../../screens/add_trip/google_places.dart';
 import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
@@ -27,7 +27,6 @@ import '../../screens/menu_screens/help/help.dart';
 import '../../screens/menu_screens/help/report.dart';
 import '../../screens/menu_screens/main_menu.dart';
 import '../../screens/menu_screens/settings/settings.dart';
-import '../../screens/menu_screens/users/all_users/all_users_page.dart';
 import '../../screens/menu_screens/users/dm_chat/chats_page.dart';
 import '../../screens/menu_screens/users/dm_chat/dm_chat.dart';
 import '../../screens/menu_screens/users/user_profile_page.dart';
@@ -282,7 +281,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name,
         viewToShow: BlocProvider(
             create: (context) => GenericBloc<UserPublicProfile, AllUserRepository>(
-                repository: AllUserRepository())),
+                repository: AllUserRepository(),),
+          child: AllUserPage(),
+        ),
       );
     case UserProfilePageRoute:
       return _getPageRoute(
@@ -303,11 +304,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             body: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Image.asset(error,fit: BoxFit.cover,width: SizeConfig.screenWidth*.9,height: SizeConfig.screenWidth*.9,),
-                    Text('Something went wrong. Sorry about that.',textScaleFactor: 1.5,textAlign: TextAlign.center,style: TextStyle(color: Colors.redAccent),),
-                    SizedBox(height: 10,),
-                    Text('Be sure to check your network connection just in case.',textScaleFactor: 1.5,textAlign: TextAlign.center,),
+                    const Text('Something went wrong. Sorry about that.',textScaleFactor: 1.5,textAlign: TextAlign.center,style: TextStyle(color: Colors.redAccent),),
+                    const SizedBox(height: 10,),
+                    const Text('Be sure to check your network connection just in case.',textScaleFactor: 1.5,textAlign: TextAlign.center,),
                   ],
                 )),
           ));
