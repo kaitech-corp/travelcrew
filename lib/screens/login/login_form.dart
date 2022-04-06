@@ -66,94 +66,89 @@ class _LoginFormState extends State<LoginForm> {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
-          child: Column(
-            children: [
-              BlocBuilder<LoginBloc, LoginState>(
-                bloc: _loginBloc,
-                builder: (context, state) {
-                  return Column(children: <Widget>[
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.email),
-                        labelText: 'Email',
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      // autovalidate: true,
-                      autocorrect: false,
-                      validator: (_) {
-                        return !state.isEmailValid ? 'Invalid Email' : null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.lock),
-                        labelText: 'Password',
-                      ),
-                      obscureText: true,
-                      // autovalidate: true,
-                      autocorrect: false,
-                      validator: (_) {
-                        return !state.isPasswordValid
-                            ? 'Invalid Password'
-                            : null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GradientButton(
-                          width: 150,
-                          height: 45,
-                          onPressed: () {
-                            navigationService.navigateTo(SignUpScreenRoute);
-                          },
-                          text: const Text(
-                            'Signup',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.arrow_forward,
-                            color: Colors.black,
-                          ),
-                        ),
-                        GradientButton(
-                          width: 150,
-                          height: 45,
-                          onPressed: () {
-                            if (isLoginWithEmailAndPasswordButtonEnabled(
-                                state)) {
-                              _onFormSubmitted();
-                            }
-                          },
-                          text: const Text(
-                            'Login',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.check,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
+          child: BlocBuilder<LoginBloc, LoginState>(
+            bloc: _loginBloc,
+            builder: (context, state) {
+              return Column(children: <Widget>[
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.email),
+                    labelText: 'Email',
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  // autovalidate: true,
+                  autocorrect: false,
+                  validator: (_) {
+                    return !state.isEmailValid ? 'Invalid Email' : null;
+                  },
+                ),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.lock),
+                    labelText: 'Password',
+                  ),
+                  obscureText: true,
+                  // autovalidate: true,
+                  autocorrect: false,
+                  validator: (_) {
+                    return !state.isPasswordValid
+                        ? 'Invalid Password'
+                        : null;
+                  },
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
 
-                    IntrinsicWidth(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                IntrinsicWidth(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                        width: 150,
+                        height: 45,
+                        onPressed: () {
+                          if (isLoginWithEmailAndPasswordButtonEnabled(
+                              state)) {
+                            _onFormSubmitted();
+                          }
+                        },
+                        text: Text(
+                          'Login',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        icon: const Icon(
+                          Icons.check,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            child: Text(
+                                'Forgot Password?'
+                            ),
+                            onPressed: () {
+                              TravelCrewAlertDialogs().resetPasswordDialog(context);
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                            signUpOrSignIn,style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          (UserRepository().appleSignInAvailable) ? ElevatedButton(
+                          if (UserRepository().appleSignInAvailable) ElevatedButton(
                             onPressed: () {
                               if (isAppleLoginButtonEnabled(state)) {
                               _onPressedAppleSignIn();
@@ -165,72 +160,78 @@ class _LoginFormState extends State<LoginForm> {
                                 backgroundColor:
                                 MaterialStateProperty.all(canvasColor)),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
+                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const <Widget>[
-                                  Image(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Image(
                                       image: AssetImage(apple_logo),
                                       height: 25.0),
                                   Text(
                                     signInWithApple,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
+                                    style: Theme.of(context).textTheme.subtitle1,
                                   )
                                 ],
                               ),
                             ),
-                          ): nil,
+                          ),
+                          if (UserRepository().appleSignInAvailable) SizedBox(width: 16,),
                           ElevatedButton(
                             onPressed: () {
                               if (isGoogleLoginButtonEnabled(state)) {
-                              _onPressedGoogleSignIn();
+                                _onPressedGoogleSignIn();
                               }
                             },
                             style: ElevatedButtonTheme.of(context).style.copyWith(
                                 backgroundColor:
                                 MaterialStateProperty.all(canvasColor)),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const <Widget>[
-                                  Image(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Image(
                                       image: AssetImage(google_logo), height: 25.0),
                                   Text(
                                     signInWithGoogle,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
+                                    style: Theme.of(context).textTheme.subtitle1
                                   )
                                 ],
                               ),
                             ),
                           ),
-                          // }),
                         ],
                       ),
-                    )]);
-                },),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextButton(
-                    child: const Text(
-                      'Forgot Password?',
-                    ),
-                    onPressed: () {
-                      TravelCrewAlertDialogs().resetPasswordDialog(context);
-                    },
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                  "Don't have an account?"
+                              ),
+                              TextButton(
+                                child: Text(
+                                  "Sign Up",
+                                ),
+                                onPressed: () {
+                                  navigationService.navigateTo(SignUpScreenRoute);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
+                SizedBox(height: 15,),
+
+              ]);
+            },),
         ),
       ),
     );
