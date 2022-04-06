@@ -27,27 +27,17 @@ class AdCard extends StatelessWidget{
           TCFunctions().launchURL(tripAds.link);
           CloudFunction().updateClicks(tripAds.documentID);
         },
-        child: Stack(
-          children: [
-            Container (
-              margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(tripAds.urlToImage,),
-                  fit: BoxFit.fill,
-                ),
-                borderRadius: const BorderRadius.only(topLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
-              ),
+        child: Container (
+          height: SizeConfig.screenWidth*.5,
+          width: SizeConfig.screenWidth*.5,
+          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(tripAds.urlToImage,),
+              fit: BoxFit.fill,
             ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                  height: SizeConfig.screenWidth*.1,
-                  width: SizeConfig.screenWidth*.1,
-                  color: Colors.transparent,
-                  child: Image.asset(starImage)),
-            ),
-          ],
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
+          ),
         ),
       ),
     );
