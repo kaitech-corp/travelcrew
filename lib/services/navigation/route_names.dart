@@ -2,6 +2,7 @@ const String ActivityRoute = "Activity";
 const String AddNewActivityRoute = 'AddNewActivity';
 const String AddNewLodgingRoute = 'AddNewLodging';
 const String AddNewTransportationRoute = 'AddNewTransportation';
+const String AddNewTripRoute = 'AddNewTrip';
 const String AdminPageRoute = "AdminPage";
 const String AllTripsPageRoute = "AllTripsPage";
 const String BasketListPageRoute = 'BasketListPage';
