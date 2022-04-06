@@ -40,7 +40,7 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
     return BlocBuilder<GenericBloc<TripAds,TripAdRepository>, GenericState>(
         builder: (context, state) {
           if (state is LoadingState) {
-            return Expanded(child: Loading());
+            return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState) {
             List<TripAds> adList = state.data;
             return SizedBox(

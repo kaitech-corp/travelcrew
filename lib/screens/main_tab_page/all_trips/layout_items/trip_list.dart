@@ -48,7 +48,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     return BlocBuilder<GenericBloc<Trip,AllTripsRepository>, GenericState>(
         builder: (context, state) {
           if (state is LoadingState) {
-            return Expanded(child: Loading());
+            return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState<Trip>) {
             List<Trip> tripList = state.data;
             return SizedBox(

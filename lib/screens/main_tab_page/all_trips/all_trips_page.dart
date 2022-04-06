@@ -53,7 +53,6 @@ class _AllTripsState extends State<AllTrips>
                       text: " Destinations",
                       style: Theme.of(context).textTheme.headline6,
                     ),
-
                   ]),
             ),
             SliverGridAdList(),
@@ -71,7 +70,6 @@ class _AllTripsState extends State<AllTrips>
                       text: " Recommendations",
                       style: Theme.of(context).textTheme.headline6,
                     ),
-
                   ]),
             ),
             SliverGridTripSuggestionList(),

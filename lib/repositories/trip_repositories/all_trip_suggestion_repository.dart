@@ -22,8 +22,10 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
           Map<String, dynamic> data = doc.data();
           return Trip.fromData(data);
         }).toList();
-        // trips.sort(
-        //         (a, b) => a.favorite.length.compareTo(b.favorite.length));
+        trips = trips
+            .where(
+                (trip) => trip.location.length < 20 && trip.location.length > 0)
+            .toList();
         return trips;
       } catch (e) {
         CloudFunction()
