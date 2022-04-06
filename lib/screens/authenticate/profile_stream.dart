@@ -12,6 +12,7 @@ import '../../blocs/notification_bloc/notification_event.dart';
 import '../../blocs/notification_bloc/notification_state.dart';
 import '../../repositories/trip_ad_repository.dart';
 import '../../repositories/trip_repositories/all_trip_repository.dart';
+import '../../repositories/trip_repositories/all_trip_suggestion_repository.dart';
 import '../../repositories/trip_repositories/current_trip_repository.dart';
 import '../../repositories/trip_repositories/favorite_trip_repository.dart';
 import '../../repositories/trip_repositories/past_trip_repository.dart';
@@ -53,6 +54,7 @@ class _ProfileStreamState extends State<ProfileStream> {
           BlocProvider(create: (context) => GenericBloc<Trip,FavoriteTripRepository>(repository: FavoriteTripRepository())),
           BlocProvider(create: (context) => CurrentProfileBloc(currentUserProfileRepository: CurrentUserProfileRepository()..refresh())),
           BlocProvider(create: (context) => GenericBloc<TripAds,TripAdRepository>(repository: TripAdRepository())),
+          BlocProvider(create: (context) => GenericBloc<Trip,AllTripsSuggestionRepository>(repository: AllTripsSuggestionRepository())),
         ],
         child: BlocBuilder<NotificationBloc, NotificationState>(
             builder: (context, state){
