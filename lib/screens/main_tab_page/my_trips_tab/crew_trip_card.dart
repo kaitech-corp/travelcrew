@@ -57,7 +57,7 @@ class CrewTripCard extends StatelessWidget {
                       Flexible(
                           flex: 3,
                           child: Hero(
-                              tag: trip.urlToImage,
+                              tag: heroTag,
                               transitionOnUserGestures: true,
                               child: ImageLayout(trip.urlToImage))),
                     Flexible(

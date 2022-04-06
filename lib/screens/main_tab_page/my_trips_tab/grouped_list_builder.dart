@@ -43,6 +43,7 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
       itemBuilder: (context, trip) {
         return CrewTripCard(
           trip: trip,
+          heroTag: trip.urlToImage,
         );
       },
     );

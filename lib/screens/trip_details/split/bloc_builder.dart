@@ -8,7 +8,8 @@ import '../../../blocs/generics/generics_event.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
-import '../../../repositories_v2/split_repository.dart';
+
+import '../../../repositories/split_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
@@ -17,6 +18,7 @@ import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 import 'split_package.dart';
 
+/// Split Bloc Builder
 class SplitBlocBuilder extends StatefulWidget {
   final Trip trip;
   const SplitBlocBuilder({

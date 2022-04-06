@@ -17,9 +17,8 @@ import 'split_package.dart';
 /// Split Page
 class SplitPage extends StatefulWidget {
   final Trip tripDetails;
-  final ValueNotifier<String> title;
 
-  SplitPage({this.tripDetails, this.title});
+  SplitPage({this.tripDetails,});
 
   @override
   _SplitPageState createState() => _SplitPageState();
@@ -29,7 +28,6 @@ class _SplitPageState extends State<SplitPage> {
 
   @override
   Widget build(BuildContext context) {
-    widget.title.value = "Split";
     return SplitBlocBuilder(
       trip: widget.tripDetails,
     );

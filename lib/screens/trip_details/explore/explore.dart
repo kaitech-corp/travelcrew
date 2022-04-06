@@ -102,7 +102,7 @@ class _ExploreState extends State<Explore> {
           child: TabBarView(
                     children: <Widget>[
                       checkOwner(userService.currentUserID),
-                      SplitPage(tripDetails: widget.trip,title: title,),
+                      SplitPage(tripDetails: widget.trip,),
                       TransportationPage(trip: widget.trip,),
                       LodgingPage(trip: widget.trip,),
                       ActivityPage(trip: widget.trip,),
