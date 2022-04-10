@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
@@ -110,16 +111,16 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                       const CustomAppBar(bottomNav: true,),
                       Padding(
                         padding: EdgeInsets.only(
-                            top: SizeConfig.screenHeight*.175),
+                            top: SizeConfig.screenHeight*.18),
                         child: Align(
                           alignment: Alignment.topCenter,
                           child: TabBar(
-                            labelStyle: Theme.of(context).textTheme.headline6,
+                            labelStyle: responsiveTextStyleTopicsSub(context),
                             isScrollable: true,
-                            tabs: const <Widget> [
-                              Tab(text: 'Current',),
-                              Tab(text: 'Past',),
-                              Tab(text: 'Private',),
+                            tabs: <Widget> [
+                              Tab(text: Intl.message('Current'),),
+                              Tab(text: Intl.message('Past'),),
+                              Tab(text: Intl.message('Private'),),
                             ],
                           ),
                         ),

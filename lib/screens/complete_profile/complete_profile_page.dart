@@ -53,7 +53,6 @@ class CompleteProfile extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [Colors.white, Colors.white.withOpacity(0.4)],
-                        // colors: [canvasColor, Colors.blueAccent.shade100],
                       ),
                     ),
                     child: const Text(

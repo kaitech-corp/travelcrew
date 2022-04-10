@@ -2,19 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for split object
 class SplitObject {
-  double amountRemaining;
-  Timestamp dateCreated;
-  String details;
-  String itemDescription;
-  String itemDocID;
-  String itemName;
-  double itemTotal;
-  String itemType;
-  Timestamp lastUpdated;
-  String purchasedByUID;
-  String tripDocID;
-  List<String> users;
-  List<String> userSelectedList;
+  double? amountRemaining;
+  Timestamp? dateCreated;
+  String? details;
+  String? itemDescription;
+  String? itemDocID;
+  String? itemName;
+  double? itemTotal;
+  String? itemType;
+  Timestamp? lastUpdated;
+  String? purchasedByUID;
+  String? tripDocID;
+  List<String>? users;
+  List<String>? userSelectedList;
 
   SplitObject({
     this.amountRemaining,
@@ -44,8 +44,8 @@ class SplitObject {
         itemType = data['itemType'] ?? '',
         lastUpdated = data['lastUpdated'] ?? '',
         purchasedByUID = data['purchasedByUID'] ?? '',
-        users = List.from(data['users']) ?? [],
-        userSelectedList = List.from(data['userSelectedList']) ?? [],
+        users = List.from(data['users']),
+        userSelectedList = List.from(data['userSelectedList']),
         tripDocID = data['tripDocID'] ?? '';
 
   Map<String, dynamic> toJson(){

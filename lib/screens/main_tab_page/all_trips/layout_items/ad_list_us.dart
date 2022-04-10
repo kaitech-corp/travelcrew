@@ -46,17 +46,10 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
             return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
-                // padding: EdgeInsets.all(8),
-                // crossAxisCount: crossAxisCount,
                 scrollDirection: Axis.horizontal,
-                // itemCount: adList.length,
-                // itemBuilder: (context, index){
-                //   return AdCard(tripAds: adList[index]);
-                // },
                 children: List.generate(adList.length, (index) {
                   return AdCard(tripAds: adList[index]);
-                }
-                ),
+                }),
               ),
             );
           } else {

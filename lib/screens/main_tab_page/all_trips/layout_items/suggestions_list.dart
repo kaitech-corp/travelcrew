@@ -7,6 +7,7 @@ import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
 import '../../../../repositories/trip_repositories/all_trip_suggestion_repository.dart';
 import '../../../../services/functions/tc_functions.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 
@@ -34,18 +35,15 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
 
   @override
   Widget build(BuildContext context) {
-    if (SizeConfig.tablet) {
-      setState(() {
-        crossAxisCount = 4;
-      });
-    }
+
     return BlocBuilder<GenericBloc<Trip,AllTripsSuggestionRepository>, GenericState>(
         builder: (context, state) {
           if (state is LoadingState) {
             return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState) {
             List<Trip> tripList = state.data;
-            return SizedBox(
+            print(tripList.length);
+        return SizedBox(
               height: SizeConfig.screenWidth*.2,
               child: ListView(
                 scrollDirection: Axis.horizontal,
@@ -63,7 +61,7 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
                             child: Text(tripList[randomList[index]].location,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.subtitle1,)),
+                              style: responsiveTextStyleSuggestions(context))),
                     ),
                   );
                 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:travelcrew/models/activity_model.dart';
 import 'package:travelcrew/models/custom_objects.dart';
 import 'package:travelcrew/models/lodging_model.dart';
@@ -107,10 +108,10 @@ class _ReportContentState extends State<ReportContent> {
   String _message;
 
   Map<String, String> reportType = {
-    'Content': 'Content (i.e. image, language) is inappropriate.',
-    'Identity': 'This account is pretending to be someone else.',
-    'Spam': 'You believe this to be a spam account.',
-    'Other': 'Please describe below.'
+    'Content': Intl.message('Content (i.e. image, language) is inappropriate.'),
+    'Identity': Intl.message('This account is pretending to be someone else.'),
+    'Spam': Intl.message('You believe this to be a spam account.'),
+    'Other': Intl.message('Please describe below.')
   };
   List<String> reportList = ['Content', 'Identity', 'Spam', 'Other'];
   String itemType = 'Content';
@@ -135,8 +136,8 @@ class _ReportContentState extends State<ReportContent> {
                 const Padding(
                   padding: EdgeInsets.only(top: 5),
                 ),
-                Text(
-                  'Report this user for...',
+                Text(Intl.message
+                  ('Report this user for...'),
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 const Padding(
@@ -232,9 +233,9 @@ class _ReportContentState extends State<ReportContent> {
         style: Theme.of(context).textTheme.subtitle1,
         controller: _controller,
         maxLines: maxLines,
-        decoration: const InputDecoration(
-          hintText:
-              'Please describe the reasoning for this report and/or add additional details.',
+        decoration: InputDecoration(
+          hintText: Intl.message('Please describe the reasoning for this report '
+              'and/or add additional details.'),
           fillColor: Colors.grey,
           filled: true,
         ),

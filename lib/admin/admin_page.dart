@@ -19,7 +19,7 @@ class AdminPage extends StatefulWidget {
 class _AdminPageState extends State<AdminPage> {
 
 
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
   @override
   void initState() {
@@ -29,11 +29,11 @@ class _AdminPageState extends State<AdminPage> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
-  String _message;
+  String? _message;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class _AdminPageState extends State<AdminPage> {
                     child: StreamBuilder(
                       builder: (BuildContext context, feedbackData) {
                         if (feedbackData.hasData) {
-                          final List<TCFeedback> feedbackList = feedbackData.data;
+                          final List<TCFeedback> feedbackList = feedbackData.data as List<TCFeedback>;
                           return ListView.builder(
                             itemCount: feedbackList.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -122,10 +122,10 @@ class _AdminPageState extends State<AdminPage> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_message.isNotEmpty) {
+                      if (_message?.isNotEmpty ?? false) {
                         TravelCrewAlertDialogs()
                             .pushCustomNotification(context);
-                        CloudFunction().addCustomNotification(_message);
+                        CloudFunction().addCustomNotification(_message!);
                       }
                     },
                     child: const Text(push, style: TextStyle(fontSize: 20)),

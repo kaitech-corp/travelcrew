@@ -9,8 +9,8 @@ import '../../repositories/user_profile_repository.dart';
 
 
 class PublicProfileBloc extends Bloc<PublicProfileEvent, PublicProfileState> {
-  final PublicProfileRepository profileRepository;
-  StreamSubscription _subscription;
+  final PublicProfileRepository? profileRepository;
+  StreamSubscription? _subscription;
 
 
   PublicProfileBloc({this.profileRepository}) : super(PublicProfileLoadingState());
@@ -23,16 +23,16 @@ class PublicProfileBloc extends Bloc<PublicProfileEvent, PublicProfileState> {
       if(_subscription != null){
         await _subscription?.cancel();
       }
-      _subscription = profileRepository.profile().asBroadcastStream().listen((data) { add(PublicProfileHasDataEvent(data)); });
+      _subscription = profileRepository?.profile().asBroadcastStream().listen((data) { add(PublicProfileHasDataEvent(data)); });
     }
     else if(event is PublicProfileHasDataEvent){
       yield PublicProfileHasDataState(event.data);
     }
   }
   @override
-  Future<Function> close(){
+  Future<void> close(){
     _subscription?.cancel();
-    profileRepository.dispose();
+    profileRepository?.dispose();
     return super.close();
   }
 }

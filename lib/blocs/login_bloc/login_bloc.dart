@@ -6,9 +6,9 @@ import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final UserRepository _userRepository;
+  final UserRepository? _userRepository;
 
-  LoginBloc({UserRepository userRepository})
+  LoginBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(LoginState.initial());
 
@@ -28,19 +28,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  Stream<LoginState> _mapLoginEmailChangeToState(String email) async* {
-    yield state.update(isEmailValid: Validators.isValidEmail(email));
+  Stream<LoginState> _mapLoginEmailChangeToState(String? email) async* {
+    yield state.update(isEmailValid: Validators.isValidEmail(email!));
   }
 
-  Stream<LoginState> _mapLoginPasswordChangeToState(String password) async* {
-    yield state.update(isPasswordValid: Validators.isValidPassword(password));
+  Stream<LoginState> _mapLoginPasswordChangeToState(String? password) async* {
+    yield state.update(isPasswordValid: Validators.isValidPassword(password!));
   }
 
   Stream<LoginState> _mapLoginWithCredentialsPressedToState(
-      {String email, String password}) async* {
+      {String? email, String? password}) async* {
     yield LoginState.loading();
     try {
-      await _userRepository.signInWithCredentials(email, password);
+      await _userRepository?.signInWithCredentials(email, password);
       yield LoginState.success();
     } catch (_) {
       yield LoginState.failure();
@@ -50,7 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> _mapLoginWithApplePressedToState() async* {
     yield LoginState.loading();
     try {
-      await _userRepository.signInWithApple();
+      await _userRepository?.signInWithApple();
       yield LoginState.success();
     } catch (_) {
       yield LoginState.failure();
@@ -60,7 +60,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> _mapLoginWithGooglePressedToState() async* {
     yield LoginState.loading();
     try {
-      await _userRepository.signInWithGoogle();
+      await _userRepository?.signInWithGoogle();
       yield LoginState.success();
     } catch (_) {
       yield LoginState.failure();

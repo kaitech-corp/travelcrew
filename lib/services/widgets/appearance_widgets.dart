@@ -195,3 +195,26 @@ class TransportationIcon extends StatelessWidget{
     }
   }
 }
+
+TextStyle responsiveTextStyleSuggestions(BuildContext context){
+  if (SizeConfig.tablet) {
+    return Theme.of(context).textTheme.headline4;
+  } else {
+    return Theme.of(context).textTheme.subtitle1;
+  }
+}
+
+TextStyle responsiveTextStyleTopics(BuildContext context){
+  if (SizeConfig.tablet) {
+    return Theme.of(context).textTheme.headline2;
+  } else {
+    return Theme.of(context).textTheme.headline4;
+  }
+}
+TextStyle responsiveTextStyleTopicsSub(BuildContext context){
+  if (SizeConfig.tablet) {
+    return Theme.of(context).textTheme.headline4;
+  } else {
+    return Theme.of(context).textTheme.headline6;
+  }
+}

@@ -11,9 +11,9 @@ import 'signup_event.dart';
 import 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  final UserRepository _userRepository;
+  final UserRepository? _userRepository;
 
-  SignupBloc({UserRepository userRepository})
+  SignupBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(SignupState.initial());
 
@@ -50,26 +50,26 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   Stream<SignupState> _mapSignupPasswordChangeToState(String password) async* {
     yield state.update(isPasswordValid: Validators.isValidPassword(password));
   }
-  Stream<SignupState> _mapSignupImageChangeToState(File urlToImage) async* {
+  Stream<SignupState> _mapSignupImageChangeToState(File? urlToImage) async* {
     yield state.update(imageAdded: true);
   }
-  Stream<SignupState> _mapSignupDisplayNameChangeToState(String displayName) async* {
+  Stream<SignupState> _mapSignupDisplayNameChangeToState(String? displayName) async* {
     yield state.update(isDisplayNameValid: true);
   }
-  Stream<SignupState> _mapSignupFirstNameChangeToState(String firstName) async* {
+  Stream<SignupState> _mapSignupFirstNameChangeToState(String? firstName) async* {
     yield state.update(isFirstNameValid: true);
   }
-  Stream<SignupState> _mapSignupLastNameChangeToState(String lastName) async* {
+  Stream<SignupState> _mapSignupLastNameChangeToState(String? lastName) async* {
     yield state.update(isLastNameValid: true);
   }
 
   Stream<SignupState> _mapSignupSubmittedToState({
-    String email,
-    String password,
-    String displayName,
-    String firstName,
-    String lastName,
-    File urlToImage}) async* {
+    required String email,
+    required String password,
+    String? displayName,
+    String? firstName,
+    String? lastName,
+    File? urlToImage}) async* {
     yield SignupState.loading();
     try {
       await UserRepository().signUp(email, password, firstName, lastName, displayName, urlToImage);

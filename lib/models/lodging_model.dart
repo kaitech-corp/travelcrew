@@ -3,18 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 ///Model for lodging data
 class LodgingData {
   
-  final String comment;
-  final Timestamp startDateTimestamp;
-  final Timestamp endDateTimestamp;
-  final String displayName;
-  final String endTime;
-  final String fieldID;
-  final String link;
-  final String location;
-  final String lodgingType;
-  final String startTime;
-  final String uid;
-  final List<String> voters;
+  final String? comment;
+  final Timestamp? startDateTimestamp;
+  final Timestamp? endDateTimestamp;
+  final String? displayName;
+  final String? endTime;
+  final String? fieldID;
+  final String? link;
+  final String? location;
+  final String? lodgingType;
+  final String? startTime;
+  final String? uid;
+  final List<String?>? voters;
 
   LodgingData({
     this.endTime,

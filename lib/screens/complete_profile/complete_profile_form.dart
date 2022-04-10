@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -101,7 +102,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text('CompleteProfile Failure'),
+                  Text(Intl.message('CompleteProfile Failure')),
                   const Icon(Icons.error),
                 ],
               ),
@@ -115,7 +116,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text('Registering...'),
+                  Text(Intl.message('Registering...')),
                   const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
@@ -143,27 +144,27 @@ class _LoginFormState extends State<CompleteProfileForm> {
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       icon: Icon(Icons.person),
-                      labelText: 'Display Name',
+                      labelText: Intl.message('Display Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       icon: Icon(Icons.person),
-                      labelText: 'First Name',
+                      labelText: Intl.message('First Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       icon: Icon(Icons.person),
-                      labelText: 'Last Name',
+                      labelText: Intl.message('Last Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
@@ -181,7 +182,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                                   image: FileImage(_urlToImage.value),
                                   fit: BoxFit.cover)),
                         )
-                      : const Text('Select a Profile Picture.',
+                      : Text(Intl.message('Select a Profile Picture.'),
                           style: TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
@@ -199,7 +200,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          agreement,
+                          agreementMessage(),
                           style: Theme.of(context).textTheme.subtitle1,
                           textAlign: TextAlign.center,
                         ),
@@ -240,8 +241,8 @@ class _LoginFormState extends State<CompleteProfileForm> {
                         _onFormSubmittedEmpty();
                       }
                     },
-                    text: const Text(
-                      'Continue',
+                    text: Text(Intl.message
+                      ('Continue'),
                       style: TextStyle(
                         color: Colors.white,
                       ),

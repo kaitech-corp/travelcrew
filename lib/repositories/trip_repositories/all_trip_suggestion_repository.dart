@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../models/trip_model.dart';
-import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../blocs/generics/generic_bloc.dart';
 
@@ -19,18 +18,18 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
     List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
       try {
         List<Trip> trips = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Trip.fromData(data);
         }).toList();
         trips = trips
             .where(
-                (trip) => trip.location.length < 20 && trip.location.length > 0)
+                (trip) => (trip.location?.length ?? 0) < 20 && (trip.location?.length ?? 0) > 0)
             .toList();
         return trips;
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving all trip list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

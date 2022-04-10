@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
 import 'package:travelcrew/services/functions/tc_functions.dart';
@@ -13,7 +14,7 @@ class HelpPage extends StatelessWidget{
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Help & Feedback',style: Theme.of(context).textTheme.headline5,),
+          title: Text(Intl.message('Help & Feedback'),style: Theme.of(context).textTheme.headline5,),
         ),
         body: Container(
           margin: const EdgeInsets.all(16),
@@ -25,7 +26,7 @@ class HelpPage extends StatelessWidget{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('About',style: Theme.of(context).textTheme.subtitle1,),
+                  Text(Intl.message('About'),style: Theme.of(context).textTheme.subtitle1,),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,12 +57,12 @@ class HelpPage extends StatelessWidget{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Feedback',style: Theme.of(context).textTheme.subtitle1,),
+                  Text(Intl.message('Feedback'),style: Theme.of(context).textTheme.subtitle1,),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Provide Feedback'),
+                        Text(Intl.message('Provide Feedback')),
                         const Icon(Icons.navigate_next),
                       ],
                     ),

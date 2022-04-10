@@ -59,7 +59,7 @@ class TappableCrewTripGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       key: Key(trip.documentId),
-      margin: const EdgeInsets.only(left: 20, bottom: 10, right: 20),
+      margin: const EdgeInsets.only(left: 20, bottom: 16, right: 20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
@@ -76,83 +76,94 @@ class TappableCrewTripGrid extends StatelessWidget {
                 end: Alignment.topRight,
                 colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              if(trip.urlToImage.isNotEmpty)
-                  Flexible(
-                      flex: 4,
-                      child: Hero(
-                          tag: trip.urlToImage,
-                          transitionOnUserGestures: true,
-                          child: ImageLayout(trip.urlToImage))),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Tooltip(
-                    message: trip.tripName,
-                    child: Text(
-                      trip.tripName ?? trip.location,
-                      style: Theme.of(context).textTheme.headline4,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textScaleFactor: 1.2,
-                    )),
-              ),
-              Flexible(
-                flex: 2,
-                child: ListTile(
-                  title: Text(
-                    trip.startDate != null
-                        ? '${TCFunctions()
-                        .dateToMonthDay(trip.startDate)} - ${trip.endDate}'
-                        : 'Dates',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textScaleFactor: 2,
+          child: Stack(
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  if(trip.urlToImage.isNotEmpty)
+                      Flexible(
+                          flex: 4,
+                          child: Hero(
+                              tag: trip.urlToImage,
+                              transitionOnUserGestures: true,
+                              child: ImageLayout(trip.urlToImage))),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Tooltip(
+                        message: trip.tripName,
+                        child: Text(
+                          trip.tripName ?? trip.location,
+                          style: Theme.of(context).textTheme.headline4,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textScaleFactor: 1.2,
+                        )),
                   ),
-                  trailing: Tooltip(
-                    message: 'Members',
-                    child: Wrap(
-                      // mainAxisAlignment: MainAxisAlignment.end,
-                      spacing: 3,
-                      children: <Widget>[
-                        Text(
-                          '${trip.accessUsers.length} ',
-                          style: Theme.of(context).textTheme.subtitle1,
-                          textScaleFactor: 2,
-                        ),
-                        const IconThemeWidget(
-                          icon: Icons.people,
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      trip.startDate != null
+                          ? '${TCFunctions()
+                          .dateToMonthDay(trip.startDate)} - ${trip.endDate}'
+                          : 'Dates',
+                      style: Theme.of(context).textTheme.subtitle2,
+                      textScaleFactor: 2,
                     ),
                   ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: SizeConfig.screenHeight*.05,
+                  width: SizeConfig.screenWidth*.25,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.white,
+                  ),
+                  child: ButtonBar(
+                    alignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      favoriteIcon(),
+                      chatNotificationBadges(trip),
+                      needListBadges(trip),
+                      BadgeIcon(
+                        icon: (trip.accessUsers.length > 1) ? const Icon(
+                          Icons.people,
+                          color: Colors.purpleAccent,
+                        ):
+                        const Icon(
+                          Icons.people_outline,
+                          color: Colors.purpleAccent,
+                        ),
+                        badgeCount: trip.accessUsers.length,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Flexible(
-                flex: 2,
-                child: ButtonBar(
-                  alignment: MainAxisAlignment.end,
-                  children: [
-                    if (trip.favorite.isNotEmpty)
-                      Tooltip(
-                        message: 'Likes',
-                        child: BadgeIcon(
-                          icon: const Icon(
-                            Icons.favorite,
-                            color: Colors.redAccent,
-                          ),
-                          badgeCount: trip.favorite.length,
-                        ),
-                      ),
-                    chatNotificationBadges(trip),
-                    needListBadges(trip),
-                  ],
-                ),
-              )
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Tooltip favoriteIcon() {
+    return Tooltip(
+      message: 'Likes',
+      child: BadgeIcon(
+        icon: (trip.favorite.isNotEmpty) ? const Icon(
+          Icons.favorite,
+          color: Colors.redAccent,
+        ):
+        const Icon(
+          Icons.favorite_border,
+          color: Colors.redAccent,
+        ),
+        badgeCount: trip.favorite.length,
       ),
     );
   }
@@ -173,24 +184,21 @@ class TappableCrewTripGrid extends StatelessWidget {
               .logError('Error streaming chats for '
               'notifications on Crew cards: ${chats.error.toString()}');
         }
-        if (chats.hasData) {
+        if (chats.hasData && chats.data.isNotEmpty) {
           List<ChatData> chatList = chats.data;
-          if (chatList.isNotEmpty) {
             return Tooltip(
               message: 'New Messages',
               child: BadgeIcon(
-                icon: const IconThemeWidget(
-                  icon: Icons.chat,
-                ),
+                icon: const Icon(Icons.chat,color: Colors.greenAccent,),
                 badgeCount: chatList.length,
               ),
             );
           } else {
-            return nil;
+            return Tooltip(
+              message: 'No new messages',
+              child: const Icon(Icons.chat_bubble_outline,color: Colors.greenAccent,),
+            );
           }
-        } else {
-          return nil;
-        }
       },
       stream: DatabaseService(
               tripDocID: trip.documentId, uid: userService.currentUserID)
@@ -211,14 +219,12 @@ class TappableCrewTripGrid extends StatelessWidget {
           return Tooltip(
             message: 'Need List',
             child: BadgeIcon(
-              icon: const IconThemeWidget(
-                icon: Icons.shopping_basket,
-              ),
+              icon: const Icon(Icons.shopping_basket,color: Colors.orangeAccent,),
               badgeCount: items.data.length,
             ),
           );
         } else {
-          return nil;
+          return const Icon(Icons.shopping_basket_outlined,color: Colors.orangeAccent,);
         }
       },
       stream: DatabaseService().getNeedList(trip.documentId),

@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for user
 class User {
-  final String displayName;
-  final String email;
-  final String firstName;
-  final String lastName;
-  final String uid;
+  final String? displayName;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
+  final String? uid;
 
   User({this.displayName, this.email, this.firstName, this.lastName, this.uid});
 
@@ -14,11 +14,11 @@ class User {
 
 ///Model for user signup
 class UserSignUp {
-   String displayName;
-   String email;
-   String firstName;
-   String lastName;
-   String uid;
+   String? displayName;
+   String? email;
+   String? firstName;
+   String? lastName;
+   String? uid;
 
    UserSignUp({this.displayName, this.email, this.firstName, this.lastName, this.uid});
 
@@ -26,21 +26,21 @@ class UserSignUp {
 
 ///Model for user public profile
 class UserPublicProfile {
-  List<String> blockedList;
-  String displayName;
-  String email;
-  String firstName;
-  List<String> following;
-  List<String> followers;
-  String lastName;
-  int tripsCreated;
-  int tripsJoined;
-  String uid;
-  String urlToImage;
-  String hometown;
-  String instagramLink;
-  String facebookLink;
-  List<String> topDestinations;
+  List<String>? blockedList;
+  String? displayName;
+  String? email;
+  String? firstName;
+  List<String>? following;
+  List<String>? followers;
+  String? lastName;
+  int? tripsCreated;
+  int? tripsJoined;
+  String? uid;
+  String? urlToImage;
+  String? hometown;
+  String? instagramLink;
+  String? facebookLink;
+  List<String>? topDestinations;
 
   UserPublicProfile({this.hometown, this.instagramLink, this.facebookLink, this.topDestinations, this.blockedList, this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
 
@@ -85,11 +85,11 @@ class UserPublicProfile {
 
 ///Model for members of trip
 class Members {
-   String uid;
-   String displayName;
-   String firstName;
-   String lastName;
-   String urlToImage;
+   String? uid;
+   String? displayName;
+   String? firstName;
+   String? lastName;
+   String? urlToImage;
 
    Members({this.displayName, this.firstName, this.lastName, this.uid, this.urlToImage});
 
@@ -114,11 +114,11 @@ class Members {
 
 ///Model for item being brought
 class Bringing {
-  String item;
-  String displayName;
-  String documentID;
-  List<String> voters;
-  String type;
+  String? item;
+  String? displayName;
+  String? documentID;
+  List<String>? voters;
+  String? type;
 
   Bringing({this.voters, this.displayName, this.documentID, this.item,this.type});
 
@@ -132,10 +132,10 @@ class Bringing {
 
 ///Model for item needed for trip
 class Need {
-  String item;
-  String displayName;
-  String documentID;
-  String type;
+  String? item;
+  String? displayName;
+  String? documentID;
+  String? type;
 
   Need({this.displayName, this.documentID, this.item,this.type});
 
@@ -149,11 +149,11 @@ class Need {
 ///API Objects
 
 class Countries {
-  final String name;
-  final String capital;
-  final String region;
-  final List<dynamic> currencies;
-  final List<dynamic> languages;
+  final String? name;
+  final String? capital;
+  final String? region;
+  final List<dynamic>? currencies;
+  final List<dynamic>? languages;
 
   Countries({this.name, this.capital, this.currencies, this.languages, this.region});
 
@@ -168,10 +168,10 @@ class Countries {
 
 ///Model for Holiday
 class Holiday {
-  final String date;
-  final String localName;
-  final String name;
-  final String countryCode;
+  final String? date;
+  final String? localName;
+  final String? name;
+  final String? countryCode;
 
 Holiday({this.date, this.localName, this.name, this.countryCode});
 
@@ -185,8 +185,8 @@ Holiday({this.date, this.localName, this.name, this.countryCode});
 
 ///Model Walmart API
 class WalmartProducts {
-   String query;
-   String type;
+   String? query;
+   String? type;
 
   WalmartProducts({this.query,this.type});
 
@@ -199,8 +199,8 @@ class WalmartProducts {
 
 ///Model for department type from Walmart API
 class Department {
-  final String name;
-  final String id;
+  final String? name;
+  final String? id;
 
   Department({this.name,this.id});
 
@@ -212,7 +212,7 @@ class Department {
 ///Model for quantity from Walmart API
 class WalmartProductsItem {
   int quantity;
-  final WalmartProducts walmartProducts;
+  final WalmartProducts? walmartProducts;
 
   WalmartProductsItem({this.quantity = 1, this.walmartProducts});
 
@@ -223,10 +223,10 @@ class WalmartProductsItem {
 
 ///Model for user feedback
 class TCFeedback {
-  final String message;
-  final Timestamp timestamp;
-  final String uid;
-  final String fieldID;
+  final String? message;
+  final Timestamp? timestamp;
+  final String? uid;
+  final String? fieldID;
 
   TCFeedback({this.fieldID, this.message, this.timestamp, this.uid});
 
@@ -237,24 +237,24 @@ class TCReports {
 }
 ///Model for Google Places
 class GoogleData {
-  String location;
-  GeoPoint geoLocation;
+  String? location;
+  GeoPoint? geoLocation;
 
   GoogleData({this.location, this.geoLocation});
 }
 
 ///Model for trip ads show
 class TripAds {
-  final String tripName;
-  final GeoPoint geoPoint;
-  final String link;
-  final String location;
-  final Timestamp dateCreated;
-  final String documentID;
-  final List<String> favorites;
-  final int clicks;
-  final List<String> clickers;
-  final String urlToImage;
+  final String? tripName;
+  final GeoPoint? geoPoint;
+  final String? link;
+  final String? location;
+  final Timestamp? dateCreated;
+  final String? documentID;
+  final List<String>? favorites;
+  final int? clicks;
+  final List<String>? clickers;
+  final String? urlToImage;
 
   TripAds(
       {this.link,
@@ -283,10 +283,10 @@ class TripAds {
 
 ///Model for suggestions
 class Suggestions {
-  final String url;
-  final Timestamp timestamp;
-  final List<String> tags;
-  final String fieldID;
+  final String? url;
+  final Timestamp? timestamp;
+  final List<String>? tags;
+  final String? fieldID;
 
   Suggestions({this.fieldID, this.url, this.timestamp, this.tags});
 }
@@ -294,10 +294,10 @@ class Suggestions {
 ///Model for map API
 class TrueWay {
 
-  final String name;
-  final String address;
-  final int distance;
-  final String website;
+  final String? name;
+  final String? address;
+  final int? distance;
+  final String? website;
 
   TrueWay({this.name, this.address, this.distance, this.website});
 
@@ -311,24 +311,24 @@ class TrueWay {
 ///Model for count down date to show on trip page
 class CountDownDate {
 
-  double initialDayCount;
-  double daysLeft;
-  double gaugeCount;
+  double? initialDayCount;
+  double? daysLeft;
+  double? gaugeCount;
 
   CountDownDate({this.daysLeft,this.initialDayCount,this.gaugeCount});
 }
 
 ///Model for user purchase details: Split Feature
 class UserPurchaseDetails{
-  String uid;
-  double total;
+  String? uid;
+  double? total;
 
   UserPurchaseDetails({this.total,this.uid});
 }
 ///Model for start and end dates
 class DateTimeModel{
-  DateTime startDate;
-  DateTime endDate;
+  DateTime? startDate;
+  DateTime? endDate;
 
   DateTimeModel({this.endDate,this.startDate});
 }

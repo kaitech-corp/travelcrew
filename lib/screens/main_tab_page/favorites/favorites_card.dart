@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
@@ -32,7 +33,6 @@ class FavoritesCard extends StatelessWidget {
           navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
         },
         child: Container(
-          // margin: const EdgeInsets.only(left: 15,right: 15, bottom: 20, top: 10),
           decoration:BoxDecoration(
             borderRadius: const BorderRadius.only(topRight: Radius.circular(50.0)),
             gradient: LinearGradient(
@@ -55,7 +55,7 @@ class FavoritesCard extends StatelessWidget {
                 trailing: IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: (){
-                    String message = '${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.';
+                    String message = Intl.message('${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.');
                     String type = 'joinRequest';
 
                     CloudFunction().addNewNotification(message: message,
@@ -85,7 +85,7 @@ class FavoritesCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Creator: ${trip.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                    Text(Intl.message('Creator: ${trip.displayName}'),style: Theme.of(context).textTheme.subtitle2,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[

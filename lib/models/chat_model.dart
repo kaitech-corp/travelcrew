@@ -42,8 +42,8 @@ class ChatData {
 
 }
 class Status {
-  final String uid;
-  final bool status;
+  final String? uid;
+  final bool? status;
 
   Status.fromMap(Map<String, dynamic> data) : uid = data["uid"], status = data["read"];
   Status({this.uid, this.status,});

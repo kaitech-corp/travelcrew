@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcrew/services/widgets/appearance_widgets.dart';
 
 import 'layout_items/ad_list_us.dart';
 import 'layout_items/suggestions_list.dart';
@@ -24,51 +25,46 @@ class _AllTripsState extends State<AllTrips>
           children: [
             RichText(
               text: TextSpan(
-                  style: Theme.of(context).textTheme.headline3,
+                  style: responsiveTextStyleTopics(context),
                   children: [
-                    const TextSpan(
+                    TextSpan(
                         text: " What's",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.greenAccent,
-                            fontSize: 28)),
+                        style: responsiveTextStyleTopics(context).copyWith(color: Colors.greenAccent,),),
                     TextSpan(
                       text: ' New',
-                      style: Theme.of(context).textTheme.headline6,
+                      style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),
             SliverGridTripList(),
             RichText(
               text: TextSpan(
-                  style: Theme.of(context).textTheme.headline3,
+                  // style: ,
                   children: [
-                    const TextSpan(
-                        text: " U.S.",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                            fontSize: 28)),
                     TextSpan(
-                      text: " Destinations",
-                      style: Theme.of(context).textTheme.headline6,
+                        text: " Nature",
+                        style: responsiveTextStyleTopics(context).copyWith(color: Colors.redAccent,),),
+
+                        // TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.redAccent,
+                        //     fontSize: 28)),
+                    TextSpan(
+                      text: " Lovers",
+                      style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),
             SliverGridAdList(),
             RichText(
               text: TextSpan(
-                  style: Theme.of(context).textTheme.headline3,
                   children: [
-                    const TextSpan(
+                    TextSpan(
                         text: " Friend",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orangeAccent,
-                            fontSize: 28)),
+                        style: responsiveTextStyleTopics(context).copyWith(color: Colors.orangeAccent,),),
                     TextSpan(
                       text: " Recommendations",
-                      style: Theme.of(context).textTheme.headline6,
+                      style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),

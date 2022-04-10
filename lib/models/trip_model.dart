@@ -4,23 +4,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 ///Model for trip details
 class Trip {
 
-  final List<String> accessUsers;
-  final String comment;
-  final Timestamp dateCreatedTimeStamp;
-  final String displayName;
-  final String documentId;
-  final String endDate;
-  final Timestamp endDateTimeStamp;
-  final List<String> favorite;
-  final bool ispublic;
-  final GeoPoint tripGeoPoint;
-  final String tripName;
-  final String location;
-  final String ownerID;
-  final String startDate;
-  final Timestamp startDateTimeStamp;
-  final String travelType;
-  final String urlToImage;
+  final List<String>? accessUsers;
+  final String? comment;
+  final Timestamp? dateCreatedTimeStamp;
+  final String? displayName;
+  final String? documentId;
+  final String? endDate;
+  final Timestamp? endDateTimeStamp;
+  final List<String>? favorite;
+  final bool? ispublic;
+  final GeoPoint? tripGeoPoint;
+  final String? tripName;
+  final String? location;
+  final String? ownerID;
+  final String? startDate;
+  final Timestamp? startDateTimeStamp;
+  final String? travelType;
+  final String? urlToImage;
 
   Trip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
 

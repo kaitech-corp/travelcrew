@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/trip_model.dart';
+import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/navigation/route_names.dart';
@@ -95,7 +96,7 @@ class _EditTripDataState extends State<EditTripData> {
 
     return Scaffold(
         appBar: AppBar(
-            title: Text('Edit Trip', style: Theme.of(context).textTheme.headline5,)),
+            title: Text(editTripPageTitle(), style: Theme.of(context).textTheme.headline5,)),
         body: Container(
             child: SingleChildScrollView(
                 padding:
@@ -113,11 +114,11 @@ class _EditTripDataState extends State<EditTripData> {
                                     new LengthLimitingTextInputFormatter(75),
                                   ],
                                   decoration:
-                                  const InputDecoration(labelText: 'Trip Name or Location'),
+                                  InputDecoration(labelText: addTripNameLabel()),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      return 'Please enter a trip name';
+                                      return addTripNameValidator();
                                     }
                                   },
                               ),
@@ -128,11 +129,11 @@ class _EditTripDataState extends State<EditTripData> {
                                     new LengthLimitingTextInputFormatter(30),
                                   ],
                                   decoration:
-                                  const InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)'),
+                                  InputDecoration(labelText: addTripTypeLabel()),
                                   // ignore: missing_return
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      return 'Please enter a type.';
+                                      return addTripTypeValidator();
                                     }
                                   },
                               ),
@@ -143,11 +144,11 @@ class _EditTripDataState extends State<EditTripData> {
                                     controller: controllerLocation,
                                     enableInteractiveSelection: true,
                                     textCapitalization: TextCapitalization.words,
-                                    decoration: const InputDecoration(labelText:'Location'),
+                                    decoration: InputDecoration(labelText:addTripLocation()),
                                     // ignore: missing_return
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Please enter a location.';
+                                        return addTripLocationValidator();
                                         // ignore: missing_return
                                       }
                                     },
@@ -164,10 +165,10 @@ class _EditTripDataState extends State<EditTripData> {
                                       textCapitalization: TextCapitalization.words,
                                       enabled: false,
                                       decoration:
-                                      const InputDecoration(labelText: 'Location'),
+                                      InputDecoration(labelText: addTripLocation()),
                                   ),
                                   ElevatedButton(
-                                    child: const Text('Edit Location'),
+                                    child: Text(editTripPageEditLocation()),
                                     onPressed: (){
                                       setState(() {
                                         locationChangeVisible = true;
@@ -206,7 +207,7 @@ class _EditTripDataState extends State<EditTripData> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 16.0, horizontal: 16.0),
                                 child: _image == null
-                                    ? const Text('No image selected.')
+                                    ? Text(addTripImageMessage())
                                     : Image.file(_image),
                               ),
                               ElevatedButton(
@@ -218,16 +219,16 @@ class _EditTripDataState extends State<EditTripData> {
                               ),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                child: Text('Description',style: Theme.of(context).textTheme.subtitle1,),
+                                child: Text(addTripDescriptionMessage(),style: Theme.of(context).textTheme.subtitle1,),
                               ),
                               TextFormField(
                                 controller: controllerComment,
                                 cursorColor: Colors.grey,
                                 maxLines: 3,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
-                                    hintText: 'Add a short description.'),
+                                    hintText: addTripAddDescriptionMessage()),
                               ),
                             ]),
                     )))
@@ -244,7 +245,7 @@ class _EditTripDataState extends State<EditTripData> {
             }
             navigationService.pop();
             try {
-              String action = 'Saving edited Trip data';
+              String action = saveEditedTripData;
               CloudFunction().logEvent(action);
               DatabaseService().editTripData(
                   controllerComment.text,
@@ -271,7 +272,7 @@ class _EditTripDataState extends State<EditTripData> {
     );
   }
   _showDialog(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Saving')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(addTripSavingDataMessage())));
     navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
   }
 }

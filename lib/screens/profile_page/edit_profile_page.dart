@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/custom_objects.dart';
 import '../../services/database.dart';
@@ -58,7 +59,7 @@ class _SignupScreenState extends State {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text('Edit Profile',
+            title: Text(Intl.message('Edit Profile'),
                 style: Theme.of(context).textTheme.headline5)),
         body: StreamBuilder<UserPublicProfile>(
             stream: DatabaseService().currentUserPublicProfile,

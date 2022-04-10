@@ -1,11 +1,11 @@
 class SignupState {
-  final bool isEmailValid;
-  final bool isPasswordValid;
-  final bool isSubmitting;
-  final bool isSuccess;
-  final bool isFailure;
+  final bool? isEmailValid;
+  final bool? isPasswordValid;
+  final bool? isSubmitting;
+  final bool? isSuccess;
+  final bool? isFailure;
 
-  bool get isFormValid => isEmailValid && isPasswordValid;
+  bool?get isFormValid => isEmailValid! && isPasswordValid!;
 
   SignupState(
       {this.isEmailValid,
@@ -55,12 +55,12 @@ class SignupState {
   }
 
   SignupState update({
-    bool isEmailValid,
-    bool isPasswordValid,
-    bool imageAdded,
-    bool isDisplayNameValid,
-    bool isFirstNameValid,
-    bool isLastNameValid,
+    bool? isEmailValid,
+    bool?isPasswordValid,
+    bool?imageAdded,
+    bool?isDisplayNameValid,
+    bool?isFirstNameValid,
+    bool?isLastNameValid,
   }) {
     return copyWith(
       isEmailValid: isEmailValid,
@@ -72,11 +72,11 @@ class SignupState {
   }
 
   SignupState copyWith({
-    bool isEmailValid,
-    bool isPasswordValid,
-    bool isSubmitting,
-    bool isSuccess,
-    bool isFailure,
+    bool?isEmailValid,
+    bool?isPasswordValid,
+    bool?isSubmitting,
+    bool?isSuccess,
+    bool?isFailure,
   }) {
     return SignupState(
       isEmailValid: isEmailValid ?? this.isEmailValid,

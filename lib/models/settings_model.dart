@@ -5,11 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for user settings
 class UserNotificationSettingsData {
-  final bool isDirectMessagingOn;
-  final bool isPushNotificationsOn;
-  final bool isTripChangeOn;
-  final bool isTripChatOn;
-  final Timestamp lastUpdated;
+  final bool? isDirectMessagingOn;
+  final bool? isPushNotificationsOn;
+  final bool? isTripChangeOn;
+  final bool? isTripChatOn;
+  final Timestamp? lastUpdated;
 
   UserNotificationSettingsData(
       {this.isTripChatOn,

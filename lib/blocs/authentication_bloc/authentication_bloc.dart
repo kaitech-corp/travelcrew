@@ -7,9 +7,9 @@ import 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final UserRepository _userRepository;
+  final UserRepository? _userRepository;
 
-  AuthenticationBloc({UserRepository userRepository})
+  AuthenticationBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(AuthenticationInitial());
 
@@ -28,13 +28,13 @@ class AuthenticationBloc
   //AuthenticationLoggedOut
   Stream<AuthenticationState> _mapAuthenticationLoggedOutInToState() async* {
     yield AuthenticationFailure();
-    _userRepository.signOut();
+    _userRepository?.signOut();
   }
 
   //AuthenticationLoggedIn
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
     try {
-      yield AuthenticationSuccess( await _userRepository.user.first);
+      yield AuthenticationSuccess( await _userRepository!.user.first);
     } catch(e){
       print(e.toString());
       yield AuthenticationFailure();
@@ -44,10 +44,10 @@ class AuthenticationBloc
 
   // AuthenticationStarted
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
-    final isSignedIn = await _userRepository.isSignedIn();
+    final isSignedIn = await _userRepository!.isSignedIn();
     if (isSignedIn) {
       try {
-        final firebaseUser = await _userRepository.user.first;
+        final firebaseUser = await _userRepository!.user.first;
         yield AuthenticationSuccess(firebaseUser);
       } catch(e) {
         print(e.toString());

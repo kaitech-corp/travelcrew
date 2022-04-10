@@ -11,9 +11,9 @@ abstract class GenericBlocRepository<T> {
 }
 class GenericBloc<M, R extends GenericBlocRepository<M>> extends Bloc<GenericEvent,GenericState> {
 
-  final R repository;
+  final R? repository;
 
-  StreamSubscription _subscription;
+  StreamSubscription? _subscription;
 
   GenericBloc({this.repository}) : super(LoadingState());
 
@@ -26,7 +26,7 @@ class GenericBloc<M, R extends GenericBlocRepository<M>> extends Bloc<GenericEve
       if(_subscription != null){
         await _subscription?.cancel();
       }
-      _subscription = repository.data().asBroadcastStream().listen((data) {add(HasDataEvent(data)); });
+      _subscription = repository?.data().asBroadcastStream().listen((data) {add(HasDataEvent(data)); });
     }
     else if(event is HasDataEvent<M>){
       yield HasDataState<M>(event.data);

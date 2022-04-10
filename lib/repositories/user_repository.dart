@@ -20,13 +20,13 @@ class UserRepository {
   UserRepository()
       : _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> signInWithCredentials(String email, String password) async {
+  Future<void> signInWithCredentials(String? email, String? password) async {
     return await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
   }
 
-  Future<void> signUp(String email, String password, String firstname, String lastName, String displayName, File urlToImage) async {
+  Future<void> signUp(String email, String password, String? firstname, String? lastName, String? displayName, File? urlToImage) async {
     var result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     User user = result.user;
     await DatabaseService(uid: user.uid).updateUserData(firstname, lastName, email, user.uid);
@@ -108,9 +108,9 @@ class UserRepository {
     }
   }
 
-  Future<void>updateUserPublicProfile(String firstname, String lastName, String displayName, File urlToImage) async {
+  Future<void>updateUserPublicProfile(String? firstname, String? lastName, String? displayName, File? urlToImage) async {
     final currentUser =  _firebaseAuth.currentUser;
-    if(displayName.isEmpty){
+    if(displayName?.isEmpty ?? true){
       displayName = 'User${currentUser.uid.substring(currentUser.uid.length - 5)}';
     }
     await DatabaseService(uid: currentUser.uid).updateUserData(firstname, lastName, currentUser.email, currentUser.uid);

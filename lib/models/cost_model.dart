@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for cost data when spliting items
 class CostObject {
-  double amountOwe;
-  Timestamp datePaid;
-  String itemDocID;
-  Timestamp lastUpdated;
-  bool paid;
-  String uid;
-  String tripDocID;
+  double? amountOwe;
+  Timestamp? datePaid;
+  String? itemDocID;
+  Timestamp? lastUpdated;
+  bool? paid;
+  String? uid;
+  String? tripDocID;
 
   CostObject({
     this.amountOwe,

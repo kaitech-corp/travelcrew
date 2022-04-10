@@ -2,19 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for activity data
 class ActivityData {
-  final String activityType;
-  final String comment;
-  final String displayName;
-  final String endTime;
-  final Timestamp dateTimestamp;
-  final Timestamp endDateTimestamp;
-  final Timestamp startDateTimestamp;
-  final String fieldID;
-  final String link;
-  final String location;
-  final String startTime;
-  final String uid;
-  final List<String> voters;
+  final String? activityType;
+  final String? comment;
+  final String? displayName;
+  final String? endTime;
+  final Timestamp? dateTimestamp;
+  final Timestamp? endDateTimestamp;
+  final Timestamp? startDateTimestamp;
+  final String? fieldID;
+  final String? link;
+  final String? location;
+  final String? startTime;
+  final String? uid;
+  final List<String>? voters;
 
   ActivityData({this.endTime,this.endDateTimestamp, this.startDateTimestamp,this.dateTimestamp, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.location, this.activityType, this.uid, this.voters});
 

@@ -223,7 +223,7 @@ class _LoginFormState extends State<SignupForm> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          agreement,
+                          agreementMessage(),
                           style: Theme.of(context).textTheme.subtitle1,
                           textAlign: TextAlign.center,
                         ),

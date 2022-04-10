@@ -19,7 +19,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
       try {
         return snapshot.docs
             .map((doc) {
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Trip.fromData(data);
         })
             .toList()
@@ -28,7 +28,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving private trip list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

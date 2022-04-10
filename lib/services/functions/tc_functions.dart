@@ -339,7 +339,7 @@ class TCFunctions {
 
   List<int> randomList() {
     Random random = new Random();
-    List<int> x = List<int>.generate(5, (index) => random.nextInt(50));
+    List<int> x = List<int>.generate(5, (index) => random.nextInt(28));
     return x;
   }
 

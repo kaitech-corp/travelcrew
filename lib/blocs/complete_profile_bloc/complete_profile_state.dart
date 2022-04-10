@@ -1,8 +1,8 @@
 class CompleteProfileState {
 
-  final bool isSubmitting;
-  final bool isSuccess;
-  final bool isFailure;
+  final bool? isSubmitting;
+  final bool? isSuccess;
+  final bool? isFailure;
 
 
   CompleteProfileState(
@@ -44,10 +44,10 @@ class CompleteProfileState {
   }
 
   CompleteProfileState update({
-    bool imageAdded,
-    bool isDisplayNameValid,
-    bool isFirstNameValid,
-    bool isLastNameValid,
+    bool? imageAdded,
+    bool? isDisplayNameValid,
+    bool? isFirstNameValid,
+    bool? isLastNameValid,
   }) {
     return copyWith(
       isSubmitting: false,
@@ -57,11 +57,11 @@ class CompleteProfileState {
   }
 
   CompleteProfileState copyWith({
-    bool isEmailValid,
-    bool isPasswordValid,
-    bool isSubmitting,
-    bool isSuccess,
-    bool isFailure,
+    bool? isEmailValid,
+    bool? isPasswordValid,
+    bool? isSubmitting,
+    bool? isSuccess,
+    bool? isFailure,
   }) {
     return CompleteProfileState(
       isSubmitting: isSubmitting ?? this.isSubmitting,

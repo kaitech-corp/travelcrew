@@ -8,8 +8,8 @@ import 'notification_event.dart';
 import 'notification_state.dart';
 
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
-  final NotificationRepository notificationRepository;
-  StreamSubscription _subscription;
+  final NotificationRepository? notificationRepository;
+  StreamSubscription? _subscription;
 
 
   NotificationBloc({this.notificationRepository}) : super(NotificationLoadingState());
@@ -22,7 +22,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       if(_subscription != null){
         await _subscription?.cancel();
       }
-      _subscription = notificationRepository.notifications().asBroadcastStream().listen((data) { add(HasDataEvent(data)); });
+      _subscription = notificationRepository?.notifications().asBroadcastStream().listen((data) { add(HasDataEvent(data)); });
     }
     else if(event is HasDataEvent){
       yield NotificationHasDataState(event.data);

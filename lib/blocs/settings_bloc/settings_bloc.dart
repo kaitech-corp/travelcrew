@@ -9,8 +9,8 @@ import '../../repositories/user_settings_repository.dart';
 
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
-  final UserSettingsRepository userSettingsRepository;
-  StreamSubscription _subscription;
+  final UserSettingsRepository? userSettingsRepository;
+  StreamSubscription? _subscription;
 
 
   UserSettingsBloc({this.userSettingsRepository}) : super(UserSettingsLoadingState());
@@ -25,7 +25,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         await _subscription?.cancel();
       }
       _subscription = userSettingsRepository
-          .settingsData()
+          ?.settingsData()
           .asBroadcastStream()
           .listen((activity) {add(HasDataEvent(activity)); });
     }

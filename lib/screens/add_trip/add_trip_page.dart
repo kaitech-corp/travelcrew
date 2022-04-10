@@ -9,6 +9,7 @@ import 'package:travelcrew/services/navigation/route_names.dart';
 import '../../models/custom_objects.dart';
 import '../../models/trip_model.dart';
 import '../../services/analytics_service.dart';
+import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/locator.dart';
@@ -118,7 +119,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           initialValue: '',
                           decoration:
                           InputDecoration(
-                              labelText: 'Trip Name',
+                              labelText: addTripNameLabel(),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                               )
@@ -126,7 +127,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           // ignore: missing_return
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please enter a trip name';
+                              return addTripNameValidator();
                               // ignore: missing_return
                             }
                           },
@@ -141,7 +142,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           initialValue: '',
                           autocorrect: true,
                           decoration:
-                          InputDecoration(labelText: 'Type (i.e. work, vacation, wedding)',
+                          InputDecoration(labelText: addTripTypeLabel(),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                               )
@@ -149,7 +150,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           // ignore: missing_return
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please enter a type.';
+                              return addTripTypeValidator();
                               // ignore: missing_return
                             }
                           },
@@ -162,7 +163,7 @@ class _AddTripPageState extends State<AddTripPage> {
                         controller: myController,
                         enableInteractiveSelection: true,
                         textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(labelText:'Location',
+                        decoration: InputDecoration(labelText:addTripLocation(),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                             )
@@ -188,7 +189,7 @@ class _AddTripPageState extends State<AddTripPage> {
                         showBoth: true,
                       ),
                       SwitchListTile(
-                          title: const Text('Public'),
+                          title: Text(addTripPublic()),
                           value: ispublic,
                           onChanged: (bool val) =>
                           {
@@ -205,7 +206,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           });})): Container(),
                       Container(
                         child: _image == null
-                            ? Text('No image selected.',style: Theme.of(context).textTheme.headline6,)
+                            ? Text(addTripImageMessage(),style: Theme.of(context).textTheme.headline6,)
                             : Image.file(_image),
                       ),
                       Padding(
@@ -221,7 +222,7 @@ class _AddTripPageState extends State<AddTripPage> {
                       ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                        child: Text('Description',style: Theme.of(context).textTheme.subtitle1,),
+                        child: Text(addTripDescriptionMessage(),style: Theme.of(context).textTheme.subtitle1,),
                       ),
                       TextFormField(
                         enableInteractiveSelection: true,
@@ -232,7 +233,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
                             ),
                             border: OutlineInputBorder(),
-                            hintText: 'Add a short description.',
+                            hintText: addTripAddDescriptionMessage(),
                             hintStyle: Theme.of(context).textTheme.subtitle1
                         ),
                         style: Theme.of(context).textTheme.subtitle1,
@@ -250,7 +251,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               form.save();
                               if (form.validate()) {
                                 try {
-                                  String action = 'Saving new Trip data';
+                                  String action = addTripSavingDataMessage();
                                   CloudFunction().logEvent(action);
                                   DatabaseService().addNewTripData(
                                       Trip(
@@ -284,7 +285,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
                               }
                             },
-                            child: const Text('Add Trip'),
+                            child: Text(addTripAddTripButton()),
                           )
                       ),
                     ]))));

@@ -8,28 +8,28 @@ import 'complete_profile_state.dart';
 
 
 class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileState> {
-  final UserRepository _userRepository;
+  final UserRepository? _userRepository;
 
-  CompleteProfileBloc({UserRepository userRepository})
+  CompleteProfileBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(CompleteProfileState.initial());
 
   @override
   Stream<CompleteProfileState> mapEventToState(CompleteProfileEvent event) async* {
     if (event is CompleteProfileDisplayNameChanged){
-      yield* _mapCompleteProfileDisplayNameChangeToState(event.displayName);
+      yield* _mapCompleteProfileDisplayNameChangeToState(event.displayName!);
     } else if (event is CompleteProfileFirstNameChanged){
-      yield* _mapCompleteProfileFirstNameChangeToState(event.firstName);
+      yield* _mapCompleteProfileFirstNameChangeToState(event.firstName!);
     } else if (event is CompleteProfileLastNameChanged){
-      yield* _mapCompleteProfileLastNameChangeToState(event.lastName);
+      yield* _mapCompleteProfileLastNameChangeToState(event.lastName!);
     } else if (event is CompleteProfileImageChanged){
-      yield* _mapCompleteProfileImageChangeToState(event.urlToImage);
+      yield* _mapCompleteProfileImageChangeToState(event.urlToImage!);
     } else if (event is CompleteProfileSubmitted) {
       yield* _mapCompleteProfileSubmittedToState(
-          displayName: event.displayName,
-          firstName: event.firstName,
-          lastName: event.lastName,
-          urlToImage: event.urlToImage
+          displayName: event.displayName!,
+          firstName: event.firstName!,
+          lastName: event.lastName!,
+          urlToImage: event.urlToImage!
       );
     }
   }
@@ -48,13 +48,13 @@ class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileStat
   }
 
   Stream<CompleteProfileState> _mapCompleteProfileSubmittedToState({
-    String displayName,
-    String firstName,
-    String lastName,
-    File urlToImage}) async* {
+    String? displayName,
+    String? firstName,
+    String? lastName,
+    File? urlToImage}) async* {
     yield CompleteProfileState.loading();
     try {
-      await _userRepository.updateUserPublicProfile(firstName, lastName, displayName, urlToImage);
+      await _userRepository?.updateUserPublicProfile(firstName, lastName, displayName, urlToImage);
       yield CompleteProfileState.success();
     } catch (error) {
       print(error);

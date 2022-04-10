@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:nil/nil.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
@@ -142,7 +143,7 @@ class _LoginFormState extends State<LoginForm> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                            signUpOrSignIn,style: Theme.of(context).textTheme.subtitle1,
+                          signUpOrSignIn(),style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
                       Row(
@@ -210,12 +211,12 @@ class _LoginFormState extends State<LoginForm> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Text(
-                                  "Don't have an account?"
+                              Text(Intl.message
+                                  ("Don't have an account?")
                               ),
                               TextButton(
-                                child: Text(
-                                  "Sign Up",
+                                child: Text(Intl.message
+                                  ("Sign Up"),
                                 ),
                                 onPressed: () {
                                   navigationService.navigateTo(SignUpScreenRoute);
@@ -245,9 +246,9 @@ class _LoginFormState extends State<LoginForm> {
           SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const <Widget>[
-                Text('Login Failure'),
-                Icon(Icons.error),
+              children: <Widget>[
+                Text(Intl.message('Login Failure')),
+                const Icon(Icons.error),
               ],
             ),
             backgroundColor: const Color(0xffffae88),
@@ -262,9 +263,9 @@ class _LoginFormState extends State<LoginForm> {
           SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const <Widget>[
-                Text('Logging In...'),
-                CircularProgressIndicator(
+              children: <Widget>[
+                Text(Intl.message('Logging In...')),
+                const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
               ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 import 'package:travelcrew/services/database.dart';
@@ -34,7 +35,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text('Feedback',style: Theme.of(context).textTheme.headline5,),
+            title: Text(Intl.message('Feedback'),style: Theme.of(context).textTheme.headline5,),
             flexibleSpace: AppBarGradient(),
           ),
           body: Container(
@@ -44,7 +45,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(padding: EdgeInsets.all(5.0),),
-                Center(child: Text('Feel free to share your thoughts with us.',style: Theme.of(context).textTheme.subtitle1,)),
+                Center(child: Text(Intl.message('Feel free to share your thoughts with us.'),style: Theme.of(context).textTheme.subtitle1,)),
                 _buildTextField(),
                 const SizedBox(height: 15),
                 Center(
@@ -54,11 +55,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       navigationService.pop();
                       TravelCrewAlertDialogs().submitFeedbackAlert(context);
                     },
-                    child: const Text('Send', style: TextStyle(fontSize: 20)),
+                    child: Text(Intl.message('Send'), style: TextStyle(fontSize: 20)),
                   ),
                 ),
                 const SizedBox(height: 30),
-                Center(child: SelectableText(collaboratingText,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,)),
+                Center(child: SelectableText(collaboratingText(),style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,)),
               ],
             ),
           )
@@ -79,7 +80,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         maxLines: maxLines,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          hintText: "What's on your mind?",
+          hintText: Intl.message("What's on your mind?"),
           filled: true,
         ),
         onChanged: (String value) {
