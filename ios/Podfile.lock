@@ -160,6 +160,8 @@ PODS:
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
+  - flutter_sms (1.1.0):
+    - Flutter
   - flutter_web_auth (0.4.0):
     - Flutter
   - fluttertoast (0.0.2):
@@ -278,6 +280,7 @@ DEPENDENCIES:
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - flutter_sms (from `.symlinks/plugins/flutter_sms/ios`)
   - flutter_web_auth (from `.symlinks/plugins/flutter_web_auth/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoding (from `.symlinks/plugins/geocoding/ios`)
@@ -356,6 +359,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  flutter_sms:
+    :path: ".symlinks/plugins/flutter_sms/ios"
   flutter_web_auth:
     :path: ".symlinks/plugins/flutter_web_auth/ios"
   fluttertoast:
@@ -426,6 +431,7 @@ SPEC CHECKSUMS:
   flutter_app_badger: 65de4d6f0c34a891df49e6cfb8a1c0496426fa68
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  flutter_sms: 91ce41530f55c85d6524d82307a5d555844c086a
   flutter_web_auth: fd071763f61703882adbb2524f5cd5251883118c
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a

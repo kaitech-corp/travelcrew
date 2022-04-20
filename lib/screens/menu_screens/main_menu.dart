@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:travelcrew/services/social/app_invite.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -135,6 +136,15 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     navigationService.navigateTo(AdminPageRoute);
                 },
               ),
+            ListTile(
+              leading: const IconThemeWidget(
+                  icon: Icons.send),
+              title:
+              Text('Invite Friends', style: Theme.of(context).textTheme.subtitle1),
+              onTap: () {
+                AppInvite().sendInvite();
+              },
+            ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.exit_to_app),
               title:
