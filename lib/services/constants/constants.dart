@@ -32,6 +32,10 @@ const urls = [];
 const splitWiseToken = 'splitWiseToken';
 const tabs = ['Explore', 'Split', 'Transportation', 'Lodging', 'Activities', 'Chat'];
 
+const appleStore = "//apps.apple.com/us/app/travel-crew/id1501930493";
+
+const googleplay = "//play.google.com/store/apps/details?id=com.kaitechcorp.travelcrew";
+
 const defaultDuration = Duration(seconds: 3);
 const listAnimationDuration = Duration(milliseconds: 500);
 var cartBarHeight = SizeConfig.screenHeight*.12;

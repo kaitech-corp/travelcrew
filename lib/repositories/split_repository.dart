@@ -27,7 +27,7 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
         return splitItemData;
       } catch (e) {
         CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

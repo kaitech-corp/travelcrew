@@ -432,6 +432,7 @@ class CloudFunction {
       'flightNumber': flightNumber,
       'comment': comment,
     });
+    _analyticsService.createTransportation(true);
   }
 
   void deleteTransportation({String fieldID, String tripDocID}) async {

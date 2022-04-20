@@ -27,7 +27,7 @@ class NotificationRepository {
         }).toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving notification list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

@@ -51,7 +51,8 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState<Trip>) {
             List<Trip> tripList = state.data;
-            return SizedBox(
+            print(tripList.length);
+        return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
                 scrollDirection: Axis.horizontal,

@@ -29,7 +29,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
       } catch (e) {
         CloudFunction().logError(
             'Error retrieving transportation list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

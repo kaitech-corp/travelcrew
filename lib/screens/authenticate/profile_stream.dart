@@ -24,9 +24,7 @@ import '../main_tab_page/main_tab_page.dart';
 
 /// Profile stream to initiate all blocs
 class ProfileStream extends StatefulWidget {
-  final String uid;
-
-  const ProfileStream({Key key, this.uid,}) : super(key: key);
+  const ProfileStream({Key key,}) : super(key: key);
 
   @override
   _ProfileStreamState createState() => _ProfileStreamState();
@@ -64,7 +62,7 @@ class _ProfileStreamState extends State<ProfileStream> {
                 FlutterAppBadger.updateBadgeCount(state.data.length);
                 return MainTabPage(notifications: state.data,);
               } else {
-                return MainTabPage(notifications: null,);
+                return MainTabPage(notifications: [],);
               }}
         ));
   }

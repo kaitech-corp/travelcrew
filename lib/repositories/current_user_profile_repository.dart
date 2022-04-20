@@ -30,9 +30,9 @@ class CurrentUserProfileRepository {
           return UserPublicProfile.fromData(data);
         } catch(e){
           CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
-          return null;
+          return UserPublicProfile();
         }} else {
-        return null;
+        return UserPublicProfile();
       }
     }
 

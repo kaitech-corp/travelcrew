@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   Container(
                     margin: const EdgeInsets.only(top: 230),
-                    child: LoginForm(userRepository: _userRepository,),
+                    child: LoginForm(),
                   )
                 ],
               ),

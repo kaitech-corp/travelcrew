@@ -21,11 +21,10 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
           Map<String, dynamic> data = doc.data();
           return ActivityData.fromData(data);
         }).toList();
-        // activityList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
         return activityList;
       } catch (e) {
         CloudFunction().logError('Error retrieving activity list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

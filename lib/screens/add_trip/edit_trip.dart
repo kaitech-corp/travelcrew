@@ -51,14 +51,14 @@ class _EditTripDataState extends State<EditTripData> {
   @override
   void initState() {
     super.initState();
-    controllerLocation.text = widget.tripDetails?.location ?? '';
-    controllerTripName.text = widget.tripDetails?.tripName ?? '';
-    controllerType.text = widget.tripDetails?.travelType ?? '';
-    controllerComment.text = widget.tripDetails.comment;
-    startDate.value = widget.tripDetails.startDate;
-    endDate.value = widget.tripDetails.endDate;
-    endDateTimestamp.value = widget.tripDetails.endDateTimeStamp;
-    startDateTimestamp.value = widget.tripDetails.startDateTimeStamp;
+    controllerLocation.text = widget.tripDetails.location ?? '';
+    controllerTripName.text = widget.tripDetails.tripName ?? '';
+    controllerType.text = widget.tripDetails.travelType ?? '';
+    controllerComment.text = widget.tripDetails.comment ?? '';
+    startDate.value = widget.tripDetails.startDate ?? '';
+    endDate.value = widget.tripDetails.endDate ?? '';
+    endDateTimestamp.value = widget.tripDetails.endDateTimeStamp ?? Timestamp.now();
+    startDateTimestamp.value = widget.tripDetails.startDateTimeStamp ?? Timestamp.now();
     ispublic = widget.tripDetails.ispublic;
     documentID = widget.tripDetails.documentId;
 

@@ -9,21 +9,24 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
 
-void projectInitializer() async {
+Future<String> projectInitializer() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    // await dotenv.load(fileName: ".env");
+    await Firebase.initializeApp();
+    setupLocator();
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp();
-  setupLocator();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
-  // Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    Bloc.observer = CustomBlocObserver();
 
-  Bloc.observer = CustomBlocObserver();
+    return "Passed";
+  } catch (e){
+    return "Failed: $e";
+  }
 }

@@ -165,9 +165,12 @@ class DatabaseService {
       if(userData.exists) {
         final Map<String, dynamic> data = userData.data();
         return UserPublicProfile.fromData(data);
+      } else{
+        return UserPublicProfile();
       }
     } catch(e){
       CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
+      return UserPublicProfile();
     }
   }
 
@@ -426,8 +429,8 @@ class DatabaseService {
 
   ////Updates public profile after sign up
   Future<void> updateUserPublicProfileData(
-      String displayName, String firstName, String lastName, 
-      String email, int tripsCreated, int tripsJoined, String uid, 
+      String displayName, String firstName, String lastName,
+      String email, int tripsCreated, int tripsJoined, String uid,
       File urlToImage) async {
     final ref = userPublicProfileCollection.doc(uid);
      try {
@@ -1091,6 +1094,8 @@ class DatabaseService {
       addNewLodgingRef.update({
         'fieldID': key,
       });
+      _analyticsService.createLodging(true);
+
     } catch (e) {
       CloudFunction().logError('Error adding new lodging data:  ${e.toString()}');
     }
@@ -1154,6 +1159,7 @@ class DatabaseService {
         'fieldID': key,
         'dateTimestamp': FieldValue.serverTimestamp(),
       });
+      _analyticsService.createActivity(true);
     } catch (e) {
       CloudFunction().logError('Error adding new activity:  ${e.toString()}');
       _analyticsService

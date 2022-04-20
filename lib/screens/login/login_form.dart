@@ -16,11 +16,8 @@ import '../alerts/alert_dialogs.dart';
 
 /// Form for login screen
 class LoginForm extends StatefulWidget {
-  final UserRepository _userRepository;
 
-  const LoginForm({Key key, UserRepository userRepository})
-      : _userRepository = userRepository,
-        super(key: key);
+  const LoginForm({Key key,}) :super(key: key);
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -156,7 +153,7 @@ class _LoginFormState extends State<LoginForm> {
                             },
                             style: ElevatedButtonTheme.of(context)
                                 .style
-                                .copyWith(
+                                ?.copyWith(
                                 backgroundColor:
                                 MaterialStateProperty.all(canvasColor)),
                             child: Padding(
@@ -183,7 +180,7 @@ class _LoginFormState extends State<LoginForm> {
                                 _onPressedGoogleSignIn();
                               }
                             },
-                            style: ElevatedButtonTheme.of(context).style.copyWith(
+                            style: ElevatedButtonTheme.of(context).style?.copyWith(
                                 backgroundColor:
                                 MaterialStateProperty.all(canvasColor)),
                             child: Padding(

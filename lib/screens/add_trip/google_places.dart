@@ -20,7 +20,6 @@ class GooglePlaces extends StatefulWidget{
   final GlobalKey<ScaffoldState> searchScaffoldKey;
   final TextEditingController controller;
 
-
   GooglePlaces({this.homeScaffoldKey, this.searchScaffoldKey,this.controller});
 
   @override
@@ -80,7 +79,6 @@ class _GooglePlacesState extends State<GooglePlaces> {
       // print(detail.result.formattedAddress);
       final lat = detail.result.geometry.location.lat;
       final lng = detail.result.geometry.location.lng;
-
       if (widget.controller != null) {
         widget.controller.text = detail.result.formattedAddress;
       }

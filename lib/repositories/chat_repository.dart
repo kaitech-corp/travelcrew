@@ -27,7 +27,7 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -56,12 +56,12 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
   List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
     try {
       return snapshot.docs.map((doc){
-        Map<String, dynamic> data = doc.data();
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return ChatData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 

@@ -45,8 +45,9 @@ class _PastTripsState extends State<PastTrips>{
           if(state is LoadingState){
             return Loading();
           } else if (state is HasDataState){
+            List<Trip> trips = state.data as List<Trip>;
             return SizeConfig.tablet ?
-            SliverGridView(trips: state.data, length: state.data.length):
+            SliverGridView(trips: trips, length: trips.length):
             GroupedListTripView(data: state.data,isPast: true,);
           } else {
             return Container();

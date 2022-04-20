@@ -42,4 +42,16 @@ class AnalyticsService {
   Future viewedTrip() async {
     await _analytics.logEvent(name: 'viewedTrip');
   }
+
+  Future createActivity( bool created) async {
+    await _analytics.logEvent(name: 'createActivity', parameters: {'did_create': created});
+  }
+
+  Future createLodging( bool created) async {
+    await _analytics.logEvent(name: 'createLodging', parameters: {'did_create': created});
+  }
+
+  Future createTransportation( bool created) async {
+    await _analytics.logEvent(name: 'createTransportation', parameters: {'did_create': created});
+  }
 }

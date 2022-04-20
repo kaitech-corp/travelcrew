@@ -53,7 +53,7 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
     return BlocProvider<NotificationBloc>(
         create: (context){
           return NotificationBloc(notificationRepository: NotificationRepository()..refresh());},
-        child: ProfileStream(uid: userService.currentUserID),
+        child: ProfileStream(),
     );
   }
 
