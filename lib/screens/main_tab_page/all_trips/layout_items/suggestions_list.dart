@@ -23,7 +23,6 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
 
   int crossAxisCount = 2;
 
-  List<int> randomList = TCFunctions().randomList();
 
   @override
   void initState() {
@@ -45,7 +44,8 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
             return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState) {
             List<Trip> tripList = state.data;
-            return SizedBox(
+            List<int> randomList = TCFunctions().randomList(tripList.length);
+        return SizedBox(
               height: SizeConfig.screenWidth*.2,
               child: ListView(
                 scrollDirection: Axis.horizontal,

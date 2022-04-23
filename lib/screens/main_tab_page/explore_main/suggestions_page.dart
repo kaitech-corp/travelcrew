@@ -1,5 +1,6 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:intl/intl.dart';
 // import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
 // import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
@@ -23,9 +24,9 @@
 // class _SuggestionsPageState extends State<SuggestionsPage> {
 //
 //   final Geolocator geolocator = Geolocator();
-//   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+//   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: dotenv.env['kGoogleApiKey']);
 //
-//   List<PlaceDetails> _detailedPlaces = [];
+//   // List<PlaceDetails> _detailedPlaces = [];
 //
 //   Position _currentPosition;
 //   String _currentAddress;
@@ -65,29 +66,29 @@
 //     });
 //   }
 //
-//   Future<List<PlaceDetails>> googleNearbyPlaces() async {
-//     if(showWidget()){
-//       dynamic _location = TCFunctions()
-//           .getLocation(_currentPosition.latitude, _currentPosition.longitude);
-//       var results = await _places.searchNearbyWithRadius(_location, 10000,
-//           keyword: place);
-//
-//       var len = results.results.length;
-//       results.results.forEach((item) async {
-//         var _value = await _places.getDetailsByPlaceId(item.placeId);
-//         // print(_value.result.formattedAddress);
-//         // _detailedPlaces.insert(0, _value.result);
-//         _detailedPlaces.add(_value.result);
-//         // print(_detailedPlaces.length);
-//       });
-//       // print(_detailedPlaces.length);
-//       // return _detailedPlaces.sublist(0, (len - 1));
-//       return _detailedPlaces;
-//     } else {
-//
-//       return null;
-//     }
-//   }
+//   // Future<List<PlaceDetails>> googleNearbyPlaces() async {
+//   //   if(showWidget()){
+//   //     dynamic _location = TCFunctions()
+//   //         .getLocation(_currentPosition.latitude, _currentPosition.longitude);
+//   //     var results = await _places.searchNearbyWithRadius(_location, 10000,
+//   //         keyword: place);
+//   //
+//   //     var len = results.results.length;
+//   //     results.results.forEach((item) async {
+//   //       var _value = await _places.getDetailsByPlaceId(item.placeId);
+//   //       // print(_value.result.formattedAddress);
+//   //       // _detailedPlaces.insert(0, _value.result);
+//   //       _detailedPlaces.add(_value.result);
+//   //       // print(_detailedPlaces.length);
+//   //     });
+//   //     // print(_detailedPlaces.length);
+//   //     // return _detailedPlaces.sublist(0, (len - 1));
+//   //     return _detailedPlaces;
+//   //   } else {
+//   //
+//   //     return null;
+//   //   }
+//   // }
 //
 //
 //   @override

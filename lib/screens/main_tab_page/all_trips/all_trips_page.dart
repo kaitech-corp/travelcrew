@@ -44,13 +44,13 @@ class _AllTripsState extends State<AllTrips>
                   style: Theme.of(context).textTheme.headline3,
                   children: [
                     const TextSpan(
-                        text: " U.S.",
+                        text: " Nature",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.redAccent,
                             fontSize: 28)),
                     TextSpan(
-                      text: " Destinations",
+                      text: " Lovers",
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ]),
