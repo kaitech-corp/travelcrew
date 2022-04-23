@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
+
 import '../../../models/chat_model.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
-import '../../image_layout/image_layout_trips.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/badge_icon.dart';
-import '../../../services/functions/cloud_functions.dart';
-import '../../../services/database.dart';
 import '../../../size_config/size_config.dart';
+import '../../image_layout/image_layout_trips.dart';
 
 class CrewTripCard extends StatelessWidget {
   final Trip trip;
@@ -56,7 +57,7 @@ class CrewTripCard extends StatelessWidget {
                       Flexible(
                           flex: 3,
                           child: Hero(
-                              tag: trip.urlToImage,
+                              tag: heroTag,
                               transitionOnUserGestures: true,
                               child: ImageLayout(trip.urlToImage))),
                     Flexible(

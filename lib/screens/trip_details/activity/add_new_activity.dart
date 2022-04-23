@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import '../../../models/activity_model.dart';
 import '../../../models/trip_model.dart';
-import '../../add_trip/google_places.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
@@ -14,6 +14,7 @@ import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/in_app_review.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../services/widgets/reusableWidgets.dart';
+import '../../add_trip/google_places.dart';
 
 class AddNewActivity extends StatefulWidget {
 

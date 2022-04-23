@@ -32,3 +32,20 @@ class LoginWithCredentialsPressed extends LoginEvent {
   @override
   List<Object> get props => [email, password];
 }
+
+class LoginWithApplePressed extends LoginEvent {
+
+
+  LoginWithApplePressed();
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithGooglePressed extends LoginEvent {
+
+  LoginWithGooglePressed();
+
+  @override
+  List<Object> get props => [];
+}

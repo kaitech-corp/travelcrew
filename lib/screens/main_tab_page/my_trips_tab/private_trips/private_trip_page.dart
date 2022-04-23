@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import '../../../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trips_bloc.dart';
-import '../../../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_state.dart';
-import '../../../../blocs/crew_trips_bloc/private_crew_trips_bloc/private_crew_trip_event.dart';
+
+import '../../../../blocs/generics/generic_bloc.dart';
+import '../../../../blocs/generics/generic_state.dart';
+import '../../../../blocs/generics/generics_event.dart';
+import '../../../../models/trip_model.dart';
+import '../../../../repositories/trip_repositories/private_trip_repository.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../grouped_list_builder.dart';
@@ -19,7 +22,7 @@ class PrivateTrips extends StatefulWidget{
 }
 
 class _PrivateTripsState extends State<PrivateTrips>{
-  PrivateTripBloc bloc;
+  GenericBloc<Trip,PrivateTripRepository> bloc;
 
   @override
   void initState() {
@@ -29,8 +32,8 @@ class _PrivateTripsState extends State<PrivateTrips>{
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<PrivateTripBloc>(context);
-    bloc.add(LoadingData());
+    bloc = BlocProvider.of<GenericBloc<Trip,PrivateTripRepository>>(context);
+    bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();
   }
@@ -38,11 +41,11 @@ class _PrivateTripsState extends State<PrivateTrips>{
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<PrivateTripBloc, TripState>(
+    return BlocBuilder<GenericBloc<Trip,PrivateTripRepository>, GenericState>(
         builder: (context, state){
-          if(state is TripLoadingState){
+          if(state is LoadingState){
             return Loading();
-          } else if (state is TripHasDataState){
+          } else if (state is HasDataState<Trip>){
             return SizeConfig.tablet ?
             SliverGridView(trips: state.data, length: state.data.length):
             GroupedListTripView(data: state.data, isPast: true,)

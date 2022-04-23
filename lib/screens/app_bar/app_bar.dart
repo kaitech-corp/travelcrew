@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:travelcrew/blocs/current_profile_bloc/current_profile_bloc.dart';
+import 'package:travelcrew/blocs/current_profile_bloc/current_profile_event.dart';
+import 'package:travelcrew/blocs/current_profile_bloc/current_profile_state.dart';
+
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
@@ -8,16 +13,27 @@ import '../../services/widgets/reusableWidgets.dart';
 import '../../size_config/size_config.dart';
 
 /// Custom app bar
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
 
-  final  bool bottomNav;
+  final bool bottomNav;
 
   const CustomAppBar({
     Key key, this.bottomNav,
   }) : super(key: key);
 
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
 
+class _CustomAppBarState extends State<CustomAppBar> {
+  CurrentProfileBloc bloc;
 
+  @override
+  void initState() {
+    bloc = BlocProvider.of<CurrentProfileBloc>(context);
+    bloc.add(LoadingCurrentProfileData());
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -30,7 +46,7 @@ class CustomAppBar extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.blue[900],
+                  Colors.blue.shade900,
                   Colors.lightBlueAccent
                 ]
             ),
@@ -57,15 +73,38 @@ class CustomAppBar extends StatelessWidget {
                       onTap: (){
                         navigationService.navigateTo(ProfilePageRoute);
                       },
-                      child: Hero(
-                        tag: userService.currentUserID,
-                        transitionOnUserGestures: true,
-                        child: CircleAvatar(
-                          radius: SizeConfig.screenWidth/8.0,
-                          backgroundImage: (urlToImage.value.isNotEmpty ?? false) ?
-                          NetworkImage(urlToImage.value,) :
-                          AssetImage(profileImagePlaceholder),
-                        ),
+                      child: BlocBuilder<CurrentProfileBloc, CurrentProfileState>(
+                        builder: (context, state){
+                          if(state is CurrentProfileLoadingState){
+                            return Hero(
+                              tag: userService.currentUserID,
+                              transitionOnUserGestures: true,
+                              child: CircleAvatar(
+                                radius: SizeConfig.screenWidth/8.0,
+                                backgroundImage: AssetImage(profileImagePlaceholder),
+                              ),
+                            );
+                          } else if (state is CurrentProfileHasDataState){
+                            return Hero(
+                              tag: userService.currentUserID,
+                              transitionOnUserGestures: true,
+                              child: CircleAvatar(
+                                radius: SizeConfig.screenWidth/8.0,
+                                backgroundImage: NetworkImage(state.data.urlToImage,) ,
+                              ),
+                            );
+                          } else {
+                            return Hero(
+                              tag: userService.currentUserID,
+                              transitionOnUserGestures: true,
+                              child: CircleAvatar(
+                                radius: SizeConfig.screenWidth/8.0,
+                                backgroundImage: AssetImage(profileImagePlaceholder),
+                              ),
+                            );
+                          }
+                        },
+                        // child:
                       ),
                     ),
                   ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import '../../../../blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trip_event.dart';
-import '../../../../blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trip_state.dart';
-import '../../../../blocs/crew_trips_bloc/current_crew_trips_bloc/current_crew_trips_bloc.dart';
+
+import '../../../../blocs/generics/generic_bloc.dart';
+import '../../../../blocs/generics/generic_state.dart';
+import '../../../../blocs/generics/generics_event.dart';
+import '../../../../models/trip_model.dart';
+import '../../../../repositories/trip_repositories/current_trip_repository.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
-
 import '../grouped_list_builder.dart';
 import '../sliver_grid_view.dart';
 
@@ -19,38 +21,32 @@ class CurrentTrips extends StatefulWidget{
 }
 
 class _CurrentTripsState extends State<CurrentTrips>{
-  CurrentCrewTripBloc blocCurrent;
+  GenericBloc bloc;
 
   @override
   void initState() {
-    blocCurrent = BlocProvider.of<CurrentCrewTripBloc>(context);
-    blocCurrent.add(LoadingData());
+    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
 
   @override
   void didChangeDependencies() {
-    blocCurrent = BlocProvider.of<CurrentCrewTripBloc>(context);
-    blocCurrent.add(LoadingData());
+    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);//dependency injection
+    bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();
   }
 
-  // @override
-  // void dispose() {
-  //   blocCurrent.close();
-  //   super.dispose();
-  // }
-
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CurrentCrewTripBloc, TripState>(
+    return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
+      // bloc: bloc,
       builder: (context, state){
-        if(state is TripLoadingState){
+        if(state is LoadingState){
             return Loading();
-        } else if (state is TripHasDataState){
+        } else if (state is HasDataState<Trip>){
         return SizeConfig.tablet ?
         SliverGridView(trips: state.data, length: state.data.length):
         GroupedListTripView(data: state.data, isPast: false,);

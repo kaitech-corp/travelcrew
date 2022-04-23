@@ -1,17 +1,20 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
 import '../../../../models/custom_objects.dart';
 import '../../../../models/trip_model.dart';
-import '../../../alerts/alert_dialogs.dart';
-import '../../../../services/navigation/route_names.dart';
-import '../../../../services/widgets/appearance_widgets.dart';
-import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/locator.dart';
-import '../../../../size_config/size_config.dart';
+import '../../../../services/navigation/route_names.dart';
+import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/loading.dart';
+import '../../../../size_config/size_config.dart';
+import '../../../alerts/alert_dialogs.dart';
 
+/// Layout list for members of trip
 class MembersLayout extends StatefulWidget{
 
   final Trip tripDetails;

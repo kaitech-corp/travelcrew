@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
+  any_link_preview:
+    dependency: "direct main"
+    description:
+      name: any_link_preview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.4"
   args:
     dependency: transitive
     description:
@@ -510,13 +517,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_chat_types:
-    dependency: transitive
-    description:
-      name: flutter_chat_types
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.4"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -531,20 +531,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
-  flutter_link_preview:
-    dependency: "direct main"
-    description:
-      path: "packages/flutter_link_preview"
-      relative: true
-    source: path
-    version: "1.5.6"
-  flutter_link_previewer:
-    dependency: "direct main"
-    description:
-      name: flutter_link_previewer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.5.2"
   flutter_linkify:
     dependency: "direct main"
     description:
@@ -622,6 +608,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+  flutter_sms:
+    dependency: "direct main"
+    description:
+      name: flutter_sms
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.2"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -660,13 +653,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "8.0.8"
-  gbk2utf8:
-    dependency: transitive
-    description:
-      name: gbk2utf8
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   geocoding:
     dependency: "direct main"
     description:
@@ -723,13 +709,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.2.0"
-  gfsearchbar:
-    dependency: "direct main"
-    description:
-      path: "packages/gfsearchbar"
-      relative: true
-    source: path
-    version: "0.0.1"
   glob:
     dependency: transitive
     description:
@@ -757,7 +736,21 @@ packages:
       name: google_sign_in
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.3"
+    version: "5.3.0"
+  google_sign_in_android:
+    dependency: transitive
+    description:
+      name: google_sign_in_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.2.5"
+  google_sign_in_ios:
+    dependency: transitive
+    description:
+      name: google_sign_in_ios
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.2.5"
   google_sign_in_platform_interface:
     dependency: transitive
     description:
@@ -877,6 +870,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  location:
+    dependency: "direct main"
+    description:
+      name: location
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.3.0"
+  location_platform_interface:
+    dependency: transitive
+    description:
+      name: location_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.0"
+  location_web:
+    dependency: transitive
+    description:
+      name: location_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
   logging:
     dependency: transitive
     description:
@@ -898,6 +912,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.11"
+  material_color_utilities:
+    dependency: transitive
+    description:
+      name: material_color_utilities
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.3"
   meta:
     dependency: transitive
     description:
@@ -1337,6 +1358,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  string_validator:
+    dependency: transitive
+    description:
+      name: string_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   syncfusion_flutter_core:
     dependency: transitive
     description:
@@ -1371,7 +1399,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.8"
   timezone:
     dependency: transitive
     description:

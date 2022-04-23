@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../models/custom_objects.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -29,9 +30,9 @@ class CurrentUserProfileRepository {
           return UserPublicProfile.fromData(data);
         } catch(e){
           CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
-          return null;
+          return UserPublicProfile();
         }} else {
-        return null;
+        return UserPublicProfile();
       }
     }
 

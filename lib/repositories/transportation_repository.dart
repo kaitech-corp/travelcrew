@@ -1,44 +1,41 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../models/transportation_model.dart';
-import '../../../services/functions/cloud_functions.dart';
 
-class TransportationRepository {
+import '../../../../models/transportation_model.dart';
+import '../../../../services/functions/cloud_functions.dart';
+import '../blocs/generics/generic_bloc.dart';
 
-  final CollectionReference transportCollection =  FirebaseFirestore.instance.collection("transport");
-  final _loadedData = StreamController<List<TransportationData>>.broadcast();
+class TransportationRepository extends GenericBlocRepository<TransportationData> {
 
+  final String tripDocID;
 
-  void dispose() {
-    _loadedData.close();
-  }
+  TransportationRepository({this.tripDocID});
 
-  void refresh(String tripDocID) {
+  Stream<List<TransportationData>> data() {
+    final CollectionReference transportCollection = FirebaseFirestore.instance
+        .collection("transport");
+
     // Get all transportation items
-    List<TransportationData> _transportListFromSnapshot(QuerySnapshot snapshot) {
+    List<TransportationData> _transportListFromSnapshot(
+        QuerySnapshot snapshot) {
       try {
-        List<TransportationData> transportList =  snapshot.docs.map((doc) {
+        List<TransportationData> transportList = snapshot.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
           return TransportationData.fromData(data);
         }).toList();
 
         return transportList;
       } catch (e) {
-        CloudFunction().logError('Error retrieving transportation list:  ${e.toString()}');
-        return null;
+        CloudFunction().logError(
+            'Error retrieving transportation list:  ${e.toString()}');
+        return [];
       }
     }
 
-    Stream<List<TransportationData>> transportList = transportCollection
+    return transportCollection
         .doc(tripDocID).collection('mode')
         .snapshots()
         .map(_transportListFromSnapshot);
-
-    _loadedData.addStream(transportList);
-
-
   }
-
-  Stream<List<TransportationData>> transportation() => _loadedData.stream;
-
 }

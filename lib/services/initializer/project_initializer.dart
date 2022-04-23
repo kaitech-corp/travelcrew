@@ -5,25 +5,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../../blocs/bloc_observer/custom_bloc_observer.dart';
+import 'package:travelcrew/services/location/location_handler.dart';
 
+import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
 
-void ProjectInitializer() async {
+Future<String> projectInitializer() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    // await dotenv.load(fileName: ".env");
+    await Firebase.initializeApp();
+    setupLocator();
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp();
-  setupLocator();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
-  // Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    Bloc.observer = CustomBlocObserver();
 
-  Bloc.observer = CustomBlocObserver();
+    // Enable location services
+    LocationHandler().enableLocation();
+
+
+    return "Passed";
+  } catch (e){
+    return "Failed: $e";
+  }
 }

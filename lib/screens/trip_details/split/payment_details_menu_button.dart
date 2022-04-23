@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/cost_model.dart';
 import '../../../models/split_model.dart';
 import '../../../services/database.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 
+/// Payment details menu button
 class PaymentDetailsMenuButton extends StatelessWidget {
   const PaymentDetailsMenuButton({
     Key key,

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../blocs/generics/generic_bloc.dart';
+
 import '../../../models/custom_objects.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -8,44 +10,31 @@ import '../../../services/functions/cloud_functions.dart';
 /// Interface to our 'userPublicProfile' Firebase collection.
 ///
 /// Relies on a remote NoSQL document-oriented database.
-class AllUserRepository {
+class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
 
-  final CollectionReference userPublicProfileCollection = FirebaseFirestore.instance.collection("userPublicProfile");
-  final _loadedData = StreamController<List<UserPublicProfile>>.broadcast();
-
-
-  void dispose() {
-    _loadedData.close();
-  }
-
-  void refresh() {
-    //Get all users
-    List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot snapshot){
-
+  Stream<List<UserPublicProfile>> data() {
+    CollectionReference userPublicProfileCollection = FirebaseFirestore.instance
+        .collection("userPublicProfile");
+    List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot snapshot) {
       try {
-        List<UserPublicProfile> userList =  snapshot.docs.map((doc){
+        List<UserPublicProfile> userList = snapshot.docs.map((doc) {
           Map<String, dynamic> data = doc.data();
           return UserPublicProfile.fromData(data);
         }).toList();
-        userList.sort((a,b) => a.displayName.compareTo(b.displayName));
-        userList = userList.where((user) => user.uid != userService.currentUserID).toList();
+        userList.sort((a, b) => a.displayName.compareTo(b.displayName));
+        userList =
+            userList.where((user) => user.uid != userService.currentUserID)
+                .toList();
 
         return userList;
       } catch (e) {
-        CloudFunction().logError('Error retrieving stream of all users: ${e.toString()}');
+        CloudFunction().logError(
+            'Error retrieving stream of all users: ${e.toString()}');
         return null;
       }
     }
     // get all users
-    Stream<List<UserPublicProfile>> userList = userPublicProfileCollection.snapshots()
-          .map(_userListFromSnapshot);
-
-
-    _loadedData.addStream(userList);
-
-
+    return userPublicProfileCollection.snapshots()
+        .map(_userListFromSnapshot);
   }
-
-  Stream<List<UserPublicProfile>> users() => _loadedData.stream;
-
 }

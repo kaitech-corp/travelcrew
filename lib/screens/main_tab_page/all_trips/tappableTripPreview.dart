@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
-import '../../image_layout/image_layout_trips.dart';
 import '../../../size_config/size_config.dart';
+import '../../image_layout/image_layout_trips.dart';
 
 /// Tappable trip preview
 class TappableTripPreview extends StatelessWidget {
@@ -31,7 +32,16 @@ class TappableTripPreview extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              trip.urlToImage.isNotEmpty ? Flexible(flex: 3,child: Hero(tag: trip.urlToImage, transitionOnUserGestures: true,child: ImageLayout(trip.urlToImage))) : Container(),
+              trip.urlToImage.isNotEmpty ?
+              Flexible(
+                flex: 3,
+                child: Hero(
+                    tag: trip.urlToImage,
+                    transitionOnUserGestures: true,
+                    child: ImageLayout(trip.urlToImage)
+                )
+              ) :
+              Container(),
               Flexible(
                 flex: 1,
                 child: ListTile(

@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
-import '../../../blocs/activities_bloc/activity_bloc.dart';
-import '../../../blocs/activities_bloc/activity_event.dart';
-import '../../../blocs/activities_bloc/activity_state.dart';
+
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
 import '../../../models/activity_model.dart';
 import '../../../models/trip_model.dart';
+import '../../../repositories/activity_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
@@ -26,12 +28,12 @@ class ActivityPage extends StatefulWidget {
 
 class _ActivityPageState extends State<ActivityPage> {
 
-  ActivityBloc bloc;
+  GenericBloc<ActivityData,ActivityRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<ActivityBloc>(context);
-    bloc.add(LoadingActivityData());
+    bloc = BlocProvider.of<GenericBloc<ActivityData,ActivityRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -43,11 +45,11 @@ class _ActivityPageState extends State<ActivityPage> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<ActivityBloc, ActivityState>(
+        body: BlocBuilder<GenericBloc<ActivityData,ActivityRepository>, GenericState>(
             builder: (context, state){
-              if(state is ActivityLoadingState){
+              if(state is LoadingState){
                 return Loading();
-              } else if (state is ActivityHasDataState){
+              } else if (state is HasDataState<ActivityData>){
                 List<ActivityData> activityList = state.data;
             return Container(
                   child:

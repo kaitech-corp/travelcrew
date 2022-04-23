@@ -11,7 +11,7 @@ import 'package:travelcrew/services/locator.dart';
 
 import '../../../../services/widgets/loading.dart';
 
-
+/// Following list
 class FollowingList extends StatefulWidget{
 
   final Trip tripDetails;

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../blocs/split_bloc/split_bloc.dart';
-import '../../../blocs/split_bloc/split_event.dart';
-import '../../../blocs/split_bloc/split_state.dart';
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
+
+import '../../../repositories/split_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
@@ -16,6 +18,7 @@ import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 import 'split_package.dart';
 
+/// Split Bloc Builder
 class SplitBlocBuilder extends StatefulWidget {
   final Trip trip;
   const SplitBlocBuilder({
@@ -28,12 +31,12 @@ class SplitBlocBuilder extends StatefulWidget {
 }
 
 class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
-  SplitBloc bloc;
+  GenericBloc<SplitObject,SplitRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<SplitBloc>(context);
-    bloc.add(LoadingSplitData());
+    bloc = BlocProvider.of<GenericBloc<SplitObject,SplitRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -41,10 +44,11 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: BlocBuilder<SplitBloc, SplitState>(builder: (context, state) {
-          if (state is SplitLoadingState) {
+        body: BlocBuilder<GenericBloc<SplitObject,SplitRepository>, GenericState>(
+            builder: (context, state) {
+          if (state is LoadingState) {
             return Loading();
-          } else if (state is SplitHasDataState) {
+          } else if (state is HasDataState<SplitObject>) {
             final List<SplitObject> items = state.data;
             final List<String> uids = [];
             if (items != null) {

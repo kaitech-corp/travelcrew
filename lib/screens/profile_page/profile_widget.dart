@@ -1,16 +1,18 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
 import '../../models/custom_objects.dart';
-import '../alerts/alert_dialogs.dart';
-import '../../services/locator.dart';
-import '../../services/widgets/appearance_widgets.dart';
-import '../../services/functions/cloud_functions.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
-import '../../services/widgets/reusableWidgets.dart';
+import '../../services/functions/cloud_functions.dart';
 import '../../services/functions/tc_functions.dart';
-import '../../size_config/size_config.dart';
+import '../../services/locator.dart';
+import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/loading.dart';
+import '../../services/widgets/reusableWidgets.dart';
+import '../../size_config/size_config.dart';
+import '../alerts/alert_dialogs.dart';
 
 class ProfileWidget extends StatelessWidget {
   final UserPublicProfile user;

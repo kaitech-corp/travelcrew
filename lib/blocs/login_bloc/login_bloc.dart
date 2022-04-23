@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../repositories/user_repository.dart';
 import '../../../utils/validators.dart';
+import '../../repositories/user_repository.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
@@ -21,6 +21,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginWithCredentialsPressed) {
       yield* _mapLoginWithCredentialsPressedToState(
           email: event.email, password: event.password);
+    } else if (event is LoginWithApplePressed) {
+      yield* _mapLoginWithApplePressedToState();
+    } else if (event is LoginWithGooglePressed) {
+      yield* _mapLoginWithGooglePressedToState();
     }
   }
 
@@ -37,6 +41,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     yield LoginState.loading();
     try {
       await _userRepository.signInWithCredentials(email, password);
+      yield LoginState.success();
+    } catch (_) {
+      yield LoginState.failure();
+    }
+  }
+
+  Stream<LoginState> _mapLoginWithApplePressedToState() async* {
+    yield LoginState.loading();
+    try {
+      await _userRepository.signInWithApple();
+      yield LoginState.success();
+    } catch (_) {
+      yield LoginState.failure();
+    }
+  }
+
+  Stream<LoginState> _mapLoginWithGooglePressedToState() async* {
+    yield LoginState.loading();
+    try {
+      await _userRepository.signInWithGoogle();
       yield LoginState.success();
     } catch (_) {
       yield LoginState.failure();

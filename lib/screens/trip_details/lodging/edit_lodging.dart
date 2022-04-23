@@ -1,17 +1,17 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
-import '../../add_trip/google_places.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/reusableWidgets.dart';
+import '../../add_trip/google_places.dart';
 
-
-
+/// Edit lodging data
 class EditLodging extends StatefulWidget {
 
   final LodgingData lodging;

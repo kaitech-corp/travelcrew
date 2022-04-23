@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../../../../models/trip_model.dart';
 import '../../basket_list/controller/basket_controller.dart';
-
 import 'item_lists.dart';
 
+/// Add to list page
 class AddToListPage extends StatefulWidget{
 
   final Trip tripDetails;

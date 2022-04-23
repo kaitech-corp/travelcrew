@@ -1,23 +1,25 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../models/lodging_model.dart';
-import '../../../services/functions/cloud_functions.dart';
+import 'package:travelcrew/blocs/generics/generic_bloc.dart';
+
+import '../../../../models/lodging_model.dart';
+import '../../../../services/functions/cloud_functions.dart';
 
 /// Interface to our 'lodging' Firebase collection.
 /// It contains the lodging options for the different locations.
 ///
 /// Relies on a remote NoSQL document-oriented database.
-class LodgingRepository {
+class LodgingRepository extends GenericBlocRepository<LodgingData> {
 
-  final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");
-  final _loadedData = StreamController<List<LodgingData>>.broadcast();
+  final String tripDocID;
 
+  LodgingRepository({this.tripDocID});
 
-  void dispose() {
-    _loadedData.close();
-  }
+  Stream<List<LodgingData>> data() {
 
-  void refresh(String tripDocID) {
+    final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");
+
     //Get Lodging items
     List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
       try {
@@ -29,19 +31,14 @@ class LodgingRepository {
         return lodgingList;
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
     //Get Lodging List
-    Stream<List<LodgingData>> lodgingList = lodgingCollection.doc(tripDocID).collection('lodging').snapshots().map(_lodgingListFromSnapshot);
-
-
-
-    _loadedData.addStream(lodgingList);
-
-
+    return lodgingCollection.doc(tripDocID)
+        .collection('lodging')
+        .snapshots()
+        .map(_lodgingListFromSnapshot);
   }
-
-  Stream<List<LodgingData>> lodging() => _loadedData.stream;
 
 }

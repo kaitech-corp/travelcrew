@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/activity_model.dart';
 import '../../../models/lodging_model.dart';
 import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
-
 import 'activity_details.dart';
 import 'lodging_details.dart';
 import 'transportation_details.dart';

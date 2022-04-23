@@ -1,43 +1,41 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../models/split_model.dart';
-import '../../../services/functions/cloud_functions.dart';
+import '../blocs/generics/generic_bloc.dart';
 
-class SplitRepository {
+import '../../../../models/split_model.dart';
+import '../../../../services/functions/cloud_functions.dart';
 
-  final CollectionReference splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
-  final _loadedData = StreamController<List<SplitObject>>.broadcast();
+class SplitRepository extends GenericBlocRepository<SplitObject> {
 
+  final String tripDocID;
 
-  void dispose() {
-    _loadedData.close();
-  }
+  SplitRepository({this.tripDocID});
 
-  void refresh(String tripDocID) {
-  /// Stream in split item data
-  List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot snapshot) {
-    try {
-      List<SplitObject> splitItemData =  snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data();
-        return SplitObject.fromData(data);
-      }).toList();
+  Stream<List<SplitObject>> data() {
 
-      return splitItemData;
-    } catch (e) {
-      CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
-      return null;
+    final CollectionReference splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
+
+    /// Stream in split item data
+    List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot snapshot) {
+      try {
+        List<SplitObject> splitItemData =  snapshot.docs.map((doc) {
+          Map<String, dynamic> data = doc.data();
+          return SplitObject.fromData(data);
+        }).toList();
+
+        return splitItemData;
+      } catch (e) {
+        CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
+        return [];
+      }
     }
-  }
 
-  Stream<List<SplitObject>> splitItemData = splitItemCollection.doc(tripDocID).collection('Item').snapshots().map(_splitItemDataFromSnapshot);
-
-
-    _loadedData.addStream(splitItemData);
-
+    return splitItemCollection.doc(tripDocID)
+        .collection('Item')
+        .snapshots()
+        .map(_splitItemDataFromSnapshot);
 
   }
-
-  Stream<List<SplitObject>> splitData() => _loadedData.stream;
 
 }

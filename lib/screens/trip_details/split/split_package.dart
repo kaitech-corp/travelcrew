@@ -19,6 +19,7 @@ import '../../../size_config/size_config.dart';
 
 ValueNotifier<List<String>> selectedList;
 
+/// Split Package for all split functions
 class SplitPackage {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();

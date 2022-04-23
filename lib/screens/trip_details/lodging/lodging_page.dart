@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
-import '../../../blocs/lodging_bloc/lodging_bloc.dart';
-import '../../../blocs/lodging_bloc/lodging_event.dart';
-import '../../../blocs/lodging_bloc/lodging_state.dart';
+
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
 import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
+import '../../../repositories/lodging_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/loading.dart';
 import 'lodging_card.dart';
 
-
+/// Lodging page
 class LodgingPage extends StatefulWidget {
 
   final Trip trip;
@@ -24,12 +26,12 @@ class LodgingPage extends StatefulWidget {
 }
 
 class _LodgingPageState extends State<LodgingPage> {
-  LodgingBloc bloc;
+  GenericBloc<LodgingData,LodgingRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<LodgingBloc>(context);
-    bloc.add(LoadingLodgingData());
+    bloc = BlocProvider.of<GenericBloc<LodgingData,LodgingRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -41,11 +43,11 @@ class _LodgingPageState extends State<LodgingPage> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<LodgingBloc, LodgingState>(
+        body: BlocBuilder<GenericBloc<LodgingData,LodgingRepository>, GenericState>(
             builder: (context, state){
-              if(state is LodgingLoadingState){
+              if(state is LoadingState){
                 return Loading();
-              } else if (state is LodgingHasDataState){
+              } else if (state is HasDataState<LodgingData>){
                 List<LodgingData> lodgingList = state.data;
                 return Container(
                   child: ListView.builder(

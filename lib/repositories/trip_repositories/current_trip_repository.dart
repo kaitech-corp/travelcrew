@@ -1,23 +1,22 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../blocs/generics/generic_bloc.dart';
 
-class CurrentTripRepository {
-  final Query tripCollection = FirebaseFirestore.instance
-      .collection("trips")
-      .orderBy('endDateTimeStamp')
-      .where('ispublic', isEqualTo: true);
 
-  final _loadedDataCurrentTrips = StreamController<List<Trip>>.broadcast();
+class CurrentTripRepository extends GenericBlocRepository<Trip> {
 
-  void dispose() {
-    _loadedDataCurrentTrips.close();
-  }
+  Stream<List<Trip>> data() {
 
-  void refresh() {
+    final Query tripCollection = FirebaseFirestore.instance
+        .collection("trips")
+        .orderBy('endDateTimeStamp')
+        .where('ispublic', isEqualTo: true);
+
     List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot snapshot) {
       try {
         final now = DateTime.now().toUtc();
@@ -38,15 +37,9 @@ class CurrentTripRepository {
       }
     }
 
-    Stream<List<Trip>> currentCrewTrips = tripCollection
+    return tripCollection
         .where('accessUsers', arrayContainsAny: [userService.currentUserID])
         .snapshots()
         .map(_currentCrewTripListFromSnapshot);
-    if(!_loadedDataCurrentTrips.isClosed){
-      _loadedDataCurrentTrips.addStream(currentCrewTrips);
-    }
-
   }
-
-  Stream<List<Trip>> trips() => _loadedDataCurrentTrips.stream;
 }

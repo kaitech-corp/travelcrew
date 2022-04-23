@@ -160,6 +160,8 @@ PODS:
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
+  - flutter_sms (1.1.0):
+    - Flutter
   - flutter_web_auth (0.4.0):
     - Flutter
   - fluttertoast (0.0.2):
@@ -172,7 +174,7 @@ PODS:
     - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
-  - google_sign_in (0.0.1):
+  - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 5.0)
   - GoogleAppMeasurement (8.10.0):
@@ -234,6 +236,8 @@ PODS:
     - Flutter
   - in_app_review (0.2.0):
     - Flutter
+  - location (0.0.1):
+    - Flutter
   - maps_launcher (0.0.1):
     - Flutter
   - nanopb (2.30908.0):
@@ -278,14 +282,16 @@ DEPENDENCIES:
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - flutter_sms (from `.symlinks/plugins/flutter_sms/ios`)
   - flutter_web_auth (from `.symlinks/plugins/flutter_web_auth/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
-  - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
+  - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
+  - location (from `.symlinks/plugins/location/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
   - notification_permissions (from `.symlinks/plugins/notification_permissions/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -356,6 +362,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  flutter_sms:
+    :path: ".symlinks/plugins/flutter_sms/ios"
   flutter_web_auth:
     :path: ".symlinks/plugins/flutter_web_auth/ios"
   fluttertoast:
@@ -364,14 +372,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geocoding/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
-  google_sign_in:
-    :path: ".symlinks/plugins/google_sign_in/ios"
+  google_sign_in_ios:
+    :path: ".symlinks/plugins/google_sign_in_ios/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   in_app_review:
     :path: ".symlinks/plugins/in_app_review/ios"
+  location:
+    :path: ".symlinks/plugins/location/ios"
   maps_launcher:
     :path: ".symlinks/plugins/maps_launcher/ios"
   notification_permissions:
@@ -426,12 +436,13 @@ SPEC CHECKSUMS:
   flutter_app_badger: 65de4d6f0c34a891df49e6cfb8a1c0496426fa68
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  flutter_sms: 91ce41530f55c85d6524d82307a5d555844c086a
   flutter_web_auth: fd071763f61703882adbb2524f5cd5251883118c
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
-  google_sign_in: c5cecea71f3be43282263550556e311c4cc03582
+  google_sign_in_ios: ed71c0dbddfba8b1ea9aa210dbda695f46bf51bd
   GoogleAppMeasurement: a3311dbcf3ea651e5a070fe8559b57c174ada081
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
@@ -441,6 +452,7 @@ SPEC CHECKSUMS:
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
+  location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   notification_permissions: 825ea1bf2a52ab585c53fd7b5e8e96876d735d4b

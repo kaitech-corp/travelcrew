@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/notifications_bloc/notification_bloc.dart';
+
 import 'package:travelcrew/repositories/notification_repository.dart';
 import 'package:travelcrew/screens/authenticate/profile_stream.dart';
 import 'package:travelcrew/services/database.dart';
+
+import '../../blocs/notification_bloc/notification_bloc.dart';
 
 
 
@@ -51,7 +53,7 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
     return BlocProvider<NotificationBloc>(
         create: (context){
           return NotificationBloc(notificationRepository: NotificationRepository()..refresh());},
-        child: ProfileStream(uid: userService.currentUserID),
+        child: ProfileStream(),
     );
   }
 

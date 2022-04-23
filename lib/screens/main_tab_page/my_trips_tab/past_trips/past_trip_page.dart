@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_bloc.dart';
-import '../../../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_event.dart';
-import '../../../../blocs/crew_trips_bloc/past_crew_trips_bloc/past_crew_trips_state.dart';
+
+import '../../../../blocs/generics/generic_bloc.dart';
+import '../../../../blocs/generics/generic_state.dart';
+import '../../../../blocs/generics/generics_event.dart';
+import '../../../../models/trip_model.dart';
+import '../../../../repositories/trip_repositories/past_trip_repository.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../grouped_list_builder.dart';
@@ -18,7 +21,7 @@ class PastTrips extends StatefulWidget{
 }
 
 class _PastTripsState extends State<PastTrips>{
-  PastCrewTripBloc bloc;
+  GenericBloc<Trip,PastTripRepository> bloc;
 
   @override
   void initState() {
@@ -28,8 +31,8 @@ class _PastTripsState extends State<PastTrips>{
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<PastCrewTripBloc>(context);
-    bloc.add(LoadingData());
+    bloc = BlocProvider.of<GenericBloc<Trip,PastTripRepository>>(context);//dependency injection
+    bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();
   }
@@ -37,13 +40,14 @@ class _PastTripsState extends State<PastTrips>{
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<PastCrewTripBloc, TripState>(
+    return BlocBuilder<GenericBloc<Trip,PastTripRepository>, GenericState>(
         builder: (context, state){
-          if(state is TripLoadingState){
+          if(state is LoadingState){
             return Loading();
-          } else if (state is TripHasDataState){
+          } else if (state is HasDataState){
+            List<Trip> trips = state.data as List<Trip>;
             return SizeConfig.tablet ?
-            SliverGridView(trips: state.data, length: state.data.length):
+            SliverGridView(trips: trips, length: trips.length):
             GroupedListTripView(data: state.data,isPast: true,);
           } else {
             return Container();

@@ -9,6 +9,7 @@ import '../../../services/database.dart';
 import '../../../size_config/size_config.dart';
 import 'payment_details_menu_button.dart';
 
+/// Bottom sheet for split cost details
 class UserSplitCostDetailsBottomSheet extends StatelessWidget {
   const UserSplitCostDetailsBottomSheet({
     Key key,

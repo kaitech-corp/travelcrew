@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:travelcrew/services/location/location_handler.dart';
 
 import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
@@ -39,7 +40,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
   @override
   void initState() {
     super.initState();
-
+    LocationHandler().getLocationData();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       RemoteNotification message =  event.notification;
       String tripDocID = event.data['docID'];
@@ -91,7 +92,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
       _selectedIndex = index;
     });
   }
-  
+
 
   @override
   Widget build(BuildContext context) {

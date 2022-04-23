@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+
 import '../../../models/trip_model.dart';
 import '../../../services/functions/tc_functions.dart';
-
 import 'crew_trip_card.dart';
 
 /// Grouped list view for current past and private trips
@@ -43,6 +43,7 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
       itemBuilder: (context, trip) {
         return CrewTripCard(
           trip: trip,
+          heroTag: trip.urlToImage,
         );
       },
     );

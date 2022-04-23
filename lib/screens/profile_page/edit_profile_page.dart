@@ -1,14 +1,16 @@
 import 'dart:io';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../models/custom_objects.dart';
-import '../../services/functions/cloud_functions.dart';
 import '../../services/database.dart';
-import '../../size_config/size_config.dart';
+import '../../services/functions/cloud_functions.dart';
 import '../../services/widgets/loading.dart';
+import '../../size_config/size_config.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override

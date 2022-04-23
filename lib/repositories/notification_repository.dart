@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../models/notification_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -25,7 +27,7 @@ class NotificationRepository {
         }).toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving notification list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

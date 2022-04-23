@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../models/chat_model.dart';
 import '../../../../models/custom_objects.dart';
-import 'dm_chat_message_layout.dart';
 import '../../../../services/widgets/loading.dart';
+import 'dm_chat_message_layout.dart';
 
 
 

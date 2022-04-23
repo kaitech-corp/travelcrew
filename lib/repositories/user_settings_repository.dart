@@ -1,8 +1,10 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../models/settings_model.dart';
-import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
+
+import '../../../../models/settings_model.dart';
+import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
 
 /// Interface to our 'settings' Firebase collection.
 /// It contains the settings for each user.

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/transportation_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 
-
-
+/// Edit transportation data
 class EditTransportation extends StatefulWidget {
   final TransportationData transportationData;
   EditTransportation({this.transportationData});

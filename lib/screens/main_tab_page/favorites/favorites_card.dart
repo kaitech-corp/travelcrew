@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../size_config/size_config.dart';
+import '../../alerts/alert_dialogs.dart';
 
 
 /// Favorites card layout
@@ -48,9 +49,15 @@ class FavoritesCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ListTile(
-                title: Text((trip.tripName).toUpperCase(),style: Theme.of(context).textTheme.headline5,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                title: Text((trip.tripName).toUpperCase(),
+                  style: Theme.of(context).textTheme.headline5,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,),
                 subtitle: Text("Travel Type: ${trip.travelType}",
-                  textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.subtitle2,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,),
                 trailing: IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: (){
@@ -88,7 +95,8 @@ class FavoritesCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('${trip.startDate.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
+                        Text('${trip.startDate.split(',')[0]}-${trip.endDate}',
+                          style: Theme.of(context).textTheme.subtitle2,),
                       ],
                     ),
                   ],

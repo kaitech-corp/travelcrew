@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../models/trip_model.dart';
-import '../controller/basket_controller.dart';
-import '../../../../services/constants/constants.dart';
 
+import '../../../../models/trip_model.dart';
+import '../../../../services/constants/constants.dart';
+import '../controller/basket_controller.dart';
 import 'cart_detailed_view_card.dart';
 
 class CartDetailsView extends StatelessWidget {

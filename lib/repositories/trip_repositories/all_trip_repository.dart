@@ -1,23 +1,21 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../blocs/generics/generic_bloc.dart';
 
-class AllTripRepository {
-  final Query tripCollection = FirebaseFirestore.instance
-      .collection("trips")
-      .orderBy('endDateTimeStamp')
-      .where('ispublic', isEqualTo: true);
+class AllTripsRepository extends GenericBlocRepository<Trip> {
 
-  final _loadedDataAllTrips = StreamController<List<Trip>>.broadcast();
+  Stream<List<Trip>> data() {
+    //Firebase Collection
+    final Query tripCollection = FirebaseFirestore.instance
+        .collection("trips")
+        .orderBy('endDateTimeStamp')
+        .where('ispublic', isEqualTo: true);
 
-  void dispose() {
-    _loadedDataAllTrips.close();
-  }
-
-  void refresh() {
     // Get all trips
     List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
       try {
@@ -46,10 +44,8 @@ class AllTripRepository {
     }
 
     // get trips stream
-    Stream<List<Trip>> allTrips =
-        tripCollection.snapshots().map(_tripListFromSnapshot);
-    _loadedDataAllTrips.addStream(allTrips);
+    return tripCollection
+        .snapshots()
+        .map(_tripListFromSnapshot);
   }
-
-  Stream<List<Trip>> trips() => _loadedDataAllTrips.stream;
 }

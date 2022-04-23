@@ -3,11 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
 
-import '../../../blocs/transportation_bloc/transportation_bloc.dart';
-import '../../../blocs/transportation_bloc/transportation_event.dart';
-import '../../../blocs/transportation_bloc/transportation_state.dart';
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
 import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
+import '../../../repositories/transportation_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/widgets/appearance_widgets.dart';
@@ -15,6 +16,7 @@ import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 import 'transportation_card.dart';
 
+/// Transportation page
 class TransportationPage extends StatefulWidget {
   final Trip trip;
   TransportationPage({this.trip});
@@ -26,11 +28,13 @@ class TransportationPage extends StatefulWidget {
 }
 
 class _TransportationPageState extends State<TransportationPage> {
-  TransportationBloc bloc;
+
+  GenericBloc<TransportationData,TransportationRepository> bloc;
+
   @override
   void initState() {
-    bloc = BlocProvider.of<TransportationBloc>(context);
-    bloc.add(LoadingTransportationData());
+    bloc = BlocProvider.of<GenericBloc<TransportationData,TransportationRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -41,11 +45,11 @@ class _TransportationPageState extends State<TransportationPage> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<TransportationBloc, TransportationState>(
+        body: BlocBuilder<GenericBloc<TransportationData,TransportationRepository>, GenericState>(
             builder: (context, state) {
-          if (state is TransportationLoadingState) {
+          if (state is LoadingState) {
             return Loading();
-          } else if (state is TransportationHasDataState) {
+          } else if (state is HasDataState<TransportationData>) {
             List<TransportationData> modeList = state.data;
             return Column(
               children: [

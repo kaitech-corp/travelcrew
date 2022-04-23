@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -333,6 +335,20 @@ class TCFunctions {
       CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
       return '';
     }
+  }
+
+  List<int> randomList(int num) {
+    // Random random = new Random();
+    // List<int> x = List<int>.generate(5, (index) => random.nextInt(num));
+    List<int> numberList=[];
+    Random random = new Random();
+    while(numberList.length<5){
+      int random_number = random.nextInt(num);
+      if (!numberList.contains(random_number)){
+        numberList.add(random_number);
+      }
+    }
+    return numberList;
   }
 
 }

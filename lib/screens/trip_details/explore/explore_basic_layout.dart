@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
-import '../../alerts/alert_dialogs.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
+import '../../alerts/alert_dialogs.dart';
 
+/// Basic Layout for Explore page
 class ExploreBasicLayout extends StatelessWidget{
 
   final Trip tripDetails;

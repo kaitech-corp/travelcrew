@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../models/chat_model.dart';
 import '../../../../models/custom_objects.dart';
-import 'dm_chat_list.dart';
+import '../../../../services/database.dart';
 import '../../../../services/locator.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
-import '../../../../services/database.dart';
+import 'dm_chat_list.dart';
 
 class DMChat extends StatefulWidget {
   final UserPublicProfile user;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../../../models/trip_model.dart';
-import 'cart/basket_header.dart';
-import '../explore/lists/addToListPage.dart';
-import '../explore/lists/item_lists.dart';
 import '../../../services/constants/constants.dart';
 import '../../../size_config/size_config.dart';
-
+import '../explore/lists/addToListPage.dart';
+import '../explore/lists/item_lists.dart';
+import 'cart/basket_header.dart';
 import 'cart/cart_detailed_view.dart';
 import 'cart/cart_short_view.dart';
 import 'controller/basket_controller.dart';

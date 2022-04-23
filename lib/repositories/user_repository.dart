@@ -4,9 +4,10 @@ import 'dart:io' show File, Platform;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import '../../../services/analytics_service.dart';
-import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
+
+import '../../../../services/analytics_service.dart';
+import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
 
 /// Interface to the info about the current user.
 /// Relies on Firebase authentication.
@@ -19,7 +20,7 @@ class UserRepository {
   UserRepository()
       : _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> signInWithCredentials(String email, String password) async {
+  Future<UserCredential> signInWithCredentials(String email, String password) async {
     return await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
@@ -102,8 +103,6 @@ class UserRepository {
       assert(user.uid == currentUser.uid);
       await _analyticsService.logLoginGoogle();
 
-      // return await _firebaseAuth.signInWithCredential(
-      //     credential);
     } catch (e){
       return e.toString();
     }

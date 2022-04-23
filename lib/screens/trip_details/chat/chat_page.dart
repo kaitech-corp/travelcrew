@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../blocs/chat_bloc/chat_bloc.dart';
-import '../../../blocs/chat_bloc/chat_event.dart';
-import '../../../blocs/chat_bloc/chat_state.dart';
+
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
+import '../../../models/chat_model.dart';
 import '../../../models/trip_model.dart';
+import '../../../repositories/chat_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
-
 import 'grouped_list_chat_builder.dart';
 
 class ChatPage extends StatefulWidget {
@@ -24,9 +26,11 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  ChatBloc bloc;
+  GenericBloc<ChatData,ChatRepository> bloc;
+
   var currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
+
   final TextEditingController _chatController = TextEditingController();
 
   Future<void> clearChat(String uid) async {
@@ -36,8 +40,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<ChatBloc>(context);
-    bloc.add(LoadingChatData());
+    bloc = BlocProvider.of<GenericBloc<ChatData,ChatRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.didChangeDependencies();
   }
 
@@ -51,10 +55,10 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         body: SizedBox(
           height: SizeConfig.screenHeight,
-          child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-            if (state is ChatLoadingState) {
+          child: BlocBuilder<GenericBloc<ChatData,ChatRepository>, GenericState>(builder: (context, state) {
+            if (state is LoadingState) {
               return Align(alignment: Alignment.center, child: Loading());
-            } else if (state is ChatHasDataState) {
+            } else if (state is HasDataState<ChatData>) {
               return Column(
                 children: <Widget>[
                   Expanded(

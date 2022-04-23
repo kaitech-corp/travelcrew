@@ -1,9 +1,12 @@
 
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
+import 'package:travelcrew/screens/menu_screens/users/all_users/all_users_page.dart';
+
 import '../../admin/admin_page.dart';
-import '../../blocs/all_users_bloc/all_users_bloc.dart';
+import '../../blocs/generics/generic_bloc.dart';
 import '../../blocs/settings_bloc/settings_bloc.dart';
 import '../../models/activity_model.dart';
 import '../../models/custom_objects.dart';
@@ -25,7 +28,6 @@ import '../../screens/menu_screens/help/help.dart';
 import '../../screens/menu_screens/help/report.dart';
 import '../../screens/menu_screens/main_menu.dart';
 import '../../screens/menu_screens/settings/settings.dart';
-import '../../screens/menu_screens/users/all_users/all_users_page.dart';
 import '../../screens/menu_screens/users/dm_chat/chats_page.dart';
 import '../../screens/menu_screens/users/dm_chat/dm_chat.dart';
 import '../../screens/menu_screens/users/user_profile_page.dart';
@@ -79,6 +81,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: AddNewModeOfTransport(trip: args,),
+      );
+    case AddNewTripRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: AddTripPage(addedLocation: args,),
       );
     case AdminPageRoute:
       return _getPageRoute(
@@ -279,9 +286,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: BlocProvider(
-            create: (context) => AllUserBloc(
-                allUserRepository: AllUserRepository()..refresh()),
-            child: AllUserPage()),
+            create: (context) => GenericBloc<UserPublicProfile, AllUserRepository>(
+                repository: AllUserRepository(),),
+          child: AllUserPage(),
+        ),
       );
     case UserProfilePageRoute:
       return _getPageRoute(
@@ -302,19 +310,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             body: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Image.asset(error,fit: BoxFit.cover,width: SizeConfig.screenWidth*.9,height: SizeConfig.screenWidth*.9,),
-                    Text('Something went wrong. Sorry about that.',textScaleFactor: 1.5,textAlign: TextAlign.center,style: TextStyle(color: Colors.redAccent),),
-                    SizedBox(height: 10,),
-                    Text('Be sure to check your network connection just in case.',textScaleFactor: 1.5,textAlign: TextAlign.center,),
+                    const Text('Something went wrong. Sorry about that.',textScaleFactor: 1.5,textAlign: TextAlign.center,style: TextStyle(color: Colors.redAccent),),
+                    const SizedBox(height: 10,),
+                    const Text('Be sure to check your network connection just in case.',textScaleFactor: 1.5,textAlign: TextAlign.center,),
                   ],
                 )),
           ));
   }
 }
 
-CupertinoPageRoute _getPageRoute({String routeName, Widget viewToShow }) {
-  return CupertinoPageRoute(
+MaterialPageRoute _getPageRoute({String routeName, Widget viewToShow }) {
+  return MaterialPageRoute(
       settings: RouteSettings(
         name: routeName,
       ),
