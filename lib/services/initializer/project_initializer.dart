@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:travelcrew/services/location/location_handler.dart';
 
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
@@ -24,6 +25,10 @@ Future<String> projectInitializer() async {
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
     Bloc.observer = CustomBlocObserver();
+
+    // Enable location services
+    LocationHandler().enableLocation();
+
 
     return "Passed";
   } catch (e){

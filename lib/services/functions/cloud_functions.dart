@@ -3,6 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:travelcrew/models/location_model.dart';
 
 import '../../services/analytics_service.dart';
 import '../../services/locator.dart';
@@ -479,6 +480,17 @@ class CloudFunction {
     functionData();
   }
 
-  // void addSplitItem(String )
+  // Record Location
+  void recordLocation({LocationModel locationModel}) async {
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable('recordLocation');
+    functionData({
+      'city': locationModel.city,
+      'country': locationModel.country,
+      'documentID': locationModel.documentID,
+      'latitude': locationModel.geoPoint.latitude,
+      'longitude': locationModel.geoPoint.longitude,
+      'zipcode': locationModel.zipcode,
+    });
+  }
 }//end CloudFunction
 

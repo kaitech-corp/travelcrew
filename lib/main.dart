@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:travelcrew/repositories/user_repository.dart';
+import 'package:travelcrew/services/location/location_handler.dart';
 
 import '../blocs/authentication_bloc/authentication_bloc.dart';
 import '../blocs/authentication_bloc/authentication_event.dart';
@@ -60,6 +61,8 @@ class _TravelCrewState extends State<TravelCrew> {
   void initState() {
     // DatabaseService().getUserNotificationSettings();
 
+    // Request location permissions
+    LocationHandler().getPermission();
     if (Platform.isIOS) {
       FBMessaging().requestPermissions();
     } else {

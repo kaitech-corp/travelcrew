@@ -337,10 +337,18 @@ class TCFunctions {
     }
   }
 
-  List<int> randomList() {
+  List<int> randomList(int num) {
+    // Random random = new Random();
+    // List<int> x = List<int>.generate(5, (index) => random.nextInt(num));
+    List<int> numberList=[];
     Random random = new Random();
-    List<int> x = List<int>.generate(5, (index) => random.nextInt(50));
-    return x;
+    while(numberList.length<5){
+      int random_number = random.nextInt(num);
+      if (!numberList.contains(random_number)){
+        numberList.add(random_number);
+      }
+    }
+    return numberList;
   }
 
 }
