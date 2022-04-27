@@ -14,7 +14,7 @@ import '../locator.dart';
 Future<void> projectInitializer() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    // await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: ".env");
     await Firebase.initializeApp();
     setupLocator();
     SystemChrome.setPreferredOrientations(
