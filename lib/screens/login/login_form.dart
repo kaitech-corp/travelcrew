@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nil/nil.dart';
+import 'package:travelcrew/screens/login/third_party_login.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../blocs/login_bloc/login_bloc.dart';
 import '../../blocs/login_bloc/login_event.dart';
 import '../../blocs/login_bloc/login_state.dart';
-import '../../repositories/user_repository.dart';
-import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/gradient_button.dart';
@@ -34,13 +32,7 @@ class _LoginFormState extends State<LoginForm> {
     return state.isFormValid && isPopulated && !state.isSubmitting;
   }
 
-  bool isAppleLoginButtonEnabled(LoginState state) {
-    return !state.isSubmitting;
-  }
 
-  bool isGoogleLoginButtonEnabled(LoginState state) {
-    return !state.isSubmitting;
-  }
 
   LoginBloc _loginBloc;
 
@@ -136,71 +128,7 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                            signUpOrSignIn,style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (UserRepository().appleSignInAvailable) ElevatedButton(
-                            onPressed: () {
-                              if (isAppleLoginButtonEnabled(state)) {
-                              _onPressedAppleSignIn();
-                              }
-                            },
-                            style: ElevatedButtonTheme.of(context)
-                                .style
-                                ?.copyWith(
-                                backgroundColor:
-                                MaterialStateProperty.all(canvasColor)),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  const Image(
-                                      image: AssetImage(apple_logo),
-                                      height: 25.0),
-                                  Text(
-                                    signInWithApple,
-                                    style: Theme.of(context).textTheme.subtitle1,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (UserRepository().appleSignInAvailable) SizedBox(width: 16,),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (isGoogleLoginButtonEnabled(state)) {
-                                _onPressedGoogleSignIn();
-                              }
-                            },
-                            style: ElevatedButtonTheme.of(context).style?.copyWith(
-                                backgroundColor:
-                                MaterialStateProperty.all(canvasColor)),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  const Image(
-                                      image: AssetImage(google_logo), height: 25.0),
-                                  Text(
-                                    signInWithGoogle,
-                                    style: Theme.of(context).textTheme.subtitle1
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      ThirdPartyLogin(loginBloc: _loginBloc,state: state,),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
@@ -226,7 +154,6 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
                 SizedBox(height: 15,),
-
               ]);
             },),
         ),
@@ -298,11 +225,5 @@ class _LoginFormState extends State<LoginForm> {
         email: _emailController.text, password: _passwordController.text));
   }
 
-  void _onPressedAppleSignIn() {
-    _loginBloc.add(LoginWithApplePressed());
-  }
 
-  void _onPressedGoogleSignIn() {
-    _loginBloc.add(LoginWithGooglePressed());
-  }
 }

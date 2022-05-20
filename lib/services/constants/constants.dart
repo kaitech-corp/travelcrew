@@ -32,7 +32,8 @@ const googleplay = "//play.google.com/store/apps/details?id=com.kaitechcorp.trav
 // Messages
 const agreement = "By pressing Signup you are agreeing to our Term's of Service and Privacy Policy.";
 const signInWithGoogle = "  Google";
-const signInWithApple = "  Apple";
+const signInWithGoogle2 = " Sign in with Google";
+const signInWithApple = " Sign in with Apple";
 const signUpOrSignIn = "Sign Up or Login with";
 const splitWiseToken = 'splitWiseToken';
 
