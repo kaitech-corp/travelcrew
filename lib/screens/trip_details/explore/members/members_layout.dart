@@ -123,33 +123,36 @@ class _MembersLayoutState extends State<MembersLayout> {
           onTap: (){
             navigationService.navigateTo(UserProfilePageRoute, arguments: member);
           },
-          child: Row(
-            children: [
-              Center(
-                child: CircleAvatar(
-                  radius: SizeConfig.blockSizeHorizontal*7,
-                  backgroundImage: (member.urlToImage.isNotEmpty ?? false)
-                      ? NetworkImage(member.urlToImage,)
-                      : AssetImage(profileImagePlaceholder),
-                ),
-              ),
-              Expanded(
-                child: ListTile(
-                  title: Text(member.displayName,
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.start,),
-                  trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID)
-                      ? const IconThemeWidget(icon:Icons.check)
-                  : IconButton(
-                    icon: const IconThemeWidget(icon: Icons.close),
-                    onPressed: (){
-                      TravelCrewAlertDialogs()
-                          .removeMemberAlert(context, tripDetails, member,);
-                    },
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Row(
+              children: [
+                Center(
+                  child: CircleAvatar(
+                    radius: SizeConfig.blockSizeHorizontal*7,
+                    backgroundImage: (member.urlToImage.isNotEmpty ?? false)
+                        ? NetworkImage(member.urlToImage,)
+                        : AssetImage(profileImagePlaceholder),
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: ListTile(
+                    title: Text(member.displayName,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textAlign: TextAlign.start,),
+                    trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID)
+                        ? const IconThemeWidget(icon:Icons.check)
+                    : IconButton(
+                      icon: const IconThemeWidget(icon: Icons.close),
+                      onPressed: (){
+                        TravelCrewAlertDialogs()
+                            .removeMemberAlert(context, tripDetails, member,);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
