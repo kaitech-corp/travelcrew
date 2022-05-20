@@ -12,5 +12,5 @@ Before building please create a `.env` file and place the following code within:
 
 - Android minSDK: 30
 - iOS deployment target: 11
-- Flutter: 2.5.1
-- Dart: 2.14.2
+- Flutter: 2.10.4
+- Dart: 2.16.2
