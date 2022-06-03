@@ -12,7 +12,7 @@ class Trip {
   final String? endDate;
   final Timestamp? endDateTimeStamp;
   final List<String>? favorite;
-  final bool? ispublic;
+  final bool ispublic;
   final GeoPoint? tripGeoPoint;
   final String? tripName;
   final String? location;
@@ -22,7 +22,7 @@ class Trip {
   final String? travelType;
   final String? urlToImage;
 
-  Trip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
+  Trip({this.tripGeoPoint, this.comment, this.dateCreatedTimeStamp, this.displayName, this.favorite, this.accessUsers, this.documentId, this.endDate, this.endDateTimeStamp, required this.ispublic,this.tripName, this.location, this.ownerID, this.startDate, this.startDateTimeStamp, this.travelType, this.urlToImage});
 
   Trip.fromData(Map<String, dynamic> data)
       : accessUsers = List<String>.from(data['accessUsers']),

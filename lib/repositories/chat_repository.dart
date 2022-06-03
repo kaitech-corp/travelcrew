@@ -15,19 +15,19 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
 
   final String tripDocID;
 
-  ChatRepository({this.tripDocID});
+  ChatRepository({required this.tripDocID});
 
   final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
   // Get all chat messages
   List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
     try {
       return snapshot.docs.map((doc){
-        Map<String, dynamic> data = doc.data();
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return ChatData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -49,19 +49,19 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
 
   final String tripDocID;
 
-  ChatNotificationRepository({this.tripDocID});
+  ChatNotificationRepository({required this.tripDocID});
 
   final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
   // Get all chat messages
   List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
     try {
       return snapshot.docs.map((doc){
-        Map<String, dynamic> data = doc.data();
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return ChatData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 

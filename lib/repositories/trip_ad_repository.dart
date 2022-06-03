@@ -20,12 +20,12 @@ class TripAdRepository extends GenericBlocRepository<TripAds> {
 
       try {
         return snapshot.docs.map((doc){
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return TripAds.fromData(data);
         }).toList().reversed.toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving ad list:  ${e.toString()}');
-        return null;
+        return [];
       }
 
     }

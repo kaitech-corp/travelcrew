@@ -14,7 +14,7 @@ class CustomAppBar extends StatelessWidget {
   final  bool bottomNav;
 
   const CustomAppBar({
-    Key key, this.bottomNav,
+    Key? key, required this.bottomNav,
   }) : super(key: key);
 
 

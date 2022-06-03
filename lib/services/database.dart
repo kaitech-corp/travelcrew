@@ -32,15 +32,15 @@ ValueNotifier<String> urlToImage = ValueNotifier('');
 ////Database class for all firebase api functions
 class DatabaseService {
   ////uid parameter
-  String uid;
+  String? uid;
   ////tripDocID parameter
-  String tripDocID;
+  String? tripDocID;
   ////itemDocID parameter
-  String itemDocID;
+  String? itemDocID;
   ////userID parameter
-  String userID;
+  String? userID;
   ////fieldID parameter
-  String fieldID;
+  String? fieldID;
   
   DatabaseService({this.uid,this.fieldID,this.tripDocID, this.userID,
     this.itemDocID});
@@ -81,9 +81,9 @@ class DatabaseService {
   Future<String> getVersion() async{
     try {
       ///TODO change version doc for new releases
-      final DocumentSnapshot<Object> ref = 
+      final DocumentSnapshot<Object?> ref =
       await versionCollection.doc('version3_0_8').get();
-      final Map<String, dynamic> data = ref.data();
+      final Map<String, dynamic> data = ref.data() as Map<String, dynamic>;
 
 
       return data["version"] ?? '';
@@ -97,7 +97,7 @@ class DatabaseService {
     try {
 
       /// Get the token for this device
-      String fcmToken = await _fcm.getToken();
+      String? fcmToken = await _fcm.getToken();
       final ref = await tokensCollection.doc(uid).collection('tokens')
           .doc(fcmToken).get();
       /// Save it to Firestore
@@ -125,7 +125,7 @@ class DatabaseService {
   Future<UserNotificationSettingsData> getUserNotificationSettings ()async{
     final ref = await notificationCollection.doc(userService.currentUserID).get();
     if(ref.exists){
-      final Map<String, dynamic> settings = ref.data();
+      final Map<String, dynamic> settings = ref.data() as Map<String, dynamic>;
       return UserNotificationSettingsData.fromData(settings);
     }else{
       final bool status = await SettingsNotifications().permissionStatus();
@@ -163,17 +163,18 @@ class DatabaseService {
 
       final userData = await userPublicProfileCollection.doc(uid).get();
       if(userData.exists) {
-        final Map<String, dynamic> data = userData.data();
+        final Map<String, dynamic> data = userData.data() as Map<String, dynamic>;
         return UserPublicProfile.fromData(data);
       }
     } catch(e){
       CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
+      return UserPublicProfile();
     }
   }
 
   ///Updates user info after signup
   Future<void> updateUserData(
-      String firstName, String lastName, String email, String uid) async {
+      String? firstName, String? lastName, String? email, String uid) async {
     try {
       const String action = 'Updating User data.';
       CloudFunction().logEvent(action);
@@ -254,14 +255,14 @@ class DatabaseService {
   List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot snapshot) {
     try {
       final List<SplitObject> splitItemData =  snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return SplitObject.fromData(data);
       }).toList();
 
       return splitItemData;
     } catch (e) {
       CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
   //// Stream in split item
@@ -381,7 +382,7 @@ class DatabaseService {
   List<CostObject> _costObjectDataFromSnapshot(QuerySnapshot snapshot) {
     try {
       final List<CostObject> costObjectData =  snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return CostObject.fromData(data);
       }).toList();
 
@@ -389,7 +390,7 @@ class DatabaseService {
     } catch (e) {
       CloudFunction()
           .logError('Error in streaming cost details: ${e.toString()}');
-      return null;
+      return [];
     }
   }
 ////Stream cost data
@@ -419,16 +420,16 @@ class DatabaseService {
       final refSnapshot2 = await ref2.get();
 
       if (refSnapshot2.exists) {
-        final Map<String, dynamic> data = refSnapshot2.data();
-        urlToImage.value = UserPublicProfile.fromData(data).urlToImage;
+        final Map<String, dynamic> data = refSnapshot2.data() as Map<String, dynamic>;
+        urlToImage.value = UserPublicProfile.fromData(data)?.urlToImage ?? '';
       }
     }
 
   ////Updates public profile after sign up
   Future<void> updateUserPublicProfileData(
-      String displayName, String firstName, String lastName, 
-      String email, int tripsCreated, int tripsJoined, String uid, 
-      File urlToImage) async {
+      String? displayName, String? firstName, String? lastName,
+      String? email, String? uid,
+      File? urlToImage) async {
     final ref = userPublicProfileCollection.doc(uid);
      try {
        const String action = 'Updating public profile after sign up';
@@ -441,8 +442,6 @@ class DatabaseService {
          'following': [],
         'firstName': firstName,
         'lastName' : lastName,
-        'tripsCreated': tripsCreated,
-        'tripsJoined': tripsJoined,
         'uid': uid,
         'urlToImage': '',
         'hometown':  '',
@@ -546,7 +545,7 @@ class DatabaseService {
 
 
   //// Add new trip
-  Future<void> addNewTripData(Trip trip, File urlToImage)
+  Future<void> addNewTripData(Trip trip, File? urlToImage)
   async {
 
     final key = tripsCollectionUnordered.doc().id;
@@ -809,9 +808,9 @@ class DatabaseService {
       String startDate,
       Timestamp startDateTimeStamp,
       String travelType,
-      File urlToImage,
+      File? urlToImage,
       String tripName,
-      GeoPoint tripGeoPoint)
+      GeoPoint? tripGeoPoint)
   async {
     final addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
 
@@ -866,7 +865,7 @@ class DatabaseService {
         following: List<String>.from(data['following']) ?? [],
       );
     } else {
-      return null;
+      return [];
     }
   }
   /// Get following list
@@ -898,7 +897,7 @@ class DatabaseService {
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
     
           return snapshot.docs.map((doc) {
-            final Map<String, dynamic> data = doc.data();
+            final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
               return Bringing.fromData(data);
                 }).toList();
   }
@@ -916,12 +915,12 @@ class DatabaseService {
   List<Need> _retrieveNeedItems(QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Need.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving need list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
   Stream<List<Need>> getNeedList(String docID){
@@ -938,7 +937,7 @@ class DatabaseService {
         final ref = await tripsCollectionUnordered.doc(docID).collection(
             'Members').get();
         final List<Members> memberList = ref.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data();
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Members.fromData(data);
         }).toList();
         memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
@@ -947,7 +946,7 @@ class DatabaseService {
         CloudFunction()
             .logError('Error retrieving all members from trip:  '
             '${e.toString()}');
-        return null;
+        return [];
       }
     } else {
       try {
@@ -957,7 +956,7 @@ class DatabaseService {
             'Members').get();
 
           final List<Members> memberList = ref.docs.map((doc) {
-            final Map<String, dynamic> data = doc.data();
+            final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
             return Members.fromData(data);
           }).toList();
           memberList.sort((a, b) => a.lastName.compareTo(b.lastName));
@@ -966,7 +965,7 @@ class DatabaseService {
         CloudFunction()
             .logError('Error retrieving members from private trip:  '
             '${e.toString()}');
-        return null;
+        return [];
       }
     }
 
@@ -981,7 +980,7 @@ class DatabaseService {
     } catch (e) {
       CloudFunction()
           .logError('Error retrieving current trip list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -999,14 +998,14 @@ class DatabaseService {
       const String action = 'Get bringing items by document ID';
       CloudFunction().logEvent(action);
         final List<Bringing> items = ref.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data();
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Bringing.fromData(data);
         }).toList();
       return items;
     } catch (e) {
       CloudFunction()
           .logError('Error retrieving bringing items docID:  ${e.toString()}');
-      return null;
+      return [];
     }
 
 
@@ -1023,12 +1022,12 @@ class DatabaseService {
           final Map<String, dynamic> data = ref.data();
           return Trip.fromData(data);
       } else {
-        return null;
+        return [];
       }
     } catch (e) {
       CloudFunction()
           .logError('Error retrieving single trip by docID:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
   /// Get Private Trip
@@ -1042,12 +1041,12 @@ class DatabaseService {
         final Map<String, dynamic> data = ref.data();
         return Trip.fromData(data);
       } else {
-        return null;
+        return [];
       }
     } catch (e) {
       CloudFunction()
           .logError('Error retrieving single private trip:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1056,7 +1055,7 @@ class DatabaseService {
 
     try {
       final List<Trip> trips = snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Trip.fromData(data);
       }).toList();
       trips.sort((a,b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
@@ -1065,7 +1064,7 @@ class DatabaseService {
     } catch (e) {
       CloudFunction()
           .logError('Error retrieving all trip list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
   /// get trips stream
@@ -1208,14 +1207,14 @@ class DatabaseService {
   List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
     try {
       final List<LodgingData> lodgingList = snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return LodgingData.fromData(data);
       }).toList();
       lodgingList.sort((a, b) => b.voters.length.compareTo(a.voters.length));
       return lodgingList;
     } catch (e) {
       CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
   ////Get Lodging List
@@ -1231,10 +1230,10 @@ class DatabaseService {
           return LodgingData.fromData(data);
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
-        return null;
+        return [];
       }
     } else{
-      return null;
+      return [];
     }
 
   }
@@ -1246,14 +1245,14 @@ class DatabaseService {
   List<ActivityData> _activitiesListFromSnapshot(QuerySnapshot snapshot){
     try {
       final List<ActivityData> activitiesList = snapshot.docs.map((doc){
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return ActivityData.fromData(data);
       }).toList();
       activitiesList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
       return activitiesList;
     } catch (e) {
       CloudFunction().logError('Error retrieving activity list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1268,10 +1267,10 @@ class DatabaseService {
         return ActivityData.fromData(data);
       } catch (e) {
         CloudFunction().logError('Error retrieving single activity:  ${e.toString()}');
-        return null;
+        return [];
       }
     } else{
-      return null;
+      return [];
     }
 
   }
@@ -1284,7 +1283,7 @@ class DatabaseService {
 
     try {
       final List<UserPublicProfile> userList =  snapshot.docs.map((doc){
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return UserPublicProfile.fromData(data);
       }).toList();
       userList.sort((a,b) => a.displayName.compareTo(b.displayName));
@@ -1292,7 +1291,7 @@ class DatabaseService {
       return userList;
     } catch (e) {
       CloudFunction().logError('Error retrieving stream of all users: ${e.toString()}');
-      return null;
+      return [];
     }
   }
   /// get all users
@@ -1305,14 +1304,14 @@ class DatabaseService {
     try {
       final ref = await userPublicProfileCollection.get();
       final List<UserPublicProfile> userList = ref.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return UserPublicProfile.fromData(data);
       }).toList();
       userList.sort((a,b) => a.displayName.compareTo(b.displayName));
       return userList;
     } catch (e) {
       CloudFunction().logError('Error retrieving all users: ${e.toString()}');
-      return null;
+      return [];
     }
     }
 
@@ -1324,7 +1323,7 @@ class DatabaseService {
         return UserPublicProfile.fromData(data);
     } catch (e) {
       CloudFunction().logError('Error retrieving specific user public profile:  ${e.toString()}');
-      return null;
+      return [];
     }
 
   }
@@ -1344,14 +1343,14 @@ class DatabaseService {
   List<TransportationData> _transportListFromSnapshot(QuerySnapshot snapshot) {
     try {
       final List<TransportationData> transportList =  snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return TransportationData.fromData(data);
       }).toList();
 
       return transportList;
     } catch (e) {
       CloudFunction().logError('Error retrieving transportation list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1363,12 +1362,12 @@ class DatabaseService {
   List<Trip> _privateTripListFromSnapshot(QuerySnapshot snapshot){
     try {
       return snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Trip.fromData(data);
       }).toList().reversed.toList();
     } catch (e){
       CloudFunction().logError('Error retrieving private trip list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1379,7 +1378,7 @@ class DatabaseService {
       final now = DateTime.now().toUtc();
       final past = DateTime(now.year, now.month, now.day - 2);
         final List<Trip> trips = snapshot.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data();
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Trip.fromData(data);
         }).toList();
       final List<Trip> crewTrips = trips.where((trip) =>
@@ -1387,7 +1386,7 @@ class DatabaseService {
       return crewTrips;
     } catch (e) {
       CloudFunction().logError('Error retrieving current trip list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1398,7 +1397,7 @@ class DatabaseService {
       final now = DateTime.now().toUtc();
       final past = DateTime(now.year, now.month, now.day - 1);
       final List<Trip> trips = snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Trip.fromData(data);
       }).toList();
       final List<Trip> crewTrips = trips.where((trip) =>
@@ -1407,7 +1406,7 @@ class DatabaseService {
       return crewTrips;
     } catch (e) {
       CloudFunction().logError('Error retrieving past trip list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1451,12 +1450,12 @@ class DatabaseService {
 
     try {
       return snapshot.docs.map((doc){
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return NotificationData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving notification list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1524,12 +1523,12 @@ class DatabaseService {
 
     try {
       return snapshot.docs.map((doc){
-        final Map<String, dynamic> data = doc.data();
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return ChatData.fromData(data);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 ///Stream chats
@@ -1540,7 +1539,7 @@ class DatabaseService {
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
   Stream<List<ChatData>> get chatListNotification {
@@ -1548,7 +1547,7 @@ class DatabaseService {
       return chatCollection.doc(tripDocID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false).snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError('Error retrieving chat list notifications:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1556,7 +1555,7 @@ class DatabaseService {
   List<TCFeedback> _feedbackSnapshot (QuerySnapshot snapshot) {
 
     final List<TCFeedback> feedback = snapshot.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data();
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return TCFeedback(
             fieldID: data['fieldID'] ?? '',
             message: data['message'] ?? '',
@@ -1601,7 +1600,7 @@ class DatabaseService {
 
       try {
         return snapshot.docs.map((doc){
-          final Map<String, dynamic> data = doc.data();
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return TripAds(
             tripName: data['tripName'] ?? '',
             documentID: data['documentID'] ?? '',
@@ -1616,7 +1615,7 @@ class DatabaseService {
         }).toList().reversed.toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving ad list:  ${e.toString()}');
-        return null;
+        return [];
       }
 
   }
@@ -1707,7 +1706,7 @@ class DatabaseService {
     }catch (e) {
       _analyticsService.writeError(e.toString());
       CloudFunction().logError('Error retrieving dm chat messages:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1718,7 +1717,7 @@ class DatabaseService {
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError('Error retrieving dm chat notifications:  ${e.toString()}');
-      return null;
+      return [];
     }
   }
 
@@ -1777,7 +1776,7 @@ class DatabaseService {
   List<Suggestions> _suggestionListFromSnapshot(QuerySnapshot snapshot){
 
     return snapshot.docs.map((doc){
-      final Map<String, dynamic> data = doc.data();
+      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return Suggestions(
         url: data['url'] ?? '',
         timestamp: data['timestamp'] ?? null,

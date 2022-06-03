@@ -18,10 +18,10 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
     List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot snapshot) {
       try {
         List<UserPublicProfile> userList = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return UserPublicProfile.fromData(data);
         }).toList();
-        userList.sort((a, b) => a.displayName.compareTo(b.displayName));
+        userList.sort((a, b) => a.displayName!.compareTo(b.displayName!));
         userList =
             userList.where((user) => user.uid != userService.currentUserID)
                 .toList();
@@ -30,7 +30,7 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
       } catch (e) {
         CloudFunction().logError(
             'Error retrieving stream of all users: ${e.toString()}');
-        return null;
+        return [];
       }
     }
     // get all users

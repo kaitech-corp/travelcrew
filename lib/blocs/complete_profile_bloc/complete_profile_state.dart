@@ -1,15 +1,15 @@
 class CompleteProfileState {
 
-  final bool? isSubmitting;
-  final bool? isSuccess;
-  final bool? isFailure;
+  final bool isSubmitting;
+  final bool isSuccess;
+  final bool isFailure;
 
 
   CompleteProfileState(
       {
-        this.isSubmitting,
-        this.isSuccess,
-        this.isFailure});
+      required  this.isSubmitting,
+      required  this.isSuccess,
+      required  this.isFailure});
 
   factory CompleteProfileState.initial() {
     return CompleteProfileState(

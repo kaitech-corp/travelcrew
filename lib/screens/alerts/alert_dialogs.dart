@@ -44,7 +44,7 @@ class TravelCrewAlertDialogs {
               child: Text(Intl.message('Confirm Delete'),),
               onPressed: () async {
                 await navigationService.pop();
-                await BlocProvider.of<AuthenticationBloc>(context)
+                BlocProvider.of<AuthenticationBloc>(context)
                     .add(AuthenticationLoggedOut());
                 CloudFunction().disableAccount();
               },
@@ -85,7 +85,7 @@ class TravelCrewAlertDialogs {
       },
     );
   }
-  Future<void> reportAlert({BuildContext context, Trip tripDetails, UserPublicProfile userProfile, ActivityData activityData, LodgingData lodgingData, String type}) {
+  Future<void> reportAlert({required BuildContext context, Trip? tripDetails, required UserPublicProfile userProfile, ActivityData? activityData, LodgingData? lodgingData, required String type}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -100,10 +100,6 @@ class TravelCrewAlertDialogs {
               onPressed: () {
                 navigationService.pop();
                 navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile, activityData, tripDetails, lodgingData));
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ReportContent(type: type, tripDetails: tripDetails, userAccount: userProfile, activity: activityData, lodging: lodgingData,)),
-                // );
               },
             ),
             TextButton(
@@ -205,7 +201,7 @@ class TravelCrewAlertDialogs {
             TextButton(
               child: Text(yesMessage(),),
               onPressed: () {
-                CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, uid,tripDetails.ispublic);
+                CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId!, userUID: uid, ispublic: tripDetails.ispublic);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
@@ -234,7 +230,7 @@ class TravelCrewAlertDialogs {
             TextButton(
               child: Text(yesMessage()),
               onPressed: () {
-                CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
+                CloudFunction().deleteTrip(tripDetails.documentId!, tripDetails.ispublic);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
@@ -285,22 +281,22 @@ class TravelCrewAlertDialogs {
     );
   }
 
-  Future<void> removeMemberAlert(BuildContext context, Trip tripDetails, UserPublicProfile member) {
+  Future<void> removeMemberAlert(BuildContext context, Trip tripDetails, UserPublicProfile? member) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(
-            Intl.message('Remove ${member.firstName+' '+ member.lastName}?'),
+            Intl.message('Remove ${member?.displayName}?'),
             textScaleFactor: 1.5,),
           content: Text(Intl.message(
-              '${member.firstName} will no longer be able to view this trip.'),),
+              '${member?.displayName} will no longer be able to view this trip.'),),
           actions: <Widget>[
             TextButton(
               child: Text(yesMessage()),
               onPressed: () {
-                CloudFunction().leaveAndRemoveMemberFromTrip(tripDetails.documentId, member.uid, tripDetails.ispublic);
+                CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId!, userUID: member!.uid!, ispublic: tripDetails.ispublic);
                 navigationService.pop();
               },
             ),
@@ -483,8 +479,8 @@ class TravelCrewAlertDialogs {
 
   Future<void> resetPasswordDialog(BuildContext context) async {
     final _formKey = GlobalKey<FormState>();
-    String email;
-    return await showDialog<String>(
+    String? email;
+    return await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
       return _SystemPadding(
@@ -509,7 +505,7 @@ class TravelCrewAlertDialogs {
                         email = val;
                       },
                       validator: (value) {
-                        if (value.isEmpty || !value.contains('.com')) {
+                        if ((value?.isEmpty ?? true) || !value!.contains('.com')) {
                           return Intl.message('Please enter valid email address.');
                         } else {
                           return null;
@@ -532,10 +528,10 @@ class TravelCrewAlertDialogs {
             TextButton(
                 child: Text(Intl.message('Reset')),
                 onPressed: () {
-                  final form = _formKey.currentState;
-                  if (form.validate()) {
+                  final FormState? form = _formKey.currentState;
+                  if (form!.validate()) {
                     form.save();
-                    UserRepository().resetPassword(email);
+                    UserRepository().resetPassword(email!);
                     submittedAlert(context);
                     navigationService.pop();
                   }
@@ -630,9 +626,9 @@ class TravelCrewAlertDialogs {
 }
 
 class _SystemPadding extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  _SystemPadding({Key key, this.child}) : super(key: key);
+  _SystemPadding({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

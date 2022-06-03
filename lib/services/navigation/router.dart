@@ -375,9 +375,9 @@ class MembersLayoutArguments{
 class ReportArguments{
   final String type;
   final UserPublicProfile userAccount;
-  final ActivityData activity;
-  final LodgingData lodging;
-  final Trip tripDetails;
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final Trip? tripDetails;
 
   ReportArguments(
       this.type,

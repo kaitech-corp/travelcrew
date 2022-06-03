@@ -85,19 +85,19 @@ class _AdminPageState extends State<AdminPage> {
                                         color: Colors.white,
                                       )),
                                 ),
-                                key: Key(item.fieldID),
+                                key: Key(item.fieldID!),
                                 onDismissed: (DismissDirection direction) {
-                                  CloudFunction().removeFeedback(item.fieldID);
+                                  CloudFunction().removeFeedback(item.fieldID!);
                                 },
                                 child: ListTile(
-                                  key: Key(item.fieldID),
+                                  key: Key(item.fieldID!),
                                   title: Text(
-                                    item.message,
+                                    item.message ?? '',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
                                   subtitle: Text(
-                                    '$submitted: ${item.timestamp.toDate()}',
+                                    '$submitted: ${item.timestamp?.toDate() ?? ''}',
                                     style:
                                         Theme.of(context).textTheme.subtitle2,
                                   ),

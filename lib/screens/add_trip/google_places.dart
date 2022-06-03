@@ -21,7 +21,7 @@ class GooglePlaces extends StatefulWidget{
   final TextEditingController controller;
 
 
-  GooglePlaces({this.homeScaffoldKey, this.searchScaffoldKey,this.controller});
+  GooglePlaces({required this.homeScaffoldKey, required this.searchScaffoldKey,required this.controller});
 
   @override
   _GooglePlacesState createState() => _GooglePlacesState();
@@ -41,7 +41,7 @@ class _GooglePlacesState extends State<GooglePlaces> {
   void onError(PlacesAutocompleteResponse response) {
     // widget.homeScaffoldKey.currentState.showSnackBar(
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(response.errorMessage)),
+      SnackBar(content: Text(response?.errorMessage ?? 'Oops! Something went wrong.')),
     );
   }
 
@@ -49,9 +49,9 @@ class _GooglePlacesState extends State<GooglePlaces> {
     // show input autocomplete with selected mode
     // then get the Prediction selected
     try {
-      Prediction p = await PlacesAutocomplete.show(
+      Prediction? p = await PlacesAutocomplete.show(
         context: context,
-        apiKey: dotenv.env['kGoogleApiKey'],
+        apiKey: dotenv.env['kGoogleApiKey'] ?? '',
         onError: onError,
         types: [],
         mode: _mode,
@@ -62,7 +62,7 @@ class _GooglePlacesState extends State<GooglePlaces> {
         ],
       );
 
-      displayPrediction(p, widget.homeScaffoldKey.currentState);
+      displayPrediction(p!, widget.homeScaffoldKey.currentState!);
     } catch (e) {
       print("Error: ${e.toString()}");
     }

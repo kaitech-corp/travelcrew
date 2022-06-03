@@ -71,5 +71,5 @@ class SignupSubmitted extends SignupEvent {
   SignupSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage, required this.email, required this.password});
 
   @override
-  List<Object> get props => [email, password, displayName as Object, firstName as Object, lastName as Object, urlToImage as Object];
+  List<Object> get props => [email, password, displayName, firstName, lastName, urlToImage];
 }

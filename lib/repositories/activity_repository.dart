@@ -7,7 +7,7 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
 
   final String tripDocID;
 
-  ActivityRepository({this.tripDocID});
+  ActivityRepository({required this.tripDocID});
 
   @override
   Stream<List<ActivityData>> data() {
@@ -18,14 +18,14 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
     List<ActivityData> _activitiesListFromSnapshot(QuerySnapshot snapshot){
       try {
         List<ActivityData> activityList = snapshot.docs.map((doc){
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return ActivityData.fromData(data);
         }).toList();
         // activityList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
         return activityList;
       } catch (e) {
         CloudFunction().logError('Error retrieving activity list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

@@ -20,7 +20,8 @@ class UserRepository {
   UserRepository()
       : _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> signInWithCredentials(String? email, String? password) async {
+  Future<UserCredential> signInWithCredentials(
+      {required String email, required String password}) async {
     return await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
@@ -28,15 +29,14 @@ class UserRepository {
 
   Future<void> signUp(String email, String password, String? firstname, String? lastName, String? displayName, File? urlToImage) async {
     var result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-    User user = result.user;
-    await DatabaseService(uid: user.uid).updateUserData(firstname, lastName, email, user.uid);
-    await DatabaseService(uid: user.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, 0, 0, user.uid, urlToImage);
+    User? user = result.user;
+    await DatabaseService(uid: user?.uid).updateUserData(firstname, lastName, email, user!.uid);
+    await DatabaseService(uid: user?.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, user!.uid, urlToImage);
     await _analyticsService.logSignUp();
-
-    return result;
+    // return result;
   }
 
-  Future<void> signOut() async {
+  Future<List<dynamic>> signOut() async {
     return Future.wait([_firebaseAuth.signOut()]);
   }
 
@@ -50,17 +50,17 @@ class UserRepository {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  User getUser()  {
+  User? getUser()  {
     return  _firebaseAuth.currentUser;
   }
-  Stream<User> get user {
+  Stream<User?> get user {
     return _firebaseAuth.authStateChanges().map((user) => user);
 
   }
 
   bool get appleSignInAvailable => Platform.isIOS;
 
-  Future<void> signInWithApple() async {
+  Future<UserCredential?> signInWithApple() async {
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
           scopes: [AppleIDAuthorizationScopes.email,AppleIDAuthorizationScopes.fullName]
@@ -81,40 +81,40 @@ class UserRepository {
 
   Future<void> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount googleSignInAccount = await googleSignIn
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn
           .signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
+      final GoogleSignInAuthentication? googleSignInAuthentication =
+      await googleSignInAccount?.authentication;
 
-      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
+      final AuthCredential? credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication?.accessToken,
+        idToken: googleSignInAuthentication?.idToken,
       );
 
       final UserCredential authResult = await _firebaseAuth.signInWithCredential(
-          credential);
-      final User user = authResult.user;
+          credential!);
+      final User? user = authResult.user;
 
 
-      assert(!user.isAnonymous);
-      assert(await user.getIdToken() != null);
+      assert(!user!.isAnonymous);
+      assert(await user?.getIdToken() != null);
 
-      final User currentUser =  _firebaseAuth.currentUser;
-      assert(user.uid == currentUser.uid);
+      final User? currentUser =  _firebaseAuth.currentUser;
+      assert(user?.uid == currentUser?.uid);
       await _analyticsService.logLoginGoogle();
 
     } catch (e){
-      return e.toString();
+      _analyticsService.writeError(e.toString());
     }
   }
 
   Future<void>updateUserPublicProfile(String? firstname, String? lastName, String? displayName, File? urlToImage) async {
     final currentUser =  _firebaseAuth.currentUser;
     if(displayName?.isEmpty ?? true){
-      displayName = 'User${currentUser.uid.substring(currentUser.uid.length - 5)}';
+      displayName = 'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
     }
-    await DatabaseService(uid: currentUser.uid).updateUserData(firstname, lastName, currentUser.email, currentUser.uid);
-    return await DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(displayName, firstname, lastName,currentUser.email, 0, 0, currentUser.uid, urlToImage);
+    await DatabaseService(uid: currentUser!.uid).updateUserData(firstname, lastName, currentUser?.email, currentUser!.uid);
+    return await DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(displayName, firstname, lastName,currentUser?.email, currentUser.uid, urlToImage);
   }
 
 }

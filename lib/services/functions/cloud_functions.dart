@@ -173,8 +173,8 @@ class CloudFunction {
   }
 
 
-  void leaveAndRemoveMemberFromTrip(String tripDocID, String userUID,
-      bool ispublic) async {
+  void leaveAndRemoveMemberFromTrip(
+      {required String tripDocID, required String userUID, required bool ispublic}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'leaveAndRemoveMemberFromTrip');
     functionData({
       'tripDocID': tripDocID,

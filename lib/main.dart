@@ -46,7 +46,7 @@ void main() async {
 }
 
 class TravelCrew extends StatefulWidget{
-  final UserRepository userRepository;
+  final UserRepository? userRepository;
 
   TravelCrew({this.userRepository });
   @override
@@ -54,7 +54,7 @@ class TravelCrew extends StatefulWidget{
 }
 
 class _TravelCrewState extends State<TravelCrew> {
-  FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {

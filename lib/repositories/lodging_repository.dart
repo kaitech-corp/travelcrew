@@ -14,7 +14,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
 
   final String tripDocID;
 
-  LodgingRepository({this.tripDocID});
+  LodgingRepository({required this.tripDocID});
 
   Stream<List<LodgingData>> data() {
 
@@ -24,14 +24,14 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
     List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot snapshot){
       try {
         List<LodgingData> lodgingList = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return LodgingData.fromData(data);
         }).toList();
-        lodgingList.sort((a, b) => b.voters.length.compareTo(a.voters.length));
+        lodgingList.sort((a, b) => b.voters!.length.compareTo(a.voters!.length));
         return lodgingList;
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
     //Get Lodging List

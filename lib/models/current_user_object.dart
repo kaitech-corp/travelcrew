@@ -8,16 +8,14 @@ class CurrentUser {
   final List<String>? following;
   final List<String>? followers;
   final String? lastName;
-  // final int tripsCreated;
-  // final int tripsJoined;
-  final String? uid;
+  final String uid;
   final String? urlToImage;
   final String? hometown;
   final String? instagramLink;
   final String? facebookLink;
   final List<String>? topDestinations;
   
-  CurrentUser({this.blockedList, this.displayName, this.email, this.firstName, this.following, this.followers, this.lastName, this.uid, this.urlToImage, this.hometown, this.instagramLink, this.facebookLink, this.topDestinations,});
+  CurrentUser({this.blockedList, this.displayName, this.email, this.firstName, this.following, this.followers, this.lastName, required this.uid, this.urlToImage, this.hometown, this.instagramLink, this.facebookLink, this.topDestinations,});
 
   CurrentUser.fromData(Map<String, dynamic> data)
       : blockedList = List<String>.from(data['blockedList']),

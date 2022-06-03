@@ -19,7 +19,7 @@ import 'google_places.dart';
 /// Edit trip page
 class EditTripData extends StatefulWidget {
   final Trip tripDetails;
-  EditTripData({this.tripDetails});
+  EditTripData({required this.tripDetails});
   @override
   _EditTripDataState createState() => _EditTripDataState();
 }
@@ -43,23 +43,23 @@ class _EditTripDataState extends State<EditTripData> {
   bool dateChangeVisible = false;
   bool locationChangeVisible = false;
 
-  File _image;
-  File urlToImage;
-  String documentID;
+  File? _image;
+  File? urlToImage;
+  String? documentID;
   bool ispublic = true;
-  GeoPoint tripGeoPoint;
+  GeoPoint? tripGeoPoint;
 
   @override
   void initState() {
     super.initState();
-    controllerLocation.text = widget.tripDetails?.location ?? '';
-    controllerTripName.text = widget.tripDetails?.tripName ?? '';
-    controllerType.text = widget.tripDetails?.travelType ?? '';
-    controllerComment.text = widget.tripDetails.comment;
-    startDate.value = widget.tripDetails.startDate;
-    endDate.value = widget.tripDetails.endDate;
-    endDateTimestamp.value = widget.tripDetails.endDateTimeStamp;
-    startDateTimestamp.value = widget.tripDetails.startDateTimeStamp;
+    controllerLocation.text = widget.tripDetails.location ?? '';
+    controllerTripName.text = widget.tripDetails.tripName ?? '';
+    controllerType.text = widget.tripDetails.travelType ?? '';
+    controllerComment.text = widget.tripDetails.comment ?? '';
+    startDate.value = widget.tripDetails.startDate ?? '';
+    endDate.value = widget.tripDetails.endDate ?? '';
+    endDateTimestamp.value = widget.tripDetails.endDateTimeStamp ?? Timestamp.now();
+    startDateTimestamp.value = widget.tripDetails.startDateTimeStamp ?? Timestamp.now();
     ispublic = widget.tripDetails.ispublic;
     documentID = widget.tripDetails.documentId;
 
@@ -84,7 +84,7 @@ class _EditTripDataState extends State<EditTripData> {
     var image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
-      _image = File(image.path);
+      _image = File(image!.path);
       urlToImage = _image;
     });
   }
@@ -117,7 +117,7 @@ class _EditTripDataState extends State<EditTripData> {
                                   InputDecoration(labelText: addTripNameLabel()),
                                   // ignore: missing_return
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value?.isEmpty ?? true) {
                                       return addTripNameValidator();
                                     }
                                   },
@@ -132,7 +132,7 @@ class _EditTripDataState extends State<EditTripData> {
                                   InputDecoration(labelText: addTripTypeLabel()),
                                   // ignore: missing_return
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value?.isEmpty ?? true) {
                                       return addTripTypeValidator();
                                     }
                                   },
@@ -147,7 +147,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     decoration: InputDecoration(labelText:addTripLocation()),
                                     // ignore: missing_return
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value?.isEmpty ?? true) {
                                         return addTripLocationValidator();
                                         // ignore: missing_return
                                       }
@@ -208,7 +208,7 @@ class _EditTripDataState extends State<EditTripData> {
                                     vertical: 16.0, horizontal: 16.0),
                                 child: _image == null
                                     ? Text(addTripImageMessage())
-                                    : Image.file(_image),
+                                    : Image.file(_image!),
                               ),
                               ElevatedButton(
                                 onPressed: () {
@@ -235,13 +235,11 @@ class _EditTripDataState extends State<EditTripData> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final form = _formKey.currentState;
-          if (form.validate()) {
+          final FormState? form = _formKey.currentState;
+          if (form!.validate()) {
             if(locationChangeVisible){
               // location = myController.text;
-              if(googleData2.value != null){
-                tripGeoPoint = googleData2.value.geoLocation;
-              }
+              tripGeoPoint = googleData2.value.geoLocation;
             }
             navigationService.pop();
             try {
@@ -249,7 +247,7 @@ class _EditTripDataState extends State<EditTripData> {
               CloudFunction().logEvent(action);
               DatabaseService().editTripData(
                   controllerComment.text,
-                  documentID,
+                  documentID!,
                   endDate.value,
                   endDateTimestamp.value,
                   ispublic,

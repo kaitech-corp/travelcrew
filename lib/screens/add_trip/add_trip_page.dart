@@ -18,15 +18,15 @@ import '../../services/widgets/calendar_widget.dart';
 import '../alerts/alert_dialogs.dart';
 import 'google_places.dart';
 
-GoogleData googleData;
+GoogleData? googleData;
 
 /// Add trip page
 class AddTripPage extends StatefulWidget {
 
   //When using google places this object will pass on the location.
-  final String addedLocation;
+  final String? addedLocation;
 
-  AddTripPage({Key key, this.addedLocation}) : super(key: key);
+  AddTripPage({Key? key, this.addedLocation}) : super(key: key);
 
 
   @override
@@ -37,7 +37,7 @@ final AnalyticsService _analyticsService = AnalyticsService();
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 final myController = TextEditingController();
-final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData);
+final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData!);
 
 class _AddTripPageState extends State<AddTripPage> {
   var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
@@ -53,7 +53,7 @@ class _AddTripPageState extends State<AddTripPage> {
     super.initState();
     myController.clear();
     if(widget.addedLocation != null){
-      myController.text = widget.addedLocation;
+      myController.text = widget.addedLocation!;
     }
   }
 
@@ -70,7 +70,7 @@ class _AddTripPageState extends State<AddTripPage> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
 
-  File _image;
+  File? _image;
   bool gotDataBool = false;
 
 
@@ -84,7 +84,7 @@ class _AddTripPageState extends State<AddTripPage> {
   String location = '';
   String ownerID = '';
   String travelType = '';
-  File urlToImage;
+  File? urlToImage;
 
 
 
@@ -97,8 +97,8 @@ class _AddTripPageState extends State<AddTripPage> {
 
 
     setState(() {
-      _image = File(image.path);
-      urlToImage = File(_image.path);
+      _image = File(image!.path);
+      urlToImage = File(_image!.path);
     });
   }
 
@@ -126,7 +126,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           ),
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value?.isEmpty ?? true) {
                               return addTripNameValidator();
                               // ignore: missing_return
                             }
@@ -149,7 +149,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           ),
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value?.isEmpty ?? true) {
                               return addTripTypeValidator();
                               // ignore: missing_return
                             }
@@ -178,7 +178,7 @@ class _AddTripPageState extends State<AddTripPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 16.0, horizontal: 16.0),
-                        child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,),
+                        child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: myController,),
                       ),
                       CalendarWidget(
                         startDate: startDate,
@@ -207,7 +207,7 @@ class _AddTripPageState extends State<AddTripPage> {
                       Container(
                         child: _image == null
                             ? Text(addTripImageMessage(),style: Theme.of(context).textTheme.headline6,)
-                            : Image.file(_image),
+                            : Image.file(_image!),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -247,9 +247,9 @@ class _AddTripPageState extends State<AddTripPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               // splitWiseAPI();
-                              final form = _formKey.currentState;
-                              form.save();
-                              if (form.validate()) {
+                              final FormState? form = _formKey.currentState;
+                              form?.save();
+                              if (form!.validate()) {
                                 try {
                                   String action = addTripSavingDataMessage();
                                   CloudFunction().logEvent(action);
@@ -264,7 +264,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                         location: myController.text ?? '',
                                         startDate: startDate.value,
                                         travelType: travelType,
-                                        tripGeoPoint: googleData2.value?.geoLocation ?? null,
+                                        tripGeoPoint: googleData2.value.geoLocation ?? null,
                                         tripName: tripName,
                                       ),
                                       urlToImage,

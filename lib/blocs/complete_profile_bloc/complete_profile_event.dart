@@ -10,12 +10,12 @@ abstract class CompleteProfileEvent extends Equatable {
 }
 
 class CompleteProfileFirstNameChanged extends CompleteProfileEvent {
-  final String? firstName;
+  final String firstName;
 
-  CompleteProfileFirstNameChanged({this.firstName});
+  CompleteProfileFirstNameChanged({required this.firstName});
 
   @override
-  List<Object> get props => [firstName!];
+  List<Object> get props => [firstName];
 }
 class CompleteProfileLastNameChanged extends CompleteProfileEvent {
   final String? lastName;

@@ -26,7 +26,7 @@ class CompleteProfileForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<CompleteProfileForm> {
-  File image;
+  File? image;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -37,7 +37,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
 
   bool imagePicked = false;
 
-  CompleteProfileBloc _completeProfileBloc;
+  late CompleteProfileBloc _completeProfileBloc;
 
   bool get isPopulated =>
       _firstNameController.text.isNotEmpty ||
@@ -72,14 +72,14 @@ class _LoginFormState extends State<CompleteProfileForm> {
     var image =
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
 
-    _cropImage(image.path, image);
+    _cropImage(image?.path, image);
     setState(() {
       imagePicked = true;
     });
   }
 
   _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper.cropImage(
+    CroppedFile? croppedImage = await ImageCropper.cropImage(
       sourcePath: imagePath,
       maxHeight: 1080,
       maxWidth: 1080,

@@ -10,7 +10,7 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
 
   final String tripDocID;
 
-  SplitRepository({this.tripDocID});
+  SplitRepository({required this.tripDocID});
 
   Stream<List<SplitObject>> data() {
 
@@ -20,14 +20,14 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
     List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot snapshot) {
       try {
         List<SplitObject> splitItemData =  snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return SplitObject.fromData(data);
         }).toList();
 
         return splitItemData;
       } catch (e) {
         CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

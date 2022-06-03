@@ -10,7 +10,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
 
   final String tripDocID;
 
-  TransportationRepository({this.tripDocID});
+  TransportationRepository({required this.tripDocID});
 
   Stream<List<TransportationData>> data() {
     final CollectionReference transportCollection = FirebaseFirestore.instance
@@ -21,7 +21,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
         QuerySnapshot snapshot) {
       try {
         List<TransportationData> transportList = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return TransportationData.fromData(data);
         }).toList();
 
@@ -29,7 +29,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
       } catch (e) {
         CloudFunction().logError(
             'Error retrieving transportation list:  ${e.toString()}');
-        return null;
+        return [];
       }
     }
 

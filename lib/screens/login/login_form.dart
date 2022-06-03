@@ -17,9 +17,9 @@ import '../alerts/alert_dialogs.dart';
 
 /// Form for login screen
 class LoginForm extends StatefulWidget {
-  final UserRepository _userRepository;
+  final UserRepository? _userRepository;
 
-  const LoginForm({Key key, UserRepository userRepository})
+  const LoginForm({Key? key, UserRepository? userRepository})
       : _userRepository = userRepository,
         super(key: key);
 
@@ -46,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
     return !state.isSubmitting;
   }
 
-  LoginBloc _loginBloc;
+  late LoginBloc _loginBloc;
 
   @override
   void initState() {

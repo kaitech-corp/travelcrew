@@ -11,9 +11,9 @@ import 'complete_profile_form.dart';
 
 /// Complete profile page after signup
 class CompleteProfile extends StatelessWidget {
-  final UserRepository _userRepository;
+  final UserRepository? _userRepository;
 
-  const CompleteProfile({Key key, UserRepository userRepository})
+  const CompleteProfile({Key? key, UserRepository? userRepository})
       : _userRepository = userRepository,
         super(key: key);
 
