@@ -4,7 +4,7 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelcrew/models/location_model.dart';
-
+import 'package:http/http.dart' as http;
 import '../../services/analytics_service.dart';
 import '../../services/locator.dart';
 
@@ -16,6 +16,40 @@ class CloudFunction {
   var currentUserProfile = locator<UserProfileService>()
       .currentUserProfileDirect();
   final AnalyticsService _analyticsService = AnalyticsService();
+
+  Future<void> helloRandy(String name) async {
+    const baseUrl = 'https://us-central1-universal-code-135522.cloudfunctions.net/image_scrap/?name=';
+    Uri url = Uri.parse(baseUrl + name);
+    const Map<String, String> _headers = {
+      "content-type": "application/json",
+    };
+    var response = await http.get(url, headers: _headers);
+    if (response.statusCode == 200){
+      final result = response.body;
+      print(result.toString());
+    } else {
+      print(response.statusCode);
+    }
+    print(response.body);
+  }
+
+  Future<void> hello_world(String name) async {
+    final callable = await FirebaseFunctions.instance.
+    httpsCallable('image_scrap');
+    final results = await callable({
+      'message':'Paris'
+    });
+    print(results.data.toString());
+  }
+
+  Future<void> test_1(String name) async {
+    final callable = await FirebaseFunctions.instance.
+    httpsCallable('test_1');
+    final results = await callable({
+      'message':'Paris'
+    });
+    print(results.data.toString());
+  }
 
   Future<dynamic> connectSplitwise() async {
     final HttpsCallable callable = FirebaseFunctions.instance
