@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelcrew/services/functions/cloud_functions.dart';
 
 import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
@@ -45,31 +46,36 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
           } else if (state is HasDataState) {
             List<Trip> tripList = state.data;
             List<int> randomList = TCFunctions().randomList(tripList.length);
-        return SizedBox(
-              height: SizeConfig.screenWidth*.2,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: List.generate(5, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding: EdgeInsets.all(5),
-                        width: SizeConfig.screenWidth*.4,
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            color: Colors.blue[50]
-                        ),
-                        child: Center(
-                            child: Text(tripList[randomList[index]].location,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.subtitle1,)),
-                    ),
-                  );
-                }
+        return GestureDetector(
+          onTap: (){
+            CloudFunction().helloRandy("Paris");
+          },
+          child: SizedBox(
+                height: SizeConfig.screenWidth*.2,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: List.generate(5, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                          width: SizeConfig.screenWidth*.4,
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              color: Colors.blue[50]
+                          ),
+                          child: Center(
+                              child: Text(tripList[randomList[index]].location,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.subtitle1,)),
+                      ),
+                    );
+                  }
+                  ),
                 ),
               ),
-            );
+        );
           } else {
             return Container();
           }
