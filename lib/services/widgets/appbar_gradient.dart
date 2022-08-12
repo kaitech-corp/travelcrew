@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppBarGradient extends StatelessWidget {
   const AppBarGradient({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

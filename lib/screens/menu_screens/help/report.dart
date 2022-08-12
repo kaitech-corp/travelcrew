@@ -10,14 +10,14 @@ import 'package:travelcrew/services/functions/cloud_functions.dart';
 
 class ReportContent extends StatefulWidget {
   final String type;
-  final UserPublicProfile userAccount;
-  final ActivityData activity;
-  final LodgingData lodging;
-  final Trip tripDetails;
+  final UserPublicProfile? userAccount;
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final Trip? tripDetails;
 
   const ReportContent(
-      {Key key,
-      this.type,
+      {Key? key,
+      required this.type,
       this.userAccount,
       this.activity,
       this.lodging,
@@ -28,10 +28,10 @@ class ReportContent extends StatefulWidget {
 }
 
 class _ReportContentState extends State<ReportContent> {
-  String collection;
-  String docID;
-  String offenderID;
-  String urlToImage;
+  late String collection;
+  late String docID;
+  late String offenderID;
+  late String urlToImage;
 
   void saveData(String type) {
     switch (type) {
@@ -39,9 +39,9 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'users';
-            docID = widget.userAccount.uid;
+            docID = widget.userAccount!.uid!;
             offenderID = docID;
-            urlToImage = widget.userAccount.urlToImage;
+            urlToImage = widget.userAccount!.urlToImage!;
           });
         }
         break;
@@ -49,8 +49,8 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'activities';
-            docID = widget.activity.fieldID;
-            offenderID = widget.activity.uid;
+            docID = widget.activity!.fieldID!;
+            offenderID = widget.activity!.uid!;
           });
         }
         break;
@@ -58,22 +58,22 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'lodging';
-            docID = widget.lodging.fieldID;
-            offenderID = widget.lodging.uid;
+            docID = widget.lodging!.fieldID!;
+            offenderID = widget.lodging!.uid!;
           });
         }
         break;
       case 'tripDetails':
         {
           setState(() {
-            if (widget.tripDetails.ispublic) {
+            if (widget.tripDetails!.ispublic) {
               collection = 'trips';
             } else {
               collection = 'privateTrips';
             }
-            docID = widget.tripDetails.documentId;
-            offenderID = widget.tripDetails.ownerID;
-            urlToImage = widget.tripDetails.urlToImage;
+            docID = widget.tripDetails!.documentId!;
+            offenderID = widget.tripDetails!.ownerID!;
+            urlToImage = widget.tripDetails!.urlToImage!;
           });
         }
         break;
@@ -90,7 +90,7 @@ class _ReportContentState extends State<ReportContent> {
     }
   }
 
-  TextEditingController _controller;
+  late TextEditingController _controller;
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class _ReportContentState extends State<ReportContent> {
     super.dispose();
   }
 
-  String _message;
+  late String _message;
 
   Map<String, String> reportType = {
     'Content': Intl.message('Content (i.e. image, language) is inappropriate.'),
@@ -154,14 +154,14 @@ class _ReportContentState extends State<ReportContent> {
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                             subtitle: Text(
-                              reportType[reportList[index]],
+                              reportType[reportList[index]]!,
                               style: Theme.of(context).textTheme.subtitle2,
                             ),
                             value: reportList[index],
                             groupValue: itemType,
                             onChanged: (value) {
                               setState(() {
-                                itemType = value;
+                                itemType = value as String;
                               });
                             });
                       }),
@@ -170,26 +170,26 @@ class _ReportContentState extends State<ReportContent> {
                 if (widget.userAccount != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.userAccount.firstName} '
-                        '${widget.userAccount.lastName}',
+                    'Reporting: ${widget.userAccount!.firstName} '
+                        '${widget.userAccount!.lastName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 if (widget.activity != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.activity.displayName}',
+                    'Reporting: ${widget.activity!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 if (widget.lodging != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.lodging.displayName}',
+                    'Reporting: ${widget.lodging!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 if (widget.tripDetails != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.tripDetails.displayName}',
+                    'Reporting: ${widget.tripDetails!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 const SizedBox(height: 30),

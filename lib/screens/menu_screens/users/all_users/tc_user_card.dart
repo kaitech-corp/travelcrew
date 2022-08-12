@@ -13,7 +13,7 @@ import '../../../alerts/alert_dialogs.dart';
 class TCUserCard extends StatefulWidget {
   final UserPublicProfile allUsers;
   TCUserCard({
-    this.allUsers,
+    required this.allUsers,
     this.heroTag,
   });
   final heroTag;
@@ -30,7 +30,7 @@ class _TCUserCardState extends State<TCUserCard> {
   Widget build(BuildContext context) {
     return Card(
       color: ReusableThemeColor().color(context),
-      key: Key(widget.allUsers.uid),
+      key: Key(widget.allUsers.uid!),
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
@@ -44,17 +44,14 @@ class _TCUserCardState extends State<TCUserCard> {
             children: <Widget>[
               Center(
                 child: Hero(
-                  tag: widget.allUsers.uid,
+                  tag: widget.allUsers.uid!,
                   transitionOnUserGestures: true,
                   child: CircleAvatar(
                     radius: SizeConfig.tablet
                         ? SizeConfig.blockSizeHorizontal * 8
                         : SizeConfig.blockSizeHorizontal * 11,
-                    backgroundImage: (widget.allUsers.urlToImage.isNotEmpty)
-                        ? NetworkImage(
-                            widget.allUsers.urlToImage,
-                          )
-                        : AssetImage(profileImagePlaceholder),
+                    child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: widget.allUsers.urlToImage!),
+
                   ),
                 ),
               ),
@@ -66,7 +63,7 @@ class _TCUserCardState extends State<TCUserCard> {
                       alignment: Alignment.topLeft,
                       child: ListTile(
                         // leading:
-                        title: Text(widget.allUsers.displayName,
+                        title: Text(widget.allUsers.displayName!,
                             style: SizeConfig.mobile
                                 ? Theme.of(context).textTheme.subtitle1
                                 : Theme.of(context).textTheme.headline5),
@@ -79,14 +76,14 @@ class _TCUserCardState extends State<TCUserCard> {
                               : Theme.of(context).textTheme.subtitle1,
                         ),
                         trailing: !(currentUserProfile.blockedList
-                                    .contains(widget.allUsers.uid) ??
+                                    ?.contains(widget.allUsers.uid) ??
                                 false)
                             ? UnblockedPopupMenu(allUsers: widget.allUsers)
                             : BlockedPopupMenu(allUsers: widget.allUsers),
                       ),
                     ),
                     widget.allUsers.followers
-                            .contains(userService.currentUserID)
+                            !.contains(userService.currentUserID)
                         ? Align(
                             alignment: Alignment.bottomRight,
                             child: Padding(
@@ -97,10 +94,10 @@ class _TCUserCardState extends State<TCUserCard> {
                                         Theme.of(context).textTheme.subtitle1),
                                 onPressed: () {
                                   if (currentUserProfile.blockedList
-                                      .contains(widget.allUsers.uid)) {
+                                      !.contains(widget.allUsers.uid)) {
                                   } else {
                                     TravelCrewAlertDialogs().unFollowAlert(
-                                        context, widget.allUsers.uid);
+                                        context, widget.allUsers.uid!);
                                   }
                                 },
                               ),
@@ -122,7 +119,7 @@ class _TCUserCardState extends State<TCUserCard> {
                                   if (userService.currentUserID !=
                                       widget.allUsers.uid) {
                                     if (currentUserProfile.blockedList
-                                        .contains(widget.allUsers.uid)) {
+                                        !.contains(widget.allUsers.uid)) {
                                     } else {
                                       CloudFunction().addNewNotification(
                                           message: message,
@@ -151,8 +148,8 @@ class _TCUserCardState extends State<TCUserCard> {
 
 class BlockedPopupMenu extends StatelessWidget {
   const BlockedPopupMenu({
-    Key key,
-    @required this.allUsers,
+    Key? key,
+    required this.allUsers,
   }) : super(key: key);
 
   final UserPublicProfile allUsers;
@@ -192,8 +189,8 @@ class BlockedPopupMenu extends StatelessWidget {
 
 class UnblockedPopupMenu extends StatelessWidget {
   const UnblockedPopupMenu({
-    Key key,
-    @required this.allUsers,
+    Key? key,
+    required this.allUsers,
   }) : super(key: key);
 
   final UserPublicProfile allUsers;

@@ -18,8 +18,8 @@ import 'google_places.dart';
 
 /// Edit trip page
 class EditTripData extends StatefulWidget {
-  final Trip tripDetails;
-  EditTripData({required this.tripDetails});
+  final Trip trip;
+  EditTripData({required this.trip});
   @override
   _EditTripDataState createState() => _EditTripDataState();
 }
@@ -52,16 +52,16 @@ class _EditTripDataState extends State<EditTripData> {
   @override
   void initState() {
     super.initState();
-    controllerLocation.text = widget.tripDetails.location ?? '';
-    controllerTripName.text = widget.tripDetails.tripName ?? '';
-    controllerType.text = widget.tripDetails.travelType ?? '';
-    controllerComment.text = widget.tripDetails.comment ?? '';
-    startDate.value = widget.tripDetails.startDate ?? '';
-    endDate.value = widget.tripDetails.endDate ?? '';
-    endDateTimestamp.value = widget.tripDetails.endDateTimeStamp ?? Timestamp.now();
-    startDateTimestamp.value = widget.tripDetails.startDateTimeStamp ?? Timestamp.now();
-    ispublic = widget.tripDetails.ispublic;
-    documentID = widget.tripDetails.documentId;
+    controllerLocation.text = widget.trip.location ?? '';
+    controllerTripName.text = widget.trip.tripName ?? '';
+    controllerType.text = widget.trip.travelType ?? '';
+    controllerComment.text = widget.trip.comment ?? '';
+    startDate.value = widget.trip.startDate ?? '';
+    endDate.value = widget.trip.endDate ?? '';
+    endDateTimestamp.value = widget.trip.endDateTimeStamp ?? Timestamp.now();
+    startDateTimestamp.value = widget.trip.startDateTimeStamp ?? Timestamp.now();
+    ispublic = widget.trip.ispublic;
+    documentID = widget.trip.documentId;
 
 
 
@@ -191,8 +191,8 @@ class _EditTripDataState extends State<EditTripData> {
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Text('Departure Date: ${widget.tripDetails.startDate}',style: TextStyle(fontSize: 15),),
-                                  Text('Return Date: ${widget.tripDetails.endDate}',style: TextStyle(fontSize: 15)),
+                                  Text('Departure Date: ${widget.trip.startDate}',style: TextStyle(fontSize: 15),),
+                                  Text('Return Date: ${widget.trip.endDate}',style: TextStyle(fontSize: 15)),
                                   ElevatedButton(
                                     child: const Text('Edit Dates'),
                                     onPressed: (){

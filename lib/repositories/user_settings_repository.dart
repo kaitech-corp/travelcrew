@@ -25,7 +25,7 @@ class UserSettingsRepository {
     UserNotificationSettingsData _settingsFromSnapshot(DocumentSnapshot snapshot){
       if(snapshot.exists) {
         try {
-          Map<String, dynamic> data = snapshot.data();
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
           return UserNotificationSettingsData.fromData(data);
         } catch(e){
           CloudFunction().logError('Error retrieving settings for user:  ${e.toString()}');

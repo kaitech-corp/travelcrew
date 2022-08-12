@@ -31,7 +31,7 @@ class CustomAppBar extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.blue[900],
+                  Colors.blue[900]!,
                   Colors.lightBlueAccent
                 ]
             ),
@@ -63,15 +63,13 @@ class CustomAppBar extends StatelessWidget {
                         transitionOnUserGestures: true,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth/8.0,
-                          backgroundImage: (urlToImage.value.isNotEmpty ?? false) ?
-                          NetworkImage(urlToImage.value,) :
-                          AssetImage(profileImagePlaceholder),
+                          child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: urlToImage.value)
                         ),
                       ),
                     ),
                   ),
                   IconButton(
-                    icon: const AppBarIconThemeWidget(icon: Icons.chat,),
+                    icon: const AppBarIconThemeWidget(icon: Icons.chat),
                     onPressed: (){
                       navigationService.navigateTo(DMChatListPageRoute);
                     },

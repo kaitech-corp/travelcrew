@@ -22,8 +22,8 @@ import 'split_package.dart';
 class SplitBlocBuilder extends StatefulWidget {
   final Trip trip;
   const SplitBlocBuilder({
-    Key key,
-    this.trip,
+    Key? key,
+    required this.trip,
   }) : super(key: key);
 
   @override
@@ -174,7 +174,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
 
 class QuickDataCards extends StatelessWidget {
   const QuickDataCards({
-    Key key,
+    Key? key,
     this.items,
     this.uids,
   }) : super(key: key);

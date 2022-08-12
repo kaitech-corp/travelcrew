@@ -32,7 +32,7 @@ class DMChatListPage extends StatelessWidget {
                 'Error streaming dm chat list: ${users.error.toString()}');
           }
           if (users.hasData) {
-            final List<UserPublicProfile> chats = users.data;
+            final List<UserPublicProfile> chats = users.data as List<UserPublicProfile>;
             return ListView.builder(
               itemCount: chats.length,
               itemBuilder: (context, index) {
@@ -61,11 +61,7 @@ class DMChatListPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: SizeConfig.blockSizeHorizontal * 7,
-                backgroundImage: (user.urlToImage.isNotEmpty ?? false)
-                    ? NetworkImage(
-                        user.urlToImage,
-                      )
-                    : AssetImage(profileImagePlaceholder),
+                child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage!),
               ),
             ),
             Expanded(
@@ -78,7 +74,7 @@ class DMChatListPage extends StatelessWidget {
                 },
                 // leading:
                 title: Text(
-                  user.displayName,
+                  user.displayName!,
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.subtitle2,
                 ),
@@ -101,7 +97,7 @@ Widget chatNotificationBadges(UserPublicProfile user) {
             'for DM notifications: ${chats.error.toString()}');
       }
       if (chats.hasData) {
-        final List<ChatData> chatList = chats.data;
+        final List<ChatData> chatList = chats.data as List<ChatData>;
         if (chatList.isNotEmpty) {
           chatNotifier.value = 1;
           return Tooltip(
@@ -111,7 +107,7 @@ Widget chatNotificationBadges(UserPublicProfile user) {
                 Icons.chat,
                 color: Colors.grey,
               ),
-              badgeCount: chats.data.length,
+              badgeCount: chatList.length,
             ),
           );
         } else {

@@ -17,7 +17,7 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 
-ValueNotifier<List<String>> selectedList;
+late ValueNotifier<List<String>> selectedList;
 
 /// Split Package for all split functions
 class SplitPackage {
@@ -44,7 +44,7 @@ class SplitPackage {
 
   /// Split item alert which checks if item has already been split.
   Future<void> splitItemAlert(BuildContext context, SplitObject splitObject,
-      {Trip trip}) {
+      {required Trip trip}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -93,7 +93,7 @@ class SplitPackage {
   /// Logic for icon button to check it item has been split
   /// and directs the user accordingly.
   Widget splitItemExist(BuildContext context, SplitObject splitObject,
-      {Trip trip}) {
+      {required Trip trip}) {
     return FutureBuilder<bool>(
       builder: (BuildContext context, response) {
         if (response.hasData && response.data == false) {
@@ -121,7 +121,7 @@ class SplitPackage {
 
   /// Popup dialog to create split item.
   Future<Widget> splitDialog(BuildContext context, SplitObject splitObject,
-      {Trip trip}) async {
+      {required Trip trip}) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -220,7 +220,7 @@ class SplitPackage {
                           height: SizeConfig.screenHeight * .3,
                           width: double.infinity,
                           child: SplitMembersLayout(
-                            tripDetails: trip,
+                            trip: trip,
                           )),
                     ],
                   ),
@@ -231,7 +231,7 @@ class SplitPackage {
 
   /// Edit Split Dialog
   Future<Widget> editSplitDialog(BuildContext context, SplitObject splitObject,
-      {Trip trip}) async {
+      {required Trip trip}) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -300,13 +300,18 @@ class SplitPackage {
                                 )),
                               ),
                               onPressed: () {
-                                final FormState form = _formKey2.currentState;
-                                form.save();
-                                if (form.validate()) {
-                                  splitObject.lastUpdated = Timestamp.now();
-                                  DatabaseService()
-                                      .createSplitItem(splitObject);
-                                  navigationService.pop();
+                                try {
+                                  final FormState form =
+                                      _formKey2.currentState!;
+                                  form.save();
+                                  if (form.validate()) {
+                                    splitObject.lastUpdated = Timestamp.now();
+                                    DatabaseService()
+                                        .createSplitItem(splitObject);
+                                    navigationService.pop();
+                                  }
+                                } catch(e){
+
                                 }
                               },
                               child: Text(
@@ -347,10 +352,10 @@ class SplitPackage {
 }
 
 class SplitMembersLayout extends StatefulWidget {
-  final Trip tripDetails;
+  final Trip trip;
   final String ownerID;
 
-  SplitMembersLayout({Key key, this.tripDetails, this.ownerID})
+  SplitMembersLayout({Key? key, required this.trip, this.ownerID})
       : super(key: key);
 
   @override
@@ -377,10 +382,10 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return getMember(context, widget.tripDetails);
+    return getMember(context, widget.trip);
   }
 
-  Widget getMember(BuildContext context, Trip tripDetails) {
+  Widget getMember(BuildContext context, Trip trip) {
     return Stack(
       children: [
         StreamBuilder(
@@ -396,14 +401,14 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
                 itemCount: crew.length,
                 itemBuilder: (BuildContext context, int index) {
                   final UserPublicProfile member = crew[index];
-                  return userCard(context, member, tripDetails);
+                  return userCard(context, member, trip);
                 },
               );
             } else {
               return Loading();
             }
           },
-          stream: DatabaseService().getcrewList(widget.tripDetails.accessUsers),
+          stream: DatabaseService().getcrewList(widget.trip.accessUsers),
         ),
         if (_showImage) ...[
           BackdropFilter(
@@ -441,7 +446,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
   }
 
   Widget userCard(
-      BuildContext context, UserPublicProfile member, Trip tripDetails) {
+      BuildContext context, UserPublicProfile member, Trip trip) {
     return Card(
       key: Key(member.uid),
       color: Colors.white,

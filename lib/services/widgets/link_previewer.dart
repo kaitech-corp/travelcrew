@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class ViewAnyLink extends StatefulWidget {
   const ViewAnyLink({
-    Key key,
-    @required this.link,
-    @required this.function,
+    Key? key,
+    required this.link,
+    required this.function,
 }) : super(key: key);
 
   final String link;

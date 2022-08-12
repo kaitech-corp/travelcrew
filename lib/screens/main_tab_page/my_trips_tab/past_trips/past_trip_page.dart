@@ -21,7 +21,7 @@ class PastTrips extends StatefulWidget{
 }
 
 class _PastTripsState extends State<PastTrips>{
-  GenericBloc<Trip,PastTripRepository> bloc;
+  late GenericBloc<Trip,PastTripRepository> bloc;
 
   @override
   void initState() {
@@ -45,8 +45,9 @@ class _PastTripsState extends State<PastTrips>{
           if(state is LoadingState){
             return Loading();
           } else if (state is HasDataState){
+            List<Trip> tripsData = state.data as List<Trip>;
             return SizeConfig.tablet ?
-            SliverGridView(trips: state.data, length: state.data.length):
+            SliverGridView(trips: tripsData, length: state.data.length):
             GroupedListTripView(data: state.data,isPast: true,);
           } else {
             return Container();

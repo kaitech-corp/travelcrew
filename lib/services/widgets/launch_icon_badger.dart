@@ -14,7 +14,7 @@ import '../../blocs/notification_bloc/notification_bloc.dart';
 class LaunchIconBadger extends StatefulWidget{
 
 
-  const LaunchIconBadger({Key key,}) : super(key: key);
+  const LaunchIconBadger({Key? key,}) : super(key: key);
   @override
   _LaunchIconBadgerState createState() => _LaunchIconBadgerState();
 

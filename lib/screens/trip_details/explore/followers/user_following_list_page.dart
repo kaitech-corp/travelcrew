@@ -14,8 +14,8 @@ import '../../../../services/widgets/loading.dart';
 /// Following list
 class FollowingList extends StatefulWidget{
 
-  final Trip tripDetails;
-  FollowingList({this.tripDetails});
+  final Trip trip;
+  FollowingList({required this.trip});
 
   @override
   _FollowingListState createState() => _FollowingListState();

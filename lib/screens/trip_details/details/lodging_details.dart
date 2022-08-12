@@ -21,7 +21,7 @@ class LodgingDetails extends StatelessWidget {
   final LodgingData lodging;
   final Trip trip;
 
-  const LodgingDetails({Key key, this.lodging, this.trip}) : super(key: key);
+  const LodgingDetails({Key? key, required this.lodging, required this.trip}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +47,9 @@ class LodgingDetails extends StatelessWidget {
 
 class LodgingDataLayout extends StatelessWidget {
   const LodgingDataLayout({
-    Key key,
-    @required this.fieldID,
-    @required this.trip,
+    Key? key,
+    required this.fieldID,
+    required this.trip,
   }) : super(key: key);
 
   final String fieldID;

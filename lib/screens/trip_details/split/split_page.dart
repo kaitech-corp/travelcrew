@@ -16,9 +16,9 @@ import 'split_package.dart';
 
 /// Split Page
 class SplitPage extends StatefulWidget {
-  final Trip tripDetails;
+  final Trip trip;
 
-  SplitPage({this.tripDetails,});
+  SplitPage({required this.trip,});
 
   @override
   _SplitPageState createState() => _SplitPageState();

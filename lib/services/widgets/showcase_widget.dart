@@ -7,9 +7,9 @@ class CustomShowcaseWidget extends StatelessWidget {
   final GlobalKey globalKey;
 
   const CustomShowcaseWidget({
-    @required this.description,
-    @required this.child,
-    @required this.globalKey,
+    required this.description,
+    required this.child,
+    required this.globalKey,
   });
 
   @override

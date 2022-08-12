@@ -12,7 +12,7 @@ class FeedbackPage extends StatefulWidget{
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  TextEditingController _controller;
+  late TextEditingController _controller;
 
   void initState() {
     super.initState();
@@ -24,7 +24,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     super.dispose();
   }
 
-  String _message;
+  late String _message;
 
   @override
   Widget build(BuildContext context) {

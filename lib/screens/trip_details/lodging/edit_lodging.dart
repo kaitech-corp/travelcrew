@@ -16,7 +16,7 @@ class EditLodging extends StatefulWidget {
 
   final LodgingData lodging;
   final Trip trip;
-  EditLodging({this.lodging, this.trip});
+  EditLodging({this.lodging, required this.trip});
 
   @override
   _EditLodgingState createState() => _EditLodgingState();

@@ -18,7 +18,7 @@ class EditActivity extends StatefulWidget {
 
   final ActivityData activity;
   final Trip trip;
-  EditActivity({this.activity, this.trip});
+  EditActivity({this.activity, required this.trip});
 
   @override
   _EditActivityState createState() => _EditActivityState();

@@ -20,7 +20,7 @@ class AddNewActivity extends StatefulWidget {
 
 
   final Trip trip;
-  AddNewActivity({this.trip});
+  AddNewActivity({required this.trip});
 
   @override
   AddNewActivityState createState() => AddNewActivityState();

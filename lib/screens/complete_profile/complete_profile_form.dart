@@ -79,14 +79,14 @@ class _LoginFormState extends State<CompleteProfileForm> {
   }
 
   _cropImage(imagePath, image) async {
-    CroppedFile? croppedImage = await ImageCropper.cropImage(
+    CroppedFile? croppedImage = await ImageCropper().cropImage(
       sourcePath: imagePath,
       maxHeight: 1080,
       maxWidth: 1080,
     );
 
     if (croppedImage != null) {
-      _urlToImage.value = croppedImage;
+      _urlToImage.value = croppedImage as File;
     } else {
       _urlToImage.value = File(image.path);
     }

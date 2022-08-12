@@ -25,7 +25,7 @@ class ExploreMemberLayout extends StatefulWidget{
   final PersistentBottomSheetController controller;
 
 
-  ExploreMemberLayout({this.tripDetails, this.scaffoldKey, this.controller,});
+  ExploreMemberLayout({required this.tripDetails, required this.scaffoldKey, required this.controller,});
 
   @override
   _ExploreMemberLayoutState createState() => _ExploreMemberLayoutState();
@@ -122,9 +122,9 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
 
 class MemberPopupMenuButton extends StatelessWidget {
   const MemberPopupMenuButton({
-    Key key,
-    @required this.tripDetails,
-    @required this.event, this.scaffoldKey, this.controller,this.basketController,
+    Key? key,
+    required this.tripDetails,
+    required this.event, required this.scaffoldKey, required this.controller,this.basketController,
 
   }) : super(key: key);
 
@@ -183,9 +183,9 @@ class MemberPopupMenuButton extends StatelessWidget {
 
 class PopupMenuButtonWidget extends StatelessWidget {
   const PopupMenuButtonWidget({
-    Key key,
-    @required this.tripDetails,
-    @required this.event,
+    Key? key,
+    required this.tripDetails,
+    required this.event,
   }) : super(key: key);
 
   final Trip tripDetails;

@@ -320,7 +320,7 @@ class CloudFunction {
   }
 
   void addNewNotification(
-      {String message, String uidToUse, String documentID, String type, String ownerID, bool ispublic}) async {
+      {required String message, String? uidToUse, String? documentID, required String type, String? ownerID, bool? ispublic}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addNewNotification');
     functionData({
       'message': message,
@@ -354,7 +354,7 @@ class CloudFunction {
     });
   }
 
-  void deleteChatMessage({String tripDocID, String fieldID}) async {
+  void deleteChatMessage({required String tripDocID, String fieldID}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteChatMessage');
     functionData({
       'tripDocID': tripDocID,
@@ -450,7 +450,7 @@ class CloudFunction {
     });
   }
 
-  void removeVoterFromBringingItem({String documentID, String tripDocID}) async{
+  void removeVoterFromBringingItem({String documentID, required String tripDocID}) async{
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromBringingItem');
     functionData({
       'documentID':documentID,

@@ -110,7 +110,7 @@ class _NeedListState extends State<NeedList> {
   TextEditingController controller;
 
   List<String> filterSearchTerms({
-    @required String filter,
+    required String filter,
   }) {
     if (filter != null && filter.isNotEmpty) {
       return _searchHistory.reversed
@@ -246,7 +246,7 @@ class _NeedListState extends State<NeedList> {
 class NeedListToDisplay extends StatelessWidget {
   final String documentID;
 
-  const NeedListToDisplay({Key key, this.documentID}) : super(key: key);
+  const NeedListToDisplay({Key? key, this.documentID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +319,7 @@ class NeedListToDisplay extends StatelessWidget {
 
 class BringListToDisplay extends StatelessWidget {
   final String tripDocID;
-  BringListToDisplay({this.tripDocID});
+  BringListToDisplay({required this.tripDocID});
 
   @override
   Widget build(BuildContext context) {
@@ -385,7 +385,7 @@ class BringListToDisplay extends StatelessWidget {
 class CustomList extends StatefulWidget {
   final String documentID;
 
-  CustomList({Key key, this.documentID}) : super(key: key);
+  CustomList({Key? key, this.documentID}) : super(key: key);
 
   @override
   _CustomListState createState() => _CustomListState();

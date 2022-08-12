@@ -21,7 +21,7 @@ class NotificationPage extends StatefulWidget{
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  NotificationBloc bloc;
+  late NotificationBloc bloc;
   
   @override
   void initState() {

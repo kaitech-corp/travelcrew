@@ -15,7 +15,7 @@ import '../../add_trip/google_places.dart';
 class AddNewLodging extends StatefulWidget {
 
   final Trip trip;
-  AddNewLodging({this.trip});
+  AddNewLodging({required this.trip});
 
   @override
   _AddNewLodgingState createState() => _AddNewLodgingState();

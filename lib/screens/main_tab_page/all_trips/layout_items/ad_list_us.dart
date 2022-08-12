@@ -19,7 +19,7 @@ class SliverGridAdList extends StatefulWidget {
 
 class _SliverGridAdListState extends State<SliverGridAdList> {
 
-  GenericBloc<TripAds,TripAdRepository>  tripAdBloc;
+  late GenericBloc<TripAds,TripAdRepository>  tripAdBloc;
 
   int crossAxisCount = 2;
 
@@ -42,7 +42,7 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
           if (state is LoadingState) {
             return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState) {
-            List<TripAds> adList = state.data;
+            List<TripAds> adList = state.data as List<TripAds>;
             return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(

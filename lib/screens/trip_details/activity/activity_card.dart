@@ -20,7 +20,7 @@ class ActivityCard extends StatelessWidget {
   final ActivityData activity;
   final Trip trip;
 
-  ActivityCard({this.activity, this.trip});
+  ActivityCard({required this.activity, required this.trip});
 
 
   @override

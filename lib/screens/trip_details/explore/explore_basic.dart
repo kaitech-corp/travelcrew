@@ -14,7 +14,7 @@ import 'explore_basic_layout.dart';
 class ExploreBasic extends StatelessWidget {
 
   final Trip trip;
-  ExploreBasic({this.trip});
+  ExploreBasic({required this.trip});
 
   @override
   Widget build(BuildContext context) {

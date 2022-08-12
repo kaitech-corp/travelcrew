@@ -21,7 +21,7 @@ class LodgingCard extends StatelessWidget {
   final LodgingData lodging;
   final Trip trip;
 
-  LodgingCard({this.lodging, this.trip});
+  LodgingCard({required this.lodging, required this.trip});
 
 
   @override

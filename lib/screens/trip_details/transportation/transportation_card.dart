@@ -18,7 +18,7 @@ class TransportationCard extends StatelessWidget {
       locator<UserProfileService>().currentUserProfileDirect();
   final TransportationData transportationData;
   final Trip trip;
-  TransportationCard({this.transportationData, this.trip});
+  TransportationCard({required this.transportationData, required this.trip});
 
   @override
   Widget build(BuildContext context) {

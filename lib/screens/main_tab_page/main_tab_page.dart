@@ -26,9 +26,9 @@ import 'notifications/notification_page.dart';
 /// Main screen
 class MainTabPage extends StatefulWidget {
 
-  final List<NotificationData> notifications;
+  final List<NotificationData>? notifications;
 
-  MainTabPage({Key key, this.notifications}) :  super(key: key);
+  MainTabPage({Key? key, this.notifications}) :  super(key: key);
 
 
   @override
@@ -42,13 +42,13 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     super.initState();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
-      RemoteNotification message =  event.notification;
+      RemoteNotification message =  event.notification!;
       String tripDocID = event.data['docID'];
       if (tripDocID?.isNotEmpty ?? false) {
-        CloudFunction().addNewNotification(type: 'Chat',message: message.title,documentID: tripDocID,ownerID: userService.currentUserID);
+        CloudFunction().addNewNotification(type: 'Chat',message: message.title!,documentID: tripDocID,ownerID: userService.currentUserID);
       }
       Fluttertoast.showToast(
-              msg: message.title,
+              msg: message.title!,
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.TOP,
               timeInSecForIosWeb: 2,
@@ -155,7 +155,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
               BadgeIcon(
                 icon: const IconThemeWidget(icon:Icons.notifications_active),
                 badgeCount: widget.notifications != null ?
-                widget.notifications.length : 0,
+                widget.notifications!.length : 0,
               ),
             ],
             onTap: _onItemTapped,

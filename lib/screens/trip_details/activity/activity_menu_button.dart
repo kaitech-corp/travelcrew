@@ -19,7 +19,7 @@ class ActivityMenuButton extends StatelessWidget{
   final Trip trip;
   final Event event;
 
-  const ActivityMenuButton({Key key, this.activity, this.trip,this.event}) : super(key: key);
+  const ActivityMenuButton({Key? key, required this.activity, required this.trip, this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

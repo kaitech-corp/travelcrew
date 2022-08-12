@@ -34,7 +34,7 @@ import 'explore_owner_layout.dart';
 class Explore extends StatefulWidget {
 
   final Trip trip;
-  Explore({this.trip,});
+  Explore({required this.trip,});
   
 
   @override
@@ -44,7 +44,7 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  static PersistentBottomSheetController controller;
+  static late PersistentBottomSheetController controller;
   ValueNotifier<String> title = ValueNotifier("Explore");
 
   @override
@@ -60,7 +60,7 @@ class _ExploreState extends State<Explore> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: canvasColor,
-          title: Text(widget.trip.tripName,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,maxLines: 1,),
+          title: Text(widget.trip.tripName!,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,maxLines: 1,),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.close),
@@ -88,21 +88,21 @@ class _ExploreState extends State<Explore> {
         body: MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => GenericBloc<ActivityData,ActivityRepository>(
-                repository: ActivityRepository(tripDocID:widget.trip.documentId)
+                repository: ActivityRepository(tripDocID:widget.trip.documentId!)
               )),
             BlocProvider(create: (context) => GenericBloc<ChatData,ChatRepository>(
-                repository: ChatRepository(tripDocID: widget.trip.documentId))),
+                repository: ChatRepository(tripDocID: widget.trip.documentId!))),
             BlocProvider(create: (context) => GenericBloc<LodgingData,LodgingRepository>(
-                repository: LodgingRepository(tripDocID: widget.trip.documentId))),
+                repository: LodgingRepository(tripDocID: widget.trip.documentId!))),
             BlocProvider(create: (context) => GenericBloc<TransportationData,TransportationRepository>(
-                repository: TransportationRepository(tripDocID: widget.trip.documentId))),
+                repository: TransportationRepository(tripDocID: widget.trip.documentId!))),
             BlocProvider(create: (context) => GenericBloc<SplitObject,SplitRepository>(
-                repository: SplitRepository(tripDocID: widget.trip.documentId))),
+                repository: SplitRepository(tripDocID: widget.trip.documentId!))),
           ],
           child: TabBarView(
                     children: <Widget>[
                       checkOwner(userService.currentUserID),
-                      SplitPage(tripDetails: widget.trip,),
+                      SplitPage(trip: widget.trip,),
                       TransportationPage(trip: widget.trip,),
                       LodgingPage(trip: widget.trip,),
                       ActivityPage(trip: widget.trip,),
@@ -117,7 +117,6 @@ class _ExploreState extends State<Explore> {
   void _closeModalBottomSheet() {
     if (controller != null) {
       controller.close();
-      controller = null;
     }
   }
 
@@ -127,14 +126,14 @@ class _ExploreState extends State<Explore> {
         stream: DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
         builder: (context, document){
           if(document.hasData){
-            final Trip tripDetails = document.data;
+            final Trip tripDetails = document.data as Trip;
             return ExploreOwnerLayout(
-              tripDetails: tripDetails,
+              trip: tripDetails,
               controller: controller,
               scaffoldKey: scaffoldKey,);
           } else {
             return ExploreOwnerLayout(
-              tripDetails: widget.trip,
+              trip: widget.trip,
               controller: controller,
               scaffoldKey: scaffoldKey,);
           }
@@ -154,9 +153,9 @@ Widget getChatNotificationBadge (){
                 ' chat notification: ${chats.error.toString()}');
           }
           if(chats.hasData){
-            final List<ChatData> chatList = chats.data;
+            final List<ChatData> chatList = chats.data as List<ChatData>;
             if(chatList.isNotEmpty) {
-              final int chatNotifications = chats.data.length;
+              final int chatNotifications = chatList.length;
               return Tooltip(
                 message: 'Messages',
                 child: BadgeIcon(

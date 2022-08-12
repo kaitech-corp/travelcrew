@@ -7,7 +7,7 @@ import '../controller/basket_controller.dart';
 class BasketHeader extends StatelessWidget {
   final BasketController controller;
 
-  const BasketHeader({Key key, this.controller}) : super(key: key);
+  const BasketHeader({Key? key, this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

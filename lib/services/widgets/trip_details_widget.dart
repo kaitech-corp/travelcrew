@@ -12,9 +12,9 @@ import 'appearance_widgets.dart';
 
 class TripDetailsWidget extends StatelessWidget {
   const TripDetailsWidget({
-    Key key,
-    @required this.expandController,
-    @required this.tripDetails, this.detailsPadding, this.event,
+    Key? key,
+    required this.expandController,
+    required this.tripDetails, required this.detailsPadding, required this.event,
   }) : super(key: key);
 
   final ExpandableController expandController;

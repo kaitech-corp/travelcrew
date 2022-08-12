@@ -8,9 +8,9 @@ import 'item_lists.dart';
 /// List page
 class ListPage extends StatelessWidget{
 
-  final Trip tripDetails;
+  final Trip trip;
 
-  const ListPage({Key key, this.tripDetails}) : super(key: key);
+  const ListPage({Key? key, required this.trip}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +37,7 @@ class ListPage extends StatelessWidget{
                 ),
                 Expanded(
                   flex: 5,
-                  child: BringListToDisplay(tripDocID: tripDetails.documentId,)),
+                  child: BringListToDisplay(tripDocID: trip.documentId,)),
               ],
             )
     ),
@@ -56,7 +56,7 @@ class ListPage extends StatelessWidget{
                 ),
                 Expanded(
                   flex: 5,
-                  child: NeedListToDisplay(documentID: tripDetails.documentId,)),
+                  child: NeedListToDisplay(documentID: trip.documentId,)),
               ],
             )
     )

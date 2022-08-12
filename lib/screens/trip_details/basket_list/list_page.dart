@@ -12,10 +12,10 @@ import 'controller/basket_controller.dart';
 
 class BasketListPage extends StatelessWidget{
 
-  final Trip tripDetails;
+  final Trip trip;
   final BasketController controller;
 
-  BasketListPage({Key key, this.tripDetails,this.controller}) : super(key: key);
+  BasketListPage({Key? key, required this.trip,this.controller}) : super(key: key);
 
 
 
@@ -73,13 +73,13 @@ class BasketListPage extends StatelessWidget{
                                   Radius.circular(defaultPadding * 2),
                                 ),
                               ),
-                              // child: AddToListPage(tripDetails: tripDetails,controller: controller,),
+                              // child: AddToListPage(trip: trip,controller: controller,),
                               child: AnimatedSwitcher(
                                 duration: listAnimationDuration,
                                 child: controller.homeState == BasketState.add
                                     ? Padding(
                                       padding: const EdgeInsets.all( 4.0),
-                                      child: AddToListPage(tripDetails: tripDetails,controller: controller,),
+                                      child: AddToListPage(trip: trip,controller: controller,),
                                     )
                                     :
                                 Column(
@@ -95,7 +95,7 @@ class BasketListPage extends StatelessWidget{
                                         ],
                                       ),
                                     ),
-                                    Expanded(child: BringListToDisplay(tripDocID: tripDetails.documentId,)),
+                                    Expanded(child: BringListToDisplay(tripDocID: trip.documentId,)),
                                   ],
                                 )
                               ),
@@ -118,7 +118,7 @@ class BasketListPage extends StatelessWidget{
                               child: AnimatedSwitcher(
                                 duration: listAnimationDuration,
                                 child: controller.homeState == BasketState.cart
-                                    ? CartDetailsView(controller: controller,tripDetails: tripDetails,)
+                                    ? CartDetailsView(controller: controller,trip: trip,)
                                     : CartShortView(controller: controller)
                               ),
                             ),

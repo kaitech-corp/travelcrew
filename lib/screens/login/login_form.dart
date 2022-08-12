@@ -157,7 +157,7 @@ class _LoginFormState extends State<LoginForm> {
                             },
                             style: ElevatedButtonTheme.of(context)
                                 .style
-                                .copyWith(
+                                ?.copyWith(
                                 backgroundColor:
                                 MaterialStateProperty.all(canvasColor)),
                             child: Padding(
@@ -184,7 +184,7 @@ class _LoginFormState extends State<LoginForm> {
                                 _onPressedGoogleSignIn();
                               }
                             },
-                            style: ElevatedButtonTheme.of(context).style.copyWith(
+                            style: ElevatedButtonTheme.of(context).style?.copyWith(
                                 backgroundColor:
                                 MaterialStateProperty.all(canvasColor)),
                             child: Padding(

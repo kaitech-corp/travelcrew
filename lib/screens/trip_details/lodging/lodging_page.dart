@@ -17,7 +17,7 @@ import 'lodging_card.dart';
 class LodgingPage extends StatefulWidget {
 
   final Trip trip;
-  LodgingPage({this.trip});
+  LodgingPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {

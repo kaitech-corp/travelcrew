@@ -42,7 +42,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               child: StreamBuilder<UserPublicProfile>(
                 builder: (context, profile) {
                   if (profile.hasData) {
-                    final UserPublicProfile currentUser = profile.data;
+                    final UserPublicProfile currentUser = profile.data as UserPublicProfile;
                     return Stack(
                       children: [
                         Align(
@@ -55,12 +55,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             radius: SizerUtil.deviceType == DeviceType.tablet
                                 ? SizeConfig.screenWidth / 8.0
                                 : SizeConfig.screenWidth / 4.0,
-                            backgroundImage:
-                                (currentUser.urlToImage?.isNotEmpty ?? false)
-                                    ? NetworkImage(
-                                        currentUser.urlToImage,
-                                      )
-                                    : AssetImage(profileImagePlaceholder),
+                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage!)
                           ),
                         ),
                       ],
@@ -160,7 +155,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
       future: DatabaseService().getVersion(),
       builder: (context, data) {
         if (data.hasData) {
-          final String version = data.data;
+          final String version = data.data as String;
           return Text(version, style: Theme.of(context).textTheme.subtitle1);
         } else {
           return const Text('');

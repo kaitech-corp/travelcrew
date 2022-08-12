@@ -20,7 +20,7 @@ class SliverGridTripSuggestionList extends StatefulWidget {
 
 class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionList> {
 
-  GenericBloc<Trip,AllTripsSuggestionRepository>  bloc;
+  late GenericBloc<Trip,AllTripsSuggestionRepository> bloc;
 
   int crossAxisCount = 2;
 
@@ -41,7 +41,7 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
           if (state is LoadingState) {
             return Flexible(fit:FlexFit.loose,child: Loading());
           } else if (state is HasDataState) {
-            List<Trip> tripList = state.data;
+            List<Trip> tripList = state.data as List<Trip>;
             print(tripList.length);
         return SizedBox(
               height: SizeConfig.screenWidth*.2,
@@ -58,7 +58,7 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
                             color: Colors.blue[50]
                         ),
                         child: Center(
-                            child: Text(tripList[randomList[index]].location,
+                            child: Text(tripList[randomList[index]].location!,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: responsiveTextStyleSuggestions(context))),

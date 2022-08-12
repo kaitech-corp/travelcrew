@@ -5,7 +5,7 @@ class FavoriteWidget extends StatelessWidget {
   final List<String> voters;
   final String uid;
 
-  const FavoriteWidget({Key key, this.voters, this.uid}) : super(key: key);
+  const FavoriteWidget({Key? key, this.voters, this.uid}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

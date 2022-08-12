@@ -79,7 +79,7 @@ class TimePickers extends StatefulWidget{
   final ValueNotifier<String> startTime;
   final ValueNotifier<String> endTime;
 
-  const TimePickers({Key key, this.lodging, this.startTime, this.endTime}) : super(key: key);
+  const TimePickers({Key? key, this.lodging, this.startTime, this.endTime}) : super(key: key);
 
 
   @override
@@ -199,10 +199,10 @@ class _TimePickersState extends State<TimePickers> {
 
 class AnimatedClipRRect extends StatelessWidget {
   const AnimatedClipRRect({
-    @required this.duration,
+    required this.duration,
     this.curve = Curves.linear,
-    @required this.borderRadius,
-    @required this.child,
+    required this.borderRadius,
+    required this.child,
   })  : assert(duration != null),
         assert(curve != null),
         assert(borderRadius != null),
@@ -233,7 +233,7 @@ class AnimatedClipRRect extends StatelessWidget {
 
 class HangingImageTheme extends StatelessWidget {
   const HangingImageTheme({
-    Key key,
+    Key? key,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -260,7 +260,7 @@ class HangingImageTheme3 extends StatelessWidget {
   final UserPublicProfile user;
 
   HangingImageTheme3({
-    Key key, this.user,
+    Key? key, this.user,
   }) : super(key: key);
 
   @override
@@ -310,7 +310,7 @@ class HangingImageTheme3 extends StatelessWidget {
 
 class CustomHangingImage extends StatelessWidget {
   const CustomHangingImage({
-    Key key,
+    Key? key,
     this.urlToImage
   }) : super(key: key);
 
@@ -334,8 +334,8 @@ class CustomHangingImage extends StatelessWidget {
 
 class CrewModalBottomSheet extends StatelessWidget {
   const CrewModalBottomSheet({
-    Key key,
-    @required this.tripDetails,
+    Key? key,
+    required this.tripDetails,
   }) : super(key: key);
 
   final Trip tripDetails;
@@ -363,8 +363,8 @@ class CrewModalBottomSheet extends StatelessWidget {
 
 class DateGauge extends StatelessWidget {
   const DateGauge({
-    Key key,
-    @required this.tripDetails,
+    Key? key,
+    required this.tripDetails,
   }) : super(key: key);
 
   final Trip tripDetails;
@@ -401,8 +401,8 @@ class DateGauge extends StatelessWidget {
 
 class Gauge extends StatelessWidget {
   const Gauge({
-    Key key,
-    @required this.countDownDate,@required this.color
+    Key? key,
+    required this.countDownDate,required this.color
   }) : super(key: key);
 
   final CountDownDate countDownDate;
@@ -460,7 +460,7 @@ class Gauge extends StatelessWidget {
 class RecentTripTile extends StatelessWidget{
   final String uid;
 
-  const RecentTripTile({Key key, this.uid}) : super(key: key);
+  const RecentTripTile({Key? key, this.uid}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(

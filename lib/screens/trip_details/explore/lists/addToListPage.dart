@@ -7,11 +7,11 @@ import 'item_lists.dart';
 /// Add to list page
 class AddToListPage extends StatefulWidget{
 
-  final Trip tripDetails;
+  final Trip trip;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final BasketController controller;
 
-  AddToListPage({Key key, this.tripDetails, this.scaffoldKey,this.controller}) : super(key: key);
+  AddToListPage({Key? key, required this.trip, required this.scaffoldKey, required this.controller}) : super(key: key);
 
   @override
   _AddToListPageState createState() => _AddToListPageState();
@@ -25,9 +25,8 @@ class _AddToListPageState extends State<AddToListPage> {
     final List<Widget> _widgetOptions = <Widget>[
       TabBarView(
         children: [
-          BringingList(documentID: widget.tripDetails.documentId,controller: widget.controller,),
-          // NeedList(documentID: widget.tripDetails.documentId,),
-          CustomList(documentID: widget.tripDetails.documentId,)
+          BringingList(documentID: widget.trip.documentId!,controller: widget.controller,),
+          CustomList(documentID: widget.trip.documentId!,)
         ],
       )
     ];

@@ -25,8 +25,8 @@ class _SettingsState extends State<Settings> {
   bool buttonTwoPressed = false;
   bool buttonThreePressed = false;
   final myController = TextEditingController();
-  UserSettingsBloc _bloc;
-  String accessToken;
+  late UserSettingsBloc _bloc;
+  late String accessToken;
 
   @override
   void initState() {

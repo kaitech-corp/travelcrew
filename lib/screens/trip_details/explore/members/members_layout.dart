@@ -17,10 +17,10 @@ import '../../../alerts/alert_dialogs.dart';
 /// Layout list for members of trip
 class MembersLayout extends StatefulWidget{
 
-  final Trip tripDetails;
+  final Trip trip;
   final String ownerID;
 
-  MembersLayout({Key key, this.tripDetails, this.ownerID}) : super(key: key);
+  MembersLayout({Key? key, required this.trip, this.ownerID}) : super(key: key);
 
   @override
   _MembersLayoutState createState() => _MembersLayoutState();
@@ -36,11 +36,11 @@ class _MembersLayoutState extends State<MembersLayout> {
 
   @override
   Widget build(BuildContext context) {
-  return getMember(context, widget.tripDetails);
+  return getMember(context, widget.trip);
   }
 
 
-  Widget getMember(BuildContext context, Trip tripDetails){
+  Widget getMember(BuildContext context, Trip trip){
     return Stack(
       children: [
         StreamBuilder<List<UserPublicProfile>>(
@@ -56,14 +56,14 @@ class _MembersLayoutState extends State<MembersLayout> {
                     itemCount: crew.length,
                     itemBuilder: (BuildContext context, int index) {
                       final UserPublicProfile member = crew[index];
-                      return userCard(context, member, tripDetails);
+                      return userCard(context, member, trip);
                     },
                   );
             } else {
               return Loading();
             }
           },
-        stream: DatabaseService().getcrewList(widget.tripDetails.accessUsers),),
+        stream: DatabaseService().getcrewList(widget.trip.accessUsers),),
         if (_showImage) ...[
           BackdropFilter(
             filter: ImageFilter.blur(
@@ -99,7 +99,7 @@ class _MembersLayoutState extends State<MembersLayout> {
     );
   }
 
-  Widget userCard(BuildContext context, UserPublicProfile member, Trip tripDetails){
+  Widget userCard(BuildContext context, UserPublicProfile member, Trip trip){
 
     return Card(
       key: Key(member.uid),
@@ -138,13 +138,13 @@ class _MembersLayoutState extends State<MembersLayout> {
                   title: Text(member.displayName,
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.start,),
-                  trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID)
+                  trailing: (member.uid == userService.currentUserID || member.uid == trip.ownerID)
                       ? const IconThemeWidget(icon:Icons.check)
                   : IconButton(
                     icon: const IconThemeWidget(icon: Icons.close),
                     onPressed: (){
                       TravelCrewAlertDialogs()
-                          .removeMemberAlert(context, tripDetails, member,);
+                          .removeMemberAlert(context, trip, member,);
                     },
                   ),
                 ),

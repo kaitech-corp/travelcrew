@@ -12,9 +12,9 @@ import 'payment_details_menu_button.dart';
 /// Bottom sheet for split cost details
 class UserSplitCostDetailsBottomSheet extends StatelessWidget {
   const UserSplitCostDetailsBottomSheet({
-    Key key,
-    @required this.user,
-    @required this.costObject,
+    Key? key,
+    required this.user,
+    required this.costObject,
     this.splitObject,
     this.purchasedByUser,
   }) : super(key: key);

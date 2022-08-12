@@ -28,7 +28,7 @@ class IconThemeWidget extends StatelessWidget{
 
   final IconData icon;
 
-  const IconThemeWidget({Key key, this.icon}) : super(key: key);
+  const IconThemeWidget({Key? key, this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class AppBarIconThemeWidget extends StatelessWidget{
 
   final IconData icon;
 
-  const AppBarIconThemeWidget({Key key, this.icon}) : super(key: key);
+  const AppBarIconThemeWidget({Key? key, required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class SplitIconWidget extends StatelessWidget{
 
   final String type;
 
-  const SplitIconWidget({Key key, this.type}) : super(key: key);
+  const SplitIconWidget({Key? key, required this.type}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,7 @@ class TripDetailsIconThemeWidget extends StatelessWidget{
 
   final IconData icon;
 
-  const TripDetailsIconThemeWidget({Key key, this.icon}) : super(key: key);
+  const TripDetailsIconThemeWidget({Key? key, required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +140,7 @@ class BottomNavIconThemeWidget extends StatelessWidget{
 
   final IconData icon;
 
-  const BottomNavIconThemeWidget({Key key, this.icon}) : super(key: key);
+  const BottomNavIconThemeWidget({Key? key, required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -23,7 +23,7 @@ class AllUserPage extends StatefulWidget {
 
 class _AllUserPageState extends State<AllUserPage> {
 
-  GenericBloc<UserPublicProfile,AllUserRepository> bloc;
+  late GenericBloc<UserPublicProfile,AllUserRepository> bloc;
 
   final ScrollController controller = ScrollController();
   bool _isSearching = false;
@@ -44,15 +44,15 @@ class _AllUserPageState extends State<AllUserPage> {
   @override
   Widget build(BuildContext context) {
 
-    List<UserPublicProfile> allUsersSearchList;
+    late List<UserPublicProfile> allUsersSearchList;
 
     Future<List<UserPublicProfile>> userSearchList (String name) async {
       String val = name.toLowerCase();
 
       var results = allUsersSearchList.where((user) =>
-      user.displayName.toLowerCase().contains(val)
-          || user.firstName.toLowerCase().contains(val) ||
-          user.lastName.toLowerCase().contains(val) || user.displayName.toLowerCase().contains(val)
+      user.displayName!.toLowerCase().contains(val)
+          || user.firstName!.toLowerCase().contains(val) ||
+          user.lastName!.toLowerCase().contains(val) || user.displayName!.toLowerCase().contains(val)
       ).toList();
       return results;
     }
@@ -78,7 +78,7 @@ class _AllUserPageState extends State<AllUserPage> {
                 allUsersSearchList = allUsersList;
               return _isSearching ? SearchBar(
                 onSearch: userSearchList,
-                textStyle: Theme.of(context).textTheme.subtitle1,
+                textStyle: Theme.of(context).textTheme.subtitle1!,
                 placeHolder: DraggableScrollbar.semicircle(
                   controller: controller,
                   child: ListView.builder(

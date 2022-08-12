@@ -10,7 +10,7 @@ import '../../../services/widgets/appearance_widgets.dart';
 /// Add new mode of Transportation
 class AddNewModeOfTransport extends StatefulWidget {
   final Trip trip;
-  AddNewModeOfTransport({this.trip});
+  AddNewModeOfTransport({required this.trip});
 
   @override
   _AddNewModeOfTransportState createState() => _AddNewModeOfTransportState();

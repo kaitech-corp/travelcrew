@@ -17,7 +17,7 @@ import '../../alerts/alert_dialogs.dart';
 class NotificationsCard extends StatelessWidget{
   final NotificationData notification;
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  NotificationsCard({this.notification});
+  NotificationsCard({required this.notification});
 
 
   @override
@@ -35,7 +35,7 @@ class NotificationsCard extends StatelessWidget{
       'Chat': notificationType6(context)
     };
 
-    return notificationType[notification.type];
+    return notificationType[notification.type]!;
   }
 // Activity or Lodging Notifications
   Widget notificationType1(BuildContext context){
@@ -99,7 +99,7 @@ class NotificationsCard extends StatelessWidget{
             String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
             CloudFunction().removeNotificationData(fieldID);
-            if (!currentUserProfile.following.contains(notification.uid)) {
+            if (!currentUserProfile.following!.contains(notification.uid)) {
               TravelCrewAlertDialogs().followBackAlert(context, notification.uid);
             }
           },

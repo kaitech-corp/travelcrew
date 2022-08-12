@@ -15,7 +15,7 @@ class FavoritesCard extends StatelessWidget {
 
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final Trip trip;
-  FavoritesCard({this.trip});
+  FavoritesCard({required this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class FavoritesCard extends StatelessWidget {
         borderRadius: const BorderRadius.only(topRight: Radius.circular(50.0)),
       ),
       margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
-      key: Key(trip.documentId),
+      key: Key(trip.documentId!),
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
@@ -49,7 +49,7 @@ class FavoritesCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ListTile(
-                title: Text((trip.tripName).toUpperCase(),style: Theme.of(context).textTheme.headline5,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                title: Text((trip.tripName)!.toUpperCase(),style: Theme.of(context).textTheme.headline5,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 subtitle: Text("Travel Type: ${trip.travelType}",
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 trailing: IconButton(
@@ -59,9 +59,9 @@ class FavoritesCard extends StatelessWidget {
                     String type = 'joinRequest';
 
                     CloudFunction().addNewNotification(message: message,
-                      documentID: trip.documentId,
+                      documentID: trip.documentId!,
                       type: type,
-                      ownerID: trip.ownerID,
+                      ownerID: trip.ownerID!,
                       ispublic: trip.ispublic,
                     );
                     TravelCrewAlertDialogs().showRequestDialog(context);
@@ -89,7 +89,7 @@ class FavoritesCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('${trip.startDate.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
+                        Text('${trip.startDate!.split(',')[0]}-${trip.endDate}',style: Theme.of(context).textTheme.subtitle2,),
                       ],
                     ),
                   ],

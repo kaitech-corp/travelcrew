@@ -6,7 +6,7 @@ class CurvedWidget extends StatelessWidget {
   final double curvedHeight;
 
   const CurvedWidget(
-      {Key key, this.curvedDistance = 80, this.curvedHeight = 80, this.child})
+      {Key? key, this.curvedDistance = 80, this.curvedHeight = 80, this.child})
       : super(key: key);
 
   @override

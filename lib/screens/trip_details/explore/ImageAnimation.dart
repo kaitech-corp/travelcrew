@@ -27,7 +27,7 @@ class CustomShape2 extends CustomClipper<Path> {
 
 class CustomHangingImage extends StatelessWidget {
   const CustomHangingImage({
-    Key key,
+    Key? key,
     this.urlToImage, this.height
   }) : super(key: key);
 
@@ -52,10 +52,10 @@ class CustomHangingImage extends StatelessWidget {
 }
 
 class ImageAnimation extends StatefulWidget{
-  final Trip tripDetails;
+  final Trip trip;
   final expandController;
 
-  const ImageAnimation({Key key, this.tripDetails, this.expandController,}) : super(key: key);
+  const ImageAnimation({Key? key, required this.trip, this.expandController,}) : super(key: key);
 
   @override
   _ImageAnimationState createState() => _ImageAnimationState();

@@ -40,7 +40,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       {String? email, String? password}) async* {
     yield LoginState.loading();
     try {
-      await _userRepository?.signInWithCredentials(email, password);
+      await _userRepository?.signInWithCredentials(email:email!, password: password!);
       yield LoginState.success();
     } catch (_) {
       yield LoginState.failure();

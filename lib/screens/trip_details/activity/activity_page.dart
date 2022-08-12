@@ -18,7 +18,7 @@ import 'activity_card.dart';
 class ActivityPage extends StatefulWidget {
 
   final Trip trip;
-  ActivityPage({this.trip});
+  ActivityPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {

@@ -6,7 +6,7 @@ import '../../../services/database.dart';
 class CustomNotificationWidget extends StatefulWidget{
   final UserNotificationSettingsData settings;
 
-  const CustomNotificationWidget({Key key, this.settings}) : super(key: key);
+  const CustomNotificationWidget({Key? key, required this.settings}) : super(key: key);
 
   @override
   _CustomNotificationWidgetState createState() => _CustomNotificationWidgetState();

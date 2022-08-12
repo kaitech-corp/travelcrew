@@ -15,7 +15,7 @@ class ChatCard extends StatelessWidget {
   final ChatData message;
   final String tripDocID;
 
-  ChatCard({this.message, this.tripDocID});
+  ChatCard({required this.message, required this.tripDocID});
 
   @override
   Widget build(BuildContext context) {

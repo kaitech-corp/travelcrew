@@ -10,7 +10,7 @@ import 'crew_trip_card.dart';
 class GroupedListTripView extends StatefulWidget {
   final dynamic data;
   final bool isPast;
-  const GroupedListTripView({Key key, this.data, this.isPast})
+  const GroupedListTripView({Key? key, this.data, required this.isPast})
       : super(key: key);
 
   @override
@@ -22,8 +22,8 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
   Widget build(BuildContext context) {
     return GroupedListView<Trip, String>(
       elements: widget.data,
-      groupBy: (trip) => DateTime(trip.endDateTimeStamp.toDate().year,
-              trip.endDateTimeStamp.toDate().month)
+      groupBy: (trip) => DateTime(trip.endDateTimeStamp!.toDate().year,
+              trip.endDateTimeStamp!.toDate().month)
           .toString(),
       order: widget.isPast ? GroupedListOrder.DESC : GroupedListOrder.ASC,
       groupSeparatorBuilder: (trip) => Padding(
@@ -35,11 +35,11 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
           style: Theme.of(context)
               .textTheme
               .headline5
-              .copyWith(color: Colors.black54),
+              ?.copyWith(color: Colors.black54),
         )),
       ),
       itemComparator: (a, b) =>
-          (a.startDateTimeStamp.compareTo(b.startDateTimeStamp)),
+          (a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!)),
       itemBuilder: (context, trip) {
         return CrewTripCard(
           trip: trip,

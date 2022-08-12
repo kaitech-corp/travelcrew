@@ -7,7 +7,7 @@ import '../controller/basket_controller.dart';
 
 class CartShortView extends StatelessWidget {
   const CartShortView({
-    Key key,
+    Key? key,
     this.controller,
   }) : super(key: key);
 

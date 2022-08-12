@@ -16,10 +16,10 @@ import 'split_package.dart';
 class SplitDetailsPage extends StatelessWidget {
   final SplitObject splitObject;
   final String purchasedByUID;
-  final Trip tripDetails;
+  final Trip trip;
 
   const SplitDetailsPage(
-      {Key key, this.splitObject, this.purchasedByUID, this.tripDetails})
+      {Key? key, this.splitObject, this.purchasedByUID, required this.trip})
       : super(key: key);
 
   @override
@@ -39,7 +39,7 @@ class SplitDetailsPage extends StatelessWidget {
                   itemDocID: splitObject.itemDocID,
                   tripDocID: splitObject.tripDocID)
               .costDataList,
-          DatabaseService().getcrewList(tripDetails.accessUsers),
+          DatabaseService().getcrewList(trip.accessUsers),
         ),
         builder: (BuildContext context, snapshots) {
           if (snapshots.item1.hasData && snapshots.item2.hasData) {

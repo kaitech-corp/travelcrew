@@ -19,7 +19,7 @@ import 'transportation_card.dart';
 /// Transportation page
 class TransportationPage extends StatefulWidget {
   final Trip trip;
-  TransportationPage({this.trip});
+  TransportationPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {

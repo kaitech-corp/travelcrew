@@ -20,8 +20,8 @@ class ProfileWidget extends StatelessWidget {
   final currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
   ProfileWidget({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -311,8 +311,8 @@ class ProfileWidget extends StatelessWidget {
 
 class FollowerBar extends StatelessWidget {
   const FollowerBar({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
   }) : super(key: key);
 
   final UserPublicProfile user;
@@ -352,7 +352,7 @@ class FollowList extends StatefulWidget {
   final bool isFollowers;
   final UserPublicProfile user;
 
-  const FollowList({Key key, this.isFollowers, this.user}) : super(key: key);
+  const FollowList({Key? key, this.isFollowers, this.user}) : super(key: key);
   @override
   _FollowListState createState() => _FollowListState();
 }

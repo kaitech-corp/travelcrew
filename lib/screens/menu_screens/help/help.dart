@@ -7,7 +7,7 @@ import 'package:travelcrew/services/navigation/route_names.dart';
 
 class HelpPage extends StatelessWidget{
 
-  const HelpPage({Key key}) : super(key: key);
+  const HelpPage({Key? key}) : super(key: key);
 
  @override
   Widget build(BuildContext context) {

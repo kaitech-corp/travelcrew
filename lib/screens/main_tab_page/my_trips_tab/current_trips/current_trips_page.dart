@@ -21,7 +21,7 @@ class CurrentTrips extends StatefulWidget{
 }
 
 class _CurrentTripsState extends State<CurrentTrips>{
-  GenericBloc bloc;
+  late GenericBloc bloc;
 
   @override
   void initState() {

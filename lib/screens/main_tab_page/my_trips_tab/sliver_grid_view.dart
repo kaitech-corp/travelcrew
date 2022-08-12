@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
-import 'package:nil/nil.dart';
 
 import '../../../models/chat_model.dart';
 import '../../../models/custom_objects.dart';
@@ -9,7 +8,6 @@ import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
-import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
 import '../../image_layout/image_layout_trips.dart';
@@ -19,7 +17,7 @@ class SliverGridView extends StatelessWidget {
   final List<Trip> trips;
   final int length;
 
-  const SliverGridView({Key key, this.trips, this.length}) : super(key: key);
+  const SliverGridView({Key? key, required this.trips, required this.length}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,7 @@ class SliverGridView extends StatelessWidget {
             );
           },
           staggeredTileBuilder: (index) {
-            if (trips[index].urlToImage.isNotEmpty) {
+            if (trips[index]?.urlToImage?.isNotEmpty ?? false) {
               return const StaggeredTile.count(2, 2);
             } else {
               return const StaggeredTile.count(2, 1);
@@ -53,12 +51,12 @@ class TappableCrewTripGrid extends StatelessWidget {
   final Trip trip;
   final heroTag;
 
-  TappableCrewTripGrid({this.trip, this.heroTag});
+  TappableCrewTripGrid({required this.trip, this.heroTag});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      key: Key(trip.documentId),
+      key: Key(trip.documentId!),
       margin: const EdgeInsets.only(left: 20, bottom: 16, right: 20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
@@ -82,19 +80,19 @@ class TappableCrewTripGrid extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  if(trip.urlToImage.isNotEmpty)
+                  if(trip.urlToImage?.isNotEmpty ?? false)
                       Flexible(
                           flex: 4,
                           child: Hero(
-                              tag: trip.urlToImage,
+                              tag: trip.urlToImage!,
                               transitionOnUserGestures: true,
-                              child: ImageLayout(trip.urlToImage))),
+                              child: ImageLayout(trip.urlToImage!))),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Tooltip(
                         message: trip.tripName,
                         child: Text(
-                          trip.tripName ?? trip.location,
+                          trip.tripName ?? "Trip",
                           style: Theme.of(context).textTheme.headline4,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -106,7 +104,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                     child: Text(
                       trip.startDate != null
                           ? '${TCFunctions()
-                          .dateToMonthDay(trip.startDate)} - ${trip.endDate}'
+                          .dateToMonthDay(trip.startDate!)} - ${trip.endDate}'
                           : 'Dates',
                       style: Theme.of(context).textTheme.subtitle2,
                       textScaleFactor: 2,
@@ -130,7 +128,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                       chatNotificationBadges(trip),
                       needListBadges(trip),
                       BadgeIcon(
-                        icon: (trip.accessUsers.length > 1) ? const Icon(
+                        icon: (trip.accessUsers!.length > 1) ? const Icon(
                           Icons.people,
                           color: Colors.purpleAccent,
                         ):
@@ -138,7 +136,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                           Icons.people_outline,
                           color: Colors.purpleAccent,
                         ),
-                        badgeCount: trip.accessUsers.length,
+                        badgeCount: trip.accessUsers!.length,
                       ),
                     ],
                   ),
@@ -155,7 +153,7 @@ class TappableCrewTripGrid extends StatelessWidget {
     return Tooltip(
       message: 'Likes',
       child: BadgeIcon(
-        icon: (trip.favorite.isNotEmpty) ? const Icon(
+        icon: (trip.favorite?.isNotEmpty ?? false) ? const Icon(
           Icons.favorite,
           color: Colors.redAccent,
         ):
@@ -163,7 +161,7 @@ class TappableCrewTripGrid extends StatelessWidget {
           Icons.favorite_border,
           color: Colors.redAccent,
         ),
-        badgeCount: trip.favorite.length,
+        badgeCount: trip.favorite!.length,
       ),
     );
   }
@@ -172,7 +170,7 @@ class TappableCrewTripGrid extends StatelessWidget {
     if (trip.ownerID == currentUserID) {
       return 'You';
     } else {
-      return trip.displayName;
+      return trip.displayName!;
     }
   }
 
@@ -184,8 +182,8 @@ class TappableCrewTripGrid extends StatelessWidget {
               .logError('Error streaming chats for '
               'notifications on Crew cards: ${chats.error.toString()}');
         }
-        if (chats.hasData && chats.data.isNotEmpty) {
-          List<ChatData> chatList = chats.data;
+        if (chats.hasData) {
+          List<ChatData> chatList = chats.data as List<ChatData>;
             return Tooltip(
               message: 'New Messages',
               child: BadgeIcon(
@@ -209,7 +207,7 @@ class TappableCrewTripGrid extends StatelessWidget {
   Widget needListBadges(Trip trip) {
     return StreamBuilder<List<Need>>(
       builder: (context, items) {
-        List<Need> needs = items.data;
+        List<Need> needs = items.data as List<Need>;
         if (items.hasError) {
           CloudFunction()
               .logError('Error streaming need '
@@ -220,14 +218,14 @@ class TappableCrewTripGrid extends StatelessWidget {
             message: 'Need List',
             child: BadgeIcon(
               icon: const Icon(Icons.shopping_basket,color: Colors.orangeAccent,),
-              badgeCount: items.data.length,
+              badgeCount: items.data!.length,
             ),
           );
         } else {
           return const Icon(Icons.shopping_basket_outlined,color: Colors.orangeAccent,);
         }
       },
-      stream: DatabaseService().getNeedList(trip.documentId),
+      stream: DatabaseService().getNeedList(trip.documentId!),
     );
   }
 }

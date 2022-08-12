@@ -8,7 +8,7 @@ import '../../../../services/widgets/basket_icon.dart';
 
 class CartDetailsViewCard extends StatelessWidget {
   const CartDetailsViewCard({
-    Key key,
+    Key? key,
     this.item,
   }) : super(key: key);
 

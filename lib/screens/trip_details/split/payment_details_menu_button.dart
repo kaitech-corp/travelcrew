@@ -8,8 +8,8 @@ import '../../../services/widgets/appearance_widgets.dart';
 /// Payment details menu button
 class PaymentDetailsMenuButton extends StatelessWidget {
   const PaymentDetailsMenuButton({
-    Key key,
-    @required this.costObject,
+    Key? key,
+    required this.costObject,
     this.splitObject,
 
   }) : super(key: key);

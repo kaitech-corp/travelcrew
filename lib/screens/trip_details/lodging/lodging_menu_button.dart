@@ -20,7 +20,7 @@ class LodgingMenuButton  extends StatelessWidget{
   final LodgingData lodging;
   final Event event;
 
-  const LodgingMenuButton({Key key, this.trip, this.lodging,this.event}) : super(key: key);
+  const LodgingMenuButton({Key? key, required this.trip, required this.lodging,required this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -19,7 +19,7 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoriteTripState extends State<FavoritesPage> {
-  GenericBloc<Trip,FavoriteTripRepository> bloc;
+  late GenericBloc<Trip,FavoriteTripRepository> bloc;
 
   @override
   void initState() {
@@ -53,11 +53,11 @@ class _FavoriteTripState extends State<FavoritesPage> {
                         margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
                         color: Colors.red,
                         child: const Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),),
-                      key: Key(item.documentId),
+                      key: Key(item.documentId!),
                       onDismissed: (direction) {
                         setState(() {
                           trips.removeAt(index);
-                          CloudFunction().removeFavoriteFromTrip(item.documentId);
+                          CloudFunction().removeFavoriteFromTrip(item.documentId!);
                         });
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Tripped removed from favorites.")));
                       },

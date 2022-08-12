@@ -16,7 +16,7 @@ class DetailsPage extends StatelessWidget{
   final Trip trip;
   final String type;
 
-  DetailsPage({this.activity,this.lodging,this.transport,this.type, this.trip});
+  DetailsPage({required this.activity,this.lodging,required this.transport,required this.type, required this.trip});
 
 
 

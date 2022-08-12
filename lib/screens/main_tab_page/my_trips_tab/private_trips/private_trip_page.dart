@@ -22,7 +22,7 @@ class PrivateTrips extends StatefulWidget{
 }
 
 class _PrivateTripsState extends State<PrivateTrips>{
-  GenericBloc<Trip,PrivateTripRepository> bloc;
+  late GenericBloc<Trip,PrivateTripRepository> bloc;
 
   @override
   void initState() {

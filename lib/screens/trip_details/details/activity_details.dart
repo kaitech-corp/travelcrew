@@ -20,7 +20,7 @@ class ActivityDetails extends StatelessWidget {
   final ActivityData activity;
   final Trip trip;
 
-  const ActivityDetails({Key key, this.activity, this.trip}) : super(key: key);
+  const ActivityDetails({Key? key, this.activity, required this.trip}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,9 @@ class ActivityDetails extends StatelessWidget {
 
 class ActivityDataLayout extends StatelessWidget {
   const ActivityDataLayout({
-    Key key,
-    @required this.fieldID,
-    @required this.trip,
+    Key? key,
+    required this.fieldID,
+    required this.trip,
   }) : super(key: key);
 
   final String fieldID;

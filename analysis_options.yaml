@@ -2,7 +2,6 @@
 ##
 analyzer:
   enable-experiment:
-    - non-nullable
 #linter:
 #  rules:
 #    # ------ Disable individual rules ----- #

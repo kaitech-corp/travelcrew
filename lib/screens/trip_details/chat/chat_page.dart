@@ -17,7 +17,7 @@ import 'grouped_list_chat_builder.dart';
 
 class ChatPage extends StatefulWidget {
   final Trip trip;
-  ChatPage({this.trip});
+  ChatPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {

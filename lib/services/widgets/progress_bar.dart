@@ -6,7 +6,7 @@ class ProgressBarWidget extends StatelessWidget {
   final currentValue;
   final maxValue;
 
-  const ProgressBarWidget({Key key, this.currentValue, this.maxValue}) : super(key: key);
+  const ProgressBarWidget({Key? key, this.currentValue, this.maxValue}) : super(key: key);
 
 
   @override

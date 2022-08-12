@@ -8,7 +8,7 @@ import 'chat_card.dart';
 class GroupedListChatView extends StatelessWidget {
   final dynamic data;
   final String documentId;
-  GroupedListChatView({Key key, this.data, this.documentId}) : super(key: key);
+  GroupedListChatView({Key? key, this.data, this.documentId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
