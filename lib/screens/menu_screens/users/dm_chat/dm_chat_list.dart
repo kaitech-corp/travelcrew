@@ -11,7 +11,7 @@ import 'dm_chat_message_layout.dart';
 class DMChatList extends StatefulWidget {
 
   final UserPublicProfile user;
-  DMChatList({this.user});
+  DMChatList({required this.user});
 
   @override
   _DMChatListState createState() => _DMChatListState();

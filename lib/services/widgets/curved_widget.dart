@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CurvedWidget extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
   final double curvedDistance;
   final double curvedHeight;
 
@@ -25,7 +25,7 @@ class CurvedWidgetBackgroundClipper extends CustomClipper<Path> {
   final double curvedDistance;
   final double curvedHeight;
 
-  CurvedWidgetBackgroundClipper({this.curvedDistance, this.curvedHeight});
+  CurvedWidgetBackgroundClipper({required this.curvedDistance, required this.curvedHeight});
 
   @override
   getClip(Size size) {

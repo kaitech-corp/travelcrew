@@ -9,7 +9,7 @@ import '../../../../services/widgets/basket_icon.dart';
 class CartDetailsViewCard extends StatelessWidget {
   const CartDetailsViewCard({
     Key? key,
-    this.item,
+    required this.item,
   }) : super(key: key);
 
   final WalmartProductsItem item;
@@ -18,13 +18,13 @@ class CartDetailsViewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-      leading: BasketIcon(item.walmartProducts.type),
+      leading: BasketIcon(item.walmartProducts!.type),
       title: Text(
-        item.walmartProducts.query,
+        item.walmartProducts!.query!,
         style: Theme.of(context)
             .textTheme
             .subtitle1
-            .copyWith(fontWeight: FontWeight.bold),
+            !.copyWith(fontWeight: FontWeight.bold),
       ),
       trailing: FittedBox(
         child: Row(
@@ -35,7 +35,7 @@ class CartDetailsViewCard extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .subtitle1
-                  .copyWith(fontWeight: FontWeight.bold),
+                  !.copyWith(fontWeight: FontWeight.bold),
             )
           ],
         ),

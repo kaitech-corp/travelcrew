@@ -6,41 +6,41 @@ import 'package:equatable/equatable.dart';
 
 abstract class SignupEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class SignupFirstNameChanged extends SignupEvent {
-  final String firstName;
+  final String? firstName;
 
   SignupFirstNameChanged({required this.firstName});
 
   @override
-  List<Object> get props => [firstName];
+  List<Object?> get props => [firstName];
 }
 class SignupLastNameChanged extends SignupEvent {
-  final String lastName;
+  final String? lastName;
 
   SignupLastNameChanged({required this.lastName});
 
   @override
-  List<Object> get props => [lastName];
+  List<Object?> get props => [lastName];
 }
 class SignupDisplayNameChanged extends SignupEvent {
-  final String displayName;
+  final String? displayName;
 
   SignupDisplayNameChanged({required this.displayName});
 
   @override
-  List<Object> get props => [displayName];
+  List<Object?> get props => [displayName];
 }
 
 class SignupImageChanged extends SignupEvent {
-  final File urlToImage;
+  final File? urlToImage;
 
   SignupImageChanged({ required this.urlToImage});
 
   @override
-  List<Object> get props => [urlToImage];
+  List<Object?> get props => [urlToImage];
 }
 class SignupEmailChanged extends SignupEvent {
   final String email;

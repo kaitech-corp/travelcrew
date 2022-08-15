@@ -30,11 +30,9 @@ class UserPopupProfile extends StatelessWidget{
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: (member.urlToImage?.isNotEmpty ?? false) ? NetworkImage(member.urlToImage) : Image.asset(
-                profileImagePlaceholder,
-                height: 300,
-                width: 300,
-              ),
+              child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: member.urlToImage!,height: 300,
+                width: 300,)
+
             ),
           ),
         ),

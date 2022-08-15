@@ -98,7 +98,7 @@ class _TravelCrewState extends State<TravelCrew> {
                                   }
                                   return Loading();
                                 },
-                                future: DatabaseService(uid: state.firebaseUser.uid).checkUserHasProfile(),
+                                future: DatabaseService(uid: state.firebaseUser!.uid).checkUserHasProfile(),
                               );
                             } else {
                               return LoginScreen();

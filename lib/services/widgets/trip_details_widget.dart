@@ -62,12 +62,12 @@ class TripDetailsWidget extends StatelessWidget {
                           ),
                           onTap: (){
                             FlutterClipboard.copy(
-                                tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
+                                tripDetails.location!).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
                           },
                         ),
                         ListTile(
                           leading: TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                          title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',
+                          title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate!)} - ${tripDetails.endDate}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           onTap: (){
@@ -82,7 +82,7 @@ class TripDetailsWidget extends StatelessWidget {
                         ),
                         ListTile(
                           leading: TripDetailsIconThemeWidget(icon: Icons.people,),
-                          title: Text('${tripDetails.accessUsers.length} Members',
+                          title: Text('${tripDetails.accessUsers!.length} Members',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
@@ -96,9 +96,9 @@ class TripDetailsWidget extends StatelessWidget {
                           Text('Private Trip',
                             style: Theme.of(context).textTheme.subtitle1,),
                         ),
-                        if(tripDetails.comment.isNotEmpty) ListTile(
+                        if(tripDetails.comment?.isNotEmpty ?? false) ListTile(
                           leading: TripDetailsIconThemeWidget(icon: Icons.comment,),
-                          title: Text(tripDetails.comment,
+                          title: Text(tripDetails.comment!,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),

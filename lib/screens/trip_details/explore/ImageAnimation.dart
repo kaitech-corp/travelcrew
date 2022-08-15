@@ -86,9 +86,9 @@ class _ImageAnimationState extends State<ImageAnimation> {
     @override
     Widget build(BuildContext context) {
       return Hero(
-      tag: widget.tripDetails.urlToImage,
+      tag: widget.trip.urlToImage!,
       transitionOnUserGestures: true,
-      child: CustomHangingImage(urlToImage: widget.tripDetails.urlToImage,height: _height,),
+      child: CustomHangingImage(urlToImage: widget.trip.urlToImage,height: _height,),
       );
     }
   }

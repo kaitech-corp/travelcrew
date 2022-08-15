@@ -10,7 +10,7 @@ class PaymentDetailsMenuButton extends StatelessWidget {
   const PaymentDetailsMenuButton({
     Key? key,
     required this.costObject,
-    this.splitObject,
+    required this.splitObject,
 
   }) : super(key: key);
 

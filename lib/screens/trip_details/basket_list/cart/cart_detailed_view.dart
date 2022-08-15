@@ -6,7 +6,7 @@ import '../controller/basket_controller.dart';
 import 'cart_detailed_view_card.dart';
 
 class CartDetailsView extends StatelessWidget {
-  const CartDetailsView({Key? key, this.controller, required this.trip})
+  const CartDetailsView({Key? key, required this.controller, required this.trip})
       : super(key: key);
 
   final BasketController controller;

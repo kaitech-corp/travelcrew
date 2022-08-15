@@ -19,7 +19,7 @@ class SplitDetailsPage extends StatelessWidget {
   final Trip trip;
 
   const SplitDetailsPage(
-      {Key? key, this.splitObject, this.purchasedByUID, required this.trip})
+      {Key? key, required this.splitObject, required this.purchasedByUID, required this.trip})
       : super(key: key);
 
   @override
@@ -27,14 +27,14 @@ class SplitDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          splitObject.itemName,
+          splitObject.itemName!,
           style: Theme.of(context).textTheme.headline5,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
       ),
       body: StreamBuilder2(
-        streams: Tuple2(
+        streams: StreamTuple2(
           DatabaseService(
                   itemDocID: splitObject.itemDocID,
                   tripDocID: splitObject.tripDocID)
@@ -42,12 +42,12 @@ class SplitDetailsPage extends StatelessWidget {
           DatabaseService().getcrewList(trip.accessUsers!),
         ),
         builder: (BuildContext context, snapshots) {
-          if (snapshots.item1.hasData && snapshots.item2.hasData) {
-            List<CostObject> userCostData = snapshots.item1.data;
+          if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {
+            List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
             List<String> uidList = [];
             userCostData.forEach((element) {
               if (!uidList.contains(element.uid)) {
-                uidList.add(element.uid);
+                uidList.add(element.uid!);
               }
             });
             var amountRemaining =
@@ -59,7 +59,7 @@ class SplitDetailsPage extends StatelessWidget {
               DatabaseService().updateRemainingBalance(
                   splitObject, amountRemaining, uidList);
             }
-            List<UserPublicProfile> userPublicData = snapshots.item2.data;
+            List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
             return ListView.builder(
                 itemCount: userCostData.length,
                 itemBuilder: (context, index) {
@@ -97,25 +97,15 @@ class SplitDetailsPage extends StatelessWidget {
                         child: ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
-                            child: userPublicProfile.urlToImage.isNotEmpty
-                                ? Image.network(
-                                    userPublicProfile.urlToImage,
-                                    height: 50,
-                                    width: 50,
-                                    fit: BoxFit.fill,
-                                  )
-                                : Image.asset(
-                                    profileImagePlaceholder,
-                                    height: 50,
-                                    width: 50,
-                                    fit: BoxFit.fill,
-                                  ),
+                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: userPublicProfile.urlToImage!,height: 50,
+                              width: 50,
+                              fit: BoxFit.fill,)
                           ),
                           title: Text('${userPublicProfile.displayName}',
                               style: Theme.of(context).textTheme.subtitle1),
                           subtitle: (costObject.paid == false)
                               ? Text(
-                                  'Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
+                                  'Owe: \$${costObject.amountOwe!.toStringAsFixed(2)}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Cantata One',
@@ -130,7 +120,7 @@ class SplitDetailsPage extends StatelessWidget {
                                             color: Colors.green)),
                                     Text(
                                         TCFunctions().formatTimestamp(
-                                            costObject.datePaid,
+                                            costObject.datePaid!,
                                             wTime: true),
                                         style: Theme.of(context)
                                             .textTheme

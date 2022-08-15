@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class GlobalCard extends StatelessWidget{
-  final Widget widget;
+  final Widget? widget;
 
   const GlobalCard({Key? key, this.widget}) : super(key: key);
 

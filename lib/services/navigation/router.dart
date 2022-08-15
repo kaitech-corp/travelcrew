@@ -16,7 +16,7 @@ import '../../models/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
 import '../../repositories/user_settings_repository.dart';
 import '../../screens/add_trip/edit_trip.dart';
-import '../../screens/add_trip/google_places.dart';
+import '../../screens/add_trip/google_autocomplete.dart';
 import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
 import '../../screens/main_tab_page/favorites/favorites_page.dart';
 import '../../screens/main_tab_page/main_tab_page.dart';
@@ -199,11 +199,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name!,
         viewToShow: FollowingList(trip: args as Trip,),
       );
-    case GooglePlacesRoute:
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: GooglePlaces(),
-      );
+    // case GooglePlacesRoute:
+    //   return _getPageRoute(
+    //     routeName: settings.name!,
+    //     viewToShow: GooglePlaces(controller: ,),
+    //   );
     case HelpPageRoute:
       return _getPageRoute(
         routeName: settings.name!,

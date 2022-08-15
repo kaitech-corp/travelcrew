@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:travelcrew/services/constants/constants.dart';
 
 class GradientButton extends StatelessWidget {
-  final double width;
-  final double height;
-  final Function onPressed;
-  final Text text;
-  final Icon icon;
+  final double? width;
+  final double? height;
+  final Function()? onPressed;
+  final Text? text;
+  final Icon? icon;
 
   const GradientButton(
       {Key? key, this.width, this.height, this.onPressed, this.text, this.icon})
@@ -35,8 +35,8 @@ class GradientButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                text,
-                icon,
+                text!,
+                icon!,
               ],
             ),
           )),

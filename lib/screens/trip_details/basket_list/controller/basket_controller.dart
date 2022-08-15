@@ -16,7 +16,7 @@ class BasketController extends ChangeNotifier {
 
   void addWalmartProductsToCart(WalmartProducts walmartProducts) {
     for (WalmartProductsItem item in cart) {
-      if (item.walmartProducts.query == walmartProducts.query) {
+      if (item.walmartProducts!.query == walmartProducts.query) {
         item.increment();
         notifyListeners();
         return;

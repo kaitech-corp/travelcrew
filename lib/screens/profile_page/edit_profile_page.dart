@@ -28,23 +28,23 @@ class _SignupScreenState extends State {
   String destination2 = '';
   String destination3 = '';
 
-  Key get key => null;
+  // Key get key => null;
 
   getImage() async {
     var image =
         await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
 
-    _cropImage(image.path, image);
+    _cropImage(image!.path, image);
   }
 
   _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper.cropImage(
+    File croppedImage = await ImageCropper().cropImage(
       sourcePath: imagePath,
       maxHeight: 1080,
       maxWidth: 1080,
-    );
+    ) as File;
 
-    if (croppedImage != null) {
+    if (croppedImage.path.isEmpty) {
       setState(() {
         _image = croppedImage;
       });
@@ -84,11 +84,7 @@ class _SignupScreenState extends State {
                                         : CircleAvatar(
                                             radius:
                                                 SizeConfig.screenWidth / 2.25,
-                                            backgroundImage: _image == null
-                                                ? NetworkImage(user.urlToImage)
-                                                : FileImage(
-                                                    _image,
-                                                  ),
+                                            child: FadeInImage.assetNetwork(placeholder: _image.path, image: user.urlToImage!),
                                           ),
                                     ElevatedButton(
                                       onPressed: () {
@@ -109,8 +105,10 @@ class _SignupScreenState extends State {
                                         initialValue: user.firstName,
                                         // ignore: missing_return
                                         validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please first name.';
+                                          if (value!.isEmpty) {
+                                            return 'Please add first name.';
+                                          } else {
+                                            return null;
                                           }
                                         },
                                         onSaved: (val) => setState(
@@ -128,8 +126,10 @@ class _SignupScreenState extends State {
                                       // ignore: missing_return
                                       validator: (value) {
                                         // ignore: missing_return
-                                        if (value.isEmpty) {
+                                        if (value!.isEmpty) {
                                           return 'Please enter last name';
+                                        } else {
+                                          return null;
                                         }
                                       },
                                       onSaved: (val) =>
@@ -144,8 +144,10 @@ class _SignupScreenState extends State {
                                         // ignore: missing_return
                                         validator: (value) {
                                           // ignore: missing_return,
-                                          if (value.isEmpty) {
+                                          if (value!.isEmpty) {
                                             return 'Please enter a display name.';
+                                          } else {
+                                            return null;
                                           }
                                         },
                                         onSaved: (val) => setState(
@@ -155,7 +157,7 @@ class _SignupScreenState extends State {
                                         decoration: const InputDecoration(
                                             labelText: 'Hometown'),
                                         onSaved: (val) => setState(
-                                            () => _user.hometown = val.trim())),
+                                            () => _user.hometown = val!.trim())),
                                     const SizedBox(
                                       height: 20,
                                     ),
@@ -185,7 +187,7 @@ class _SignupScreenState extends State {
                                                 // ignore: missing_return
                                                 validator: (value) {
                                                   // ignore: missing_return,
-                                                  if (value.isNotEmpty &&
+                                                  if (value!.isNotEmpty &&
                                                       !value.contains(
                                                           'https://www.instagram.com/')) {
                                                     return 'i.e. https://www.instagram.com/username';
@@ -204,7 +206,7 @@ class _SignupScreenState extends State {
                                                 // ignore: missing_return
                                                 validator: (value) {
                                                   // ignore: missing_return,
-                                                  if (value.isNotEmpty &&
+                                                  if (value!.isNotEmpty &&
                                                       !value.contains(
                                                           'https://www.facebook.com/')) {
                                                     return 'i.e. https://www.facebook.com/username';
@@ -238,9 +240,9 @@ class _SignupScreenState extends State {
                                           children: [
                                             TextFormField(
                                                 initialValue: (user
-                                                        .topDestinations[0]
+                                                        .topDestinations![0]
                                                         .isNotEmpty)
-                                                    ? user.topDestinations[0]
+                                                    ? user.topDestinations![0]
                                                     : '',
                                                 inputFormatters: [
                                                   LengthLimitingTextInputFormatter(
@@ -253,12 +255,12 @@ class _SignupScreenState extends State {
                                                         labelText:
                                                             'Destination 1'),
                                                 onSaved: (val) => setState(() =>
-                                                    destination1 = val.trim())),
+                                                    destination1 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
-                                                        .topDestinations[1]
+                                                        .topDestinations![1]
                                                         .isNotEmpty)
-                                                    ? user.topDestinations[1]
+                                                    ? user.topDestinations![1]
                                                     : '',
                                                 inputFormatters: [
                                                   LengthLimitingTextInputFormatter(
@@ -271,12 +273,12 @@ class _SignupScreenState extends State {
                                                         labelText:
                                                             'Destination 2'),
                                                 onSaved: (val) => setState(() =>
-                                                    destination2 = val.trim())),
+                                                    destination2 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
-                                                        .topDestinations[2]
+                                                        .topDestinations![2]
                                                         .isNotEmpty)
-                                                    ? user.topDestinations[2]
+                                                    ? user.topDestinations![2]
                                                     : '',
                                                 inputFormatters: [
                                                   LengthLimitingTextInputFormatter(
@@ -289,7 +291,7 @@ class _SignupScreenState extends State {
                                                         labelText:
                                                             'Destination 3'),
                                                 onSaved: (val) => setState(() =>
-                                                    destination3 = val.trim())),
+                                                    destination3 = val!.trim())),
                                           ],
                                         ),
                                       ),
@@ -299,7 +301,7 @@ class _SignupScreenState extends State {
                                     ),
                                     ElevatedButton(
                                         onPressed: () async {
-                                          final form = _formKey.currentState;
+                                          final form = _formKey.currentState!;
                                           form.save();
                                           _user.topDestinations = [
                                             destination1,

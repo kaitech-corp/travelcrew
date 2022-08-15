@@ -6,19 +6,19 @@ import 'appearance_widgets.dart';
 
 class CalendarWidget  extends StatefulWidget{
 
-  final ValueNotifier<String> startDate;
-  final ValueNotifier<String> endDate;
+  final ValueNotifier<String>? startDate;
+  final ValueNotifier<String>? endDate;
   final ValueNotifier<Timestamp> startDateTimeStamp;
   final ValueNotifier<Timestamp> endDateTimeStamp;
-  final BuildContext context;
+  final BuildContext? context;
   final bool showBoth;
 
   CalendarWidget(
-      {this.startDate,
+      { this.startDate,
         this.endDate,
-        this.startDateTimeStamp,
-        this.endDateTimeStamp,
-        this.context, this.showBoth});
+        required this.startDateTimeStamp,
+        required this.endDateTimeStamp,
+        this.context, required this.showBoth});
 
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
@@ -31,13 +31,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   
 
   String get labelTextDepart {
-    if(widget.startDate != null) widget.startDate.value = DateFormat.yMMMd().format(_fromDateDepart);
+    widget.startDate!.value = DateFormat.yMMMd().format(_fromDateDepart);
     widget.startDateTimeStamp.value = Timestamp.fromDate(_fromDateDepart);
     return DateFormat.yMMMd().format(_fromDateDepart);
   }
   String get labelTextReturn {
-    if(widget.endDate != null) widget.endDate.value = DateFormat.yMMMd().format(_fromDateReturn);
-    if(widget.endDateTimeStamp != null) widget.endDateTimeStamp.value = Timestamp.fromDate(_fromDateReturn);
+    widget.endDate!.value = DateFormat.yMMMd().format(_fromDateReturn);
+    widget.endDateTimeStamp.value = Timestamp.fromDate(_fromDateReturn);
     return DateFormat.yMMMd().format(_fromDateReturn);
   }
 

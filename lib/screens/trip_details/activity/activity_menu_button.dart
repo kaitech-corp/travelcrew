@@ -17,7 +17,7 @@ class ActivityMenuButton extends StatelessWidget{
 
   final ActivityData activity;
   final Trip trip;
-  final Event event;
+  final Event? event;
 
   const ActivityMenuButton({Key? key, required this.activity, required this.trip, this.event}) : super(key: key);
 
@@ -32,7 +32,7 @@ class ActivityMenuButton extends StatelessWidget{
           }
           break;
           case "View": {
-            if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
+            if(activity.link?.isNotEmpty ?? false) TCFunctions().launchURL(activity.link!);
           }
           break;
           case "Split": {
@@ -50,11 +50,11 @@ class ActivityMenuButton extends StatelessWidget{
           break;
           case "Calendar":
             {
-              Add2Calendar.addEvent2Cal(event);
+              Add2Calendar.addEvent2Cal(event!);
             }
           break;
           default: {
-            CloudFunction().removeActivity(trip.documentId,activity.fieldID);
+            CloudFunction().removeActivity(trip.documentId!,activity.fieldID!);
           }
           break;
         }
@@ -112,8 +112,8 @@ class ActivityMenuButton extends StatelessWidget{
             }
             break;
           case "View": {
-            if (activity.link.isNotEmpty) {
-              TCFunctions().launchURL(activity.link);
+            if (activity.link?.isNotEmpty ?? false) {
+              TCFunctions().launchURL(activity.link!);
             }
           }
           break;
@@ -134,7 +134,7 @@ class ActivityMenuButton extends StatelessWidget{
           break;
           case "Calendar":
             {
-              Add2Calendar.addEvent2Cal(event);
+              Add2Calendar.addEvent2Cal(event!);
             }
             break;
           default: {

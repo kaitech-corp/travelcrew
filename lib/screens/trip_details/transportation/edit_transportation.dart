@@ -8,7 +8,7 @@ import '../../../services/widgets/appearance_widgets.dart';
 /// Edit transportation data
 class EditTransportation extends StatefulWidget {
   final TransportationData transportationData;
-  EditTransportation({this.transportationData});
+  EditTransportation({required this.transportationData});
 
   @override
   _EditTransportationState createState() => _EditTransportationState();
@@ -50,9 +50,9 @@ class _EditTransportationState extends State<EditTransportation> {
                                   height: 2,
                                   color: Colors.blueAccent,
                                 ),
-                                onChanged: (String newValue) {
+                                onChanged: (newValue) {
                                   setState(() {
-                                    dropdownValue = newValue;
+                                    dropdownValue = newValue!;
                                   });
                                 },
                                 items: modes
@@ -125,7 +125,7 @@ class _EditTransportationState extends State<EditTransportation> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final form = _formKey.currentState;
+          final form = _formKey.currentState!;
           if (form.validate()) {
             CloudFunction().addTransportation(
               mode: dropdownValue,

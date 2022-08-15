@@ -232,7 +232,7 @@ class SplitPackage {
 
   /// Edit Split Dialog
   Future<Widget?> editSplitDialog(BuildContext context, SplitObject splitObject,
-      {required Trip trip}) async {
+      {Trip? trip}) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {

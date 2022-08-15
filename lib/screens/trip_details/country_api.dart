@@ -8,7 +8,7 @@ class CountryAPI extends StatelessWidget {
 
   final Countries countries;
 
-  CountryAPI({this.countries});
+  CountryAPI({required this.countries});
 
   @override
   Widget build(BuildContext context) {

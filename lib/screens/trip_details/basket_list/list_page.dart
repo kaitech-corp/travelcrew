@@ -15,7 +15,7 @@ class BasketListPage extends StatelessWidget{
   final Trip trip;
   final BasketController controller;
 
-  BasketListPage({Key? key, required this.trip,this.controller}) : super(key: key);
+  BasketListPage({Key? key, required this.trip, required this.controller}) : super(key: key);
 
 
 
@@ -23,9 +23,9 @@ class BasketListPage extends StatelessWidget{
   static bool pressed = false;
 
   void _onVerticalGesture(DragUpdateDetails details) {
-    if (details.primaryDelta < -0.7) {
+    if (details.primaryDelta! < -0.7) {
       controller.changeBasketState(BasketState.cart);
-    } else if (details.primaryDelta > 12) {
+    } else if (details.primaryDelta! > 12) {
       controller.changeBasketState(BasketState.normal);
     }
   }
@@ -95,7 +95,7 @@ class BasketListPage extends StatelessWidget{
                                         ],
                                       ),
                                     ),
-                                    Expanded(child: BringListToDisplay(tripDocID: trip.documentId,)),
+                                    Expanded(child: BringListToDisplay(tripDocID: trip.documentId!,)),
                                   ],
                                 )
                               ),

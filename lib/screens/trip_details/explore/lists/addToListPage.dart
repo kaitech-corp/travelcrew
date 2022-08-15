@@ -8,10 +8,10 @@ import 'item_lists.dart';
 class AddToListPage extends StatefulWidget{
 
   final Trip trip;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
   final BasketController controller;
 
-  AddToListPage({Key? key, required this.trip, required this.scaffoldKey, required this.controller}) : super(key: key);
+  AddToListPage({Key? key, required this.trip, this.scaffoldKey, required this.controller}) : super(key: key);
 
   @override
   _AddToListPageState createState() => _AddToListPageState();

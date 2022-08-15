@@ -16,6 +16,7 @@ import '../../services/locator.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/calendar_widget.dart';
 import '../alerts/alert_dialogs.dart';
+import 'google_autocomplete.dart';
 import 'google_places.dart';
 
 GoogleData? googleData;

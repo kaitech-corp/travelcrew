@@ -10,7 +10,7 @@ import '../../../services/locator.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/reusableWidgets.dart';
-import '../../add_trip/google_places.dart';
+import '../../add_trip/google_autocomplete.dart';
 
 
 

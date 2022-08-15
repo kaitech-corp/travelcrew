@@ -109,7 +109,7 @@ class WalmartProductSearch {
     Map<String, String> _headers = {
 //    "content-type": "application/json",
     "x-rapidapi-host": "walmart.p.rapidapi.com",
-    "x-rapidapi-key": _api_key,
+    "x-rapidapi-key": _api_key!,
     };
 
 //    Uri uri = Uri.https(_baseUrl, endpoint);
@@ -125,34 +125,6 @@ class WalmartProductSearch {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load json data: ${response.statusCode}');
     }
-  }
-}
-
-class ImageSearch {
-
-
-  Future<String> getImage(String item) {
-    // const request = require('request');
-
-    var options = {
-      'method': 'POST',
-      'url': 'https://texttoimage.p.rapidapi.com/image',
-      'headers': {
-        'content-type': 'application/json',
-        'x-rapidapi-key': '',
-        'x-rapidapi-host': 'texttoimage.p.rapidapi.com',
-        'useQueryString': true
-      },
-      'body': {'search_text': '$item', 'num_images': 1},
-      'json': true
-    };
-
-    // final req = http.Request(options, function (error, response, body) {
-    // if (error) throw new Error(error);
-    //
-    // console.log(body);
-    // });
-
   }
 }
 

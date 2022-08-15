@@ -15,7 +15,7 @@ class DMChatMessageLayout extends StatelessWidget {
   final ChatData message;
   final UserPublicProfile user;
 
-  DMChatMessageLayout({this.message, this.user});
+  DMChatMessageLayout({required this.message, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +107,7 @@ class DMChatMessageLayout extends StatelessWidget {
                             margin: EdgeInsets.all(10),
                             child: Text(
                               readTimestamp(
-                                  message.timestamp.millisecondsSinceEpoch ??
-                                      ''),
+                                  message.timestamp.millisecondsSinceEpoch),
                               style: ChatTextStyle().timestampStyle(),
                               textScaleFactor: 0.75,
                             )),

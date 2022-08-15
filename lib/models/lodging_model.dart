@@ -14,7 +14,7 @@ class LodgingData {
   final String? lodgingType;
   final String? startTime;
   final String? uid;
-  final List<String?>? voters;
+  final List<String>? voters;
 
   LodgingData({
     this.endTime,

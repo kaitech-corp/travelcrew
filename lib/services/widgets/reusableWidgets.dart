@@ -212,7 +212,7 @@ class AnimatedClipRRect extends StatelessWidget {
   final Widget child;
 
   static Widget _builder(
-      BuildContext context, BorderRadius radius, Widget child) {
+      BuildContext context, BorderRadius radius, Widget? child) {
     return ClipRRect(borderRadius: radius, child: child);
   }
 
@@ -221,7 +221,7 @@ class AnimatedClipRRect extends StatelessWidget {
     return TweenAnimationBuilder<BorderRadius>(
       duration: duration,
       curve: curve,
-      tween: BorderRadiusTween(begin: BorderRadius.zero, end: borderRadius),
+      tween: Tween(begin: BorderRadius.zero, end: borderRadius),
       builder: _builder,
       child: child,
     );

@@ -76,11 +76,11 @@ class _LoginFormState extends State<SignupForm> {
   }
 
   _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper.cropImage(
+    File croppedImage = await ImageCropper().cropImage(
       sourcePath: imagePath,
       maxHeight: 1080,
       maxWidth: 1080,
-    );
+    ) as File;
 
     if (croppedImage != null) {
       _urlToImage.value = croppedImage;

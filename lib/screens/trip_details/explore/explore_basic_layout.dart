@@ -10,11 +10,11 @@ import '../../alerts/alert_dialogs.dart';
 /// Basic Layout for Explore page
 class ExploreBasicLayout extends StatelessWidget{
 
-  final Trip trip;
+  final Trip tripDetails;
   final heroTag;
   final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
-  ExploreBasicLayout({required this.trip,this.heroTag});
+  ExploreBasicLayout({required this.tripDetails,this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,13 @@ class ExploreBasicLayout extends StatelessWidget{
             children: <Widget>[
               Stack(
                 children: [
-                  (trip.urlToImage?.isNotEmpty ?? false) ? Hero(
-                    tag: trip.documentId!,
+                  (tripDetails.urlToImage?.isNotEmpty ?? false) ? Hero(
+                    tag: tripDetails.documentId!,
                     transitionOnUserGestures: true,
                     child: FadeInImage.assetNetwork(
                       fit: BoxFit.fitWidth,
                       placeholder: travelImage,
-                      image: trip.urlToImage!,
+                      image: tripDetails.urlToImage!,
 
                     ),
                   ):
@@ -44,11 +44,11 @@ class ExploreBasicLayout extends StatelessWidget{
                           child: const Text('Request to Join',style: TextStyle(color: Colors.white),),
                           onPressed: ()
                           {
-                            String message = '${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.';
-                            String trip = trip.documentId;
+                            String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
+                            String trip = tripDetails.documentId!;
                             String type = 'joinRequest';
-                            String ownerID = trip.ownerID;
-                            bool ispublic = trip.ispublic;
+                            String ownerID = tripDetails.ownerID!;
+                            bool ispublic = tripDetails.ispublic;
 
                             CloudFunction().addNewNotification(message: message,
                               documentID: trip,
@@ -62,12 +62,12 @@ class ExploreBasicLayout extends StatelessWidget{
                 ],
               ),
               ListTile(
-                title: Text('${trip.location}',style: TextStyle(fontSize: 20.0)),
-                subtitle: Text('Owner: ${trip.displayName}',style: Theme.of(context).textTheme.subtitle2,),
+                title: Text('${tripDetails.location}',style: TextStyle(fontSize: 20.0)),
+                subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                 trailing: IconButton(
                   icon: const Icon(Icons.report,),
                   onPressed: (){
-                    TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: trip, type: 'trip');
+                    TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'trip');
                   },
                 ),
               ),
@@ -79,8 +79,8 @@ class ExploreBasicLayout extends StatelessWidget{
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('${trip.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
-                      Text('${TCFunctions().dateToMonthDay(trip.startDate!)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle1,)
+                      Text('${tripDetails.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
+                      Text('${TCFunctions().dateToMonthDay(tripDetails.startDate!)} - ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
 
 
                     ],
@@ -88,11 +88,11 @@ class ExploreBasicLayout extends StatelessWidget{
                 ),
               ),
 
-              if(trip.comment?.isNotEmpty ?? false) Container(
+              if(tripDetails.comment?.isNotEmpty ?? false) Container(
                 padding: const EdgeInsets.all(18.0),
                 decoration: BoxDecoration(
                 ),
-                child: Text(trip.comment!,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                child: Text(tripDetails.comment!,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
               ),
             ],
           ),

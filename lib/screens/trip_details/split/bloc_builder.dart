@@ -53,9 +53,9 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
             if (items != null) {
               double total = 0.00;
               items.forEach((item) {
-                total += item.itemTotal;
+                total += item.itemTotal!;
                 if (!uids.contains(item.purchasedByUID)) {
-                  uids.add(item.purchasedByUID);
+                  uids.add(item.purchasedByUID!);
                 }
               });
               return Column(
@@ -109,7 +109,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                                   SplitDetailsPageRoute,
                                   arguments: SplitDetailsArguments(
                                       splitObject: item,
-                                      purchasedByUID: item.purchasedByUID,
+                                      purchasedByUID: item.purchasedByUID!,
                                       trip: widget.trip));
                             },
                             child: Container(
@@ -121,14 +121,14 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                                   Expanded(
                                     flex: 1,
                                     child: SplitIconWidget(
-                                      type: item.itemType,
+                                      type: item.itemType!,
                                     ),
                                   ),
                                   Expanded(
                                     flex: 3,
                                     child: ListTile(
                                       title: Text(
-                                        item.itemName,
+                                        item.itemName!,
                                         style: SizeConfig.tablet
                                             ? Theme.of(context)
                                                 .textTheme
@@ -139,7 +139,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      subtitle: Text('\$${item.amountRemaining?.toStringAsFixed(2) ?? item.itemTotal!.toStringAsFixed(2)}  (${item.userSelectedList.length}pp)',
+                                      subtitle: Text('\$${item.amountRemaining?.toStringAsFixed(2) ?? item.itemTotal!.toStringAsFixed(2)}  (${item.userSelectedList!.length}pp)',
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontFamily: 'Cantata One',
@@ -174,8 +174,8 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
 class QuickDataCards extends StatelessWidget {
   const QuickDataCards({
     Key? key,
-    this.items,
-    this.uids,
+    required this.items,
+    required this.uids,
   }) : super(key: key);
 
   final List<SplitObject> items;
@@ -190,7 +190,7 @@ class QuickDataCards extends StatelessWidget {
     items.forEach((item) {
       calculatedList.forEach((object) {
         if (object.uid == item.purchasedByUID) {
-          object.total += item.itemTotal;
+          // object.total += item.itemTotal!;
         }
       });
     });
@@ -216,7 +216,7 @@ class QuickDataCards extends StatelessWidget {
               child: StreamBuilder<UserPublicProfile>(
                 builder: (context, userData) {
                   if (userData.hasData) {
-                    final UserPublicProfile user = userData.data;
+                    final UserPublicProfile user = userData.data as UserPublicProfile;
                     return Container(
                       padding: EdgeInsets.all(SizeConfig.defaultPadding),
                       height: SizeConfig.screenWidth * .35,
@@ -224,13 +224,13 @@ class QuickDataCards extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            user.displayName,
+                            user.displayName!,
                             style: SizeConfig.tablet
                                 ? Theme.of(context).textTheme.headline5
                                 : Theme.of(context).textTheme.subtitle1,
                           ),
                           Text(
-                            'Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',
+                            'Prepaid: \$${userDetails[index].total!.toStringAsFixed(2)}',
                             style: SizeConfig.tablet
                                 ? Theme.of(context).textTheme.headline5
                                 : Theme.of(context).textTheme.subtitle1,

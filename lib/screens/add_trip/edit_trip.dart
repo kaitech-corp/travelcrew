@@ -13,6 +13,7 @@ import '../../services/functions/cloud_functions.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/calendar_widget.dart';
 import 'add_trip_page.dart';
+import 'google_autocomplete.dart';
 import 'google_places.dart';
 
 

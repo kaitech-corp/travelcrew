@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_webservice/places.dart';
+import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,8 +67,8 @@ class TCFunctions {
         Timestamp _startDateX = Timestamp.now();
         Timestamp _endDateX = Timestamp.now();
 
-        _startTime = stringToTimeOfDay(startTime) ?? TimeOfDay.now();
-        _endTime = stringToTimeOfDay(endTime) ?? TimeOfDay.now();
+        _startTime = stringToTimeOfDay(startTime ?? TimeOfDay.now().toString());
+        _endTime = stringToTimeOfDay(endTime ?? TimeOfDay.now().toString());
 
         _startDateX = startDate ?? Timestamp.now();
         _endDateX = endDate ?? Timestamp.now();
@@ -117,10 +117,10 @@ class TCFunctions {
         Timestamp _startDateX = Timestamp.now();
         Timestamp _endDateX = Timestamp.now();
 
-        _startTime = stringToTimeOfDay(startTime) ?? TimeOfDay.now();
-        _endTime = stringToTimeOfDay(endTime) ?? TimeOfDay.now();
-        _startDateX = startDate;
-        _endDateX = startDate;
+        _startTime = stringToTimeOfDay(startTime ?? TimeOfDay.now().toString());
+        _endTime = stringToTimeOfDay(endTime ?? TimeOfDay.now().toString());
+        _startDateX = startDate!;
+        _endDateX = startDate!;
 
 
         final DateTime _startDate = DateTime(

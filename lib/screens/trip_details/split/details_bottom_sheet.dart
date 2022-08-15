@@ -15,8 +15,8 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
     Key? key,
     required this.user,
     required this.costObject,
-    this.splitObject,
-    this.purchasedByUser,
+    required this.splitObject,
+    required this.purchasedByUser,
   }) : super(key: key);
 
   final UserPublicProfile user;
@@ -41,13 +41,9 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: SizeConfig.screenWidth / 6,
-            backgroundImage: user.urlToImage.isNotEmpty
-                ? NetworkImage(
-                    user.urlToImage,
-                  )
-                : AssetImage(profileImagePlaceholder),
+            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage!),
           ),
-          Text(user.displayName, style: Theme.of(context).textTheme.headline5),
+          Text(user.displayName!, style: Theme.of(context).textTheme.headline5),
           Container(
             height: 10,
           ),
@@ -64,7 +60,7 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
           ),
           ListTile(
             title: (costObject.paid == false)
-                ? Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
+                ? Text('Owe: \$${costObject.amountOwe!.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.subtitle1)
                 : Text('Paid', style: Theme.of(context).textTheme.subtitle1),
             subtitle: (userService.currentUserID == purchasedByUser.uid)

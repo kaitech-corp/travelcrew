@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget BasketIcon(String department) {
+Widget BasketIcon(String? department) {
 
     switch (department){
       case 'Food':

@@ -7,7 +7,7 @@ import '../../profile_page/profile_widget.dart';
 class UserProfilePage extends StatelessWidget{
   final UserPublicProfile user;
 
-  UserProfilePage({this.user});
+  UserProfilePage({ required this.user});
 
   Widget build(BuildContext context) {
 

@@ -1,18 +1,18 @@
 class SignupState {
-  final bool? isEmailValid;
-  final bool? isPasswordValid;
-  final bool? isSubmitting;
-  final bool? isSuccess;
-  final bool? isFailure;
+  final bool isEmailValid;
+  final bool isPasswordValid;
+  final bool isSubmitting;
+  final bool isSuccess;
+  final bool isFailure;
 
-  bool?get isFormValid => isEmailValid! && isPasswordValid!;
+  bool? get isFormValid => isEmailValid! && isPasswordValid!;
 
   SignupState(
-      {this.isEmailValid,
-        this.isPasswordValid,
-        this.isSubmitting,
-        this.isSuccess,
-        this.isFailure});
+      {required this.isEmailValid,
+        required this.isPasswordValid,
+        required this.isSubmitting,
+        required this.isSuccess,
+        required this.isFailure});
 
   factory SignupState.initial() {
     return SignupState(

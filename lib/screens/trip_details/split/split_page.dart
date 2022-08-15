@@ -39,20 +39,20 @@ class _SplitPageState extends State<SplitPage> {
         height: SizeConfig.screenHeight * .4,
         width: SizeConfig.screenWidth,
         child: StreamBuilder2(
-          streams: Tuple2(
+          streams: StreamTuple2(
             DatabaseService(
                     itemDocID: splitObject.itemDocID,
                     tripDocID: splitObject.tripDocID)
                 .costDataList,
-            DatabaseService().getcrewList(widget.trip.accessUsers),
+            DatabaseService().getcrewList(widget.trip.accessUsers!),
           ),
           builder: (context, snapshots) {
-            if (snapshots.item1.hasData && snapshots.item2.hasData) {
-              List<CostObject> userCostData = snapshots.item1.data;
+            if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {
+              List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
               List<String> uidList = [];
               userCostData.forEach((element) {
                 if (!uidList.contains(element.uid)) {
-                  uidList.add(element.uid);
+                  uidList.add(element.uid!);
                 }
               });
 
@@ -64,7 +64,7 @@ class _SplitPageState extends State<SplitPage> {
                 DatabaseService().updateRemainingBalance(
                     splitObject, amountRemaining, uidList);
               }
-              List<UserPublicProfile> userPublicData = snapshots.item2.data;
+              List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
               return ListView.builder(
                   itemCount: userCostData.length,
                   itemBuilder: (context, index) {
@@ -103,19 +103,9 @@ class _SplitPageState extends State<SplitPage> {
                           child: ListTile(
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(25),
-                              child: userPublicProfile.urlToImage.isNotEmpty
-                                  ? Image.network(
-                                      userPublicProfile.urlToImage,
-                                      height: 50,
-                                      width: 50,
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.asset(
-                                      profileImagePlaceholder,
-                                      height: 50,
-                                      width: 50,
-                                      fit: BoxFit.fill,
-                                    ),
+                              child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: userPublicProfile.urlToImage!,height: 50,
+                                width: 50,
+                                fit: BoxFit.fill,)
                             ),
                             title: Text(userPublicProfile.displayName!,
                                 style: Theme.of(context).textTheme.subtitle1),

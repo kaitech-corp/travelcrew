@@ -68,7 +68,7 @@ class LodgingCard extends StatelessWidget {
                           ), trip: trip),
                       IconButton(
                           visualDensity: VisualDensity(horizontal: 0,vertical: -4),
-                          icon: FavoriteWidget(uid: userService.currentUserID,voters:lodging.voters,),
+                          icon: FavoriteWidget(uid: userService.currentUserID,voters: lodging.voters!,),
                           onPressed: () {
                             String fieldID = lodging.fieldID!;
                             String uid = userService.currentUserID;

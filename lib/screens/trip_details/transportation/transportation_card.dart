@@ -78,7 +78,7 @@ class TransportationCard extends StatelessWidget {
   }
 
   Widget menuButton(BuildContext context) {
-    return transportationData.uid == currentUserProfile?.uid ?? ''
+    return transportationData.uid == currentUserProfile.uid
         ? PopupMenuButton<String>(
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,

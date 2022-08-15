@@ -6,7 +6,7 @@ class ChatDateDisplay extends StatelessWidget{
 
   final String dateString;
 
-  const ChatDateDisplay({Key? key, this.dateString}) : super(key: key);
+  const ChatDateDisplay({Key? key, required this.dateString}) : super(key: key);
 
 
 

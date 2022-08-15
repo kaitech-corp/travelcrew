@@ -9,7 +9,7 @@ class ViewAnyLink extends StatefulWidget {
 }) : super(key: key);
 
   final String link;
-  final Function function;
+  final Function() function;
 
   @override
   _ViewAnyLinkState createState() => _ViewAnyLinkState();

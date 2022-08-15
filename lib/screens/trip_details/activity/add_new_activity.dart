@@ -14,6 +14,7 @@ import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/in_app_review.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../services/widgets/reusableWidgets.dart';
+import '../../add_trip/google_autocomplete.dart';
 import '../../add_trip/google_places.dart';
 
 class AddNewActivity extends StatefulWidget {

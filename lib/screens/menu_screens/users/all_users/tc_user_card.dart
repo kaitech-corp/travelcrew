@@ -161,7 +161,7 @@ class BlockedPopupMenu extends StatelessWidget {
         switch (value) {
           case 'unblock':
             {
-              CloudFunction().unBlockUser(allUsers.uid);
+              CloudFunction().unBlockUser(allUsers.uid!);
               TravelCrewAlertDialogs().unblockDialog(context);
             }
             break;
@@ -211,7 +211,7 @@ class UnblockedPopupMenu extends StatelessWidget {
             break;
           case 'block':
             {
-              TravelCrewAlertDialogs().blockAlert(context, allUsers.uid);
+              TravelCrewAlertDialogs().blockAlert(context, allUsers.uid!);
             }
             break;
           case 'report':

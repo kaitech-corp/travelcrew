@@ -8,7 +8,7 @@ import '../controller/basket_controller.dart';
 class CartShortView extends StatelessWidget {
   const CartShortView({
     Key? key,
-    this.controller,
+    required this.controller,
   }) : super(key: key);
 
   final BasketController controller;
@@ -31,8 +31,8 @@ class CartShortView extends StatelessWidget {
                     (index) => Padding(
                   padding: const EdgeInsets.only(right: defaultPadding / 2),
                   child: Hero(
-                    tag: controller.cart[index].walmartProducts.query + "_cartTag",
-                    child: BasketIcon(controller.cart[index].walmartProducts.type),
+                    tag: "${controller.cart[index].walmartProducts!.query} + _cartTag",
+                    child: BasketIcon(controller.cart[index].walmartProducts!.type),
                   ),
                 ),
               ),

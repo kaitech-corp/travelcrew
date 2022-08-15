@@ -86,7 +86,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  (widget.tripDetails.urlToImage.isNotEmpty) ? Stack(
+                  (widget.tripDetails.urlToImage!.isNotEmpty) ? Stack(
                     children: [
                       ImageAnimation(trip: widget.tripDetails,
                         expandController: expandController,),
@@ -124,7 +124,7 @@ class MemberPopupMenuButton extends StatelessWidget {
   const MemberPopupMenuButton({
     Key? key,
     required this.tripDetails,
-    required this.event, required this.scaffoldKey, required this.controller,this.basketController,
+    required this.event, required this.scaffoldKey, required this.controller, this.basketController,
 
   }) : super(key: key);
 
@@ -132,7 +132,7 @@ class MemberPopupMenuButton extends StatelessWidget {
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
-  final BasketController basketController;
+  final BasketController? basketController;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +156,7 @@ class MemberPopupMenuButton extends StatelessWidget {
               icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
             IconButton(
               onPressed: (){
-                navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: tripDetails,basketController: basketController));
+                navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: tripDetails,basketController: basketController!));
                 },
               icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
             IconButton(
