@@ -20,7 +20,7 @@ class ActivityDetails extends StatelessWidget {
   final ActivityData activity;
   final Trip trip;
 
-  const ActivityDetails({Key? key, this.activity, required this.trip}) : super(key: key);
+  const ActivityDetails({Key? key, required this.activity, required this.trip}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class ActivityDetails extends StatelessWidget {
           child: Container(
             height: SizeConfig.screenHeight,
             width: SizeConfig.screenWidth,
-            child: ActivityDataLayout(fieldID: activity.fieldID, trip: trip),
+            child: ActivityDataLayout(fieldID: activity.fieldID!, trip: trip),
           ),
         ));
   }
@@ -59,11 +59,11 @@ class ActivityDataLayout extends StatelessWidget {
           .activity,
       builder: (context, document) {
         if (document.hasData) {
-          ActivityData activity = document.data;
+          ActivityData activity = document.data as ActivityData;
           DateTimeModel timeModel = TCFunctions().addDateAndTime(
-              startDate: activity.dateTimestamp,
-              startTime: activity.startTime,
-              endTime: activity.endTime,
+              startDate: activity.dateTimestamp!,
+              startTime: activity.startTime!,
+              endTime: activity.endTime!,
               hasEndDate: false);
 
           Event event = TCFunctions().createEvent(
@@ -83,7 +83,7 @@ class ActivityDataLayout extends StatelessWidget {
                   children: [
                     ListTile(
                       title: Text(
-                        activity.activityType,
+                        activity.activityType!,
                         style: Theme.of(context).textTheme.headline5,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -105,8 +105,8 @@ class ActivityDataLayout extends StatelessWidget {
                               icon: Icons.calendar_today,
                             ),
                             title: Text(
-                              "${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp)} - "
-                              "${TCFunctions().formatTimestamp(activity.endDateTimestamp, wTime: false)}",
+                              "${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp!)} - "
+                              "${TCFunctions().formatTimestamp(activity.endDateTimestamp!, wTime: false)}",
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                             onTap: () {
@@ -140,14 +140,14 @@ class ActivityDataLayout extends StatelessWidget {
                               icon: Icons.map,
                             ),
                             title: Text(
-                              activity.location,
+                              activity.location!,
                               style: TextStyle(color: Colors.blue),
                             ),
                             onTap: () {
-                              MapsLauncher.launchQuery(activity.location);
+                              MapsLauncher.launchQuery(activity.location!);
                             },
                             onLongPress: () {
-                              FlutterClipboard.copy(activity.location)
+                              FlutterClipboard.copy(activity.location!)
                                   .whenComplete(() => TravelCrewAlertDialogs()
                                       .copiedToClipboardDialog(context));
                             },
@@ -169,7 +169,7 @@ class ActivityDataLayout extends StatelessWidget {
                             title: Tooltip(
                                 message: activity.comment,
                                 child: Text(
-                                  activity.comment,
+                                  activity.comment!,
                                   style: Theme.of(context).textTheme.subtitle1,
                                   maxLines: 7,
                                   overflow: TextOverflow.ellipsis,
@@ -197,9 +197,9 @@ class ActivityDataLayout extends StatelessWidget {
                         padding: EdgeInsets.all(SizeConfig.defaultPadding),
                         width: double.infinity,
                         child: InkWell(
-                          child: ViewAnyLink(link: activity.link,function: null,),
+                          child: ViewAnyLink(link: activity.link!,function: (){},),
                           onTap: () {
-                            TCFunctions().launchURL(activity.link);
+                            TCFunctions().launchURL(activity.link!);
                           },
                         ),
                       ),

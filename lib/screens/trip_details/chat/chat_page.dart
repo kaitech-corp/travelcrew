@@ -26,7 +26,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  GenericBloc<ChatData,ChatRepository> bloc;
+  late GenericBloc<ChatData,ChatRepository> bloc;
 
   var currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
@@ -64,7 +64,7 @@ class _ChatPageState extends State<ChatPage> {
                   Expanded(
                       child: GroupedListChatView(
                     data: state.data,
-                    documentId: widget.trip.documentId,
+                    documentId: widget.trip.documentId!,
                   )),
                   const Divider(
                     height: 1.0,
@@ -101,7 +101,7 @@ class _ChatPageState extends State<ChatPage> {
                                     final status = createStatus();
                                     _chatController.clear();
                                     final String displayName =
-                                        currentUserProfile.displayName;
+                                        currentUserProfile.displayName!;
                                     final String uid =
                                         userService.currentUserID;
                                     try {
@@ -139,7 +139,7 @@ class _ChatPageState extends State<ChatPage> {
   Map<String, bool> createStatus() {
     final Map<String, bool> status = {};
     final users =
-        widget.trip.accessUsers.where((f) => f != userService.currentUserID);
+        widget.trip.accessUsers!.where((f) => f != userService.currentUserID);
     users.forEach((f) => status[f] = false);
     return status;
   }

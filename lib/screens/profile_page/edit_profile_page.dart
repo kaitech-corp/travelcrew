@@ -21,7 +21,7 @@ class EditProfilePage extends StatefulWidget {
 class _SignupScreenState extends State {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserPublicProfile _user = UserPublicProfile();
-  File _image;
+  late File _image;
   final ImagePicker _picker = ImagePicker();
   String error = '';
   String destination1 = '';

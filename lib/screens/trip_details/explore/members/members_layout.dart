@@ -20,7 +20,7 @@ class MembersLayout extends StatefulWidget{
   final Trip trip;
   final String ownerID;
 
-  MembersLayout({Key? key, required this.trip, this.ownerID}) : super(key: key);
+  MembersLayout({Key? key, required this.trip, required this.ownerID}) : super(key: key);
 
   @override
   _MembersLayoutState createState() => _MembersLayoutState();
@@ -29,7 +29,7 @@ class MembersLayout extends StatefulWidget{
 class _MembersLayoutState extends State<MembersLayout> {
 
   var _showImage = false;
-  String _image;
+  late String _image;
   var userService = locator<UserService>();
 
   final ScrollController controller = ScrollController();
@@ -51,7 +51,7 @@ class _MembersLayoutState extends State<MembersLayout> {
                   'for members layout: ${userData.error.toString()}');
             }
             if(userData.hasData){
-              final List<UserPublicProfile> crew = userData.data;
+              final List<UserPublicProfile> crew = userData.data as List<UserPublicProfile>;
               return ListView.builder(
                     itemCount: crew.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -63,7 +63,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               return Loading();
             }
           },
-        stream: DatabaseService().getcrewList(widget.trip.accessUsers),),
+        stream: DatabaseService().getcrewList(widget.trip.accessUsers!),),
         if (_showImage) ...[
           BackdropFilter(
             filter: ImageFilter.blur(
@@ -102,7 +102,7 @@ class _MembersLayoutState extends State<MembersLayout> {
   Widget userCard(BuildContext context, UserPublicProfile member, Trip trip){
 
     return Card(
-      key: Key(member.uid),
+      key: Key(member.uid!),
       color: Colors.white,
       child: Container(
         width: SizeConfig.screenWidth,
@@ -112,7 +112,7 @@ class _MembersLayoutState extends State<MembersLayout> {
           onLongPress: (){
             setState(() {
               _showImage = true;
-              _image = member.urlToImage;
+              _image = member.urlToImage ?? '';
             });
           },
           onLongPressEnd: (details) {
@@ -128,14 +128,12 @@ class _MembersLayoutState extends State<MembersLayout> {
               Center(
                 child: CircleAvatar(
                   radius: SizeConfig.blockSizeHorizontal*7,
-                  backgroundImage: (member.urlToImage.isNotEmpty ?? false)
-                      ? NetworkImage(member.urlToImage,)
-                      : AssetImage(profileImagePlaceholder),
+                  child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: member.urlToImage ?? ''),
                 ),
               ),
               Expanded(
                 child: ListTile(
-                  title: Text(member.displayName,
+                  title: Text(member.displayName!,
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.start,),
                   trailing: (member.uid == userService.currentUserID || member.uid == trip.ownerID)

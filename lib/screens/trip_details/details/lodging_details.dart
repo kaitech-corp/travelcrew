@@ -37,7 +37,7 @@ class LodgingDetails extends StatelessWidget {
             height: SizeConfig.screenHeight,
             width: SizeConfig.screenWidth,
             child: LodgingDataLayout(
-              fieldID: lodging.fieldID,
+              fieldID: lodging.fieldID!,
               trip: trip,
             ),
           ),
@@ -62,7 +62,7 @@ class LodgingDataLayout extends StatelessWidget {
           DatabaseService(fieldID: fieldID, tripDocID: trip.documentId).lodging,
       builder: (context, document) {
         if (document.hasData) {
-          LodgingData lodging = document.data;
+          LodgingData lodging = document.data as LodgingData;
           DateTimeModel timeModel = TCFunctions().addDateAndTime(
               startDate: lodging.startDateTimestamp,
               endDate: lodging.endDateTimestamp,
@@ -87,7 +87,7 @@ class LodgingDataLayout extends StatelessWidget {
                   children: [
                     ListTile(
                       title: Text(
-                        lodging.lodgingType,
+                        lodging.lodgingType!,
                         style: Theme.of(context).textTheme.headline5,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -112,8 +112,8 @@ class LodgingDataLayout extends StatelessWidget {
                               icon: Icons.calendar_today,
                             ),
                             title: Text(
-                              "${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp)} - "
-                              "${TCFunctions().formatTimestamp(lodging.endDateTimestamp, wTime: false)}",
+                              "${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp!)} - "
+                              "${TCFunctions().formatTimestamp(lodging.endDateTimestamp!, wTime: false)}",
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                             onTap: () {
@@ -157,13 +157,13 @@ class LodgingDataLayout extends StatelessWidget {
                             leading: TripDetailsIconThemeWidget(
                               icon: Icons.map,
                             ),
-                            title: Text(lodging.location,
+                            title: Text(lodging.location!,
                                 style: TextStyle(color: Colors.blue)),
                             onTap: () {
-                              MapsLauncher.launchQuery(lodging.location);
+                              MapsLauncher.launchQuery(lodging.location!);
                             },
                             onLongPress: () {
-                              FlutterClipboard.copy(lodging.location)
+                              FlutterClipboard.copy(lodging.location!)
                                   .whenComplete(() => TravelCrewAlertDialogs()
                                       .copiedToClipboardDialog(context));
                             },
@@ -185,7 +185,7 @@ class LodgingDataLayout extends StatelessWidget {
                             title: Tooltip(
                                 message: lodging.comment,
                                 child: Text(
-                                  lodging.comment,
+                                  lodging.comment!,
                                   style: Theme.of(context).textTheme.subtitle1,
                                   maxLines: 10,
                                   overflow: TextOverflow.ellipsis,
@@ -212,9 +212,9 @@ class LodgingDataLayout extends StatelessWidget {
                       padding: EdgeInsets.all(SizeConfig.defaultPadding),
                       width: double.infinity,
                       child: InkWell(
-                        child: ViewAnyLink(link: lodging.link,function: null,),
+                        child: ViewAnyLink(link: lodging.link!,function: (){},),
                         onTap: () {
-                          TCFunctions().launchURL(lodging.link);
+                          TCFunctions().launchURL(lodging.link!);
                         },
                       ),
                     )

@@ -79,7 +79,7 @@ class TimePickers extends StatefulWidget{
   final ValueNotifier<String> startTime;
   final ValueNotifier<String> endTime;
 
-  const TimePickers({Key? key, this.lodging, this.startTime, this.endTime}) : super(key: key);
+  const TimePickers({Key? key, required this.lodging, required this.startTime, required this.endTime}) : super(key: key);
 
 
   @override
@@ -88,8 +88,8 @@ class TimePickers extends StatefulWidget{
 }
 
 class _TimePickersState extends State<TimePickers> {
-  TimeOfDay timeStart;
-  TimeOfDay timeEnd;
+  late TimeOfDay timeStart;
+  late TimeOfDay timeEnd;
 
   @override
   void initState() {
@@ -260,7 +260,7 @@ class HangingImageTheme3 extends StatelessWidget {
   final UserPublicProfile user;
 
   HangingImageTheme3({
-    Key? key, this.user,
+    Key? key, required this.user,
   }) : super(key: key);
 
   @override
@@ -352,11 +352,11 @@ class CrewModalBottomSheet extends StatelessWidget {
           builder: (context) => Container(
             padding: const EdgeInsets.all(10),
             height: SizeConfig.screenHeight*.7,
-            child: MembersLayout(tripDetails: tripDetails,ownerID: userService.currentUserID,),
+            child: MembersLayout(trip: tripDetails,ownerID: userService.currentUserID,),
           ),
         );
       },
-      child: Text("Crew ${tripDetails.accessUsers.length} "),
+      child: Text("Crew ${tripDetails.accessUsers!.length} "),
     );
   }
 }
@@ -375,12 +375,12 @@ class DateGauge extends StatelessWidget {
 
 
     CountDownDate countDownDate = TCFunctions().dateGauge(
-        tripDetails.dateCreatedTimeStamp?.millisecondsSinceEpoch,
-        tripDetails.startDateTimeStamp?.millisecondsSinceEpoch);
+        tripDetails.dateCreatedTimeStamp!.millisecondsSinceEpoch,
+        tripDetails.startDateTimeStamp!.millisecondsSinceEpoch);
     CountDownDate countDownDateReturn = TCFunctions().dateGauge(
-        tripDetails.startDateTimeStamp?.millisecondsSinceEpoch,
-        tripDetails.endDateTimeStamp?.millisecondsSinceEpoch);
-    String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp?.millisecondsSinceEpoch, tripDetails.endDateTimeStamp?.millisecondsSinceEpoch);
+        tripDetails.startDateTimeStamp!.millisecondsSinceEpoch,
+        tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
+    String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp!.millisecondsSinceEpoch, tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
 
     switch (result){
       case 'before':
@@ -419,7 +419,7 @@ class Gauge extends StatelessWidget {
           axes: <RadialAxis>[
             RadialAxis(
                 minimum: 0.0,
-                maximum: countDownDate.initialDayCount,
+                maximum: countDownDate.initialDayCount!,
                 showLabels: false,
                 showTicks: false,
                 startAngle: 180,
@@ -432,7 +432,7 @@ class Gauge extends StatelessWidget {
                 ),
                 pointers: <GaugePointer>[
                   RangePointer(
-                    value: countDownDate.gaugeCount,
+                    value: countDownDate.gaugeCount!,
                     cornerStyle: CornerStyle.bothCurve,
                     width: 0.2,
                     sizeUnit: GaugeSizeUnit.factor,
@@ -444,7 +444,7 @@ class Gauge extends StatelessWidget {
                       positionFactor: 0.1,
                       angle: 90,
                       widget: Text(
-                        countDownDate.daysLeft.toStringAsFixed(0) + ' Days Left',
+                        countDownDate.daysLeft!.toStringAsFixed(0) + ' Days Left',
                         style: Theme.of(context).textTheme.subtitle1,
                       ))
                 ])
@@ -460,13 +460,13 @@ class Gauge extends StatelessWidget {
 class RecentTripTile extends StatelessWidget{
   final String uid;
 
-  const RecentTripTile({Key? key, this.uid}) : super(key: key);
+  const RecentTripTile({Key? key, required this.uid}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         builder: (context, streamData){
           if(streamData.hasData){
-            List<Trip> trips = streamData.data;
+            List<Trip> trips = streamData.data as List<Trip>;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: (trips.length > 10) ? 10 : trips.length,
@@ -480,11 +480,11 @@ class RecentTripTile extends StatelessWidget{
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: (trip.urlToImage.isNotEmpty) ?
+                    child: (trip.urlToImage?.isNotEmpty?? false) ?
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
                         child: Image.network(
-                          trip.urlToImage,
+                          trip.urlToImage!,
                           fit: BoxFit.cover,
                           height: 125,
                           width: 125,

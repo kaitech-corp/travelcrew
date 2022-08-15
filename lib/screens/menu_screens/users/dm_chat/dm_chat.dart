@@ -10,7 +10,7 @@ import 'dm_chat_list.dart';
 
 class DMChat extends StatefulWidget {
   final UserPublicProfile user;
-  DMChat({this.user});
+  DMChat({required this.user});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,7 +28,7 @@ class _DMChatState extends State<DMChat> {
 
   @override
   Widget build(BuildContext context) {
-    clearChat(widget.user.uid);
+    clearChat(widget.user.uid!);
 
     return StreamProvider<List<ChatData>>.value(
       initialData: [],
@@ -40,7 +40,7 @@ class _DMChatState extends State<DMChat> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              widget.user.displayName,
+              widget.user.displayName!,
               style: Theme.of(context).textTheme.headline5,
               overflow: TextOverflow.ellipsis,
             ),
@@ -87,7 +87,7 @@ class _DMChatState extends State<DMChat> {
                                 final status = createStatus();
                                 _chatController.clear();
                                 final String displayName =
-                                    currentUserProfile.displayName;
+                                    currentUserProfile.displayName ?? '';
                                 final String uid = userService.currentUserID;
                                 await DatabaseService(userID: widget.user.uid)
                                     .addNewDMChatMessage(
@@ -109,7 +109,7 @@ class _DMChatState extends State<DMChat> {
   }
 
   Map<String, bool> createStatus() {
-    final List<String> _members = [userService.currentUserID, widget.user.uid];
+    final List<String> _members = [userService.currentUserID, widget.user.uid!];
     final Map<String, bool> status = {};
     final users = _members.where((f) => f != userService.currentUserID);
     users.forEach((f) => status[f] = false);

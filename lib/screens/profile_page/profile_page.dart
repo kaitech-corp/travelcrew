@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     '${userData.error.toString()}');
               }
               if (userData.hasData) {
-                final UserPublicProfile user = userData.data;
+                final UserPublicProfile user = userData.data as UserPublicProfile;
 
                 return Stack(children: [
                   HangingImageTheme3(

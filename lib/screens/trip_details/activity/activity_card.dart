@@ -26,7 +26,7 @@ class ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        key: Key(activity.fieldID),
+        key: Key(activity.fieldID!),
         child: GlobalCard(
           widget: InkWell(
             splashColor: Colors.blue.withAlpha(30),
@@ -68,7 +68,7 @@ class ActivityCard extends StatelessWidget {
                       null,
                     ),
                     if(activity.link?.isNotEmpty ?? false)
-                      ViewAnyLink(link: activity.link,function: ()=>{},),
+                      ViewAnyLink(link: activity.link!,function: ()=>{},),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -85,16 +85,16 @@ class ActivityCard extends StatelessWidget {
                                 horizontal: 0, vertical: -4),
                             icon: FavoriteWidget(
                               uid: userService.currentUserID,
-                              voters: activity.voters,),
+                              voters: activity.voters ?? [],),
                             onPressed: () {
-                              String fieldID = activity.fieldID;
-                              if (!activity.voters.contains(
+                              String fieldID = activity.fieldID!;
+                              if (!activity.voters!.contains(
                                   userService.currentUserID)) {
                                 return CloudFunction().addVoterToActivity(trip
-                                    .documentId, fieldID);
+                                    .documentId!, fieldID);
                               } else {
                                 return CloudFunction().removeVoterFromActivity(
-                                    trip.documentId, fieldID);
+                                    trip.documentId!, fieldID);
                               }
                             }
                         ),

@@ -55,9 +55,9 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                     height: 2,
                                     color: Colors.blueAccent,
                                   ),
-                                  onChanged: (String newValue) {
+                                  onChanged: (newValue) {
                                     setState(() {
-                                      dropdownValue = newValue;
+                                      dropdownValue = newValue ?? '';
                                     });
                                   },
                                   items: modes
@@ -129,8 +129,8 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            final form = _formKey.currentState;
-            String documentID = widget.trip.documentId;
+            final form = _formKey.currentState!;
+            String documentID = widget.trip.documentId!;
             String message = 'A new travel method has been added to ${widget.trip.tripName}';
             if (form.validate()) {
               try {
@@ -138,7 +138,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                 CloudFunction().logEvent(action);
                 CloudFunction().addTransportation(
                   mode: dropdownValue,
-                  tripDocID: widget.trip.documentId,
+                  tripDocID: widget.trip.documentId!,
                   canCarpool: canCarpool,
                   carpoolingWith: carpoolingWith,
                   airline: airline.trim(),
@@ -152,7 +152,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
               try {
                 String action = 'Sending notifications to access users for $documentId';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers.forEach((f) {
+                widget.trip.accessUsers!.forEach((f) {
                   if(f != userService.currentUserID){
                     CloudFunction().addNewNotification(
                       message: message,

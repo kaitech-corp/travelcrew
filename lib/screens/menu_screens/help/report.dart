@@ -13,7 +13,7 @@ class ReportContent extends StatefulWidget {
   final UserPublicProfile? userAccount;
   final ActivityData? activity;
   final LodgingData? lodging;
-  final Trip? tripDetails;
+  final Trip? trip;
 
   const ReportContent(
       {Key? key,
@@ -21,7 +21,7 @@ class ReportContent extends StatefulWidget {
       this.userAccount,
       this.activity,
       this.lodging,
-      this.tripDetails})
+      this.trip})
       : super(key: key);
   @override
   _ReportContentState createState() => _ReportContentState();
@@ -63,17 +63,17 @@ class _ReportContentState extends State<ReportContent> {
           });
         }
         break;
-      case 'tripDetails':
+      case 'trip':
         {
           setState(() {
-            if (widget.tripDetails!.ispublic) {
+            if (widget.trip!.ispublic) {
               collection = 'trips';
             } else {
               collection = 'privateTrips';
             }
-            docID = widget.tripDetails!.documentId!;
-            offenderID = widget.tripDetails!.ownerID!;
-            urlToImage = widget.tripDetails!.urlToImage!;
+            docID = widget.trip!.documentId!;
+            offenderID = widget.trip!.ownerID!;
+            urlToImage = widget.trip!.urlToImage!;
           });
         }
         break;
@@ -186,10 +186,10 @@ class _ReportContentState extends State<ReportContent> {
                     'Reporting: ${widget.lodging!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
-                if (widget.tripDetails != null)
+                if (widget.trip != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.tripDetails!.displayName}',
+                    'Reporting: ${widget.trip!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 const SizedBox(height: 30),

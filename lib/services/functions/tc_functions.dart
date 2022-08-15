@@ -24,27 +24,27 @@ class TCFunctions {
   }
   
   Event createEvent(
-      {ActivityData activity,
-      DateTimeModel timeModel,
-      LodgingData lodging,
-      String type}){
+      {ActivityData? activity,
+      required DateTimeModel timeModel,
+      LodgingData? lodging,
+      required String type}){
 
     if(type == 'Activity') {
       final Event event = Event(
-        title: activity.activityType,
-        description: activity.comment,
-        location: activity.location,
-        startDate: timeModel.startDate,
-        endDate: timeModel.endDate,
+        title: activity!.activityType!,
+        description: activity!.comment!,
+        location: activity!.location!,
+        startDate: timeModel.startDate!,
+        endDate: timeModel.endDate!,
       );
       return event;
     } else{
       final Event event = Event(
-        title: lodging.lodgingType,
-        description: lodging.comment,
-        location: lodging.location,
-        startDate: timeModel.startDate,
-        endDate: timeModel.endDate,
+        title: lodging!.lodgingType!,
+        description: lodging!.comment!,
+        location: lodging!.location!,
+        startDate: timeModel.startDate!,
+        endDate: timeModel.endDate!,
         // allDay: true,
       );
       return event;
@@ -54,11 +54,11 @@ class TCFunctions {
 
 
   DateTimeModel addDateAndTime(
-      {Timestamp startDate,
-      Timestamp endDate,
-      String startTime,
-      String endTime,
-      bool hasEndDate}){
+      {Timestamp? startDate,
+      Timestamp? endDate,
+      String? startTime,
+      String? endTime,
+      required bool hasEndDate}){
 
     if(hasEndDate){
       try {
@@ -285,7 +285,7 @@ class TCFunctions {
   }
 
   List<String> splitDocID(List<String> x){
-    final _idList = [];
+    final List<String> _idList = [];
     x.forEach((id) {
       final _y = id.split('_');
       _y.remove(userService.currentUserID);
@@ -298,7 +298,7 @@ class TCFunctions {
     return Location(lat: lat, lng: lng);
   }
 
-  String formatTimestamp (Timestamp timestamp, {bool wTime}){
+  String formatTimestamp (Timestamp timestamp, {required bool wTime}){
     try {
       final DateFormat format = DateFormat('yMMMd');
       final DateFormat format2 = DateFormat('yMMMd').add_jm();
@@ -324,7 +324,7 @@ class TCFunctions {
     }
   }
 
-  String formatTimestampYM (Timestamp timestamp, {bool wTime}){
+  String formatTimestampYM (Timestamp timestamp, {required bool wTime}){
     try {
       final DateFormat format = DateFormat('yMMM');
       final DateFormat format2 = DateFormat('yMMM').add_jm();

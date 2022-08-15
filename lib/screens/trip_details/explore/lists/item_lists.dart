@@ -18,7 +18,7 @@ import '../../basket_list/controller/basket_controller.dart';
 class BringingList extends StatefulWidget {
   final String documentID;
   final BasketController controller;
-  BringingList({this.documentID, this.controller});
+  BringingList({required this.documentID, required this.controller});
 
   @override
   _BringingListState createState() => _BringingListState();
@@ -49,7 +49,7 @@ class _BringingListState extends State<BringingList> {
         height: MediaQuery.of(context).size.height,
         color: Colors.blue.shade100,
         child: SearchBar(
-            textStyle: Theme.of(context).textTheme.subtitle2,
+            textStyle: Theme.of(context).textTheme.subtitle2!,
             cancellationWidget: const Text('Clear'),
             placeHolder: Text(
               '  i.e. Cups, Doritos, Flashlight',
@@ -60,13 +60,13 @@ class _BringingListState extends State<BringingList> {
             onItemFound: (WalmartProducts product, int index) {
               // return
               return CheckboxListTile(
-                title: Text(product.query),
+                title: Text(product.query!),
                 // subtitle: Text(product.department[0]['name'] ?? 'Unknown'),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
-                onChanged: (bool selected) {
+                onChanged: (selected) {
                   setState(() {
-                    _onSelectedProduct(selected, product);
+                    _onSelectedProduct(selected!, product);
                   });
                 },
                 activeColor: Colors.green,
@@ -80,7 +80,7 @@ class _BringingListState extends State<BringingList> {
 
 class NeedList extends StatefulWidget {
   final String documentID;
-  NeedList({this.documentID});
+  NeedList({required this.documentID});
 
   @override
   _NeedListState createState() => _NeedListState();
@@ -102,19 +102,19 @@ class _NeedListState extends State<NeedList> {
   }
 
   static const historyLength = 5;
-  bool selected;
+  late bool selected;
   String query = 'chips';
   List<String> filteredSearchHistory = [];
   List<String> _searchHistory = [];
   List<WalmartProducts> queryResults = [];
-  TextEditingController controller;
+  late TextEditingController controller;
 
   List<String> filterSearchTerms({
-    required String filter,
+    String? filter,
   }) {
-    if (filter != null && filter.isNotEmpty) {
+    if (filter?.isNotEmpty ?? false) {
       return _searchHistory.reversed
-          .where((term) => term.startsWith(filter))
+          .where((term) => term.startsWith(filter!))
           .toList();
     } else {
       return _searchHistory.reversed.toList();
@@ -145,7 +145,7 @@ class _NeedListState extends State<NeedList> {
     addSearchTerm(term);
   }
 
-  void searchForQuery([String item]) {
+  void searchForQuery([String? item]) {
     if (query.length > 2) {
       setState(() async {
         queryResults = await WalmartProductSearch().getProducts(query);
@@ -176,7 +176,7 @@ class _NeedListState extends State<NeedList> {
       child: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: SearchBar(
-            textStyle: Theme.of(context).textTheme.subtitle2,
+            textStyle: Theme.of(context).textTheme.subtitle2!,
             cancellationWidget: const Text('Clear'),
             placeHolder: NeedListToDisplay(
               documentID: widget.documentID,
@@ -184,16 +184,16 @@ class _NeedListState extends State<NeedList> {
             onSearch: WalmartProductSearch().getProducts,
             onItemFound: (WalmartProducts product, int index) {
               return CheckboxListTile(
-                title: Text(product.query),
+                title: Text(product.query ?? ''),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
-                onChanged: (bool selected) {
+                onChanged: (selected) {
                   setState(() {
-                    _onSelectedProduct(selected, product.query);
+                    _onSelectedProduct(selected!, product.query);
                     if (selected == true) {
                       try {
                         CloudFunction().addItemToNeedList(widget.documentID,
-                            product.query, currentUserProfile.displayName, '');
+                            product.query!, currentUserProfile?.displayName ?? '', '');
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Item added')));
                       } catch (e) {}
@@ -216,13 +216,13 @@ class _NeedListState extends State<NeedList> {
       title: Text(product.query),
       controlAffinity: ListTileControlAffinity.trailing,
       value: _selectedProducts.contains(product.query),
-      onChanged: (bool selected) {
+      onChanged: (selected) {
         setState(() {
-          _onSelectedProduct(selected, product.query);
+          _onSelectedProduct(selected!, product.query);
           if (selected == true) {
             try {
               CloudFunction().addItemToNeedList(widget.documentID,
-                  product.query, currentUserProfile.displayName, '');
+                  product.query, currentUserProfile?.displayName ?? '', '');
               ScaffoldMessenger.of(context)
                   .showSnackBar(
                   const SnackBar(content: Text('Item added')
@@ -246,13 +246,13 @@ class _NeedListState extends State<NeedList> {
 class NeedListToDisplay extends StatelessWidget {
   final String documentID;
 
-  const NeedListToDisplay({Key? key, this.documentID}) : super(key: key);
+  const NeedListToDisplay({Key? key, required this.documentID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     void _onSelectedItems(Need item) {
       CloudFunction().addItemToBringingList(documentID, item.item, item.type);
-      CloudFunction().removeItemFromNeedList(documentID, item.documentID);
+      CloudFunction().removeItemFromNeedList(documentID, item.documentID!);
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Item added to Bringing list')));
     }
@@ -265,10 +265,11 @@ class NeedListToDisplay extends StatelessWidget {
               'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
+          List<Need> needList = items.data as List<Need>;
           return ListView.builder(
-            itemCount: items.data.length,
+            itemCount: needList.length,
             itemBuilder: (context, index) {
-              final Need item = items.data[index];
+              final Need item = needList[index];
               return Dismissible(
                 direction: DismissDirection.endToStart,
                 background: Container(
@@ -281,10 +282,10 @@ class NeedListToDisplay extends StatelessWidget {
                         color: Colors.white,
                       )),
                 ),
-                key: Key(item.documentID),
+                key: Key(item.documentID!),
                 onDismissed: (DismissDirection direction) {
                   CloudFunction()
-                      .removeItemFromNeedList(documentID, item.documentID);
+                      .removeItemFromNeedList(documentID, item.documentID!);
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Item removed')));
                 },
@@ -293,7 +294,7 @@ class NeedListToDisplay extends StatelessWidget {
                     child: Icon(Icons.shopping_basket),
                   ),
                   title: Text(
-                    item.item.toUpperCase(),
+                    item.item!.toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   subtitle: Text(
@@ -332,40 +333,41 @@ class BringListToDisplay extends StatelessWidget {
               'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
+          List<Bringing> bringingList = items.data as List<Bringing>;
           return ListView.builder(
-            itemCount: items.data.length,
+            itemCount: bringingList.length,
             itemBuilder: (BuildContext context, int index) {
-              final Bringing item = items.data[index];
+              final Bringing item = bringingList[index];
               return ListTile(
-                key: Key(item.documentID),
+                key: Key(item.documentID!),
                 onLongPress: () {
                   TravelCrewAlertDialogs().deleteBringingItemAlert(
-                      context, tripDocID, item.documentID);
+                      context, tripDocID, item.documentID!);
                 },
-                leading: BasketIcon(item.type),
+                leading: BasketIcon(item.type!),
                 title: Text(
-                  item.item.toUpperCase(),
+                  item.item!.toUpperCase(),
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  item.displayName,
+                  item.displayName!,
                   style: Theme.of(context).textTheme.subtitle2,
                 ),
                 trailing: IconButton(
                   icon: BadgeIcon(
                     icon: FavoriteWidget(
                       uid: userService.currentUserID,
-                      voters: item.voters,),
+                      voters: item.voters ?? [],),
                     badgeCount: item.voters?.length ?? 0,
                   ),
                   onPressed: () {
                     if (item.voters?.contains(userService.currentUserID) ??
                         false) {
                       CloudFunction().removeVoterFromBringingItem(
-                          tripDocID: tripDocID, documentID: item.documentID);
+                          tripDocID: tripDocID, documentID: item.documentID!);
                     } else {
                       CloudFunction().addVoterToBringingItem(
-                          tripDocID: tripDocID, documentID: item.documentID);
+                          tripDocID: tripDocID, documentID: item.documentID!);
                     }
                   },
                 ),
@@ -385,7 +387,7 @@ class BringListToDisplay extends StatelessWidget {
 class CustomList extends StatefulWidget {
   final String documentID;
 
-  CustomList({Key? key, this.documentID}) : super(key: key);
+  CustomList({Key? key, required this.documentID}) : super(key: key);
 
   @override
   _CustomListState createState() => _CustomListState();
@@ -420,7 +422,7 @@ class _CustomListState extends State<CustomList> {
                           ),
                           validator: (value) {
                             // ignore: missing_return
-                            if (value.isEmpty) {
+                            if (value?.isEmpty ?? false) {
                               return 'Please enter an item first.';
                               // ignore: missing_return
                             }
@@ -443,7 +445,7 @@ class _CustomListState extends State<CustomList> {
                                   groupValue: option,
                                   onChanged: (value) {
                                     setState(() {
-                                      option = value;
+                                      option = value!;
                                     });
                                   });
                             }),
@@ -454,7 +456,7 @@ class _CustomListState extends State<CustomList> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            final form = _formKey.currentState;
+                            final form = _formKey.currentState!;
                             form.save();
                             if (form.validate()) {
                               CloudFunction().addItemToBringingList(

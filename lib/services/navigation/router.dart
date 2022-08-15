@@ -253,11 +253,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: NotificationPage(),
       );
     case ReportContentRoute:
-      ReportArguments arguments = settings.arguments;
+      ReportArguments arguments = settings.arguments as ReportArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: ReportContent(activity: arguments.activity,
-          lodging: arguments.lodging,trip: arguments.trip,
+          lodging: arguments.lodging, trip: arguments.trip,
           type: arguments.type,userAccount: arguments.userAccount,),
       );
     case SettingsRoute:
@@ -274,7 +274,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: SignupScreen(),
       );
     case SplitDetailsPageRoute:
-      SplitDetailsArguments arguments = settings.arguments;
+      SplitDetailsArguments arguments = settings.arguments as SplitDetailsArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: SplitDetailsPage(
@@ -294,7 +294,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case UserProfilePageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: UserProfilePage(user: args,),
+        viewToShow: UserProfilePage(user: args as UserPublicProfile,),
       );
     case ProfilePageRoute:
       return _getPageRoute(
@@ -321,7 +321,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   }
 }
 
-MaterialPageRoute _getPageRoute({String routeName, Widget viewToShow }) {
+MaterialPageRoute _getPageRoute({required String routeName, required Widget viewToShow }) {
   return MaterialPageRoute(
       settings: RouteSettings(
         name: routeName,
@@ -344,9 +344,9 @@ class EditLodgingArguments{
   EditLodgingArguments(this.lodging, this.trip);
 }
 class DetailsPageArguments{
-  final ActivityData activity;
-  final LodgingData lodging;
-  final TransportationData transport;
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final TransportationData? transport;
   final Trip trip;
   final String type;
 
@@ -355,7 +355,7 @@ class DetailsPageArguments{
     this.lodging,
     this.transport,
     required this.trip,
-    this.type});
+    required this.type});
 
 }
 class AddToListPageArguments{
@@ -363,7 +363,7 @@ class AddToListPageArguments{
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
 
-  AddToListPageArguments({required this.trip, required this.scaffoldKey, this.controller});
+  AddToListPageArguments({required this.trip, required this.scaffoldKey, required this.controller});
 }
 class MembersLayoutArguments{
   final List<Members> members;
@@ -396,7 +396,7 @@ class SplitDetailsArguments{
   final String purchasedByUID;
   final Trip trip;
 
-  SplitDetailsArguments({required this.splitObject, this.purchasedByUID, required this.trip});
+  SplitDetailsArguments({required this.splitObject, required this.purchasedByUID, required this.trip});
 
 }
 
@@ -404,6 +404,6 @@ class BasketListArguments{
   final Trip trip;
   final BasketController basketController;
 
-  BasketListArguments({this.trip, this.basketController});
+  BasketListArguments({required this.trip, required this.basketController});
 
 }
