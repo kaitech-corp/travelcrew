@@ -27,7 +27,7 @@ class ExploreOwnerLayout extends StatefulWidget {
   final PersistentBottomSheetController controller;
 
 
-  ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey, this.controller,});
+  ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey, required this.controller,});
 
   @override
   _ExploreOwnerLayoutState createState() => _ExploreOwnerLayoutState();
@@ -76,11 +76,11 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
     String _image;
 
     final Event event = Event(
-      title: widget.trip.tripName,
-      description: widget.trip.comment,
-      location: widget.trip.location,
-      startDate: widget.trip.startDateTimeStamp.toDate(),
-      endDate: widget.trip.endDateTimeStamp.toDate(),
+      title: widget.trip.tripName!,
+      description: widget.trip.comment!,
+      location: widget.trip.location!,
+      startDate: widget.trip.startDateTimeStamp!.toDate(),
+      endDate: widget.trip.endDateTimeStamp!.toDate(),
     );
 
 
@@ -98,13 +98,13 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                   Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    (widget.trip.urlToImage.isNotEmpty) ? Stack(
+                    (widget.trip.urlToImage?.isNotEmpty ?? false) ? Stack(
                       children: [
                         GestureDetector(
                           onLongPress: (){
                             setState(() {
                               _showImage = true;
-                              _image = widget.trip.urlToImage;
+                              _image = widget.trip.urlToImage!;
                             });
                           },
                           onLongPressEnd: (details) {
@@ -132,7 +132,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                     Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
                     TripDetailsWidget(
                       expandController: expandController,
-                      trip: widget.trip,
+                      tripDetails: widget.trip,
                       event: event,
                       detailsPadding: _detailsPadding,
                     )
@@ -182,7 +182,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
         children: [
           IconButton(
             onPressed: (){
-              MapsLauncher.launchQuery(trip.location);
+              MapsLauncher.launchQuery(trip.location!);
               },
             icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
           IconButton(

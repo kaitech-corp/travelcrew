@@ -39,7 +39,7 @@ class SplitDetailsPage extends StatelessWidget {
                   itemDocID: splitObject.itemDocID,
                   tripDocID: splitObject.tripDocID)
               .costDataList,
-          DatabaseService().getcrewList(trip.accessUsers),
+          DatabaseService().getcrewList(trip.accessUsers!),
         ),
         builder: (BuildContext context, snapshots) {
           if (snapshots.item1.hasData && snapshots.item2.hasData) {
@@ -91,7 +91,7 @@ class SplitDetailsPage extends StatelessWidget {
                         decoration: BoxDecoration(
                             border: Border(
                                 top: BorderSide(
-                          color: Colors.grey[100],
+                          color: Colors.grey[100]!,
                         ))),
                         padding: const EdgeInsets.all(4),
                         child: ListTile(

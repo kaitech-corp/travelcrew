@@ -104,7 +104,7 @@ class ChatCard extends StatelessWidget {
                                 throw 'Could not launch $link';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontFamily: 'Cantata One',

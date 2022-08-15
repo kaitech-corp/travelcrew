@@ -1,6 +1,5 @@
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../models/custom_objects.dart';
 import '../../../../services/apis/api.dart';
@@ -193,7 +192,7 @@ class _NeedListState extends State<NeedList> {
                     if (selected == true) {
                       try {
                         CloudFunction().addItemToNeedList(widget.documentID,
-                            product.query!, currentUserProfile?.displayName ?? '', '');
+                            product.query!, currentUserProfile.displayName ?? '', '');
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Item added')));
                       } catch (e) {}
@@ -222,7 +221,7 @@ class _NeedListState extends State<NeedList> {
           if (selected == true) {
             try {
               CloudFunction().addItemToNeedList(widget.documentID,
-                  product.query, currentUserProfile?.displayName ?? '', '');
+                  product.query, currentUserProfile.displayName ?? '', '');
               ScaffoldMessenger.of(context)
                   .showSnackBar(
                   const SnackBar(content: Text('Item added')

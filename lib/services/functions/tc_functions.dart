@@ -32,8 +32,8 @@ class TCFunctions {
     if(type == 'Activity') {
       final Event event = Event(
         title: activity!.activityType!,
-        description: activity!.comment!,
-        location: activity!.location!,
+        description: activity.comment!,
+        location: activity.location!,
         startDate: timeModel.startDate!,
         endDate: timeModel.endDate!,
       );
@@ -41,8 +41,8 @@ class TCFunctions {
     } else{
       final Event event = Event(
         title: lodging!.lodgingType!,
-        description: lodging!.comment!,
-        location: lodging!.location!,
+        description: lodging.comment!,
+        location: lodging.location!,
         startDate: timeModel.startDate!,
         endDate: timeModel.endDate!,
         // allDay: true,

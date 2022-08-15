@@ -10,10 +10,8 @@ import '../../models/chat_model.dart';
 import '../../models/cost_model.dart';
 import '../../models/custom_objects.dart';
 import '../../models/lodging_model.dart';
-import '../../models/notification_model.dart';
 import '../../models/settings_model.dart';
 import '../../models/split_model.dart';
-import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
 import '../../screens/trip_details/split/split_package.dart';
 import '../../services/constants/constants.dart';
@@ -856,13 +854,13 @@ class DatabaseService {
     }
   }
 
-  ////Retrieve current user's ollowing list
+  ////Retrieve current user's following list
   Future<UserPublicProfile> followingList() async{
     final ref = await userPublicProfileCollection.doc(userService.currentUserID).get();
     if(ref.exists){
       final Map<String, dynamic> data = ref.data() as Map<String, dynamic>;
       return UserPublicProfile(
-        following: List<String>.from(data['following']) ?? [],
+        following: List<String>.from(data['following']),
       );
     } else {
       return UserPublicProfile();
@@ -942,7 +940,7 @@ class DatabaseService {
         final ref = await tripsCollectionUnordered.doc(docID).collection(
             'Members').get();
         final List<Members> memberList = ref.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          final Map<String, dynamic> data = doc.data();
           return Members.fromData(data);
         }).toList();
         memberList.sort((a, b) => a.lastName!.compareTo(b.lastName!));
@@ -961,7 +959,7 @@ class DatabaseService {
             'Members').get();
 
           final List<Members> memberList = ref.docs.map((doc) {
-            final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            final Map<String, dynamic> data = doc.data();
             return Members.fromData(data);
           }).toList();
           memberList.sort((a, b) => a.lastName!.compareTo(b.lastName!));
@@ -1442,7 +1440,7 @@ class DatabaseService {
   Future addNewDMChatMessage(String displayName, String message, String uid, Map status) async {
     final key = chatCollection.doc().id;
 
-    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
+    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
 
     final ref = await dmChatCollection.doc(chatID).get();
     if(!ref.exists) {
@@ -1497,7 +1495,7 @@ class DatabaseService {
   }
 
   /// Get all direct message chat messages
-  Stream<List<ChatData>> get dmChatList {
+  Stream<List<ChatData>>? get dmChatList {
     try {
       String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
       return dmChatCollection.doc(chatID).collection('messages')
@@ -1506,18 +1504,18 @@ class DatabaseService {
     }catch (e) {
       _analyticsService.writeError(e.toString());
       CloudFunction().logError('Error retrieving dm chat messages:  ${e.toString()}');
-      return [];
+      return null;
     }
   }
 
-  Stream<List<ChatData>> get dmChatListNotification {
+  Stream<List<ChatData>>? get dmChatListNotification {
     String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
     try {
       return dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false)
           .snapshots().map(_chatListFromSnapshot);
     }catch (e) {
       CloudFunction().logError('Error retrieving dm chat notifications:  ${e.toString()}');
-      return [];
+      return null;
     }
   }
 

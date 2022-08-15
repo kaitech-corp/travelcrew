@@ -99,7 +99,7 @@ class ActivityDataLayout extends StatelessWidget {
                       color: Colors.black,
                       thickness: 2,
                     ),
-                    activity.startDateTimestamp != null ?? false
+                    activity.startDateTimestamp != null
                         ? ListTile(
                             leading: TripDetailsIconThemeWidget(
                               icon: Icons.calendar_today,

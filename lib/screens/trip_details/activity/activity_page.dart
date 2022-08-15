@@ -28,7 +28,7 @@ class ActivityPage extends StatefulWidget {
 
 class _ActivityPageState extends State<ActivityPage> {
 
-  GenericBloc<ActivityData,ActivityRepository> bloc;
+  late GenericBloc<ActivityData,ActivityRepository> bloc;
 
   @override
   void initState() {
@@ -56,9 +56,9 @@ class _ActivityPageState extends State<ActivityPage> {
                     GroupedListView<ActivityData, String>(
                       elements: activityList,
                       groupBy: (activity) => DateTime(
-                          activity.startDateTimestamp.toDate().year,
-                          activity.startDateTimestamp.toDate().month,
-                          activity.startDateTimestamp.toDate().day,).toString(),
+                          activity.startDateTimestamp!.toDate().year,
+                          activity.startDateTimestamp!.toDate().month,
+                          activity.startDateTimestamp!.toDate().day,).toString(),
                       order: GroupedListOrder.ASC,
                       groupSeparatorBuilder: (activity) => Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
@@ -66,9 +66,9 @@ class _ActivityPageState extends State<ActivityPage> {
                             child: Text(
                               TCFunctions().dateToMonthDayFromTimestamp(
                                   Timestamp.fromDate(DateTime.parse(activity))),
-                              style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.black54),)),
+                              style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black54),)),
                       ),
-                      itemComparator: (a,b) => (a.startTime.compareTo(b.startTime)),
+                      itemComparator: (a,b) => (a.startTime!.compareTo(b.startTime!)),
                       itemBuilder: (context, activity){
                         return ActivityCard(activity: activity,trip: widget.trip,);
                       },

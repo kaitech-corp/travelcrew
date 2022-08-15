@@ -29,7 +29,7 @@ class _SplitPageState extends State<SplitPage> {
   @override
   Widget build(BuildContext context) {
     return SplitBlocBuilder(
-      trip: widget.tripDetails,
+      trip: widget.trip,
     );
   }
 
@@ -44,7 +44,7 @@ class _SplitPageState extends State<SplitPage> {
                     itemDocID: splitObject.itemDocID,
                     tripDocID: splitObject.tripDocID)
                 .costDataList,
-            DatabaseService().getcrewList(widget.tripDetails.accessUsers),
+            DatabaseService().getcrewList(widget.trip.accessUsers),
           ),
           builder: (context, snapshots) {
             if (snapshots.item1.hasData && snapshots.item2.hasData) {
@@ -97,7 +97,7 @@ class _SplitPageState extends State<SplitPage> {
                           decoration: BoxDecoration(
                               border: Border(
                                   top: BorderSide(
-                            color: Colors.grey[100],
+                            color: Colors.grey[100]!,
                           ))),
                           padding: const EdgeInsets.all(3),
                           child: ListTile(
@@ -117,10 +117,10 @@ class _SplitPageState extends State<SplitPage> {
                                       fit: BoxFit.fill,
                                     ),
                             ),
-                            title: Text(userPublicProfile.displayName,
+                            title: Text(userPublicProfile.displayName!,
                                 style: Theme.of(context).textTheme.subtitle1),
                             subtitle: (costObject.paid == false)
-                                ? Text('Owe: \$${costObject.amountOwe
+                                ? Text('Owe: \$${costObject.amountOwe!
                                 .toStringAsFixed(2)}',
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
@@ -137,7 +137,7 @@ class _SplitPageState extends State<SplitPage> {
                                               color: Colors.green)),
                                       Text(
                                           TCFunctions().formatTimestamp(
-                                              costObject.datePaid,
+                                              costObject.datePaid!,
                                               wTime: true),
                                           style: Theme.of(context)
                                               .textTheme

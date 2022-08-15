@@ -17,7 +17,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       : _userRepository = userRepository,
         super(SignupState.initial());
 
-  @override
+
   Stream<SignupState> mapEventToState(SignupEvent event) async* {
     if (event is SignupEmailChanged) {
       yield* _mapSignupEmailChangeToState(event.email);

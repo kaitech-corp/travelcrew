@@ -18,7 +18,7 @@ class EditActivity extends StatefulWidget {
 
   final ActivityData activity;
   final Trip trip;
-  EditActivity({this.activity, required this.trip});
+  EditActivity({required this.activity, required this.trip});
 
   @override
   _EditActivityState createState() => _EditActivityState();
@@ -44,24 +44,24 @@ class _EditActivityState extends State<EditActivity> {
   bool calendarVisible = false;
   bool timePickerVisible = false;
 
-  String displayName;
-  String documentID;
-  String fieldID;
+  late String displayName;
+  late String documentID;
+  late String fieldID;
 
 
   @override
   void initState() {
-    documentID = widget.trip.documentId;
-    fieldID = widget.activity.fieldID;
-    startDateTimestamp.value = widget.activity?.startDateTimestamp ?? widget.trip.startDateTimeStamp;
-    endDateTimestamp.value = widget.activity?.endDateTimestamp ?? widget.trip.startDateTimeStamp;
-    controllerComment.text = widget.activity.comment;
-    controllerLink.text = widget.activity.link;
-    controllerLocation.text = widget.activity.location;
-    controllerType.text = widget.activity.activityType;
-    startTime.value = widget.activity.startTime;
-    endTime.value = widget.activity.endTime;
-    displayName = widget.activity.displayName;
+    documentID = widget.trip.documentId!;
+    fieldID = widget.activity.fieldID!;
+    startDateTimestamp.value = widget.activity.startDateTimestamp ?? widget.trip.startDateTimeStamp!;
+    endDateTimestamp.value = widget.activity.endDateTimestamp ?? widget.trip.startDateTimeStamp!;
+    controllerComment.text = widget.activity.comment ?? '';
+    controllerLink.text = widget.activity.link ?? '';
+    controllerLocation.text = widget.activity.location!;
+    controllerType.text = widget.activity.activityType!;
+    startTime.value = widget.activity.startTime!;
+    endTime.value = widget.activity.endTime!;
+    displayName = widget.activity.displayName!;
 
     super.initState();
   }
@@ -106,8 +106,10 @@ class _EditActivityState extends State<EditActivity> {
                         ),
                         // ignore: missing_return
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value?.isEmpty ?? false) {
                             return 'Please enter an activity.';
+                          } else {
+                            return null;
                           }
                         },
                       ),
@@ -123,7 +125,7 @@ class _EditActivityState extends State<EditActivity> {
                         ),
                         // ignore: missing_return
                         validator: (value) {
-                          if ( value.isNotEmpty && !value.startsWith('https')){
+                          if ( (value?.isNotEmpty ?? false) && !value!.startsWith('https')){
                             return 'Please enter a valid link with including https.';
                           }
                         },
@@ -208,7 +210,7 @@ class _EditActivityState extends State<EditActivity> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async{
-            final form = _formKey.currentState;
+            final form = _formKey.currentState!;
             if (form.validate()) {
               // form.save();
               String message = 'An activity has been modified within ${widget.trip.tripName}';
@@ -235,7 +237,7 @@ class _EditActivityState extends State<EditActivity> {
               try {
                 String action = 'Send notifications for edited activity';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers.forEach((f) {
+                widget.trip.accessUsers!.forEach((f) {
                   if(f != currentUserProfile.uid){
                     CloudFunction().addNewNotification(
                       message: message,

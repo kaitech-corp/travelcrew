@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class BadgeIcon extends StatelessWidget {
   BadgeIcon(
-      {this.icon,
+      {required this.icon,
         this.badgeCount = 0,
         this.showIfZero = false,
         this.badgeColor = Colors.red,
-        TextStyle badgeTextStyle})
+        TextStyle? badgeTextStyle})
       : this.badgeTextStyle = badgeTextStyle ??
       TextStyle(
         color: Colors.white,

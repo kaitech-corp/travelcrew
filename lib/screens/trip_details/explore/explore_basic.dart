@@ -55,7 +55,7 @@ class ExploreBasic extends StatelessWidget {
               ],
             ),
           ),
-          body: ExploreBasicLayout(tripDetails: trip,),
+          body: ExploreBasicLayout(trip: trip,),
       ),
     );
   }

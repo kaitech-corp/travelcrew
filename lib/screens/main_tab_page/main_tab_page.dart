@@ -57,7 +57,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       // RemoteNotification message =  event.notification;
       String tripDocID = event.data['docID'];
-      if(tripDocID?.isNotEmpty ?? false){
+      if(tripDocID.isNotEmpty ?? false){
         Trip trip = await DatabaseService().getTrip(tripDocID);
         try {
           navigationService.navigateTo(ExploreRoute, arguments: trip);

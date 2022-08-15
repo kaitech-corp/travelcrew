@@ -3,20 +3,20 @@ import 'package:sizer/sizer.dart';
 
 /// Static values for the size of user interface.
 class SizeConfig {
-  static MediaQueryData _mediaQueryData;
-  static double screenWidth;
-  static double screenHeight;
-  static double defaultSize;
-  static Orientation orientation;
-  static double blockSizeHorizontal;
-  static double blockSizeVertical;
-  static double _safeAreaHorizontal;
-  static double _safeAreaVertical;
-  static double safeBlockHorizontal;
-  static double safeBlockVertical;
-  static bool tablet;
-  static bool mobile;
-  static double defaultPadding;
+  static late MediaQueryData _mediaQueryData;
+  static late double screenWidth;
+  static late double screenHeight;
+  static late double defaultSize;
+  static late Orientation orientation;
+  static late double blockSizeHorizontal;
+  static late double blockSizeVertical;
+  static late double _safeAreaHorizontal;
+  static late double _safeAreaVertical;
+  static late double safeBlockHorizontal;
+  static late double safeBlockVertical;
+  static late bool tablet;
+  static late bool mobile;
+  static late double defaultPadding;
 
 
   void init(BuildContext context) {

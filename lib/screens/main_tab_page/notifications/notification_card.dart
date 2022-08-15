@@ -121,7 +121,7 @@ class NotificationsCard extends StatelessWidget{
               throw 'Could not launch $link';
             }
           },
-          text: notification.message ?? '',
+          text: notification.message,
           style: Theme.of(context).textTheme.subtitle1,
           // textScaleFactor: 1.2,
           maxLines: 50,

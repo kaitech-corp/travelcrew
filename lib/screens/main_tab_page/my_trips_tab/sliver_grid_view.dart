@@ -35,7 +35,7 @@ class SliverGridView extends StatelessWidget {
             );
           },
           staggeredTileBuilder: (index) {
-            if (trips[index]?.urlToImage?.isNotEmpty ?? false) {
+            if (trips[index].urlToImage?.isNotEmpty ?? false) {
               return const StaggeredTile.count(2, 2);
             } else {
               return const StaggeredTile.count(2, 1);

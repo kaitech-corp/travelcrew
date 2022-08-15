@@ -261,7 +261,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                         endDateTimeStamp:endDateTimestamp.value,
                                         startDateTimeStamp: startDateTimestamp.value,
                                         ispublic: ispublic,
-                                        location: myController.text ?? '',
+                                        location: myController.text,
                                         startDate: startDate.value,
                                         travelType: travelType,
                                         tripGeoPoint: googleData2.value.geoLocation ?? null,

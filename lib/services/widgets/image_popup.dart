@@ -5,7 +5,7 @@ import 'package:travelcrew/services/constants/constants.dart';
 
 class ImagePopup extends StatelessWidget{
 
-  final String imagePath;
+  final String? imagePath;
 
   ImagePopup({this.imagePath});
 
@@ -28,11 +28,8 @@ class ImagePopup extends StatelessWidget{
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: (imagePath?.isNotEmpty ?? false) ? NetworkImage(imagePath) : Image.asset(
-                profileImagePlaceholder,
-                height: 300,
-                width: 300,
-              ),
+              child:FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: imagePath!,height: 300,
+                width: 300,) ,
             ),
           ),
         ),

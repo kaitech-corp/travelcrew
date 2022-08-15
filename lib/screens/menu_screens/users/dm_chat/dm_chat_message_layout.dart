@@ -154,8 +154,7 @@ class DMChatMessageLayout extends StatelessWidget {
                             margin: const EdgeInsets.all(10),
                             child: Text(
                                 readTimestamp(
-                                    message.timestamp.millisecondsSinceEpoch ??
-                                        ''),
+                                    message.timestamp.millisecondsSinceEpoch),
                                 style: ChatTextStyle().timestampStyle(),
                                 textScaleFactor: 0.75)),
                       ],

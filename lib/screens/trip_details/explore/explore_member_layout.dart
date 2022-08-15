@@ -69,11 +69,11 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
     double _detailsPadding = SizeConfig.screenWidth*.05;
 
     final Event event = Event(
-      title: widget.tripDetails.tripName,
-      description: widget.tripDetails.comment,
-      location: widget.tripDetails.location,
-      startDate: widget.tripDetails.startDateTimeStamp.toDate(),
-      endDate: widget.tripDetails.endDateTimeStamp.toDate(),
+      title: widget.tripDetails.tripName!,
+      description: widget.tripDetails.comment!,
+      location: widget.tripDetails.location!,
+      startDate: widget.tripDetails.startDateTimeStamp!.toDate(),
+      endDate: widget.tripDetails.endDateTimeStamp!.toDate(),
     );
 
     return GestureDetector(
@@ -88,7 +88,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                 children: <Widget>[
                   (widget.tripDetails.urlToImage.isNotEmpty) ? Stack(
                     children: [
-                      ImageAnimation(tripDetails: widget.tripDetails,
+                      ImageAnimation(trip: widget.tripDetails,
                         expandController: expandController,),
                       AnimatedPadding(
                           duration: Duration(milliseconds: 250),
@@ -151,12 +151,12 @@ class MemberPopupMenuButton extends StatelessWidget {
           children: [
             IconButton(
               onPressed: (){
-                MapsLauncher.launchQuery(tripDetails.location);
+                MapsLauncher.launchQuery(tripDetails.location!);
               },
               icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
             IconButton(
               onPressed: (){
-                navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(tripDetails: tripDetails,basketController: basketController));
+                navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: tripDetails,basketController: basketController));
                 },
               icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
             IconButton(
@@ -169,7 +169,7 @@ class MemberPopupMenuButton extends StatelessWidget {
                     builder: (context) => Container(
                       padding: const EdgeInsets.all(10),
                       height: SizeConfig.screenHeight*.7,
-                      child: MembersLayout(tripDetails: tripDetails,ownerID: userService.currentUserID,),
+                      child: MembersLayout(trip: tripDetails,ownerID: userService.currentUserID,),
                     ),
                   );},
                 icon: TripDetailsIconThemeWidget(icon: Icons.people,)),

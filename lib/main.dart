@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +98,7 @@ class _TravelCrewState extends State<TravelCrew> {
                                   }
                                   return Loading();
                                 },
-                                future: DatabaseService(uid: state.firebaseUser?.uid).checkUserHasProfile(),
+                                future: DatabaseService(uid: state.firebaseUser.uid).checkUserHasProfile(),
                               );
                             } else {
                               return LoginScreen();

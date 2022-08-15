@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
 
@@ -29,7 +28,7 @@ class TransportationPage extends StatefulWidget {
 
 class _TransportationPageState extends State<TransportationPage> {
 
-  GenericBloc<TransportationData,TransportationRepository> bloc;
+  late GenericBloc<TransportationData,TransportationRepository> bloc;
 
   @override
   void initState() {

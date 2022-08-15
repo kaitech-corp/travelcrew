@@ -106,7 +106,7 @@ class LodgingDataLayout extends StatelessWidget {
                       color: Colors.black,
                       thickness: 2,
                     ),
-                    lodging.startDateTimestamp != null ?? false
+                    lodging.startDateTimestamp != null
                         ? ListTile(
                             leading: TripDetailsIconThemeWidget(
                               icon: Icons.calendar_today,

@@ -19,7 +19,7 @@ class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileStat
     if (event is CompleteProfileDisplayNameChanged){
       yield* _mapCompleteProfileDisplayNameChangeToState(event.displayName!);
     } else if (event is CompleteProfileFirstNameChanged){
-      yield* _mapCompleteProfileFirstNameChangeToState(event.firstName!);
+      yield* _mapCompleteProfileFirstNameChangeToState(event.firstName);
     } else if (event is CompleteProfileLastNameChanged){
       yield* _mapCompleteProfileLastNameChangeToState(event.lastName!);
     } else if (event is CompleteProfileImageChanged){

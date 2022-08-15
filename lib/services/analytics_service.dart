@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 
 /// Our calls to the Firebase Analytics API.
 class AnalyticsService {

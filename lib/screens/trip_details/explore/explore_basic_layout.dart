@@ -26,13 +26,13 @@ class ExploreBasicLayout extends StatelessWidget{
             children: <Widget>[
               Stack(
                 children: [
-                  trip.urlToImage.isNotEmpty ? Hero(
-                    tag: trip.urlToImage,
+                  (trip.urlToImage?.isNotEmpty ?? false) ? Hero(
+                    tag: trip.documentId!,
                     transitionOnUserGestures: true,
                     child: FadeInImage.assetNetwork(
                       fit: BoxFit.fitWidth,
                       placeholder: travelImage,
-                      image: trip?.urlToImage,
+                      image: trip.urlToImage!,
 
                     ),
                   ):
@@ -67,7 +67,7 @@ class ExploreBasicLayout extends StatelessWidget{
                 trailing: IconButton(
                   icon: const Icon(Icons.report,),
                   onPressed: (){
-                    TravelCrewAlertDialogs().reportAlert(context: context, trip: trip, type: 'trip');
+                    TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: trip, type: 'trip');
                   },
                 ),
               ),
@@ -80,7 +80,7 @@ class ExploreBasicLayout extends StatelessWidget{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('${trip.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
-                      Text('${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle1,)
+                      Text('${TCFunctions().dateToMonthDay(trip.startDate!)} - ${trip.endDate}',style: Theme.of(context).textTheme.subtitle1,)
 
 
                     ],
@@ -88,11 +88,11 @@ class ExploreBasicLayout extends StatelessWidget{
                 ),
               ),
 
-              if(trip.comment.isNotEmpty) Container(
+              if(trip.comment?.isNotEmpty ?? false) Container(
                 padding: const EdgeInsets.all(18.0),
                 decoration: BoxDecoration(
                 ),
-                child: Text(trip.comment,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                child: Text(trip.comment!,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
               ),
             ],
           ),

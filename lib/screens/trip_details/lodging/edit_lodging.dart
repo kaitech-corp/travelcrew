@@ -16,7 +16,7 @@ class EditLodging extends StatefulWidget {
 
   final LodgingData lodging;
   final Trip trip;
-  EditLodging({this.lodging, required this.trip});
+  EditLodging({required this.lodging, required this.trip});
 
   @override
   _EditLodgingState createState() => _EditLodgingState();
@@ -34,27 +34,27 @@ class _EditLodgingState extends State<EditLodging> {
   final TextEditingController controller = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  String link;
-  String lodgingType;
-  String comment;
-  String documentID;
-  String fieldID;
+  String? link;
+  String? lodgingType;
+  String? comment;
+  late String documentID;
+  late String fieldID;
   bool calendarVisible = false;
   bool timePickerVisible = false;
 
 
   @override
   void initState() {
-    controller.text = widget.lodging?.location ?? '';
-    endDateTimestamp.value = widget.lodging?.endDateTimestamp ?? widget.trip.endDateTimeStamp;
-    startDateTimestamp.value = widget.lodging?.startDateTimestamp ?? widget.trip.startDateTimeStamp;
+    controller.text = widget.lodging.location ?? '';
+    endDateTimestamp.value = widget.lodging.endDateTimestamp ?? widget.trip.endDateTimeStamp!;
+    startDateTimestamp.value = widget.lodging.startDateTimestamp ?? widget.trip.startDateTimeStamp!;
     link = widget.lodging.link;
     lodgingType = widget.lodging.lodgingType;
     comment = widget.lodging.comment;
-    startTime.value = widget.lodging.startTime;
-    endTime.value = widget.lodging.endTime;
-    documentID = widget.trip.documentId;
-    fieldID = widget.lodging.fieldID;
+    startTime.value = widget.lodging.startTime!;
+    endTime.value = widget.lodging.endTime!;
+    documentID = widget.trip.documentId!;
+    fieldID = widget.lodging.fieldID!;
     super.initState();
   }
 
@@ -101,7 +101,7 @@ class _EditLodgingState extends State<EditLodging> {
                         ),
                         // ignore: missing_return
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value?.isEmpty ?? false) {
                             return 'Please enter a lodging type.';
                           }
                         },
@@ -123,7 +123,7 @@ class _EditLodgingState extends State<EditLodging> {
                         ),
                         // ignore: missing_return
                         validator: (value) {
-                          if ( value.isNotEmpty && !value.startsWith('https')){
+                          if ( (value?.isNotEmpty ?? false) && !value!.startsWith('https')){
                             return 'Please enter a valid link with including https.';
                           }
                         },
@@ -211,7 +211,7 @@ class _EditLodgingState extends State<EditLodging> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async{
-            final form = _formKey.currentState;
+            final form = _formKey.currentState!;
             if (form.validate()) {
               form.save();
               String message = 'A lodging option has been modified within ${widget.trip.tripName}';
@@ -235,7 +235,7 @@ class _EditLodgingState extends State<EditLodging> {
               try {
                 String action = 'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers.forEach((f) {
+                widget.trip.accessUsers!.forEach((f) {
                   if (f != currentUserProfile.uid) {
                     CloudFunction().addNewNotification(
                       message: message,

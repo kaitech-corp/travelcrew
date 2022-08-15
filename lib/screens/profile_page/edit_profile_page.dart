@@ -65,7 +65,7 @@ class _SignupScreenState extends State {
             stream: DatabaseService().currentUserPublicProfile,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                UserPublicProfile user = snapshot.data;
+                UserPublicProfile user = snapshot.data as UserPublicProfile;
                 return SingleChildScrollView(
                   child: Container(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),

@@ -1,9 +1,8 @@
+
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../models/cost_model.dart';
 import '../../../models/custom_objects.dart';
@@ -38,7 +37,7 @@ class SplitPackage {
   double sumRemainingBalance(List<CostObject> coList) {
     double total = 0;
     coList.forEach((element) =>
-        total = total + (((element?.paid ?? false) == false) ? element.amountOwe! : 0));
+        total = total + (((element.paid ?? false) == false) ? element.amountOwe! : 0));
     return total;
   }
 
@@ -456,7 +455,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
         onLongPress: () {
           setState(() {
             _showImage = true;
-            _image = member?.urlToImage ?? '';
+            _image = member.urlToImage ?? '';
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {

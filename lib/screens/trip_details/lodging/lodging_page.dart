@@ -26,7 +26,7 @@ class LodgingPage extends StatefulWidget {
 }
 
 class _LodgingPageState extends State<LodgingPage> {
-  GenericBloc<LodgingData,LodgingRepository> bloc;
+  late GenericBloc<LodgingData,LodgingRepository> bloc;
 
   @override
   void initState() {

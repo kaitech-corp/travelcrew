@@ -5,7 +5,7 @@ class LoginState {
   final bool isSuccess;
   final bool isFailure;
 
-  bool get isFormValid => isEmailValid! && isPasswordValid!;
+  bool get isFormValid => isEmailValid && isPasswordValid;
 
   LoginState(
       {required this.isEmailValid,

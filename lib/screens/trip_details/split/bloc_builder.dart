@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/generics/generic_bloc.dart';
@@ -31,7 +30,7 @@ class SplitBlocBuilder extends StatefulWidget {
 }
 
 class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
-  GenericBloc<SplitObject,SplitRepository> bloc;
+  late GenericBloc<SplitObject,SplitRepository> bloc;
 
   @override
   void initState() {
@@ -140,7 +139,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      subtitle: Text('\$${item?.amountRemaining?.toStringAsFixed(2) ?? item.itemTotal.toStringAsFixed(2)}  (${item.userSelectedList.length}pp)',
+                                      subtitle: Text('\$${item.amountRemaining?.toStringAsFixed(2) ?? item.itemTotal!.toStringAsFixed(2)}  (${item.userSelectedList.length}pp)',
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontFamily: 'Cantata One',

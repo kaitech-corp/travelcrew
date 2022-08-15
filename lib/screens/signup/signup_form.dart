@@ -21,7 +21,7 @@ class SignupForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<SignupForm> {
-  File image;
+  late File image;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -37,10 +37,10 @@ class _LoginFormState extends State<SignupForm> {
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   bool isButtonEnabled(SignupState state) {
-    return state.isFormValid && isPopulated && !state.isSubmitting;
+    return state.isFormValid! && isPopulated && !state.isSubmitting!;
   }
 
-  SignupBloc _signupBloc;
+  late SignupBloc _signupBloc;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _LoginFormState extends State<SignupForm> {
     var image =
         await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
 
-    _cropImage(image.path, image);
+    _cropImage(image!.path, image);
     setState(() {
       imagePicked = true;
     });

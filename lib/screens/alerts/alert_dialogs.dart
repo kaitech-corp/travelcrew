@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -85,7 +84,7 @@ class TravelCrewAlertDialogs {
       },
     );
   }
-  Future<void> reportAlert({required BuildContext context, Trip? tripDetails, required UserPublicProfile userProfile, ActivityData? activityData, LodgingData? lodgingData, required String type}) {
+  Future<void> reportAlert({required BuildContext context, Trip? tripDetails, UserPublicProfile? userProfile, ActivityData? activityData, LodgingData? lodgingData, required String type}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -99,7 +98,7 @@ class TravelCrewAlertDialogs {
               child: Text(report(),),
               onPressed: () {
                 navigationService.pop();
-                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile, activityData, tripDetails, lodgingData));
+                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile ?? UserPublicProfile(), activityData, tripDetails, lodgingData));
               },
             ),
             TextButton(

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/lodging_model.dart';
@@ -28,7 +27,7 @@ class LodgingCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Center(
-        key: Key(lodging.fieldID),
+        key: Key(lodging.fieldID!),
         child: GlobalCard(
           widget: InkWell(
             splashColor: Colors.blue.withAlpha(30),
@@ -53,7 +52,7 @@ class LodgingCard extends StatelessWidget {
                   ),
                   if(lodging.link?.isNotEmpty ?? false) Padding(
                     padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: ViewAnyLink(link: lodging.link,function: ()=>{},),
+                    child: ViewAnyLink(link: lodging.link!,function: ()=>{},),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -69,14 +68,14 @@ class LodgingCard extends StatelessWidget {
                           ), trip: trip),
                       IconButton(
                           visualDensity: VisualDensity(horizontal: 0,vertical: -4),
-                          icon: FavoriteWidget(uid: userService.currentUserID,voters:lodging.voters ,),
+                          icon: FavoriteWidget(uid: userService.currentUserID,voters:lodging.voters,),
                           onPressed: () {
-                            String fieldID = lodging.fieldID;
+                            String fieldID = lodging.fieldID!;
                             String uid = userService.currentUserID;
-                            if (!lodging.voters.contains(userService.currentUserID)) {
-                              CloudFunction().addVoterToLodging(trip.documentId, fieldID, uid);
+                            if (!lodging.voters!.contains(userService.currentUserID)) {
+                              CloudFunction().addVoterToLodging(trip.documentId!, fieldID, uid);
                             } else {
-                              CloudFunction().removeVoterFromLodging(trip.documentId, fieldID, uid);
+                              CloudFunction().removeVoterFromLodging(trip.documentId!, fieldID, uid);
                             }
                           }
                       ),

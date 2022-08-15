@@ -31,7 +31,7 @@ class UserRepository {
     var result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     User? user = result.user;
     await DatabaseService(uid: user?.uid).updateUserData(firstname, lastName, email, user!.uid);
-    await DatabaseService(uid: user?.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, user!.uid, urlToImage);
+    await DatabaseService(uid: user.uid).updateUserPublicProfileData(displayName, firstname, lastName, email, user.uid, urlToImage);
     await _analyticsService.logSignUp();
     // return result;
   }
@@ -113,8 +113,8 @@ class UserRepository {
     if(displayName?.isEmpty ?? true){
       displayName = 'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
     }
-    await DatabaseService(uid: currentUser!.uid).updateUserData(firstname, lastName, currentUser?.email, currentUser!.uid);
-    return await DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(displayName, firstname, lastName,currentUser?.email, currentUser.uid, urlToImage);
+    await DatabaseService(uid: currentUser!.uid).updateUserData(firstname, lastName, currentUser.email, currentUser.uid);
+    return await DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(displayName, firstname, lastName,currentUser.email, currentUser.uid, urlToImage);
   }
 
 }

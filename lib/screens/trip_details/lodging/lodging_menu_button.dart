@@ -18,9 +18,9 @@ class LodgingMenuButton  extends StatelessWidget{
 
   final Trip trip;
   final LodgingData lodging;
-  final Event event;
+  final Event? event;
 
-  const LodgingMenuButton({Key? key, required this.trip, required this.lodging,required this.event}) : super(key: key);
+  const LodgingMenuButton({Key? key, required this.trip, required this.lodging, this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class LodgingMenuButton  extends StatelessWidget{
           }
           break;
           case "View": {
-            if(lodging.link.isNotEmpty) TCFunctions().launchURL(lodging.link);
+            if(lodging.link?.isNotEmpty ?? false) TCFunctions().launchURL(lodging.link!);
           }
           break;
           case "Split": {
@@ -51,11 +51,11 @@ class LodgingMenuButton  extends StatelessWidget{
           break;
           case "Calendar":
             {
-              Add2Calendar.addEvent2Cal(event);
+              Add2Calendar.addEvent2Cal(event!);
             }
           break;
           default: {
-            CloudFunction().removeLodging(trip.documentId,lodging.fieldID);
+            CloudFunction().removeLodging(trip.documentId!,lodging.fieldID!);
           }
           break;
         }
@@ -113,8 +113,8 @@ class LodgingMenuButton  extends StatelessWidget{
             }
             break;
           case "View": {
-            if (lodging.link.isNotEmpty) {
-              TCFunctions().launchURL(lodging.link);
+            if (lodging.link?.isNotEmpty ?? false) {
+              TCFunctions().launchURL(lodging.link!);
             }
           }
           break;
@@ -133,7 +133,7 @@ class LodgingMenuButton  extends StatelessWidget{
           break;
           case "Calendar":
             {
-              Add2Calendar.addEvent2Cal(event);
+              Add2Calendar.addEvent2Cal(event!);
             }
           break;
           default: {

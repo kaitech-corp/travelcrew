@@ -9,7 +9,7 @@ class UserPopupProfile extends StatelessWidget{
 
   final Members member;
 
-  UserPopupProfile({this.member});
+  UserPopupProfile({required this.member});
 
   @override
   Widget build(BuildContext context) {

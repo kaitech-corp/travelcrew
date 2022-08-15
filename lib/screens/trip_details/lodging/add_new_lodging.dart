@@ -39,15 +39,15 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   String comment = '';
   String link = '';
   String uid = '';
-  bool ispublic;
+  late bool ispublic;
   bool timePickerVisible = false;
 
   @override
   void initState() {
-    endDateTimeStamp.value =  widget.trip.endDateTimeStamp;
-    startDateTimeStamp.value = widget.trip.startDateTimeStamp;
-    displayName = currentUserProfile.displayName;
-    documentID = widget.trip.documentId;
+    endDateTimeStamp.value =  widget.trip.endDateTimeStamp!;
+    startDateTimeStamp.value = widget.trip.startDateTimeStamp!;
+    displayName = currentUserProfile.displayName!;
+    documentID = widget.trip.documentId!;
     uid = userService.currentUserID;
     ispublic = widget.trip.ispublic;
     super.initState();
@@ -99,7 +99,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     textCapitalization: TextCapitalization.words,
                     // ignore: missing_return
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value?.isEmpty ?? false) {
                         return 'Please enter a lodging type.';
                       }
                     },
@@ -120,7 +120,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     ),
                     // ignore: missing_return
                     validator: (value) {
-                      if ( value.trim().isNotEmpty && !value.startsWith('https')){
+                      if ( value!.trim().isNotEmpty && !value.startsWith('https')){
                         return 'Please enter a valid link including https.';
                       }
                     },
@@ -197,7 +197,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final form = _formKey.currentState;
+            final form = _formKey.currentState!;
             if (form.validate()) {
 
               String message = 'A new lodging has been added to ${widget.trip.tripName}';
@@ -225,7 +225,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
               try {
                 String action = 'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers.forEach((f)  {
+                widget.trip.accessUsers!.forEach((f)  {
                   if(f != currentUserProfile.uid){
                     CloudFunction().addNewNotification(
                       message: message,

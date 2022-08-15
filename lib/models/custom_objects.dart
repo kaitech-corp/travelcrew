@@ -276,8 +276,8 @@ class TripAds {
     location = data['location'] ?? '',
     dateCreated = data['dateCreated'] ?? null,
     clicks = data['clicks'] ?? 0,
-    favorites = List<String>.from(data['favorites']) ?? null,
-    clickers = List<String>.from(data['clickers']) ?? null,
+    favorites = List<String>.from(data['favorites']),
+    clickers = List<String>.from(data['clickers']),
     urlToImage = data['urlToImage'] ?? '';
 }
 

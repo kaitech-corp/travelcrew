@@ -49,8 +49,10 @@ class AddNewActivityState extends State<AddNewActivity> {
   String comment = '';
   String link = '';
   String location = '';
-  File urlToImage;
+  late File urlToImage;
   bool timePickerVisible = false;
+
+  bool loading = false;
 
   @override
   void initState() {
@@ -68,8 +70,6 @@ class AddNewActivityState extends State<AddNewActivity> {
 
   @override
   Widget build(BuildContext context) {
-    bool loading = false;
-
     return loading ? Loading() : GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -103,7 +103,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                           ),
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value?.isEmpty ?? false) {
                               return 'Please enter a lodging type.';
                             }
                           },
@@ -125,7 +125,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                           ),
                           // ignore: missing_return
                           validator: (value) {
-                            if ( value.isNotEmpty && !value.startsWith('https')){
+                            if ( (value?.isNotEmpty ?? false) && !value!.startsWith('https')){
                               return 'Please enter a valid link with including https.';
                             }
                           },
@@ -207,11 +207,11 @@ class AddNewActivityState extends State<AddNewActivity> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async{
-            String documentID = widget.trip.documentId;
+            String documentID = widget.trip.documentId!;
             String message = 'A new activity has been added to ${widget.trip.tripName}';
             bool ispublic = widget.trip.ispublic;
 
-            final form = _formKey.currentState;
+            final form = _formKey.currentState!;
             if (form.validate()) {
               try {
                 String action = 'Saving new activity';
@@ -236,7 +236,7 @@ class AddNewActivityState extends State<AddNewActivity> {
               try {
                 String action = 'Send notifications for edited activity';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers.forEach((f) {
+                widget.trip.accessUsers!.forEach((f) {
                   if(f != currentUserProfile.uid){
                     CloudFunction().addNewNotification(
                       message: message,

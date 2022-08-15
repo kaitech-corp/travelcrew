@@ -28,7 +28,7 @@ class IconThemeWidget extends StatelessWidget{
 
   final IconData icon;
 
-  const IconThemeWidget({Key? key, this.icon}) : super(key: key);
+  const IconThemeWidget({Key? key, required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class SplitIconWidget extends StatelessWidget{
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.yellow[100], Colors.yellow[50]],
+                    colors:  [Colors.yellow[100]!, Colors.yellow[50]!],
                     stops: const [0.4,1.0]
                 )
             ),
@@ -84,7 +84,7 @@ class SplitIconWidget extends StatelessWidget{
               shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.orange[100], Colors.orange[50]],
+                    colors:  [Colors.orange[100]!, Colors.orange[50]!],
                     stops: const [0.4,1.0]
                 )
             ),
@@ -98,7 +98,7 @@ class SplitIconWidget extends StatelessWidget{
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.purple[100], Colors.purple[50]],
+                    colors:  [Colors.purple[100]!, Colors.purple[50]!],
                     stops: const [0.4,1.0]
                 )
             ),
@@ -173,48 +173,41 @@ class TransportationIcon extends StatelessWidget{
     switch (mode) {
       case 'Driving':
         return Icon(Icons.drive_eta);
-      break;
       case 'Carpooling':
         return Icon(Icons.directions_car_rounded);
-        break;
       case 'Bike/Scooter':
         return Icon(Icons.directions_bike);
-        break;
       case 'Train':
         return Icon(Icons.directions_railway_sharp);
-        break;
       case 'Uber/Lift':
         return Icon(Icons.directions_car_outlined);
-        break;
       case 'Bus':
         return Icon(Icons.directions_bus_rounded);
-      break;
       default:
         return Icon(Icons.local_airport);
-        break;
     }
   }
 }
 
 TextStyle responsiveTextStyleSuggestions(BuildContext context){
   if (SizeConfig.tablet) {
-    return Theme.of(context).textTheme.headline4;
+    return Theme.of(context).textTheme.headline4!;
   } else {
-    return Theme.of(context).textTheme.subtitle1;
+    return Theme.of(context).textTheme.subtitle1!;
   }
 }
 
 TextStyle responsiveTextStyleTopics(BuildContext context){
   if (SizeConfig.tablet) {
-    return Theme.of(context).textTheme.headline2;
+    return Theme.of(context).textTheme.headline2!;
   } else {
-    return Theme.of(context).textTheme.headline4;
+    return Theme.of(context).textTheme.headline4!;
   }
 }
 TextStyle responsiveTextStyleTopicsSub(BuildContext context){
   if (SizeConfig.tablet) {
-    return Theme.of(context).textTheme.headline4;
+    return Theme.of(context).textTheme.headline4!;
   } else {
-    return Theme.of(context).textTheme.headline6;
+    return Theme.of(context).textTheme.headline6!;
   }
 }
