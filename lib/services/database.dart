@@ -453,7 +453,7 @@ class DatabaseService {
        CloudFunction()
            .logError('Error creating public profile:  ${e.toString()}');
      }
-     if (urlToImage != null && urlToImage.path.isNotEmpty ?? false) {
+     if (urlToImage != null && urlToImage.path.isNotEmpty) {
        String urlForImage;
        
        try {

@@ -24,10 +24,9 @@ class ExploreOwnerLayout extends StatefulWidget {
   final heroTag;
 
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
 
 
-  ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey, required this.controller,});
+  ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey,});
 
   @override
   _ExploreOwnerLayoutState createState() => _ExploreOwnerLayoutState();
@@ -118,7 +117,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                         AnimatedPadding(
                             duration: Duration(milliseconds: 250),
                             padding: EdgeInsets.only(top: _padding),
-                            child: OwnerPopupMenuButton(trip: widget.trip, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                            child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                       ],
                     ):
                     Stack(
@@ -126,7 +125,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                         HangingImageTheme(),
                         Padding(
                             padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
-                            child: OwnerPopupMenuButton(trip: widget.trip, event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                            child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                       ],
                     ),
                     Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
@@ -153,14 +152,13 @@ class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({
     Key? key,
     required this.trip,
-    required this.event, required this.scaffoldKey, required this.controller,required this.basketController
+    required this.event, required this.scaffoldKey,required this.basketController
 
   }) : super(key: key);
 
   final Trip trip;
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
   final BasketController basketController;
 
   @override

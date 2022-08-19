@@ -93,16 +93,12 @@ class _LoginFormState extends State<LoginForm> {
                   // autovalidate: true,
                   autocorrect: false,
                   validator: (_) {
-                    return !state.isPasswordValid
-                        ? 'Invalid Password'
-                        : null;
+                    return !state.isPasswordValid ? 'Invalid Password' : null;
                   },
                 ),
                 const SizedBox(
                   height: 25,
                 ),
-
-
                 IntrinsicWidth(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,8 +107,7 @@ class _LoginFormState extends State<LoginForm> {
                         width: 150,
                         height: 45,
                         onPressed: () {
-                          if (isLoginWithEmailAndPasswordButtonEnabled(
-                              state)) {
+                          if (isLoginWithEmailAndPasswordButtonEnabled(state)) {
                             _onFormSubmitted();
                           }
                         },
@@ -130,11 +125,10 @@ class _LoginFormState extends State<LoginForm> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextButton(
-                            child: Text(
-                                'Forgot Password?'
-                            ),
+                            child: Text('Forgot Password?'),
                             onPressed: () {
-                              TravelCrewAlertDialogs().resetPasswordDialog(context);
+                              TravelCrewAlertDialogs()
+                                  .resetPasswordDialog(context);
                             },
                           ),
                         ),
@@ -142,62 +136,73 @@ class _LoginFormState extends State<LoginForm> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          signUpOrSignIn(),style: Theme.of(context).textTheme.subtitle1,
+                          signUpOrSignIn(),
+                          style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (UserRepository().appleSignInAvailable) ElevatedButton(
-                            onPressed: () {
-                              if (isAppleLoginButtonEnabled(state)) {
-                              _onPressedAppleSignIn();
-                              }
-                            },
-                            style: ElevatedButtonTheme.of(context)
-                                .style
-                                ?.copyWith(
-                                backgroundColor:
-                                MaterialStateProperty.all(canvasColor)),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  const Image(
-                                      image: AssetImage(apple_logo),
-                                      height: 25.0),
-                                  Text(
-                                    signInWithApple,
-                                    style: Theme.of(context).textTheme.subtitle1,
-                                  )
-                                ],
+                          if (UserRepository().appleSignInAvailable)
+                            ElevatedButton(
+                              onPressed: () {
+                                if (isAppleLoginButtonEnabled(state)) {
+                                  _onPressedAppleSignIn();
+                                }
+                              },
+                              style: ElevatedButtonTheme.of(context)
+                                  .style
+                                  ?.copyWith(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              canvasColor)),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Image(
+                                        image: AssetImage(apple_logo),
+                                        height: 25.0),
+                                    Text(
+                                      signInWithApple,
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          if (UserRepository().appleSignInAvailable) SizedBox(width: 16,),
+                          if (UserRepository().appleSignInAvailable)
+                            SizedBox(
+                              width: 16,
+                            ),
                           ElevatedButton(
                             onPressed: () {
                               if (isGoogleLoginButtonEnabled(state)) {
                                 _onPressedGoogleSignIn();
                               }
                             },
-                            style: ElevatedButtonTheme.of(context).style?.copyWith(
-                                backgroundColor:
-                                MaterialStateProperty.all(canvasColor)),
+                            style: ElevatedButtonTheme.of(context)
+                                .style
+                                ?.copyWith(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(canvasColor)),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   const Image(
-                                      image: AssetImage(google_logo), height: 25.0),
-                                  Text(
-                                    signInWithGoogle,
-                                    style: Theme.of(context).textTheme.subtitle1
-                                  )
+                                      image: AssetImage(google_logo),
+                                      height: 25.0),
+                                  Text(signInWithGoogle,
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1)
                                 ],
                               ),
                             ),
@@ -210,15 +215,14 @@ class _LoginFormState extends State<LoginForm> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Text(Intl.message
-                                  ("Don't have an account?")
-                              ),
+                              Text(Intl.message("Don't have an account?")),
                               TextButton(
-                                child: Text(Intl.message
-                                  ("Sign Up"),
+                                child: Text(
+                                  Intl.message("Sign Up"),
                                 ),
                                 onPressed: () {
-                                  navigationService.navigateTo(SignUpScreenRoute);
+                                  navigationService
+                                      .navigateTo(SignUpScreenRoute);
                                 },
                               ),
                             ],
@@ -228,10 +232,12 @@ class _LoginFormState extends State<LoginForm> {
                     ],
                   ),
                 ),
-                SizedBox(height: 15,),
-
+                SizedBox(
+                  height: 15,
+                ),
               ]);
-            },),
+            },
+          ),
         ),
       ),
     );
@@ -289,11 +295,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onEmailChange() {
-    _loginBloc.add(LoginEmailChange(email: _emailController.text));
+    if(isPopulated){
+      _loginBloc.add(LoginEmailChange(email: _emailController.text));
+    }
   }
 
   void _onPasswordChange() {
-    _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
+    if(isPopulated){
+      _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
+    }
   }
 
   void _onFormSubmitted() {

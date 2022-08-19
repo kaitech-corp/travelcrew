@@ -94,7 +94,7 @@ class DMChatMessageLayout extends StatelessWidget {
                                 throw 'Could not launch $link';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: Theme.of(context).textTheme.subtitle1,
                             // textScaleFactor: 1.2,
                             maxLines: 50,
@@ -141,7 +141,7 @@ class DMChatMessageLayout extends StatelessWidget {
                                 throw 'Could not launch $link';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: Theme.of(context).textTheme.subtitle1,
                             // textScaleFactor: 1.2,
                             maxLines: 50,

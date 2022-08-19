@@ -36,14 +36,14 @@ class _FavoriteTripState extends State<FavoritesPage> {
         builder: (context, state){
           if(state is LoadingState){
             return Loading();
-          } else if (state is HasDataState<Trip>){
-            List<Trip> trips = state.data;
+          } else if (state is HasDataState){
+            List<Trip> trips = state.data as List<Trip>;
             return Container(
               height: double.infinity,
               width: double.infinity,
               child: ListView.builder(
                   padding: const EdgeInsets.all(0.0),
-                  itemCount: trips != null ? trips.length : 0,
+                  itemCount: trips.length,
                   itemBuilder: (context, index){
                     var item = trips[index];
                     return Dismissible(

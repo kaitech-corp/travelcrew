@@ -50,7 +50,7 @@ dependencies:
   firebase_storage: ^10.2.16
 
   # Images
-  image_cropper: ^3.0.0
+  image_cropper: ^2.0.3
   image_picker: ^0.8.5+3
 
   # Notifications

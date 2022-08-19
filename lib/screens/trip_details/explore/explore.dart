@@ -43,7 +43,6 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  static late PersistentBottomSheetController controller;
   ValueNotifier<String> title = ValueNotifier("Explore");
 
   @override
@@ -64,7 +63,6 @@ class _ExploreState extends State<Explore> {
             IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
-                _closeModalBottomSheet;
                 navigationService.pop();
               },
             ),
@@ -113,11 +111,6 @@ class _ExploreState extends State<Explore> {
     );
   }
 
-  void _closeModalBottomSheet() {
-    if (controller != null) {
-      controller.close();
-    }
-  }
 
    Widget checkOwner(String uid) {
   if (widget.trip.ownerID == uid){
@@ -128,18 +121,16 @@ class _ExploreState extends State<Explore> {
             final Trip tripDetails = document.data as Trip;
             return ExploreOwnerLayout(
               trip: tripDetails,
-              controller: controller,
               scaffoldKey: scaffoldKey,);
           } else {
             return ExploreOwnerLayout(
               trip: widget.trip,
-              controller: controller,
               scaffoldKey: scaffoldKey,);
           }
         }
     );
   } else {
-  return ExploreMemberLayout(tripDetails: widget.trip,controller: controller,scaffoldKey: scaffoldKey,);
+  return ExploreMemberLayout(tripDetails: widget.trip,scaffoldKey: scaffoldKey,);
   }
 }
 

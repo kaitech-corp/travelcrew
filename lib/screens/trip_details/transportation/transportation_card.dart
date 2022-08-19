@@ -38,7 +38,7 @@ class TransportationCard extends StatelessWidget {
                       : Theme.of(context).textTheme.headline6,
                 ),
                 subtitle: Text(
-                  transportationData.displayName,
+                  transportationData.displayName!,
                   style: Theme.of(context).textTheme.subtitle1,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -62,9 +62,9 @@ class TransportationCard extends StatelessWidget {
                         'Open to Carpool',
                         style: Theme.of(context).textTheme.subtitle2,
                       ),
-                    if (transportationData.comment.isNotEmpty)
+                    if (transportationData.comment?.isNotEmpty ?? false)
                       Text(
-                        transportationData.comment,
+                        transportationData.comment!,
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                   ],

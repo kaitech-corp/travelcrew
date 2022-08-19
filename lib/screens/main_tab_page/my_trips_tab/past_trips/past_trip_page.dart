@@ -26,7 +26,6 @@ class _PastTripsState extends State<PastTrips>{
   @override
   void initState() {
     super.initState();
-
   }
 
   @override

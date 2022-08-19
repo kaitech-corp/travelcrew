@@ -58,7 +58,7 @@ class _ChatPageState extends State<ChatPage> {
           child: BlocBuilder<GenericBloc<ChatData,ChatRepository>, GenericState>(builder: (context, state) {
             if (state is LoadingState) {
               return Align(alignment: Alignment.center, child: Loading());
-            } else if (state is HasDataState<ChatData>) {
+            } else if (state is HasDataState) {
               return Column(
                 children: <Widget>[
                   Expanded(

@@ -120,7 +120,7 @@ class TCFunctions {
         _startTime = stringToTimeOfDay(startTime ?? TimeOfDay.now().toString());
         _endTime = stringToTimeOfDay(endTime ?? TimeOfDay.now().toString());
         _startDateX = startDate!;
-        _endDateX = startDate!;
+        _endDateX = _startDateX;
 
 
         final DateTime _startDate = DateTime(

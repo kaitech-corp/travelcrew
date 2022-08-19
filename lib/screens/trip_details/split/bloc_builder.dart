@@ -30,11 +30,11 @@ class SplitBlocBuilder extends StatefulWidget {
 }
 
 class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
-  late GenericBloc<SplitObject,SplitRepository> bloc;
+  late GenericBloc<SplitObject, SplitRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<SplitObject,SplitRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<SplitObject, SplitRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
@@ -43,14 +43,14 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: BlocBuilder<GenericBloc<SplitObject,SplitRepository>, GenericState>(
-            builder: (context, state) {
+        body: BlocBuilder<GenericBloc<SplitObject, SplitRepository>,
+            GenericState>(builder: (context, state) {
           if (state is LoadingState) {
             return Loading();
-          } else if (state is HasDataState<SplitObject>) {
-            final List<SplitObject> items = state.data;
+          } else if (state is HasDataState) {
+            final List<SplitObject> items = state.data as List<SplitObject>;
             final List<String> uids = [];
-            if (items != null) {
+            if (items.isNotEmpty) {
               double total = 0.00;
               items.forEach((item) {
                 total += item.itemTotal!;
@@ -139,7 +139,8 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      subtitle: Text('\$${item.amountRemaining?.toStringAsFixed(2) ?? item.itemTotal!.toStringAsFixed(2)}  (${item.userSelectedList!.length}pp)',
+                                      subtitle: Text(
+                                          '\$${item.amountRemaining?.toStringAsFixed(2) ?? item.itemTotal!.toStringAsFixed(2)}  (${item.userSelectedList!.length}pp)',
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontFamily: 'Cantata One',
@@ -216,7 +217,8 @@ class QuickDataCards extends StatelessWidget {
               child: StreamBuilder<UserPublicProfile>(
                 builder: (context, userData) {
                   if (userData.hasData) {
-                    final UserPublicProfile user = userData.data as UserPublicProfile;
+                    final UserPublicProfile user =
+                        userData.data as UserPublicProfile;
                     return Container(
                       padding: EdgeInsets.all(SizeConfig.defaultPadding),
                       height: SizeConfig.screenWidth * .35,

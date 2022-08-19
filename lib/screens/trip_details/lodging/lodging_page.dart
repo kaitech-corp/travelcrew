@@ -47,11 +47,11 @@ class _LodgingPageState extends State<LodgingPage> {
             builder: (context, state){
               if(state is LoadingState){
                 return Loading();
-              } else if (state is HasDataState<LodgingData>){
-                List<LodgingData> lodgingList = state.data;
+              } else if (state is HasDataState){
+                List<LodgingData> lodgingList = state.data as List<LodgingData>;
                 return Container(
                   child: ListView.builder(
-                      itemCount: lodgingList != null ? lodgingList.length : 0,
+                      itemCount: lodgingList.length,
                       itemBuilder: (context, index){
                         return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
                       }),

@@ -15,23 +15,30 @@ class GenericBloc<M, R extends GenericBlocRepository<M>> extends Bloc<GenericEve
 
   StreamSubscription? _subscription;
 
-  GenericBloc({this.repository}) : super(LoadingState());
-
   GenericState get initialState => LoadingState();
 
-
-  @override
-  Stream<GenericState> mapEventToState(GenericEvent event) async*{
-    if(event is LoadingGenericData){
-      if(_subscription != null){
-        await _subscription?.cancel();
-      }
-      _subscription = repository?.data().asBroadcastStream().listen((data) {add(HasDataEvent(data)); });
-    }
-    else if(event is HasDataEvent<M>){
-      yield HasDataState<M>(event.data);
-    }
+  GenericBloc({this.repository}) : super(LoadingState()){
+   on<LoadingGenericData>((event, emit) async {
+     _subscription = repository?.data().asBroadcastStream().listen((data) {add(HasDataEvent(data)); });
+   });
+   on<HasDataEvent>((event, emit) async => emit(HasDataState(event.data)));
   }
+
+
+
+
+  // @override
+  // Stream<GenericState> mapEventToState(GenericEvent event) async*{
+  //   if(event is LoadingGenericData){
+  //     if(_subscription != null){
+  //       await _subscription?.cancel();
+  //     }
+  //     _subscription = repository?.data().asBroadcastStream().listen((data) {add(HasDataEvent(data)); });
+  //   }
+  //   else if(event is HasDataEvent<M>){
+  //     yield HasDataState<M>(event.data);
+  //   }
+  // }
   @override
   Future<void> close() async {
     await _subscription?.cancel();

@@ -45,7 +45,7 @@ class _NotificationPageState extends State<NotificationPage> {
               return Container (
                 child: ListView.builder(
                     padding: const EdgeInsets.all(0.0),
-                    itemCount: notifications != null ? notifications.length : 0,
+                    itemCount: notifications.length,
                     itemBuilder: (context, index){
                       var item = notifications[index];
                   return Dismissible(

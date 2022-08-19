@@ -49,8 +49,8 @@ class _ActivityPageState extends State<ActivityPage> {
             builder: (context, state){
               if(state is LoadingState){
                 return Loading();
-              } else if (state is HasDataState<ActivityData>){
-                List<ActivityData> activityList = state.data;
+              } else if (state is HasDataState){
+                List<ActivityData> activityList = state.data as List<ActivityData>;
             return Container(
                   child:
                     GroupedListView<ActivityData, String>(

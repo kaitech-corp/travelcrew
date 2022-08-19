@@ -63,7 +63,7 @@ class CustomAppBar extends StatelessWidget {
                         transitionOnUserGestures: true,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth/8.0,
-                          child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: urlToImage.value)
+                          child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: urlToImage.value, fit: BoxFit.contain,)
                         ),
                       ),
                     ),

@@ -43,8 +43,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       RemoteNotification message =  event.notification!;
-      String tripDocID = event.data['docID'];
-      if (tripDocID?.isNotEmpty ?? false) {
+      String tripDocID = event.data['docID'] ?? '';
+      if (tripDocID.isNotEmpty) {
         CloudFunction().addNewNotification(type: 'Chat',message: message.title!,documentID: tripDocID,ownerID: userService.currentUserID);
       }
       Fluttertoast.showToast(
@@ -56,8 +56,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       // RemoteNotification message =  event.notification;
-      String tripDocID = event.data['docID'];
-      if(tripDocID.isNotEmpty ?? false){
+      String tripDocID = event.data['docID'] ?? '';
+      if(tripDocID.isNotEmpty){
         Trip trip = await DatabaseService().getTrip(tripDocID);
         try {
           navigationService.navigateTo(ExploreRoute, arguments: trip);

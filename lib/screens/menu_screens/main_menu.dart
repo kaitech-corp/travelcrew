@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
@@ -28,6 +29,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
     chatNotifier.value = 0;
   }
 
+  double get imageSize {
+    if (SizerUtil.deviceType == DeviceType.tablet){
+      return (SizeConfig.screenWidth / 8.0);
+    } else {
+      return (SizeConfig.screenWidth / 4.0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -52,10 +61,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
                         Align(
                           alignment: Alignment.center,
                           child: CircleAvatar(
-                            radius: SizerUtil.deviceType == DeviceType.tablet
-                                ? SizeConfig.screenWidth / 8.0
-                                : SizeConfig.screenWidth / 4.0,
-                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage!)
+                            radius: imageSize,
+                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage!,fit: BoxFit.fill,width: imageSize, height: imageSize,)
                           ),
                         ),
                       ],

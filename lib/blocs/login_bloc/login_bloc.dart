@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/validators.dart';
@@ -10,61 +11,43 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
-        super(LoginState.initial());
-
-  @override
-  Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is LoginEmailChange) {
-      yield* _mapLoginEmailChangeToState(event.email);
-    } else if (event is LoginPasswordChanged) {
-      yield* _mapLoginPasswordChangeToState(event.password);
-    } else if (event is LoginWithCredentialsPressed) {
-      yield* _mapLoginWithCredentialsPressedToState(
-          email: event.email, password: event.password);
-    } else if (event is LoginWithApplePressed) {
-      yield* _mapLoginWithApplePressedToState();
-    } else if (event is LoginWithGooglePressed) {
-      yield* _mapLoginWithGooglePressedToState();
-    }
+        super(LoginState.initial()) {
+    on<LoginEmailChange>((event, emit) async =>
+        state.update(isEmailValid: Validators.isValidEmail(event.email!)));
+    on<LoginPasswordChanged>((event, emit) async => state.update(
+        isPasswordValid: Validators.isValidPassword(event.password!)));
+    on<LoginWithCredentialsPressed>((event, emit) async {
+      emit(LoginState.loading());
+      try {
+        final firebaseUser = await _userRepository?.signInWithCredentials(
+            email: event.email!, password: event.password!);
+        emit(LoginState.success());
+        // AuthenticationSuccess(firebaseUser.user);
+      } catch (_) {
+        emit(LoginState.failure());
+      }
+    });
+    on<LoginWithApplePressed>((event, emit) async {
+      emit(LoginState.loading());
+      try {
+        UserCredential? user = await _userRepository?.signInWithApple();
+        if (user!.user!.uid.isNotEmpty) {
+          emit(LoginState.success());
+        }
+      } catch (_) {
+        emit(LoginState.failure());
+      }
+    });
+    on<LoginWithGooglePressed>((event, emit) async {
+      emit(LoginState.loading());
+      try {
+        UserCredential? user = await _userRepository?.signInWithGoogle();
+        if (user!.user!.uid.isNotEmpty) {
+          emit(LoginState.success());
+        }
+      } catch (_) {
+        emit(LoginState.failure());
+      }
+    });
   }
-
-  Stream<LoginState> _mapLoginEmailChangeToState(String? email) async* {
-    yield state.update(isEmailValid: Validators.isValidEmail(email!));
-  }
-
-  Stream<LoginState> _mapLoginPasswordChangeToState(String? password) async* {
-    yield state.update(isPasswordValid: Validators.isValidPassword(password!));
-  }
-
-  Stream<LoginState> _mapLoginWithCredentialsPressedToState(
-      {String? email, String? password}) async* {
-    yield LoginState.loading();
-    try {
-      await _userRepository?.signInWithCredentials(email:email!, password: password!);
-      yield LoginState.success();
-    } catch (_) {
-      yield LoginState.failure();
-    }
-  }
-
-  Stream<LoginState> _mapLoginWithApplePressedToState() async* {
-    yield LoginState.loading();
-    try {
-      await _userRepository?.signInWithApple();
-      yield LoginState.success();
-    } catch (_) {
-      yield LoginState.failure();
-    }
-  }
-
-  Stream<LoginState> _mapLoginWithGooglePressedToState() async* {
-    yield LoginState.loading();
-    try {
-      await _userRepository?.signInWithGoogle();
-      yield LoginState.success();
-    } catch (_) {
-      yield LoginState.failure();
-    }
-  }
-
 }

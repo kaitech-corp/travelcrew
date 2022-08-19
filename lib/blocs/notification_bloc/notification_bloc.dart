@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
@@ -11,23 +10,22 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final NotificationRepository? notificationRepository;
   StreamSubscription? _subscription;
 
-
-  NotificationBloc({this.notificationRepository}) : super(NotificationLoadingState());
-
   NotificationState get initialState => NotificationLoadingState();
 
-  @override
-  Stream<NotificationState> mapEventToState(NotificationEvent event) async*{
-    if(event is LoadingNotificationData){
-      if(_subscription != null){
-        await _subscription?.cancel();
-      }
-      _subscription = notificationRepository?.notifications().asBroadcastStream().listen((data) { add(HasDataEvent(data)); });
-    }
-    else if(event is HasDataEvent){
-      yield NotificationHasDataState(event.data);
-    }
+  NotificationBloc({this.notificationRepository})
+      : super(NotificationLoadingState()) {
+    on<LoadingNotificationData>((event, emit) async {
+      _subscription = notificationRepository
+          ?.notifications()
+          .asBroadcastStream()
+          .listen((data) {
+        add(HasDataEvent(data));
+      });
+    });
+    on<HasDataEvent>(
+        (event, emit) async => emit(NotificationHasDataState(event.data)));
   }
+
   @override
   Future<void> close() async {
     await _subscription?.cancel();

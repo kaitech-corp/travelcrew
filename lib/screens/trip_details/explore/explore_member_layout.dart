@@ -22,10 +22,9 @@ class ExploreMemberLayout extends StatefulWidget{
   final Trip tripDetails;
 
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
 
 
-  ExploreMemberLayout({required this.tripDetails, required this.scaffoldKey, required this.controller,});
+  ExploreMemberLayout({required this.tripDetails, required this.scaffoldKey,});
 
   @override
   _ExploreMemberLayoutState createState() => _ExploreMemberLayoutState();
@@ -93,7 +92,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       AnimatedPadding(
                           duration: Duration(milliseconds: 250),
                           padding: EdgeInsets.only(top: _padding),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                     ],
                   ):
                   Stack(
@@ -101,7 +100,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       HangingImageTheme(),
                       Padding(
                           padding: EdgeInsets.only(top:  SizeConfig.screenHeight*.16),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                     ],
                   ),
                   Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
@@ -124,14 +123,13 @@ class MemberPopupMenuButton extends StatelessWidget {
   const MemberPopupMenuButton({
     Key? key,
     required this.tripDetails,
-    required this.event, required this.scaffoldKey, required this.controller, this.basketController,
+    required this.event, required this.scaffoldKey, this.basketController,
 
   }) : super(key: key);
 
   final Trip tripDetails;
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
   final BasketController? basketController;
 
   @override

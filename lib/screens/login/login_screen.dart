@@ -11,7 +11,6 @@ import 'login_form.dart';
 
 /// Login screen
 class LoginScreen extends StatelessWidget {
-
   final UserRepository _userRepository = UserRepository();
 
   @override
@@ -22,54 +21,56 @@ class LoginScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body:
-      MultiBlocProvider(
-        providers: [
-          BlocProvider<LoginBloc>(
-            create: (context) => LoginBloc(userRepository: _userRepository),),
-        ],
+      body: BlocProvider<LoginBloc>(
+        create: (context) => LoginBloc(userRepository: _userRepository),
         child: Container(
-            height: double.infinity,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [canvasColor, Colors.blueAccent.shade100],
-                )),
-            child: SingleChildScrollView(
-              child: Stack(
-                children: <Widget>[
-                  CurvedWidget(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(top: SizeConfig.blockSizeHorizontal*10),
-                        width: double.infinity,
-                        height: 300,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Colors.white, Colors.white.withOpacity(0.4)],
-                          ),
+          height: double.infinity,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [canvasColor, Colors.blueAccent.shade100],
+          )),
+          child: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                CurvedWidget(
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          top: SizeConfig.blockSizeHorizontal * 10),
+                      width: double.infinity,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.white, Colors.white.withOpacity(0.4)],
                         ),
-                        child: const AutoSizeText("Travel Crew",
-                          style: TextStyle(fontFamily:'RockSalt',
-                              fontSize: 44,
-                              color: Colors.blue),
-                          maxLines: 2,
-                          textAlign: TextAlign.center,),
-                        ),
+                      ),
+                      child: const AutoSizeText(
+                        "Travel Crew",
+                        style: TextStyle(
+                            fontFamily: 'RockSalt',
+                            fontSize: 44,
+                            color: Colors.blue),
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 230),
-                    child: LoginForm(userRepository: _userRepository,),
-                  )
-                ],
-              ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 230),
+                  child: LoginForm(
+                    userRepository: _userRepository,
+                  ),
+                )
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

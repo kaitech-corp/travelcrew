@@ -83,7 +83,7 @@ class _AllUserPageState extends State<AllUserPage> {
                   controller: controller,
                   child: ListView.builder(
                       controller: controller,
-                      itemCount: allUsersList.length ?? 0,
+                      itemCount: allUsersList.length,
                       itemBuilder: (context, index){
                         return TCUserCard(allUsers: allUsersList[index]);
                       }),

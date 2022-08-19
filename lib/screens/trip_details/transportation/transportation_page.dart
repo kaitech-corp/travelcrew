@@ -48,8 +48,8 @@ class _TransportationPageState extends State<TransportationPage> {
             builder: (context, state) {
           if (state is LoadingState) {
             return Loading();
-          } else if (state is HasDataState<TransportationData>) {
-            List<TransportationData> modeList = state.data;
+          } else if (state is HasDataState) {
+            List<TransportationData> modeList = state.data as List<TransportationData>;
             return Column(
               children: [
                 Container(
@@ -59,7 +59,7 @@ class _TransportationPageState extends State<TransportationPage> {
                   flex: 1,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: modeList != null ? modeList.length : 0,
+                      itemCount: modeList.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -70,7 +70,7 @@ class _TransportationPageState extends State<TransportationPage> {
                                 // backgroundColor: Colors.yellow,
                                 child: TransportationIcon(modeList[index].mode),
                               ),
-                              Text(modeList[index].displayName)
+                              Text(modeList[index].displayName!)
                             ],
                           ),
                         );

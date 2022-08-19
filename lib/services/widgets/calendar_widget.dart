@@ -31,12 +31,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   
 
   String get labelTextDepart {
-    widget.startDate!.value = DateFormat.yMMMd().format(_fromDateDepart);
+    widget.startDate?.value = DateFormat.yMMMd().format(_fromDateDepart);
     widget.startDateTimeStamp.value = Timestamp.fromDate(_fromDateDepart);
     return DateFormat.yMMMd().format(_fromDateDepart);
   }
   String get labelTextReturn {
-    widget.endDate!.value = DateFormat.yMMMd().format(_fromDateReturn);
+    widget.endDate?.value = DateFormat.yMMMd().format(_fromDateReturn);
     widget.endDateTimeStamp.value = Timestamp.fromDate(_fromDateReturn);
     return DateFormat.yMMMd().format(_fromDateReturn);
   }

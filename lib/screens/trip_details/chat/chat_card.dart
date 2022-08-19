@@ -148,7 +148,7 @@ class ChatCard extends StatelessWidget {
                         Container(
                             margin: const EdgeInsets.all(5),
                             child: Text(
-                              message.displayName ?? '',
+                              message.displayName,
                               style: TextStyle(
                                   color: Colors.black,
                                   fontFamily: 'Cantata One'),
@@ -164,7 +164,7 @@ class ChatCard extends StatelessWidget {
                                 throw 'Could not launch $link';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontFamily: 'Cantata One',

@@ -66,7 +66,7 @@ class CrewTripCard extends StatelessWidget {
                         title: Tooltip(
                             message: trip.tripName,
                             child: Text(
-                              trip?.tripName ?? '',
+                              trip.tripName ?? '',
                               style: Theme.of(context).textTheme.headline5,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

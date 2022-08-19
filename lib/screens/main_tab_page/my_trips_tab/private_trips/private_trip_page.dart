@@ -45,9 +45,10 @@ class _PrivateTripsState extends State<PrivateTrips>{
         builder: (context, state){
           if(state is LoadingState){
             return Loading();
-          } else if (state is HasDataState<Trip>){
+          } else if (state is HasDataState){
+            List<Trip> tripsData = state.data as List<Trip>;
             return SizeConfig.tablet ?
-            SliverGridView(trips: state.data, length: state.data.length):
+            SliverGridView(trips: tripsData, length: tripsData.length):
             GroupedListTripView(data: state.data, isPast: true,)
             ;
           } else {

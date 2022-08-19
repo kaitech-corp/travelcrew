@@ -21,12 +21,10 @@ class CurrentTrips extends StatefulWidget{
 }
 
 class _CurrentTripsState extends State<CurrentTrips>{
-  late GenericBloc bloc;
+  late GenericBloc<Trip,CurrentTripRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);
-    bloc.add(LoadingGenericData());
     super.initState();
   }
 
@@ -42,13 +40,13 @@ class _CurrentTripsState extends State<CurrentTrips>{
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
-      // bloc: bloc,
       builder: (context, state){
         if(state is LoadingState){
             return Loading();
-        } else if (state is HasDataState<Trip>){
+        } else if (state is HasDataState){
+          List<Trip> tripsData = state.data as List<Trip>;
         return SizeConfig.tablet ?
-        SliverGridView(trips: state.data, length: state.data.length):
+        SliverGridView(trips: tripsData, length: tripsData.length):
         GroupedListTripView(data: state.data, isPast: false,);
         } else {
             return nil;

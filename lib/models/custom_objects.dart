@@ -46,12 +46,12 @@ class UserPublicProfile {
 
   UserPublicProfile.fromData(Map<String, dynamic> data)
       :
-        blockedList = List<String>.from(data['blockedList']) ?? [''],
+        blockedList = List<String>.from(data['blockedList']),
         displayName = data['displayName'] ?? '',
         email = data['email'] ?? '',
         firstName = data['firstName'] ?? '',
-        following = List<String>.from(data['following']) ?? [''],
-        followers = List<String>.from(data['followers']) ?? [''],
+        following = List<String>.from(data['following']) ,
+        followers = List<String>.from(data['followers']),
         lastName = data['lastName'] ?? '',
         tripsCreated = data['tripsCreated'] ?? null,
         tripsJoined = data['tripsJoined'] ?? null,
@@ -60,7 +60,7 @@ class UserPublicProfile {
         hometown = data['hometown'] ?? '',
         instagramLink = data['instagramLink'] ?? '',
         facebookLink = data['facebookLink'] ?? '',
-        topDestinations = List<String>.from(data['topDestinations']) ?? [''];
+        topDestinations = List<String>.from(data['topDestinations']);
 
   Map<String, dynamic> toJson() {
     return {
