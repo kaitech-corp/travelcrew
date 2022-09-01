@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/trip_model.dart';
+import '../../../models/trip_model.dart';
 
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
@@ -9,14 +9,14 @@ import '../../../services/widgets/appearance_widgets.dart';
 
 /// Add new mode of Transportation
 class AddNewModeOfTransport extends StatefulWidget {
+  const AddNewModeOfTransport({required this.trip});
   final Trip trip;
-  AddNewModeOfTransport({required this.trip});
 
   @override
   _AddNewModeOfTransportState createState() => _AddNewModeOfTransportState();
 }
 class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String comment = '';
   String displayName = '';
@@ -33,7 +33,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
           appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline5,),),
@@ -42,7 +42,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                   padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                   child: Builder(
-                      builder: (context) => Form(
+                      builder: (BuildContext context) => Form(
                           key: _formKey,
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,7 +55,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                     height: 2,
                                     color: Colors.blueAccent,
                                   ),
-                                  onChanged: (newValue) {
+                                  onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownValue = newValue ?? '';
                                     });
@@ -80,28 +80,28 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 ),
                                 if(dropdownValue == 'Carpool') TextFormField(
                                     decoration:
-                                    InputDecoration(labelText: 'Carpool with who?'),
+                                    const InputDecoration(labelText: 'Carpool with who?'),
                                     textCapitalization: TextCapitalization.words,
                                     keyboardType: TextInputType.name,
-                                    onChanged: (val) =>
+                                    onChanged: (String val) =>
                                     {
                                       carpoolingWith = val,
                                     }
                                 ),
                                 if(dropdownValue == 'Flying') TextFormField(
                                     decoration:
-                                    InputDecoration(labelText: 'Airline'),
+                                    const InputDecoration(labelText: 'Airline'),
                                     textCapitalization: TextCapitalization.characters,
-                                    onChanged: (val) =>
+                                    onChanged: (String val) =>
                                     {
                                       airline = val,
                                     }
                                 ),
                                 if(dropdownValue == 'Flying') TextFormField(
                                     decoration:
-                                    InputDecoration(labelText: 'Flight Number'),
+                                    const InputDecoration(labelText: 'Flight Number'),
                                     textCapitalization: TextCapitalization.characters,
-                                    onChanged: (val) =>
+                                    onChanged: (String val) =>
                                     {
                                       flightNumber = val,
                                     }
@@ -113,12 +113,12 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 TextFormField(
                                   decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                                       ),
                                       hintText: 'Add a comment.'),
                                   textCapitalization: TextCapitalization.sentences,
                                   maxLines: 10,
-                                  onChanged: (val){
+                                  onChanged: (String val){
                                     comment = val;
                                   },
                                 ),
@@ -129,12 +129,12 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            final form = _formKey.currentState!;
-            String documentID = widget.trip.documentId!;
-            String message = 'A new travel method has been added to ${widget.trip.tripName}';
+            final FormState form = _formKey.currentState!;
+            final String documentID = widget.trip.documentId!;
+            final String message = 'A new travel method has been added to ${widget.trip.tripName}';
             if (form.validate()) {
               try {
-                String action = 'Saving new transportation data';
+                const String action = 'Saving new transportation data';
                 CloudFunction().logEvent(action);
                 CloudFunction().addTransportation(
                   mode: dropdownValue,
@@ -150,9 +150,9 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
 
 
               try {
-                String action = 'Sending notifications to access users for $documentId';
+                final String action = 'Sending notifications to access users for $documentId';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers!.forEach((f) {
+                for (final String f in widget.trip.accessUsers!) {
                   if(f != userService.currentUserID){
                     CloudFunction().addNewNotification(
                       message: message,
@@ -163,7 +163,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                       ispublic: widget.trip.ispublic,
                     );
                   }
-                });
+                }
               } on Exception catch (e) {
                 CloudFunction().logError('Error sending notifications for new Transportation item:  ${e.toString()}');
               }

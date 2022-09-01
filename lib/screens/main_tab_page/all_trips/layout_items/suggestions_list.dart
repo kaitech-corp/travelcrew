@@ -37,21 +37,21 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
   Widget build(BuildContext context) {
 
     return BlocBuilder<GenericBloc<Trip,AllTripsSuggestionRepository>, GenericState>(
-        builder: (context, state) {
+        builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(fit:FlexFit.loose,child: Loading());
+            return Flexible(child: Loading());
           } else if (state is HasDataState) {
-            List<Trip> tripList = state.data as List<Trip>;
+            final List<Trip> tripList = state.data as List<Trip>;
             print(tripList.length);
         return SizedBox(
               height: SizeConfig.screenWidth*.2,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: List.generate(5, (index) {
+                children: List.generate(5, (int index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                         width: SizeConfig.screenWidth*.4,
                         decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(10)),

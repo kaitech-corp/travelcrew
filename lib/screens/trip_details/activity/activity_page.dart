@@ -16,9 +16,9 @@ import '../../../services/widgets/loading.dart';
 import 'activity_card.dart';
 
 class ActivityPage extends StatefulWidget {
+  const ActivityPage({required this.trip});
 
   final Trip trip;
-  ActivityPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -42,25 +42,24 @@ class _ActivityPageState extends State<ActivityPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         body: BlocBuilder<GenericBloc<ActivityData,ActivityRepository>, GenericState>(
-            builder: (context, state){
+            builder: (BuildContext context, GenericState state){
               if(state is LoadingState){
                 return Loading();
               } else if (state is HasDataState){
-                List<ActivityData> activityList = state.data as List<ActivityData>;
+                final List<ActivityData> activityList = state.data as List<ActivityData>;
             return Container(
                   child:
                     GroupedListView<ActivityData, String>(
                       elements: activityList,
-                      groupBy: (activity) => DateTime(
+                      groupBy: (ActivityData activity) => DateTime(
                           activity.startDateTimestamp!.toDate().year,
                           activity.startDateTimestamp!.toDate().month,
                           activity.startDateTimestamp!.toDate().day,).toString(),
-                      order: GroupedListOrder.ASC,
-                      groupSeparatorBuilder: (activity) => Padding(
+                      groupSeparatorBuilder: (String activity) => Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Center(
                             child: Text(
@@ -68,8 +67,8 @@ class _ActivityPageState extends State<ActivityPage> {
                                   Timestamp.fromDate(DateTime.parse(activity))),
                               style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black54),)),
                       ),
-                      itemComparator: (a,b) => (a.startTime!.compareTo(b.startTime!)),
-                      itemBuilder: (context, activity){
+                      itemComparator: (ActivityData a,ActivityData b) => a.startTime!.compareTo(b.startTime!),
+                      itemBuilder: (BuildContext context, ActivityData activity){
                         return ActivityCard(activity: activity,trip: widget.trip,);
                       },
                     )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
@@ -14,11 +15,11 @@ import '../split/split_package.dart';
 
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
-  final currentUserProfile =
+  TransportationCard({required this.transportationData, required this.trip});
+  final UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
   final TransportationData transportationData;
   final Trip trip;
-  TransportationCard({required this.transportationData, required this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,7 @@ class TransportationCard extends StatelessWidget {
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,
             ),
-            onSelected: (value) {
+            onSelected: (String value) {
               switch (value) {
                 case 'Edit':
                   {
@@ -144,7 +145,7 @@ class TransportationCard extends StatelessWidget {
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,
             ),
-            onSelected: (value) {
+            onSelected: (String value) {
               switch (value) {
                 case 'report':
                   {

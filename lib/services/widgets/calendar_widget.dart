@@ -6,19 +6,19 @@ import 'appearance_widgets.dart';
 
 class CalendarWidget  extends StatefulWidget{
 
+  const CalendarWidget(
+      { this.startDate,
+        this.endDate,
+        required this.startDateTimeStamp,
+        required this.endDateTimeStamp,
+        this.context, required this.showBoth});
+
   final ValueNotifier<String>? startDate;
   final ValueNotifier<String>? endDate;
   final ValueNotifier<Timestamp> startDateTimeStamp;
   final ValueNotifier<Timestamp> endDateTimeStamp;
   final BuildContext? context;
   final bool showBoth;
-
-  CalendarWidget(
-      { this.startDate,
-        this.endDate,
-        required this.startDateTimeStamp,
-        required this.endDateTimeStamp,
-        this.context, required this.showBoth});
 
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
@@ -42,10 +42,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   Future<void> showDatePickerDepart() async {
-    final picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _fromDateDepart,
-      firstDate: DateTime(2015, 1),
+      firstDate: DateTime(2015),
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _fromDateDepart) {
@@ -57,10 +57,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     }
   }
   Future<void> showDatePickerReturn() async {
-    final picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _fromDateReturn,
-      firstDate: DateTime(2015, 1),
+      firstDate: DateTime(2015),
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _fromDateReturn) {
@@ -82,8 +82,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                    SizedBox(width: 8,),
+                    const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                    const SizedBox(width: 8,),
                     Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
                   ],
                 ),
@@ -111,8 +111,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                    SizedBox(width: 8,),
+                    const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                    const SizedBox(width: 8,),
                     Text(labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
                   ],
                 ),
@@ -143,8 +143,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                SizedBox(width: 8,),
+                const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                const SizedBox(width: 8,),
                 Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
               ],
             ),
@@ -153,7 +153,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           ButtonTheme(
             minWidth: 150,
             child: IconButton(
-              icon: IconThemeWidget(icon: Icons.edit,),
+              icon: const IconThemeWidget(icon: Icons.edit,),
               onPressed: () async {
                 showDatePickerDepart();
               },

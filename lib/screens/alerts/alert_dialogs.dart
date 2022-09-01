@@ -19,7 +19,7 @@ import '../../services/navigation/router.dart';
 
 /// All alert dialogs
 class TravelCrewAlertDialogs {
-  var userService = locator<UserService>();
+  UserService userService = locator<UserService>();
 
 
   Future<void> disableAccount(BuildContext context,) {
@@ -28,7 +28,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Delete Account'),textScaleFactor: 1.5,),
           content: Text(
             deleteAccountMessage(),),
@@ -42,7 +42,7 @@ class TravelCrewAlertDialogs {
             TextButton(
               child: Text(Intl.message('Confirm Delete'),),
               onPressed: () async {
-                await navigationService.pop();
+                navigationService.pop();
                 BlocProvider.of<AuthenticationBloc>(context)
                     .add(AuthenticationLoggedOut());
                 CloudFunction().disableAccount();
@@ -60,7 +60,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Block Account'),textScaleFactor: 1.5,),
           content: Text(
               blockMessage(),),
@@ -89,10 +89,10 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(report(),textScaleFactor: 1.5,),
           content: Text(
-              reportMessage(),style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+              reportMessage(),style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: Text(report(),),
@@ -120,7 +120,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message
               ('Action completed.'),),
           actions: <Widget>[
@@ -141,7 +141,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Disable Notifications?'),textAlign: TextAlign.center,),
           content: Text(Intl.message
             ('Please go to your device settings to disable notifications.'),textAlign: TextAlign.center,),
@@ -157,18 +157,18 @@ class TravelCrewAlertDialogs {
       },
     );
   }
-  deleteNotificationsAlert(BuildContext context,) {
+  Future<void> deleteNotificationsAlert(BuildContext context,) {
 
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Clear all notifications?'),textScaleFactor: 1.2,),
           content: Text(Intl.message('Join requests and follow requests will also be removed.'),),
           actions: <Widget>[
             TextButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 navigationService.pop();
               },
@@ -192,7 +192,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message
               ('Are you sure you want to leave this Trip?'),textScaleFactor: 1.2,),
           content: Text(Intl.message('You will no longer have access to this Trip'),),
@@ -221,7 +221,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Are you sure you want to delete this trip?'),textScaleFactor: 1.2,),
           content: Text(Intl.message
             ('All data associated with this trip will be deleted.'),),
@@ -251,7 +251,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: tripDetails.ispublic
               ? Text(Intl.message
             ('Convert to Private Trip?'),textScaleFactor: 1.2,)
@@ -285,7 +285,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(
             Intl.message('Remove ${member?.displayName}?'),
             textScaleFactor: 1.5,),
@@ -342,7 +342,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Feedback Submitted!'),textScaleFactor: 1.5,),
           content: Text(Intl.message(
               'We thank you for your feedback.')),
@@ -365,7 +365,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title:  Text(Intl.message('Trip Created!'),textScaleFactor: 1.5,),
           actions: <Widget>[
             TextButton(
@@ -385,7 +385,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message('Notification Sent!')),
         );
       },
@@ -397,7 +397,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Center(child: Text(Intl.message('Follow back?'),textScaleFactor: 1.5,)),
           actions: <Widget>[
             TextButton(
@@ -425,7 +425,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Center(child: Text(Intl.message('Finalize?'),textScaleFactor: 1.5,)),
           actions: <Widget>[
             TextButton(
@@ -453,7 +453,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Center(child: Text(Intl.message('Unfollow?'),textScaleFactor: 1.5,)),
           actions: <Widget>[
             TextButton(
@@ -477,14 +477,14 @@ class TravelCrewAlertDialogs {
 
 
   Future<void> resetPasswordDialog(BuildContext context) async {
-    final _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     String? email;
     return await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
       return _SystemPadding(
         child: AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           contentPadding: const EdgeInsets.all(16.0),
           title: Text(Intl.message
             ('Reset Password'),
@@ -495,15 +495,14 @@ class TravelCrewAlertDialogs {
             children: <Widget>[
               Expanded(
                 child: Builder(
-                  builder: (context) => Form(
-                    key: _formKey,
+                  builder: (BuildContext context) => Form(
+                    key: formKey,
                     child: TextFormField(
-                      maxLines: 1,
                       autofocus: true,
-                      onSaved: (val) {
+                      onSaved: (String? val) {
                         email = val;
                       },
-                      validator: (value) {
+                      validator: (String? value) {
                         if ((value?.isEmpty ?? true) || !value!.contains('.com')) {
                           return Intl.message('Please enter valid email address.');
                         } else {
@@ -527,7 +526,7 @@ class TravelCrewAlertDialogs {
             TextButton(
                 child: Text(Intl.message('Reset')),
                 onPressed: () {
-                  final FormState? form = _formKey.currentState;
+                  final FormState? form = formKey.currentState;
                   if (form!.validate()) {
                     form.save();
                     UserRepository().resetPassword(email!);
@@ -546,7 +545,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text(Intl.message
             ('Please make sure location settings are enabled to continue.'),textScaleFactor: 1.2,),
           // content: Text('You will no longer have access to this Trip'),
@@ -568,8 +567,8 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Center(child: const Text('Delete?',textScaleFactor: 1.5,)),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          title: const Center(child: Text('Delete?',textScaleFactor: 1.5,)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -598,7 +597,7 @@ class TravelCrewAlertDialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Center(child: Text(deleteMessage(),textScaleFactor: 1.5,)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -625,14 +624,14 @@ class TravelCrewAlertDialogs {
 }
 
 class _SystemPadding extends StatelessWidget {
-  final Widget? child;
 
-  _SystemPadding({Key? key, this.child}) : super(key: key);
+  const _SystemPadding({Key? key, this.child}) : super(key: key);
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    var mediaQuery = MediaQuery.of(context);
-    return new AnimatedContainer(
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    return AnimatedContainer(
         padding: mediaQuery.padding,
         duration: const Duration(milliseconds: 300),
         child: child);

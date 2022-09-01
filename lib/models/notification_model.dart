@@ -2,6 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for notifications
 class NotificationData {
+
+  NotificationData.fromData(Map<String, dynamic> data)
+      : _documentID = data['documentID'] as String,
+        _displayName = data['displayName'] as String,
+        _ownerID = data['ownerID'] as String,
+        _ownerDisplayName = data['ownerDisplayName'] as String,
+        _fieldID = data['fieldID'] as String,
+        _firstname = data['firstname'] as String,
+        _ispublic = data['ispublic'] as bool,
+        _lastname = data['lastname'] as String,
+        _message = data['message'] as String,
+        _timestamp = data['timestamp'] as Timestamp,
+        _type = data['type'] as String,
+        _uid = data['uid'] as String;
+
   final String _documentID;
   final String _displayName;
   final String _ownerID;
@@ -15,22 +30,8 @@ class NotificationData {
   final String _type;
   final String _uid;
 
-  NotificationData.fromData(Map<String, dynamic> data)
-      : _documentID = data['documentID'],
-        _displayName = data['displayName'],
-        _ownerID = data['ownerID'],
-        _ownerDisplayName = data['ownerDisplayName'],
-        _fieldID = data['fieldID'],
-        _firstname = data['firstname'],
-        _ispublic = data['ispublic'],
-        _lastname = data['lastname'],
-        _message = data['message'],
-        _timestamp = data['timestamp'],
-        _type = data['type'],
-        _uid = data['uid'];
-
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'documentID': _documentID,
       'displayName': _displayName,
       'ownerID': _ownerID,

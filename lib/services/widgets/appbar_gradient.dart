@@ -17,12 +17,11 @@ class AppBarGradient extends StatelessWidget {
               Colors.lightBlueAccent
             ]
         ),
-        boxShadow: [
-          const BoxShadow(
-            color: Colors.black,
+        boxShadow: const [
+          BoxShadow(
             blurRadius: 10.0,
           ),
-          const BoxShadow(
+          BoxShadow(
             color: Colors.blueAccent,
             blurRadius: 10.0,
           ),

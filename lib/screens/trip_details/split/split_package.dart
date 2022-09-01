@@ -36,8 +36,9 @@ class SplitPackage {
   /// Sum up outstanding balance
   double sumRemainingBalance(List<CostObject> coList) {
     double total = 0;
-    coList.forEach((element) =>
-        total = total + (((element.paid ?? false) == false) ? element.amountOwe! : 0));
+    for (final CostObject element in coList) {
+      total = total + (((element.paid ?? false) == false) ? element.amountOwe! : 0);
+    }
     return total;
   }
 
@@ -48,7 +49,7 @@ class SplitPackage {
       context: context,
       builder: (BuildContext context) {
         return FutureBuilder<bool>(
-          builder: (context, response) {
+          builder: (BuildContext context, AsyncSnapshot<bool> response) {
             if (response.hasData && response.data == true) {
               return AlertDialog(
                 title: Text(
@@ -94,7 +95,7 @@ class SplitPackage {
   Widget splitItemExist(BuildContext context, SplitObject splitObject,
       {required Trip trip}) {
     return FutureBuilder<bool>(
-      builder: (BuildContext context, response) {
+      builder: (BuildContext context, AsyncSnapshot<bool> response) {
         if (response.hasData && response.data == false) {
           return IconButton(
               visualDensity: const VisualDensity(vertical: -4),
@@ -163,7 +164,7 @@ class SplitPackage {
                                                   .colorOpposite(context)),
                                         )),
                                     // ignore: missing_return
-                                    validator: (value) {
+                                    validator: (String? value) {
                                       if (value?.isEmpty ?? false) {
                                         return 'Please enter an amount.';
                                         // ignore: missing_return
@@ -171,7 +172,7 @@ class SplitPackage {
                                         return null;
                                       }
                                     },
-                                    onChanged: (val) => {
+                                    onChanged: (String val) => {
                                           splitObject.itemTotal =
                                               double.parse(val),
                                         }))),
@@ -186,7 +187,7 @@ class SplitPackage {
                             )),
                           ),
                           onPressed: () {
-                            final form = _formKey.currentState!;
+                            final FormState form = _formKey.currentState!;
                             form.save();
                             if (form.validate()) {
                               try {
@@ -195,7 +196,7 @@ class SplitPackage {
                                 splitObject.purchasedByUID =
                                     userService.currentUserID;
                                 splitObject.userSelectedList = trip.accessUsers
-                                    !.where((user) =>
+                                    !.where((String user) =>
                                         !selectedList.value.contains(user))
                                     .toList();
                                 splitObject.amountRemaining =
@@ -228,6 +229,7 @@ class SplitPackage {
                 ),
               ));
         });
+    return null;
   }
 
   /// Edit Split Dialog
@@ -276,13 +278,14 @@ class SplitPackage {
                                                   .colorOpposite(context)),
                                         )),
                                     // ignore: missing_return
-                                    validator: (value) {
+                                    validator: (String? value) {
                                       if (value?.isEmpty ?? false) {
                                         return 'Please enter an amount.';
                                         // ignore: missing_return
                                       }
+                                      return null;
                                     },
-                                    onChanged: (val) => {
+                                    onChanged: (String val) => {
                                           splitObject.itemTotal =
                                               double.parse(val),
                                         }))),
@@ -349,22 +352,23 @@ class SplitPackage {
                 ),
               ));
         });
+    return null;
   }
 }
 
 class SplitMembersLayout extends StatefulWidget {
+
+  const SplitMembersLayout({Key? key, required this.trip, this.ownerID})
+      : super(key: key);
   final Trip trip;
   final String? ownerID;
-
-  SplitMembersLayout({Key? key, required this.trip, this.ownerID})
-      : super(key: key);
 
   @override
   _SplitMembersLayoutState createState() => _SplitMembersLayoutState();
 }
 
 class _SplitMembersLayoutState extends State<SplitMembersLayout> {
-  var _showImage = false;
+  bool _showImage = false;
   late String _image;
 
   final ScrollController controller = ScrollController();
@@ -390,7 +394,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
     return Stack(
       children: [
         StreamBuilder(
-          builder: (BuildContext context, userData) {
+          builder: (BuildContext context, AsyncSnapshot<Object?> userData) {
             if (userData.hasError) {
               CloudFunction()
                   .logError('Error streaming user data for '
@@ -469,7 +473,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
         },
         child: CheckboxListTile(
           value: !selectedList.value.contains(member.uid),
-          onChanged: (value) {
+          onChanged: (bool? value) {
             setState(() {
               if (value ?? false) {
                 selectedList.value.remove(member.uid);

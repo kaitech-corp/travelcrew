@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:travelcrew/models/activity_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/lodging_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+
+import '../../../models/activity_model.dart';
+import '../../../models/custom_objects.dart';
+import '../../../models/lodging_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../alerts/alert_dialogs.dart';
 
 class ReportContent extends StatefulWidget {
-  final String type;
-  final UserPublicProfile? userAccount;
-  final ActivityData? activity;
-  final LodgingData? lodging;
-  final Trip? trip;
 
   const ReportContent(
       {Key? key,
@@ -23,6 +19,11 @@ class ReportContent extends StatefulWidget {
       this.lodging,
       this.trip})
       : super(key: key);
+  final String type;
+  final UserPublicProfile? userAccount;
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final Trip? trip;
   @override
   _ReportContentState createState() => _ReportContentState();
 }
@@ -159,7 +160,7 @@ class _ReportContentState extends State<ReportContent> {
                             ),
                             value: reportList[index],
                             groupValue: itemType,
-                            onChanged: (value) {
+                            onChanged: (Object? value) {
                               setState(() {
                                 itemType = value as String;
                               });

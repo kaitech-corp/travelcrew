@@ -15,7 +15,7 @@ class BasketController extends ChangeNotifier {
   }
 
   void addWalmartProductsToCart(WalmartProducts walmartProducts) {
-    for (WalmartProductsItem item in cart) {
+    for (final WalmartProductsItem item in cart) {
       if (item.walmartProducts!.query == walmartProducts.query) {
         item.increment();
         notifyListeners();
@@ -27,6 +27,6 @@ class BasketController extends ChangeNotifier {
   }
 
   int totalCartItems() => cart.fold(
-      0, (previousValue, element) => previousValue + element.quantity);
+      0, (int previousValue, WalmartProductsItem element) => previousValue + element.quantity);
 }
 

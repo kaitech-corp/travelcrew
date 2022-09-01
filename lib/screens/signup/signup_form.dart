@@ -16,11 +16,14 @@ import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
 
 class SignupForm extends StatefulWidget {
+  const SignupForm({Key? key}) : super(key: key);
+
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<SignupForm> createState() => _SignupFormState();
 }
 
-class _LoginFormState extends State<SignupForm> {
+class _SignupFormState extends State<SignupForm> {
+
   late File image;
 
   final TextEditingController _emailController = TextEditingController();
@@ -30,14 +33,12 @@ class _LoginFormState extends State<SignupForm> {
   final TextEditingController _displayNameController = TextEditingController();
   final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
 
-  final ImagePicker _picker = ImagePicker();
-
   bool imagePicked = false;
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   bool isButtonEnabled(SignupState state) {
-    return state.isFormValid! && isPopulated && !state.isSubmitting!;
+    return state.isFormValid! && isPopulated && !state.isSubmitting;
   }
 
   late SignupBloc _signupBloc;
@@ -65,42 +66,68 @@ class _LoginFormState extends State<SignupForm> {
     super.dispose();
   }
 
-  getImage() async {
-    var image =
-        await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
+  XFile? _pickedFile;
+  CroppedFile? _croppedFile;
 
-    _cropImage(image!.path, image);
-    setState(() {
-      imagePicked = true;
-    });
+  Future<void> _uploadImage() async {
+    final pickedFile =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedFile = pickedFile;
+      });
+    }
+    _cropImage();
   }
-
-  _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper().cropImage(
-      sourcePath: imagePath,
-      maxHeight: 1080,
-      maxWidth: 1080,
-    ) as File;
+  Future<void>  _cropImage() async {
+    final CroppedFile? croppedImage = await ImageCropper().cropImage(
+      sourcePath: _pickedFile!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
 
     if (croppedImage != null) {
-      _urlToImage.value = croppedImage;
+      _urlToImage.value = croppedImage as File;
     } else {
       _urlToImage.value = File(image.path);
     }
   }
 
+  void _clear() {
+    setState(() {
+      _pickedFile = null;
+      _croppedFile = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignupBloc, SignupState>(
-      listener: (context, state) {
+      listener: (BuildContext context, SignupState state) {
         if (state.isFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text('Signup Failure'),
-                  const Icon(Icons.error),
+                children: const <Widget>[
+                  Text('Signup Failure'),
+                  Icon(Icons.error),
                 ],
               ),
               backgroundColor: const Color(0xffffae88),
@@ -133,7 +160,7 @@ class _LoginFormState extends State<SignupForm> {
         }
       },
       child: BlocBuilder<SignupBloc, SignupState>(
-        builder: (context, state) {
+        builder: (BuildContext context, SignupState state) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
@@ -194,8 +221,7 @@ class _LoginFormState extends State<SignupForm> {
                   const SizedBox(
                     height: 8,
                   ),
-                  imagePicked
-                      ? Container(
+                  if (imagePicked) Container(
                           height: (SizeConfig.screenWidth / 3) * 2.5,
                           // width: (SizeConfig.screenWidth/3)*1.9,
                           decoration: BoxDecoration(
@@ -204,14 +230,13 @@ class _LoginFormState extends State<SignupForm> {
                               image: DecorationImage(
                                   image: FileImage(_urlToImage.value),
                                   fit: BoxFit.cover)),
-                        )
-                      : const Text('Select a Profile Picture.',
+                        ) else const Text('Select a Profile Picture.',
                           style: TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
                   ElevatedButton(
                     onPressed: () {
-                      getImage();
+                      _uploadImage();
                     },
                     child: const Icon(Icons.add_a_photo),
                   ),
@@ -220,7 +245,6 @@ class _LoginFormState extends State<SignupForm> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           agreementMessage(),

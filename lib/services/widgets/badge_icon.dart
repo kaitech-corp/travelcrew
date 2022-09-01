@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class BadgeIcon extends StatelessWidget {
-  BadgeIcon(
+  const BadgeIcon(
       {required this.icon,
         this.badgeCount = 0,
         this.showIfZero = false,
         this.badgeColor = Colors.red,
         TextStyle? badgeTextStyle})
-      : this.badgeTextStyle = badgeTextStyle ??
-      TextStyle(
+      : badgeTextStyle = badgeTextStyle ??
+      const TextStyle(
         color: Colors.white,
         fontSize: 8,
       );
@@ -20,7 +20,7 @@ class BadgeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(children: <Widget>[
+    return Stack(children: <Widget>[
       icon,
       if (badgeCount > 0 || showIfZero) badge(badgeCount),
     ]);
@@ -29,19 +29,19 @@ class BadgeIcon extends StatelessWidget {
   Widget badge(int count) => Positioned(
     right: 0,
     top: 0,
-    child: new Container(
-      padding: EdgeInsets.all(1),
-      decoration: new BoxDecoration(
+    child: Container(
+      padding: const EdgeInsets.all(1),
+      decoration: BoxDecoration(
         color: badgeColor,
         borderRadius: BorderRadius.circular(7.5),
       ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minWidth: 15,
         minHeight: 15,
       ),
       child: Text(
         count.toString(),
-        style: new TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 10,
         ),

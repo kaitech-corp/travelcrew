@@ -11,11 +11,12 @@ import 'signup_event.dart';
 import 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  final UserRepository? _userRepository;
 
   SignupBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(SignupState.initial());
+
+  final UserRepository? _userRepository;
 
 
   Stream<SignupState> mapEventToState(SignupEvent event) async* {
@@ -44,11 +45,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   }
 
   Stream<SignupState> _mapSignupEmailChangeToState(String email) async* {
-    yield state.update(isEmailValid: Validators.isValidEmail(email));
+    yield state.update(isEmailValid: isValidEmail(email));
   }
 
   Stream<SignupState> _mapSignupPasswordChangeToState(String password) async* {
-    yield state.update(isPasswordValid: Validators.isValidPassword(password));
+    yield state.update(isPasswordValid: isValidPassword(password));
   }
   Stream<SignupState> _mapSignupImageChangeToState(File? urlToImage) async* {
     yield state.update(imageAdded: true);
@@ -75,7 +76,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       await UserRepository().signUp(email, password, firstName, lastName, displayName, urlToImage);
       yield SignupState.success();
     } catch (error) {
-      print(error);
+      // TODO(Randy): log error.
       yield SignupState.failure();
     }
   }

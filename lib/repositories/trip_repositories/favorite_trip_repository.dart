@@ -9,22 +9,23 @@ import '../../blocs/generics/generic_bloc.dart';
 
 class FavoriteTripRepository extends GenericBlocRepository<Trip> {
 
+  @override
   Stream<List<Trip>> data() {
 
-    final Query tripCollection = FirebaseFirestore.instance
-        .collection("trips")
+    final Query<Object> tripCollection = FirebaseFirestore.instance
+        .collection('trips')
         .orderBy('endDateTimeStamp')
         .where('ispublic', isEqualTo: true);
 
 
-    List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
+    List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Trip.fromData(data);
         }).toList();
         trips.sort(
-            (a, b) => a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!));
+            (Trip a, Trip b) => a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!));
 
         return trips;
       } catch (e) {

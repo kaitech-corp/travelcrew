@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class GlobalCard extends StatelessWidget{
-  final Widget? widget;
 
   const GlobalCard({Key? key, this.widget}) : super(key: key);
+  final Widget? widget;
 
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+      margin: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       color: Colors.white,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(30))
       ),
       elevation: 10,

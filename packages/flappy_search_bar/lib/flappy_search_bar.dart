@@ -3,10 +3,10 @@ library flappy_search_bar;
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:flappy_search_bar/scaled_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import 'scaled_tile.dart';
 import 'search_bar_style.dart';
 
 mixin _ControllerListener<T> on State<SearchBar<T>> {
@@ -33,7 +33,7 @@ class SearchBarController<T> {
 
   void setTextController(TextEditingController _searchQueryController, minimumChars) {
     this._searchQueryController = _searchQueryController;
-    this.minimumChars = minimumChars;
+    this.minimumChars = minimumChars as int;
   }
 
   void setListener(_ControllerListener _controllerListener) {
@@ -58,7 +58,7 @@ class SearchBarController<T> {
         onCancel: () => {},
       );
 
-      final List<T> items = await _cancelableOperation?.value;
+      final List<T> items = await _cancelableOperation?.value as List<T>;
       _lastSearchFunction = onSearch;
       _lastSearchedText = text;
       _list.clear();
@@ -128,6 +128,39 @@ class SearchBarController<T> {
 typedef ScaledTile IndexedScaledTileBuilder(int index);
 
 class SearchBar<T> extends StatefulWidget {
+
+  const SearchBar({
+    Key? key,
+    required this.onSearch,
+    required this.onItemFound,
+    this.searchBarController,
+    this.minimumChars = 3,
+    this.debounceDuration = const Duration(milliseconds: 500),
+    this.loader = const Center(child: CircularProgressIndicator()),
+    this.onError,
+    this.emptyWidget = const SizedBox.shrink(),
+    this.header,
+    this.placeHolder,
+    this.icon = const Icon(Icons.search),
+    this.hintText = "",
+    this.hintStyle = const TextStyle(color: Color.fromRGBO(142, 142, 147, 1)),
+    this.iconActiveColor = Colors.black,
+    this.textStyle = const TextStyle(color: Colors.black),
+    this.cancellationWidget = const Text("Cancel"),
+    this.onCancelled,
+    this.suggestions = const [],
+    this.buildSuggestion,
+    this.searchBarStyle = const SearchBarStyle(),
+    this.crossAxisCount = 1,
+    this.shrinkWrap = false,
+    this.indexedScaledTileBuilder,
+    this.scrollDirection = Axis.vertical,
+    this.mainAxisSpacing = 0.0,
+    this.crossAxisSpacing = 0.0,
+    this.listPadding = const EdgeInsets.all(0),
+    this.searchBarPadding = const EdgeInsets.all(0),
+    this.headerPadding = const EdgeInsets.all(0),
+  }) : super(key: key);
   /// Future returning searched items
   final Future<List<T>> Function(String text) onSearch;
 
@@ -215,39 +248,6 @@ class SearchBar<T> extends StatefulWidget {
 
   /// Set a padding on the list
   final EdgeInsetsGeometry listPadding;
-
-  SearchBar({
-    Key? key,
-    required this.onSearch,
-    required this.onItemFound,
-    this.searchBarController,
-    this.minimumChars = 3,
-    this.debounceDuration = const Duration(milliseconds: 500),
-    this.loader = const Center(child: CircularProgressIndicator()),
-    this.onError,
-    this.emptyWidget = const SizedBox.shrink(),
-    this.header,
-    this.placeHolder,
-    this.icon = const Icon(Icons.search),
-    this.hintText = "",
-    this.hintStyle = const TextStyle(color: Color.fromRGBO(142, 142, 147, 1)),
-    this.iconActiveColor = Colors.black,
-    this.textStyle = const TextStyle(color: Colors.black),
-    this.cancellationWidget = const Text("Cancel"),
-    this.onCancelled,
-    this.suggestions = const [],
-    this.buildSuggestion,
-    this.searchBarStyle = const SearchBarStyle(),
-    this.crossAxisCount = 1,
-    this.shrinkWrap = false,
-    this.indexedScaledTileBuilder,
-    this.scrollDirection = Axis.vertical,
-    this.mainAxisSpacing = 0.0,
-    this.crossAxisSpacing = 0.0,
-    this.listPadding = const EdgeInsets.all(0),
-    this.searchBarPadding = const EdgeInsets.all(0),
-    this.headerPadding = const EdgeInsets.all(0),
-  }) : super(key: key);
 
   @override
   _SearchBarState createState() => _SearchBarState<T>();

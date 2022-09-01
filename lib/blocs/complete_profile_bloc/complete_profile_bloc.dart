@@ -8,13 +8,12 @@ import 'complete_profile_state.dart';
 
 
 class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileState> {
-  final UserRepository? _userRepository;
 
   CompleteProfileBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(CompleteProfileState.initial());
+  final UserRepository? _userRepository;
 
-  @override
   Stream<CompleteProfileState> mapEventToState(CompleteProfileEvent event) async* {
     if (event is CompleteProfileDisplayNameChanged){
       yield* _mapCompleteProfileDisplayNameChangeToState(event.displayName!);
@@ -57,7 +56,6 @@ class CompleteProfileBloc extends Bloc<CompleteProfileEvent, CompleteProfileStat
       await _userRepository?.updateUserPublicProfile(firstName, lastName, displayName, urlToImage);
       yield CompleteProfileState.success();
     } catch (error) {
-      print(error);
       yield CompleteProfileState.failure();
     }
   }

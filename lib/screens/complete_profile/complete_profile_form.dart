@@ -21,6 +21,8 @@ import '../../size_config/size_config.dart';
 
 /// Form for complete profile page
 class CompleteProfileForm extends StatefulWidget {
+  const CompleteProfileForm({Key? key}) : super(key: key);
+
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -68,18 +70,18 @@ class _LoginFormState extends State<CompleteProfileForm> {
     super.dispose();
   }
 
-  getImage() async {
-    var image =
+  Future<void> getImage() async {
+    final XFile? image =
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
 
-    _cropImage(image?.path, image);
+    _cropImage(image!.path, image);
     setState(() {
       imagePicked = true;
     });
   }
 
-  _cropImage(imagePath, image) async {
-    CroppedFile? croppedImage = await ImageCropper().cropImage(
+  Future<void> _cropImage(String imagePath, XFile image) async {
+    final CroppedFile? croppedImage = await ImageCropper().cropImage(
       sourcePath: imagePath,
       maxHeight: 1080,
       maxWidth: 1080,
@@ -95,7 +97,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CompleteProfileBloc, CompleteProfileState>(
-      listener: (context, state) {
+      listener: (BuildContext context, CompleteProfileState state) {
         if (state.isFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -145,7 +147,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: const Icon(Icons.person),
                       labelText: Intl.message('Display Name'),
                     ),
                     keyboardType: TextInputType.name,
@@ -154,7 +156,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: const Icon(Icons.person),
                       labelText: Intl.message('First Name'),
                     ),
                     keyboardType: TextInputType.name,
@@ -163,16 +165,15 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: const Icon(Icons.person),
                       labelText: Intl.message('Last Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
-                  imagePicked
-                      ? Container(
+                  if (imagePicked) Container(
                           height: (SizeConfig.screenWidth / 3) * 2.5,
                           // width: (SizeConfig.screenWidth/3)*1.9,
                           decoration: BoxDecoration(
@@ -181,9 +182,8 @@ class _LoginFormState extends State<CompleteProfileForm> {
                               image: DecorationImage(
                                   image: FileImage(_urlToImage.value),
                                   fit: BoxFit.cover)),
-                        )
-                      : Text(Intl.message('Select a Profile Picture.'),
-                          style: TextStyle(
+                        ) else Text(Intl.message('Select a Profile Picture.'),
+                          style: const TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
                   ElevatedButton(
@@ -197,7 +197,6 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           agreementMessage(),
@@ -243,7 +242,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     },
                     text: Text(Intl.message
                       ('Continue'),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),

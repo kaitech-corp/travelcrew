@@ -18,7 +18,7 @@ class CartShortView extends StatelessWidget {
     return Row(
       children: [
         Text(
-          "Recent:",
+          'Recent:',
           style: Theme.of(context).textTheme.headline6,
         ),
         const SizedBox(width: defaultPadding),
@@ -28,10 +28,10 @@ class CartShortView extends StatelessWidget {
             child: Row(
               children: List.generate(
                 controller.cart.length,
-                    (index) => Padding(
+                    (int index) => Padding(
                   padding: const EdgeInsets.only(right: defaultPadding / 2),
                   child: Hero(
-                    tag: "${controller.cart[index].walmartProducts!.query} + _cartTag",
+                    tag: '${controller.cart[index].walmartProducts!.query} + _cartTag',
                     child: BasketIcon(controller.cart[index].walmartProducts!.type),
                   ),
                 ),
@@ -43,7 +43,7 @@ class CartShortView extends StatelessWidget {
           backgroundColor: Colors.grey.shade200,
           child: Text(
             controller.totalCartItems().toString(),
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
           ),
         )
       ],

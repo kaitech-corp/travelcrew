@@ -12,7 +12,7 @@ import '../locator.dart';
 Future<String> projectInitializer() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load();
   await Firebase.initializeApp();
   setupLocator();
   SystemChrome.setPreferredOrientations([
@@ -26,5 +26,5 @@ Future<String> projectInitializer() async {
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   Bloc.observer = CustomBlocObserver();
-  return "Complete";
+  return 'Complete';
 }

@@ -11,11 +11,11 @@ import '../../size_config/size_config.dart';
 /// Custom app bar
 class CustomAppBar extends StatelessWidget {
 
-  final  bool bottomNav;
-
   const CustomAppBar({
     Key? key, required this.bottomNav,
   }) : super(key: key);
+
+  final  bool bottomNav;
 
 
 
@@ -35,12 +35,11 @@ class CustomAppBar extends StatelessWidget {
                   Colors.lightBlueAccent
                 ]
             ),
-            boxShadow: [
-              const BoxShadow(
-                color: Colors.black,
+            boxShadow: const [
+              BoxShadow(
                 blurRadius: 10.0,
               ),
-              const BoxShadow(
+              BoxShadow(
                 color: Colors.blueAccent,
                 blurRadius: 10.0,
               ),

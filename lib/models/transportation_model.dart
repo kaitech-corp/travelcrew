@@ -1,6 +1,28 @@
 
 ///Model for transportation data
 class TransportationData {
+
+  // TransportationData(this._mode, this._airline, this._airportCode, this._canCarpool, this._carpoolingWith, this._comment, this._departureDate, this._departureDateArrivalTime, this._departureDateDepartTime, this._displayName, this._fieldID, this._flightNumber, this._location, this._returnDateArrivalTime, this._returnDateDepartTime, this._returnDate, this._uid, this._tripDocID,);
+
+  TransportationData.fromData(Map<String, dynamic> data)
+      : _mode = data['mode'] as String,
+        _airline = data['airline'] as String,
+        _airportCode = data['airportCode'] as String,
+        _canCarpool = data['canCarpool'] as bool,
+        _carpoolingWith = data['carpoolingWith'] as String,
+        _comment = data['comment'] as String,
+        _departureDate = data['departureDate'] as String,
+        _departureDateArrivalTime = data['departureDateArrivalTime'] as String,
+        _departureDateDepartTime = data['departureDateDepartTime'] as String,
+        _displayName = data['displayName'] as String,
+        _fieldID = data['fieldID'] as String,
+        _flightNumber = data['flightNumber'] as String,
+        _location = data['location'] as String,
+        _returnDateArrivalTime = data['returnDateArrivalTime'] as String,
+        _returnDateDepartTime = data['returnDateDepartTime'] as String,
+        _returnDate = data['returnDate'] as String,
+        _tripDocID = data['tripDocID'] as String,
+        _uid = data['uid'] as String;
   final String _mode;
   final String? _airline;
   final String? _airportCode;
@@ -20,30 +42,8 @@ class TransportationData {
   final String _uid;
   final String _tripDocID;
 
-  // TransportationData(this._mode, this._airline, this._airportCode, this._canCarpool, this._carpoolingWith, this._comment, this._departureDate, this._departureDateArrivalTime, this._departureDateDepartTime, this._displayName, this._fieldID, this._flightNumber, this._location, this._returnDateArrivalTime, this._returnDateDepartTime, this._returnDate, this._uid, this._tripDocID,);
-
-  TransportationData.fromData(Map<String, dynamic> data)
-      : _mode = data['mode'],
-        _airline = data['airline'] ?? '',
-        _airportCode = data['airportCode'] ?? '',
-        _canCarpool = data['canCarpool'],
-        _carpoolingWith = data['carpoolingWith'] ?? '',
-        _comment = data['comment'] ?? '',
-        _departureDate = data['departureDate'] ?? '',
-        _departureDateArrivalTime = data['departureDateArrivalTime'] ?? '',
-        _departureDateDepartTime = data['departureDateDepartTime'] ?? '',
-        _displayName = data['displayName'],
-        _fieldID = data['fieldID'],
-        _flightNumber = data['flightNumber'] ?? '',
-        _location = data['location'] ?? '',
-        _returnDateArrivalTime = data['returnDateArrivalTime'] ?? '',
-        _returnDateDepartTime = data['returnDateDepartTime'] ?? '',
-        _returnDate = data['returnDate'] ?? '',
-        _tripDocID = data['tripDocID'],
-        _uid = data['uid'];
-
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'mode': _mode,
       'airline': _airline,
       'airportCode': _airportCode,

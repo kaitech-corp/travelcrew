@@ -8,10 +8,10 @@ import 'crew_trip_card.dart';
 
 /// Grouped list view for current past and private trips
 class GroupedListTripView extends StatefulWidget {
-  final dynamic data;
-  final bool isPast;
-  const GroupedListTripView({Key? key, this.data, required this.isPast})
+  const GroupedListTripView({Key? key, required this.data, required this.isPast})
       : super(key: key);
+  final List<Trip> data;
+  final bool isPast;
 
   @override
   _GroupedListTripViewState createState() => _GroupedListTripViewState();
@@ -22,11 +22,11 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
   Widget build(BuildContext context) {
     return GroupedListView<Trip, String>(
       elements: widget.data,
-      groupBy: (trip) => DateTime(trip.endDateTimeStamp!.toDate().year,
+      groupBy: (Trip trip) => DateTime(trip.endDateTimeStamp!.toDate().year,
               trip.endDateTimeStamp!.toDate().month)
           .toString(),
       order: widget.isPast ? GroupedListOrder.DESC : GroupedListOrder.ASC,
-      groupSeparatorBuilder: (trip) => Padding(
+      groupSeparatorBuilder: (String trip) => Padding(
         padding: const EdgeInsets.only(bottom: 4.0),
         child: Center(
             child: Text(
@@ -38,12 +38,12 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
               ?.copyWith(color: Colors.black54),
         )),
       ),
-      itemComparator: (a, b) =>
-          (a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!)),
-      itemBuilder: (context, trip) {
+      itemComparator: (Trip a, Trip b) =>
+          a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!),
+      itemBuilder: (BuildContext context, Trip trip) {
         return CrewTripCard(
           trip: trip,
-          heroTag: trip.urlToImage,
+          heroTag: trip.urlToImage!,
         );
       },
     );

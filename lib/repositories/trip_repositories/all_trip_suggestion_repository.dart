@@ -8,22 +8,23 @@ import '../../blocs/generics/generic_bloc.dart';
 
 class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
 
+  @override
   Stream<List<Trip>> data() {
     //Firebase Collection
-    final Query tripCollection = FirebaseFirestore.instance
-        .collection("trips")
+    final Query<Object> tripCollection = FirebaseFirestore.instance
+        .collection('trips')
         .where('ispublic', isEqualTo: true);
 
     // Get all trips
-    List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
+    List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Trip.fromData(data);
         }).toList();
         trips = trips
             .where(
-                (trip) => (trip.location?.length ?? 0) < 20 && (trip.location?.length ?? 0) > 0)
+                (Trip trip) => (trip.location?.length ?? 0) < 20 && (trip.location?.length ?? 0) > 0)
             .toList();
         return trips;
       } catch (e) {

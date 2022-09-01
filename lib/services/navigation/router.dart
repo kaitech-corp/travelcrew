@@ -1,8 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/screens/add_trip/add_trip_page.dart';
-import 'package:travelcrew/screens/menu_screens/users/all_users/all_users_page.dart';
 
 import '../../admin/admin_page.dart';
 import '../../blocs/generics/generic_bloc.dart';
@@ -15,8 +13,8 @@ import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
 import '../../repositories/user_settings_repository.dart';
+import '../../screens/add_trip/add_trip_page.dart';
 import '../../screens/add_trip/edit_trip.dart';
-import '../../screens/add_trip/google_autocomplete.dart';
 import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
 import '../../screens/main_tab_page/favorites/favorites_page.dart';
 import '../../screens/main_tab_page/main_tab_page.dart';
@@ -27,6 +25,7 @@ import '../../screens/menu_screens/help/help.dart';
 import '../../screens/menu_screens/help/report.dart';
 import '../../screens/menu_screens/main_menu.dart';
 import '../../screens/menu_screens/settings/settings.dart';
+import '../../screens/menu_screens/users/all_users/all_users_page.dart';
 import '../../screens/menu_screens/users/dm_chat/chats_page.dart';
 import '../../screens/menu_screens/users/dm_chat/dm_chat.dart';
 import '../../screens/menu_screens/users/user_profile_page.dart';
@@ -59,7 +58,7 @@ import '../../size_config/size_config.dart';
 
 
 Route<dynamic> generateRoute(RouteSettings settings) {
-  final args = settings.arguments;
+  final Object? args = settings.arguments;
   switch (settings.name!) {
     case ActivityRoute:
       return _getPageRoute(
@@ -97,7 +96,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: AllTrips(),
       );
     case BasketListPageRoute:
-      BasketListArguments arguments = settings.arguments as BasketListArguments;
+      final BasketListArguments arguments = settings.arguments as BasketListArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: BasketListPage(
@@ -111,7 +110,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: ChatPage(trip: args as Trip,),
       );
     case CostPageRoute:
-      Trip arguments = settings.arguments as Trip;
+      final Trip arguments = settings.arguments as Trip;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: SplitPage(trip: arguments,),
@@ -122,7 +121,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: CurrentTrips(),
       );
     case DetailsPageRoute:
-      DetailsPageArguments arguments = settings.arguments as DetailsPageArguments;
+      final DetailsPageArguments arguments = settings.arguments as DetailsPageArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: DetailsPage(
@@ -144,7 +143,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: DMChatListPage(),
       );
     case EditActivityRoute:
-      EditActivityArguments arguments = settings.arguments as EditActivityArguments;
+      final EditActivityArguments arguments = settings.arguments as EditActivityArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: EditActivity(
@@ -152,7 +151,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           trip: arguments.trip,),
       );
     case EditLodgingRoute:
-      EditLodgingArguments arguments = settings.arguments as EditLodgingArguments;
+      final EditLodgingArguments arguments = settings.arguments as EditLodgingArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: EditLodging(
@@ -207,15 +206,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case HelpPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: HelpPage(),
+        viewToShow: const HelpPage(),
       );
     case LaunchIconBadgerRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: LaunchIconBadger(),
+        viewToShow: const LaunchIconBadger(),
       );
     case AddToListPageRoute:
-      AddToListPageArguments arguments = settings.arguments as AddToListPageArguments;
+      final AddToListPageArguments arguments = settings.arguments as AddToListPageArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: AddToListPage(
@@ -231,10 +230,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case MainTabPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: MainTabPage(),
+        viewToShow: const MainTabPage(),
       );
     case MembersLayoutRoute:
-      MembersLayoutArguments arguments = settings.arguments as MembersLayoutArguments;
+      final MembersLayoutArguments arguments = settings.arguments as MembersLayoutArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: MembersLayout(
@@ -252,7 +251,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: NotificationPage(),
       );
     case ReportContentRoute:
-      ReportArguments arguments = settings.arguments as ReportArguments;
+      final ReportArguments arguments = settings.arguments as ReportArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: ReportContent(activity: arguments.activity,
@@ -263,17 +262,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: BlocProvider(
-            create: (context) => UserSettingsBloc(
+            create: (BuildContext context) => UserSettingsBloc(
                 userSettingsRepository: UserSettingsRepository()..refresh())
             ,child: Settings()),
       );
     case SignUpScreenRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: SignupScreen(),
+        viewToShow: const SignupScreen(),
       );
     case SplitDetailsPageRoute:
-      SplitDetailsArguments arguments = settings.arguments as SplitDetailsArguments;
+      final SplitDetailsArguments arguments = settings.arguments as SplitDetailsArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: SplitDetailsPage(
@@ -285,7 +284,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: BlocProvider(
-            create: (context) => GenericBloc<UserPublicProfile, AllUserRepository>(
+            create: (BuildContext context) => GenericBloc<UserPublicProfile, AllUserRepository>(
                 repository: AllUserRepository(),),
           child: AllUserPage(),
         ),
@@ -331,23 +330,18 @@ MaterialPageRoute _getPageRoute({required String routeName, required Widget view
 
 
 class EditActivityArguments{
-  final Trip trip;
-  final ActivityData activity;
 
   EditActivityArguments(this.activity, this.trip);
+  final Trip trip;
+  final ActivityData activity;
 }
 class EditLodgingArguments{
-  final Trip trip;
-  final LodgingData lodging ;
 
   EditLodgingArguments(this.lodging, this.trip);
+  final Trip trip;
+  final LodgingData lodging ;
 }
 class DetailsPageArguments{
-  final ActivityData? activity;
-  final LodgingData? lodging;
-  final TransportationData? transport;
-  final Trip trip;
-  final String type;
 
   DetailsPageArguments({
     this.activity,
@@ -355,28 +349,28 @@ class DetailsPageArguments{
     this.transport,
     required this.trip,
     required this.type});
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final TransportationData? transport;
+  final Trip trip;
+  final String type;
 
 }
 class AddToListPageArguments{
+
+  AddToListPageArguments({required this.trip, required this.scaffoldKey, required this.controller});
   final Trip trip;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController controller;
-
-  AddToListPageArguments({required this.trip, required this.scaffoldKey, required this.controller});
 }
 class MembersLayoutArguments{
+
+  MembersLayoutArguments(this.members, this.trip, this.ownerID);
   final List<Members> members;
   final Trip trip;
   final String ownerID;
-
-  MembersLayoutArguments(this.members, this.trip, this.ownerID);
 }
 class ReportArguments{
-  final String type;
-  final UserPublicProfile userAccount;
-  final ActivityData? activity;
-  final LodgingData? lodging;
-  final Trip? trip;
 
   ReportArguments(
       this.type,
@@ -384,25 +378,30 @@ class ReportArguments{
       this.activity,
       this.trip,
       this.lodging);
+  final String type;
+  final UserPublicProfile userAccount;
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final Trip? trip;
 }
 class SplitArguments{
-  final Trip trip;
 
   SplitArguments(this.trip);
+  final Trip trip;
 }
 class SplitDetailsArguments{
+
+  SplitDetailsArguments({required this.splitObject, required this.purchasedByUID, required this.trip});
   final SplitObject splitObject;
   final String purchasedByUID;
   final Trip trip;
 
-  SplitDetailsArguments({required this.splitObject, required this.purchasedByUID, required this.trip});
-
 }
 
 class BasketListArguments{
-  final Trip trip;
-  final BasketController basketController;
 
   BasketListArguments({required this.trip, required this.basketController});
+  final Trip trip;
+  final BasketController basketController;
 
 }

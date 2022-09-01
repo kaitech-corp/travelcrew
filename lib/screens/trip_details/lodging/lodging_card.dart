@@ -17,10 +17,10 @@ import 'lodging_menu_button.dart';
 /// Lodging card
 class LodgingCard extends StatelessWidget {
 
+  const LodgingCard({required this.lodging, required this.trip});
+
   final LodgingData lodging;
   final Trip trip;
-
-  LodgingCard({required this.lodging, required this.trip});
 
 
   @override
@@ -45,7 +45,7 @@ class LodgingCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   ListTile(
-                    visualDensity: VisualDensity(horizontal: 0,vertical: -4),
+                    visualDensity: const VisualDensity(vertical: -4),
                     title: Text('${lodging.lodgingType}',style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
                     subtitle: (lodging.startTime?.isNotEmpty ?? false) ? Text('Check in: ${lodging.startTime}',style: Theme.of(context).textTheme.subtitle2,): null,
                     trailing: LodgingMenuButton(trip: trip,lodging: lodging,),
@@ -64,14 +64,14 @@ class LodgingCard extends StatelessWidget {
                               users: trip.accessUsers,
                               itemName: lodging.lodgingType,
                               itemDescription: lodging.comment,
-                              itemType: "Lodging"
+                              itemType: 'Lodging'
                           ), trip: trip),
                       IconButton(
-                          visualDensity: VisualDensity(horizontal: 0,vertical: -4),
+                          visualDensity: const VisualDensity(vertical: -4),
                           icon: FavoriteWidget(uid: userService.currentUserID,voters: lodging.voters!,),
                           onPressed: () {
-                            String fieldID = lodging.fieldID!;
-                            String uid = userService.currentUserID;
+                            final String fieldID = lodging.fieldID!;
+                            final String uid = userService.currentUserID;
                             if (!lodging.voters!.contains(userService.currentUserID)) {
                               CloudFunction().addVoterToLodging(trip.documentId!, fieldID, uid);
                             } else {

@@ -5,9 +5,9 @@ import '../../../../services/widgets/appearance_widgets.dart';
 import '../controller/basket_controller.dart';
 
 class BasketHeader extends StatelessWidget {
-  final BasketController controller;
 
   const BasketHeader({Key? key, required this.controller}) : super(key: key);
+  final BasketController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class BasketHeader extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Add to List",
+                    Text('Add to List',
                         style: Theme.of(context).textTheme.headline6
                         // .copyWith(color: Colors.black54),
                         ),
@@ -36,7 +36,7 @@ class BasketHeader extends StatelessWidget {
                             controller.changeBasketState(BasketState.normal);
                           }
                         },
-                        icon: IconThemeWidget(
+                        icon: const IconThemeWidget(
                           icon: Icons.add,
                         ))
                   ],
@@ -47,7 +47,7 @@ class BasketHeader extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Full List",
+                    Text('Full List',
                         style: Theme.of(context).textTheme.headline6
                         // .copyWith(color: Colors.black54),
                         ),
@@ -59,7 +59,7 @@ class BasketHeader extends StatelessWidget {
                             controller.changeBasketState(BasketState.normal);
                           }
                         },
-                        icon: IconThemeWidget(
+                        icon: const IconThemeWidget(
                           icon: Icons.list,
                         ))
                   ],

@@ -10,11 +10,11 @@ import '../../size_config/size_config.dart';
 import 'signup_form.dart';
 
 class SignupScreen extends StatelessWidget {
-  final UserRepository? _userRepository;
 
   const SignupScreen({Key? key, UserRepository? userRepository})
       : _userRepository = userRepository,
         super(key: key);
+  final UserRepository? _userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,12 @@ class SignupScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Color(0xff6a515e),
         ),
       ),
       body: BlocProvider<SignupBloc>(
-        create: (context) => SignupBloc(userRepository: _userRepository),
+        create: (BuildContext context) => SignupBloc(userRepository: _userRepository),
         child: Container(
           height: SizeConfig.screenHeight,
           decoration: BoxDecoration(
@@ -55,7 +55,7 @@ class SignupScreen extends StatelessWidget {
                         // colors: [canvasColor, Colors.blueAccent.shade100],
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Signup',
                       style: TextStyle(
                         fontSize: 40,

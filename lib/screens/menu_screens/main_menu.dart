@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
@@ -31,9 +30,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   double get imageSize {
     if (SizerUtil.deviceType == DeviceType.tablet){
-      return (SizeConfig.screenWidth / 8.0);
+      return SizeConfig.screenWidth / 8.0;
     } else {
-      return (SizeConfig.screenWidth / 4.0);
+      return SizeConfig.screenWidth / 4.0;
     }
   }
 
@@ -41,7 +40,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: SafeArea(
         child: Drawer(
@@ -49,7 +48,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
           children: <Widget>[
             DrawerHeader(
               child: StreamBuilder<UserPublicProfile>(
-                builder: (context, profile) {
+                builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> profile) {
                   if (profile.hasData) {
                     final UserPublicProfile currentUser = profile.data as UserPublicProfile;
                     return Stack(
@@ -59,7 +58,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             child: Text('TC',
                                 style: Theme.of(context).textTheme.headline5)),
                         Align(
-                          alignment: Alignment.center,
                           child: CircleAvatar(
                             radius: imageSize,
                             child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage!,fit: BoxFit.fill,width: imageSize, height: imageSize,)
@@ -76,7 +74,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
                               style: Theme.of(context).textTheme.headline5),
                         ),
                         Align(
-                          alignment: Alignment.center,
                           child: CircleAvatar(
                             radius: SizerUtil.deviceType == DeviceType.tablet
                                 ? SizeConfig.screenWidth / 8.0
@@ -133,8 +130,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 title:
                     Text('Admin', style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {
-                  if (userService.currentUserID.contains('XCVzgl7xIG3'))
+                  if (userService.currentUserID.contains('XCVzgl7xIG3')) {
                     navigationService.navigateTo(AdminPageRoute);
+                  }
                 },
               ),
             ListTile(
@@ -160,7 +158,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Widget currentVersion(BuildContext context) {
     return FutureBuilder<String>(
       future: DatabaseService().getVersion(),
-      builder: (context, data) {
+      builder: (BuildContext context, AsyncSnapshot<String> data) {
         if (data.hasData) {
           final String version = data.data as String;
           return Text(version, style: Theme.of(context).textTheme.subtitle1);

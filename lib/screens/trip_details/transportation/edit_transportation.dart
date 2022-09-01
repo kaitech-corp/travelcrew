@@ -7,14 +7,14 @@ import '../../../services/widgets/appearance_widgets.dart';
 
 /// Edit transportation data
 class EditTransportation extends StatefulWidget {
+  const EditTransportation({required this.transportationData});
   final TransportationData transportationData;
-  EditTransportation({required this.transportationData});
 
   @override
   _EditTransportationState createState() => _EditTransportationState();
 }
 class _EditTransportationState extends State<EditTransportation> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
   String comment = '';
@@ -37,7 +37,7 @@ class _EditTransportationState extends State<EditTransportation> {
                 padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                 child: Builder(
-                    builder: (context) => Form(
+                    builder: (BuildContext context) => Form(
                         key: _formKey,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -50,7 +50,7 @@ class _EditTransportationState extends State<EditTransportation> {
                                   height: 2,
                                   color: Colors.blueAccent,
                                 ),
-                                onChanged: (newValue) {
+                                onChanged: (String? newValue) {
                                   setState(() {
                                     dropdownValue = newValue!;
                                   });
@@ -75,28 +75,28 @@ class _EditTransportationState extends State<EditTransportation> {
                               ),
                               if(dropdownValue == 'Carpool') TextFormField(
                                   decoration:
-                                  InputDecoration(labelText: 'Carpool with who?'),
+                                  const InputDecoration(labelText: 'Carpool with who?'),
                                   textCapitalization: TextCapitalization.words,
                                   keyboardType: TextInputType.name,
-                                  onChanged: (val) =>
+                                  onChanged: (String val) =>
                                   {
                                     carpoolingWith = val,
                                   }
                               ),
                               if(dropdownValue == 'Flying') TextFormField(
                                   decoration:
-                                  InputDecoration(labelText: 'Airline'),
+                                  const InputDecoration(labelText: 'Airline'),
                                   textCapitalization: TextCapitalization.characters,
-                                  onChanged: (val) =>
+                                  onChanged: (String val) =>
                                   {
                                     airline = val,
                                   }
                               ),
                               if(dropdownValue == 'Flying') TextFormField(
                                   decoration:
-                                  InputDecoration(labelText: 'Flight Number'),
+                                  const InputDecoration(labelText: 'Flight Number'),
                                   textCapitalization: TextCapitalization.characters,
-                                  onChanged: (val) =>
+                                  onChanged: (String val) =>
                                   {
                                     flightNumber = val,
                                   }
@@ -109,12 +109,12 @@ class _EditTransportationState extends State<EditTransportation> {
                                 cursorColor: Colors.grey,
                                 decoration: InputDecoration(
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                                      borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                                     ),
                                     hintText: 'Add a comment.'),
                                 textCapitalization: TextCapitalization.sentences,
                                 maxLines: 10,
-                                onChanged: (val){
+                                onChanged: (String val){
                                   comment = val;
                                 },
                               ),
@@ -125,7 +125,7 @@ class _EditTransportationState extends State<EditTransportation> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final form = _formKey.currentState!;
+          final FormState form = _formKey.currentState!;
           if (form.validate()) {
             CloudFunction().addTransportation(
               mode: dropdownValue,

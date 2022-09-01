@@ -9,8 +9,8 @@ import '../../../../services/widgets/appearance_widgets.dart';
 import 'dm_chat_list.dart';
 
 class DMChat extends StatefulWidget {
+  const DMChat({required this.user});
   final UserPublicProfile user;
-  DMChat({required this.user});
 
   @override
   State<StatefulWidget> createState() {
@@ -20,7 +20,7 @@ class DMChat extends StatefulWidget {
 
 class _DMChatState extends State<DMChat> {
   final TextEditingController _chatController = TextEditingController();
-  var currentUserProfile =
+  UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
   Future<void> clearChat(String uid) async {
     await DatabaseService(userID: widget.user.uid).clearDMChatNotifications();
@@ -31,7 +31,7 @@ class _DMChatState extends State<DMChat> {
     clearChat(widget.user.uid!);
 
     return StreamProvider<List<ChatData>>.value(
-      initialData: [],
+      initialData: const [],
       value: DatabaseService(userID: widget.user.uid).dmChatList,
       child: GestureDetector(
         onTap: () {
@@ -68,7 +68,6 @@ class _DMChatState extends State<DMChat> {
                           child: TextField(
                             decoration: const InputDecoration.collapsed(
                               hintText: 'Start typing ...',
-                              border: InputBorder.none,
                             ),
                             controller: _chatController,
                             textCapitalization: TextCapitalization.sentences,
@@ -84,7 +83,7 @@ class _DMChatState extends State<DMChat> {
                             onPressed: () async {
                               if (_chatController.text != '') {
                                 final String message = _chatController.text;
-                                final status = createStatus();
+                                final Map<String, bool> status = createStatus();
                                 _chatController.clear();
                                 final String displayName =
                                     currentUserProfile.displayName ?? '';
@@ -109,10 +108,12 @@ class _DMChatState extends State<DMChat> {
   }
 
   Map<String, bool> createStatus() {
-    final List<String> _members = [userService.currentUserID, widget.user.uid!];
+    final List<String> members = [userService.currentUserID, widget.user.uid!];
     final Map<String, bool> status = {};
-    final users = _members.where((f) => f != userService.currentUserID);
-    users.forEach((f) => status[f] = false);
+    final Iterable<String> users = members.where((String f) => f != userService.currentUserID);
+    for (final String f in users) {
+      status[f] = false;
+    }
     return status;
   }
 }

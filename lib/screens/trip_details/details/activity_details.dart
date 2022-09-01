@@ -8,6 +8,7 @@ import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
+import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/link_previewer.dart';
@@ -17,10 +18,10 @@ import '../../alerts/alert_dialogs.dart';
 import '../activity/activity_menu_button.dart';
 
 class ActivityDetails extends StatelessWidget {
+  const ActivityDetails({Key? key, required this.activity, required this.trip})
+      : super(key: key);
   final ActivityData activity;
   final Trip trip;
-
-  const ActivityDetails({Key? key, required this.activity, required this.trip}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class ActivityDetails extends StatelessWidget {
           backgroundColor: canvasColor,
         ),
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: SizeConfig.screenHeight,
             width: SizeConfig.screenWidth,
             child: ActivityDataLayout(fieldID: activity.fieldID!, trip: trip),
@@ -54,27 +55,25 @@ class ActivityDataLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<ActivityData>(
       stream: DatabaseService(fieldID: fieldID, tripDocID: trip.documentId)
           .activity,
-      builder: (context, document) {
+      builder: (BuildContext context, AsyncSnapshot<ActivityData> document) {
         if (document.hasData) {
-          ActivityData activity = document.data as ActivityData;
-          DateTimeModel timeModel = TCFunctions().addDateAndTime(
-              startDate: activity.dateTimestamp!,
-              startTime: activity.startTime!,
-              endTime: activity.endTime!,
-              hasEndDate: false);
+          final ActivityData activityData = document.data!;
+          final ActivityData activity = activityData;
+          final DateTimeModel timeModel = DateTimeModel(
+              startDate: activity.startDateTimestamp!.toDate(),
+              endDate: activity.endDateTimestamp!.toDate());
 
-          Event event = TCFunctions().createEvent(
-              activity: activity, type: "Activity", timeModel: timeModel);
+          final Event event = createEvent(
+              activity: activity, type: 'Activity', timeModel: timeModel);
           return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(45),
                       bottomRight: Radius.circular(45)),
                 ),
@@ -95,37 +94,38 @@ class ActivityDataLayout extends StatelessWidget {
                       trailing: ActivityMenuButton(
                           activity: activity, trip: trip, event: event),
                     ),
-                    Divider(
+                    const Divider(
                       color: Colors.black,
                       thickness: 2,
                     ),
-                    activity.startDateTimestamp != null
-                        ? ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.calendar_today,
-                            ),
-                            title: Text(
-                              "${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp!)} - "
-                              "${TCFunctions().formatTimestamp(activity.endDateTimestamp!, wTime: false)}",
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            onTap: () {
-                              Add2Calendar.addEvent2Cal(event);
-                            },
-                          )
-                        : ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.calendar_today,
-                            ),
-                            title: Text(
-                              '...',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            onTap: () {},
-                          ),
+                    if (activity.startDateTimestamp != null)
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.calendar_today,
+                        ),
+                        title: Text(
+                          '${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp!)} - '
+                          '${TCFunctions().formatTimestamp(activity.endDateTimestamp!, wTime: false)}',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        onTap: () {
+                          Add2Calendar.addEvent2Cal(event);
+                        },
+                      )
+                    else
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.calendar_today,
+                        ),
+                        title: Text(
+                          '...',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        onTap: () {},
+                      ),
                     if (activity.startTime?.isNotEmpty ?? false)
                       ListTile(
-                        leading: TripDetailsIconThemeWidget(
+                        leading: const TripDetailsIconThemeWidget(
                           icon: Icons.access_time,
                         ),
                         title: Text(
@@ -134,77 +134,86 @@ class ActivityDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    activity.location?.isNotEmpty ?? false
-                        ? ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.map,
-                            ),
-                            title: Text(
-                              activity.location!,
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            onTap: () {
-                              MapsLauncher.launchQuery(activity.location!);
-                            },
-                            onLongPress: () {
-                              FlutterClipboard.copy(activity.location!)
-                                  .whenComplete(() => TravelCrewAlertDialogs()
-                                      .copiedToClipboardDialog(context));
-                            },
-                          )
-                        : ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.map,
-                            ),
-                            title: Text(
+                    if (activity.location?.isNotEmpty ?? false)
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.map,
+                        ),
+                        title: Text(
+                          activity.location!,
+                          style: const TextStyle(color: Colors.blue),
+                        ),
+                        onTap: () {
+                          MapsLauncher.launchQuery(activity.location!);
+                        },
+                        onLongPress: () {
+                          FlutterClipboard.copy(activity.location!)
+                              .whenComplete(() => TravelCrewAlertDialogs()
+                                  .copiedToClipboardDialog(context));
+                        },
+                      )
+                    else
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.map,
+                        ),
+                        title: Text(
+                          '...',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    if (activity.comment?.isNotEmpty ?? false)
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.comment,
+                        ),
+                        title: Tooltip(
+                            message: activity.comment,
+                            child: Text(
+                              activity.comment!,
+                              style: Theme.of(context).textTheme.subtitle1,
+                              maxLines: 7,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                      )
+                    else
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.comment,
+                        ),
+                        title: Tooltip(
+                            message: activity.comment,
+                            child: Text(
                               '...',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                          ),
-                    activity.comment?.isNotEmpty ?? false
-                        ? ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.comment,
-                            ),
-                            title: Tooltip(
-                                message: activity.comment,
-                                child: Text(
-                                  activity.comment!,
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                  maxLines: 7,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                          )
-                        : ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.comment,
-                            ),
-                            title: Tooltip(
-                                message: activity.comment,
-                                child: Text(
-                                  '...',
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                  maxLines: 10,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                          ),
+                              maxLines: 10,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                      ),
                   ],
                 ),
               ),
-              activity.link?.isNotEmpty ?? false
-                  ? Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(SizeConfig.defaultPadding),
-                        width: double.infinity,
-                        child: InkWell(
-                          child: ViewAnyLink(link: activity.link!,function: (){},),
-                          onTap: () {
-                            TCFunctions().launchURL(activity.link!);
-                          },
-                        ),
+              if (activity.link?.isNotEmpty ?? false)
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(SizeConfig.defaultPadding),
+                    width: double.infinity,
+                    child: InkWell(
+                      child: ViewAnyLink(
+                        link: activity.link!,
+                        function: () {},
                       ),
-                    )
-                  : Container(height: 0,width: 0,),
+                      onTap: () {
+                        TCFunctions().launchURL(activity.link!);
+                      },
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(
+                  height: 0,
+                  width: 0,
+                ),
             ],
           );
         } else {

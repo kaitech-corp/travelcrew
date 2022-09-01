@@ -36,8 +36,6 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       height: SizeConfig.screenHeight * .5,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: SizeConfig.screenWidth / 6,
@@ -76,15 +74,13 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
                   )
                 : null,
           ),
-          (user.uid == userService.currentUserID ||
-                  userService.currentUserID == purchasedByUser.uid)
-              ? ElevatedButton(
+          if (user.uid == userService.currentUserID ||
+                  userService.currentUserID == purchasedByUser.uid) ElevatedButton(
                   onPressed: () {
                     DatabaseService().markAsPaid(costObject, splitObject);
                   },
                   child: const Text('Paid'),
-                )
-              : nil,
+                ) else nil,
         ],
       ),
     );

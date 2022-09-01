@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -12,18 +13,18 @@ import '../../alerts/alert_dialogs.dart';
 
 /// Favorites card layout
 class FavoritesCard extends StatelessWidget {
-
-  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  final Trip trip;
   FavoritesCard({required this.trip});
+
+  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final Trip trip;
 
   @override
   Widget build(BuildContext context) {
 
     return Card(
       color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(50.0)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
       ),
       margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
       key: Key(trip.documentId!),
@@ -50,13 +51,13 @@ class FavoritesCard extends StatelessWidget {
             children: <Widget>[
               ListTile(
                 title: Text((trip.tripName)!.toUpperCase(),style: Theme.of(context).textTheme.headline5,maxLines: 1,overflow: TextOverflow.ellipsis,),
-                subtitle: Text("Travel Type: ${trip.travelType}",
+                subtitle: Text('Travel Type: ${trip.travelType}',
                   textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,maxLines: 1,overflow: TextOverflow.ellipsis,),
                 trailing: IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: (){
-                    String message = Intl.message('${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.');
-                    String type = 'joinRequest';
+                    final String message = Intl.message('${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.');
+                    const String type = 'joinRequest';
 
                     CloudFunction().addNewNotification(message: message,
                       documentID: trip.documentId!,
@@ -69,7 +70,7 @@ class FavoritesCard extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(75.0)),
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,

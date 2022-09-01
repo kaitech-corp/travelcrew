@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelcrew/blocs/generics/generic_bloc.dart';
 
 import '../../../../models/chat_model.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
+import '../blocs/generics/generic_bloc.dart';
 
 /// Interface to our 'chat' Firebase collection.
 /// It contains the chat messages.
@@ -13,16 +13,16 @@ import '../../../../services/functions/cloud_functions.dart';
 /// Relies on a remote NoSQL document-oriented database.
 class ChatRepository extends GenericBlocRepository<ChatData>{
 
-  final String tripDocID;
-
   ChatRepository({required this.tripDocID});
 
-  final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
+  final String tripDocID;
+
+  final CollectionReference<Object> chatCollection =  FirebaseFirestore.instance.collection('chat');
   // Get all chat messages
-  List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
+  List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
     try {
-      return snapshot.docs.map((doc){
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return ChatData.fromData(data);
       }).toList();
     } catch (e) {
@@ -31,6 +31,7 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
     }
   }
 
+  @override
   Stream<List<ChatData>> data() {
 
     //Stream chats
@@ -47,16 +48,16 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
 
 class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
 
-  final String tripDocID;
-
   ChatNotificationRepository({required this.tripDocID});
 
-  final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
+  final String tripDocID;
+
+  final CollectionReference<Object> chatCollection =  FirebaseFirestore.instance.collection('chat');
   // Get all chat messages
-  List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
+  List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
     try {
-      return snapshot.docs.map((doc){
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return ChatData.fromData(data);
       }).toList();
     } catch (e) {
@@ -66,6 +67,7 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
   }
 
 
+  @override
   Stream<List<ChatData>> data(){
     //Stream chat notifications
     return chatCollection

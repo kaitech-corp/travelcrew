@@ -4,45 +4,45 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../models/custom_objects.dart';
 import '../../services/analytics_service.dart';
 import '../../services/locator.dart';
 
 class CloudFunction {
 
-  final Trace trace = FirebasePerformance.instance.newTrace("test");
+  final Trace trace = FirebasePerformance.instance.newTrace('test');
 
-  var userService = locator<UserService>();
-  var currentUserProfile = locator<UserProfileService>()
+  UserService userService = locator<UserService>();
+  UserPublicProfile currentUserProfile = locator<UserProfileService>()
       .currentUserProfileDirect();
   final AnalyticsService _analyticsService = AnalyticsService();
 
   Future<dynamic> connectSplitwise() async {
     final HttpsCallable callable = FirebaseFunctions.instance
         .httpsCallable('connectSplitwise');
-    final results = await callable({
+    final HttpsCallableResult<dynamic> results = await callable(<String,dynamic>{
       'consumerKey': dotenv.env['consumerKey'],
       'consumerSecret': dotenv.env['consumerSecret'],
     });
     return results.data;
   }
   //
-  void splitwiseAPI() async {
+  Future<void> splitwiseAPI() async {
     final HttpsCallable callable = FirebaseFunctions.instance
         .httpsCallable(
         'connectToSplitwise');
-    final results = await callable({
+    final HttpsCallableResult<dynamic> results = await callable(<String,dynamic>{
       'consumerKey': dotenv.env['consumerKey'],
       'consumerSecret': dotenv.env['consumerSecret']
     });
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('accessToken', results.data);
-    print(results.data);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('accessToken', results.data as String);
   }
   Future<dynamic> splitwiseGetCurrentUser(String accessToken) async {
     final HttpsCallable callableGetCurrentUser = FirebaseFunctions.instance
         .httpsCallable(
         'getCurrentUser');
-    final results = await callableGetCurrentUser({
+    final HttpsCallableResult<dynamic> results = await callableGetCurrentUser(<String,dynamic>{
       'consumerKey': dotenv.env['consumerKey'],
       'consumerSecret': dotenv.env['consumerSecret'],
       'accessToken': accessToken,
@@ -53,7 +53,7 @@ class CloudFunction {
     final HttpsCallable callableGetFriends = FirebaseFunctions.instance
         .httpsCallable(
         'getFriends');
-    final results = await callableGetFriends({
+    final HttpsCallableResult<dynamic> results = await callableGetFriends(<String,dynamic>{
       'consumerKey': dotenv.env['consumerKey'],
       'consumerSecret': dotenv.env['consumerSecret'],
       'accessToken': accessToken,
@@ -65,7 +65,7 @@ class CloudFunction {
     final HttpsCallable addCustomMember = FirebaseFunctions.instance
         .httpsCallable(
         'addCustomMember');
-    addCustomMember({
+    addCustomMember(<String,dynamic>{
       'docID': 'zUEcSXEpEkp8wFV6AIRn',
       'uid': 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3',
     });
@@ -74,24 +74,24 @@ class CloudFunction {
   // Block User
   void blockUser(String blockedUserID) {
     final HttpsCallable blockUser = FirebaseFunctions.instance.httpsCallable( 'blockUser');
-    blockUser({
+    blockUser(<String,dynamic>{
       'blockedUserID': blockedUserID
-    }).then((value) =>
+    }).then((HttpsCallableResult<dynamic> value) =>
         unFollowUser(blockedUserID));
   }
 
   void unBlockUser(String blockedUserID) {
     final HttpsCallable unBlockUser = FirebaseFunctions.instance.httpsCallable( 'unBlockUser');
-    unBlockUser({
+    unBlockUser(<String,dynamic>{
       'blockedUserID': blockedUserID
     });
   }
 
   // Report inappropriate behaviour
-  void reportUser(String collection, String docID, String offenderID,
+  Future<void> reportUser(String collection, String docID, String offenderID,
       String offense, String type, String urlToImage) async {
     final HttpsCallable giveFeedback = FirebaseFunctions.instance.httpsCallable( 'reportUser');
-    giveFeedback({
+    giveFeedback(<String,dynamic>{
       'collection': collection,
       'docID': docID,
       'offenderID': offenderID,
@@ -103,125 +103,125 @@ class CloudFunction {
   }
 
   // Give feedback
-  void giveFeedback(String message) async {
+  Future<void> giveFeedback(String message) async {
     final HttpsCallable giveFeedback = FirebaseFunctions.instance.httpsCallable( 'giveFeedback');
-    giveFeedback({
+    giveFeedback(<String,dynamic>{
       'message': message,
     });
   }
 
 
-  void joinTrip(String docID, bool ispublic, String ownerID) async {
+  Future<void> joinTrip(String docID, bool ispublic, String ownerID) async {
     final HttpsCallable joinTrip = FirebaseFunctions.instance.httpsCallable( 'joinTrip');
-    joinTrip({
+    joinTrip(<String,dynamic>{
       'docID': docID,
       'ispublic': ispublic,
       'ownerID': ownerID
-    }).then((value) =>
+    }).then((HttpsCallableResult<dynamic> value) =>
     {
       _analyticsService.joinedTrip(true),
     });
   }
 
-  void joinTripInvite(String docID, String uidInvitee, bool ispublic) async {
+  Future<void> joinTripInvite(String docID, String uidInvitee, bool ispublic) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'joinTripInvite');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'uidInvitee': uidInvitee,
       'ispublic': ispublic,
-    }).then((value) =>
-    {
+    }).then((HttpsCallableResult<dynamic> value) =>
+    <void>{
       _analyticsService.joinedTrip(true),
       if(ispublic){
         addMember(docID, uidInvitee),
       } else
-        {
+        <void>{
           addPrivateMember(docID, uidInvitee),
         }
     });
   }
 
-  void addMember(String docID, String uid) async {
+  Future<void> addMember(String docID, String uid) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addMember');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'uid': uid,
     });
   }
 
-  void addPrivateMember(String docID, String uid) async {
+  Future<void> addPrivateMember(String docID, String uid) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addPrivateMember');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'uid': uid,
     });
   }
 
-  void deleteTrip(String tripDocID, bool ispublic) async {
+  Future<void> deleteTrip(String tripDocID, bool ispublic) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteTrip');
-    functionData({
+    functionData(<String,dynamic>{
       'tripDocID': tripDocID,
       'ispublic': ispublic,
-    }).then((value) => deleteTripID(tripDocID));
+    }).then((HttpsCallableResult<dynamic> value) => deleteTripID(tripDocID));
   }
 
-  void deleteTripID(String tripDocID) async {
+  Future<void> deleteTripID(String tripDocID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteTripID');
-    functionData({
+    functionData(<String,dynamic>{
       'tripDocID': tripDocID,
     });
   }
 
 
-  void leaveAndRemoveMemberFromTrip(
+  Future<void> leaveAndRemoveMemberFromTrip(
       {required String tripDocID, required String userUID, required bool ispublic}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'leaveAndRemoveMemberFromTrip');
-    functionData({
+    functionData(<String,dynamic>{
       'tripDocID': tripDocID,
       'userUID': userUID,
       'ispublic': ispublic,
     });
   }
 
-  void removeLodging(String docID, String fieldID) async {
+  Future<void> removeLodging(String docID, String fieldID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeLodging');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'fieldID': fieldID,
     });
   }
 
-  void removeActivity(String docID, String fieldID) async {
+  Future<void> removeActivity(String docID, String fieldID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeActivity');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'fieldID': fieldID,
     });
   }
 
-  void addFavoriteTrip(String docID) async {
+  Future<void> addFavoriteTrip(String docID) async {
     trace.start();
-    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( "addFavoriteTrip");
-    functionData({
+    final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addFavoriteTrip');
+    functionData(<String,dynamic>{
       'docID': docID,
-    }).then((value) =>
-    {
+    }).then((HttpsCallableResult<dynamic> value) =>
+    <dynamic>{
       _analyticsService.likedTrip(),
       trace.stop(),
     });
   }
 
-  void removeFavoriteFromTrip(String docID) async {
+  Future<void> removeFavoriteFromTrip(String docID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeFavoriteFromTrip');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'uid': userService.currentUserID,
     });
   }
 
-  void addVoterToActivity(String docID, String fieldID) async {
+  Future<void> addVoterToActivity(String docID, String fieldID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addVoterToActivity');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'fieldID': fieldID,
       'uid': userService.currentUserID,
@@ -229,9 +229,9 @@ class CloudFunction {
   }
 
   // void removeVoterFromActivity(String docID, String field )
-  void removeVoterFromActivity(String docID, String fieldID) async {
+  Future<void> removeVoterFromActivity(String docID, String fieldID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromActivity');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'fieldID': fieldID,
       'uid': userService.currentUserID,
@@ -239,52 +239,52 @@ class CloudFunction {
   }
 
 
-  void addVoterToLodging(String docID, String fieldID, String uid) async {
+  Future<void> addVoterToLodging(String docID, String fieldID, String uid) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addVoterToLodging');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'fieldID': fieldID,
       'uid': uid,
     });
   }
 
-  void removeVoterFromLodging(String docID, String fieldID, String uid) async {
+  Future<void> removeVoterFromLodging(String docID, String fieldID, String uid) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromLodging');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'fieldID': fieldID,
       'uid': uid,
     });
   }
 
-  void followUser(String userUID) async {
+  Future<void> followUser(String userUID) async {
     // Add user ID to current user's followers list.
     // Add current user's ID to user's following list
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'followUser');
-    functionData({
+    functionData(<String,dynamic>{
       'userUID': userUID,
     });
   }
 
-  void followBack(String userUID) async {
+  Future<void> followBack(String userUID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'followBack');
-    functionData({
+    functionData(<String,dynamic>{
       'userUID': userUID,
     });
   }
 
-  void unFollowUser(String userUID) async {
+  Future<void> unFollowUser(String userUID) async {
     // Remove user ID from current user following list.
     // Remove current user ID from user's followers list.
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'unFollowUser');
-    functionData({
+    functionData(<String,dynamic>{
       'userUID': userUID,
     });
   }
 
-  void addItemToBringingList(String tripDocID, String? item,String? type) async {
+  Future<void> addItemToBringingList(String tripDocID, String? item,String? type) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addItemToBringingList');
-    functionData({
+    functionData(<String,dynamic>{
       'displayName': currentUserProfile.displayName,
       'item': item,
       'tripDocID': tripDocID,
@@ -292,18 +292,18 @@ class CloudFunction {
     });
   }
 
-  void removeItemFromBringingList(String tripDocID, String documentID) async {
+  Future<void> removeItemFromBringingList(String tripDocID, String documentID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeItemFromBringingList');
-    functionData({
+    functionData(<String,dynamic>{
       'tripDocID': tripDocID,
       'documentID': documentID,
     });
   }
 
-  void addItemToNeedList(String tripDocID, String item,
+  Future<void> addItemToNeedList(String tripDocID, String item,
       String displayName,String type) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addItemToNeedList');
-    functionData({
+    functionData(<String,dynamic>{
       'displayName': displayName,
       'item': item,
       'tripDocID': tripDocID,
@@ -311,18 +311,18 @@ class CloudFunction {
     });
   }
 
-  void removeItemFromNeedList(String tripDocID, String documentID) async {
+  Future<void> removeItemFromNeedList(String tripDocID, String documentID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeItemFromNeedList');
-    functionData({
+    functionData(<String,dynamic>{
       'tripDocID': tripDocID,
       'documentID': documentID,
     });
   }
 
-  void addNewNotification(
+  Future<void> addNewNotification(
       {required String message, String? uidToUse, String? documentID, required String type, String? ownerID, bool? ispublic}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addNewNotification');
-    functionData({
+    functionData(<String,dynamic>{
       'message': message,
       'uidToUse': uidToUse,
       'documentID': documentID,
@@ -333,30 +333,30 @@ class CloudFunction {
     });
   }
 
-  void addCustomNotification(String message) async {
+  Future<void> addCustomNotification(String message) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addCustomNotification');
-    functionData({
+    functionData(<String,dynamic>{
       'message': message,
     });
   }
 
-  void removeNotificationData(String fieldID) async {
+  Future<void> removeNotificationData(String fieldID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeNotificationData');
-    functionData({
+    functionData(<String,dynamic>{
       'uid': userService.currentUserID,
       'fieldID': fieldID,
     });
   }
 
-  void removeAllNotifications() async {
+  Future<void> removeAllNotifications() async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeAllNotifications');
-    functionData({
+    functionData(<String,dynamic>{
     });
   }
 
-  void deleteChatMessage({required String tripDocID, required String fieldID}) async {
+  Future<void> deleteChatMessage({required String tripDocID, required String fieldID}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteChatMessage');
-    functionData({
+    functionData(<String,dynamic>{
       'tripDocID': tripDocID,
       'fieldID': fieldID,
     });
@@ -376,32 +376,32 @@ class CloudFunction {
   //     );
   //   }).toList();
   // }
-  void feedbackData() async {
+  Future<void> feedbackData() async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'feedbackData');
-    functionData({
+    functionData(<String,dynamic>{
     });
   }
 
-  void removeFeedback(String fieldID) async {
+  Future<void> removeFeedback(String fieldID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeFeedback');
-    functionData({
+    functionData(<String,dynamic>{
       'fieldID': fieldID,
     });
   }
 
-  void updateClicks(String docID) async {
+  Future<void> updateClicks(String docID) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'updateClicks');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'uid': currentUserProfile.uid,
     });
   }
 
 
-  void addCurrentLocation(
+  Future<void> addCurrentLocation(
       {required String docID, String? city, String? country, String? zipcode, GeoPoint? geoPoint}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addCurrentLocation');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
       'city': city,
       'zipcode': zipcode,
@@ -412,17 +412,17 @@ class CloudFunction {
   }
 
 
-  void addReview({required String docID}) async {
+  Future<void> addReview({required String docID}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addReview');
-    functionData({
+    functionData(<String,dynamic>{
       'docID': docID,
     });
   }
 
-  void addTransportation({required String mode, required String tripDocID, bool? canCarpool,
+  Future<void> addTransportation({required String mode, required String tripDocID, bool? canCarpool,
     String? carpoolingWith, String? airline, String? flightNumber, String? comment}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addTransportation');
-    functionData({
+    functionData(<String,dynamic>{
       'mode': mode,
       'tripDocID': tripDocID,
       'displayName': currentUserProfile.displayName,
@@ -434,50 +434,47 @@ class CloudFunction {
     });
   }
 
-  void deleteTransportation({required String fieldID, required String tripDocID}) async {
+  Future<void> deleteTransportation({required String fieldID, required String tripDocID}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'deleteTransportation');
-    functionData({
+    functionData(<String,dynamic>{
       'fieldID':fieldID,
       'tripDocID':tripDocID,
     });
   }
 
-  void addVoterToBringingItem({required String documentID, required String tripDocID}) async{
+  Future<void> addVoterToBringingItem({required String documentID, required String tripDocID}) async{
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'addVoterToBringingItem');
-    functionData({
+    functionData(<String,dynamic>{
       'documentID':documentID,
       'tripDocID':tripDocID,
     });
   }
 
-  void removeVoterFromBringingItem({required String documentID, required String tripDocID}) async{
+  Future<void> removeVoterFromBringingItem({required String documentID, required String tripDocID}) async{
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'removeVoterFromBringingItem');
-    functionData({
+    functionData(<String,dynamic>{
       'documentID':documentID,
       'tripDocID':tripDocID,
     });
   }
 //Log event
-  void logEvent(String action) async{
+  Future<void> logEvent(String action) async{
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'logEvent');
-    functionData({
+    functionData(<String,dynamic>{
       'action': action,
     });
   }
 // Log Error
-  void logError(String error) async{
+  Future<void> logError(String error) async{
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable( 'logError');
-    functionData({
+    functionData(<String,dynamic>{
       'error': error,
     });
   }
 
   //Disable account
-  void disableAccount() async {
+  Future<void> disableAccount() async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable('disableAccount');
     functionData();
   }
-
-  // void addSplitItem(String )
 }//end CloudFunction
-

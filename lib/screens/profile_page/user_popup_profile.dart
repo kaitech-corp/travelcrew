@@ -7,9 +7,9 @@ import '../../services/constants/constants.dart';
 
 class UserPopupProfile extends StatelessWidget{
 
-  final Members member;
+  const UserPopupProfile({required this.member});
 
-  UserPopupProfile({required this.member});
+  final Members member;
 
   @override
   Widget build(BuildContext context) {

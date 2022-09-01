@@ -15,14 +15,14 @@ import '../../size_config/size_config.dart';
 import '../alerts/alert_dialogs.dart';
 
 class ProfileWidget extends StatelessWidget {
-  final UserPublicProfile user;
-  final profileSize = SizeConfig.screenWidth * .45;
-  final currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
   ProfileWidget({
     Key? key,
     required this.user,
   }) : super(key: key);
+  final UserPublicProfile user;
+  final double profileSize = SizeConfig.screenWidth * .45;
+  final UserPublicProfile currentUserProfile =
+      locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +40,10 @@ class ProfileWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                    flex: 1,
                     child: Hero(
                       tag: user.uid!,
                       transitionOnUserGestures: true,
-                      child: Container(
+                      child: SizedBox(
                         height: profileSize,
                         width: profileSize,
                         child: CircleAvatar(
@@ -55,7 +54,6 @@ class ProfileWidget extends StatelessWidget {
                     ),
                   ),
                   Flexible(
-                    flex: 1,
                     child: Container(
                       // width: double.infinity,
                       padding: EdgeInsets.only(
@@ -73,7 +71,6 @@ class ProfileWidget extends StatelessWidget {
                             height: SizeConfig.screenHeight * .01,
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               const IconThemeWidget(
                                 icon: Icons.person,
@@ -94,11 +91,9 @@ class ProfileWidget extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    (user.hometown?.isNotEmpty ?? false)
-                                        ? Text(
+                                    if (user.hometown?.isNotEmpty ?? false) Text(
                                             user.hometown!,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -106,8 +101,7 @@ class ProfileWidget extends StatelessWidget {
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             softWrap: true,
-                                          )
-                                        : Text('Hometown',
+                                          ) else Text('Hometown',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle2),
@@ -151,39 +145,32 @@ class ProfileWidget extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              (user.topDestinations?[0].isNotEmpty ?? false)
-                                  ? Text(
+                              if (user.topDestinations?[0].isNotEmpty ?? false) Text(
                                       user.topDestinations![0],
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
-                                    )
-                                  : Text(
+                                    ) else Text(
                                       'Destination 1',
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
                                     ),
-                              (user.topDestinations?[1].isNotEmpty ?? false)
-                                  ? Text(
+                              if (user.topDestinations?[1].isNotEmpty ?? false) Text(
                                       user.topDestinations![1],
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
-                                    )
-                                  : Text(
+                                    ) else Text(
                                       'Destination 2',
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
                                     ),
-                              (user.topDestinations?[2].isNotEmpty ?? false)
-                                  ? Text(
+                              if (user.topDestinations?[2].isNotEmpty ?? false) Text(
                                       user.topDestinations![2],
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
                                       maxLines: 1,
-                                    )
-                                  : Text(
+                                    ) else Text(
                                       'Destination 3',
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
@@ -223,22 +210,19 @@ class ProfileWidget extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'IG: ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              (user.instagramLink?.isNotEmpty ?? false)
-                                  ? GestureDetector(
+                              if (user.instagramLink?.isNotEmpty ?? false) GestureDetector(
                                       onTap: () {
                                         TCFunctions()
                                             .launchURL(user.instagramLink!);
                                       },
-                                      child: Text('Instagram Link',
-                                          style: TextStyle(color: Colors.blue)))
-                                  : Text(
+                                      child: const Text('Instagram Link',
+                                          style: TextStyle(color: Colors.blue))) else Text(
                                       '',
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
@@ -252,22 +236,19 @@ class ProfileWidget extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Facebook: ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              (user.facebookLink?.isNotEmpty ?? false)
-                                  ? GestureDetector(
+                              if (user.facebookLink?.isNotEmpty ?? false) GestureDetector(
                                       onTap: () {
                                         TCFunctions()
                                             .launchURL(user.facebookLink!);
                                       },
-                                      child: Text('Facebook Link',
-                                          style: TextStyle(color: Colors.blue)))
-                                  : Text(
+                                      child: const Text('Facebook Link',
+                                          style: TextStyle(color: Colors.blue))) else Text(
                                       '',
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
@@ -345,16 +326,16 @@ class FollowerBar extends StatelessWidget {
 }
 
 class FollowList extends StatefulWidget {
-  final bool isFollowers;
-  final UserPublicProfile user;
 
   const FollowList({Key? key, required this.isFollowers, required this.user}) : super(key: key);
+  final bool isFollowers;
+  final UserPublicProfile user;
   @override
   _FollowListState createState() => _FollowListState();
 }
 
 class _FollowListState extends State<FollowList> {
-  var showImage = false;
+  bool showImage = false;
   late String image;
 
   @override
@@ -365,7 +346,7 @@ class _FollowListState extends State<FollowList> {
   Widget getMember(BuildContext context, String image, bool showImage) {
     return StreamBuilder(
       stream: DatabaseService().retrieveFollowList(widget.user),
-      builder: (context, users) {
+      builder: (BuildContext context, AsyncSnapshot<Object?> users) {
         if (users.hasError) {
           CloudFunction().logError(
               'Error streaming follow list in profile widget: ${users.error.toString()}');

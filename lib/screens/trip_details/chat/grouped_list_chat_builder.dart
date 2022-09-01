@@ -6,29 +6,29 @@ import '../../../services/widgets/chat_date_display.dart';
 import 'chat_card.dart';
 
 class GroupedListChatView extends StatelessWidget {
-  final dynamic data;
+  const GroupedListChatView({Key? key, required this.data, required this.documentId}) : super(key: key);
+  final List<ChatData> data;
   final String documentId;
-  GroupedListChatView({Key? key, this.data, required this.documentId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GroupedListView<ChatData, String>(
       elements: data,
       reverse: true,
-      groupBy: (chat) => DateTime(
+      groupBy: (ChatData chat) => DateTime(
               chat.timestamp.toDate().year,
               chat.timestamp.toDate().month,
               chat.timestamp.toDate().day,
               chat.timestamp.toDate().hour)
           .toString(),
       order: GroupedListOrder.DESC,
-      itemComparator: (a, b) => a.timestamp.compareTo(b.timestamp),
-      groupSeparatorBuilder: (chat) => Padding(
+      itemComparator: (ChatData a, ChatData b) => a.timestamp.compareTo(b.timestamp),
+      groupSeparatorBuilder: (String chat) => Padding(
           padding: const EdgeInsets.all(4.0),
           child: ChatDateDisplay(
             dateString: chat,
           )),
-      itemBuilder: (context, chat) {
+      itemBuilder: (BuildContext context, ChatData chat) {
         return ChatCard(
           message: chat,
           tripDocID: documentId,

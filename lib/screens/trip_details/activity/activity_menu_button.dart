@@ -15,27 +15,27 @@ import '../split/split_package.dart';
 
 class ActivityMenuButton extends StatelessWidget{
 
+  const ActivityMenuButton({Key? key, required this.activity, required this.trip, this.event}) : super(key: key);
+
   final ActivityData activity;
   final Trip trip;
   final Event? event;
 
-  const ActivityMenuButton({Key? key, required this.activity, required this.trip, this.event}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return activity.uid == userService.currentUserID ? PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value){
         switch (value){
-          case "Edit": {
+          case 'Edit': {
             navigationService.navigateTo(EditActivityRoute, arguments: EditActivityArguments(activity, trip));
           }
           break;
-          case "View": {
+          case 'View': {
             if(activity.link?.isNotEmpty ?? false) TCFunctions().launchURL(activity.link!);
           }
           break;
-          case "Split": {
+          case 'Split': {
             SplitPackage().splitItemAlert(context,
                 SplitObject(itemDocID:activity.fieldID,
                     tripDocID: trip.documentId,
@@ -43,12 +43,12 @@ class ActivityMenuButton extends StatelessWidget{
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
                     amountRemaining: 0,
-                    itemType: "Activity" ),
+                    itemType: 'Activity' ),
                 trip: trip);
 
           }
           break;
-          case "Calendar":
+          case 'Calendar':
             {
               Add2Calendar.addEvent2Cal(event!);
             }
@@ -60,64 +60,64 @@ class ActivityMenuButton extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
+      itemBuilder: (BuildContext context) =>[
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
-            title: const Text('View Link'),
+            title: Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
         const PopupMenuItem(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
-            title: const Text('Split'),
+            title: Text('Split'),
           ),
         ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
-            title: const Text('Delete Activity'),
+            title: Text('Delete Activity'),
           ),
         ),
       ],
     ):
     PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value){
         switch (value){
-          case "Edit": {
+          case 'Edit': {
             navigationService.navigateTo(EditActivityRoute, arguments: EditActivityArguments(activity, trip));
           }
           break;
-          case "report":
+          case 'report':
             {
               TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
             }
             break;
-          case "View": {
+          case 'View': {
             if (activity.link?.isNotEmpty ?? false) {
               TCFunctions().launchURL(activity.link!);
             }
           }
           break;
-          case "Split": {
+          case 'Split': {
             // if (false) {
             SplitPackage().splitItemExist(context,
                 SplitObject(
@@ -127,12 +127,12 @@ class ActivityMenuButton extends StatelessWidget{
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
                     amountRemaining: 0.01,
-                    itemType: "Activity" ),
+                    itemType: 'Activity' ),
                 trip: trip
             );
           }
           break;
-          case "Calendar":
+          case 'Calendar':
             {
               Add2Calendar.addEvent2Cal(event!);
             }
@@ -143,40 +143,40 @@ class ActivityMenuButton extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
+      itemBuilder: (BuildContext context) =>[
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.report),
-            title: const Text('Report'),
+            title: Text('Report'),
           ),
         ),
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.link),
-            title: const Text('View Link'),
+            title: Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
-            title: const Text('Split'),
+            title: Text('Split'),
           ),
         ),
         const PopupMenuItem(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
       ],

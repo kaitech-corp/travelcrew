@@ -7,9 +7,9 @@ import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 
 class NotificationRepository {
-  final CollectionReference notificationCollection = FirebaseFirestore.instance.collection('notifications');
+  final CollectionReference<Object> notificationCollection = FirebaseFirestore.instance.collection('notifications');
 
-  final _loadedData = StreamController<List<NotificationData>>.broadcast();
+  final StreamController<List<NotificationData>> _loadedData = StreamController<List<NotificationData>>.broadcast();
 
 
   void dispose() {
@@ -18,11 +18,11 @@ class NotificationRepository {
 
   void refresh() {
     // Get all Notifications
-    List<NotificationData> _notificationListFromSnapshot(QuerySnapshot snapshot){
+    List<NotificationData> _notificationListFromSnapshot(QuerySnapshot<Object> snapshot){
 
       try {
-        return snapshot.docs.map((doc){
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return NotificationData.fromData(data);
         }).toList();
       } catch (e) {
@@ -31,7 +31,7 @@ class NotificationRepository {
       }
     }
 
-    Stream<List<NotificationData>> notificationList =
+    final Stream<List<NotificationData>> notificationList =
     notificationCollection.doc(userService.currentUserID)
         .collection('notifications').orderBy('timestamp', descending: true)
         .snapshots().map(_notificationListFromSnapshot);

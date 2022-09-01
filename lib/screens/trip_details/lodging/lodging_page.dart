@@ -15,9 +15,9 @@ import 'lodging_card.dart';
 
 /// Lodging page
 class LodgingPage extends StatefulWidget {
+  const LodgingPage({required this.trip});
 
   final Trip trip;
-  LodgingPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -40,19 +40,19 @@ class _LodgingPageState extends State<LodgingPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         body: BlocBuilder<GenericBloc<LodgingData,LodgingRepository>, GenericState>(
-            builder: (context, state){
+            builder: (BuildContext context, GenericState state){
               if(state is LoadingState){
                 return Loading();
               } else if (state is HasDataState){
-                List<LodgingData> lodgingList = state.data as List<LodgingData>;
+                final List<LodgingData> lodgingList = state.data as List<LodgingData>;
                 return Container(
                   child: ListView.builder(
                       itemCount: lodgingList.length,
-                      itemBuilder: (context, index){
+                      itemBuilder: (BuildContext context, int index){
                         return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
                       }),
                 );

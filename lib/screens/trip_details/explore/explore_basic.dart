@@ -12,13 +12,13 @@ import 'explore_basic_layout.dart';
 
 /// Basic layout for Explore page.
 class ExploreBasic extends StatelessWidget {
+  const ExploreBasic({required this.trip});
 
   final Trip trip;
-  ExploreBasic({required this.trip});
 
   @override
   Widget build(BuildContext context) {
-    List<String> tabs = [
+    final List<String> tabs = [
       'Explore',
     ];
 
@@ -26,7 +26,7 @@ class ExploreBasic extends StatelessWidget {
       length: tabs.length,
       child: Scaffold(
         drawer: BlocProvider(
-          create: (context) => PublicProfileBloc(
+          create: (BuildContext context) => PublicProfileBloc(
               profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
           child: MenuDrawer(),),
           appBar: AppBar(
@@ -51,7 +51,7 @@ class ExploreBasic extends StatelessWidget {
               labelStyle: SizeConfig.tablet ? Theme.of(context).textTheme.headline5 : Theme.of(context).textTheme.subtitle1,
               isScrollable: true,
               tabs: [
-                for (final tab in tabs) Tab(text: tab),
+                for (final String tab in tabs) Tab(text: tab),
               ],
             ),
           ),

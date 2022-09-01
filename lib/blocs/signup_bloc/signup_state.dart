@@ -1,11 +1,4 @@
 class SignupState {
-  final bool isEmailValid;
-  final bool isPasswordValid;
-  final bool isSubmitting;
-  final bool isSuccess;
-  final bool isFailure;
-
-  bool? get isFormValid => isEmailValid! && isPasswordValid!;
 
   SignupState(
       {required this.isEmailValid,
@@ -53,6 +46,13 @@ class SignupState {
       isFailure: false,
     );
   }
+  final bool isEmailValid;
+  final bool isPasswordValid;
+  final bool isSubmitting;
+  final bool isSuccess;
+  final bool isFailure;
+
+  bool? get isFormValid => isEmailValid&& isPasswordValid;
 
   SignupState update({
     bool? isEmailValid,

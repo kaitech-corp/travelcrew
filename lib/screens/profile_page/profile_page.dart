@@ -20,16 +20,16 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
-        children: [
-          StreamBuilder(
-            builder: (context, userData) {
+        children: <Widget>[
+          StreamBuilder<UserPublicProfile>(
+            builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> userData) {
               if (userData.hasError) {
                 CloudFunction()
                     .logError('Error streaming user data for Profile Page: '
                     '${userData.error.toString()}');
               }
               if (userData.hasData) {
-                final UserPublicProfile user = userData.data as UserPublicProfile;
+                final UserPublicProfile user = userData.data!;
 
                 return Stack(children: [
                   HangingImageTheme3(

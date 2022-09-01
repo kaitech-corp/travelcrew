@@ -1,21 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
 
+import '../../../../models/custom_objects.dart';
+import '../../../../models/trip_model.dart';
+import '../../../../services/constants/constants.dart';
+import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
+import '../../../../services/locator.dart';
 import '../../../../services/widgets/loading.dart';
+import '../../../alerts/alert_dialogs.dart';
 
 /// Following list
 class FollowingList extends StatefulWidget{
+  const FollowingList({required this.trip});
 
   final Trip trip;
-  FollowingList({required this.trip});
 
   @override
   _FollowingListState createState() => _FollowingListState();
@@ -23,8 +23,8 @@ class FollowingList extends StatefulWidget{
 
 class _FollowingListState extends State<FollowingList> {
 
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  var _showImage = false;
+  UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  bool _showImage = false;
   late String _image;
 
   @override
@@ -36,20 +36,20 @@ class _FollowingListState extends State<FollowingList> {
       ),
       body: StreamBuilder(
         stream: DatabaseService().retrieveFollowingList(),
-        builder: (context, users) {
+        builder: (BuildContext context, AsyncSnapshot<Object?> users) {
           if(users.hasError){
            CloudFunction().logError('Error streaming Following list for invites: ${users.error.toString()}');
           }
           if (users.hasData) {
-            List<UserPublicProfile> usersList = users.data as List<UserPublicProfile>;
-            List<UserPublicProfile> followingList =
-            usersList.where((user) => currentUserProfile.following!.contains(user.uid)).toList();
+            final List<UserPublicProfile> usersList = users.data as List<UserPublicProfile>;
+            final List<UserPublicProfile> followingList =
+            usersList.where((UserPublicProfile user) => currentUserProfile.following!.contains(user.uid)).toList();
             return Stack(
               children: [
                 ListView.builder(
                   itemCount: followingList.length,
-                  itemBuilder: (context, index) {
-                    UserPublicProfile user = followingList[index];
+                  itemBuilder: (BuildContext context, int index) {
+                    final UserPublicProfile user = followingList[index];
                     return userCard(context, user);
                   },
                 ),
@@ -96,7 +96,7 @@ class _FollowingListState extends State<FollowingList> {
                 _image = user.urlToImage ?? '';
               });
             },
-            onLongPressEnd: (details) {
+            onLongPressEnd: (LongPressEndDetails details) {
               setState(() {
                 _showImage = false;
               });
@@ -116,13 +116,13 @@ class _FollowingListState extends State<FollowingList> {
                 ),
               ),
               title: Text('${user.firstName} ${user.lastName}'),
-              subtitle: Text("${user.displayName}",
+              subtitle: Text('${user.displayName}',
                 textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
               trailing: !widget.trip.accessUsers!.contains(user.uid) ? IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: (){
-                  var message = '${currentUserProfile.displayName} invited you to ${widget.trip.tripName}.';
-                  var type = 'Invite';
+                  final String message = '${currentUserProfile.displayName} invited you to ${widget.trip.tripName}.';
+                  const String type = 'Invite';
                   CloudFunction().addNewNotification(
                       ownerID: user.uid,
                       message: message,

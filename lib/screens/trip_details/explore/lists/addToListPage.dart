@@ -7,11 +7,11 @@ import 'item_lists.dart';
 /// Add to list page
 class AddToListPage extends StatefulWidget{
 
+  const AddToListPage({Key? key, required this.trip, this.scaffoldKey, required this.controller}) : super(key: key);
+
   final Trip trip;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final BasketController controller;
-
-  AddToListPage({Key? key, required this.trip, this.scaffoldKey, required this.controller}) : super(key: key);
 
   @override
   _AddToListPageState createState() => _AddToListPageState();
@@ -22,7 +22,7 @@ class _AddToListPageState extends State<AddToListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _widgetOptions = <Widget>[
+    final List<Widget> widgetOptions = <Widget>[
       TabBarView(
         children: [
           BringingList(documentID: widget.trip.documentId!,controller: widget.controller,),
@@ -45,13 +45,13 @@ class _AddToListPageState extends State<AddToListPage> {
                       .of(context)
                       .textTheme
                       .subtitle1,
-                  tabs: <Widget>[
-                    const Tab(text: 'Bringing'),
+                  tabs: const <Widget>[
+                    Tab(text: 'Bringing'),
                     // const Tab(text: 'Need',),
-                    const Tab(text: 'Custom',)
+                    Tab(text: 'Custom',)
                   ],
                 ),
-                body: _widgetOptions.elementAt(_selectedIndex),
+                body: widgetOptions.elementAt(_selectedIndex),
               ),
             );
   }

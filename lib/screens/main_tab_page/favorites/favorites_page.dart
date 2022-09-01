@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/blocs/generics/generic_bloc.dart';
-import 'package:travelcrew/blocs/generics/generic_state.dart';
-import 'package:travelcrew/blocs/generics/generics_event.dart';
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../blocs/generics/generic_state.dart';
+import '../../../blocs/generics/generics_event.dart';
 
 import '../../../models/trip_model.dart';
 import '../../../repositories/trip_repositories/favorite_trip_repository.dart';
@@ -33,33 +33,33 @@ class _FavoriteTripState extends State<FavoritesPage> {
 
 
     return BlocBuilder<GenericBloc<Trip,FavoriteTripRepository>, GenericState>(
-        builder: (context, state){
+        builder: (BuildContext context, GenericState state){
           if(state is LoadingState){
             return Loading();
           } else if (state is HasDataState){
-            List<Trip> trips = state.data as List<Trip>;
-            return Container(
+            final List<Trip> trips = state.data as List<Trip>;
+            return SizedBox(
               height: double.infinity,
               width: double.infinity,
               child: ListView.builder(
                   padding: const EdgeInsets.all(0.0),
                   itemCount: trips.length,
-                  itemBuilder: (context, index){
-                    var item = trips[index];
+                  itemBuilder: (BuildContext context, int index){
+                    final Trip item = trips[index];
                     return Dismissible(
                       direction: DismissDirection.endToStart,
                       // Show a red background as the item is swiped away.
                       background: Container(
                         margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
                         color: Colors.red,
-                        child: const Align(alignment: Alignment.centerRight,child: const Icon(Icons.delete, color: Colors.white,)),),
+                        child: const Align(alignment: Alignment.centerRight,child: Icon(Icons.delete, color: Colors.white,)),),
                       key: Key(item.documentId!),
-                      onDismissed: (direction) {
+                      onDismissed: (DismissDirection direction) {
                         setState(() {
                           trips.removeAt(index);
                           CloudFunction().removeFavoriteFromTrip(item.documentId!);
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Tripped removed from favorites.")));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tripped removed from favorites.')));
                       },
                       child: FavoritesCard(trip: trips[index]),
                     );

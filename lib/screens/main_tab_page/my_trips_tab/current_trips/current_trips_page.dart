@@ -15,6 +15,7 @@ import '../sliver_grid_view.dart';
 
 /// Current trips
 class CurrentTrips extends StatefulWidget{
+  const CurrentTrips({Key? key}) : super(key: key);
 
   @override
   _CurrentTripsState createState() => _CurrentTripsState();
@@ -40,14 +41,14 @@ class _CurrentTripsState extends State<CurrentTrips>{
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
-      builder: (context, state){
+      builder: (BuildContext context, GenericState state){
         if(state is LoadingState){
             return Loading();
         } else if (state is HasDataState){
-          List<Trip> tripsData = state.data as List<Trip>;
+          final List<Trip> tripsData = state.data as List<Trip>;
         return SizeConfig.tablet ?
         SliverGridView(trips: tripsData, length: tripsData.length):
-        GroupedListTripView(data: state.data, isPast: false,);
+        GroupedListTripView(data: tripsData, isPast: false,);
         } else {
             return nil;
         }

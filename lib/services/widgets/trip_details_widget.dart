@@ -39,9 +39,8 @@ class TripDetailsWidget extends StatelessWidget {
           child: ExpandableNotifier(
             controller: expandController,
             child: ScrollOnExpand(
-              scrollOnExpand: true,
               child: ExpandableTheme(
-                data: ExpandableThemeData(
+                data: const ExpandableThemeData(
                   iconSize: 25.0,
                   iconColor: Colors.black,
                 ),
@@ -51,10 +50,9 @@ class TripDetailsWidget extends StatelessWidget {
                   expanded: Padding(
                     padding: EdgeInsets.all(detailsPadding),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.location_pin,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.location_pin,),
                           title: Text('${tripDetails.location}',
                             style: Theme.of(context).textTheme.subtitle1,
                             maxLines: 2,
@@ -66,7 +64,7 @@ class TripDetailsWidget extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
                           title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate!)} - ${tripDetails.endDate}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
@@ -75,21 +73,21 @@ class TripDetailsWidget extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.label,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.label,),
                           title: Text('${tripDetails.travelType}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.people,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.people,),
                           title: Text('${tripDetails.accessUsers!.length} Members',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                         ListTile(
                           leading: tripDetails.ispublic ?
-                          TripDetailsIconThemeWidget(icon: Icons.public,) :
-                          TripDetailsIconThemeWidget(icon: Icons.public_off,),
+                          const TripDetailsIconThemeWidget(icon: Icons.public,) :
+                          const TripDetailsIconThemeWidget(icon: Icons.public_off,),
                           title: tripDetails.ispublic ?
                           Text('Public Trip',
                             style: Theme.of(context).textTheme.subtitle1,) :
@@ -97,7 +95,7 @@ class TripDetailsWidget extends StatelessWidget {
                             style: Theme.of(context).textTheme.subtitle1,),
                         ),
                         if(tripDetails.comment?.isNotEmpty ?? false) ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.comment,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.comment,),
                           title: Text(tripDetails.comment!,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),

@@ -18,9 +18,9 @@ final double defaultSize = SizeConfig.defaultSize;
 class CustomShape extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    var path = Path();
-    double height = size.height;
-    double width = size.width;
+    final Path path = Path();
+    final double height = size.height;
+    final double width = size.width;
     path.lineTo(0, height - 100);
     path.quadraticBezierTo(width / 2, height, width, height - 100);
     path.lineTo(width, 0);
@@ -37,9 +37,9 @@ class CustomShape extends CustomClipper<Path> {
 class CustomShape2 extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    var path = Path();
-    double height = size.height;
-    double width = size.width;
+    final Path path = Path();
+    final double height = size.height;
+    final double width = size.width;
     path.lineTo(0, height - 0);
     path.quadraticBezierTo(width / 1, height, width, height - 0);
     path.lineTo(width, 0);
@@ -54,9 +54,9 @@ class CustomShape2 extends CustomClipper<Path> {
 }
 
 class ImageBanner extends StatelessWidget{
-  final String _assetPath;
 
-  ImageBanner(this._assetPath);
+  const ImageBanner(this._assetPath, {Key? key}) : super(key: key);
+  final String _assetPath;
 
   @override
   Widget build(BuildContext context) {
@@ -64,136 +64,14 @@ class ImageBanner extends StatelessWidget{
         constraints: BoxConstraints.expand(
           height: MediaQuery.of(context).size.height * .33,
         ),
-        decoration: BoxDecoration(color: Colors.grey),
+        decoration: const BoxDecoration(color: Colors.grey),
         child: Image.asset(_assetPath,
           fit: BoxFit.fill,
         ));
   }
 }
 
-class TimePickers extends StatefulWidget{
 
-  final bool lodging;
-  final ValueNotifier<String> startTime;
-  final ValueNotifier<String> endTime;
-
-  const TimePickers({Key? key, required this.lodging, required this.startTime, required this.endTime}) : super(key: key);
-
-
-  @override
-  _TimePickersState createState() => _TimePickersState();
-
-}
-
-class _TimePickersState extends State<TimePickers> {
-  late TimeOfDay timeStart;
-  late TimeOfDay timeEnd;
-
-  @override
-  void initState() {
-    timeStart = widget.lodging ? TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,15,0)): TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,9,0));
-    timeEnd = widget.lodging ? TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,11,0)): TimeOfDay.fromDateTime(DateTime.utc(2021,1,1,15,0));
-    super.initState();
-  }
-
-
-
-  String get _labelTextTimeStart {
-    String _startTime = timeStart.format(context);
-    widget.startTime.value = _startTime;
-    return _startTime;
-  }
-  String get _labelTextTimeEnd {
-    String _endTime = timeEnd.format(context);
-    widget.endTime.value = _endTime;
-    return _endTime;
-  }
-
-  Future<void> showTimePickerStart(BuildContext context) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: timeStart,
-    );
-    if (picked != null && picked != timeStart) {
-      setState(() {
-        timeStart = picked;
-      });
-    }
-  }
-  Future<void> showTimePickerEnd(BuildContext context) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: timeEnd,
-    );
-    if (picked != null && picked != timeEnd) {
-      setState(() {
-        timeEnd = picked;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    TripDetailsIconThemeWidget(icon: Icons.access_time,),
-                    SizedBox(width: 8,),
-                    Text(_labelTextTimeStart,style: Theme.of(context).textTheme.subtitle1,),
-                  ],
-                ),
-              ),
-//                                SizedBox(height: 16),
-              ButtonTheme(
-                minWidth: 150,
-                child: ElevatedButton(
-                  child:widget.lodging ? Text('Check In') :Text('Start Time',),
-                  onPressed: () async {
-                    showTimePickerStart(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    TripDetailsIconThemeWidget(icon: Icons.access_time,),
-                    SizedBox(width: 8,),
-                    Text(_labelTextTimeEnd,style: Theme.of(context).textTheme.subtitle1,),
-                  ],
-                ),
-              ),
-//                                SizedBox(height: 16),
-              ButtonTheme(
-                minWidth: 150,
-                child: ElevatedButton(
-                  child: widget.lodging ? Text('Checkout') :Text('End Time',),
-                  onPressed: () {
-                    showTimePickerEnd(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class AnimatedClipRRect extends StatelessWidget {
   const AnimatedClipRRect({
@@ -240,7 +118,7 @@ class HangingImageTheme extends StatelessWidget {
       child: Container(
         height: SizeConfig.screenHeight*.22, //150
         // color:
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(skyImage),
             fit: BoxFit.cover,
@@ -253,13 +131,13 @@ class HangingImageTheme extends StatelessWidget {
 
 class HangingImageTheme3 extends StatelessWidget {
 
-  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  final double hgt = SizeConfig.screenHeight*.06;
-  final UserPublicProfile user;
-
   HangingImageTheme3({
     Key? key, required this.user,
   }) : super(key: key);
+
+  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  final double hgt = SizeConfig.screenHeight*.06;
+  final UserPublicProfile user;
 
   @override
   Widget build(BuildContext context) {
@@ -268,30 +146,29 @@ class HangingImageTheme3 extends StatelessWidget {
       child: Container(
           height: SizeConfig.screenHeight*.22, //150
           // color:
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage(skyImage),
               fit: BoxFit.cover,
             ),
           ),
           child: Padding(
-              padding: EdgeInsets.fromLTRB(8.0,0,8.0,0),
+              padding: const EdgeInsets.fromLTRB(8.0,0,8.0,0),
               child:
               Stack(
                 children: [
                   Positioned.fill(
                     child: AppBar(
-                      shadowColor: Color(0x00000000),
-                      backgroundColor: Color(0x00000000),
+                      shadowColor: const Color(0x00000000),
+                      backgroundColor: const Color(0x00000000),
                       actions: <Widget>[
-                        (currentUserProfile.uid == user.uid) ? IconButton(
+                        if (currentUserProfile.uid == user.uid) IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: (){
                             navigationService.navigateTo(EditProfilePageRoute);
                             // Navigator.pushNamed(context, '/cropperTest');
                           },
-                        ) :
-                        Container(),
+                        ) else Container(),
                       ],
                     ),
                   ),
@@ -309,10 +186,10 @@ class HangingImageTheme3 extends StatelessWidget {
 class CustomHangingImage extends StatelessWidget {
   const CustomHangingImage({
     Key? key,
-    this.urlToImage
+    required this.urlToImage
   }) : super(key: key);
 
-  final urlToImage;
+  final String urlToImage;
 
   @override
   Widget build(BuildContext context) {
@@ -344,17 +221,17 @@ class CrewModalBottomSheet extends StatelessWidget {
       onPressed: () {
         showModalBottomSheet(
           context: context,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
           ),
-          builder: (context) => Container(
+          builder: (BuildContext context) => Container(
             padding: const EdgeInsets.all(10),
             height: SizeConfig.screenHeight*.7,
             child: MembersLayout(trip: tripDetails,ownerID: userService.currentUserID,),
           ),
         );
       },
-      child: Text("Crew ${tripDetails.accessUsers!.length} "),
+      child: Text('Crew ${tripDetails.accessUsers!.length} '),
     );
   }
 }
@@ -372,13 +249,13 @@ class DateGauge extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    CountDownDate countDownDate = TCFunctions().dateGauge(
+    final CountDownDate countDownDate = TCFunctions().dateGauge(
         tripDetails.dateCreatedTimeStamp!.millisecondsSinceEpoch,
         tripDetails.startDateTimeStamp!.millisecondsSinceEpoch);
-    CountDownDate countDownDateReturn = TCFunctions().dateGauge(
+    final CountDownDate countDownDateReturn = TCFunctions().dateGauge(
         tripDetails.startDateTimeStamp!.millisecondsSinceEpoch,
         tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
-    String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp!.millisecondsSinceEpoch, tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
+    final String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp!.millisecondsSinceEpoch, tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
 
     switch (result){
       case 'before':
@@ -387,7 +264,7 @@ class DateGauge extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Trip has started.'),
+            const Text('Trip has started.'),
             Gauge(countDownDate: countDownDateReturn, color: Colors.blue,),
           ],
         );
@@ -408,7 +285,7 @@ class Gauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: SizeConfig.screenHeight*.2,
       width: SizeConfig.screenWidth*.5,
       child: SfRadialGauge(
@@ -416,13 +293,12 @@ class Gauge extends StatelessWidget {
           enableLoadingAnimation: true,
           axes: <RadialAxis>[
             RadialAxis(
-                minimum: 0.0,
                 maximum: countDownDate.initialDayCount!,
                 showLabels: false,
                 showTicks: false,
                 startAngle: 180,
                 endAngle: 0,
-                axisLineStyle: AxisLineStyle(
+                axisLineStyle: const AxisLineStyle(
                   thickness: 0.2,
                   cornerStyle: CornerStyle.bothCurve,
                   color: Color.fromARGB(30, 0, 169, 181),
@@ -442,7 +318,7 @@ class Gauge extends StatelessWidget {
                       positionFactor: 0.1,
                       angle: 90,
                       widget: Text(
-                        countDownDate.daysLeft!.toStringAsFixed(0) + ' Days Left',
+                        '${countDownDate.daysLeft!.toStringAsFixed(0)} Days Left',
                         style: Theme.of(context).textTheme.subtitle1,
                       ))
                 ])
@@ -456,20 +332,20 @@ class Gauge extends StatelessWidget {
 
 //Recent Trip tile
 class RecentTripTile extends StatelessWidget{
-  final String uid;
 
   const RecentTripTile({Key? key, required this.uid}) : super(key: key);
+  final String uid;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        builder: (context, streamData){
+        builder: (BuildContext context, AsyncSnapshot<Object?> streamData){
           if(streamData.hasData){
-            List<Trip> trips = streamData.data as List<Trip>;
+            final List<Trip> trips = streamData.data as List<Trip>;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: (trips.length > 10) ? 10 : trips.length,
-              itemBuilder: (context, index){
-                Trip trip = trips[index];
+              itemBuilder: (BuildContext context, int index){
+                final Trip trip = trips[index];
                 return InkWell(
                   onTap: (){
                     navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
@@ -490,7 +366,7 @@ class RecentTripTile extends StatelessWidget{
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.0),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [

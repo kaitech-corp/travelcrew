@@ -20,13 +20,13 @@ import 'members/members_layout.dart';
 /// Layout for owner of trip.
 class ExploreOwnerLayout extends StatefulWidget {
 
+
+  const ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey,});
+
   final Trip trip;
   final heroTag;
 
   final GlobalKey<ScaffoldState> scaffoldKey;
-
-
-  ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey,});
 
   @override
   _ExploreOwnerLayoutState createState() => _ExploreOwnerLayoutState();
@@ -34,8 +34,8 @@ class ExploreOwnerLayout extends StatefulWidget {
 
 class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
-  final expandController = ExpandableController();
-  final basketController = BasketController();
+  final ExpandableController expandController = ExpandableController();
+  final BasketController basketController = BasketController();
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
@@ -70,9 +70,9 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
   @override
   Widget build(BuildContext context) {
 
-    double _detailsPadding = SizeConfig.screenWidth*.05;
-    var _showImage = false;
-    String _image;
+    final double detailsPadding = SizeConfig.screenWidth*.05;
+    bool showImage = false;
+    String image;
 
     final Event event = Event(
       title: widget.trip.tripName!,
@@ -86,43 +86,42 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
           body: Container(
             child: SingleChildScrollView(
               child: Stack(
                 children: [
-                  if(_showImage) ImagePopup(imagePath: widget.trip.urlToImage,),
+                  if(showImage) ImagePopup(imagePath: widget.trip.urlToImage,),
                   Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    (widget.trip.urlToImage?.isNotEmpty ?? false) ? Stack(
+                    if (widget.trip.urlToImage?.isNotEmpty ?? false) Stack(
                       children: [
                         GestureDetector(
                           onLongPress: (){
                             setState(() {
-                              _showImage = true;
-                              _image = widget.trip.urlToImage!;
+                              showImage = true;
+                              image = widget.trip.urlToImage!;
                             });
                           },
-                          onLongPressEnd: (details) {
+                          onLongPressEnd: (LongPressEndDetails details) {
                             setState(() {
-                              _showImage = false;
+                              showImage = false;
                             });
                           },
                           child: ImageAnimation(trip: widget.trip,
                             expandController: expandController,),
                         ),
                         AnimatedPadding(
-                            duration: Duration(milliseconds: 250),
+                            duration: const Duration(milliseconds: 250),
                             padding: EdgeInsets.only(top: _padding),
                             child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
                       ],
-                    ):
-                    Stack(
+                    ) else Stack(
                       children: [
-                        HangingImageTheme(),
+                        const HangingImageTheme(),
                         Padding(
                             padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
                             child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
@@ -133,7 +132,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                       expandController: expandController,
                       tripDetails: widget.trip,
                       event: event,
-                      detailsPadding: _detailsPadding,
+                      detailsPadding: detailsPadding,
                     )
                   ],
                 ),]
@@ -182,27 +181,27 @@ class OwnerPopupMenuButton extends StatelessWidget {
             onPressed: (){
               MapsLauncher.launchQuery(trip.location!);
               },
-            icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
+            icon: const TripDetailsIconThemeWidget(icon: Icons.map,),),
           IconButton(
             onPressed: (){
               navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: trip,basketController: basketController));
 
             },
-            icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
+            icon: const TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
           IconButton(
             onPressed: (){
               showModalBottomSheet(
                 context: context,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
                 ),
-                builder: (context) => Container(
+                builder: (BuildContext context) => Container(
                   padding: const EdgeInsets.all(10),
                   height: SizeConfig.screenHeight*.7,
                   child: MembersLayout(trip: trip,ownerID: userService.currentUserID,),
                 ),
               );},
-            icon: TripDetailsIconThemeWidget(icon: Icons.people,)),
+            icon: const TripDetailsIconThemeWidget(icon: Icons.people,)),
 
         ],
         )
@@ -224,25 +223,25 @@ class PopupMenuButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value) {
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value) {
         switch (value) {
-          case "Edit":
+          case 'Edit':
             {
               navigationService.navigateTo(EditTripDataRoute, arguments: trip);
             }
             break;
-          case "Calendar":
+          case 'Calendar':
             {
               Add2Calendar.addEvent2Cal(event);
             }
             break;
-          case "Invite":
+          case 'Invite':
             {
               navigationService.navigateTo(FollowingListRoute, arguments: trip);
             }
             break;
-          case "Convert":
+          case 'Convert':
             {
               TravelCrewAlertDialogs().convertTripAlert(context, trip);
             }
@@ -255,34 +254,34 @@ class PopupMenuButtonWidget extends StatelessWidget {
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>
+      itemBuilder: (BuildContext context) =>
       [
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
         const PopupMenuItem(
           value: 'Invite',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.person_add),
-            title: const Text('Invite'),
+            title: Text('Invite'),
           ),
         ),
         PopupMenuItem(
           value: 'Convert',
           child: ListTile(
-            leading: trip.ispublic ? IconThemeWidget(icon: Icons
-                .do_not_disturb_on) : IconThemeWidget(icon: Icons
+            leading: trip.ispublic ? const IconThemeWidget(icon: Icons
+                .do_not_disturb_on) : const IconThemeWidget(icon: Icons
                 .do_not_disturb_off),
             title: trip.ispublic
                 ? const Text('Make Private')
@@ -293,7 +292,7 @@ class PopupMenuButtonWidget extends StatelessWidget {
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.exit_to_app),
-            title: const Text('Delete Trip'),
+            title: Text('Delete Trip'),
           ),
         ),
       ],

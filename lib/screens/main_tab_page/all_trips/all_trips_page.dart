@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/appearance_widgets.dart';
 
 import 'layout_items/ad_list_us.dart';
 import 'layout_items/suggestions_list.dart';
@@ -42,7 +42,7 @@ class _AllTripsState extends State<AllTrips>
                   // style: ,
                   children: [
                     TextSpan(
-                        text: " Nature",
+                        text: ' Nature',
                         style: responsiveTextStyleTopics(context).copyWith(color: Colors.redAccent,),),
 
                         // TextStyle(
@@ -50,7 +50,7 @@ class _AllTripsState extends State<AllTrips>
                         //     color: Colors.redAccent,
                         //     fontSize: 28)),
                     TextSpan(
-                      text: " Lovers",
+                      text: ' Lovers',
                       style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
@@ -60,10 +60,10 @@ class _AllTripsState extends State<AllTrips>
               text: TextSpan(
                   children: [
                     TextSpan(
-                        text: " Friend",
+                        text: ' Friend',
                         style: responsiveTextStyleTopics(context).copyWith(color: Colors.orangeAccent,),),
                     TextSpan(
-                      text: " Recommendations",
+                      text: ' Recommendations',
                       style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),

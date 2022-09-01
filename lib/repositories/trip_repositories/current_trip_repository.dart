@@ -10,24 +10,25 @@ import '../../blocs/generics/generic_bloc.dart';
 
 class CurrentTripRepository extends GenericBlocRepository<Trip> {
 
+  @override
   Stream<List<Trip>> data() {
 
-    final Query tripCollection = FirebaseFirestore.instance
-        .collection("trips")
+    final Query<Object> tripCollection = FirebaseFirestore.instance
+        .collection('trips')
         .orderBy('endDateTimeStamp')
         .where('ispublic', isEqualTo: true);
 
-    List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot snapshot) {
+    List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        final now = DateTime.now().toUtc();
-        var past = DateTime(now.year, now.month, now.day - 2);
-        List<Trip> trips = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        final DateTime now = DateTime.now().toUtc();
+        final DateTime past = DateTime(now.year, now.month, now.day - 2);
+        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Trip.fromData(data);
         }).toList();
-        List<Trip> crewTrips = trips
+        final List<Trip> crewTrips = trips
             .where(
-                (trip) => trip.endDateTimeStamp!.toDate().compareTo(past) == 1)
+                (Trip trip) => trip.endDateTimeStamp!.toDate().compareTo(past) == 1)
             .toList();
         return crewTrips;
       } catch (e) {

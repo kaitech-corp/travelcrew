@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/trip_model.dart';
@@ -9,9 +10,9 @@ final double defaultSize = SizeConfig.defaultSize;
 class CustomShape2 extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    var path = Path();
-    double height = size.height;
-    double width = size.width;
+    final Path path = Path();
+    final double height = size.height;
+    final double width = size.width;
     path.lineTo(0, height - 100);
     path.quadraticBezierTo(width / 2, height, width, height - 100);
     path.lineTo(width, 0);
@@ -28,11 +29,11 @@ class CustomShape2 extends CustomClipper<Path> {
 class CustomHangingImage extends StatelessWidget {
   const CustomHangingImage({
     Key? key,
-    this.urlToImage, this.height
+    required this.urlToImage, required this.height
   }) : super(key: key);
 
-  final urlToImage;
-  final height;
+  final String urlToImage;
+  final double height;
 
 
   @override
@@ -40,7 +41,7 @@ class CustomHangingImage extends StatelessWidget {
     return ClipPath(
       clipper: CustomShape2(),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
         height: height, //150
         decoration: BoxDecoration(
             image: DecorationImage(image: NetworkImage(urlToImage),
@@ -52,10 +53,10 @@ class CustomHangingImage extends StatelessWidget {
 }
 
 class ImageAnimation extends StatefulWidget{
-  final Trip trip;
-  final expandController;
 
-  const ImageAnimation({Key? key, required this.trip, this.expandController,}) : super(key: key);
+  const ImageAnimation({Key? key, required this.trip, required this.expandController,}) : super(key: key);
+  final Trip trip;
+  final ExpandableController expandController;
 
   @override
   _ImageAnimationState createState() => _ImageAnimationState();
@@ -75,7 +76,7 @@ class _ImageAnimationState extends State<ImageAnimation> {
       if(mounted){
       setState(() {
         if (widget.expandController.expanded) {
-          _height = defaultSize.toDouble() * 15.0;
+          _height = defaultSize * 15.0;
         } else {
           _height = SizeConfig.screenHeight*.4;
         }
@@ -88,7 +89,7 @@ class _ImageAnimationState extends State<ImageAnimation> {
       return Hero(
       tag: widget.trip.urlToImage!,
       transitionOnUserGestures: true,
-      child: CustomHangingImage(urlToImage: widget.trip.urlToImage,height: _height,),
+      child: CustomHangingImage(urlToImage: widget.trip.urlToImage!,height: _height,),
       );
     }
   }

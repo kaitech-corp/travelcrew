@@ -17,10 +17,10 @@ import '../../../alerts/alert_dialogs.dart';
 /// Layout list for members of trip
 class MembersLayout extends StatefulWidget{
 
+  const MembersLayout({Key? key, required this.trip, required this.ownerID}) : super(key: key);
+
   final Trip trip;
   final String ownerID;
-
-  MembersLayout({Key? key, required this.trip, required this.ownerID}) : super(key: key);
 
   @override
   _MembersLayoutState createState() => _MembersLayoutState();
@@ -28,9 +28,9 @@ class MembersLayout extends StatefulWidget{
 
 class _MembersLayoutState extends State<MembersLayout> {
 
-  var _showImage = false;
+  bool _showImage = false;
   late String _image;
-  var userService = locator<UserService>();
+  UserService userService = locator<UserService>();
 
   final ScrollController controller = ScrollController();
 
@@ -44,7 +44,7 @@ class _MembersLayoutState extends State<MembersLayout> {
     return Stack(
       children: [
         StreamBuilder<List<UserPublicProfile>>(
-          builder: (context, userData){
+          builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> userData){
             if(userData.hasError){
               CloudFunction()
                   .logError('Error streaming user data '
@@ -107,7 +107,7 @@ class _MembersLayoutState extends State<MembersLayout> {
       child: Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight*.09,
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: GestureDetector(
           onLongPress: (){
             setState(() {
@@ -115,7 +115,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               _image = member.urlToImage ?? '';
             });
           },
-          onLongPressEnd: (details) {
+          onLongPressEnd: (LongPressEndDetails details) {
             setState(() {
               _showImage = false;
             });

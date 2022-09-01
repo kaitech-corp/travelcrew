@@ -17,8 +17,8 @@ import 'transportation_card.dart';
 
 /// Transportation page
 class TransportationPage extends StatefulWidget {
+  const TransportationPage({required this.trip});
   final Trip trip;
-  TransportationPage({required this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -41,26 +41,25 @@ class _TransportationPageState extends State<TransportationPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         body: BlocBuilder<GenericBloc<TransportationData,TransportationRepository>, GenericState>(
-            builder: (context, state) {
+            builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
             return Loading();
           } else if (state is HasDataState) {
-            List<TransportationData> modeList = state.data as List<TransportationData>;
+            final List<TransportationData> modeList = state.data as List<TransportationData>;
             return Column(
               children: [
                 Container(
                   height: 16,
                 ),
                 Expanded(
-                  flex: 1,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: modeList.length,
-                      itemBuilder: (context, index) {
+                      itemBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Column(
@@ -81,7 +80,7 @@ class _TransportationPageState extends State<TransportationPage> {
                   child: Container(
                     child: ListView.builder(
                         itemCount: modeList != null ? modeList.length : 0,
-                        itemBuilder: (context, index) {
+                        itemBuilder: (BuildContext context, int index) {
                           return TransportationCard(
                             transportationData: modeList[index],
                             trip: widget.trip,
@@ -100,7 +99,7 @@ class _TransportationPageState extends State<TransportationPage> {
             navigationService.navigateTo(AddNewTransportationRoute,
                 arguments: widget.trip);
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

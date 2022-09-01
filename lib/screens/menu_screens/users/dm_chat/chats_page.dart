@@ -22,11 +22,11 @@ class DMChatListPage extends StatelessWidget {
           'Chats',
           style: Theme.of(context).textTheme.headline5,
         ),
-        flexibleSpace: AppBarGradient(),
+        flexibleSpace: const AppBarGradient(),
       ),
       body: StreamBuilder<List<UserPublicProfile>>(
         stream: DatabaseService().retrieveDMChats(),
-        builder: (context, users) {
+        builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if (users.hasError) {
             CloudFunction().logError(
                 'Error streaming dm chat list: ${users.error.toString()}');
@@ -35,7 +35,7 @@ class DMChatListPage extends StatelessWidget {
             final List<UserPublicProfile> chats = users.data as List<UserPublicProfile>;
             return ListView.builder(
               itemCount: chats.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (BuildContext context, int index) {
                 final UserPublicProfile user = chats[index];
                 return userCard(context, user);
               },
@@ -90,7 +90,7 @@ class DMChatListPage extends StatelessWidget {
 
 Widget chatNotificationBadges(UserPublicProfile user) {
   return StreamBuilder<List<ChatData>>(
-    builder: (context, chats) {
+    builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
       if (chats.hasError) {
         CloudFunction()
             .logError('Error streaming chats '

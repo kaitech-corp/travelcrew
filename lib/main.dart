@@ -7,7 +7,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:travelcrew/repositories/user_repository.dart';
 
 import '../blocs/authentication_bloc/authentication_bloc.dart';
 import '../blocs/authentication_bloc/authentication_event.dart';
@@ -26,28 +25,28 @@ import '../services/theme/theme_data.dart';
 import '../services/widgets/launch_icon_badger.dart';
 import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
-
-
-
+import 'repositories/user_repository.dart';
 
 void main() async {
-
   await projectInitializer();
 
   final UserRepository userRepository = UserRepository();
 
-  runApp(BlocProvider(
-    create: (BuildContext context) => AuthenticationBloc(userRepository: userRepository)..add(AuthenticationLoggedOut()),
-      child: TravelCrew(userRepository: userRepository,)));
-
+  runApp(BlocProvider<AuthenticationBloc>(
+      create: (BuildContext context) =>
+          AuthenticationBloc(userRepository: userRepository)
+            ..add(AuthenticationLoggedOut()),
+      child: TravelCrew(
+        userRepository: userRepository,
+      )));
 }
 
-class TravelCrew extends StatefulWidget{
+class TravelCrew extends StatefulWidget {
+  const TravelCrew({Key? key, this.userRepository}) : super(key: key);
   final UserRepository? userRepository;
 
-  TravelCrew({this.userRepository });
   @override
-  _TravelCrewState createState() => _TravelCrewState();
+  State<TravelCrew> createState() => _TravelCrewState();
 }
 
 class _TravelCrewState extends State<TravelCrew> {
@@ -55,65 +54,64 @@ class _TravelCrewState extends State<TravelCrew> {
 
   @override
   void initState() {
-    // DatabaseService().getUserNotificationSettings();
-
     if (Platform.isIOS) {
       FBMessaging().requestPermissions();
     } else {
       FBMessaging().androidFCMSetting();
-      FirebaseMessaging.onBackgroundMessage((message) async {
+      FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
         FBMessaging().firebaseMessagingBackgroundHandler(message);
       });
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     FirebaseCrashlytics.instance.log('App Started');
-    return Sizer(
-      builder: (context,orientation, deviceType) {
-        return MaterialApp(
-                builder: (context, widget) {
-                  return ResponsiveWrapperBuilder(context, widget);
+    return Sizer(builder:
+        (BuildContext context, Orientation orientation, DeviceType deviceType) {
+      return MaterialApp(
+        builder: (BuildContext context, Widget? widget) {
+          return responsiveWrapperBuilder(context, widget!);
+        },
+        home: AnimatedSplashScreen(
+          splash: splashScreenLogo,
+          animationDuration: const Duration(milliseconds: 1000),
+          splashIconSize: double.maxFinite,
+          nextScreen: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (BuildContext context, AuthenticationState state) {
+            SizeConfig().init(context);
+            if (state is AuthenticationFailure) {
+              return LoginScreen();
+            }
+            if (state is AuthenticationSuccess) {
+              return FutureBuilder<bool>(
+                builder: (BuildContext context, AsyncSnapshot<Object?> data) {
+                  if (data.data == true) {
+                    return const LaunchIconBadger();
+                  } else if (data.data == false) {
+                    return CompleteProfile(
+                      userRepository: widget.userRepository,
+                    );
+                  }
+                  return Loading();
                 },
-                home: AnimatedSplashScreen(
-                  splash: splashScreenLogo,
-                  animationDuration: Duration(milliseconds: 1000),
-                  splashIconSize: double.maxFinite,
-                  nextScreen: BlocBuilder<AuthenticationBloc,AuthenticationState>(
-                          builder: (context,state){
-                            SizeConfig().init(context);
-                            if (state is AuthenticationFailure) {
-                              return LoginScreen();
-                            }
-                            if (state is AuthenticationSuccess) {
-                              return FutureBuilder(
-                                builder: (context, data) {
-                                  if (data.data == true) {
-                                    return LaunchIconBadger();
-                                  } else if (data.data == false){
-                                    return CompleteProfile(userRepository: widget.userRepository,);
-                                  }
-                                  return Loading();
-                                },
-                                future: DatabaseService(uid: state.firebaseUser!.uid).checkUserHasProfile(),
-                              );
-                            } else {
-                              return LoginScreen();
-                            }
-                          }),
-                ),
-                debugShowCheckedModeBanner: false,
-                theme:  ThemeDataBuilder(),
-                navigatorKey: locator<NavigationService>().navigationKey,
-                onGenerateRoute: generateRoute,
-                navigatorObservers: [
-                  FirebaseAnalyticsObserver(analytics: analytics),
-                ],
+                future: DatabaseService(uid: state.firebaseUser!.uid)
+                    .checkUserHasProfile(),
               );
-      }
-    );
+            } else {
+              return LoginScreen();
+            }
+          }),
+        ),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeDataBuilder(),
+        navigatorKey: locator<NavigationService>().navigationKey,
+        onGenerateRoute: generateRoute,
+        navigatorObservers: <FirebaseAnalyticsObserver>[
+          FirebaseAnalyticsObserver(analytics: analytics),
+        ],
+      );
+    });
   }
-
-
 }

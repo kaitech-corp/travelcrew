@@ -9,9 +9,9 @@ import '../../../size_config/size_config.dart';
 /// Layout for trip Ads
 class AdCard extends StatelessWidget{
 
-  final TripAds tripAds;
-
   const AdCard({Key? key, required this.tripAds}) : super(key: key);
+
+  final TripAds tripAds;
 
   @override
   Widget build(BuildContext context) {

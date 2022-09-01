@@ -8,11 +8,11 @@ import '../../services/widgets/chat_date_display.dart';
 class StickyGroupedChatListView extends StatelessWidget {
   const StickyGroupedChatListView({
     Key? key,
-    @required this.data,
+    required this.data,
     required this.documentId
   }) : super(key: key);
 
-  final dynamic data;
+  final List<ChatData> data;
   final String documentId;
 
   @override
@@ -21,7 +21,7 @@ class StickyGroupedChatListView extends StatelessWidget {
       key: Key(data.length.toString()),
       elements: data,
       reverse: true,
-      groupBy: (chat)
+      groupBy: (ChatData chat)
       {
         return DateTime(
             chat.timestamp.toDate().year,
@@ -31,13 +31,13 @@ class StickyGroupedChatListView extends StatelessWidget {
             .toString();
       },
       order: StickyGroupedListOrder.DESC,
-      itemComparator:(a,b) => a.timestamp.compareTo(b.timestamp),
-      groupSeparatorBuilder: (chat) =>
+      itemComparator:(ChatData a,ChatData b) => a.timestamp.compareTo(b.timestamp),
+      groupSeparatorBuilder: (ChatData chat) =>
           Padding(
               padding: const EdgeInsets.all(4.0),
               child:ChatDateDisplay(
                 dateString: chat.timestamp.toDate().toString(),)),
-      itemBuilder: (context, chat){
+      itemBuilder: (BuildContext context, ChatData chat){
         return ChatCard(message: chat, tripDocID: documentId,);
       },
     );

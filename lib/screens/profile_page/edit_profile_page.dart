@@ -14,11 +14,14 @@ import '../../services/widgets/loading.dart';
 import '../../size_config/size_config.dart';
 
 class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({Key? key}) : super(key: key);
+
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _SignupScreenState extends State {
+class _EditProfilePageState extends State<EditProfilePage> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserPublicProfile _user = UserPublicProfile();
   late File _image;
@@ -28,31 +31,54 @@ class _SignupScreenState extends State {
   String destination2 = '';
   String destination3 = '';
 
-  // Key get key => null;
+  XFile? _pickedFile;
+  CroppedFile? _croppedFile;
 
-  getImage() async {
-    var image =
-        await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
-
-    _cropImage(image!.path, image);
-  }
-
-  _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper().cropImage(
-      sourcePath: imagePath,
-      maxHeight: 1080,
-      maxWidth: 1080,
-    ) as File;
-
-    if (croppedImage.path.isEmpty) {
+  Future<void> _uploadImage() async {
+    final pickedFile =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
       setState(() {
-        _image = croppedImage;
-      });
-    } else {
-      setState(() {
-        _image = File(image.path);
+        _pickedFile = pickedFile;
       });
     }
+    _cropImage();
+  }
+  Future<void>  _cropImage() async {
+    final CroppedFile? croppedImage = await ImageCropper().cropImage(
+      sourcePath: _pickedFile!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+
+    if (croppedImage != null) {
+      _image = croppedImage as File;
+    } else {
+      _image = File(_user.urlToImage!);
+    }
+  }
+
+  void _clear() {
+    setState(() {
+      _pickedFile = null;
+      _croppedFile = null;
+    });
   }
 
   @override
@@ -63,32 +89,29 @@ class _SignupScreenState extends State {
                 style: Theme.of(context).textTheme.headline5)),
         body: StreamBuilder<UserPublicProfile>(
             stream: DatabaseService().currentUserPublicProfile,
-            builder: (context, snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> snapshot) {
               if (snapshot.hasData) {
-                UserPublicProfile user = snapshot.data as UserPublicProfile;
+                final UserPublicProfile user = snapshot.data as UserPublicProfile;
                 return SingleChildScrollView(
                   child: Container(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: Builder(
-                          builder: (context) => Form(
+                          builder: (BuildContext context) => Form(
                               key: _formKey,
                               child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    (user.urlToImage == null)
-                                        ? Container(
+                                    if (user.urlToImage == null) Container(
                                             child: _image == null
-                                                ? Text('No image selected.')
+                                                ? const Text('No image selected.')
                                                 : Image.file(_image),
-                                          )
-                                        : CircleAvatar(
+                                          ) else CircleAvatar(
                                             radius:
                                                 SizeConfig.screenWidth / 2.25,
                                             child: FadeInImage.assetNetwork(placeholder: _image.path, image: user.urlToImage!),
                                           ),
                                     ElevatedButton(
                                       onPressed: () {
-                                        getImage();
+                                        _uploadImage();
                                       },
 //                              tooltip: 'Pick Image',
                                       child: const Icon(Icons.add_a_photo),
@@ -104,14 +127,14 @@ class _SignupScreenState extends State {
                                         ],
                                         initialValue: user.firstName,
                                         // ignore: missing_return
-                                        validator: (value) {
+                                        validator: (String? value) {
                                           if (value!.isEmpty) {
                                             return 'Please add first name.';
                                           } else {
                                             return null;
                                           }
                                         },
-                                        onSaved: (val) => setState(
+                                        onSaved: (String? val) => setState(
                                             () => _user.firstName = val)),
                                     TextFormField(
                                       decoration: const InputDecoration(
@@ -124,7 +147,7 @@ class _SignupScreenState extends State {
                                       ],
                                       initialValue: user.lastName,
                                       // ignore: missing_return
-                                      validator: (value) {
+                                      validator: (String? value) {
                                         // ignore: missing_return
                                         if (value!.isEmpty) {
                                           return 'Please enter last name';
@@ -132,7 +155,7 @@ class _SignupScreenState extends State {
                                           return null;
                                         }
                                       },
-                                      onSaved: (val) =>
+                                      onSaved: (String? val) =>
                                           setState(() => _user.lastName = val),
                                     ),
                                     TextFormField(
@@ -142,7 +165,7 @@ class _SignupScreenState extends State {
                                         textCapitalization:
                                             TextCapitalization.words,
                                         // ignore: missing_return
-                                        validator: (value) {
+                                        validator: (String? value) {
                                           // ignore: missing_return,
                                           if (value!.isEmpty) {
                                             return 'Please enter a display name.';
@@ -150,13 +173,13 @@ class _SignupScreenState extends State {
                                             return null;
                                           }
                                         },
-                                        onSaved: (val) => setState(
+                                        onSaved: (String? val) => setState(
                                             () => _user.displayName = val)),
                                     TextFormField(
                                         initialValue: user.hometown ?? '',
                                         decoration: const InputDecoration(
                                             labelText: 'Hometown'),
-                                        onSaved: (val) => setState(
+                                        onSaved: (String? val) => setState(
                                             () => _user.hometown = val!.trim())),
                                     const SizedBox(
                                       height: 20,
@@ -175,8 +198,6 @@ class _SignupScreenState extends State {
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
                                           children: [
                                             TextFormField(
                                                 initialValue:
@@ -185,15 +206,16 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText: 'Instagram'),
                                                 // ignore: missing_return
-                                                validator: (value) {
+                                                validator: (String? value) {
                                                   // ignore: missing_return,
                                                   if (value!.isNotEmpty &&
                                                       !value.contains(
                                                           'https://www.instagram.com/')) {
                                                     return 'i.e. https://www.instagram.com/username';
                                                   }
+                                                  return null;
                                                 },
-                                                onSaved: (val) => setState(() =>
+                                                onSaved: (String? val) => setState(() =>
                                                     _user.instagramLink = val)),
                                             TextFormField(
                                                 initialValue: user
@@ -204,15 +226,16 @@ class _SignupScreenState extends State {
                                                         labelText:
                                                             'Facebook Link'),
                                                 // ignore: missing_return
-                                                validator: (value) {
+                                                validator: (String? value) {
                                                   // ignore: missing_return,
                                                   if (value!.isNotEmpty &&
                                                       !value.contains(
                                                           'https://www.facebook.com/')) {
                                                     return 'i.e. https://www.facebook.com/username';
                                                   }
+                                                  return null;
                                                 },
-                                                onSaved: (val) => setState(() =>
+                                                onSaved: (String? val) => setState(() =>
                                                     _user.facebookLink = val)),
                                           ],
                                         ),
@@ -235,8 +258,6 @@ class _SignupScreenState extends State {
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
                                           children: [
                                             TextFormField(
                                                 initialValue: (user
@@ -254,7 +275,7 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText:
                                                             'Destination 1'),
-                                                onSaved: (val) => setState(() =>
+                                                onSaved: (String? val) => setState(() =>
                                                     destination1 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
@@ -272,7 +293,7 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText:
                                                             'Destination 2'),
-                                                onSaved: (val) => setState(() =>
+                                                onSaved: (String? val) => setState(() =>
                                                     destination2 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
@@ -290,7 +311,7 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText:
                                                             'Destination 3'),
-                                                onSaved: (val) => setState(() =>
+                                                onSaved: (String? val) => setState(() =>
                                                     destination3 = val!.trim())),
                                           ],
                                         ),
@@ -301,7 +322,7 @@ class _SignupScreenState extends State {
                                     ),
                                     ElevatedButton(
                                         onPressed: () async {
-                                          final form = _formKey.currentState!;
+                                          final FormState form = _formKey.currentState!;
                                           form.save();
                                           _user.topDestinations = [
                                             destination1,
@@ -310,7 +331,7 @@ class _SignupScreenState extends State {
                                           ];
                                           if (form.validate()) {
                                             try {
-                                              String action =
+                                              const String action =
                                                   'Editing Public Profile page from page';
                                               CloudFunction().logEvent(action);
                                               DatabaseService(uid: user.uid)

@@ -6,51 +6,51 @@ import 'package:equatable/equatable.dart';
 
 abstract class CompleteProfileEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class CompleteProfileFirstNameChanged extends CompleteProfileEvent {
-  final String firstName;
 
   CompleteProfileFirstNameChanged({required this.firstName});
+  final String firstName;
 
   @override
-  List<Object> get props => [firstName];
+  List<Object> get props => <Object>[firstName];
 }
 class CompleteProfileLastNameChanged extends CompleteProfileEvent {
-  final String? lastName;
 
   CompleteProfileLastNameChanged({this.lastName});
+  final String? lastName;
 
   @override
-  List<Object> get props => [lastName!];
+  List<Object> get props => <Object>[lastName!];
 }
 class CompleteProfileDisplayNameChanged extends CompleteProfileEvent {
-  final String? displayName;
 
   CompleteProfileDisplayNameChanged({this.displayName});
+  final String? displayName;
 
   @override
-  List<Object> get props => [displayName!];
+  List<Object> get props => <Object>[displayName!];
 }
 
 class CompleteProfileImageChanged extends CompleteProfileEvent {
-  final File? urlToImage;
 
   CompleteProfileImageChanged({this.urlToImage});
+  final File? urlToImage;
 
   @override
-  List<Object> get props => [urlToImage!];
+  List<Object> get props => <Object>[urlToImage!];
 }
 
 class CompleteProfileSubmitted extends CompleteProfileEvent {
+
+  CompleteProfileSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage,});
   final String? firstName;
   final String? lastName;
   final String? displayName;
   final File? urlToImage;
 
-  CompleteProfileSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage,});
-
   @override
-  List<Object> get props => [displayName as Object, firstName as Object, lastName as Object, urlToImage as Object];
+  List<Object> get props => <Object>[displayName!, firstName!, lastName!, urlToImage!];
 }

@@ -20,15 +20,15 @@ class PaymentDetailsMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.edit,),
-      onSelected: (value) {
+      icon: const IconThemeWidget(icon: Icons.edit,),
+      onSelected: (String value) {
         switch (value) {
-          case "Edit":
+          case 'Edit':
             {
 
             }
             break;
-          case "Delete":
+          case 'Delete':
             {
               DatabaseService().deleteCostObject(costObject, splitObject);
               navigationService.pop();
@@ -42,7 +42,7 @@ class PaymentDetailsMenuButton extends StatelessWidget {
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>
+      itemBuilder: (BuildContext context) =>
       [
         // const PopupMenuItem(
         //   value: 'Edit',
@@ -55,7 +55,7 @@ class PaymentDetailsMenuButton extends StatelessWidget {
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
-            title: const Text('Remove'),
+            title: Text('Remove'),
           ),
         ),
       ],

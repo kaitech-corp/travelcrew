@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/widgets/appbar_gradient.dart';
+
+import '../../../services/constants/constants.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../../services/widgets/appbar_gradient.dart';
+import '../../alerts/alert_dialogs.dart';
 
 class FeedbackPage extends StatefulWidget{
   @override
@@ -14,11 +15,13 @@ class FeedbackPage extends StatefulWidget{
 class _FeedbackPageState extends State<FeedbackPage> {
   late TextEditingController _controller;
 
+  @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
   }
 
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -30,13 +33,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
             title: Text(Intl.message('Feedback'),style: Theme.of(context).textTheme.headline5,),
-            flexibleSpace: AppBarGradient(),
+            flexibleSpace: const AppBarGradient(),
           ),
           body: Container(
             padding: const EdgeInsets.all(8.0),
@@ -55,7 +58,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       navigationService.pop();
                       TravelCrewAlertDialogs().submitFeedbackAlert(context);
                     },
-                    child: Text(Intl.message('Send'), style: TextStyle(fontSize: 20)),
+                    child: Text(Intl.message('Send'), style: const TextStyle(fontSize: 20)),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -68,13 +71,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Widget _buildTextField() {
-    final maxLines = 5;
+    const int maxLines = 5;
 
     return Container(
       margin: const EdgeInsets.all(12),
       height: maxLines * 24.0,
       child: TextField(
-        autocorrect: true,
         enableInteractiveSelection: true,
         controller: _controller,
         maxLines: maxLines,

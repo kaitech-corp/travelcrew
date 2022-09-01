@@ -14,20 +14,19 @@ import '../../services/navigation/route_names.dart';
 import '../../services/widgets/calendar_widget.dart';
 import 'add_trip_page.dart';
 import 'google_autocomplete.dart';
-import 'google_places.dart';
 
 
 /// Edit trip page
 class EditTripData extends StatefulWidget {
+  const EditTripData({required this.trip});
   final Trip trip;
-  EditTripData({required this.trip});
   @override
   _EditTripDataState createState() => _EditTripDataState();
 }
 class _EditTripDataState extends State<EditTripData> {
 
 
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
 
   final ValueNotifier<String> startDate = ValueNotifier('');
@@ -82,7 +81,7 @@ class _EditTripDataState extends State<EditTripData> {
 
 
   Future getImage() async {
-    var image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
 
     setState(() {
       _image = File(image!.path);
@@ -103,43 +102,43 @@ class _EditTripDataState extends State<EditTripData> {
                 padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                 child: Builder(
-                    builder: (context) => Form(
+                    builder: (BuildContext context) => Form(
                         key: _formKey,
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               TextFormField(
                                 controller: controllerTripName,
                                   textCapitalization: TextCapitalization.words,
                                   inputFormatters: [
-                                    new LengthLimitingTextInputFormatter(75),
+                                    LengthLimitingTextInputFormatter(75),
                                   ],
                                   decoration:
                                   InputDecoration(labelText: addTripNameLabel()),
                                   // ignore: missing_return
-                                  validator: (value) {
+                                  validator: (String? value) {
                                     if (value?.isEmpty ?? true) {
                                       return addTripNameValidator();
                                     }
+                                    return null;
                                   },
                               ),
                               TextFormField(
                                 controller: controllerType,
                                   textCapitalization: TextCapitalization.words,
                                   inputFormatters: [
-                                    new LengthLimitingTextInputFormatter(30),
+                                    LengthLimitingTextInputFormatter(30),
                                   ],
                                   decoration:
                                   InputDecoration(labelText: addTripTypeLabel()),
                                   // ignore: missing_return
-                                  validator: (value) {
+                                  validator: (String? value) {
                                     if (value?.isEmpty ?? true) {
                                       return addTripTypeValidator();
                                     }
+                                    return null;
                                   },
                               ),
-                              locationChangeVisible ?
-                              Column(
+                              if (locationChangeVisible) Column(
                                 children: [
                                   TextFormField(
                                     controller: controllerLocation,
@@ -147,19 +146,19 @@ class _EditTripDataState extends State<EditTripData> {
                                     textCapitalization: TextCapitalization.words,
                                     decoration: InputDecoration(labelText:addTripLocation()),
                                     // ignore: missing_return
-                                    validator: (value) {
+                                    validator: (String? value) {
                                       if (value?.isEmpty ?? true) {
                                         return addTripLocationValidator();
                                         // ignore: missing_return
                                       }
+                                      return null;
                                     },
                                   ),
                                   Container(
-                                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controllerLocation,),
-                                    padding: const EdgeInsets.only(top: 5, bottom: 5),),
+                                    padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                    child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controllerLocation,),),
                                 ],
-                              ):
-                              Column(
+                              ) else Column(
                                 children: [
                                   TextFormField(
                                     controller: controllerLocation,
@@ -179,21 +178,20 @@ class _EditTripDataState extends State<EditTripData> {
                                 ],
                               ),
                               const Padding(
-                                padding: const EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.only(top: 10),
                               ),
-                              dateChangeVisible ? CalendarWidget(
+                              if (dateChangeVisible) CalendarWidget(
                                 startDate: startDate,
                                 startDateTimeStamp: startDateTimestamp,
                                 endDate: endDate,
                                 endDateTimeStamp: endDateTimestamp,
                                 context: context,
                                 showBoth: true,
-                              ):
-                              Column(
+                              ) else Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Text('Departure Date: ${widget.trip.startDate}',style: TextStyle(fontSize: 15),),
-                                  Text('Return Date: ${widget.trip.endDate}',style: TextStyle(fontSize: 15)),
+                                  Text('Departure Date: ${widget.trip.startDate}',style: const TextStyle(fontSize: 15),),
+                                  Text('Return Date: ${widget.trip.endDate}',style: const TextStyle(fontSize: 15)),
                                   ElevatedButton(
                                     child: const Text('Edit Dates'),
                                     onPressed: (){
@@ -244,7 +242,7 @@ class _EditTripDataState extends State<EditTripData> {
             }
             navigationService.pop();
             try {
-              String action = saveEditedTripData;
+              const String action = saveEditedTripData;
               CloudFunction().logEvent(action);
               DatabaseService().editTripData(
                   controllerComment.text,

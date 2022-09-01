@@ -22,7 +22,7 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       body: BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc(userRepository: _userRepository),
+        create: (BuildContext context) => LoginBloc(userRepository: _userRepository),
         child: Container(
           height: double.infinity,
           decoration: BoxDecoration(
@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                       child: const AutoSizeText(
-                        "Travel Crew",
+                        'Travel Crew',
                         style: TextStyle(
                             fontFamily: 'RockSalt',
                             fontSize: 44,

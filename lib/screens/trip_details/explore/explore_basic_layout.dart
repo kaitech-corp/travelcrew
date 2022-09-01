@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -10,11 +11,11 @@ import '../../alerts/alert_dialogs.dart';
 /// Basic Layout for Explore page
 class ExploreBasicLayout extends StatelessWidget{
 
+  ExploreBasicLayout({required this.tripDetails,this.heroTag});
+
   final Trip tripDetails;
   final heroTag;
-  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-
-  ExploreBasicLayout({required this.tripDetails,this.heroTag});
+  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +23,10 @@ class ExploreBasicLayout extends StatelessWidget{
     return  Scaffold(
         body: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Stack(
                 children: [
-                  (tripDetails.urlToImage?.isNotEmpty ?? false) ? Hero(
+                  if (tripDetails.urlToImage?.isNotEmpty ?? false) Hero(
                     tag: tripDetails.documentId!,
                     transitionOnUserGestures: true,
                     child: FadeInImage.assetNetwork(
@@ -35,8 +35,7 @@ class ExploreBasicLayout extends StatelessWidget{
                       image: tripDetails.urlToImage!,
 
                     ),
-                  ):
-                  Image.asset(travelImage,fit: BoxFit.fitWidth,),
+                  ) else Image.asset(travelImage,fit: BoxFit.fitWidth,),
                   Positioned(
                     right: 5,
                     bottom: 10,
@@ -44,11 +43,11 @@ class ExploreBasicLayout extends StatelessWidget{
                           child: const Text('Request to Join',style: TextStyle(color: Colors.white),),
                           onPressed: ()
                           {
-                            String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
-                            String trip = tripDetails.documentId!;
-                            String type = 'joinRequest';
-                            String ownerID = tripDetails.ownerID!;
-                            bool ispublic = tripDetails.ispublic;
+                            final String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
+                            final String trip = tripDetails.documentId!;
+                            const String type = 'joinRequest';
+                            final String ownerID = tripDetails.ownerID!;
+                            final bool ispublic = tripDetails.ispublic;
 
                             CloudFunction().addNewNotification(message: message,
                               documentID: trip,
@@ -62,7 +61,7 @@ class ExploreBasicLayout extends StatelessWidget{
                 ],
               ),
               ListTile(
-                title: Text('${tripDetails.location}',style: TextStyle(fontSize: 20.0)),
+                title: Text('${tripDetails.location}',style: const TextStyle(fontSize: 20.0)),
                 subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                 trailing: IconButton(
                   icon: const Icon(Icons.report,),
@@ -76,7 +75,6 @@ class ExploreBasicLayout extends StatelessWidget{
                 child: Padding(
                   padding: const EdgeInsets.only(left:18.0, right: 18.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('${tripDetails.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
@@ -90,7 +88,7 @@ class ExploreBasicLayout extends StatelessWidget{
 
               if(tripDetails.comment?.isNotEmpty ?? false) Container(
                 padding: const EdgeInsets.all(18.0),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                 ),
                 child: Text(tripDetails.comment!,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
               ),

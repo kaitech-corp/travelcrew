@@ -37,17 +37,17 @@ class _NotificationPageState extends State<NotificationPage> {
 
     return Scaffold(
       body: BlocBuilder<NotificationBloc, NotificationState>(
-          builder: (context, state){
+          builder: (BuildContext context, NotificationState state){
             if(state is NotificationLoadingState){
               return Loading();
             } else if (state is NotificationHasDataState){
-              List<NotificationData> notifications = state.data;
+              final List<NotificationData> notifications = state.data;
               return Container (
                 child: ListView.builder(
                     padding: const EdgeInsets.all(0.0),
                     itemCount: notifications.length,
-                    itemBuilder: (context, index){
-                      var item = notifications[index];
+                    itemBuilder: (BuildContext context, int index){
+                      final NotificationData item = notifications[index];
                   return Dismissible(
                         direction: DismissDirection.endToStart,
                         // Show a red background as the item is swiped away.
@@ -55,16 +55,16 @@ class _NotificationPageState extends State<NotificationPage> {
                             alignment: AlignmentDirectional.centerStart,
                             child: const Align(
                               alignment: Alignment.centerRight,
-                              child: const Icon(Icons.delete,
+                              child: Icon(Icons.delete,
                                 color: Colors.white,),
                             )),
                         key: UniqueKey(),
-                        onDismissed: (direction) {
+                        onDismissed: (DismissDirection direction) {
                           setState(() {
                             notifications.removeAt(index);
                             CloudFunction().removeNotificationData(item.fieldID);
                           });
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Notification removed.")));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification removed.')));
                         },
 
                         child: NotificationsCard(notification: notifications[index],),
@@ -88,20 +88,20 @@ class _NotificationPageState extends State<NotificationPage> {
 }
 
 class NotificationCount extends StatefulWidget{
-  final ValueNotifier<int> notificationCount = ValueNotifier<int>(0);
 
   NotificationCount();
+  final ValueNotifier<int> notificationCount = ValueNotifier<int>(0);
   @override
   _NotificationCountState createState() => _NotificationCountState();
 }
 class _NotificationCountState extends State<NotificationCount> {
   @override
   Widget build(BuildContext context) {
-    final notifications = Provider.of<List<NotificationData>>(context);
+    final List<NotificationData> notifications = Provider.of<List<NotificationData>>(context);
 
     return ListView.builder(
         itemCount: notifications != null ? notifications.length : 0,
-        itemBuilder: (context, index) {
+        itemBuilder: (BuildContext context, int index) {
           return NotificationsCard(notification: notifications[index]);
         });
   }

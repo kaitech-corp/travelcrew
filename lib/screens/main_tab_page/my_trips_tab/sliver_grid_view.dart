@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../models/chat_model.dart';
 import '../../../models/custom_objects.dart';
@@ -14,14 +14,14 @@ import '../../image_layout/image_layout_trips.dart';
 
 /// Sliver Grid View for all trips
 class SliverGridView extends StatelessWidget {
+
+  const SliverGridView({Key? key, required this.trips, required this.length}) : super(key: key);
   final List<Trip> trips;
   final int length;
 
-  const SliverGridView({Key? key, required this.trips, required this.length}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: SizeConfig.screenHeight,
       child: CustomScrollView(slivers: <Widget>[
         SliverStaggeredGrid.countBuilder(
@@ -29,12 +29,12 @@ class SliverGridView extends StatelessWidget {
           mainAxisSpacing: 1,
           crossAxisSpacing: 1,
           itemCount: trips.length,
-          itemBuilder: (context, index) {
+          itemBuilder: (BuildContext context, int index) {
             return TappableCrewTripGrid(
               trip: trips[index],
             );
           },
-          staggeredTileBuilder: (index) {
+          staggeredTileBuilder: (int index) {
             if (trips[index].urlToImage?.isNotEmpty ?? false) {
               return const StaggeredTile.count(2, 2);
             } else {
@@ -48,10 +48,10 @@ class SliverGridView extends StatelessWidget {
 }
 
 class TappableCrewTripGrid extends StatelessWidget {
+
+  const TappableCrewTripGrid({required this.trip, this.heroTag});
   final Trip trip;
   final heroTag;
-
-  TappableCrewTripGrid({required this.trip, this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +92,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                     child: Tooltip(
                         message: trip.tripName,
                         child: Text(
-                          trip.tripName ?? "Trip",
+                          trip.tripName ?? 'Trip',
                           style: Theme.of(context).textTheme.headline4,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -176,14 +176,14 @@ class TappableCrewTripGrid extends StatelessWidget {
 
   Widget chatNotificationBadges(Trip trip) {
     return StreamBuilder(
-      builder: (context, chats) {
+      builder: (BuildContext context, AsyncSnapshot<Object?> chats) {
         if (chats.hasError) {
           CloudFunction()
               .logError('Error streaming chats for '
               'notifications on Crew cards: ${chats.error.toString()}');
         }
         if (chats.hasData) {
-          List<ChatData> chatList = chats.data as List<ChatData>;
+          final List<ChatData> chatList = chats.data as List<ChatData>;
             return Tooltip(
               message: 'New Messages',
               child: BadgeIcon(
@@ -192,9 +192,9 @@ class TappableCrewTripGrid extends StatelessWidget {
               ),
             );
           } else {
-            return Tooltip(
+            return const Tooltip(
               message: 'No new messages',
-              child: const Icon(Icons.chat_bubble_outline,color: Colors.greenAccent,),
+              child: Icon(Icons.chat_bubble_outline,color: Colors.greenAccent,),
             );
           }
       },
@@ -206,8 +206,8 @@ class TappableCrewTripGrid extends StatelessWidget {
 
   Widget needListBadges(Trip trip) {
     return StreamBuilder<List<Need>>(
-      builder: (context, items) {
-        List<Need> needs = items.data as List<Need>;
+      builder: (BuildContext context, AsyncSnapshot<List<Need>> items) {
+        final List<Need> needs = items.data as List<Need>;
         if (items.hasError) {
           CloudFunction()
               .logError('Error streaming need '

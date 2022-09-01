@@ -16,11 +16,10 @@ import '../alerts/alert_dialogs.dart';
 
 /// Form for login screen
 class LoginForm extends StatefulWidget {
-  final UserRepository? _userRepository;
-
   const LoginForm({Key? key, UserRepository? userRepository})
       : _userRepository = userRepository,
         super(key: key);
+  final UserRepository? _userRepository;
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -57,18 +56,16 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<LoginBloc, LoginState>(listener: (context, state) {
-          listenerMethod(state, context);
-        }),
-      ],
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (BuildContext context, LoginState state) {
+        listenerMethod(state, context);
+      },
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
           child: BlocBuilder<LoginBloc, LoginState>(
             bloc: _loginBloc,
-            builder: (context, state) {
+            builder: (BuildContext context, LoginState state) {
               return Column(children: <Widget>[
                 TextFormField(
                   controller: _emailController,
@@ -77,7 +74,6 @@ class _LoginFormState extends State<LoginForm> {
                     labelText: 'Email',
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  // autovalidate: true,
                   autocorrect: false,
                   validator: (_) {
                     return !state.isEmailValid ? 'Invalid Email' : null;
@@ -90,7 +86,6 @@ class _LoginFormState extends State<LoginForm> {
                     labelText: 'Password',
                   ),
                   obscureText: true,
-                  // autovalidate: true,
                   autocorrect: false,
                   validator: (_) {
                     return !state.isPasswordValid ? 'Invalid Password' : null;
@@ -101,8 +96,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 IntrinsicWidth(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       GradientButton(
                         width: 150,
                         height: 45,
@@ -125,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextButton(
-                            child: Text('Forgot Password?'),
+                            child: const Text('Forgot Password?'),
                             onPressed: () {
                               TravelCrewAlertDialogs()
                                   .resetPasswordDialog(context);
@@ -142,7 +136,7 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: <Widget>[
                           if (UserRepository().appleSignInAvailable)
                             ElevatedButton(
                               onPressed: () {
@@ -176,7 +170,7 @@ class _LoginFormState extends State<LoginForm> {
                               ),
                             ),
                           if (UserRepository().appleSignInAvailable)
-                            SizedBox(
+                            const SizedBox(
                               width: 16,
                             ),
                           ElevatedButton(
@@ -214,11 +208,11 @@ class _LoginFormState extends State<LoginForm> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
-                            children: [
+                            children: <Widget>[
                               Text(Intl.message("Don't have an account?")),
                               TextButton(
                                 child: Text(
-                                  Intl.message("Sign Up"),
+                                  Intl.message('Sign Up'),
                                 ),
                                 onPressed: () {
                                   navigationService
@@ -232,7 +226,7 @@ class _LoginFormState extends State<LoginForm> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
               ]);
@@ -243,7 +237,7 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  void listenerMethod(dynamic state, BuildContext context) {
+  void listenerMethod(LoginState state, BuildContext context) {
     if (state.isFailure) {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -295,13 +289,13 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onEmailChange() {
-    if(isPopulated){
+    if (isPopulated) {
       _loginBloc.add(LoginEmailChange(email: _emailController.text));
     }
   }
 
   void _onPasswordChange() {
-    if(isPopulated){
+    if (isPopulated) {
       _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
     }
   }

@@ -22,13 +22,16 @@ import '../../services/navigation/navigation_service.dart';
 import '../../services/notifications/notifications.dart';
 import 'analytics_service.dart';
 
-var userService = locator<UserService>();
-var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-var navigationService = locator<NavigationService>();
-ValueNotifier<String> urlToImage = ValueNotifier('');
+UserService userService = locator<UserService>();
+UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+NavigationService navigationService = locator<NavigationService>();
+ValueNotifier<String> urlToImage = ValueNotifier<String>('');
 
 ////Database class for all firebase api functions
 class DatabaseService {
+  
+  DatabaseService({this.uid,this.fieldID,this.tripDocID, this.userID,
+    this.itemDocID});
   ////uid parameter
   String? uid;
   ////tripDocID parameter
@@ -39,52 +42,52 @@ class DatabaseService {
   String? userID;
   ////fieldID parameter
   String? fieldID;
-  
-  DatabaseService({this.uid,this.fieldID,this.tripDocID, this.userID,
-    this.itemDocID});
   final AnalyticsService _analyticsService = AnalyticsService();
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
 
   ///  All collection references
 
-  final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
-  final CollectionReference userPublicProfileCollection = FirebaseFirestore.instance.collection("userPublicProfile");
-  final Query allUsersCollection = FirebaseFirestore.instance.collection("userPublicProfile").orderBy('lastname').orderBy('firstname');
-  final Query tripCollection = FirebaseFirestore.instance.collection("trips").orderBy('endDateTimeStamp').where('ispublic', isEqualTo: true);
-  final Query privateTripCollection = FirebaseFirestore.instance.collection("privateTrips").orderBy('endDateTimeStamp');
-  final CollectionReference tripsCollectionUnordered = FirebaseFirestore.instance.collection("trips");
-  final CollectionReference privateTripsCollectionUnordered = FirebaseFirestore.instance.collection("privateTrips");
-  final CollectionReference transportCollection =  FirebaseFirestore.instance.collection("transport");
-  final CollectionReference lodgingCollection =  FirebaseFirestore.instance.collection("lodging");
-  final CollectionReference activitiesCollection =  FirebaseFirestore.instance.collection("activities");
-  final CollectionReference chatCollection =  FirebaseFirestore.instance.collection("chat");
-  final CollectionReference notificationCollection = FirebaseFirestore.instance.collection('notifications');
-  final CollectionReference bringListCollection = FirebaseFirestore.instance.collection('bringList');
-  final CollectionReference needListCollection = FirebaseFirestore.instance.collection('needList');
-  final CollectionReference uniqueCollection = FirebaseFirestore.instance.collection('unique');
-  final CollectionReference feedbackCollection = FirebaseFirestore.instance.collection('feedback');
-  final CollectionReference reportsCollection = FirebaseFirestore.instance.collection('reports');
-  final CollectionReference adsCollection = FirebaseFirestore.instance.collection('tripAds');
-  final CollectionReference dmChatCollection = FirebaseFirestore.instance.collection('dmChat');
-  final CollectionReference suggestionsCollection = FirebaseFirestore.instance.collection('suggestions');
-  final CollectionReference tokensCollection = FirebaseFirestore.instance.collection('tokens');
-  final CollectionReference addReviewCollection = FirebaseFirestore.instance.collection('addReview');
-  final CollectionReference versionCollection = FirebaseFirestore.instance.collection('version');
-  final CollectionReference splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
-  final CollectionReference costDetailsCollection = FirebaseFirestore.instance.collection('costDetails');
-  final CollectionReference settingsCollection = FirebaseFirestore.instance.collection('settings');
+  final CollectionReference<Object?> userCollection = FirebaseFirestore.instance.collection('users');
+  final CollectionReference<Object?> userPublicProfileCollection = FirebaseFirestore.instance.collection('userPublicProfile');
+  final Query<Object?> allUsersCollection = FirebaseFirestore.instance.collection('userPublicProfile').orderBy('lastname').orderBy('firstname');
+  final Query<Object?> tripCollection = FirebaseFirestore.instance.collection('trips').orderBy('endDateTimeStamp').where('ispublic', isEqualTo: true);
+  final Query<Object?> privateTripCollection = FirebaseFirestore.instance.collection('privateTrips').orderBy('endDateTimeStamp');
+  final CollectionReference<Object?> tripsCollectionUnordered = FirebaseFirestore.instance.collection('trips');
+  final CollectionReference<Object?>  privateTripsCollectionUnordered = FirebaseFirestore.instance.collection('privateTrips');
+  final CollectionReference<Object?>  transportCollection =  FirebaseFirestore.instance.collection('transport');
+  final CollectionReference<Object?>  lodgingCollection =  FirebaseFirestore.instance.collection('lodging');
+  final CollectionReference<Object?>  activitiesCollection =  FirebaseFirestore.instance.collection('activities');
+  final CollectionReference<Object?>  chatCollection =  FirebaseFirestore.instance.collection('chat');
+  final CollectionReference<Object?>  notificationCollection = FirebaseFirestore.instance.collection('notifications');
+  final CollectionReference<Object?>  bringListCollection = FirebaseFirestore.instance.collection('bringList');
+  final CollectionReference<Object?>  needListCollection = FirebaseFirestore.instance.collection('needList');
+  final CollectionReference<Object?>  uniqueCollection = FirebaseFirestore.instance.collection('unique');
+  final CollectionReference<Object?>  feedbackCollection = FirebaseFirestore.instance.collection('feedback');
+  final CollectionReference<Object?>  reportsCollection = FirebaseFirestore.instance.collection('reports');
+  final CollectionReference<Object?>  adsCollection = FirebaseFirestore.instance.collection('tripAds');
+  final CollectionReference<Object?>  dmChatCollection = FirebaseFirestore.instance.collection('dmChat');
+  final CollectionReference<Object?>  suggestionsCollection = FirebaseFirestore.instance.collection('suggestions');
+  final CollectionReference<Object?>  tokensCollection = FirebaseFirestore.instance.collection('tokens');
+  final CollectionReference<Object?>  addReviewCollection = FirebaseFirestore.instance.collection('addReview');
+  final CollectionReference<Object?>  versionCollection = FirebaseFirestore.instance.collection('version');
+  final CollectionReference<Object?>  splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
+  final CollectionReference<Object?>  costDetailsCollection = FirebaseFirestore.instance.collection('costDetails');
+  final CollectionReference<Object?>  settingsCollection = FirebaseFirestore.instance.collection('settings');
 
   //// Shows latest app version to display in main menu.
   Future<String> getVersion() async{
     try {
-      ///TODO change version doc for new releases
+      // TODO(Randy): change version doc for new releases
       final DocumentSnapshot<Object?> ref =
       await versionCollection.doc('version3_0_8').get();
-      final Map<String, dynamic> data = ref.data() as Map<String, dynamic>;
-
-
-      return data["version"] ?? '';
+      final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
+      final String version = data['version'] as String;
+      if(version.isNotEmpty){
+        return version;
+      } else {
+        return '';
+      }
     } catch (e) {
       CloudFunction().logError('Error retrieving version:  ${e.toString()}');
       return '';
@@ -93,20 +96,19 @@ class DatabaseService {
 ////Save device token to use in cloud messaging.
   Future<void> saveDeviceToken() async {
     try {
-
       /// Get the token for this device
-      String? fcmToken = await _fcm.getToken();
-      final ref = await tokensCollection.doc(uid).collection('tokens')
+      final String? fcmToken = await _fcm.getToken();
+      final DocumentSnapshot<Map<String, dynamic>> ref = await tokensCollection.doc(uid).collection('tokens')
           .doc(fcmToken).get();
       /// Save it to Firestore
       if (!ref.exists || ref.id != fcmToken) {
         if (fcmToken != null) {
-          final tokens = tokensCollection
+          final DocumentReference<Map<String, dynamic>> tokens = tokensCollection
               .doc(uid)
               .collection('tokens')
               .doc(fcmToken);
 
-          await tokens.set({
+          await tokens.set(<String, dynamic>{
             'token': fcmToken,
             'createdAt': FieldValue.serverTimestamp(), /// optional
             'platform': Platform.operatingSystem /// optional
@@ -121,9 +123,9 @@ class DatabaseService {
 
   ///Checks current users saved Settings for on their device.
   Future<UserNotificationSettingsData> getUserNotificationSettings ()async{
-    final ref = await notificationCollection.doc(userService.currentUserID).get();
+    final DocumentSnapshot<Object?> ref = await notificationCollection.doc(userService.currentUserID).get();
     if(ref.exists){
-      final Map<String, dynamic> settings = ref.data() as Map<String, dynamic>;
+      final Map<String, dynamic> settings = ref.data()! as Map<String, dynamic>;
       return UserNotificationSettingsData.fromData(settings);
     }else{
       final bool status = await SettingsNotifications().permissionStatus();
@@ -139,17 +141,17 @@ class DatabaseService {
   }
 
   void changeDMSettings(bool response){
-    settingsCollection.doc(userService.currentUserID).update({
+    settingsCollection.doc(userService.currentUserID).update(<String, dynamic>{
       'isDirectMessagingOn': response,
     });
   }
   void changeTripNotificationSettings(bool response){
-    settingsCollection.doc(userService.currentUserID).update({
+    settingsCollection.doc(userService.currentUserID).update(<String, dynamic>{
       'isTripChangeOn': response,
     });
   }
   void changeTripChatNotificationSettings(bool response){
-    settingsCollection.doc(userService.currentUserID).update({
+    settingsCollection.doc(userService.currentUserID).update(<String, dynamic>{
       'isTripChatOn': response,
     });
   }
@@ -158,9 +160,9 @@ class DatabaseService {
 
   Future<UserPublicProfile> getUserProfile(String uid) async{
     try{
-      final userData = await userPublicProfileCollection.doc(uid).get();
+      final DocumentSnapshot<Object?> userData = await userPublicProfileCollection.doc(uid).get();
       if(userData.exists) {
-        final Map<String, dynamic> data = userData.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data = userData.data()! as Map<String, dynamic>;
         return UserPublicProfile.fromData(data);
       }
     } catch(e){
@@ -176,7 +178,7 @@ class DatabaseService {
     try {
       const String action = 'Updating User data.';
       CloudFunction().logEvent(action);
-      return await userCollection.doc(uid).set({
+      return await userCollection.doc(uid).set(<String, dynamic>{
         'firstName': firstName,
         'lastName' : lastName,
         'email': email,
@@ -188,14 +190,14 @@ class DatabaseService {
   }
 ///Creates Firestore document files for newly created split item.
   Future<void> createSplitItem(SplitObject splitObject) async{
-    final ref = splitItemCollection.doc(splitObject.tripDocID)
+    final DocumentReference<Map<String, dynamic>> ref = splitItemCollection.doc(splitObject.tripDocID)
         .collection('Item').doc(splitObject.itemDocID);
-    final ref2 = await ref.get();
+    final DocumentSnapshot<Map<String, dynamic>> ref2 = await ref.get();
     if(!ref2.exists) {
       try {
-        splitObject.userSelectedList!.forEach((element) {
+        for (final String element in splitObject.userSelectedList!) {
           createSplitItemCostDetailsPerUser(splitObject, element);
-        });
+        }
         return await ref.set(splitObject.toJson());
 
       } catch (e) {
@@ -203,45 +205,44 @@ class DatabaseService {
       }
     } else {
       try {
-        splitObject.userSelectedList!.forEach((element) {
+        for (final String element in splitObject.userSelectedList!) {
           createSplitItemCostDetailsPerUser(splitObject, element);
-        });
+        }
         return await ref.update(splitObject.toJson());
 
       } catch (e) {
-        print('Error from create split item function: $e');
+        CloudFunction()
+            .logError('Error from create split item function: $e');
       }
     }
   }
 
   //// delete SplitObject
   void deleteSplitObject(SplitObject splitObject){
-    final ref2 = splitItemCollection.doc(splitObject.tripDocID)
+    final DocumentReference<Map<String, dynamic>> ref2 = splitItemCollection.doc(splitObject.tripDocID)
         .collection('Item').doc(splitObject.itemDocID);
     try {
       try {
-        splitObject.userSelectedList!.forEach((element) {
+        for (final String element in splitObject.userSelectedList!) {
           costDetailsCollection.doc(splitObject.itemDocID)
               .collection('Users')
               .doc(element).delete();
-        });
+        }
       } catch (e) {
         CloudFunction()
             .logError('Error deleting user cost details documents: '
             '${e.toString()}');
       }
       ref2.delete();
-
-
     } catch (e) {
-      print('Error marking cost data as paid: $e');
+      CloudFunction()
+          .logError('Error marking cost data as paid: $e');
     }
-    /// }
   }
 
   //// Check Split Item exists
   Future<bool> checkSplitItemExist(String itemDocID) async{
-    final ref = await splitItemCollection.doc(tripDocID)
+    final DocumentSnapshot<Map<String, dynamic>> ref = await splitItemCollection.doc(tripDocID)
         .collection('Item').doc(itemDocID).get();
     if(ref.exists) {
       return true;
@@ -250,10 +251,10 @@ class DatabaseService {
     }
   }
   //// Stream in split item
-  List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot snapshot) {
+  List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot<Object?> snapshot) {
     try {
-      final List<SplitObject> splitItemData =  snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      final List<SplitObject> splitItemData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
         return SplitObject.fromData(data);
       }).toList();
 
@@ -273,18 +274,23 @@ class DatabaseService {
   //// Create split item cost details
   Future<void> createSplitItemCostDetailsPerUser(
       SplitObject splitObject, String userUID) async{
-
-    final costObject = CostObject(
+    late bool paid; 
+    if (userUID == splitObject.purchasedByUID){
+      paid = true;
+    } else {
+      paid = false;
+    }
+    final CostObject costObject = CostObject(
         tripDocID: splitObject.tripDocID,
         itemDocID: splitObject.itemDocID,
         lastUpdated: Timestamp.now(),
-        paid: (userUID == splitObject.purchasedByUID) ? true : false,
+        paid: paid,
         uid: userUID,
         amountOwe: SplitPackage()
             .standardSplit(splitObject
             .userSelectedList!.length, splitObject.itemTotal!));
 
-    final ref = costDetailsCollection
+    final DocumentReference<Map<String, dynamic>> ref = costDetailsCollection
         .doc(costObject.itemDocID)
         .collection('Users')
         .doc(costObject.uid);
@@ -298,37 +304,22 @@ class DatabaseService {
     /// }
   }
 
-  //// Edit Cost Details
-  /// Future editCostDetailsPerUser() async{
-  ///
-  ///
-  ///   var ref = costDetailsCollection.doc(costObject.itemDocID).collection('Users').doc(costObject.uid);
-  ///   /// var ref2 = await ref.get();
-  ///   /// if(!ref2.exists) {
-  ///   try {
-  ///     return ref.update(costObject.toJson());
-  ///   } catch (e) {
-  ///     print('Error editing cost details function: $e');
-  ///   }
-  ///   /// }
-  /// }
-
   //// Mark as paid
    void markAsPaid(CostObject costObject, SplitObject splitObject){
-    final ref = costDetailsCollection
+    final DocumentReference<Map<String, dynamic>> ref = costDetailsCollection
         .doc(costObject.itemDocID)
         .collection('Users')
         .doc(costObject.uid);
-    final ref2 = splitItemCollection.doc(splitObject.tripDocID)
+    final DocumentReference<Map<String, dynamic>> ref2 = splitItemCollection.doc(splitObject.tripDocID)
         .collection('Item').doc(splitObject.itemDocID);
 
       try {
-         ref.update({
+         ref.update(<String, dynamic>{
           'paid': costObject.paid,
           'datePaid': FieldValue.serverTimestamp(),
         }
         );
-         ref2.update({
+         ref2.update(<String, dynamic>{
           'lastUpdated':FieldValue.serverTimestamp(),
         });
       } catch (e) {
@@ -339,10 +330,10 @@ class DatabaseService {
   //// Update remaining balance
   void updateRemainingBalance(
       SplitObject splitObject, double amountRemaining, List<String> uidList){
-    final ref = splitItemCollection.doc(splitObject.tripDocID)
+    final DocumentReference<Map<String, dynamic>> ref = splitItemCollection.doc(splitObject.tripDocID)
         .collection('Item').doc(splitObject.itemDocID);
     try {
-      ref.update({
+      ref.update(<String, dynamic>{
         'amountRemaining': amountRemaining,
         'lastUpdated': FieldValue.serverTimestamp(),
         'userSelectedList': uidList,
@@ -355,19 +346,19 @@ class DatabaseService {
   }
   //// deleteCostObject and recreate the split object with remaining members
   void deleteCostObject(CostObject costObject, SplitObject splitObject){
-    final ref = costDetailsCollection
+    final DocumentReference<Map<String, dynamic>> ref = costDetailsCollection
         .doc(costObject.itemDocID)
         .collection('Users')
         .doc(costObject.uid);
-    final ref2 = splitItemCollection
+    final DocumentReference<Map<String, dynamic>> ref2 = splitItemCollection
         .doc(splitObject.tripDocID)
         .collection('Item')
         .doc(splitObject.itemDocID);
     try {
        splitObject.userSelectedList!.remove(costObject.uid);
        ref.delete();
-       ref2.update({
-         'userSelectedList':FieldValue.arrayRemove([costObject.uid])
+       ref2.update(<String, dynamic>{
+         'userSelectedList':FieldValue.arrayRemove(<String?>[costObject.uid])
        });
        createSplitItem(splitObject);
 
@@ -379,8 +370,8 @@ class DatabaseService {
 //// Stream in Cost Details
   List<CostObject> _costObjectDataFromSnapshot(QuerySnapshot snapshot) {
     try {
-      final List<CostObject> costObjectData =  snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      final List<CostObject> costObjectData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
         return CostObject.fromData(data);
       }).toList();
 
@@ -402,8 +393,8 @@ class DatabaseService {
   ////Checks whether user has a Public Profile on Firestore to know whether to
   //// send user to complete profile page or not.
   Future<bool> checkUserHasProfile() async {
-    final ref = userCollection.doc(uid);
-    final refSnapshot = await ref.get();
+    final DocumentReference<Object?> ref = userCollection.doc(uid);
+    final DocumentSnapshot<Object?> refSnapshot = await ref.get();
     if (refSnapshot.exists){
       saveDeviceToken();
     }
@@ -414,11 +405,11 @@ class DatabaseService {
 
     ////Retrieve profile image
     Future<void> retrieveProfileImage() async{
-      final ref2 = userPublicProfileCollection.doc(uid);
-      final refSnapshot2 = await ref2.get();
+      final DocumentReference<Object?> ref2 = userPublicProfileCollection.doc(uid);
+      final DocumentSnapshot<Object?> refSnapshot2 = await ref2.get();
 
       if (refSnapshot2.exists) {
-        final Map<String, dynamic> data = refSnapshot2.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data = refSnapshot2.data()! as Map<String, dynamic>;
         urlToImage.value = UserPublicProfile.fromData(data).urlToImage ?? '';
       }
     }
@@ -428,16 +419,16 @@ class DatabaseService {
       String? displayName, String? firstName, String? lastName,
       String? email, String? uid,
       File? urlToImage) async {
-    final ref = userPublicProfileCollection.doc(uid);
+    final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
      try {
        const String action = 'Updating public profile after sign up';
        CloudFunction().logEvent(action);
-       await ref.set({
-        'blockedList': [],
+       await ref.set(<String, dynamic>{
+        'blockedList': <String>[],
         'displayName': displayName,
         'email': email,
-         'followers': [],
-         'following': [],
+         'followers': <String>[],
+         'following': <String>[],
         'firstName': firstName,
         'lastName' : lastName,
         'uid': uid,
@@ -445,7 +436,7 @@ class DatabaseService {
         'hometown':  '',
         'instagramLink':  '',
         'facebookLink':  '',
-        'topDestinations': ['','',''],
+        'topDestinations': <String>['','',''],
            });
      } catch (e) {
        _analyticsService
@@ -462,18 +453,15 @@ class DatabaseService {
          final Reference storageReference = FirebaseStorage.instance
              .ref()
              .child('users/$uid');
-         final UploadTask uploadTask = storageReference.putFile(urlToImage!);
-         await uploadTask.whenComplete(() => print('File Uploaded'));
-
+         final UploadTask uploadTask = storageReference.putFile(urlToImage);
          
-         return await ref.update({
-           'urlToImage': await storageReference.getDownloadURL().then((fileURL) {
+         return await ref.update(<String, dynamic>{
+           'urlToImage': await storageReference.getDownloadURL().then((String fileURL) {
              urlForImage = fileURL;
              return urlForImage;
            })
          });
        } catch (e) {
-        print('Error updating with image url: ${e.toString()}');
         _analyticsService
             .writeError('Error updating public profile with image url: '
             '${e.toString()}');
@@ -487,12 +475,12 @@ class DatabaseService {
   //// Edit Public Profile page
   Future<void> editPublicProfileData(
       UserPublicProfile userProfile, File urlToImage) async {
-    final ref = userPublicProfileCollection.doc(uid);
+    final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
     try {
       const String action = 'Editing Public Profile page';
       CloudFunction().logEvent(action);
       await ref.update(
-      {
+      <String, dynamic>{
         'displayName': userProfile.displayName,
     'firstName': userProfile.firstName,
     'lastName' : userProfile.lastName,
@@ -502,7 +490,7 @@ class DatabaseService {
     'topDestinations': userProfile.topDestinations,
     });
     } catch (e) {
-      print('Error editing Public Profile: ${e.toString()}');
+      
       _analyticsService
           .writeError('Error editing Public Profile: ${e.toString()}');
       CloudFunction()
@@ -519,16 +507,16 @@ class DatabaseService {
             .ref()
             .child('users/$uid');
         final UploadTask uploadTask = storageReference.putFile(urlToImage);
-        await uploadTask.whenComplete(() => print('File Uploaded'));
+        
 
-        return await ref.update({
-          'urlToImage': await storageReference.getDownloadURL().then((fileURL) {
+        return await ref.update(<String, dynamic>{
+          'urlToImage': await storageReference.getDownloadURL().then((String fileURL) {
             urlForImage = fileURL;
             return urlForImage;
           })
         });
       } catch (e) {
-        print('Error updating with image url: ${e.toString()}');
+        
         _analyticsService
             .writeError('Error editing Public Profile with image url: '
             '${e.toString()}');
@@ -546,15 +534,15 @@ class DatabaseService {
   Future<void> addNewTripData(Trip trip, File? urlToImage)
   async {
 
-    final key = tripsCollectionUnordered.doc().id;
+    final String key = tripsCollectionUnordered.doc().id;
     if (trip.ispublic) {
-      final addTripRef =  tripsCollectionUnordered.doc(key);
+      final DocumentReference<Object?> addTripRef =  tripsCollectionUnordered.doc(key);
       try {
         const String action = 'Adding new trip';
         CloudFunction().logEvent(action);
          addTripRef.set(
             {
-              'favorite': [],
+              'favorite': <String>[],
               'accessUsers': [userService.currentUserID],
               'comment': trip.comment,
               'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
@@ -583,7 +571,7 @@ class DatabaseService {
       try {
         const String action = 'Saving member data to new Trip';
         CloudFunction().logEvent(action);
-         addTripRef.collection('Members').doc(userService.currentUserID).set({
+         addTripRef.collection('Members').doc(userService.currentUserID).set(<String, dynamic>{
            'displayName' : currentUserProfile.displayName,
            'firstName': currentUserProfile.firstName,
            'lastname' : currentUserProfile.lastName,
@@ -596,12 +584,12 @@ class DatabaseService {
       }
 
     } else {
-      final addTripRef = privateTripsCollectionUnordered.doc(key);
+      final DocumentReference<Object?> addTripRef = privateTripsCollectionUnordered.doc(key);
       try {
         const String action = 'Saving new private Trip';
         CloudFunction().logEvent(action);
-         addTripRef.set({
-          'favorite': [],
+         addTripRef.set(<String, dynamic>{
+          'favorite': <String>[],
           'accessUsers': trip.accessUsers,
           'comment': trip.comment,
            'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
@@ -630,7 +618,7 @@ class DatabaseService {
       try {
         const String action = 'Saving member data to new private Trip';
         CloudFunction().logEvent(action);
-        addTripRef.collection('Members').doc(userService.currentUserID).set({
+        addTripRef.collection('Members').doc(userService.currentUserID).set(<String, dynamic>{
           'displayName' : currentUserProfile.displayName,
           'firstName': currentUserProfile.firstName,
           'lastName' : currentUserProfile.lastName,
@@ -649,15 +637,15 @@ class DatabaseService {
       CloudFunction().logEvent(action);
       await userCollection
           .doc(userService.currentUserID)
-          .update({
-            'trips': FieldValue.arrayUnion([key])
+          .update(<String, dynamic>{
+            'trips': FieldValue.arrayUnion(<String>[key])
           });
     }catch (e) {
       CloudFunction()
           .logError('Error adding user to access users (Public Trip):  '
           '${e.toString()}');
     }
-///     await addTripRef.update({"documentId": addTripRef.id});
+///     await addTripRef.update(<String, dynamic>{"documentId": addTripRef.id});
 
     if (urlToImage != null) {
       if(trip.ispublic) {
@@ -669,11 +657,10 @@ class DatabaseService {
               .ref()
               .child('trips/$key');
           final UploadTask uploadTask = storageReference.putFile(urlToImage);
-          await uploadTask.whenComplete(() => print('File Uploaded'));
 
-          return await tripsCollectionUnordered.doc(key).update({
-            "urlToImage": await storageReference.getDownloadURL().then((
-                fileURL) {
+          return await tripsCollectionUnordered.doc(key).update(<String, dynamic>{
+            'urlToImage': await storageReference.getDownloadURL().then((
+                String fileURL) {
               urlForImage = fileURL;
               return urlForImage;
             })
@@ -691,11 +678,11 @@ class DatabaseService {
               .ref()
               .child('trips/$key');
           final UploadTask uploadTask = storageReference.putFile(urlToImage);
-          await uploadTask.whenComplete(() => print('File Uploaded'));
+          
 
-          return await privateTripsCollectionUnordered.doc(key).update({
-            "urlToImage": await storageReference.getDownloadURL().then((
-                fileURL) {
+          return await privateTripsCollectionUnordered.doc(key).update(<String, dynamic>{
+            'urlToImage': await storageReference.getDownloadURL().then((
+                String fileURL) {
               urlForImage = fileURL;
               return urlForImage;
             })
@@ -708,7 +695,7 @@ class DatabaseService {
     }
   }
   /// Convert trip (private or public)
-  Future convertTrip(Trip trip)
+  Future<void> convertTrip(Trip trip)
   async {
     if (!trip.ispublic) {
       try {
@@ -743,9 +730,9 @@ class DatabaseService {
           CloudFunction().logError('Error deleting private trip after '
               'converting to public trip:  ${e.toString()}');
         }
-        trip.accessUsers!.forEach((member) {
+        for (final String member in trip.accessUsers!) {
           CloudFunction().addMember(trip.documentId!, member);
-        });
+        }
       } catch (e) {
         CloudFunction()
             .logError('Error converting to public trip: ''${e.toString()}');
@@ -757,7 +744,7 @@ class DatabaseService {
         const String action = 'Converting trip from public to private';
         CloudFunction().logEvent(action);
         await privateTripsCollectionUnordered.doc(trip.documentId)
-            .set({
+            .set(<String, dynamic>{
           'favorite': trip.favorite,
           'accessUsers': trip.accessUsers,
           'comment': trip.comment,
@@ -783,9 +770,9 @@ class DatabaseService {
         } catch (e){
           CloudFunction().logError('Deleting public trip after converting it to private: ${e.toString()}');
         }
-        trip.accessUsers!.forEach((member) {
+        for (final String member in trip.accessUsers!) {
           CloudFunction().addPrivateMember(trip.documentId!, member);
-        });
+        }
       }
       catch (e) {
         _analyticsService.writeError('Error converting to private trip:  ${e.toString()}');
@@ -796,7 +783,7 @@ class DatabaseService {
 
 
 /// Edit Trip
-  Future editTripData(
+  Future<void> editTripData(
       String comment,
       String documentID,
       String endDate,
@@ -810,23 +797,23 @@ class DatabaseService {
       String tripName,
       GeoPoint? tripGeoPoint)
   async {
-    final addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
+    final DocumentReference<Object?> addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
 
 
     try {
       const String action = 'Editing Trip';
       CloudFunction().logEvent(action);
-      await addTripRef.update({
-        "comment": comment,
-        "endDate": endDate,
-        "endDateTimeStamp": endDateTimeStamp,
-        "ispublic": ispublic,
-        "location": location,
-        "startDate": startDate,
+      await addTripRef.update(<String, dynamic>{
+        'comment': comment,
+        'endDate': endDate,
+        'endDateTimeStamp': endDateTimeStamp,
+        'ispublic': ispublic,
+        'location': location,
+        'startDate': startDate,
         'startDateTimeStamp': startDateTimeStamp,
         'tripName': tripName,
         'tripGeoPoint': tripGeoPoint,
-        "travelType": travelType,
+        'travelType': travelType,
       });
     } catch (e) {
       CloudFunction().logError('Error editing public trip:  ${e.toString()}');
@@ -840,10 +827,9 @@ class DatabaseService {
             .ref()
             .child('trips/${addTripRef.id}');
         final UploadTask uploadTask = storageReference.putFile(urlToImage);
-        await uploadTask.whenComplete(() => print('File Uploaded'));
 
-        return await addTripRef.update({
-          "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
+        return await addTripRef.update(<String, dynamic>{
+          'urlToImage': await storageReference.getDownloadURL().then((String fileURL) {
             urlForImage = fileURL;
             return urlForImage;
           })
@@ -856,11 +842,11 @@ class DatabaseService {
 
   ////Retrieve current user's following list
   Future<UserPublicProfile> followingList() async{
-    final ref = await userPublicProfileCollection.doc(userService.currentUserID).get();
+    final DocumentSnapshot<Object?> ref = await userPublicProfileCollection.doc(userService.currentUserID).get();
     if(ref.exists){
-      final Map<String, dynamic> data = ref.data() as Map<String, dynamic>;
+      final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
       return UserPublicProfile(
-        following: List<String>.from(data['following']),
+        following: List<String>.from(data['following'] as List<String>),
       );
     } else {
       return UserPublicProfile();
@@ -868,10 +854,10 @@ class DatabaseService {
   }
   /// Get following list
   Stream<List<UserPublicProfile>> retrieveFollowingList() async*{
-      final user = await usersList();
-      final followingRef = await followingList();
-    final ref =
-          user.where((user) => followingRef
+      final List<UserPublicProfile> user = await usersList();
+      final UserPublicProfile followingRef = await followingList();
+    final List<UserPublicProfile> ref =
+          user.where((UserPublicProfile user) => followingRef
               .following
               !.contains(user.uid))
               .toList();
@@ -883,12 +869,12 @@ class DatabaseService {
   Stream<List<UserPublicProfile>> retrieveFollowList(
       UserPublicProfile currentUser) async*{
     try {
-      final user = await usersList();
+      final List<UserPublicProfile> user = await usersList();
       final List<String> followList =
-      List.from(currentUser.following!)
+      List<String>.from(currentUser.following!)
         ..addAll(currentUser.followers!);
       final List<UserPublicProfile> newList =
-      user.where((user) => followList.contains(user.uid)).toList();
+      user.where((UserPublicProfile user) => followList.contains(user.uid)).toList();
       yield newList;
     } catch(e){
       CloudFunction().logError('Error retrieving follow list:  ${e.toString()}');
@@ -899,8 +885,8 @@ class DatabaseService {
   ////Retrieve bringing list
   List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
     
-          return snapshot.docs.map((doc) {
-            final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+            final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
               return Bringing.fromData(data);
                 }).toList();
   }
@@ -915,10 +901,10 @@ class DatabaseService {
         .snapshots().map(_retrieveBringingItems);
   }
 
-  List<Need> _retrieveNeedItems(QuerySnapshot snapshot) {
+  List<Need> _retrieveNeedItems(QuerySnapshot<Object?> snapshot) {
     try {
-      return snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
         return Need.fromData(data);
       }).toList();
     } catch (e) {
@@ -937,13 +923,13 @@ class DatabaseService {
       try {
         const String action = 'Get all members from Trip';
         CloudFunction().logEvent(action);
-        final ref = await tripsCollectionUnordered.doc(docID).collection(
+        final QuerySnapshot<Object?> ref = await tripsCollectionUnordered.doc(docID).collection(
             'Members').get();
-        final List<Members> memberList = ref.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data();
+        final List<Members> memberList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
           return Members.fromData(data);
         }).toList();
-        memberList.sort((a, b) => a.lastName!.compareTo(b.lastName!));
+        memberList.sort((Members a, Members b) => a.lastName!.compareTo(b.lastName!));
         return memberList;
       } catch (e) {
         CloudFunction()
@@ -955,14 +941,14 @@ class DatabaseService {
       try {
         const String action = 'Get all members from private trip';
         CloudFunction().logEvent(action);
-        final ref = await privateTripsCollectionUnordered.doc(docID).collection(
+        final QuerySnapshot<Object?> ref = await privateTripsCollectionUnordered.doc(docID).collection(
             'Members').get();
 
-          final List<Members> memberList = ref.docs.map((doc) {
-            final Map<String, dynamic> data = doc.data();
+          final List<Members> memberList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
+            final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
             return Members.fromData(data);
           }).toList();
-          memberList.sort((a, b) => a.lastName!.compareTo(b.lastName!));
+          memberList.sort((Members a, Members b) => a.lastName!.compareTo(b.lastName!));
           return memberList;
         } catch (e) {
         CloudFunction()
@@ -975,9 +961,9 @@ class DatabaseService {
 
   }
   //// Get Trip Stream
-  Trip _tripFromSnapshot(DocumentSnapshot snapshot) {
+  Trip _tripFromSnapshot(DocumentSnapshot<Object?> snapshot) {
     try {
-        final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data = snapshot.data()! as Map<String, dynamic>;
         return Trip.fromData(data);
     } catch (e) {
       CloudFunction()
@@ -992,15 +978,15 @@ class DatabaseService {
 
   Future<List<Bringing>> getItems() async {
 
-    final ref = await bringListCollection
+    final QuerySnapshot<Object?> ref = await bringListCollection
         .doc(tripDocID)
         .collection('Items')
         .get();
     try {
       const String action = 'Get bringing items by document ID';
       CloudFunction().logEvent(action);
-        final List<Bringing> items = ref.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data();
+        final List<Bringing> items = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
           return Bringing.fromData(data);
         }).toList();
       return items;
@@ -1015,12 +1001,12 @@ class DatabaseService {
 
   /// Get Trip
   Future<Trip> getTrip(String documentID) async {
-    final ref = await tripsCollectionUnordered.doc(documentID).get();
+    final DocumentSnapshot<Object?> ref = await tripsCollectionUnordered.doc(documentID).get();
     try {
       const String action = 'Get single trip by document ID';
       CloudFunction().logEvent(action);
       if (ref.exists){
-          final Map<String, dynamic> data = ref.data() as Map<String, dynamic>;
+          final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
           return Trip.fromData(data);
       } else {
         return Trip(ispublic: false);
@@ -1034,12 +1020,12 @@ class DatabaseService {
   /// Get Private Trip
   Future<Trip> getPrivateTrip(String documentID) async {
 
-    final ref = await privateTripsCollectionUnordered.doc(documentID).get();
+    final DocumentSnapshot<Object?> ref = await privateTripsCollectionUnordered.doc(documentID).get();
     try {
       const String action = 'Get single private trip by document ID';
       CloudFunction().logEvent(action);
       if (ref.exists){
-        final Map<String, dynamic> data = ref.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
         return Trip.fromData(data);
       } else {
         return Trip(ispublic: false);
@@ -1054,19 +1040,19 @@ class DatabaseService {
   
 
   //// Add new lodging
-  Future addNewLodgingData(String documentID, LodgingData lodging) async {
+  Future<void> addNewLodgingData(String documentID, LodgingData lodging) async {
 
-    final key = lodgingCollection.doc().id;
+    final String key = lodgingCollection.doc().id;
 
     try {
-      String action = 'Add new lodging for $documentID';
+      final String action = 'Add new lodging for $documentID';
       CloudFunction().logEvent(action);
-      final addNewLodgingRef = lodgingCollection
+      final DocumentReference<Map<String, dynamic>> addNewLodgingRef = lodgingCollection
           .doc(documentID)
           .collection('lodging')
           .doc(key);
       addNewLodgingRef.set(lodging.toJson());
-      addNewLodgingRef.update({
+      addNewLodgingRef.update(<String, dynamic>{
         'fieldID': key,
       });
     } catch (e) {
@@ -1075,7 +1061,7 @@ class DatabaseService {
   }
 
   //// Edit Lodging
-  Future editLodgingData(
+  Future<void> editLodgingData(
       {String? comment,
       required String documentID,
       String? link,
@@ -1087,13 +1073,13 @@ class DatabaseService {
       String? startTime,
       String? endTime}) async {
 
-    final editLodgingRef = lodgingCollection
+    final DocumentReference<Map<String, dynamic>> editLodgingRef = lodgingCollection
         .doc(documentID)
         .collection('lodging')
         .doc(fieldID);
 
     try {
-      String action = 'Editing lodging for $documentID';
+      final String action = 'Editing lodging for $documentID';
       CloudFunction().logEvent(action);
       editLodgingRef.update(
           {'comment': comment,
@@ -1116,19 +1102,19 @@ class DatabaseService {
   //// Add new activity
   Future<void> addNewActivityData(
       ActivityData activityData, String documentID) async {
-    final key = activitiesCollection.doc().id;
+    final String key = activitiesCollection.doc().id;
 
-    final addNewActivityRef = activitiesCollection
+    final DocumentReference<Map<String, dynamic>> addNewActivityRef = activitiesCollection
         .doc(documentID)
         .collection('activity')
         .doc(key);
 
 
     try {
-      String action = 'Add new activity for $documentID';
+      final String action = 'Add new activity for $documentID';
       CloudFunction().logEvent(action);
       addNewActivityRef.set(activityData.toJson());
-      addNewActivityRef.update({
+      addNewActivityRef.update(<String, dynamic>{
         'fieldID': key,
         'dateTimestamp': FieldValue.serverTimestamp(),
       });
@@ -1156,13 +1142,13 @@ class DatabaseService {
       String? startTime,
       String? endTime}) async {
 
-    final addNewActivityRef = activitiesCollection
+    final DocumentReference<Map<String, dynamic>> addNewActivityRef = activitiesCollection
         .doc(documentID)
         .collection('activity')
         .doc(fieldID);
 
     try {
-      String action = 'Editing activity for $documentID';
+      final String action = 'Editing activity for $documentID';
       CloudFunction().logEvent(action);
       addNewActivityRef.update(
       {'comment': comment,
@@ -1184,10 +1170,10 @@ class DatabaseService {
   }
 
   ////Get Lodging item
-  LodgingData _lodgingFromSnapshot(DocumentSnapshot snapshot){
+  LodgingData _lodgingFromSnapshot(DocumentSnapshot<Object?> snapshot){
     if(snapshot.exists){
       try {
-          final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+          final Map<String, dynamic> data = snapshot.data()! as Map<String, dynamic>;
           return LodgingData.fromData(data);
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
@@ -1204,10 +1190,10 @@ class DatabaseService {
   }
 
   ///Get Activity item
-  ActivityData _activityFromSnapshot(DocumentSnapshot snapshot){
+  ActivityData _activityFromSnapshot(DocumentSnapshot<Object?> snapshot){
     if(snapshot.exists){
       try {
-        final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data = snapshot.data()! as Map<String, dynamic>;
         return ActivityData.fromData(data);
       } catch (e) {
         CloudFunction().logError('Error retrieving single activity:  ${e.toString()}');
@@ -1225,12 +1211,12 @@ class DatabaseService {
   ///Get all users Future Builder
   Future<List<UserPublicProfile>> usersList() async {
     try {
-      final ref = await userPublicProfileCollection.get();
-      final List<UserPublicProfile> userList = ref.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      final QuerySnapshot<Object?> ref = await userPublicProfileCollection.get();
+      final List<UserPublicProfile> userList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
         return UserPublicProfile.fromData(data);
       }).toList();
-      userList.sort((a,b) => a.displayName!.compareTo(b.displayName!));
+      userList.sort((UserPublicProfile a,UserPublicProfile b) => a.displayName!.compareTo(b.displayName!));
       return userList;
     } catch (e) {
       CloudFunction().logError('Error retrieving all users: ${e.toString()}');
@@ -1240,9 +1226,9 @@ class DatabaseService {
 
 
   /// Get current user public profile
-  UserPublicProfile _userPublicProfileSnapshot(DocumentSnapshot snapshot){
+  UserPublicProfile _userPublicProfileSnapshot(DocumentSnapshot<Object?> snapshot){
     try {
-      final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      final Map<String, dynamic> data = snapshot.data()! as Map<String, dynamic>;
         return UserPublicProfile.fromData(data);
     } catch (e) {
       CloudFunction().logError('Error retrieving specific user public profile:  ${e.toString()}');
@@ -1263,16 +1249,16 @@ class DatabaseService {
   }
 
   ///Query for past My Crew Trips
-  List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot snapshot){
+  List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot<Object?> snapshot){
 
     try {
-      final now = DateTime.now().toUtc();
-      final past = DateTime(now.year, now.month, now.day - 1);
-      final List<Trip> trips = snapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      final DateTime now = DateTime.now().toUtc();
+      final DateTime past = DateTime(now.year, now.month, now.day - 1);
+      final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
         return Trip.fromData(data);
       }).toList();
-      final List<Trip> crewTrips = trips.where((trip) =>
+      final List<Trip> crewTrips = trips.where((Trip trip) =>
           trip.endDateTimeStamp!.toDate().compareTo(past) == -1)
           .toList().reversed.toList();
       return crewTrips;
@@ -1293,16 +1279,16 @@ class DatabaseService {
     try {
       const String action = 'creating unique key';
       CloudFunction().logEvent(action);
-      uniqueCollection.doc(key2).set({
+      uniqueCollection.doc(key2).set(<String, dynamic>{
       });
     } catch(e){
-      print(e.toString());
+      CloudFunction().logError('Error creating unique ID: ${e.toString()}');
     }
   }
 
   /// Add new chat message
-  Future addNewChatMessage(String displayName, String message, String uid, Map status) async {
-    final key = chatCollection.doc().id;
+  Future<void> addNewChatMessage(String displayName, String message, String uid, Map<String,bool> status) async {
+    final String key = chatCollection.doc().id;
 
     try {
       return await chatCollection.doc(tripDocID).collection('messages').doc(key).set(
@@ -1330,7 +1316,7 @@ class DatabaseService {
     ///     await uploadTask.onComplete;
     ///     print('File Uploaded');
     ///
-    ///     return await addNewActivityRef.update({
+    ///     return await addNewActivityRef.update(<String, dynamic>{
     ///       "urlToImage": await storageReference.getDownloadURL().then((fileURL) {
     ///         urlForImage = fileURL;
     ///         return urlForImage;
@@ -1343,12 +1329,12 @@ class DatabaseService {
   }
 
 /// Clear chat notifications.
-  Future clearChatNotifications() async {
+  Future<void> clearChatNotifications() async {
     try {
-      final db = chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false);
-      final QuerySnapshot snapshot = await db.get();
-      for(var i =0; i< snapshot.docs.length;i++) {
-        chatCollection.doc(tripDocID).collection('messages').doc(snapshot.docs[i].id).update({'status.$uid': true});
+      final Query<Map<String, dynamic>> db = chatCollection.doc(tripDocID).collection('messages').where('status.$uid' ,isEqualTo: false);
+      final QuerySnapshot<Object?> snapshot = await db.get();
+      for(int i =0; i< snapshot.docs.length;i++) {
+        chatCollection.doc(tripDocID).collection('messages').doc(snapshot.docs[i].id).update(<String, dynamic>{'status.$uid': true});
       }
     } catch (e) {
       CloudFunction().logError('Error clearing chat notifications:  ${e.toString()}');
@@ -1356,11 +1342,11 @@ class DatabaseService {
   }
 
   /// Get all chat messages
-  List<ChatData> _chatListFromSnapshot(QuerySnapshot snapshot){
+  List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object?> snapshot){
 
     try {
-      return snapshot.docs.map((doc){
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
+        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
         return ChatData.fromData(data);
       }).toList();
     } catch (e) {
@@ -1378,18 +1364,18 @@ class DatabaseService {
   }
 
 /// Feedback Data stream snapshot
-  List<TCFeedback> _feedbackSnapshot (QuerySnapshot snapshot) {
+  List<TCFeedback> _feedbackSnapshot (QuerySnapshot<Object?> snapshot) {
 
-    final List<TCFeedback> feedback = snapshot.docs.map((doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final List<TCFeedback> feedback = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
           return TCFeedback(
-            fieldID: data['fieldID'] ?? '',
-            message: data['message'] ?? '',
-            uid: data['uid'] ?? '',
-            timestamp: data['timestamp'] ?? null,
+            fieldID: data['fieldID'] as String,
+            message: data['message'] as String,
+            uid: data['uid'] as String,
+            timestamp: data['timestamp'] as Timestamp,
           );
         }).toList();
-      feedback.sort((a,b) => b.timestamp!.compareTo(a.timestamp!));
+      feedback.sort((TCFeedback a,TCFeedback b) => b.timestamp!.compareTo(a.timestamp!));
 
       return feedback;
 
@@ -1406,7 +1392,7 @@ class DatabaseService {
   ///   try {
   ///     var ref = await reportsCollection.get();
   ///     List<TCFeedback> feedback = ref.docs.map((doc) {
-  ///       Map<String, dynamic> data = doc.data();
+  ///       Map<String, dynamic> data = doc.data()!;
   ///       return TCFeedback(
   ///         message: data['message'] ?? '',
   ///         uid: data['uid'] ?? '',
@@ -1422,34 +1408,34 @@ class DatabaseService {
   /// }
 
 
-  Future createAd() async {
-    final key = adsCollection.doc().id;
-    return await adsCollection.doc(key).set({
+  Future<void> createAd() async {
+    final String key = adsCollection.doc().id;
+    return adsCollection.doc(key).set(<String, dynamic>{
       'tripName': 'Cathedral Rock',
       'documentID' : key,
       'location': 'Sedona, Arizona',
       'dateCreated': FieldValue.serverTimestamp(),
       'clicks' : 0,
-      'favorites': [],
-      'clickers': [],
+      'favorites': <String>[],
+      'clickers': <String>[],
       'urlToImage': 'https:///www.tripstodiscover.com/wp-content/uploads/2016/10/bigstock-Cathedral-Rock-in-Sedona-Ariz-92403158-3-1.jpg',
     });
   }
 
   /// Add new direct message
-  Future addNewDMChatMessage(String displayName, String message, String uid, Map status) async {
-    final key = chatCollection.doc().id;
+  Future<void> addNewDMChatMessage(String displayName, String message, String uid, Map status) async {
+    final String key = chatCollection.doc().id;
 
-    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
+    final String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
 
-    final ref = await dmChatCollection.doc(chatID).get();
+    final DocumentSnapshot<Object?> ref = await dmChatCollection.doc(chatID).get();
     if(!ref.exists) {
-      await dmChatCollection.doc(chatID).set({
+      await dmChatCollection.doc(chatID).set(<String, dynamic>{
         'ids': [userID, userService.currentUserID],
         'lastUpdatedTimestamp': FieldValue.serverTimestamp(),
       });
     } else{
-      await dmChatCollection.doc(chatID).update({
+      await dmChatCollection.doc(chatID).update(<String, dynamic>{
         'lastUpdatedTimestamp': FieldValue.serverTimestamp(),
       });
     }
@@ -1470,7 +1456,7 @@ class DatabaseService {
     }
   }
   /// Delete a chat message
-  Future deleteDMChatMessage({required ChatData message}) async {
+  Future<void> deleteDMChatMessage({required ChatData message}) async {
     /// String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID);
     try {
       return await dmChatCollection.doc(message.chatID).collection('messages').doc(message.fieldID).delete();
@@ -1481,14 +1467,14 @@ class DatabaseService {
   }
 
   /// Clear DM chat notifications.
-  Future clearDMChatNotifications() async {
+  Future<void> clearDMChatNotifications() async {
     try {
-      String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
-      final db = dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false);
-      final QuerySnapshot snapshot = await db.get();
-      snapshot.docs.forEach((doc) {
-        dmChatCollection.doc(chatID).collection('messages').doc(doc.id).update({'status.${userService.currentUserID}': true});
-      });
+      final String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
+      final Query<Map<String, dynamic>> db = dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false);
+      final QuerySnapshot<Object?> snapshot = await db.get();
+      for (final QueryDocumentSnapshot<Object?> doc in snapshot.docs) {
+        dmChatCollection.doc(chatID).collection('messages').doc(doc.id).update(<String, dynamic>{'status.${userService.currentUserID}': true});
+      }
     } catch (e) {
       CloudFunction().logError('Error clearing dm chat notifications:  ${e.toString()}');
     }
@@ -1497,7 +1483,7 @@ class DatabaseService {
   /// Get all direct message chat messages
   Stream<List<ChatData>>? get dmChatList {
     try {
-      String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
+      final String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
       return dmChatCollection.doc(chatID).collection('messages')
           .orderBy('timestamp', descending: true)
           .snapshots().map(_chatListFromSnapshot);
@@ -1509,7 +1495,7 @@ class DatabaseService {
   }
 
   Stream<List<ChatData>>? get dmChatListNotification {
-    String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
+    final String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
     try {
       return dmChatCollection.doc(chatID).collection('messages').where('status.${userService.currentUserID}' ,isEqualTo: false)
           .snapshots().map(_chatListFromSnapshot);
@@ -1521,25 +1507,25 @@ class DatabaseService {
 
   /// Get user list of DM chats
   Stream<List<UserPublicProfile>> retrieveDMChats() async*{
-    final List<String> _uidsOfAllChats = [];
-    final user = await usersList();
-    final List<UserPublicProfile> sortedUserList = [];
+    final List<String> uidsOfAllChats = <String>[];
+    final List<UserPublicProfile> user = await usersList();
+    final List<UserPublicProfile> sortedUserList = <UserPublicProfile>[];
 
-      final ref = await dmChatCollection.orderBy('lastUpdatedTimestamp',descending: true).where(
+      final QuerySnapshot<Object?> ref = await dmChatCollection.orderBy('lastUpdatedTimestamp',descending: true).where(
           'ids', arrayContains: userService.currentUserID).get();
-      ref.docs.forEach((doc) {
-        _uidsOfAllChats.add(doc.id);
-      });
-      final _idList = [];
-      _uidsOfAllChats.forEach((id) {
-        final _y = id.split('_');
-        _y.remove(userService.currentUserID);
-        _idList.add(_y[0]);
-      });
+      for (final QueryDocumentSnapshot<Object?> doc in ref.docs) {
+        uidsOfAllChats.add(doc.id);
+      }
+      final List idList = <String>[];
+      for (final String id in uidsOfAllChats) {
+        final List<String> y = id.split('_');
+        y.remove(userService.currentUserID);
+        idList.add(y[0]);
+      }
 
-      _idList.forEach((profile) {
-        sortedUserList.add(user.where((element) => profile == element.uid).first);
-      });
+      for (final profile in idList) {
+        sortedUserList.add(user.where((UserPublicProfile element) => profile == element.uid).first);
+      }
     yield sortedUserList;
   }
 
@@ -1547,8 +1533,8 @@ class DatabaseService {
   /// Get user list of DM chats
   Stream<List<UserPublicProfile>> getcrewList(List<String> accessUsers) async*{
     try {
-      final users = await usersList();
-      yield users.where((user) => accessUsers.contains(user.uid)).toList();
+      final List<UserPublicProfile> users = await usersList();
+      yield users.where((UserPublicProfile user) => accessUsers.contains(user.uid)).toList();
     } catch (e) {
       CloudFunction().logError('Error in getcrewList for members layout: ${e.toString()}');
     }
@@ -1557,28 +1543,28 @@ class DatabaseService {
   }
 
 
-  Future writeSuggestions() async{
-    final ref = suggestionsCollection;
-    urls.forEach((url) {
-      final key = suggestionsCollection.doc().id;
-      ref.doc(key).set({
+  Future<void>writeSuggestions() async{
+    final CollectionReference<Object?> ref = suggestionsCollection;
+    for (final url in urls) {
+      final String key = suggestionsCollection.doc().id;
+      ref.doc(key).set(<String, dynamic>{
         'fieldID': key,
         'url': url,
         'timestamp': FieldValue.serverTimestamp(),
-        'tags': [],
+        'tags': <String>[],
       });
-    });
+    }
   }
 
   /// Get all Suggestions
-  List<Suggestions> _suggestionListFromSnapshot(QuerySnapshot snapshot){
+  List<Suggestions> _suggestionListFromSnapshot(QuerySnapshot<Object?> snapshot){
 
-    return snapshot.docs.map((doc){
-      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
+      final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
       return Suggestions(
-        url: data['url'] ?? '',
-        timestamp: data['timestamp'] ?? null,
-        fieldID: data['fieldID'] ?? '',
+        url: data['url'] as String,
+        timestamp: data['timestamp'] as Timestamp,
+        fieldID: data['fieldID'] as String,
       );
     }).toList();
 
@@ -1589,28 +1575,15 @@ class DatabaseService {
   }
 
   /// Delete a suggestion
-  Future deleteSuggestion({required String fieldID}) async {
-      return await suggestionsCollection.doc(fieldID).delete();
+  Future<void> deleteSuggestion({required String fieldID}) async {
+      return suggestionsCollection.doc(fieldID).delete();
   }
 
   ///Check if user already submitted or view app Review this month
   Future<bool> appReviewExists(String docID) async {
-    final ref = await addReviewCollection.doc(currentUserProfile.uid).collection('review').get();
-
-    return ref.docs.contains(docID);
+    final QuerySnapshot<Object?> ref = await addReviewCollection.doc(currentUserProfile.uid).collection('review').get();
+    bool reviewExists = ref.docs.contains(docID);
+    return reviewExists;
   }
 
 }
-
-
-
-
-/// activityList.forEach((activity) {
-/// /// if(activity.fieldID == '1SsDjx3cWY7Zv2R1zPqC'){
-/// if(activity.startDateTimestamp == null && activity.endDateTimestamp == null) {
-/// ///   activitiesCollection.doc(tripDocID).collection('activity').doc(activity.fieldID).update({
-/// ///     'endDateTimestamp': FieldValue.serverTimestamp(),
-/// ///     'startDateTimestamp': FieldValue.serverTimestamp(),
-/// ///   });
-/// }
-/// });

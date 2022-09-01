@@ -4,15 +4,15 @@ import '../../../models/custom_objects.dart';
 
 
 abstract class PublicProfileState extends Equatable{
-  PublicProfileState();
+  const PublicProfileState();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 class PublicProfileLoadingState extends PublicProfileState {}
 class PublicProfileHasDataState extends PublicProfileState {
+  const PublicProfileHasDataState(this.data);
   final UserPublicProfile data;
-  PublicProfileHasDataState(this.data);
   @override
-  List<Object> get props => [data];
+  List<Object> get props => <Object>[data];
 }

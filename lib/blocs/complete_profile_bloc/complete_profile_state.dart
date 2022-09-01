@@ -1,9 +1,5 @@
 class CompleteProfileState {
 
-  final bool isSubmitting;
-  final bool isSuccess;
-  final bool isFailure;
-
 
   CompleteProfileState(
       {
@@ -42,6 +38,10 @@ class CompleteProfileState {
       isFailure: false,
     );
   }
+
+  final bool isSubmitting;
+  final bool isSuccess;
+  final bool isFailure;
 
   CompleteProfileState update({
     bool? imageAdded,

@@ -15,21 +15,21 @@ import '../../basket_list/controller/basket_controller.dart';
 
 /// Bringing List
 class BringingList extends StatefulWidget {
+  const BringingList({Key? key, required this.documentID, required this.controller}) : super(key: key);
   final String documentID;
   final BasketController controller;
-  BringingList({required this.documentID, required this.controller});
 
   @override
   _BringingListState createState() => _BringingListState();
 }
 
 class _BringingListState extends State<BringingList> {
-  List _selectedProducts = [];
+  final List<String> _selectedProducts = <String>[];
 
   void _onSelectedProduct(bool selected, WalmartProducts product) {
     if (selected == true) {
       setState(() {
-        _selectedProducts.add(product.query);
+        _selectedProducts.add(product.query!);
         CloudFunction().addItemToBringingList(
             widget.documentID, product.query, product.type);
         widget.controller.addWalmartProductsToCart(product);
@@ -63,7 +63,7 @@ class _BringingListState extends State<BringingList> {
                 // subtitle: Text(product.department[0]['name'] ?? 'Unknown'),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
-                onChanged: (selected) {
+                onChanged: (bool? selected) {
                   setState(() {
                     _onSelectedProduct(selected!, product);
                   });
@@ -78,17 +78,17 @@ class _BringingListState extends State<BringingList> {
 }
 
 class NeedList extends StatefulWidget {
+  const NeedList({Key? key, required this.documentID}) : super(key: key);
   final String documentID;
-  NeedList({required this.documentID});
 
   @override
   _NeedListState createState() => _NeedListState();
 }
 
 class _NeedListState extends State<NeedList> {
-  final List _selectedProducts = [];
+  final List<String> _selectedProducts = <String>[];
 
-  void _onSelectedProduct(bool selected, productName) {
+  void _onSelectedProduct(bool selected, String productName) {
     if (selected == true) {
       setState(() {
         _selectedProducts.add(productName);
@@ -100,12 +100,12 @@ class _NeedListState extends State<NeedList> {
     }
   }
 
-  static const historyLength = 5;
+  static const int historyLength = 5;
   late bool selected;
   String query = 'chips';
-  List<String> filteredSearchHistory = [];
-  List<String> _searchHistory = [];
-  List<WalmartProducts> queryResults = [];
+  List<String> filteredSearchHistory = <String>[];
+  final List<String> _searchHistory = <String>[];
+  List<WalmartProducts> queryResults = <WalmartProducts>[];
   late TextEditingController controller;
 
   List<String> filterSearchTerms({
@@ -113,7 +113,7 @@ class _NeedListState extends State<NeedList> {
   }) {
     if (filter?.isNotEmpty ?? false) {
       return _searchHistory.reversed
-          .where((term) => term.startsWith(filter!))
+          .where((String term) => term.startsWith(filter!))
           .toList();
     } else {
       return _searchHistory.reversed.toList();
@@ -131,12 +131,12 @@ class _NeedListState extends State<NeedList> {
       _searchHistory.removeRange(0, _searchHistory.length - historyLength);
     }
 
-    filteredSearchHistory = filterSearchTerms(filter: null);
+    filteredSearchHistory = filterSearchTerms();
   }
 
   void deleteSearchTerm(String term) {
-    _searchHistory.removeWhere((t) => t == term);
-    filteredSearchHistory = filterSearchTerms(filter: null);
+    _searchHistory.removeWhere((String t) => t == term);
+    filteredSearchHistory = filterSearchTerms();
   }
 
   void putSearchTermFirst(String term) {
@@ -160,7 +160,7 @@ class _NeedListState extends State<NeedList> {
   void initState() {
     super.initState();
     controller = TextEditingController();
-    filteredSearchHistory = filterSearchTerms(filter: null);
+    filteredSearchHistory = filterSearchTerms();
   }
 
   @override
@@ -186,19 +186,21 @@ class _NeedListState extends State<NeedList> {
                 title: Text(product.query ?? ''),
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: _selectedProducts.contains(product.query),
-                onChanged: (selected) {
+                onChanged: (bool? selected) {
                   setState(() {
-                    _onSelectedProduct(selected!, product.query);
+                    _onSelectedProduct(selected!, product.query!);
                     if (selected == true) {
                       try {
                         CloudFunction().addItemToNeedList(widget.documentID,
                             product.query!, currentUserProfile.displayName ?? '', '');
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Item added')));
-                      } catch (e) {}
+                      } catch (e) {
+                        // TODO(Randy): log error.
+                      }
                     } else {
-                      // TODO: change to delete
-                      _onSelectedProduct(selected, product.query);
+                      // TODO(Randy): change to delete.
+                      _onSelectedProduct(selected, product.query!);
                     }
                   });
                 },
@@ -210,18 +212,18 @@ class _NeedListState extends State<NeedList> {
     );
   }
 
-  Widget productTile(product) {
+  Widget productTile(WalmartProducts product) {
     return CheckboxListTile(
-      title: Text(product.query),
+      title: Text(product.query!),
       controlAffinity: ListTileControlAffinity.trailing,
       value: _selectedProducts.contains(product.query),
-      onChanged: (selected) {
+      onChanged: (bool? selected) {
         setState(() {
-          _onSelectedProduct(selected!, product.query);
+          _onSelectedProduct(selected!, product.query!);
           if (selected == true) {
             try {
               CloudFunction().addItemToNeedList(widget.documentID,
-                  product.query, currentUserProfile.displayName ?? '', '');
+                  product.query!, currentUserProfile.displayName ?? '', '');
               ScaffoldMessenger.of(context)
                   .showSnackBar(
                   const SnackBar(content: Text('Item added')
@@ -231,8 +233,8 @@ class _NeedListState extends State<NeedList> {
                   .logError('Error adding item to Need List: ${e.toString()}');
             }
           } else {
-            // TODO: change to delete
-            _onSelectedProduct(selected, product.query);
+            // TODO(Randy): change to delete
+            _onSelectedProduct(selected, product.query!);
           }
         });
       },
@@ -243,9 +245,9 @@ class _NeedListState extends State<NeedList> {
 }
 
 class NeedListToDisplay extends StatelessWidget {
-  final String documentID;
 
   const NeedListToDisplay({Key? key, required this.documentID}) : super(key: key);
+  final String documentID;
 
   @override
   Widget build(BuildContext context) {
@@ -256,18 +258,18 @@ class NeedListToDisplay extends StatelessWidget {
           const SnackBar(content: Text('Item added to Bringing list')));
     }
 
-    return StreamBuilder(
-      builder: (context, items) {
+    return StreamBuilder<List<Need>>(
+      builder: (BuildContext context, AsyncSnapshot<List<Need>> items) {
         if (items.hasError) {
           CloudFunction()
               .logError('Error streaming items in need '
               'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
-          List<Need> needList = items.data as List<Need>;
+          final List<Need> needList = items.data!;
           return ListView.builder(
             itemCount: needList.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (BuildContext context, int index) {
               final Need item = needList[index];
               return Dismissible(
                 direction: DismissDirection.endToStart,
@@ -318,21 +320,21 @@ class NeedListToDisplay extends StatelessWidget {
 }
 
 class BringListToDisplay extends StatelessWidget {
+  const BringListToDisplay({Key? key, required this.tripDocID}) : super(key: key);
   final String tripDocID;
-  BringListToDisplay({required this.tripDocID});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Bringing>>(
       stream: DatabaseService().getBringingList(tripDocID),
-      builder: (context, items) {
+      builder: (BuildContext context, AsyncSnapshot<List<Bringing>> items) {
         if (items.hasError) {
           CloudFunction()
               .logError('Error streaming items in bringing '
               'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
-          List<Bringing> bringingList = items.data as List<Bringing>;
+          final List<Bringing> bringingList = items.data!;
           return ListView.builder(
             itemCount: bringingList.length,
             itemBuilder: (BuildContext context, int index) {
@@ -343,7 +345,7 @@ class BringListToDisplay extends StatelessWidget {
                   TravelCrewAlertDialogs().deleteBringingItemAlert(
                       context, tripDocID, item.documentID!);
                 },
-                leading: BasketIcon(item.type!),
+                leading: BasketIcon(item.type),
                 title: Text(
                   item.item!.toUpperCase(),
                   style: Theme.of(context).textTheme.subtitle1,
@@ -356,7 +358,7 @@ class BringListToDisplay extends StatelessWidget {
                   icon: BadgeIcon(
                     icon: FavoriteWidget(
                       uid: userService.currentUserID,
-                      voters: item.voters ?? [],),
+                      voters: item.voters ?? <String>[],),
                     badgeCount: item.voters?.length ?? 0,
                   ),
                   onPressed: () {
@@ -384,9 +386,9 @@ class BringListToDisplay extends StatelessWidget {
 }
 
 class CustomList extends StatefulWidget {
-  final String documentID;
 
-  CustomList({Key? key, required this.documentID}) : super(key: key);
+  const CustomList({Key? key, required this.documentID}) : super(key: key);
+  final String documentID;
 
   @override
   _CustomListState createState() => _CustomListState();
@@ -396,7 +398,7 @@ class _CustomListState extends State<CustomList> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController controller = TextEditingController(text: '');
   String option = 'Bringing';
-  List<String> optionList = ['Bringing'];
+  List<String> optionList = <String>['Bringing'];
 
   @override
   Widget build(BuildContext context) {
@@ -410,7 +412,7 @@ class _CustomListState extends State<CustomList> {
               builder: (BuildContext context) => Form(
                   key: _formKey,
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       TextFormField(
                         controller: controller,
                           enableInteractiveSelection: true,
@@ -419,12 +421,13 @@ class _CustomListState extends State<CustomList> {
                             border: OutlineInputBorder(),
                             labelText: 'Custom Item',
                           ),
-                          validator: (value) {
+                          validator: (String? value) {
                             // ignore: missing_return
                             if (value?.isEmpty ?? false) {
                               return 'Please enter an item first.';
                               // ignore: missing_return
                             }
+                            return null;
                           },
                           // onChanged: (val) => {
                           //       item = val,
@@ -442,7 +445,7 @@ class _CustomListState extends State<CustomList> {
                                   title: Text(optionList[index]),
                                   value: optionList[index],
                                   groupValue: option,
-                                  onChanged: (value) {
+                                  onChanged: (String? value) {
                                     setState(() {
                                       option = value!;
                                     });
@@ -455,7 +458,7 @@ class _CustomListState extends State<CustomList> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            final form = _formKey.currentState!;
+                            final FormState form = _formKey.currentState!;
                             form.save();
                             if (form.validate()) {
                               CloudFunction().addItemToBringingList(
@@ -465,8 +468,6 @@ class _CustomListState extends State<CustomList> {
                                       content: Text(
                                           'Item added to Bringing list')));
                               form.reset();
-                            } else {
-                              print(form.validate());
                             }
                           },
                           child: const Text('Save'))

@@ -31,9 +31,9 @@ import 'explore_owner_layout.dart';
 
 /// Explore page for trip
 class Explore extends StatefulWidget {
+  const Explore({required this.trip,});
 
   final Trip trip;
-  Explore({required this.trip,});
   
 
   @override
@@ -43,7 +43,7 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<String> title = ValueNotifier("Explore");
+  ValueNotifier<String> title = ValueNotifier('Explore');
 
   @override
   Widget build(BuildContext context) {
@@ -84,16 +84,16 @@ class _ExploreState extends State<Explore> {
         ),
         body: MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => GenericBloc<ActivityData,ActivityRepository>(
+            BlocProvider(create: (BuildContext context) => GenericBloc<ActivityData,ActivityRepository>(
                 repository: ActivityRepository(tripDocID:widget.trip.documentId!)
               )),
-            BlocProvider(create: (context) => GenericBloc<ChatData,ChatRepository>(
+            BlocProvider(create: (BuildContext context) => GenericBloc<ChatData,ChatRepository>(
                 repository: ChatRepository(tripDocID: widget.trip.documentId!))),
-            BlocProvider(create: (context) => GenericBloc<LodgingData,LodgingRepository>(
+            BlocProvider(create: (BuildContext context) => GenericBloc<LodgingData,LodgingRepository>(
                 repository: LodgingRepository(tripDocID: widget.trip.documentId!))),
-            BlocProvider(create: (context) => GenericBloc<TransportationData,TransportationRepository>(
+            BlocProvider(create: (BuildContext context) => GenericBloc<TransportationData,TransportationRepository>(
                 repository: TransportationRepository(tripDocID: widget.trip.documentId!))),
-            BlocProvider(create: (context) => GenericBloc<SplitObject,SplitRepository>(
+            BlocProvider(create: (BuildContext context) => GenericBloc<SplitObject,SplitRepository>(
                 repository: SplitRepository(tripDocID: widget.trip.documentId!))),
           ],
           child: TabBarView(
@@ -116,7 +116,7 @@ class _ExploreState extends State<Explore> {
   if (widget.trip.ownerID == uid){
     return StreamBuilder<Trip>(
         stream: DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
-        builder: (context, document){
+        builder: (BuildContext context, AsyncSnapshot<Trip> document){
           if(document.hasData){
             final Trip tripDetails = document.data as Trip;
             return ExploreOwnerLayout(
@@ -136,7 +136,7 @@ class _ExploreState extends State<Explore> {
 
 Widget getChatNotificationBadge (){
     return StreamBuilder<List<ChatData>>(
-        builder: (context, chats){
+        builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats){
           if(chats.hasError){
             CloudFunction()
                 .logError('Error streaming chats for explore'
@@ -154,13 +154,13 @@ Widget getChatNotificationBadge (){
                 ),
               );
             } else {
-              return BadgeIcon(
-                icon: const Icon(Icons.chat, ),
+              return const BadgeIcon(
+                icon: Icon(Icons.chat, ),
               );
             }
           } else {
-            return BadgeIcon(
-              icon: const Icon(Icons.chat, ),
+            return const BadgeIcon(
+              icon: Icon(Icons.chat, ),
             );
           }
         },

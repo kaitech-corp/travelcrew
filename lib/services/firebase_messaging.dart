@@ -9,14 +9,8 @@ class FBMessaging {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   requestPermissions() async {
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
+    final NotificationSettings settings = await messaging.requestPermission(
+      
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -33,7 +27,7 @@ class FBMessaging {
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
 
-    print("Handling a background message: ${message.messageId}");
+    print('Handling a background message: ${message.messageId}');
   }
 
   static const AndroidNotificationChannel channel = AndroidNotificationChannel(

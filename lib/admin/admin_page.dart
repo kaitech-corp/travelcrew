@@ -11,14 +11,13 @@ import '../size_config/size_config.dart';
 
 /// Admin page
 class AdminPage extends StatefulWidget {
+  const AdminPage({Key? key}) : super(key: key);
 
   @override
-  _AdminPageState createState() => _AdminPageState();
+  State<AdminPage> createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
-
-
   TextEditingController? _controller;
 
   @override
@@ -48,7 +47,7 @@ class _AdminPageState extends State<AdminPage> {
             admin,
             style: Theme.of(context).textTheme.headline5,
           ),
-          flexibleSpace: AppBarGradient(),
+          flexibleSpace: const AppBarGradient(),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -66,10 +65,12 @@ class _AdminPageState extends State<AdminPage> {
                     decoration: BoxDecoration(
                       border: Border.all(),
                     ),
-                    child: StreamBuilder(
-                      builder: (BuildContext context, feedbackData) {
+                    child: StreamBuilder<List<TCFeedback>>(
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Object?> feedbackData) {
                         if (feedbackData.hasData) {
-                          final List<TCFeedback> feedbackList = feedbackData.data as List<TCFeedback>;
+                          final List<TCFeedback> feedbackList =
+                              feedbackData.data as List<TCFeedback>;
                           return ListView.builder(
                             itemCount: feedbackList.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -145,7 +146,6 @@ class _AdminPageState extends State<AdminPage> {
       margin: const EdgeInsets.all(12),
       height: textBoxHeight,
       child: TextField(
-        autocorrect: true,
         enableInteractiveSelection: true,
         controller: _controller,
         maxLines: maxLines,

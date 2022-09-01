@@ -13,7 +13,7 @@ import '../../../../services/functions/cloud_functions.dart';
 class UserSettingsRepository {
 
   final CollectionReference settingsCollection = FirebaseFirestore.instance.collection('settings');
-  final _loadedData = StreamController<UserNotificationSettingsData>.broadcast();
+  final StreamController<UserNotificationSettingsData> _loadedData = StreamController<UserNotificationSettingsData>.broadcast();
 
 
   void dispose() {
@@ -25,7 +25,7 @@ class UserSettingsRepository {
     UserNotificationSettingsData _settingsFromSnapshot(DocumentSnapshot snapshot){
       if(snapshot.exists) {
         try {
-          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+          final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
           return UserNotificationSettingsData.fromData(data);
         } catch(e){
           CloudFunction().logError('Error retrieving settings for user:  ${e.toString()}');
@@ -35,7 +35,7 @@ class UserSettingsRepository {
       }
     }
 
-    Stream<UserNotificationSettingsData> settings = settingsCollection
+    final Stream<UserNotificationSettingsData> settings = settingsCollection
         .doc(userService.currentUserID)
         .snapshots().map(_settingsFromSnapshot);
 

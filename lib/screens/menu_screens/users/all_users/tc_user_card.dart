@@ -11,11 +11,11 @@ import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
 
 class TCUserCard extends StatefulWidget {
-  final UserPublicProfile allUsers;
-  TCUserCard({
+  const TCUserCard({
     required this.allUsers,
     this.heroTag,
   });
+  final UserPublicProfile allUsers;
   final heroTag;
 
   @override
@@ -23,7 +23,7 @@ class TCUserCard extends StatefulWidget {
 }
 
 class _TCUserCardState extends State<TCUserCard> {
-  var currentUserProfile =
+  UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
   @override
@@ -82,9 +82,8 @@ class _TCUserCardState extends State<TCUserCard> {
                             : BlockedPopupMenu(allUsers: widget.allUsers),
                       ),
                     ),
-                    widget.allUsers.followers
-                            !.contains(userService.currentUserID)
-                        ? Align(
+                    if (widget.allUsers.followers
+                            !.contains(userService.currentUserID)) Align(
                             alignment: Alignment.bottomRight,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8.0),
@@ -102,8 +101,7 @@ class _TCUserCardState extends State<TCUserCard> {
                                 },
                               ),
                             ),
-                          )
-                        : Align(
+                          ) else Align(
                             alignment: Alignment.bottomRight,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8.0),
@@ -113,9 +111,9 @@ class _TCUserCardState extends State<TCUserCard> {
                                         Theme.of(context).textTheme.subtitle1),
                                 onPressed: () {
                                   // Send a follow request notification to user
-                                  var message =
+                                  final String message =
                                       'Follow request from ${currentUserProfile.displayName}';
-                                  var type = 'Follow';
+                                  const String type = 'Follow';
                                   if (userService.currentUserID !=
                                       widget.allUsers.uid) {
                                     if (currentUserProfile.blockedList

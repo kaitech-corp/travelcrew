@@ -18,12 +18,12 @@ class CartDetailsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Recently Added:", style: Theme.of(context).textTheme.headline6),
+          Text('Recently Added:', style: Theme.of(context).textTheme.headline6),
           ...List.generate(
             controller.cart.length,
-            (index) => CartDetailsViewCard(item: controller.cart[index]),
+            (int index) => CartDetailsViewCard(item: controller.cart[index]),
           ),
-          SizedBox(height: defaultPadding),
+          const SizedBox(height: defaultPadding),
         ],
       ),
     );

@@ -38,16 +38,16 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
       });
     }
     return BlocBuilder<GenericBloc<TripAds,TripAdRepository>, GenericState>(
-        builder: (context, state) {
+        builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(fit:FlexFit.loose,child: Loading());
+            return Flexible(child: Loading());
           } else if (state is HasDataState) {
-            List<TripAds> adList = state.data as List<TripAds>;
+            final List<TripAds> adList = state.data as List<TripAds>;
             return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: List.generate(adList.length, (index) {
+                children: List.generate(adList.length, (int index) {
                   return AdCard(tripAds: adList[index]);
                 }),
               ),

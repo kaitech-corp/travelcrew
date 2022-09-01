@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../models/custom_objects.dart';
 import '../../../models/notification_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
@@ -15,15 +16,15 @@ import '../../alerts/alert_dialogs.dart';
 
 /// Layout for notifications
 class NotificationsCard extends StatelessWidget{
-  final NotificationData notification;
-  final currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   NotificationsCard({required this.notification});
+  final NotificationData notification;
+  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
 
   @override
   Widget build(BuildContext context) {
 
-    var notificationType = {
+    final Map<String, Widget> notificationType = {
       'Activity' : notificationType1(context),
       'Lodging' : notificationType1(context),
       'Travel' :notificationType1(context),
@@ -43,14 +44,14 @@ class NotificationsCard extends StatelessWidget{
       color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
-        title: Text('${notification.message}'),
+        title: Text(notification.message),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         onTap: () async {
           if(notification.ispublic){
-            Trip trip = await DatabaseService().getTrip(notification.documentID);
+            final Trip trip = await DatabaseService().getTrip(notification.documentID);
             navigationService.navigateTo(ExploreRoute,arguments: trip);
           } else {
-            Trip trip = await DatabaseService().getPrivateTrip(notification.documentID);
+            final Trip trip = await DatabaseService().getPrivateTrip(notification.documentID);
             navigationService.navigateTo(ExploreRoute,arguments: trip);
           }
         },
@@ -62,19 +63,19 @@ class NotificationsCard extends StatelessWidget{
 
     return InkWell(
       onTap: () async {
-        Trip trip = await DatabaseService().getTrip(notification.documentID);
+        final Trip trip = await DatabaseService().getTrip(notification.documentID);
         navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
       },
       child: Card(
         color: Colors.white,
         key: Key(notification.fieldID),
         child: ListTile(
-          title: Text('${notification.message}'),
+          title: Text(notification.message),
           subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
           trailing: IconButton(
-            icon: IconThemeWidget(icon:Icons.add_circle),
+            icon: const IconThemeWidget(icon:Icons.add_circle),
             onPressed: () async{
-              String fieldID = notification.fieldID;
+              final String fieldID = notification.fieldID;
               CloudFunction().joinTrip(notification.documentID, notification.ispublic,notification.uid);
               CloudFunction().removeNotificationData(fieldID);
               _showDialog(context);
@@ -91,12 +92,12 @@ class NotificationsCard extends StatelessWidget{
       color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
-        title: Text('${notification.message}'),
+        title: Text(notification.message),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: IconThemeWidget(icon:Icons.person_add),
+          icon: const IconThemeWidget(icon:Icons.person_add),
           onPressed: () async{
-            String fieldID = notification.fieldID;
+            final String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
             CloudFunction().removeNotificationData(fieldID);
             if (!currentUserProfile.following!.contains(notification.uid)) {
@@ -114,7 +115,7 @@ class NotificationsCard extends StatelessWidget{
       key: Key(notification.fieldID),
       child: ListTile(
         title: Linkify(
-          onOpen: (link) async {
+          onOpen: (LinkableElement link) async {
             if (await canLaunch(link.url)) {
               await launch(link.url);
             } else {
@@ -140,12 +141,12 @@ class NotificationsCard extends StatelessWidget{
       color: Colors.white,
       key: Key(notification.fieldID),
       child: ListTile(
-        title: Text('${notification.message}'),
+        title: Text(notification.message),
         subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         trailing: IconButton(
-          icon: IconThemeWidget(icon:Icons.add_circle),
+          icon: const IconThemeWidget(icon:Icons.add_circle),
           onPressed: () async{
-            String fieldID = notification.fieldID;
+            final String fieldID = notification.fieldID;
             CloudFunction().joinTripInvite(notification.documentID, notification.uid, notification.ispublic);
             CloudFunction().removeNotificationData(fieldID);
             _showDialog(context);
@@ -153,7 +154,7 @@ class NotificationsCard extends StatelessWidget{
         ),
         onTap: () async {
           if(notification.ispublic){
-            Trip trip = await DatabaseService().getTrip(notification.documentID);
+            final Trip trip = await DatabaseService().getTrip(notification.documentID);
             navigationService.navigateTo(ExploreBasicRoute,arguments: trip);
           }
         },
@@ -164,7 +165,7 @@ class NotificationsCard extends StatelessWidget{
   Widget notificationType6(BuildContext context){
     return InkWell(
       onTap: () async {
-        Trip trip = await DatabaseService().getTrip(notification.documentID);
+        final Trip trip = await DatabaseService().getTrip(notification.documentID);
         navigationService.navigateTo(ExploreRoute,arguments: trip);
 
       },
@@ -172,7 +173,7 @@ class NotificationsCard extends StatelessWidget{
         color: Colors.white,
         key: Key(notification.fieldID),
         child: ListTile(
-          title: Text('${notification.message}'),
+          title: Text(notification.message),
           subtitle: Text(TCFunctions().readTimestamp(notification.timestamp.millisecondsSinceEpoch),style: Theme.of(context).textTheme.subtitle2,),
         ),
       ),
@@ -180,7 +181,7 @@ class NotificationsCard extends StatelessWidget{
   }
 
   _showDialog(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Request accepted.')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Request accepted.')));
   }
 }
 

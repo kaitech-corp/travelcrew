@@ -16,9 +16,9 @@ import 'split_package.dart';
 
 /// Split Page
 class SplitPage extends StatefulWidget {
-  final Trip trip;
 
-  SplitPage({required this.trip,});
+  const SplitPage({required this.trip,});
+  final Trip trip;
 
   @override
   _SplitPageState createState() => _SplitPageState();
@@ -46,17 +46,17 @@ class _SplitPageState extends State<SplitPage> {
                 .costDataList,
             DatabaseService().getcrewList(widget.trip.accessUsers!),
           ),
-          builder: (context, snapshots) {
+          builder: (BuildContext context, SnapshotTuple2<Object?, Object?> snapshots) {
             if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {
-              List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
-              List<String> uidList = [];
-              userCostData.forEach((element) {
+              final List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
+              final List<String> uidList = [];
+              for (final CostObject element in userCostData) {
                 if (!uidList.contains(element.uid)) {
                   uidList.add(element.uid!);
                 }
-              });
+              }
 
-              var amountRemaining =
+              final double amountRemaining =
                   SplitPackage().sumRemainingBalance(userCostData);
 
               ///Update remaining balance by checking if each outstanding balance adds up correctly
@@ -64,15 +64,15 @@ class _SplitPageState extends State<SplitPage> {
                 DatabaseService().updateRemainingBalance(
                     splitObject, amountRemaining, uidList);
               }
-              List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
+              final List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
               return ListView.builder(
                   itemCount: userCostData.length,
-                  itemBuilder: (context, index) {
-                    CostObject costObject = userCostData[index];
-                    UserPublicProfile userPublicProfile = userPublicData
-                        .firstWhere((element) => element.uid == costObject.uid);
-                    UserPublicProfile purchasedByUser = userPublicData
-                        .firstWhere((element) => element.uid == purchasedByUID);
+                  itemBuilder: (BuildContext context, int index) {
+                    final CostObject costObject = userCostData[index];
+                    final UserPublicProfile userPublicProfile = userPublicData
+                        .firstWhere((UserPublicProfile element) => element.uid == costObject.uid);
+                    final UserPublicProfile purchasedByUser = userPublicData
+                        .firstWhere((UserPublicProfile element) => element.uid == purchasedByUID);
                     if (userPublicProfile.uid != purchasedByUID) {
                       return InkWell(
                         onTap: () {
@@ -82,7 +82,7 @@ class _SplitPageState extends State<SplitPage> {
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(20),
                                     topRight: Radius.circular(20))),
-                            builder: (context) =>
+                            builder: (BuildContext context) =>
                                 UserSplitCostDetailsBottomSheet(
                               user: userPublicProfile,
                               costObject: costObject,

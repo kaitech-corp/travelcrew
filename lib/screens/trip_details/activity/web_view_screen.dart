@@ -6,30 +6,28 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../services/widgets/loading.dart';
 
 class WebViewScreen extends StatefulWidget {
-  final url;
-  final key;
-  WebViewScreen({this.url, this.key});
+
+  const WebViewScreen({Key? key, required this.url,}) : super(key: key);
+  final String url;
+
 
   @override
-  _WebViewScreenState createState() => _WebViewScreenState(this.url,this.key);
+  _WebViewScreenState createState() => _WebViewScreenState();
 
 }
   class _WebViewScreenState extends State<WebViewScreen>{
-
-  var _url;
-  var _key;
 
   @override
   void initState() {
     super.initState();
     // Enable hybrid composition.
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    if (Platform.isAndroid) {
+      WebView.platform = SurfaceAndroidWebView();
+    }
   }
-
-  _WebViewScreenState(this._url, this._key);
   bool loading = true;
 
-  changeState() {
+  void changeState() {
     setState(() {
       loading = false;
     });
@@ -46,15 +44,15 @@ class WebViewScreen extends StatefulWidget {
       Stack(
         children: [
           WebView(
-            key: _key,
+            key: widget.key,
             javascriptMode: JavascriptMode.unrestricted,
-            initialUrl: _url,
-            onPageFinished: (done){
+            initialUrl: widget.url,
+            onPageFinished: (String done){
               setState(() {
               loading = false;
             });},
           ),
-          loading ? Center(child: Loading()) : Stack(),
+          if (loading) Center(child: Loading()) else Stack(),
         ],
       ),
     );

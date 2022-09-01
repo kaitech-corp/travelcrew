@@ -46,17 +46,17 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     }
 
     return BlocBuilder<GenericBloc<Trip,AllTripsRepository>, GenericState>(
-        builder: (context, state) {
+        builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(fit:FlexFit.loose,child: Loading());
+            return Flexible(child: Loading());
           } else if (state is HasDataState) {
-            List<Trip> tripList = state.data as List<Trip>;
+            final List<Trip> tripList = state.data as List<Trip>;
             return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                children: List.generate(tripList.length, (index) {
+                children: List.generate(tripList.length, (int index) {
                   return tripList[index].urlToImage == null
                       ? cardWithoutImage(
                       context, tripList[index])
@@ -186,7 +186,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                   child: ListTile(
                     contentPadding: const EdgeInsets.only(left: 15, right: 5),
                     title: Text(
-                      (trip.tripName!),
+                      trip.tripName!,
                       style: const TextStyle(fontFamily: 'RockSalt', color: Colors.black),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

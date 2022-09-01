@@ -16,6 +16,8 @@ import 'tc_user_card.dart';
 
 
 class AllUserPage extends StatefulWidget {
+  const AllUserPage({Key? key}) : super(key: key);
+
   @override
   _AllUserPageState createState() => _AllUserPageState();
 
@@ -47,9 +49,9 @@ class _AllUserPageState extends State<AllUserPage> {
     late List<UserPublicProfile> allUsersSearchList;
 
     Future<List<UserPublicProfile>> userSearchList (String name) async {
-      String val = name.toLowerCase();
+      final String val = name.toLowerCase();
 
-      var results = allUsersSearchList.where((user) =>
+      final List<UserPublicProfile> results = allUsersSearchList.where((UserPublicProfile user) =>
       user.displayName!.toLowerCase().contains(val)
           || user.firstName!.toLowerCase().contains(val) ||
           user.lastName!.toLowerCase().contains(val) || user.displayName!.toLowerCase().contains(val)
@@ -66,15 +68,15 @@ class _AllUserPageState extends State<AllUserPage> {
               pressedSearch();
             },)
         ],
-        flexibleSpace: AppBarGradient(),
+        flexibleSpace: const AppBarGradient(),
       ),
       body: BlocBuilder<GenericBloc<UserPublicProfile, AllUserRepository>, GenericState>(
         // bloc: blocCurrent,
-          builder: (context, state){
+          builder: (BuildContext context, GenericState state){
             if(state is LoadingState){
               return Loading();
             } else if (state is HasDataState<UserPublicProfile>){
-              List<UserPublicProfile> allUsersList = state.data;
+              final List<UserPublicProfile> allUsersList = state.data;
                 allUsersSearchList = allUsersList;
               return _isSearching ? SearchBar(
                 onSearch: userSearchList,
@@ -84,7 +86,7 @@ class _AllUserPageState extends State<AllUserPage> {
                   child: ListView.builder(
                       controller: controller,
                       itemCount: allUsersList.length,
-                      itemBuilder: (context, index){
+                      itemBuilder: (BuildContext context, int index){
                         return TCUserCard(allUsers: allUsersList[index]);
                       }),
                 ),
@@ -96,7 +98,7 @@ class _AllUserPageState extends State<AllUserPage> {
                 child: ListView.builder(
                     controller: controller,
                     itemCount: allUsersList.length,
-                    itemBuilder: (context, index){
+                    itemBuilder: (BuildContext context, int index){
                       return TCUserCard(allUsers: allUsersList[index]);
                     }),
 

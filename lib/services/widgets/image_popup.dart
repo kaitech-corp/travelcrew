@@ -1,13 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:travelcrew/services/constants/constants.dart';
+import '../constants/constants.dart';
 
 class ImagePopup extends StatelessWidget{
 
-  final String? imagePath;
+  const ImagePopup({this.imagePath});
 
-  ImagePopup({this.imagePath});
+  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {

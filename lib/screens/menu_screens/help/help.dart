@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/tc_functions.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
+import '../../../services/constants/constants.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../services/navigation/route_names.dart';
 
 class HelpPage extends StatelessWidget{
 
@@ -30,9 +30,9 @@ class HelpPage extends StatelessWidget{
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Terms of Service'),
-                        const Icon(Icons.navigate_next),
+                      children: const [
+                        Text('Terms of Service'),
+                        Icon(Icons.navigate_next),
                       ],
                     ),
                     onPressed: (){
@@ -42,9 +42,9 @@ class HelpPage extends StatelessWidget{
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Privacy Policy'),
-                        const Icon(Icons.navigate_next),
+                      children: const [
+                        Text('Privacy Policy'),
+                        Icon(Icons.navigate_next),
                       ],
                     ),
                     onPressed: (){

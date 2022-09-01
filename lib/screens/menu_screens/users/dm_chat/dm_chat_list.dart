@@ -9,9 +9,9 @@ import 'dm_chat_message_layout.dart';
 
 
 class DMChatList extends StatefulWidget {
+  const DMChatList({required this.user});
 
   final UserPublicProfile user;
-  DMChatList({required this.user});
 
   @override
   _DMChatListState createState() => _DMChatListState();
@@ -22,7 +22,7 @@ class _DMChatListState extends State<DMChatList> {
   Widget build(BuildContext context) {
 
     bool loading = true;
-    final chatList = Provider.of<List<ChatData>>(context);
+    final List<ChatData> chatList = Provider.of<List<ChatData>>(context);
     if(chatList != null) {
       setState(() {
         loading = false;
@@ -34,7 +34,7 @@ class _DMChatListState extends State<DMChatList> {
         padding: const EdgeInsets.all(8.0),
         reverse: true,
         itemCount: chatList != null ? chatList.length : 0,
-        itemBuilder: (context, index){
+        itemBuilder: (BuildContext context, int index){
           return DMChatMessageLayout(message: chatList[index], user: widget.user,);
         });
   }

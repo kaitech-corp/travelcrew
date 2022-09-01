@@ -2,13 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for cost data when spliting items
 class CostObject {
-  double? amountOwe;
-  Timestamp? datePaid;
-  String? itemDocID;
-  Timestamp? lastUpdated;
-  bool? paid;
-  String? uid;
-  String? tripDocID;
 
   CostObject({
     this.amountOwe,
@@ -21,16 +14,24 @@ class CostObject {
 
 
   CostObject.fromData(Map<String, dynamic> data):
-        amountOwe = data['amountOwe'] ?? '',
-        datePaid = data['datePaid'] ?? null,
-        itemDocID = data['itemDocID'] ?? '',
-        lastUpdated = data['lastUpdated'] ?? null,
-        paid = data['paid'] ?? '',
-        tripDocID = data['tripDocID'] ?? '',
-        uid = data['uid'] ?? '';
+        amountOwe = data['amountOwe'] as double,
+        datePaid = data['datePaid'] as Timestamp,
+        itemDocID = data['itemDocID'] as String,
+        lastUpdated = data['lastUpdated'] as Timestamp,
+        paid = data['paid'] as bool,
+        tripDocID = data['tripDocID'] as String,
+        uid = data['uid'] as String;
+
+  double? amountOwe;
+  Timestamp? datePaid;
+  String? itemDocID;
+  Timestamp? lastUpdated;
+  bool? paid;
+  String? uid;
+  String? tripDocID;
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'amountOwe': amountOwe,
       'datePaid': datePaid,
       'itemDocID': itemDocID,

@@ -31,7 +31,7 @@ class CartDetailsViewCard extends StatelessWidget {
           children: [
             // Price(amount: "20"),
             Text(
-              "  x ${item.quantity}",
+              '  x ${item.quantity}',
               style: Theme.of(context)
                   .textTheme
                   .subtitle1

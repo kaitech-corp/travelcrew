@@ -6,61 +6,63 @@ import 'package:equatable/equatable.dart';
 
 abstract class SignupEvent extends Equatable {
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => <Object>[];
 }
 
 class SignupFirstNameChanged extends SignupEvent {
-  final String? firstName;
 
   SignupFirstNameChanged({required this.firstName});
+  final String? firstName;
 
   @override
-  List<Object?> get props => [firstName];
+  List<Object?> get props => <Object?>[firstName];
 }
 class SignupLastNameChanged extends SignupEvent {
-  final String? lastName;
 
   SignupLastNameChanged({required this.lastName});
+  final String? lastName;
 
   @override
-  List<Object?> get props => [lastName];
+  List<Object?> get props => <Object?>[lastName];
 }
 class SignupDisplayNameChanged extends SignupEvent {
-  final String? displayName;
 
   SignupDisplayNameChanged({required this.displayName});
+  final String? displayName;
 
   @override
-  List<Object?> get props => [displayName];
+  List<Object?> get props => <Object?>[displayName];
 }
 
 class SignupImageChanged extends SignupEvent {
-  final File? urlToImage;
 
   SignupImageChanged({ required this.urlToImage});
+  final File? urlToImage;
 
   @override
-  List<Object?> get props => [urlToImage];
+  List<Object?> get props => <Object?>[urlToImage];
 }
 class SignupEmailChanged extends SignupEvent {
-  final String email;
 
   SignupEmailChanged({required this.email});
+  final String email;
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => <Object>[email];
 }
 
 class SignupPasswordChanged extends SignupEvent {
-  final String password;
 
   SignupPasswordChanged({required this.password});
+  final String password;
 
   @override
-  List<Object> get props => [password];
+  List<Object> get props => <Object>[password];
 }
 
 class SignupSubmitted extends SignupEvent {
+
+  SignupSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage, required this.email, required this.password});
   final String email;
   final String password;
   final String? firstName;
@@ -68,8 +70,6 @@ class SignupSubmitted extends SignupEvent {
   final String? displayName;
   final File? urlToImage;
 
-  SignupSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage, required this.email, required this.password});
-
   @override
-  List<Object?> get props => [email, password, displayName, firstName, lastName, urlToImage];
+  List<Object?> get props => <Object?>[email, password, displayName, firstName, lastName, urlToImage];
 }

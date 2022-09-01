@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelcrew/services/navigation/route_names.dart';
 
 import '../../models/custom_objects.dart';
 import '../../models/trip_model.dart';
@@ -13,21 +12,21 @@ import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/locator.dart';
+import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/calendar_widget.dart';
 import '../alerts/alert_dialogs.dart';
 import 'google_autocomplete.dart';
-import 'google_places.dart';
 
 GoogleData? googleData;
 
 /// Add trip page
 class AddTripPage extends StatefulWidget {
 
+  const AddTripPage({Key? key, this.addedLocation}) : super(key: key);
+
   //When using google places this object will pass on the location.
   final String? addedLocation;
-
-  AddTripPage({Key? key, this.addedLocation}) : super(key: key);
 
 
   @override
@@ -35,13 +34,13 @@ class AddTripPage extends StatefulWidget {
 }
 
 final AnalyticsService _analyticsService = AnalyticsService();
-final homeScaffoldKey = GlobalKey<ScaffoldState>();
-final searchScaffoldKey = GlobalKey<ScaffoldState>();
-final myController = TextEditingController();
+final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
+final TextEditingController myController = TextEditingController();
 final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData!);
 
 class _AddTripPageState extends State<AddTripPage> {
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
   final ValueNotifier<String> startDate = ValueNotifier('');
   final ValueNotifier<String> endDate = ValueNotifier('');
@@ -68,7 +67,7 @@ class _AddTripPageState extends State<AddTripPage> {
   }
 
 
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
 
   File? _image;
@@ -90,11 +89,11 @@ class _AddTripPageState extends State<AddTripPage> {
 
 
   updateGoogleDataValueNotifier() {
-    googleData2.value = new GoogleData();
+    googleData2.value = GoogleData();
   }
 
   Future getImageAddTrip() async {
-    var image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
 
 
     setState(() {
@@ -109,10 +108,9 @@ class _AddTripPageState extends State<AddTripPage> {
         padding:
         const EdgeInsets.symmetric( horizontal: 16.0),
         child: Builder(
-            builder: (context) => Form(
+            builder: (BuildContext context) => Form(
                 key: _formKey,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       TextFormField(
                           enableInteractiveSelection: true,
@@ -126,13 +124,14 @@ class _AddTripPageState extends State<AddTripPage> {
                               )
                           ),
                           // ignore: missing_return
-                          validator: (value) {
+                          validator: (String? value) {
                             if (value?.isEmpty ?? true) {
                               return addTripNameValidator();
                               // ignore: missing_return
                             }
+                            return null;
                           },
-                          onChanged: (val) =>
+                          onChanged: (String val) =>
                           {
                             tripName = val,
                           }
@@ -141,7 +140,6 @@ class _AddTripPageState extends State<AddTripPage> {
                           enableInteractiveSelection: true,
                           textCapitalization: TextCapitalization.words,
                           initialValue: '',
-                          autocorrect: true,
                           decoration:
                           InputDecoration(labelText: addTripTypeLabel(),
                               enabledBorder: UnderlineInputBorder(
@@ -149,13 +147,14 @@ class _AddTripPageState extends State<AddTripPage> {
                               )
                           ),
                           // ignore: missing_return
-                          validator: (value) {
+                          validator: (String? value) {
                             if (value?.isEmpty ?? true) {
                               return addTripTypeValidator();
                               // ignore: missing_return
                             }
+                            return null;
                           },
-                          onChanged: (val) =>
+                          onChanged: (String val) =>
                           {
                             travelType = val,
                           }
@@ -169,7 +168,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                             )
                         ),
-                        onChanged: (value){
+                        onChanged: (String value){
                           location = value;
                         },
                         // onSaved: (value){
@@ -199,12 +198,12 @@ class _AddTripPageState extends State<AddTripPage> {
                             }),
                           }
                       ),
-                      (_image != null) ? Align(
+                      if (_image != null) Align(
                           alignment: Alignment.topRight,
-                          child: IconButton(icon: Icon(Icons.clear),iconSize: 30, onPressed: (){ setState(() {
+                          child: IconButton(icon: const Icon(Icons.clear),iconSize: 30, onPressed: (){ setState(() {
                             _image = null;
                             urlToImage = null;
-                          });})): Container(),
+                          });})) else Container(),
                       Container(
                         child: _image == null
                             ? Text(addTripImageMessage(),style: Theme.of(context).textTheme.headline6,)
@@ -218,7 +217,7 @@ class _AddTripPageState extends State<AddTripPage> {
                             getImageAddTrip();
                           },
 //                              tooltip: 'Pick Image',
-                          child: Icon(Icons.add_a_photo),
+                          child: const Icon(Icons.add_a_photo),
                         ),
                       ),
                       Container(
@@ -231,14 +230,14 @@ class _AddTripPageState extends State<AddTripPage> {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
+                              borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                             ),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             hintText: addTripAddDescriptionMessage(),
                             hintStyle: Theme.of(context).textTheme.subtitle1
                         ),
                         style: Theme.of(context).textTheme.subtitle1,
-                        onChanged: (val){
+                        onChanged: (String val){
                           comment = val;
                         },
                       ),
@@ -252,7 +251,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               form?.save();
                               if (form!.validate()) {
                                 try {
-                                  String action = addTripSavingDataMessage();
+                                  final String action = addTripSavingDataMessage();
                                   CloudFunction().logEvent(action);
                                   DatabaseService().addNewTripData(
                                       Trip(
@@ -265,7 +264,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                         location: myController.text,
                                         startDate: startDate.value,
                                         travelType: travelType,
-                                        tripGeoPoint: googleData2.value.geoLocation ?? null,
+                                        tripGeoPoint: googleData2.value.geoLocation,
                                         tripName: tripName,
                                       ),
                                       urlToImage,

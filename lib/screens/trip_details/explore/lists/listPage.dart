@@ -8,9 +8,9 @@ import 'item_lists.dart';
 /// List page
 class ListPage extends StatelessWidget{
 
-  final Trip trip;
-
   const ListPage({Key? key, required this.trip}) : super(key: key);
+
+  final Trip trip;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,16 +22,14 @@ class ListPage extends StatelessWidget{
             Column(
               children: [
                 Expanded(
-                  flex: 1,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Who's bringing what...",style: Theme.of(context).textTheme.headline6,),
                       ),
-                      IconThemeWidget(icon: EvaIcons.arrowDown)
+                      const IconThemeWidget(icon: EvaIcons.arrowDown)
                     ],
                   ),
                 ),
@@ -42,16 +40,14 @@ class ListPage extends StatelessWidget{
             )
     ),
           Expanded(
-            flex: 1,
             child:
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("Items still needed...",style: Theme.of(context).textTheme.headline6,),
+                    child: Text('Items still needed...',style: Theme.of(context).textTheme.headline6,),
                   ),
                 ),
                 Expanded(

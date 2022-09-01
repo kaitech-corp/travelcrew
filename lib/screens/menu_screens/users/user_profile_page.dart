@@ -5,10 +5,11 @@ import '../../../services/widgets/reusableWidgets.dart';
 import '../../profile_page/profile_widget.dart';
 
 class UserProfilePage extends StatelessWidget{
+
+  const UserProfilePage({ required this.user});
   final UserPublicProfile user;
 
-  UserProfilePage({ required this.user});
-
+  @override
   Widget build(BuildContext context) {
 
 

@@ -12,23 +12,23 @@ import '../../../../services/functions/cloud_functions.dart';
 /// Relies on Firebase authentication.
 /// Allows to sign in with Google or Apple.
 class UserRepository {
+
+  UserRepository() : _firebaseAuth = FirebaseAuth.instance;
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final AnalyticsService _analyticsService = AnalyticsService();
 
-  UserRepository() : _firebaseAuth = FirebaseAuth.instance;
-
   Future<UserCredential> signInWithCredentials(
       {required String email, required String password}) async {
-    return await _firebaseAuth.signInWithEmailAndPassword(
+    return _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
   }
 
   Future<void> signUp(String email, String password, String? firstname,
       String? lastName, String? displayName, File? urlToImage) async {
-    var result = await _firebaseAuth.createUserWithEmailAndPassword(
+    final UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
-    User? user = result.user;
+    final User? user = result.user;
     await DatabaseService(uid: user?.uid)
         .updateUserData(firstname, lastName, email, user!.uid);
     await DatabaseService(uid: user.uid).updateUserPublicProfileData(
@@ -42,7 +42,7 @@ class UserRepository {
   }
 
   Future<bool> isSignedIn() async {
-    final currentUser = _firebaseAuth.currentUser;
+    final User? currentUser = _firebaseAuth.currentUser;
     return currentUser != null;
   }
 
@@ -56,14 +56,14 @@ class UserRepository {
   }
 
   Stream<User?> get user {
-    return _firebaseAuth.authStateChanges().map((user) => user);
+    return _firebaseAuth.authStateChanges().map((User? user) => user);
   }
 
   bool get appleSignInAvailable => Platform.isIOS;
 
   Future<UserCredential?> signInWithApple() async {
     try {
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
+      final AuthorizationCredentialAppleID appleCredential = await SignInWithApple.getAppleIDCredential(
           scopes: [
             AppleIDAuthorizationScopes.email,
             AppleIDAuthorizationScopes.fullName
@@ -88,13 +88,13 @@ class UserRepository {
       final GoogleSignInAuthentication? googleSignInAuthentication =
           await googleSignInAccount?.authentication;
 
-      final AuthCredential? credential = GoogleAuthProvider.credential(
+      final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication?.accessToken,
         idToken: googleSignInAuthentication?.idToken,
       );
 
       final UserCredential authResult =
-          await _firebaseAuth.signInWithCredential(credential!);
+          await _firebaseAuth.signInWithCredential(credential);
       final User? user = authResult.user;
 
       assert(!user!.isAnonymous);
@@ -112,7 +112,7 @@ class UserRepository {
 
   Future<void> updateUserPublicProfile(String? firstname, String? lastName,
       String? displayName, File? urlToImage) async {
-    final currentUser = _firebaseAuth.currentUser;
+    final User? currentUser = _firebaseAuth.currentUser;
     if (displayName?.isEmpty ?? true) {
       displayName =
           'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';

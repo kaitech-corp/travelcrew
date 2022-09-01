@@ -26,9 +26,9 @@ import 'notifications/notification_page.dart';
 /// Main screen
 class MainTabPage extends StatefulWidget {
 
-  final List<NotificationData>? notifications;
+  const MainTabPage({Key? key, this.notifications}) :  super(key: key);
 
-  MainTabPage({Key? key, this.notifications}) :  super(key: key);
+  final List<NotificationData>? notifications;
 
 
   @override
@@ -42,8 +42,8 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     super.initState();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
-      RemoteNotification message =  event.notification!;
-      String tripDocID = event.data['docID'] ?? '';
+      final RemoteNotification message =  event.notification!;
+      final String tripDocID = event.data['docID'] as String;
       if (tripDocID.isNotEmpty) {
         CloudFunction().addNewNotification(type: 'Chat',message: message.title!,documentID: tripDocID,ownerID: userService.currentUserID);
       }
@@ -56,9 +56,9 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       // RemoteNotification message =  event.notification;
-      String tripDocID = event.data['docID'] ?? '';
+      final String tripDocID = event.data['docID'] as String;
       if(tripDocID.isNotEmpty){
-        Trip trip = await DatabaseService().getTrip(tripDocID);
+        final Trip trip = await DatabaseService().getTrip(tripDocID);
         try {
           navigationService.navigateTo(ExploreRoute, arguments: trip);
         } catch (e) {
@@ -74,14 +74,14 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     TabBarView(
-      children: [
+      children: <Widget>[
         CurrentTrips(),
         PastTrips(),
         PrivateTrips(),
       ],
     ),
     AllTrips(),
-    AddTripPage(),
+    const AddTripPage(),
     FavoritesPage(),
     NotificationPage(),];
 
@@ -107,7 +107,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           drawer: MenuDrawer(),
           body: (_selectedIndex == 0) ? Stack(
                     clipBehavior: Clip.none,
-                    children: [
+                    children: <Widget>[
                       const CustomAppBar(bottomNav: true,),
                       Padding(
                         padding: EdgeInsets.only(
@@ -133,7 +133,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
                     ],
                   ):
                   Stack(
-                    children: [
+                    children: <Widget>[
                       const CustomAppBar(bottomNav: false,),
                       Padding(
                         padding: EdgeInsets.only(
@@ -147,7 +147,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
           bottomNavigationBar: CurvedNavigationBar(
             backgroundColor: ReusableThemeColor().bottomNavColor(context),
             color: ReusableThemeColor().color(context),
-            items: [
+            items: <Widget>[
               const IconThemeWidget(icon:Icons.list_rounded),
               const IconThemeWidget(icon:Icons.search),
               const IconThemeWidget(icon: Icons.add_outlined,),
@@ -166,4 +166,3 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
     );
   }
 }
-

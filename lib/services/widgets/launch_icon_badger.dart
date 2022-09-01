@@ -3,11 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:travelcrew/repositories/notification_repository.dart';
-import 'package:travelcrew/screens/authenticate/profile_stream.dart';
-import 'package:travelcrew/services/database.dart';
-
 import '../../blocs/notification_bloc/notification_bloc.dart';
+import '../../repositories/notification_repository.dart';
+import '../../screens/authenticate/profile_stream.dart';
+import '../database.dart';
 
 
 
@@ -30,10 +29,10 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
 
     }
 
-    initPlatformState() async {
+    Future<void> initPlatformState() async {
       String appBadgeSupported;
       try {
-        bool res = await FlutterAppBadger.isAppBadgeSupported();
+        final bool res = await FlutterAppBadger.isAppBadgeSupported();
         if (res) {
           appBadgeSupported = 'Supported';
         } else {
@@ -51,7 +50,7 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NotificationBloc>(
-        create: (context){
+        create: (BuildContext context){
           return NotificationBloc(notificationRepository: NotificationRepository()..refresh());},
         child: ProfileStream(uid: userService.currentUserID),
     );

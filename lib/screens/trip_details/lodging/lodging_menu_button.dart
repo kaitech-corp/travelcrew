@@ -16,27 +16,27 @@ import '../split/split_package.dart';
 /// Lodging menu button
 class LodgingMenuButton  extends StatelessWidget{
 
+  const LodgingMenuButton({Key? key, required this.trip, required this.lodging, this.event}) : super(key: key);
+
   final Trip trip;
   final LodgingData lodging;
   final Event? event;
 
-  const LodgingMenuButton({Key? key, required this.trip, required this.lodging, this.event}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return lodging.uid == userService.currentUserID ? PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value){
         switch (value){
-          case "Edit": {
+          case 'Edit': {
             navigationService.navigateTo(EditLodgingRoute,arguments: EditLodgingArguments(lodging, trip));
           }
           break;
-          case "View": {
+          case 'View': {
             if(lodging.link?.isNotEmpty ?? false) TCFunctions().launchURL(lodging.link!);
           }
           break;
-          case "Split": {
+          case 'Split': {
             SplitPackage().splitItemAlert(context,
                 SplitObject(
                     itemDocID:lodging.fieldID,
@@ -45,11 +45,11 @@ class LodgingMenuButton  extends StatelessWidget{
                     itemName: lodging.lodgingType,
                     itemDescription: lodging.comment,
                     amountRemaining: 0,
-                    itemType: "Lodging"),
+                    itemType: 'Lodging'),
                 trip: trip);
           }
           break;
-          case "Calendar":
+          case 'Calendar':
             {
               Add2Calendar.addEvent2Cal(event!);
             }
@@ -61,64 +61,64 @@ class LodgingMenuButton  extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
+      itemBuilder: (BuildContext context) =>[
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
-            title: const Text('View Link'),
+            title: Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
-            title: const Text('Split'),
+            title: Text('Split'),
           ),
         ),
         const PopupMenuItem(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
         const PopupMenuItem(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
-            title: const Text('Delete Lodging'),
+            title: Text('Delete Lodging'),
           ),
         ),
       ],
     ):
     PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value){
         switch (value){
-          case "Edit": {
+          case 'Edit': {
             navigationService.navigateTo(EditLodgingRoute,arguments: EditLodgingArguments(lodging, trip));
           }
           break;
-          case "report":
+          case 'report':
             {
               TravelCrewAlertDialogs().reportAlert(context: context, lodgingData: lodging, type: 'lodging');
             }
             break;
-          case "View": {
+          case 'View': {
             if (lodging.link?.isNotEmpty ?? false) {
               TCFunctions().launchURL(lodging.link!);
             }
           }
           break;
-          case "Split": {
+          case 'Split': {
             SplitPackage().splitItemAlert(context,
                 SplitObject(
                     itemDocID:lodging.fieldID,
@@ -127,11 +127,11 @@ class LodgingMenuButton  extends StatelessWidget{
                     itemName: lodging.lodgingType,
                     itemDescription: lodging.comment,
                     amountRemaining: 0,
-                    itemType: "Lodging"),
+                    itemType: 'Lodging'),
                 trip: trip);
           }
           break;
-          case "Calendar":
+          case 'Calendar':
             {
               Add2Calendar.addEvent2Cal(event!);
             }
@@ -143,40 +143,40 @@ class LodgingMenuButton  extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
+      itemBuilder: (BuildContext context) =>[
         const PopupMenuItem(
           value: 'report',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.report),
-            title: const Text('Report'),
+            title: Text('Report'),
           ),
         ),
         const PopupMenuItem(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
         const PopupMenuItem(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
-            title: const Text('View Link'),
+            title: Text('View Link'),
           ),
         ),
         const PopupMenuItem(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
-            title: const Text('Split'),
+            title: Text('Split'),
           ),
         ),
         const PopupMenuItem(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
       ],

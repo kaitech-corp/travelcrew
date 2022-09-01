@@ -19,11 +19,11 @@ import 'split_package.dart';
 
 /// Split Bloc Builder
 class SplitBlocBuilder extends StatefulWidget {
-  final Trip trip;
   const SplitBlocBuilder({
     Key? key,
     required this.trip,
   }) : super(key: key);
+  final Trip trip;
 
   @override
   _SplitBlocBuilderState createState() => _SplitBlocBuilderState();
@@ -44,7 +44,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
     return SafeArea(
       child: Scaffold(
         body: BlocBuilder<GenericBloc<SplitObject, SplitRepository>,
-            GenericState>(builder: (context, state) {
+            GenericState>(builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
             return Loading();
           } else if (state is HasDataState) {
@@ -52,12 +52,12 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
             final List<String> uids = [];
             if (items.isNotEmpty) {
               double total = 0.00;
-              items.forEach((item) {
+              for (final SplitObject item in items) {
                 total += item.itemTotal!;
                 if (!uids.contains(item.purchasedByUID)) {
                   uids.add(item.purchasedByUID!);
                 }
-              });
+              }
               return Column(
                 children: [
                   Expanded(
@@ -95,7 +95,7 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                     flex: 5,
                     child: ListView.builder(
                         itemCount: items.length,
-                        itemBuilder: (context, index) {
+                        itemBuilder: (BuildContext context, int index) {
                           final SplitObject item = items[index];
                           return InkWell(
                             onLongPress: () {
@@ -119,7 +119,6 @@ class _SplitBlocBuilderState extends State<SplitBlocBuilder> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    flex: 1,
                                     child: SplitIconWidget(
                                       type: item.itemType!,
                                     ),
@@ -184,17 +183,17 @@ class QuickDataCards extends StatelessWidget {
 
   List<UserPurchaseDetails> calculateTotalPerUser() {
     final List<UserPurchaseDetails> calculatedList = [];
-    uids.forEach((element) {
+    for (final String element in uids) {
       calculatedList.add(UserPurchaseDetails(uid: element, total: 0.00));
-    });
+    }
 
-    items.forEach((item) {
-      calculatedList.forEach((object) {
+    for (final SplitObject item in items) {
+      for (final UserPurchaseDetails object in calculatedList) {
         if (object.uid == item.purchasedByUID) {
           // object.total += item.itemTotal!;
         }
-      });
-    });
+      }
+    }
     return calculatedList;
   }
 
@@ -207,7 +206,7 @@ class QuickDataCards extends StatelessWidget {
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: userDetails.length,
-          itemBuilder: (context, index) {
+          itemBuilder: (BuildContext context, int index) {
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -215,7 +214,7 @@ class QuickDataCards extends StatelessWidget {
               color: Colors.transparent,
               elevation: 0,
               child: StreamBuilder<UserPublicProfile>(
-                builder: (context, userData) {
+                builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> userData) {
                   if (userData.hasData) {
                     final UserPublicProfile user =
                         userData.data as UserPublicProfile;
@@ -253,7 +252,7 @@ class QuickDataCards extends StatelessWidget {
                       child: Column(
                         children: const <Widget>[
                           Text('Name: N/A'),
-                          Text('Paid: \$0.00'),
+                          Text(r'Paid: $0.00'),
                         ],
                       ),
                     );

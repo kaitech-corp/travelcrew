@@ -2,30 +2,50 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for user
 class User {
+
+  User({this.displayName, this.email, this.firstName, this.lastName, this.uid});
   final String? displayName;
   final String? email;
   final String? firstName;
   final String? lastName;
   final String? uid;
 
-  User({this.displayName, this.email, this.firstName, this.lastName, this.uid});
-
 }
 
 ///Model for user signup
 class UserSignUp {
+
+   UserSignUp({this.displayName, this.email, this.firstName, this.lastName, this.uid});
    String? displayName;
    String? email;
    String? firstName;
    String? lastName;
    String? uid;
 
-   UserSignUp({this.displayName, this.email, this.firstName, this.lastName, this.uid});
-
 }
 
 ///Model for user public profile
 class UserPublicProfile {
+
+  UserPublicProfile({this.hometown, this.instagramLink, this.facebookLink, this.topDestinations, this.blockedList, this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
+
+  UserPublicProfile.fromData(Map<String, dynamic> data)
+      :
+        blockedList = List<String>.from(data['blockedList'] as List<String>),
+        displayName = data['displayName'] as String,
+        email = data['email'] as String,
+        firstName = data['firstName'] as String,
+        following = List<String>.from(data['following'] as List<String>) ,
+        followers = List<String>.from(data['followers'] as List<String>),
+        lastName = data['lastName'] as String,
+        tripsCreated = data['tripsCreated'] as int,
+        tripsJoined = data['tripsJoined'] as int,
+        uid = data['uid'] as String,
+        urlToImage = data['urlToImage'] as String,
+        hometown = data['hometown'] as String,
+        instagramLink = data['instagramLink'] as String,
+        facebookLink = data['facebookLink'] as String,
+        topDestinations = List<String>.from(data['topDestinations'] as List<String>);
   List<String>? blockedList;
   String? displayName;
   String? email;
@@ -42,28 +62,8 @@ class UserPublicProfile {
   String? facebookLink;
   List<String>? topDestinations;
 
-  UserPublicProfile({this.hometown, this.instagramLink, this.facebookLink, this.topDestinations, this.blockedList, this.displayName, this.email, this.following, this.followers, this.firstName, this.lastName, this.uid, this.urlToImage});
-
-  UserPublicProfile.fromData(Map<String, dynamic> data)
-      :
-        blockedList = List<String>.from(data['blockedList']),
-        displayName = data['displayName'] ?? '',
-        email = data['email'] ?? '',
-        firstName = data['firstName'] ?? '',
-        following = List<String>.from(data['following']) ,
-        followers = List<String>.from(data['followers']),
-        lastName = data['lastName'] ?? '',
-        tripsCreated = data['tripsCreated'] ?? null,
-        tripsJoined = data['tripsJoined'] ?? null,
-        uid = data['uid'] ?? '',
-        urlToImage = data['urlToImage'] ?? '',
-        hometown = data['hometown'] ?? '',
-        instagramLink = data['instagramLink'] ?? '',
-        facebookLink = data['facebookLink'] ?? '',
-        topDestinations = List<String>.from(data['topDestinations']);
-
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'blockedList': blockedList,
       'displayName': displayName,
       'email': email,
@@ -85,23 +85,23 @@ class UserPublicProfile {
 
 ///Model for members of trip
 class Members {
+
+   Members({this.displayName, this.firstName, this.lastName, this.uid, this.urlToImage});
+
+   Members.fromData(Map<String, dynamic> data)
+       :displayName = data['displayName'] as String,
+         firstName = data['firstName'] as String,
+         lastName = data['lastName'] as String,
+         uid = data['uid'] as String,
+         urlToImage = data['urlToImage'] as String;
    String? uid;
    String? displayName;
    String? firstName;
    String? lastName;
    String? urlToImage;
 
-   Members({this.displayName, this.firstName, this.lastName, this.uid, this.urlToImage});
-
-   Members.fromData(Map<String, dynamic> data)
-       :displayName = data['displayName'],
-         firstName = data['firstName'],
-         lastName = data['lastName'],
-         uid = data['uid'],
-         urlToImage = data['urlToImage'];
-
    Map<String, dynamic> toJson() {
-     return {
+     return <String, dynamic>{
        'displayName': displayName,
        'firstName': firstName,
        'lastName': lastName,
@@ -114,107 +114,106 @@ class Members {
 
 ///Model for item being brought
 class Bringing {
+
+  Bringing({this.voters, this.displayName, this.documentID, this.item,this.type});
+
+  Bringing.fromData(Map<String, dynamic> data):
+        displayName = data['displayName'] as String,
+        item = data['item'] as String,
+        documentID = data['documentID'] as String,
+        type = data['type'] as String,
+        voters = data['voters'] != null ? List<String>.from(data['voters'] as List<String>) : <String>[];
   String? item;
   String? displayName;
   String? documentID;
   List<String>? voters;
   String? type;
-
-  Bringing({this.voters, this.displayName, this.documentID, this.item,this.type});
-
-  Bringing.fromData(Map<String, dynamic> data):
-        displayName = data['displayName'] ?? '',
-        item = data['item'] ?? '',
-        documentID = data['documentID'] ?? '',
-        type = data['type'] != null ? data['type'] : '',
-        voters = data['voters'] != null ? List<String>.from(data['voters']) : [];
 }
 
 ///Model for item needed for trip
 class Need {
-  String? item;
-  String? displayName;
-  String? documentID;
-  String? type;
 
   Need({this.displayName, this.documentID, this.item,this.type});
 
   Need.fromData(Map<String, dynamic> data):
-        displayName = data['displayName'],
-        item = data['item'],
-        documentID = data['documentID'],
-        type = data['type'] ?? '';
+        displayName = data['displayName']  as String,
+        item = data['item']  as String,
+        documentID = data['documentID'] as String,
+        type = data['type'] as String;
+  String? item;
+  String? displayName;
+  String? documentID;
+  String? type;
 }
 
 ///API Objects
 
-class Countries {
-  final String? name;
-  final String? capital;
-  final String? region;
-  final List<dynamic>? currencies;
-  final List<dynamic>? languages;
-
-  Countries({this.name, this.capital, this.currencies, this.languages, this.region});
-
-  Countries.fromJSON(Map<String, dynamic> jsonMap):
-        name = jsonMap['name'],
-  capital = jsonMap['capital'],
-  currencies = jsonMap['currencies'],
-  languages = jsonMap['languages'],
-  region = jsonMap['region'];
-
-}
-
-///Model for Holiday
-class Holiday {
-  final String? date;
-  final String? localName;
-  final String? name;
-  final String? countryCode;
-
-Holiday({this.date, this.localName, this.name, this.countryCode});
-
-  Holiday.fromJSON(Map<String, dynamic> jsonMap):
-        date = jsonMap['date'],
-        localName = jsonMap['localName'],
-        name = jsonMap['name'],
-        countryCode = jsonMap['countryCode'];
-
-}
+// class Countries {
+//
+//   Countries({this.name, this.capital, this.currencies, this.languages, this.region});
+//
+//   Countries.fromJSON(Map<String, dynamic> jsonMap):
+//         name = jsonMap['name'],
+//   capital = jsonMap['capital'],
+//   currencies = jsonMap['currencies'],
+//   languages = jsonMap['languages'],
+//   region = jsonMap['region'];
+//   final String? name;
+//   final String? capital;
+//   final String? region;
+//   final List<dynamic>? currencies;
+//   final List<dynamic>? languages;
+//
+// }
+//
+// ///Model for Holiday
+// class Holiday {
+//
+// Holiday({this.date, this.localName, this.name, this.countryCode});
+//
+//   Holiday.fromJSON(Map<String, dynamic> jsonMap):
+//         date = jsonMap['date'],
+//         localName = jsonMap['localName'],
+//         name = jsonMap['name'],
+//         countryCode = jsonMap['countryCode'];
+//   final String? date;
+//   final String? localName;
+//   final String? name;
+//   final String? countryCode;
+//
+// }
 
 ///Model Walmart API
 class WalmartProducts {
-   String? query;
-   String? type;
 
   WalmartProducts({this.query,this.type});
 
   WalmartProducts.fromJSON(Map<String, dynamic> jsonMap):
-        query = jsonMap['displayName'],
-        // type = jsonMap['super_deps'][0]['name'] ?? '';
-        type = jsonMap['type'] ?? '';
+        query = jsonMap['displayName'] as String,
+        type = jsonMap['type'] as String;
+   String? query;
+   String? type;
 
 }
 
 ///Model for department type from Walmart API
 class Department {
-  final String? name;
-  final String? id;
 
   Department({this.name,this.id});
 
   Department.fromJSON(Map<String, dynamic> jsonMap):
-        name = jsonMap['name'],
-        id = jsonMap['id'];
+        name = jsonMap['name'] as String,
+        id = jsonMap['id'] as String;
+  final String? name;
+  final String? id;
 }
 
 ///Model for quantity from Walmart API
 class WalmartProductsItem {
-  int quantity;
-  final WalmartProducts? walmartProducts;
 
   WalmartProductsItem({this.quantity = 1, this.walmartProducts});
+  int quantity;
+  final WalmartProducts? walmartProducts;
 
   void increment() {
     quantity++;
@@ -223,12 +222,12 @@ class WalmartProductsItem {
 
 ///Model for user feedback
 class TCFeedback {
+
+  TCFeedback({this.fieldID, this.message, this.timestamp, this.uid});
   final String? message;
   final Timestamp? timestamp;
   final String? uid;
   final String? fieldID;
-
-  TCFeedback({this.fieldID, this.message, this.timestamp, this.uid});
 
 }
 
@@ -237,24 +236,14 @@ class TCReports {
 }
 ///Model for Google Places
 class GoogleData {
-  String? location;
-  GeoPoint? geoLocation;
 
   GoogleData({this.location, this.geoLocation});
+  String? location;
+  GeoPoint? geoLocation;
 }
 
 ///Model for trip ads show
 class TripAds {
-  final String? tripName;
-  final GeoPoint? geoPoint;
-  final String? link;
-  final String? location;
-  final Timestamp? dateCreated;
-  final String? documentID;
-  final List<String>? favorites;
-  final int? clicks;
-  final List<String>? clickers;
-  final String? urlToImage;
 
   TripAds(
       {this.link,
@@ -269,66 +258,76 @@ class TripAds {
       this.clickers});
 
   TripAds.fromData(Map<String, dynamic> data):
-    tripName = data['tripName'] ?? '',
-    documentID = data['documentID'] ?? '',
-    geoPoint = data['geoPoint'] ?? null,
-    link = data['link'] ?? '',
-    location = data['location'] ?? '',
-    dateCreated = data['dateCreated'] ?? null,
-    clicks = data['clicks'] ?? 0,
-    favorites = List<String>.from(data['favorites']),
-    clickers = List<String>.from(data['clickers']),
-    urlToImage = data['urlToImage'] ?? '';
+    tripName = data['tripName'] as String,
+    documentID = data['documentID'] as String,
+    geoPoint = data['geoPoint'] as GeoPoint,
+    link = data['link'] as String,
+    location = data['location'] as String,
+    dateCreated = data['dateCreated'] as Timestamp,
+    clicks = data['clicks'] as int,
+    favorites = List<String>.from(data['favorites'] as List<String>),
+    clickers = List<String>.from(data['clickers'] as List<String>),
+    urlToImage = data['urlToImage'] as String;
+  final String? tripName;
+  final GeoPoint? geoPoint;
+  final String? link;
+  final String? location;
+  final Timestamp? dateCreated;
+  final String? documentID;
+  final List<String>? favorites;
+  final int? clicks;
+  final List<String>? clickers;
+  final String? urlToImage;
 }
 
 ///Model for suggestions
 class Suggestions {
+
+  Suggestions({this.fieldID, this.url, this.timestamp, this.tags});
   final String? url;
   final Timestamp? timestamp;
   final List<String>? tags;
   final String? fieldID;
-
-  Suggestions({this.fieldID, this.url, this.timestamp, this.tags});
 }
 
 ///Model for map API
 class TrueWay {
 
+  TrueWay({this.name, this.address, this.distance, this.website});
+
+  TrueWay.fromJSON(Map<String, dynamic> jsonMap):
+        name = jsonMap['name'] as String,
+        address = jsonMap['address'] as String,
+        distance = jsonMap['distance'] as int,
+        website = jsonMap['website'] as String;
+
   final String? name;
   final String? address;
   final int? distance;
   final String? website;
-
-  TrueWay({this.name, this.address, this.distance, this.website});
-
-  TrueWay.fromJSON(Map<String, dynamic> jsonMap):
-        name = jsonMap['name'],
-        address = jsonMap['address'],
-        distance = jsonMap['distance'],
-        website = jsonMap['website'];
 }
 
 ///Model for count down date to show on trip page
 class CountDownDate {
 
+  CountDownDate({this.daysLeft,this.initialDayCount,this.gaugeCount});
+
   double? initialDayCount;
   double? daysLeft;
   double? gaugeCount;
-
-  CountDownDate({this.daysLeft,this.initialDayCount,this.gaugeCount});
 }
 
 ///Model for user purchase details: Split Feature
 class UserPurchaseDetails{
-  String? uid;
-  double? total;
 
   UserPurchaseDetails({this.total,this.uid});
+  String? uid;
+  double? total;
 }
 ///Model for start and end dates
 class DateTimeModel{
-  DateTime? startDate;
-  DateTime? endDate;
 
   DateTimeModel({this.endDate,this.startDate});
+  DateTime? startDate;
+  DateTime? endDate;
 }

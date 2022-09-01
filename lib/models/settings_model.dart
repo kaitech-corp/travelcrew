@@ -1,33 +1,29 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 ///Model for user settings
 class UserNotificationSettingsData {
+  UserNotificationSettingsData(
+      {this.isTripChatOn,
+      this.isPushNotificationsOn,
+      this.isTripChangeOn,
+      this.isDirectMessagingOn,
+      this.lastUpdated});
+
+  UserNotificationSettingsData.fromData(Map<String, dynamic> data)
+      : isDirectMessagingOn = data['isDirectMessagingOn'] as bool,
+        isPushNotificationsOn = data['isPushNotificationsOn'] as bool,
+        isTripChangeOn = data['isTripChangeOn'] as bool,
+        isTripChatOn = data['isTripChatOn'] as bool,
+        lastUpdated = data['lastUpdated'] as Timestamp;
+
   final bool? isDirectMessagingOn;
   final bool? isPushNotificationsOn;
   final bool? isTripChangeOn;
   final bool? isTripChatOn;
   final Timestamp? lastUpdated;
 
-  UserNotificationSettingsData(
-      {this.isTripChatOn,
-      this.isPushNotificationsOn,
-      this.isTripChangeOn,
-      this.isDirectMessagingOn,
-      this.lastUpdated
-     });
-
-  UserNotificationSettingsData.fromData(Map<String, dynamic> data)
-      : isDirectMessagingOn = data['isDirectMessagingOn'] ?? true,
-        isPushNotificationsOn = data['isPushNotificationsOn'] ?? true,
-        isTripChangeOn = data['isTripChangeOn'] ?? true,
-        isTripChatOn = data['isTripChatOn'] ?? true,
-        lastUpdated = data['lastUpdated'] ?? Timestamp.now();
-
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'isDirectMessagingOn': isDirectMessagingOn,
       'isPushNotificationsOn': isPushNotificationsOn,
       'isTripChangeOn': isTripChangeOn,
@@ -36,13 +32,12 @@ class UserNotificationSettingsData {
     };
   }
 
-  UserNotificationSettingsData fakerData(){
+  UserNotificationSettingsData fakerData() {
     return UserNotificationSettingsData(
-      isTripChatOn: true,
-      isTripChangeOn: true,
-      isDirectMessagingOn: true,
-      isPushNotificationsOn: true,
-      lastUpdated: Timestamp.now()
-    );
+        isTripChatOn: true,
+        isTripChangeOn: true,
+        isDirectMessagingOn: true,
+        isPushNotificationsOn: true,
+        lastUpdated: Timestamp.now());
   }
 }

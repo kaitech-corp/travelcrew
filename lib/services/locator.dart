@@ -35,7 +35,7 @@ class UserService {
 /// Provides the user profile of the current user.
 class UserProfileService {
 
-  var userService = locator<UserService>();
+  UserService userService = locator<UserService>();
   UserPublicProfile profile = UserPublicProfile();
 
   Future<UserPublicProfile> currentUserProfile() async {
@@ -49,7 +49,7 @@ class UserProfileService {
   }
 
   UserPublicProfile currentUserProfileDirect(){
-    currentUserProfile().then((value) => profile = value);
+    currentUserProfile().then((UserPublicProfile value) => profile = value);
     return profile;
   }
 }

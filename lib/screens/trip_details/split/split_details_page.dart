@@ -14,13 +14,13 @@ import 'split_package.dart';
 
 /// Details page for split items
 class SplitDetailsPage extends StatelessWidget {
-  final SplitObject splitObject;
-  final String purchasedByUID;
-  final Trip trip;
 
   const SplitDetailsPage(
       {Key? key, required this.splitObject, required this.purchasedByUID, required this.trip})
       : super(key: key);
+  final SplitObject splitObject;
+  final String purchasedByUID;
+  final Trip trip;
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +41,16 @@ class SplitDetailsPage extends StatelessWidget {
               .costDataList,
           DatabaseService().getcrewList(trip.accessUsers!),
         ),
-        builder: (BuildContext context, snapshots) {
+        builder: (BuildContext context, SnapshotTuple2<Object?, Object?> snapshots) {
           if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {
-            List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
-            List<String> uidList = [];
-            userCostData.forEach((element) {
+            final List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
+            final List<String> uidList = [];
+            for (final CostObject element in userCostData) {
               if (!uidList.contains(element.uid)) {
                 uidList.add(element.uid!);
               }
-            });
-            var amountRemaining =
+            }
+            final double amountRemaining =
                 SplitPackage().sumRemainingBalance(userCostData);
 
             ///Update remaining balance by checking if each
@@ -59,15 +59,15 @@ class SplitDetailsPage extends StatelessWidget {
               DatabaseService().updateRemainingBalance(
                   splitObject, amountRemaining, uidList);
             }
-            List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
+            final List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
             return ListView.builder(
                 itemCount: userCostData.length,
-                itemBuilder: (context, index) {
-                  CostObject costObject = userCostData[index];
-                  UserPublicProfile userPublicProfile = userPublicData
-                      .firstWhere((element) => element.uid == costObject.uid);
-                  UserPublicProfile purchasedByUser = userPublicData
-                      .firstWhere((element) => element.uid == purchasedByUID);
+                itemBuilder: (BuildContext context, int index) {
+                  final CostObject costObject = userCostData[index];
+                  final UserPublicProfile userPublicProfile = userPublicData
+                      .firstWhere((UserPublicProfile element) => element.uid == costObject.uid);
+                  final UserPublicProfile purchasedByUser = userPublicData
+                      .firstWhere((UserPublicProfile element) => element.uid == purchasedByUID);
                   if (userPublicProfile.uid != purchasedByUID) {
                     return InkWell(
                       onTap: () {
@@ -106,14 +106,14 @@ class SplitDetailsPage extends StatelessWidget {
                           subtitle: (costObject.paid == false)
                               ? Text(
                                   'Owe: \$${costObject.amountOwe!.toStringAsFixed(2)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Cantata One',
                                       color: Colors.red))
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Paid',
+                                    const Text('Paid',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Cantata One',

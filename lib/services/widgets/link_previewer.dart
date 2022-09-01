@@ -21,7 +21,7 @@ class _ViewAnyLinkState extends State<ViewAnyLink> {
   Widget build(BuildContext context) {
     return AnyLinkPreview(
       link: widget.link,
-      bodyStyle: TextStyle(color: Colors.blueGrey),
+      bodyStyle: const TextStyle(color: Colors.blueGrey),
       onTap: widget.function,
     );
   }

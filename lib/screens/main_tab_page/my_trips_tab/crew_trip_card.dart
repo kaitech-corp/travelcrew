@@ -14,14 +14,14 @@ import '../../../size_config/size_config.dart';
 import '../../image_layout/image_layout_trips.dart';
 
 class CrewTripCard extends StatelessWidget {
-  final Trip trip;
-  final heroTag;
 
-  CrewTripCard({required this.trip, this.heroTag});
+  const CrewTripCard({Key? key, required this.trip, required this.heroTag}) : super(key: key);
+  final Trip trip;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
-    var size = SizeConfig.screenHeight;
+    final double size = SizeConfig.screenHeight;
 
     return Card(
       elevation: 5,
@@ -44,10 +44,10 @@ class CrewTripCard extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
-                colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+                colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
           ),
           child: Stack(
-            children: [
+            children: <Widget>[
               Positioned.fill(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -61,7 +61,6 @@ class CrewTripCard extends StatelessWidget {
                               transitionOnUserGestures: true,
                               child: ImageLayout(trip.urlToImage!))),
                     Flexible(
-                      flex: 1,
                       child: ListTile(
                         title: Tooltip(
                             message: trip.tripName,
@@ -98,10 +97,9 @@ class CrewTripCard extends StatelessWidget {
                       ),
                     ),
                     Flexible(
-                      flex: 1,
                       child: ButtonBar(
                         alignment: MainAxisAlignment.end,
-                        children: [
+                        children: <Widget>[
                           if (trip.favorite != null)
                             Tooltip(
                               message: 'Likes',
@@ -138,12 +136,12 @@ class CrewTripCard extends StatelessWidget {
 
   Widget chatNotificationBadges(Trip trip) {
     return StreamBuilder<List<ChatData>>(
-      builder: (context, chats) {
+      builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
         if (chats.hasError) {
           CloudFunction().logError('Error streaming chats for '
               'notifications on Crew cards: ${chats.error.toString()}');
         }
-        if (chats.hasData && chats.data!.length > 0) {
+        if (chats.hasData && chats.data!.isNotEmpty) {
           return Tooltip(
             message: 'New Messages',
             child: BadgeIcon(
@@ -165,12 +163,12 @@ class CrewTripCard extends StatelessWidget {
 
   Widget needListBadges(Trip trip) {
     return StreamBuilder<List<Need>>(
-      builder: (context, items) {
+      builder: (BuildContext context, AsyncSnapshot<List<Need>> items) {
         if (items.hasError) {
           CloudFunction().logError('Error streaming need list for '
               'Crew trip cards: ${items.error.toString()}');
         }
-        if (items.hasData && items.data!.length > 0) {
+        if (items.hasData && items.data!.isNotEmpty) {
           return Tooltip(
             message: 'Need List',
             child: BadgeIcon(

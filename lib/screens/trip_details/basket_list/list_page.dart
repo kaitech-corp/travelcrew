@@ -12,10 +12,10 @@ import 'controller/basket_controller.dart';
 
 class BasketListPage extends StatelessWidget{
 
+  const BasketListPage({Key? key, required this.trip, required this.controller}) : super(key: key);
+
   final Trip trip;
   final BasketController controller;
-
-  BasketListPage({Key? key, required this.trip, required this.controller}) : super(key: key);
 
 
 
@@ -42,9 +42,9 @@ class BasketListPage extends StatelessWidget{
           color: canvasColor,
           child: AnimatedBuilder(
             animation: controller,
-            builder: (context, _){
+            builder: (BuildContext context, _){
               return LayoutBuilder(
-                  builder: (context, BoxConstraints constraints){
+                  builder: (BuildContext context, BoxConstraints constraints){
                     return Stack(
                       children: [
                         AnimatedPositioned(
