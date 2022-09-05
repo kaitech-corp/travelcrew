@@ -11,18 +11,20 @@ import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
 
 class TCUserCard extends StatefulWidget {
-  const TCUserCard({
+  const TCUserCard({Key? key,
     required this.allUsers,
     this.heroTag,
-  });
+  }) : super(key: key);
+
   final UserPublicProfile allUsers;
   final heroTag;
 
   @override
-  _TCUserCardState createState() => _TCUserCardState();
+  State<TCUserCard> createState() => _TCUserCardState();
 }
 
 class _TCUserCardState extends State<TCUserCard> {
+
   UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
@@ -30,7 +32,7 @@ class _TCUserCardState extends State<TCUserCard> {
   Widget build(BuildContext context) {
     return Card(
       color: ReusableThemeColor().color(context),
-      key: Key(widget.allUsers.uid!),
+      key: Key(widget.allUsers.uid),
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
@@ -44,13 +46,13 @@ class _TCUserCardState extends State<TCUserCard> {
             children: <Widget>[
               Center(
                 child: Hero(
-                  tag: widget.allUsers.uid!,
+                  tag: widget.allUsers.uid,
                   transitionOnUserGestures: true,
                   child: CircleAvatar(
                     radius: SizeConfig.tablet
                         ? SizeConfig.blockSizeHorizontal * 8
                         : SizeConfig.blockSizeHorizontal * 11,
-                    child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: widget.allUsers.urlToImage!),
+                    child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: widget.allUsers.urlToImage),
 
                   ),
                 ),
@@ -58,12 +60,12 @@ class _TCUserCardState extends State<TCUserCard> {
               Expanded(
                 child: Stack(
                   // crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     Align(
                       alignment: Alignment.topLeft,
                       child: ListTile(
                         // leading:
-                        title: Text(widget.allUsers.displayName!,
+                        title: Text(widget.allUsers.displayName,
                             style: SizeConfig.mobile
                                 ? Theme.of(context).textTheme.subtitle1
                                 : Theme.of(context).textTheme.headline5),
@@ -75,15 +77,14 @@ class _TCUserCardState extends State<TCUserCard> {
                               ? Theme.of(context).textTheme.subtitle2
                               : Theme.of(context).textTheme.subtitle1,
                         ),
-                        trailing: !(currentUserProfile.blockedList
-                                    ?.contains(widget.allUsers.uid) ??
-                                false)
+                        trailing: (currentUserProfile.blockedList
+                                    .contains(widget.allUsers.uid))
                             ? UnblockedPopupMenu(allUsers: widget.allUsers)
                             : BlockedPopupMenu(allUsers: widget.allUsers),
                       ),
                     ),
                     if (widget.allUsers.followers
-                            !.contains(userService.currentUserID)) Align(
+                            .contains(userService.currentUserID)) Align(
                             alignment: Alignment.bottomRight,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8.0),
@@ -93,10 +94,10 @@ class _TCUserCardState extends State<TCUserCard> {
                                         Theme.of(context).textTheme.subtitle1),
                                 onPressed: () {
                                   if (currentUserProfile.blockedList
-                                      !.contains(widget.allUsers.uid)) {
+                                      .contains(widget.allUsers.uid)) {
                                   } else {
                                     TravelCrewAlertDialogs().unFollowAlert(
-                                        context, widget.allUsers.uid!);
+                                        context, widget.allUsers.uid);
                                   }
                                 },
                               ),
@@ -117,7 +118,7 @@ class _TCUserCardState extends State<TCUserCard> {
                                   if (userService.currentUserID !=
                                       widget.allUsers.uid) {
                                     if (currentUserProfile.blockedList
-                                        !.contains(widget.allUsers.uid)) {
+                                        .contains(widget.allUsers.uid)) {
                                     } else {
                                       CloudFunction().addNewNotification(
                                           message: message,
@@ -159,7 +160,7 @@ class BlockedPopupMenu extends StatelessWidget {
         switch (value) {
           case 'unblock':
             {
-              CloudFunction().unBlockUser(allUsers.uid!);
+              CloudFunction().unBlockUser(allUsers.uid);
               TravelCrewAlertDialogs().unblockDialog(context);
             }
             break;
@@ -169,7 +170,7 @@ class BlockedPopupMenu extends StatelessWidget {
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (BuildContext context) => [
+      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
         PopupMenuItem<String>(
           value: 'unblock',
           child: ListTile(
@@ -209,7 +210,7 @@ class UnblockedPopupMenu extends StatelessWidget {
             break;
           case 'block':
             {
-              TravelCrewAlertDialogs().blockAlert(context, allUsers.uid!);
+              TravelCrewAlertDialogs().blockAlert(context, allUsers.uid);
             }
             break;
           case 'report':
@@ -224,7 +225,7 @@ class UnblockedPopupMenu extends StatelessWidget {
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (BuildContext context) => [
+      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
         PopupMenuItem<String>(
           value: 'chat',
           child: ListTile(

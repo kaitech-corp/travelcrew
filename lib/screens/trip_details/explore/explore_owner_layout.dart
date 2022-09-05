@@ -75,11 +75,11 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
     String image;
 
     final Event event = Event(
-      title: widget.trip.tripName!,
-      description: widget.trip.comment!,
-      location: widget.trip.location!,
-      startDate: widget.trip.startDateTimeStamp!.toDate(),
-      endDate: widget.trip.endDateTimeStamp!.toDate(),
+      title: widget.trip.tripName,
+      description: widget.trip.comment,
+      location: widget.trip.location,
+      startDate: widget.trip.startDateTimeStamp.toDate(),
+      endDate: widget.trip.endDateTimeStamp.toDate(),
     );
 
 
@@ -92,18 +92,18 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
           body: Container(
             child: SingleChildScrollView(
               child: Stack(
-                children: [
+                children: <Widget>[
                   if(showImage) ImagePopup(imagePath: widget.trip.urlToImage,),
                   Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    if (widget.trip.urlToImage?.isNotEmpty ?? false) Stack(
+                    if (widget.trip.urlToImage.isNotEmpty) Stack(
                       children: [
                         GestureDetector(
                           onLongPress: (){
                             setState(() {
                               showImage = true;
-                              image = widget.trip.urlToImage!;
+                              image = widget.trip.urlToImage;
                             });
                           },
                           onLongPressEnd: (LongPressEndDetails details) {
@@ -165,12 +165,12 @@ class OwnerPopupMenuButton extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text('${trip.tripName}',
+          title: Text(trip.tripName,
             style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          subtitle: Text('${trip.displayName}',style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
+          subtitle: Text(trip.displayName,style: Theme.of(context).textTheme.subtitle1,maxLines: 1,overflow: TextOverflow.ellipsis,),
           trailing: PopupMenuButtonWidget(trip: trip, event: event),
         ),
         Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
@@ -179,7 +179,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
         children: [
           IconButton(
             onPressed: (){
-              MapsLauncher.launchQuery(trip.location!);
+              MapsLauncher.launchQuery(trip.location);
               },
             icon: const TripDetailsIconThemeWidget(icon: Icons.map,),),
           IconButton(

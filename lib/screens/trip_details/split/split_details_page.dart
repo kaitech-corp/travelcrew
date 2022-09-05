@@ -39,7 +39,7 @@ class SplitDetailsPage extends StatelessWidget {
                   itemDocID: splitObject.itemDocID,
                   tripDocID: splitObject.tripDocID)
               .costDataList,
-          DatabaseService().getcrewList(trip.accessUsers!),
+          DatabaseService().getcrewList(trip.accessUsers),
         ),
         builder: (BuildContext context, SnapshotTuple2<Object?, Object?> snapshots) {
           if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {
@@ -97,11 +97,11 @@ class SplitDetailsPage extends StatelessWidget {
                         child: ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
-                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: userPublicProfile.urlToImage!,height: 50,
+                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: userPublicProfile.urlToImage,height: 50,
                               width: 50,
                               fit: BoxFit.fill,)
                           ),
-                          title: Text('${userPublicProfile.displayName}',
+                          title: Text(userPublicProfile.displayName,
                               style: Theme.of(context).textTheme.subtitle1),
                           subtitle: (costObject.paid == false)
                               ? Text(

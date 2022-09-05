@@ -192,7 +192,7 @@ class _NeedListState extends State<NeedList> {
                     if (selected == true) {
                       try {
                         CloudFunction().addItemToNeedList(widget.documentID,
-                            product.query!, currentUserProfile.displayName ?? '', '');
+                            product.query!, currentUserProfile.displayName, '');
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Item added')));
                       } catch (e) {
@@ -223,7 +223,7 @@ class _NeedListState extends State<NeedList> {
           if (selected == true) {
             try {
               CloudFunction().addItemToNeedList(widget.documentID,
-                  product.query!, currentUserProfile.displayName ?? '', '');
+                  product.query!, currentUserProfile.displayName, '');
               ScaffoldMessenger.of(context)
                   .showSnackBar(
                   const SnackBar(content: Text('Item added')

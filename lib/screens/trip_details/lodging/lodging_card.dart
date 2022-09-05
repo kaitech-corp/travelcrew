@@ -68,14 +68,14 @@ class LodgingCard extends StatelessWidget {
                           ), trip: trip),
                       IconButton(
                           visualDensity: const VisualDensity(vertical: -4),
-                          icon: FavoriteWidget(uid: userService.currentUserID,voters: lodging.voters!,),
+                          icon: FavoriteWidget(uid: userService.currentUserID,voters: lodging.voters,),
                           onPressed: () {
                             final String fieldID = lodging.fieldID!;
                             final String uid = userService.currentUserID;
                             if (!lodging.voters!.contains(userService.currentUserID)) {
-                              CloudFunction().addVoterToLodging(trip.documentId!, fieldID, uid);
+                              CloudFunction().addVoterToLodging(trip.documentId, fieldID, uid);
                             } else {
-                              CloudFunction().removeVoterFromLodging(trip.documentId!, fieldID, uid);
+                              CloudFunction().removeVoterFromLodging(trip.documentId, fieldID, uid);
                             }
                           }
                       ),

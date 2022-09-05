@@ -108,7 +108,7 @@ class _TravelCrewState extends State<TravelCrew> {
         theme: ThemeDataBuilder(),
         navigatorKey: locator<NavigationService>().navigationKey,
         onGenerateRoute: generateRoute,
-        navigatorObservers: <FirebaseAnalyticsObserver>[
+        navigatorObservers: <NavigatorObserver>[
           FirebaseAnalyticsObserver(analytics: analytics),
         ],
       );

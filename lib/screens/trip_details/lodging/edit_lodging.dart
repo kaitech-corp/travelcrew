@@ -49,9 +49,9 @@ class _EditLodgingState extends State<EditLodging> {
   void initState() {
     controller.text = widget.lodging.location ?? '';
     endDateTimestamp.value =
-        widget.lodging.endDateTimestamp ?? widget.trip.endDateTimeStamp!;
+        widget.lodging.endDateTimestamp ?? widget.trip.endDateTimeStamp;
     startDateTimestamp.value =
-        widget.lodging.startDateTimestamp ?? widget.trip.startDateTimeStamp!;
+        widget.lodging.startDateTimestamp ?? widget.trip.startDateTimeStamp;
     link = widget.lodging.link;
     lodgingType = widget.lodging.lodgingType;
     comment = widget.lodging.comment;
@@ -59,7 +59,7 @@ class _EditLodgingState extends State<EditLodging> {
         TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp!.toDate());
     endTime.value =
         TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp!.toDate());
-    documentID = widget.trip.documentId!;
+    documentID = widget.trip.documentId;
     fieldID = widget.lodging.fieldID!;
     super.initState();
   }
@@ -274,7 +274,7 @@ class _EditLodgingState extends State<EditLodging> {
                 final String action =
                     'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
-                for (final String f in widget.trip.accessUsers!) {
+                for (final String f in widget.trip.accessUsers) {
                   if (f != currentUserProfile.uid) {
                     CloudFunction().addNewNotification(
                       message: message,

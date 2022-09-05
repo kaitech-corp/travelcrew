@@ -22,8 +22,8 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
   Widget build(BuildContext context) {
     return GroupedListView<Trip, String>(
       elements: widget.data,
-      groupBy: (Trip trip) => DateTime(trip.endDateTimeStamp!.toDate().year,
-              trip.endDateTimeStamp!.toDate().month)
+      groupBy: (Trip trip) => DateTime(trip.endDateTimeStamp.toDate().year,
+              trip.endDateTimeStamp.toDate().month)
           .toString(),
       order: widget.isPast ? GroupedListOrder.DESC : GroupedListOrder.ASC,
       groupSeparatorBuilder: (String trip) => Padding(
@@ -39,11 +39,11 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
         )),
       ),
       itemComparator: (Trip a, Trip b) =>
-          a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!),
+          a.startDateTimeStamp.compareTo(b.startDateTimeStamp),
       itemBuilder: (BuildContext context, Trip trip) {
         return CrewTripCard(
           trip: trip,
-          heroTag: trip.urlToImage!,
+          heroTag: trip.urlToImage,
         );
       },
     );

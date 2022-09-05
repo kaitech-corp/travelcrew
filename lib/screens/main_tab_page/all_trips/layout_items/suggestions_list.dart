@@ -58,7 +58,7 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
                             color: Colors.blue[50]
                         ),
                         child: Center(
-                            child: Text(tripList[randomList[index]].location!,
+                            child: Text(tripList[randomList[index]].location,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: responsiveTextStyleSuggestions(context))),

@@ -36,12 +36,12 @@ class UserService {
 class UserProfileService {
 
   UserService userService = locator<UserService>();
-  UserPublicProfile profile = UserPublicProfile();
+  late UserPublicProfile profile;
 
   Future<UserPublicProfile> currentUserProfile() async {
     try {
       profile = await DatabaseService().getUserProfile(userService.currentUserID);
-      urlToImage.value = profile.urlToImage ?? '';
+      urlToImage.value = profile.urlToImage;
     } catch (e) {
       CloudFunction().logError('Error in User Public Profile service:  ${e.toString()}');
     }

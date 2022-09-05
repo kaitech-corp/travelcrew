@@ -88,7 +88,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AdminPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: AdminPage(),
+        viewToShow: const AdminPage(),
       );
     case AllTripsPageRoute:
       return _getPageRoute(
@@ -118,7 +118,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case CurrentCrewTripsRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: CurrentTrips(),
+        viewToShow: const CurrentTrips(),
       );
     case DetailsPageRoute:
       final DetailsPageArguments arguments = settings.arguments as DetailsPageArguments;
@@ -161,7 +161,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case EditProfilePageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: EditProfilePage(),
+        viewToShow: const EditProfilePage(),
       );
     case EditTransportationRoute:
       return _getPageRoute(
@@ -286,7 +286,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: BlocProvider(
             create: (BuildContext context) => GenericBloc<UserPublicProfile, AllUserRepository>(
                 repository: AllUserRepository(),),
-          child: AllUserPage(),
+          child: const AllUserPage(),
         ),
       );
     case UserProfilePageRoute:

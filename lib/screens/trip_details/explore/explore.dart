@@ -58,7 +58,7 @@ class _ExploreState extends State<Explore> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: canvasColor,
-          title: Text(widget.trip.tripName!,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,maxLines: 1,),
+          title: Text(widget.trip.tripName,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,maxLines: 1,),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.close),
@@ -85,16 +85,16 @@ class _ExploreState extends State<Explore> {
         body: MultiBlocProvider(
           providers: [
             BlocProvider(create: (BuildContext context) => GenericBloc<ActivityData,ActivityRepository>(
-                repository: ActivityRepository(tripDocID:widget.trip.documentId!)
+                repository: ActivityRepository(tripDocID:widget.trip.documentId)
               )),
             BlocProvider(create: (BuildContext context) => GenericBloc<ChatData,ChatRepository>(
-                repository: ChatRepository(tripDocID: widget.trip.documentId!))),
+                repository: ChatRepository(tripDocID: widget.trip.documentId))),
             BlocProvider(create: (BuildContext context) => GenericBloc<LodgingData,LodgingRepository>(
-                repository: LodgingRepository(tripDocID: widget.trip.documentId!))),
+                repository: LodgingRepository(tripDocID: widget.trip.documentId))),
             BlocProvider(create: (BuildContext context) => GenericBloc<TransportationData,TransportationRepository>(
-                repository: TransportationRepository(tripDocID: widget.trip.documentId!))),
+                repository: TransportationRepository(tripDocID: widget.trip.documentId))),
             BlocProvider(create: (BuildContext context) => GenericBloc<SplitObject,SplitRepository>(
-                repository: SplitRepository(tripDocID: widget.trip.documentId!))),
+                repository: SplitRepository(tripDocID: widget.trip.documentId))),
           ],
           child: TabBarView(
                     children: <Widget>[
@@ -114,9 +114,9 @@ class _ExploreState extends State<Explore> {
 
    Widget checkOwner(String uid) {
   if (widget.trip.ownerID == uid){
-    return StreamBuilder<Trip>(
+    return StreamBuilder<Trip?>(
         stream: DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
-        builder: (BuildContext context, AsyncSnapshot<Trip> document){
+        builder: (BuildContext context, AsyncSnapshot<Trip?> document){
           if(document.hasData){
             final Trip tripDetails = document.data as Trip;
             return ExploreOwnerLayout(

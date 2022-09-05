@@ -41,14 +41,14 @@ class ProfileWidget extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Hero(
-                      tag: user.uid!,
+                      tag: user.uid,
                       transitionOnUserGestures: true,
                       child: SizedBox(
                         height: profileSize,
                         width: profileSize,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth / 1.8,
-                          child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage ?? ''),
+                          child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage ),
                         ),
                       ),
                     ),
@@ -77,7 +77,7 @@ class ProfileWidget extends StatelessWidget {
                               ),
                               Flexible(
                                   child: Text(
-                                user.displayName!,
+                                user.displayName,
                                 style: Theme.of(context).textTheme.subtitle1,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
@@ -93,8 +93,8 @@ class ProfileWidget extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (user.hometown?.isNotEmpty ?? false) Text(
-                                            user.hometown!,
+                                    if (user.hometown.isNotEmpty) Text(
+                                            user.hometown,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle1,
@@ -146,36 +146,6 @@ class ProfileWidget extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (user.topDestinations?[0].isNotEmpty ?? false) Text(
-                                      user.topDestinations![0],
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ) else Text(
-                                      'Destination 1',
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ),
-                              if (user.topDestinations?[1].isNotEmpty ?? false) Text(
-                                      user.topDestinations![1],
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ) else Text(
-                                      'Destination 2',
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ),
-                              if (user.topDestinations?[2].isNotEmpty ?? false) Text(
-                                      user.topDestinations![2],
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                      maxLines: 1,
-                                    ) else Text(
-                                      'Destination 3',
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ),
-                            ],
                           ),
                         ),
                       ],
@@ -216,10 +186,10 @@ class ProfileWidget extends StatelessWidget {
                                 'IG: ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              if (user.instagramLink?.isNotEmpty ?? false) GestureDetector(
+                              if (user.instagramLink.isNotEmpty) GestureDetector(
                                       onTap: () {
                                         TCFunctions()
-                                            .launchURL(user.instagramLink!);
+                                            .launchURL(user.instagramLink);
                                       },
                                       child: const Text('Instagram Link',
                                           style: TextStyle(color: Colors.blue))) else Text(
@@ -242,10 +212,10 @@ class ProfileWidget extends StatelessWidget {
                                 'Facebook: ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              if (user.facebookLink?.isNotEmpty ?? false) GestureDetector(
+                              if (user.facebookLink.isNotEmpty) GestureDetector(
                                       onTap: () {
                                         TCFunctions()
-                                            .launchURL(user.facebookLink!);
+                                            .launchURL(user.facebookLink);
                                       },
                                       child: const Text('Facebook Link',
                                           style: TextStyle(color: Colors.blue))) else Text(
@@ -276,7 +246,7 @@ class ProfileWidget extends StatelessWidget {
               child: SizedBox(
                   height: 150,
                   child: RecentTripTile(
-                    uid: user.uid!,
+                    uid: user.uid,
                   )),
             ),
           ),
@@ -306,7 +276,7 @@ class FollowerBar extends StatelessWidget {
             children: [
               Text('Followers', style: Theme.of(context).textTheme.subtitle1),
               Text(
-                '${user.followers!.length}',
+                '${user.followers.length}',
                 style: ReusableThemeColor().greenOrBlueTextColor(context),
               ),
             ],
@@ -315,7 +285,7 @@ class FollowerBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Following', style: Theme.of(context).textTheme.subtitle1),
-              Text('${user.following!.length}',
+              Text('${user.following.length}',
                   style: ReusableThemeColor().greenOrBlueTextColor(context)),
             ],
           )
@@ -404,12 +374,12 @@ class _FollowListState extends State<FollowList> {
       UserPublicProfile profile) {
     return Card(
       color: ReusableThemeColor().cardColor(context),
-      key: Key(member.uid!),
+      key: Key(member.uid),
       child: GestureDetector(
         onLongPress: () {
           setState(() {
             showImage = true;
-            image = member.urlToImage ?? '';
+            image = member.urlToImage;
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {
@@ -429,7 +399,7 @@ class _FollowListState extends State<FollowList> {
               borderRadius: BorderRadius.circular(25),
               child: member.urlToImage != null
                   ? Image.network(
-                      member.urlToImage!,
+                      member.urlToImage,
                       height: 75,
                       width: 75,
                       fit: BoxFit.fill,
@@ -438,7 +408,7 @@ class _FollowListState extends State<FollowList> {
             ),
           ),
           title: Text(
-            member.displayName!,
+            member.displayName,
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.start,
           ),
@@ -451,7 +421,7 @@ class _FollowListState extends State<FollowList> {
   }
 
   Widget trailingButton(UserPublicProfile member) {
-    return (!currentUserProfile.following!.contains(member.uid))
+    return (!currentUserProfile.following.contains(member.uid))
         ? ElevatedButton(
             onPressed: () {
               // Send a follow request notification to user
@@ -459,7 +429,7 @@ class _FollowListState extends State<FollowList> {
                   'Follow request from ${currentUserProfile.displayName}';
               const String type = 'Follow';
               if (userService.currentUserID != member.uid) {
-                if (currentUserProfile.blockedList!.contains(member.uid)) {
+                if (currentUserProfile.blockedList.contains(member.uid)) {
                 } else {
                   CloudFunction().addNewNotification(
                       message: message,
@@ -476,9 +446,9 @@ class _FollowListState extends State<FollowList> {
           )
         : ElevatedButton(
             onPressed: () {
-              if (currentUserProfile.blockedList!.contains(member.uid)) {
+              if (currentUserProfile.blockedList.contains(member.uid)) {
               } else {
-                TravelCrewAlertDialogs().unFollowAlert(context, member.uid!);
+                TravelCrewAlertDialogs().unFollowAlert(context, member.uid);
               }
             },
             child:

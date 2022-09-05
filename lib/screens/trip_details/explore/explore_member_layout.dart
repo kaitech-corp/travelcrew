@@ -68,11 +68,11 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
     final double detailsPadding = SizeConfig.screenWidth*.05;
 
     final Event event = Event(
-      title: widget.tripDetails.tripName!,
-      description: widget.tripDetails.comment!,
-      location: widget.tripDetails.location!,
-      startDate: widget.tripDetails.startDateTimeStamp!.toDate(),
-      endDate: widget.tripDetails.endDateTimeStamp!.toDate(),
+      title: widget.tripDetails.tripName,
+      description: widget.tripDetails.comment,
+      location: widget.tripDetails.location,
+      startDate: widget.tripDetails.startDateTimeStamp.toDate(),
+      endDate: widget.tripDetails.endDateTimeStamp.toDate(),
     );
 
     return GestureDetector(
@@ -84,7 +84,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  if (widget.tripDetails.urlToImage!.isNotEmpty) Stack(
+                  if (widget.tripDetails.urlToImage.isNotEmpty) Stack(
                     children: [
                       ImageAnimation(trip: widget.tripDetails,
                         expandController: expandController,),
@@ -135,7 +135,7 @@ class MemberPopupMenuButton extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text('${tripDetails.tripName}',
+          title: Text(tripDetails.tripName,
             style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,),
@@ -147,7 +147,7 @@ class MemberPopupMenuButton extends StatelessWidget {
           children: [
             IconButton(
               onPressed: (){
-                MapsLauncher.launchQuery(tripDetails.location!);
+                MapsLauncher.launchQuery(tripDetails.location);
               },
               icon: const TripDetailsIconThemeWidget(icon: Icons.map,),),
             IconButton(

@@ -53,11 +53,11 @@ class _FavoriteTripState extends State<FavoritesPage> {
                         margin: EdgeInsets.all(SizeConfig.screenWidth*.05),
                         color: Colors.red,
                         child: const Align(alignment: Alignment.centerRight,child: Icon(Icons.delete, color: Colors.white,)),),
-                      key: Key(item.documentId!),
+                      key: Key(item.documentId),
                       onDismissed: (DismissDirection direction) {
                         setState(() {
                           trips.removeAt(index);
-                          CloudFunction().removeFavoriteFromTrip(item.documentId!);
+                          CloudFunction().removeFavoriteFromTrip(item.documentId);
                         });
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tripped removed from favorites.')));
                       },

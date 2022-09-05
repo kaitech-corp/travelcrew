@@ -73,7 +73,7 @@ class _MyStatefulWidgetState extends State<MainTabPage> {
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
-    TabBarView(
+    const TabBarView(
       children: <Widget>[
         CurrentTrips(),
         PastTrips(),

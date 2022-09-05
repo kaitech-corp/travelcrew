@@ -40,9 +40,9 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'users';
-            docID = widget.userAccount!.uid!;
+            docID = widget.userAccount!.uid;
             offenderID = docID;
-            urlToImage = widget.userAccount!.urlToImage!;
+            urlToImage = widget.userAccount!.urlToImage;
           });
         }
         break;
@@ -72,9 +72,9 @@ class _ReportContentState extends State<ReportContent> {
             } else {
               collection = 'privateTrips';
             }
-            docID = widget.trip!.documentId!;
-            offenderID = widget.trip!.ownerID!;
-            urlToImage = widget.trip!.urlToImage!;
+            docID = widget.trip!.documentId;
+            offenderID = widget.trip!.ownerID;
+            urlToImage = widget.trip!.urlToImage;
           });
         }
         break;

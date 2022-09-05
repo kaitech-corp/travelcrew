@@ -1,4 +1,3 @@
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/custom_objects.dart';
@@ -38,26 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ProfileWidget(user: user)
                 ]);
               } else {
-                final Faker faker = Faker();
-                final UserPublicProfile blankUser = UserPublicProfile(
-                    uid: faker.phoneNumber.toString(),
-                    email: '',
-                    urlToImage: faker.image.toString(),
-                    firstName: faker.person.firstName(),
-                    lastName: faker.person.lastName(),
-                    displayName: faker.person.name(),
-                    hometown: faker.address.city(),
-                    topDestinations: [
-                      faker.address.country(),
-                      faker.address.country(),
-                      faker.address.country()],
-                    blockedList: [],
-                    followers: [],
-                    following: [],
-                    facebookLink: '',
-                    instagramLink: '',
-                );
-                return ProfileWidget(user: blankUser);
+                return ProfileWidget(user: defaultProfile);
               }
             },
             stream: DatabaseService().currentUserPublicProfile,

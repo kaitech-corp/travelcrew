@@ -231,7 +231,7 @@ class CrewModalBottomSheet extends StatelessWidget {
           ),
         );
       },
-      child: Text('Crew ${tripDetails.accessUsers!.length} '),
+      child: Text('Crew ${tripDetails.accessUsers.length} '),
     );
   }
 }
@@ -250,12 +250,12 @@ class DateGauge extends StatelessWidget {
 
 
     final CountDownDate countDownDate = TCFunctions().dateGauge(
-        tripDetails.dateCreatedTimeStamp!.millisecondsSinceEpoch,
-        tripDetails.startDateTimeStamp!.millisecondsSinceEpoch);
+        tripDetails.dateCreatedTimeStamp.millisecondsSinceEpoch,
+        tripDetails.startDateTimeStamp.millisecondsSinceEpoch);
     final CountDownDate countDownDateReturn = TCFunctions().dateGauge(
-        tripDetails.startDateTimeStamp!.millisecondsSinceEpoch,
-        tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
-    final String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp!.millisecondsSinceEpoch, tripDetails.endDateTimeStamp!.millisecondsSinceEpoch);
+        tripDetails.startDateTimeStamp.millisecondsSinceEpoch,
+        tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
+    final String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp.millisecondsSinceEpoch, tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
 
     switch (result){
       case 'before':
@@ -354,11 +354,11 @@ class RecentTripTile extends StatelessWidget{
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: (trip.urlToImage?.isNotEmpty?? false) ?
+                    child: (trip.urlToImage.isNotEmpty) ?
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
                         child: Image.network(
-                          trip.urlToImage!,
+                          trip.urlToImage,
                           fit: BoxFit.cover,
                           height: 125,
                           width: 125,
@@ -378,13 +378,13 @@ class RecentTripTile extends StatelessWidget{
                       height: 125,
                       width: 125,
                       child: ListTile(
-                        title: Text('${trip.tripName}',style: Theme
+                        title: Text(trip.tripName,style: Theme
                             .of(context)
                             .textTheme
                             .subtitle1,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,),
-                        subtitle: Text('${trip.location}',style: Theme
+                        subtitle: Text(trip.location,style: Theme
                             .of(context)
                             .textTheme
                             .subtitle2,

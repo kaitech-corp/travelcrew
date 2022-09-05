@@ -196,7 +196,7 @@ class SplitPackage {
                                 splitObject.purchasedByUID =
                                     userService.currentUserID;
                                 splitObject.userSelectedList = trip.accessUsers
-                                    !.where((String user) =>
+                                    .where((String user) =>
                                         !selectedList.value.contains(user))
                                     .toList();
                                 splitObject.amountRemaining =
@@ -413,7 +413,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
               return Loading();
             }
           },
-          stream: DatabaseService().getcrewList(widget.trip.accessUsers!),
+          stream: DatabaseService().getcrewList(widget.trip.accessUsers),
         ),
         if (_showImage) ...[
           BackdropFilter(
@@ -453,13 +453,13 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
   Widget userCard(
       BuildContext context, UserPublicProfile member, Trip trip) {
     return Card(
-      key: Key(member.uid!),
+      key: Key(member.uid),
       color: Colors.white,
       child: GestureDetector(
         onLongPress: () {
           setState(() {
             _showImage = true;
-            _image = member.urlToImage ?? '';
+            _image = member.urlToImage;
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {
@@ -478,7 +478,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
               if (value ?? false) {
                 selectedList.value.remove(member.uid);
               } else {
-                selectedList.value.add(member.uid!);
+                selectedList.value.add(member.uid);
               }
             });
           },
@@ -491,9 +491,9 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: (member.urlToImage?.isNotEmpty ?? false)
+              child: (member.urlToImage.isNotEmpty)
                   ? Image.network(
-                      member.urlToImage!,
+                      member.urlToImage,
                       height: 75,
                       width: 75,
                       fit: BoxFit.fill,
@@ -502,7 +502,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
             ),
           ),
           title: Text(
-            member.displayName!,
+            member.displayName,
             style: Theme.of(context).textTheme.subtitle2,
             textAlign: TextAlign.start,
           ),

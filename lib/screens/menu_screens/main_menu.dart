@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
@@ -14,7 +15,6 @@ import '../../size_config/size_config.dart';
 final ValueNotifier chatNotifier = ValueNotifier(int);
 
 class MenuDrawer extends StatefulWidget {
-
   @override
   _MenuDrawerState createState() => _MenuDrawerState();
 }
@@ -29,7 +29,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
 
   double get imageSize {
-    if (SizerUtil.deviceType == DeviceType.tablet){
+    if (SizerUtil.deviceType == DeviceType.tablet) {
       return SizeConfig.screenWidth / 8.0;
     } else {
       return SizeConfig.screenWidth / 4.0;
@@ -48,20 +48,31 @@ class _MenuDrawerState extends State<MenuDrawer> {
           children: <Widget>[
             DrawerHeader(
               child: StreamBuilder<UserPublicProfile>(
-                builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> profile) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<UserPublicProfile> profile) {
                   if (profile.hasData) {
-                    final UserPublicProfile currentUser = profile.data as UserPublicProfile;
+                    print(profile.data!.urlToImage);
+                    final UserPublicProfile? currentUser = profile.data;
                     return Stack(
-                      children: [
+                      children: <Widget>[
                         Align(
                             alignment: Alignment.topLeft,
                             child: Text('TC',
                                 style: Theme.of(context).textTheme.headline5)),
                         Align(
                           child: CircleAvatar(
-                            radius: imageSize,
-                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage!,fit: BoxFit.fill,width: imageSize, height: imageSize,)
-                          ),
+                              radius: imageSize,
+                              child: CachedNetworkImage(
+                                imageUrl: currentUser!.urlToImage,
+                                placeholder:
+                                    (BuildContext context, String url) =>
+                                        Image.asset(profileImagePlaceholder),
+                                errorWidget: (BuildContext context, String url,
+                                        dynamic error) =>
+                                    Image.asset(profileImagePlaceholder),
+                              )
+                              // FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage,fit: BoxFit.fill,width: imageSize, height: imageSize,)
+                              ),
                         ),
                       ],
                     );
@@ -125,8 +136,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ),
             if (userService.currentUserID.contains('XCVzgl7xIG3'))
               ListTile(
-                leading: const IconThemeWidget(
-                    icon: Icons.admin_panel_settings),
+                leading:
+                    const IconThemeWidget(icon: Icons.admin_panel_settings),
                 title:
                     Text('Admin', style: Theme.of(context).textTheme.subtitle1),
                 onTap: () {

@@ -28,7 +28,7 @@ class _DMChatState extends State<DMChat> {
 
   @override
   Widget build(BuildContext context) {
-    clearChat(widget.user.uid!);
+    clearChat(widget.user.uid);
 
     return StreamProvider<List<ChatData>>.value(
       initialData: const [],
@@ -40,7 +40,7 @@ class _DMChatState extends State<DMChat> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              widget.user.displayName!,
+              widget.user.displayName,
               style: Theme.of(context).textTheme.headline5,
               overflow: TextOverflow.ellipsis,
             ),
@@ -86,7 +86,7 @@ class _DMChatState extends State<DMChat> {
                                 final Map<String, bool> status = createStatus();
                                 _chatController.clear();
                                 final String displayName =
-                                    currentUserProfile.displayName ?? '';
+                                    currentUserProfile.displayName;
                                 final String uid = userService.currentUserID;
                                 await DatabaseService(userID: widget.user.uid)
                                     .addNewDMChatMessage(
@@ -108,7 +108,7 @@ class _DMChatState extends State<DMChat> {
   }
 
   Map<String, bool> createStatus() {
-    final List<String> members = [userService.currentUserID, widget.user.uid!];
+    final List<String> members = [userService.currentUserID, widget.user.uid];
     final Map<String, bool> status = {};
     final Iterable<String> users = members.where((String f) => f != userService.currentUserID);
     for (final String f in users) {

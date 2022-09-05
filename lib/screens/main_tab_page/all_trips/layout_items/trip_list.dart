@@ -73,7 +73,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
 
   Widget cardWithImage(BuildContext context, Trip trip) {
     Icon favorite(String uid, Trip trip) {
-      if (trip.favorite!.contains(uid)) {
+      if (trip.favorite.contains(uid)) {
         return const Icon(
           Icons.favorite,
           color: Colors.red,
@@ -89,7 +89,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     }
 
     return InkWell(
-      key: Key(trip.documentId!),
+      key: Key(trip.documentId),
       splashColor: Colors.blue.withAlpha(30),
       child: GestureDetector(
         onTap: () {
@@ -97,7 +97,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
           navigationService.navigateTo(ExploreBasicRoute, arguments: trip);
         },
         child: Hero(
-          tag: trip.urlToImage!,
+          tag: trip.urlToImage,
           transitionOnUserGestures: true,
           child: Container(
             height: SizeConfig.screenWidth*.5,
@@ -107,7 +107,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  trip.urlToImage!,
+                  trip.urlToImage,
                 ),
                 fit: BoxFit.fill,
               ),
@@ -122,10 +122,10 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                 alignment: Alignment.bottomRight,
                 child: TextButton(
                   onPressed: () {
-                    if (trip.favorite!.contains(userService.currentUserID)) {
-                      CloudFunction().removeFavoriteFromTrip(trip.documentId!);
+                    if (trip.favorite.contains(userService.currentUserID)) {
+                      CloudFunction().removeFavoriteFromTrip(trip.documentId);
                     } else {
-                      CloudFunction().addFavoriteTrip(trip.documentId!);
+                      CloudFunction().addFavoriteTrip(trip.documentId);
                     }
                   },
                   child: favorite(userService.currentUserID, trip),
@@ -140,7 +140,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
 
   Widget cardWithoutImage(BuildContext context, Trip trip) {
     Icon favorite(String uid, Trip trip) {
-      if (trip.favorite!.contains(uid)) {
+      if (trip.favorite.contains(uid)) {
         return const Icon(
           Icons.favorite,
           color: Colors.red,
@@ -162,7 +162,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             arguments: trip);
       },
       child: InkWell(
-        key: Key(trip.documentId!),
+        key: Key(trip.documentId),
         splashColor: Colors.blue.withAlpha(30),
         child: Container(
           height: SizeConfig.screenWidth*.5,
@@ -182,18 +182,18 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Tooltip(
-                  message: '${trip.tripName}',
+                  message: trip.tripName,
                   child: ListTile(
                     contentPadding: const EdgeInsets.only(left: 15, right: 5),
                     title: Text(
-                      trip.tripName!,
+                      trip.tripName,
                       style: const TextStyle(fontFamily: 'RockSalt', color: Colors.black),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
                     ),
                     subtitle: Text(
-                      '${trip.displayName}',
+                      trip.displayName,
                       style: Theme.of(context).textTheme.subtitle1,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -208,7 +208,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15, right: 5),
                   child: Text(
-                    '${TCFunctions().dateToMonthDay(trip.startDate!)} - ${trip.endDate}',
+                    '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',
                     style: Theme.of(context).textTheme.subtitle2,
                     textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
                   ),
@@ -218,10 +218,10 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                 alignment: Alignment.bottomRight,
                 child: TextButton(
                   onPressed: () {
-                    if (trip.favorite!.contains(userService.currentUserID)) {
-                      CloudFunction().removeFavoriteFromTrip(trip.documentId!);
+                    if (trip.favorite.contains(userService.currentUserID)) {
+                      CloudFunction().removeFavoriteFromTrip(trip.documentId);
                     } else {
-                      CloudFunction().addFavoriteTrip(trip.documentId!);
+                      CloudFunction().addFavoriteTrip(trip.documentId);
                     }
                   },
                   child: favorite(
@@ -237,12 +237,12 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
   }
 
   bool onLikedButtonTapped(Trip trip, bool isLiked) {
-    if (trip.favorite!.contains(userService.currentUserID)) {
-      CloudFunction().removeFavoriteFromTrip(trip.documentId!);
+    if (trip.favorite.contains(userService.currentUserID)) {
+      CloudFunction().removeFavoriteFromTrip(trip.documentId);
 
       return false;
     } else {
-      CloudFunction().addFavoriteTrip(trip.documentId!);
+      CloudFunction().addFavoriteTrip(trip.documentId);
       return true;
     }
   }

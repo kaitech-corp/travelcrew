@@ -35,7 +35,7 @@ class ListPage extends StatelessWidget{
                 ),
                 Expanded(
                   flex: 5,
-                  child: BringListToDisplay(tripDocID: trip.documentId!,)),
+                  child: BringListToDisplay(tripDocID: trip.documentId,)),
               ],
             )
     ),
@@ -52,7 +52,7 @@ class ListPage extends StatelessWidget{
                 ),
                 Expanded(
                   flex: 5,
-                  child: NeedListToDisplay(documentID: trip.documentId!,)),
+                  child: NeedListToDisplay(documentID: trip.documentId,)),
               ],
             )
     )

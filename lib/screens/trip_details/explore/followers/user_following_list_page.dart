@@ -43,7 +43,7 @@ class _FollowingListState extends State<FollowingList> {
           if (users.hasData) {
             final List<UserPublicProfile> usersList = users.data as List<UserPublicProfile>;
             final List<UserPublicProfile> followingList =
-            usersList.where((UserPublicProfile user) => currentUserProfile.following!.contains(user.uid)).toList();
+            usersList.where((UserPublicProfile user) => currentUserProfile.following.contains(user.uid)).toList();
             return Stack(
               children: [
                 ListView.builder(
@@ -93,7 +93,7 @@ class _FollowingListState extends State<FollowingList> {
             onLongPress: (){
               setState(() {
                 _showImage = true;
-                _image = user.urlToImage ?? '';
+                _image = user.urlToImage;
               });
             },
             onLongPressEnd: (LongPressEndDetails details) {
@@ -111,14 +111,14 @@ class _FollowingListState extends State<FollowingList> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25),
-                  child: user.urlToImage?.isNotEmpty ?? false  ? Image.network(user.urlToImage ?? '',fit: BoxFit.fill,):
+                  child: user.urlToImage.isNotEmpty  ? Image.network(user.urlToImage,fit: BoxFit.fill,):
                   Image.asset(profileImagePlaceholder,fit: BoxFit.fill,),
                 ),
               ),
               title: Text('${user.firstName} ${user.lastName}'),
-              subtitle: Text('${user.displayName}',
+              subtitle: Text(user.displayName,
                 textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
-              trailing: !widget.trip.accessUsers!.contains(user.uid) ? IconButton(
+              trailing: !widget.trip.accessUsers.contains(user.uid) ? IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: (){
                   final String message = '${currentUserProfile.displayName} invited you to ${widget.trip.tripName}.';

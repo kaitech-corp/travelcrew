@@ -9,7 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
 
-Future<String> projectInitializer() async {
+Future<void> projectInitializer() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
@@ -26,5 +26,4 @@ Future<String> projectInitializer() async {
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   Bloc.observer = CustomBlocObserver();
-  return 'Complete';
 }

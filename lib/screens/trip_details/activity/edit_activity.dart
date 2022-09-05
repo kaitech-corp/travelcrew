@@ -53,12 +53,12 @@ class _EditActivityState extends State<EditActivity> {
 
   @override
   void initState() {
-    documentID = widget.trip.documentId!;
+    documentID = widget.trip.documentId;
     fieldID = widget.activity.fieldID!;
     startDateTimestamp.value =
-        widget.activity.startDateTimestamp ?? widget.trip.startDateTimeStamp!;
+        widget.activity.startDateTimestamp ?? widget.trip.startDateTimeStamp;
     endDateTimestamp.value =
-        widget.activity.endDateTimestamp ?? widget.trip.startDateTimeStamp!;
+        widget.activity.endDateTimestamp ?? widget.trip.startDateTimeStamp;
     controllerComment.text = widget.activity.comment ?? '';
     controllerLink.text = widget.activity.link ?? '';
     controllerLocation.text = widget.activity.location!;
@@ -268,7 +268,7 @@ class _EditActivityState extends State<EditActivity> {
               try {
                 const String action = 'Send notifications for edited activity';
                 CloudFunction().logEvent(action);
-                for (final String f in widget.trip.accessUsers!) {
+                for (final String f in widget.trip.accessUsers) {
                   if (f != currentUserProfile.uid) {
                     CloudFunction().addNewNotification(
                       message: message,

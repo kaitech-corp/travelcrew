@@ -95,7 +95,7 @@ class BasketListPage extends StatelessWidget{
                                         ],
                                       ),
                                     ),
-                                    Expanded(child: BringListToDisplay(tripDocID: trip.documentId!,)),
+                                    Expanded(child: BringListToDisplay(tripDocID: trip.documentId,)),
                                   ],
                                 )
                               ),

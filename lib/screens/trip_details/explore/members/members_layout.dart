@@ -63,7 +63,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               return Loading();
             }
           },
-        stream: DatabaseService().getcrewList(widget.trip.accessUsers!),),
+        stream: DatabaseService().getcrewList(widget.trip.accessUsers),),
         if (_showImage) ...[
           BackdropFilter(
             filter: ImageFilter.blur(
@@ -102,7 +102,7 @@ class _MembersLayoutState extends State<MembersLayout> {
   Widget userCard(BuildContext context, UserPublicProfile member, Trip trip){
 
     return Card(
-      key: Key(member.uid!),
+      key: Key(member.uid),
       color: Colors.white,
       child: Container(
         width: SizeConfig.screenWidth,
@@ -112,7 +112,7 @@ class _MembersLayoutState extends State<MembersLayout> {
           onLongPress: (){
             setState(() {
               _showImage = true;
-              _image = member.urlToImage ?? '';
+              _image = member.urlToImage;
             });
           },
           onLongPressEnd: (LongPressEndDetails details) {
@@ -128,12 +128,12 @@ class _MembersLayoutState extends State<MembersLayout> {
               Center(
                 child: CircleAvatar(
                   radius: SizeConfig.blockSizeHorizontal*7,
-                  child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: member.urlToImage ?? ''),
+                  child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: member.urlToImage),
                 ),
               ),
               Expanded(
                 child: ListTile(
-                  title: Text(member.displayName!,
+                  title: Text(member.displayName,
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.start,),
                   trailing: (member.uid == userService.currentUserID || member.uid == trip.ownerID)

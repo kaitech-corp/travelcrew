@@ -34,7 +34,7 @@ class ExploreBasic extends StatelessWidget {
             backgroundColor: canvasColor,
             title: Tooltip(
               message: trip.tripName,
-              child: Text('${trip.tripName}'.toUpperCase(),
+              child: Text(trip.tripName.toUpperCase(),
                   style: SizeConfig.tablet ?
                   Theme.of(context).textTheme.headline5:
                   Theme.of(context).textTheme.headline6),

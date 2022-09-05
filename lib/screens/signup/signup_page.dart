@@ -66,7 +66,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 230),
-                  child: SignupForm(),
+                  child: const SignupForm(),
                 )
               ],
             ),

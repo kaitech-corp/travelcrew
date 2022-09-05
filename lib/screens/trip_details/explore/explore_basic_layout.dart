@@ -26,13 +26,13 @@ class ExploreBasicLayout extends StatelessWidget{
             children: <Widget>[
               Stack(
                 children: [
-                  if (tripDetails.urlToImage?.isNotEmpty ?? false) Hero(
-                    tag: tripDetails.documentId!,
+                  if (tripDetails.urlToImage.isNotEmpty) Hero(
+                    tag: tripDetails.documentId,
                     transitionOnUserGestures: true,
                     child: FadeInImage.assetNetwork(
                       fit: BoxFit.fitWidth,
                       placeholder: travelImage,
-                      image: tripDetails.urlToImage!,
+                      image: tripDetails.urlToImage,
 
                     ),
                   ) else Image.asset(travelImage,fit: BoxFit.fitWidth,),
@@ -44,9 +44,9 @@ class ExploreBasicLayout extends StatelessWidget{
                           onPressed: ()
                           {
                             final String message = '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
-                            final String trip = tripDetails.documentId!;
+                            final String trip = tripDetails.documentId;
                             const String type = 'joinRequest';
-                            final String ownerID = tripDetails.ownerID!;
+                            final String ownerID = tripDetails.ownerID;
                             final bool ispublic = tripDetails.ispublic;
 
                             CloudFunction().addNewNotification(message: message,
@@ -61,7 +61,7 @@ class ExploreBasicLayout extends StatelessWidget{
                 ],
               ),
               ListTile(
-                title: Text('${tripDetails.location}',style: const TextStyle(fontSize: 20.0)),
+                title: Text(tripDetails.location,style: const TextStyle(fontSize: 20.0)),
                 subtitle: Text('Owner: ${tripDetails.displayName}',style: Theme.of(context).textTheme.subtitle2,),
                 trailing: IconButton(
                   icon: const Icon(Icons.report,),
@@ -77,8 +77,8 @@ class ExploreBasicLayout extends StatelessWidget{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('${tripDetails.travelType}'.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
-                      Text('${TCFunctions().dateToMonthDay(tripDetails.startDate!)} - ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
+                      Text(tripDetails.travelType.toUpperCase(),style: Theme.of(context).textTheme.subtitle2,),
+                      Text('${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',style: Theme.of(context).textTheme.subtitle1,)
 
 
                     ],
@@ -86,11 +86,11 @@ class ExploreBasicLayout extends StatelessWidget{
                 ),
               ),
 
-              if(tripDetails.comment?.isNotEmpty ?? false) Container(
+              if(tripDetails.comment.isNotEmpty) Container(
                 padding: const EdgeInsets.all(18.0),
                 decoration: const BoxDecoration(
                 ),
-                child: Text(tripDetails.comment!,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
+                child: Text(tripDetails.comment,style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,),
               ),
             ],
           ),

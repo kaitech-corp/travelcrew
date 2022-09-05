@@ -55,7 +55,7 @@ class LodgingMenuButton  extends StatelessWidget{
             }
           break;
           default: {
-            CloudFunction().removeLodging(trip.documentId!,lodging.fieldID!);
+            CloudFunction().removeLodging(trip.documentId,lodging.fieldID!);
           }
           break;
         }
