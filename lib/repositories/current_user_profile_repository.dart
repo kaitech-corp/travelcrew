@@ -25,14 +25,14 @@ class CurrentUserProfileRepository {
     UserPublicProfile _userProfileFromSnapshot(DocumentSnapshot<Object> snapshot){
       if(snapshot.exists) {
         try {
-          final Map<String, dynamic> data = snapshot.data()  as Map<String, dynamic>;
-          urlToImage.value = UserPublicProfile.fromData(data).urlToImage ?? '';
-          return UserPublicProfile.fromData(data);
+          // final Map<String, dynamic> data = snapshot.data()  as Map<String, dynamic>;
+          // urlToImage.value = UserPublicProfile.fromData(data).urlToImage ?? '';
+          return UserPublicProfile.fromDocument(snapshot);
         } catch(e){
           CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
-          return UserPublicProfile();
+          return defaultProfile;
         }} else {
-        return UserPublicProfile();
+        return defaultProfile;
       }
     }
 

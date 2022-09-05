@@ -20,21 +20,20 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
     // Get all trips
     List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return Trip.fromData(data);
+        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         }).toList();
         // trips.where((trip) => {
         //   trip.
         // })
         trips.sort(
-            (Trip a, Trip b) => a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!));
+            (Trip a, Trip b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
         trips = trips
             .where(
-                (Trip trip) => !trip.accessUsers!.contains(userService.currentUserID))
+                (Trip trip) => !trip.accessUsers.contains(userService.currentUserID))
             .toList()
             .where((Trip trip) =>
-                trip.endDateTimeStamp!.toDate().isAfter(DateTime.now()))
+                trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
             .toList();
         return trips;
       } catch (e) {

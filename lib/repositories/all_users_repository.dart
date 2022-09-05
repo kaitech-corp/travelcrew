@@ -19,14 +19,12 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
     List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         List<UserPublicProfile> userList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return UserPublicProfile.fromData(data);
+          return UserPublicProfile.fromDocument(doc);
         }).toList();
-        userList.sort((UserPublicProfile a, UserPublicProfile b) => a.displayName!.compareTo(b.displayName!));
+        userList.sort((UserPublicProfile a, UserPublicProfile b) => a.displayName.compareTo(b.displayName));
         userList =
             userList.where((UserPublicProfile user) => user.uid != userService.currentUserID)
                 .toList();
-
         return userList;
       } catch (e) {
         CloudFunction().logError(

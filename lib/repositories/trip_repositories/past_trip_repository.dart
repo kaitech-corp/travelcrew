@@ -22,13 +22,12 @@ class PastTripRepository extends GenericBlocRepository<Trip> {
       try {
         final DateTime now = DateTime.now().toUtc();
         final DateTime past = DateTime(now.year, now.month, now.day - 1);
-        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return Trip.fromData(data);
+        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         }).toList();
         final List<Trip> crewTrips = trips
             .where(
-                (Trip trip) => trip.endDateTimeStamp?.toDate().compareTo(past) == -1)
+                (Trip trip) => trip.endDateTimeStamp.toDate().compareTo(past) == -1)
             .toList()
             .reversed
             .toList();

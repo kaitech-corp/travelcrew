@@ -22,11 +22,10 @@ class NotificationRepository {
 
       try {
         return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return NotificationData.fromData(data);
+          return NotificationData.fromDocument(doc);
         }).toList();
       } catch (e) {
-        CloudFunction().logError('Error retrieving notification list:  ${e.toString()}');
+        CloudFunction().logError('Error retrieving notification list: ${e.toString()}');
         return [];
       }
     }

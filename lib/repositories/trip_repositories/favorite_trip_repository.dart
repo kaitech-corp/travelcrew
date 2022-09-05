@@ -20,12 +20,11 @@ class FavoriteTripRepository extends GenericBlocRepository<Trip> {
 
     List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return Trip.fromData(data);
+        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         }).toList();
         trips.sort(
-            (Trip a, Trip b) => a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!));
+            (Trip a, Trip b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
 
         return trips;
       } catch (e) {

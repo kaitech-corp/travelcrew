@@ -25,8 +25,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
     List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot<Object> snapshot){
       try {
         final List<LodgingData> lodgingList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return LodgingData.fromData(data);
+          return LodgingData.fromDocument(doc);
         }).toList();
         lodgingList.sort((LodgingData a, LodgingData b) => b.voters!.length.compareTo(a.voters!.length));
         return lodgingList;

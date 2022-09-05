@@ -18,13 +18,12 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
     // Get all trips
     List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return Trip.fromData(data);
+        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         }).toList();
         trips = trips
             .where(
-                (Trip trip) => (trip.location?.length ?? 0) < 20 && (trip.location?.length ?? 0) > 0)
+                (Trip trip) => (trip.location.length) < 20 && (trip.location.length) > 0)
             .toList();
         return trips;
       } catch (e) {
