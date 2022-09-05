@@ -1,38 +1,132 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../services/functions/cloud_functions.dart';
+
 ///Model for activity data
 class ActivityData {
+  ActivityData(
+      {required this.endTime,
+      required this.endDateTimestamp,
+      required this.startDateTimestamp,
+      required this.dateTimestamp,
+      required this.startTime,
+      required this.comment,
+      required this.displayName,
+      required this.fieldID,
+      required this.link,
+      required this.location,
+      required this.activityType,
+      required this.uid,
+      required this.voters});
 
-  ActivityData({this.endTime,this.endDateTimestamp, this.startDateTimestamp,this.dateTimestamp, this.startTime, this.comment, this.displayName, this.fieldID, this.link, this.location, this.activityType, this.uid, this.voters});
+  factory ActivityData.fromDocument(DocumentSnapshot<Object?> doc) {
+    String activityType = '';
+    String comment = '';
+    String displayName = '';
+    String endTime = '';
+    Timestamp dateTimestamp = Timestamp.now();
+    Timestamp endDateTimestamp = Timestamp.now();
+    Timestamp startDateTimestamp = Timestamp.now();
+    String fieldID = '';
+    String link = '';
+    String location = '';
+    String startTime = '';
+    String uid = '';
+    List<dynamic> voters = <String>[];
+    try {
+      activityType = doc.get('activityType') as String;
+    } catch (e) {
+      CloudFunction().logError('activityType error: ${e.toString()}');
+    }
+    try {
+      comment = doc.get('comment') as String;
+    } catch (e) {
+      CloudFunction().logError('comment error: ${e.toString()}');
+    }
+    try {
+      displayName = doc.get('displayName') as String;
+    } catch (e) {
+      CloudFunction().logError('Display name error: ${e.toString()}');
+    }
+    try {
+      endTime = doc.get('endTime') as String;
+    } catch (e) {
+      CloudFunction().logError('endTime error: ${e.toString()}');
+    }
+    try {
+      dateTimestamp = doc.get('dateTimestamp') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('dateTimestamp error: ${e.toString()}');
+    }
+    try {
+      endDateTimestamp = doc.get('endDateTimestamp') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('endDateTimestamp error: ${e.toString()}');
+    }
+    try {
+      startDateTimestamp = doc.get('startDateTimestamp') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('startDateTimestamp error: ${e.toString()}');
+    }
+    try {
+      fieldID = doc.get('fieldID') as String;
+    } catch (e) {
+      CloudFunction().logError('fieldID error: ${e.toString()}');
+    }
+    try {
+      link = doc.get('link') as String;
+    } catch (e) {
+      CloudFunction().logError('link error: ${e.toString()}');
+    }
+    try {
+      location = doc.get('location') as String;
+    } catch (e) {
+      CloudFunction().logError('location error: ${e.toString()}');
+    }
+    try {
+      startTime = doc.get('startTime') as String;
+    } catch (e) {
+      CloudFunction().logError('startTime error: ${e.toString()}');
+    }
+    try {
+      voters = doc.get('voters') as List<String>;
+    } catch (e) {
+      CloudFunction().logError('voters error: ${e.toString()}');
+    }
+    try {
+      uid = doc.get('uid') as String;
+    } catch (e) {
+      CloudFunction().logError('UID error: ${e.toString()}');
+    }
+    return ActivityData(
+        endTime: endTime,
+        endDateTimestamp: endDateTimestamp,
+        startDateTimestamp: startDateTimestamp,
+        dateTimestamp: dateTimestamp,
+        startTime: startTime,
+        comment: comment,
+        displayName: displayName,
+        fieldID: fieldID,
+        link: link,
+        location: location,
+        activityType: activityType,
+        uid: uid,
+        voters: voters);
+  }
 
-  ActivityData.fromData(Map<String, dynamic> data)
-      : activityType = data['activityType'] as String,
-        comment = data['comment'] as String,
-        displayName = data['displayName'] as String,
-        endTime = data['endTime'] as String,
-        dateTimestamp = data['endDateTimestamp'] as Timestamp,
-        endDateTimestamp = data['endDateTimestamp'] as Timestamp,
-        startDateTimestamp = data['startDateTimestamp'] as Timestamp,
-        fieldID = data['fieldID'] as String,
-        link = data['link'] as String,
-        location = data['location'] as String,
-        startTime = data['startTime'] as String,
-        uid = data['uid'] as String,
-        voters = List<String>.from(data['voters'] as List<String>);
-
-  final String? activityType;
-  final String? comment;
-  final String? displayName;
-  final String? endTime;
-  final Timestamp? dateTimestamp;
-  final Timestamp? endDateTimestamp;
-  final Timestamp? startDateTimestamp;
-  final String? fieldID;
-  final String? link;
-  final String? location;
-  final String? startTime;
-  final String? uid;
-  final List<String>? voters;
+  String activityType;
+  String comment;
+  String displayName;
+  String endTime;
+  Timestamp dateTimestamp;
+  Timestamp endDateTimestamp;
+  Timestamp startDateTimestamp;
+  String fieldID;
+  String link;
+  String location;
+  String startTime;
+  String uid;
+  List<dynamic> voters;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -52,3 +146,18 @@ class ActivityData {
     };
   }
 }
+
+ActivityData defaultActivityData = ActivityData(
+    endTime: '',
+    endDateTimestamp: Timestamp.now(),
+    startDateTimestamp: Timestamp.now(),
+    dateTimestamp: Timestamp.now(),
+    startTime: '',
+    comment: '',
+    displayName: '',
+    fieldID: '',
+    link: '',
+    location: '',
+    activityType: '',
+    uid: '',
+    voters: <String>[]);

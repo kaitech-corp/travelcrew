@@ -54,7 +54,7 @@ class ActivityMenuButton extends StatelessWidget{
             }
           break;
           default: {
-            CloudFunction().removeActivity(trip.documentId!,activity.fieldID!);
+            CloudFunction().removeActivity(trip.documentId,activity.fieldID!);
           }
           break;
         }

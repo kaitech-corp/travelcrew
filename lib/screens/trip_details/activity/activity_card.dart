@@ -58,9 +58,9 @@ class ActivityCard extends StatelessWidget {
                             )
                           : null,
                     ),
-                    if (activity.link?.isNotEmpty ?? false)
+                    if (activity.link.isNotEmpty ?? false)
                       ViewAnyLink(
-                        link: activity.link!,
+                        link: activity.link,
                         function: () => <void>{},
                       ),
                     Row(
@@ -80,17 +80,17 @@ class ActivityCard extends StatelessWidget {
                             visualDensity: const VisualDensity(vertical: -4),
                             icon: FavoriteWidget(
                               uid: userService.currentUserID,
-                              voters: activity.voters ?? <String>[],
+                              voters: activity.voters as List<String>,
                             ),
                             onPressed: () {
                               final String fieldID = activity.fieldID!;
                               if (!activity.voters!
                                   .contains(userService.currentUserID)) {
                                 CloudFunction().addVoterToActivity(
-                                    trip.documentId!, fieldID);
+                                    trip.documentId, fieldID);
                               } else {
                                 CloudFunction().removeVoterFromActivity(
-                                    trip.documentId!, fieldID);
+                                    trip.documentId, fieldID);
                               }
                             }),
                       ],

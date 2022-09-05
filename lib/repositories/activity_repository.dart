@@ -18,8 +18,7 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
       try {
         final List<ActivityData> activityList =
             snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return ActivityData.fromData(data);
+          return ActivityData.fromDocument(doc);
         }).toList();
         // activityList.sort((a,b) => b.voters.length.compareTo(a.voters.length));
         return activityList;
