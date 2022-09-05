@@ -32,7 +32,9 @@ class ActivityMenuButton extends StatelessWidget{
           }
           break;
           case 'View': {
-            if(activity.link?.isNotEmpty ?? false) TCFunctions().launchURL(activity.link!);
+            if(activity.link.isNotEmpty) {
+              TCFunctions().launchURL(activity.link);
+            }
           }
           break;
           case 'Split': {
@@ -54,42 +56,42 @@ class ActivityMenuButton extends StatelessWidget{
             }
           break;
           default: {
-            CloudFunction().removeActivity(trip.documentId,activity.fieldID!);
+            CloudFunction().removeActivity(trip.documentId,activity.fieldID);
           }
           break;
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (BuildContext context) =>[
-        const PopupMenuItem(
+      itemBuilder: (BuildContext context) =><PopupMenuItem<String>>[
+        const PopupMenuItem<String>(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
             title: Text('Edit'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
             title: Text('View Link'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
             title: Text('Save to Calendar'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
             title: Text('Split'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
@@ -112,8 +114,8 @@ class ActivityMenuButton extends StatelessWidget{
             }
             break;
           case 'View': {
-            if (activity.link?.isNotEmpty ?? false) {
-              TCFunctions().launchURL(activity.link!);
+            if (activity.link.isNotEmpty) {
+              TCFunctions().launchURL(activity.link);
             }
           }
           break;
@@ -143,36 +145,36 @@ class ActivityMenuButton extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (BuildContext context) =>[
-        const PopupMenuItem(
+      itemBuilder: (BuildContext context) =><PopupMenuItem<String>>[
+        const PopupMenuItem<String>(
           value: 'report',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.report),
             title: Text('Report'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
             title: Text('Edit'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.link),
             title: Text('View Link'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
             title: Text('Split'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
@@ -182,6 +184,4 @@ class ActivityMenuButton extends StatelessWidget{
       ],
     );
   }
-
-
 }

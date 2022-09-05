@@ -16,7 +16,7 @@ import '../../../services/widgets/loading.dart';
 import 'activity_card.dart';
 
 class ActivityPage extends StatefulWidget {
-  const ActivityPage({required this.trip});
+  const ActivityPage({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
 
@@ -51,28 +51,25 @@ class _ActivityPageState extends State<ActivityPage> {
                 return Loading();
               } else if (state is HasDataState){
                 final List<ActivityData> activityList = state.data as List<ActivityData>;
-            return Container(
-                  child:
-                    GroupedListView<ActivityData, String>(
-                      elements: activityList,
-                      groupBy: (ActivityData activity) => DateTime(
-                          activity.startDateTimestamp!.toDate().year,
-                          activity.startDateTimestamp!.toDate().month,
-                          activity.startDateTimestamp!.toDate().day,).toString(),
-                      groupSeparatorBuilder: (String activity) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: Center(
-                            child: Text(
-                              TCFunctions().dateToMonthDayFromTimestamp(
-                                  Timestamp.fromDate(DateTime.parse(activity))),
-                              style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black54),)),
-                      ),
-                      itemComparator: (ActivityData a,ActivityData b) => a.startTime!.compareTo(b.startTime!),
-                      itemBuilder: (BuildContext context, ActivityData activity){
-                        return ActivityCard(activity: activity,trip: widget.trip,);
-                      },
-                    )
-                );
+            return GroupedListView<ActivityData, String>(
+              elements: activityList,
+              groupBy: (ActivityData activity) => DateTime(
+                  activity.startDateTimestamp.toDate().year,
+                  activity.startDateTimestamp.toDate().month,
+                  activity.startDateTimestamp.toDate().day,).toString(),
+              groupSeparatorBuilder: (String activity) => Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Center(
+                    child: Text(
+                      TCFunctions().dateToMonthDayFromTimestamp(
+                          Timestamp.fromDate(DateTime.parse(activity))),
+                      style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black54),)),
+              ),
+              itemComparator: (ActivityData a,ActivityData b) => a.startTime.compareTo(b.startTime),
+              itemBuilder: (BuildContext context, ActivityData activity){
+                return ActivityCard(activity: activity,trip: widget.trip,);
+              },
+            );
               } else {
                 return Container();
               }

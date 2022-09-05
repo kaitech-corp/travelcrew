@@ -38,7 +38,7 @@ class LodgingDetails extends StatelessWidget {
             height: SizeConfig.screenHeight,
             width: SizeConfig.screenWidth,
             child: LodgingDataLayout(
-              fieldID: lodging.fieldID!,
+              fieldID: lodging.fieldID,
               trip: trip,
             ),
           ),
@@ -65,13 +65,13 @@ class LodgingDataLayout extends StatelessWidget {
         if (document.hasData) {
           final LodgingData lodging = document.data as LodgingData;
           final DateTimeModel timeModel = DateTimeModel(
-              startDate: lodging.startDateTimestamp!.toDate(),
-              endDate: lodging.endDateTimestamp!.toDate());
+              startDate: lodging.startDateTimestamp.toDate(),
+              endDate: lodging.endDateTimestamp.toDate());
 
           final Event event = createEvent(
               lodging: lodging, timeModel: timeModel, type: 'Lodging');
           return Column(
-            children: [
+            children: <Widget>[
               Container(
                 padding: EdgeInsets.all(SizeConfig.defaultPadding),
                 decoration: BoxDecoration(
@@ -81,10 +81,10 @@ class LodgingDataLayout extends StatelessWidget {
                       bottomRight: Radius.circular(45)),
                 ),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     ListTile(
                       title: Text(
-                        lodging.lodgingType!,
+                        lodging.lodgingType,
                         style: Theme.of(context).textTheme.headline5,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -109,8 +109,8 @@ class LodgingDataLayout extends StatelessWidget {
                           icon: Icons.calendar_today,
                         ),
                         title: Text(
-                          '${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp!)} - '
-                          '${TCFunctions().formatTimestamp(lodging.endDateTimestamp!, wTime: false)}',
+                          '${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp)} - '
+                          '${TCFunctions().formatTimestamp(lodging.endDateTimestamp, wTime: false)}',
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         onTap: () {
@@ -128,7 +128,7 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    if (lodging.startTime?.isNotEmpty ?? false)
+                    if (lodging.startTime.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.access_time,
@@ -139,7 +139,7 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    if (lodging.endTime?.isNotEmpty ?? false)
+                    if (lodging.endTime.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.access_time,
@@ -150,18 +150,18 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    if (lodging.location?.isNotEmpty ?? false)
+                    if (lodging.location.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.map,
                         ),
-                        title: Text(lodging.location!,
+                        title: Text(lodging.location,
                             style: const TextStyle(color: Colors.blue)),
                         onTap: () {
-                          MapsLauncher.launchQuery(lodging.location!);
+                          MapsLauncher.launchQuery(lodging.location);
                         },
                         onLongPress: () {
-                          FlutterClipboard.copy(lodging.location!).whenComplete(
+                          FlutterClipboard.copy(lodging.location).whenComplete(
                               () => TravelCrewAlertDialogs()
                                   .copiedToClipboardDialog(context));
                         },
@@ -176,7 +176,7 @@ class LodgingDataLayout extends StatelessWidget {
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
-                    if (lodging.comment?.isNotEmpty ?? false)
+                    if (lodging.comment.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.comment,
@@ -184,7 +184,7 @@ class LodgingDataLayout extends StatelessWidget {
                         title: Tooltip(
                             message: lodging.comment,
                             child: Text(
-                              lodging.comment!,
+                              lodging.comment,
                               style: Theme.of(context).textTheme.subtitle1,
                               maxLines: 10,
                               overflow: TextOverflow.ellipsis,
@@ -207,17 +207,17 @@ class LodgingDataLayout extends StatelessWidget {
                   ],
                 ),
               ),
-              if (lodging.link?.isNotEmpty ?? false)
+              if (lodging.link.isNotEmpty)
                 Container(
                   padding: EdgeInsets.all(SizeConfig.defaultPadding),
                   width: double.infinity,
                   child: InkWell(
                     child: ViewAnyLink(
-                      link: lodging.link!,
+                      link: lodging.link,
                       function: () {},
                     ),
                     onTap: () {
-                      TCFunctions().launchURL(lodging.link!);
+                      TCFunctions().launchURL(lodging.link);
                     },
                   ),
                 )

@@ -12,18 +12,18 @@ Event createEvent(
 
   if(type == 'Activity') {
     final Event event = Event(
-      title: activity!.activityType!,
-      description: activity.comment!,
-      location: activity.location!,
+      title: activity!.activityType,
+      description: activity.comment,
+      location: activity.location,
       startDate: timeModel.startDate!,
       endDate: timeModel.endDate!,
     );
     return event;
   } else{
     final Event event = Event(
-      title: lodging!.lodgingType!,
-      description: lodging.comment!,
-      location: lodging.location!,
+      title: lodging!.lodgingType,
+      description: lodging.comment,
+      location: lodging.location,
       startDate: timeModel.startDate!,
       endDate: timeModel.endDate!,
       // allDay: true,

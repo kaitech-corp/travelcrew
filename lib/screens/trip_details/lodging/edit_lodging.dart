@@ -13,16 +13,18 @@ import '../../add_trip/google_autocomplete.dart';
 
 /// Edit lodging data
 class EditLodging extends StatefulWidget {
-  const EditLodging({required this.lodging, required this.trip});
+  const EditLodging({Key? key, required this.lodging, required this.trip})
+      : super(key: key);
 
   final LodgingData lodging;
   final Trip trip;
 
   @override
-  _EditLodgingState createState() => _EditLodgingState();
+  State<EditLodging> createState() => _EditLodgingState();
 }
 
 class _EditLodgingState extends State<EditLodging> {
+
   final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -47,20 +49,20 @@ class _EditLodgingState extends State<EditLodging> {
 
   @override
   void initState() {
-    controller.text = widget.lodging.location ?? '';
+    controller.text = widget.lodging.location;
     endDateTimestamp.value =
-        widget.lodging.endDateTimestamp ?? widget.trip.endDateTimeStamp;
+        widget.lodging.endDateTimestamp;
     startDateTimestamp.value =
-        widget.lodging.startDateTimestamp ?? widget.trip.startDateTimeStamp;
+        widget.lodging.startDateTimestamp;
     link = widget.lodging.link;
     lodgingType = widget.lodging.lodgingType;
     comment = widget.lodging.comment;
     startTime.value =
-        TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp!.toDate());
+        TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp.toDate());
     endTime.value =
-        TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp!.toDate());
+        TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp.toDate());
     documentID = widget.trip.documentId;
-    fieldID = widget.lodging.fieldID!;
+    fieldID = widget.lodging.fieldID;
     super.initState();
   }
 

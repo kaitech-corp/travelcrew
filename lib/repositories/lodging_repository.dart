@@ -27,7 +27,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
         final List<LodgingData> lodgingList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return LodgingData.fromDocument(doc);
         }).toList();
-        lodgingList.sort((LodgingData a, LodgingData b) => b.voters!.length.compareTo(a.voters!.length));
+        lodgingList.sort((LodgingData a, LodgingData b) => b.voters.length.compareTo(a.voters.length));
         return lodgingList;
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');

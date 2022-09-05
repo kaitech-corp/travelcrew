@@ -37,7 +37,7 @@ class ActivityDetails extends StatelessWidget {
           child: SizedBox(
             height: SizeConfig.screenHeight,
             width: SizeConfig.screenWidth,
-            child: ActivityDataLayout(fieldID: activity.fieldID!, trip: trip),
+            child: ActivityDataLayout(fieldID: activity.fieldID, trip: trip),
           ),
         ));
   }
@@ -63,8 +63,8 @@ class ActivityDataLayout extends StatelessWidget {
           final ActivityData activityData = document.data!;
           final ActivityData activity = activityData;
           final DateTimeModel timeModel = DateTimeModel(
-              startDate: activity.startDateTimestamp!.toDate(),
-              endDate: activity.endDateTimestamp!.toDate());
+              startDate: activity.startDateTimestamp.toDate(),
+              endDate: activity.endDateTimestamp.toDate());
 
           final Event event = createEvent(
               activity: activity, type: 'Activity', timeModel: timeModel);
@@ -79,16 +79,16 @@ class ActivityDataLayout extends StatelessWidget {
                 ),
                 padding: EdgeInsets.all(SizeConfig.defaultPadding),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     ListTile(
                       title: Text(
-                        activity.activityType!,
+                        activity.activityType,
                         style: Theme.of(context).textTheme.headline5,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        '${activity.displayName}',
+                        activity.displayName,
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       trailing: ActivityMenuButton(
@@ -104,8 +104,8 @@ class ActivityDataLayout extends StatelessWidget {
                           icon: Icons.calendar_today,
                         ),
                         title: Text(
-                          '${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp!)} - '
-                          '${TCFunctions().formatTimestamp(activity.endDateTimestamp!, wTime: false)}',
+                          '${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp)} - '
+                          '${TCFunctions().formatTimestamp(activity.endDateTimestamp, wTime: false)}',
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         onTap: () {
@@ -123,31 +123,31 @@ class ActivityDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    if (activity.startTime?.isNotEmpty ?? false)
+                    if (activity.startTime.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.access_time,
                         ),
                         title: Text(
-                          '${activity.startTime ?? ''} - ${activity.endTime ?? ''}',
+                          '${activity.startTime} - ${activity.endTime}',
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         onTap: () {},
                       ),
-                    if (activity.location?.isNotEmpty ?? false)
+                    if (activity.location.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.map,
                         ),
                         title: Text(
-                          activity.location!,
+                          activity.location,
                           style: const TextStyle(color: Colors.blue),
                         ),
                         onTap: () {
-                          MapsLauncher.launchQuery(activity.location!);
+                          MapsLauncher.launchQuery(activity.location);
                         },
                         onLongPress: () {
-                          FlutterClipboard.copy(activity.location!)
+                          FlutterClipboard.copy(activity.location)
                               .whenComplete(() => TravelCrewAlertDialogs()
                                   .copiedToClipboardDialog(context));
                         },
@@ -162,7 +162,7 @@ class ActivityDataLayout extends StatelessWidget {
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
-                    if (activity.comment?.isNotEmpty ?? false)
+                    if (activity.comment.isNotEmpty)
                       ListTile(
                         leading: const TripDetailsIconThemeWidget(
                           icon: Icons.comment,
@@ -170,7 +170,7 @@ class ActivityDataLayout extends StatelessWidget {
                         title: Tooltip(
                             message: activity.comment,
                             child: Text(
-                              activity.comment!,
+                              activity.comment,
                               style: Theme.of(context).textTheme.subtitle1,
                               maxLines: 7,
                               overflow: TextOverflow.ellipsis,
@@ -193,18 +193,18 @@ class ActivityDataLayout extends StatelessWidget {
                   ],
                 ),
               ),
-              if (activity.link?.isNotEmpty ?? false)
+              if (activity.link.isNotEmpty)
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.all(SizeConfig.defaultPadding),
                     width: double.infinity,
                     child: InkWell(
                       child: ViewAnyLink(
-                        link: activity.link!,
+                        link: activity.link,
                         function: () {},
                       ),
                       onTap: () {
-                        TCFunctions().launchURL(activity.link!);
+                        TCFunctions().launchURL(activity.link);
                       },
                     ),
                   ),

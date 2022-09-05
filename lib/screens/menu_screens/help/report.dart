@@ -50,8 +50,8 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'activities';
-            docID = widget.activity!.fieldID!;
-            offenderID = widget.activity!.uid!;
+            docID = widget.activity!.fieldID;
+            offenderID = widget.activity!.uid;
           });
         }
         break;
@@ -59,8 +59,8 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'lodging';
-            docID = widget.lodging!.fieldID!;
-            offenderID = widget.lodging!.uid!;
+            docID = widget.lodging!.fieldID;
+            offenderID = widget.lodging!.uid;
           });
         }
         break;
@@ -108,13 +108,13 @@ class _ReportContentState extends State<ReportContent> {
 
   late String _message;
 
-  Map<String, String> reportType = {
+  Map<String, String> reportType = <String, String>{
     'Content': Intl.message('Content (i.e. image, language) is inappropriate.'),
     'Identity': Intl.message('This account is pretending to be someone else.'),
     'Spam': Intl.message('You believe this to be a spam account.'),
     'Other': Intl.message('Please describe below.')
   };
-  List<String> reportList = ['Content', 'Identity', 'Spam', 'Other'];
+  List<String> reportList = <String>['Content', 'Identity', 'Spam', 'Other'];
   String itemType = 'Content';
 
   @override
@@ -133,7 +133,7 @@ class _ReportContentState extends State<ReportContent> {
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const Padding(
                   padding: EdgeInsets.only(top: 5),
                 ),
@@ -160,9 +160,9 @@ class _ReportContentState extends State<ReportContent> {
                             ),
                             value: reportList[index],
                             groupValue: itemType,
-                            onChanged: (Object? value) {
+                            onChanged: (String? value) {
                               setState(() {
-                                itemType = value as String;
+                                itemType = value!;
                               });
                             });
                       }),

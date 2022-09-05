@@ -24,7 +24,7 @@ class ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        key: Key(activity.fieldID!),
+        key: Key(activity.fieldID),
         child: GlobalCard(
           widget: InkWell(
             splashColor: Colors.blue.withAlpha(30),
@@ -41,7 +41,7 @@ class ActivityCard extends StatelessWidget {
                     ListTile(
                       visualDensity: const VisualDensity(vertical: -4),
                       title: Text(
-                        '${activity.activityType}',
+                        activity.activityType,
                         style: SizeConfig.tablet
                             ? Theme.of(context).textTheme.headline4
                             : Theme.of(context).textTheme.headline6,
@@ -51,14 +51,14 @@ class ActivityCard extends StatelessWidget {
                         activity: activity,
                         trip: trip,
                       ),
-                      subtitle: activity.startTime?.isNotEmpty ?? false
+                      subtitle: activity.startTime.isNotEmpty
                           ? Text(
-                              '${activity.startTime ?? ''} - ${activity.endTime ?? ''}',
+                              '${activity.startTime} - ${activity.endTime}',
                               style: Theme.of(context).textTheme.subtitle2,
                             )
                           : null,
                     ),
-                    if (activity.link.isNotEmpty ?? false)
+                    if (activity.link.isNotEmpty)
                       ViewAnyLink(
                         link: activity.link,
                         function: () => <void>{},
@@ -80,11 +80,11 @@ class ActivityCard extends StatelessWidget {
                             visualDensity: const VisualDensity(vertical: -4),
                             icon: FavoriteWidget(
                               uid: userService.currentUserID,
-                              voters: activity.voters as List<String>,
+                              voters: activity.voters,
                             ),
                             onPressed: () {
-                              final String fieldID = activity.fieldID!;
-                              if (!activity.voters!
+                              final String fieldID = activity.fieldID;
+                              if (!activity.voters
                                   .contains(userService.currentUserID)) {
                                 CloudFunction().addVoterToActivity(
                                     trip.documentId, fieldID);

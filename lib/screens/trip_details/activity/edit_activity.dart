@@ -13,16 +13,18 @@ import '../../../services/widgets/time_picker.dart';
 import '../../add_trip/google_autocomplete.dart';
 
 class EditActivity extends StatefulWidget {
-  const EditActivity({required this.activity, required this.trip});
+  const EditActivity({Key? key, required this.activity, required this.trip})
+      : super(key: key);
 
   final ActivityData activity;
   final Trip trip;
 
   @override
-  _EditActivityState createState() => _EditActivityState();
+  State<EditActivity> createState() => _EditActivityState();
 }
 
 class _EditActivityState extends State<EditActivity> {
+
   final UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
@@ -54,20 +56,20 @@ class _EditActivityState extends State<EditActivity> {
   @override
   void initState() {
     documentID = widget.trip.documentId;
-    fieldID = widget.activity.fieldID!;
+    fieldID = widget.activity.fieldID;
     startDateTimestamp.value =
-        widget.activity.startDateTimestamp ?? widget.trip.startDateTimeStamp;
+        widget.activity.startDateTimestamp;
     endDateTimestamp.value =
-        widget.activity.endDateTimestamp ?? widget.trip.startDateTimeStamp;
-    controllerComment.text = widget.activity.comment ?? '';
-    controllerLink.text = widget.activity.link ?? '';
-    controllerLocation.text = widget.activity.location!;
-    controllerType.text = widget.activity.activityType!;
+        widget.activity.endDateTimestamp;
+    controllerComment.text = widget.activity.comment;
+    controllerLink.text = widget.activity.link;
+    controllerLocation.text = widget.activity.location;
+    controllerType.text = widget.activity.activityType;
     startTime.value =
-        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp!.toDate());
+        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp.toDate());
     endTime.value =
-        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp!.toDate());
-    displayName = widget.activity.displayName!;
+        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp.toDate());
+    displayName = widget.activity.displayName;
 
     super.initState();
   }
