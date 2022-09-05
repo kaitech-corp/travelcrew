@@ -19,11 +19,11 @@ class AllUserPage extends StatefulWidget {
   const AllUserPage({Key? key}) : super(key: key);
 
   @override
-  _AllUserPageState createState() => _AllUserPageState();
-
+  State<AllUserPage> createState() => _AllUserPageState();
 }
 
 class _AllUserPageState extends State<AllUserPage> {
+
 
   late GenericBloc<UserPublicProfile,AllUserRepository> bloc;
 
@@ -52,9 +52,9 @@ class _AllUserPageState extends State<AllUserPage> {
       final String val = name.toLowerCase();
 
       final List<UserPublicProfile> results = allUsersSearchList.where((UserPublicProfile user) =>
-      user.displayName!.toLowerCase().contains(val)
-          || user.firstName!.toLowerCase().contains(val) ||
-          user.lastName!.toLowerCase().contains(val) || user.displayName!.toLowerCase().contains(val)
+      user.displayName.toLowerCase().contains(val)
+          || user.firstName.toLowerCase().contains(val) ||
+          user.lastName.toLowerCase().contains(val) || user.displayName.toLowerCase().contains(val)
       ).toList();
       return results;
     }
@@ -99,7 +99,7 @@ class _AllUserPageState extends State<AllUserPage> {
                     controller: controller,
                     itemCount: allUsersList.length,
                     itemBuilder: (BuildContext context, int index){
-                      return TCUserCard(allUsers: allUsersList[index]);
+                        return TCUserCard(allUsers: allUsersList[index]);
                     }),
 
               );
@@ -110,4 +110,3 @@ class _AllUserPageState extends State<AllUserPage> {
     );
   }
 }
-

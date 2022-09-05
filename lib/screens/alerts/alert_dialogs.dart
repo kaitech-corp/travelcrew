@@ -98,7 +98,7 @@ class TravelCrewAlertDialogs {
               child: Text(report(),),
               onPressed: () {
                 navigationService.pop();
-                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile ?? UserPublicProfile(), activityData, tripDetails, lodgingData));
+                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile ?? defaultProfile, activityData, tripDetails, lodgingData));
               },
             ),
             TextButton(
@@ -200,7 +200,7 @@ class TravelCrewAlertDialogs {
             TextButton(
               child: Text(yesMessage(),),
               onPressed: () {
-                CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId!, userUID: uid, ispublic: tripDetails.ispublic);
+                CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId, userUID: uid, ispublic: tripDetails.ispublic);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
@@ -229,7 +229,7 @@ class TravelCrewAlertDialogs {
             TextButton(
               child: Text(yesMessage()),
               onPressed: () {
-                CloudFunction().deleteTrip(tripDetails.documentId!, tripDetails.ispublic);
+                CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
@@ -295,7 +295,7 @@ class TravelCrewAlertDialogs {
             TextButton(
               child: Text(yesMessage()),
               onPressed: () {
-                CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId!, userUID: member!.uid!, ispublic: tripDetails.ispublic);
+                CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId, userUID: member!.uid, ispublic: tripDetails.ispublic);
                 navigationService.pop();
               },
             ),

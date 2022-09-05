@@ -66,7 +66,7 @@ class CompleteProfile extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 230),
-                  child: CompleteProfileForm(),
+                  child: const CompleteProfileForm(),
                 )
               ],
             ),
