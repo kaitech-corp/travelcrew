@@ -23,7 +23,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final UserPublicProfile _user = UserPublicProfile();
+  final UserPublicProfile _user = defaultProfile;
   late File _image;
   final ImagePicker _picker = ImagePicker();
   String error = '';
@@ -35,7 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   CroppedFile? _croppedFile;
 
   Future<void> _uploadImage() async {
-    final pickedFile =
+    final XFile? pickedFile =
     await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
@@ -70,7 +70,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (croppedImage != null) {
       _image = croppedImage as File;
     } else {
-      _image = File(_user.urlToImage!);
+      _image = File(_user.urlToImage);
     }
   }
 
@@ -107,7 +107,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           ) else CircleAvatar(
                                             radius:
                                                 SizeConfig.screenWidth / 2.25,
-                                            child: FadeInImage.assetNetwork(placeholder: _image.path, image: user.urlToImage!),
+                                            child: FadeInImage.assetNetwork(placeholder: _image.path, image: user.urlToImage),
                                           ),
                                     ElevatedButton(
                                       onPressed: () {
@@ -135,7 +135,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           }
                                         },
                                         onSaved: (String? val) => setState(
-                                            () => _user.firstName = val)),
+                                            () => _user.firstName = val!)),
                                     TextFormField(
                                       decoration: const InputDecoration(
                                           labelText: 'Last Name'),
@@ -156,7 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         }
                                       },
                                       onSaved: (String? val) =>
-                                          setState(() => _user.lastName = val),
+                                          setState(() => _user.lastName = val!),
                                     ),
                                     TextFormField(
                                         initialValue: user.displayName,
@@ -174,9 +174,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           }
                                         },
                                         onSaved: (String? val) => setState(
-                                            () => _user.displayName = val)),
+                                            () => _user.displayName = val!)),
                                     TextFormField(
-                                        initialValue: user.hometown ?? '',
+                                        initialValue: user.hometown,
                                         decoration: const InputDecoration(
                                             labelText: 'Hometown'),
                                         onSaved: (String? val) => setState(
@@ -201,7 +201,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           children: [
                                             TextFormField(
                                                 initialValue:
-                                                    user.instagramLink ?? '',
+                                                    user.instagramLink,
                                                 decoration:
                                                     const InputDecoration(
                                                         labelText: 'Instagram'),
@@ -216,11 +216,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                   return null;
                                                 },
                                                 onSaved: (String? val) => setState(() =>
-                                                    _user.instagramLink = val)),
+                                                    _user.instagramLink = val!)),
                                             TextFormField(
                                                 initialValue: user
-                                                        .facebookLink ??
-                                                    '',
+                                                        .facebookLink,
                                                 decoration:
                                                     const InputDecoration(
                                                         labelText:
@@ -236,7 +235,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                   return null;
                                                 },
                                                 onSaved: (String? val) => setState(() =>
-                                                    _user.facebookLink = val)),
+                                                    _user.facebookLink = val!)),
                                           ],
                                         ),
                                       ),
@@ -261,9 +260,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           children: [
                                             TextFormField(
                                                 initialValue: (user
-                                                        .topDestinations![0]
+                                                        .topDestinations[0]
+                                                .toString()
                                                         .isNotEmpty)
-                                                    ? user.topDestinations![0]
+                                                    ? user.topDestinations[0].toString()
                                                     : '',
                                                 inputFormatters: [
                                                   LengthLimitingTextInputFormatter(
@@ -279,9 +279,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                     destination1 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
-                                                        .topDestinations![1]
+                                                        .topDestinations[1]
+                                                .toString()
                                                         .isNotEmpty)
-                                                    ? user.topDestinations![1]
+                                                    ? user.topDestinations[1].toString()
                                                     : '',
                                                 inputFormatters: [
                                                   LengthLimitingTextInputFormatter(
@@ -297,9 +298,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                     destination2 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
-                                                        .topDestinations![2]
+                                                        .topDestinations[2]
+                                                .toString()
                                                         .isNotEmpty)
-                                                    ? user.topDestinations![2]
+                                                    ? user.topDestinations[2].toString()
                                                     : '',
                                                 inputFormatters: [
                                                   LengthLimitingTextInputFormatter(

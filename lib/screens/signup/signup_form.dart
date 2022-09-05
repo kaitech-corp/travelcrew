@@ -70,7 +70,7 @@ class _SignupFormState extends State<SignupForm> {
   CroppedFile? _croppedFile;
 
   Future<void> _uploadImage() async {
-    final pickedFile =
+    final XFile? pickedFile =
     await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
