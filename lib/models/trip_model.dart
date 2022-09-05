@@ -1,62 +1,168 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../services/functions/cloud_functions.dart';
+
 ///Model for trip details
 class Trip {
   Trip(
-      {this.tripGeoPoint,
-      this.comment,
-      this.dateCreatedTimeStamp,
-      this.displayName,
-      this.favorite,
-      this.accessUsers,
-      this.documentId,
-      this.endDate,
-      this.endDateTimeStamp,
+      {required this.tripGeoPoint,
+      required this.comment,
+      required this.dateCreatedTimeStamp,
+      required this.displayName,
+      required this.favorite,
+      required this.accessUsers,
+      required this.documentId,
+      required this.endDate,
+      required this.endDateTimeStamp,
       required this.ispublic,
-      this.tripName,
-      this.location,
-      this.ownerID,
-      this.startDate,
-      this.startDateTimeStamp,
-      this.travelType,
-      this.urlToImage});
+      required this.tripName,
+      required this.location,
+      required this.ownerID,
+      required this.startDate,
+      required this.startDateTimeStamp,
+      required this.travelType,
+      required this.urlToImage});
 
-  Trip.fromData(Map<String, dynamic> data)
-      : accessUsers = List<String>.from(data['accessUsers'] as List<String>),
-        comment = data['comment'] as String,
-        dateCreatedTimeStamp = data['dateCreatedTimeStamp'] as Timestamp,
-        displayName = data['displayName'] as String,
-        documentId = data['documentId'] as String,
-        endDate = data['endDate'] as String,
-        endDateTimeStamp = data['endDateTimeStamp'] as Timestamp,
-        favorite = List<String>.from(data['favorite'] as List<String>),
-        ispublic = data['ispublic'] as bool,
-        tripGeoPoint = data['tripGeoPoint'] as GeoPoint,
-        tripName = data['tripName'] as String,
-        location = data['location'] as String,
-        ownerID = data['ownerID'] as String,
-        startDate = data['startDate'] as String,
-        startDateTimeStamp = data['startDateTimeStamp'] as Timestamp,
-        travelType = data['travelType'] as String,
-        urlToImage = data['urlToImage'] as String;
+  factory Trip.fromDocument(DocumentSnapshot<Object?> doc) {
+    List<String> accessUsers = <String>[];
+    String comment = '';
+    Timestamp dateCreatedTimeStamp = Timestamp.now();
+    String displayName = '';
+    String documentId = '';
+    String endDate = '';
+    Timestamp endDateTimeStamp = Timestamp.now();
+    List<String> favorite = <String>[];
+    bool ispublic = false;
+    GeoPoint tripGeoPoint = const GeoPoint(0, 0);
+    String tripName = '';
+    String location = '';
+    String ownerID = '';
+    String startDate = '';
+    Timestamp startDateTimeStamp = Timestamp.now();
+    String travelType = '';
+    String urlToImage = '';
 
-  final List<String>? accessUsers;
-  final String? comment;
-  final Timestamp? dateCreatedTimeStamp;
-  final String? displayName;
-  final String? documentId;
-  final String? endDate;
-  final Timestamp? endDateTimeStamp;
-  final List<String>? favorite;
-  final bool ispublic;
-  final GeoPoint? tripGeoPoint;
-  final String? tripName;
-  final String? location;
-  final String? ownerID;
-  final String? startDate;
-  final Timestamp? startDateTimeStamp;
-  final String? travelType;
-  final String? urlToImage;
+    try {
+      accessUsers = doc.get('accessUsers') as List<String>;
+    } catch (e) {
+      CloudFunction().logError('accessUsers error: ${e.toString()}');
+    }
+    try {
+      comment = doc.get('comment') as String;
+    } catch (e) {
+      CloudFunction().logError('comment error: ${e.toString()}');
+    }
+    try {
+      dateCreatedTimeStamp = doc.get('dateCreatedTimeStamp') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('dateCreatedTimeStamp error: ${e.toString()}');
+    }
+    try {
+      displayName = doc.get('displayName') as String;
+    } catch (e) {
+      CloudFunction().logError('displayName error: ${e.toString()}');
+    }
+    try {
+      documentId = doc.get('documentId') as String;
+    } catch (e) {
+      CloudFunction().logError('documentId error: ${e.toString()}');
+    }
+    try {
+      endDate = doc.get('endDate') as String;
+    } catch (e) {
+      CloudFunction().logError('endDate error: ${e.toString()}');
+    }
+    try {
+      endDateTimeStamp = doc.get('endDateTimeStamp') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('endDateTimeStamp error: ${e.toString()}');
+    }
+    try {
+      favorite = doc.get('favorite') as List<String>;
+    } catch (e) {
+      CloudFunction().logError('favorite error: ${e.toString()}');
+    }
+    try {
+      ispublic = doc.get('ispublic') as bool;
+    } catch (e) {
+      CloudFunction().logError('Iispublic error: ${e.toString()}');
+    }
+    try {
+      location = doc.get('location') as String;
+    } catch (e) {
+      CloudFunction().logError('location error: ${e.toString()}');
+    }
+    try {
+      ownerID = doc.get('ownerID') as String;
+    } catch (e) {
+      CloudFunction().logError('ownerID error: ${e.toString()}');
+    }
+    try {
+      startDate = doc.get('startDate') as String;
+    } catch (e) {
+      CloudFunction().logError('startDate error: ${e.toString()}');
+    }
+    try {
+      startDateTimeStamp = doc.get('startDateTimeStamp') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('startDateTimeStamp error: ${e.toString()}');
+    }
+    try {
+      travelType = doc.get('travelType') as String;
+    } catch (e) {
+      CloudFunction().logError('travelType error: ${e.toString()}');
+    }
+    try {
+      tripGeoPoint = doc.get('tripGeoPoint') as GeoPoint;
+    } catch (e) {
+      CloudFunction().logError('tripGeoPoint error: ${e.toString()}');
+    }
+    try {
+      tripName = doc.get('tripName') as String;
+    } catch (e) {
+      CloudFunction().logError('tripName error: ${e.toString()}');
+    }
+    try {
+      urlToImage = doc.get('urlToImage') as String;
+    } catch (e) {
+      CloudFunction().logError('Image url error: ${e.toString()}');
+    }
+    return Trip(
+        tripGeoPoint: tripGeoPoint,
+        comment: comment,
+        dateCreatedTimeStamp: dateCreatedTimeStamp,
+        displayName: displayName,
+        favorite: favorite,
+        accessUsers: accessUsers,
+        documentId: documentId,
+        endDate: endDate,
+        endDateTimeStamp: endDateTimeStamp,
+        ispublic: ispublic,
+        tripName: tripName,
+        location: location,
+        ownerID: ownerID,
+        startDate: startDate,
+        startDateTimeStamp: startDateTimeStamp,
+        travelType: travelType,
+        urlToImage: urlToImage);
+  }
+  List<String> accessUsers;
+  String comment;
+  Timestamp dateCreatedTimeStamp;
+  String displayName;
+  String documentId;
+  String endDate;
+  Timestamp endDateTimeStamp;
+  List<String> favorite;
+  bool ispublic;
+  GeoPoint tripGeoPoint;
+  String tripName;
+  String location;
+  String ownerID;
+  String startDate;
+  Timestamp startDateTimeStamp;
+  String travelType;
+  String urlToImage;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -80,3 +186,22 @@ class Trip {
     };
   }
 }
+
+Trip defaultTrip = Trip(
+    tripGeoPoint: const GeoPoint(0, 0),
+    comment: '',
+    dateCreatedTimeStamp: Timestamp.now(),
+    displayName: '',
+    favorite: <String>[],
+    accessUsers: <String>[],
+    documentId: '',
+    endDate: '',
+    endDateTimeStamp: Timestamp.now(),
+    ispublic: false,
+    tripName: '',
+    location: '',
+    ownerID: '',
+    startDate: '',
+    startDateTimeStamp: Timestamp.now(),
+    travelType: '',
+    urlToImage: '');
