@@ -46,10 +46,10 @@ class _AddNewLodgingState extends State<AddNewLodging> {
 
   @override
   void initState() {
-    endDateTimestamp.value = widget.trip.endDateTimeStamp!;
-    startDateTimestamp.value = widget.trip.startDateTimeStamp!;
-    displayName = currentUserProfile.displayName!;
-    documentID = widget.trip.documentId!;
+    endDateTimestamp.value = widget.trip.endDateTimeStamp;
+    startDateTimestamp.value = widget.trip.startDateTimeStamp;
+    displayName = currentUserProfile.displayName;
+    documentID = widget.trip.documentId;
     uid = userService.currentUserID;
     ispublic = widget.trip.ispublic;
     super.initState();
@@ -246,7 +246,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                       startTime: startTime.value.toString(),
                       startDateTimestamp: startDateTimestamp.value,
                       uid: uid,
-                      voters: <String>[],
+                      voters: <String>[], fieldID: '',
                     ));
               } on Exception catch (e) {
                 CloudFunction()
@@ -256,7 +256,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 final String action =
                     'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
-                for (final String f in widget.trip.accessUsers!) {
+                for (final String f in widget.trip.accessUsers) {
                   if (f != currentUserProfile.uid) {
                     CloudFunction().addNewNotification(
                       message: message,

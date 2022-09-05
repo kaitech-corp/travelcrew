@@ -225,7 +225,7 @@ class QuickDataCards extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            user.displayName!,
+                            user.displayName,
                             style: SizeConfig.tablet
                                 ? Theme.of(context).textTheme.headline5
                                 : Theme.of(context).textTheme.subtitle1,

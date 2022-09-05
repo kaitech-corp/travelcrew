@@ -61,7 +61,7 @@ class DMChatListPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: SizeConfig.blockSizeHorizontal * 7,
-                child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage!),
+                child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage),
               ),
             ),
             Expanded(
@@ -74,7 +74,7 @@ class DMChatListPage extends StatelessWidget {
                 },
                 // leading:
                 title: Text(
-                  user.displayName!,
+                  user.displayName,
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.subtitle2,
                 ),

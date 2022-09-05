@@ -264,8 +264,8 @@ class _AddTripPageState extends State<AddTripPage> {
                                         location: myController.text,
                                         startDate: startDate.value,
                                         travelType: travelType,
-                                        tripGeoPoint: googleData2.value.geoLocation,
-                                        tripName: tripName,
+                                        tripGeoPoint: googleData2.value.geoLocation!,
+                                        tripName: tripName, ownerID: '', displayName: '', dateCreatedTimeStamp: Timestamp.now(), urlToImage: '', documentId: '', favorite: [],
                                       ),
                                       urlToImage,
                                       );

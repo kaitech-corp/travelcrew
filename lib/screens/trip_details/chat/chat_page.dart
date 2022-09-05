@@ -66,7 +66,7 @@ class _ChatPageState extends State<ChatPage> {
                   Expanded(
                       child: GroupedListChatView(
                     data: chatData,
-                    documentId: widget.trip.documentId!,
+                    documentId: widget.trip.documentId,
                   )),
                   const Divider(
                     height: 1.0,
@@ -103,7 +103,7 @@ class _ChatPageState extends State<ChatPage> {
                                     final Map<String, bool> status = createStatus();
                                     _chatController.clear();
                                     final String displayName =
-                                        currentUserProfile.displayName!;
+                                        currentUserProfile.displayName;
                                     final String uid =
                                         userService.currentUserID;
                                     try {
@@ -141,7 +141,7 @@ class _ChatPageState extends State<ChatPage> {
   Map<String, bool> createStatus() {
     final Map<String, bool> status = {};
     final Iterable<String> users =
-        widget.trip.accessUsers!.where((String f) => f != userService.currentUserID);
+        widget.trip.accessUsers.where((String f) => f != userService.currentUserID);
     for (final String f in users) {
       status[f] = false;
     }

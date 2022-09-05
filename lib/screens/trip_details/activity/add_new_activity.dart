@@ -56,8 +56,8 @@ class AddNewActivityState extends State<AddNewActivity> {
 
   @override
   void initState() {
-    startDateTimestamp.value = widget.trip.startDateTimeStamp!;
-    endDateTimestamp.value = widget.trip.endDateTimeStamp!;
+    startDateTimestamp.value = widget.trip.startDateTimeStamp;
+    endDateTimestamp.value = widget.trip.endDateTimeStamp;
     controller.clear();
     super.initState();
   }
@@ -244,7 +244,7 @@ class AddNewActivityState extends State<AddNewActivity> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  final String documentID = widget.trip.documentId!;
+                  final String documentID = widget.trip.documentId;
                   final String message =
                       'A new activity has been added to ${widget.trip.tripName}';
                   final bool ispublic = widget.trip.ispublic;
@@ -272,7 +272,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                               location: controller.text,
                               startTime: startTime.value.toString(),
                               uid: userService.currentUserID,
-                              voters: []),
+                              voters: [], dateTimestamp: Timestamp.now()),
                           documentID);
                     } on Exception catch (e) {
                       CloudFunction().logError(
@@ -282,7 +282,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                       const String action =
                           'Send notifications for edited activity';
                       CloudFunction().logEvent(action);
-                      for (final String f in widget.trip.accessUsers!) {
+                      for (final String f in widget.trip.accessUsers) {
                         if (f != currentUserProfile.uid) {
                           CloudFunction().addNewNotification(
                             message: message,

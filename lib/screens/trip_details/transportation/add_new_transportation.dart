@@ -130,7 +130,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             final FormState form = _formKey.currentState!;
-            final String documentID = widget.trip.documentId!;
+            final String documentID = widget.trip.documentId;
             final String message = 'A new travel method has been added to ${widget.trip.tripName}';
             if (form.validate()) {
               try {
@@ -138,7 +138,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                 CloudFunction().logEvent(action);
                 CloudFunction().addTransportation(
                   mode: dropdownValue,
-                  tripDocID: widget.trip.documentId!,
+                  tripDocID: widget.trip.documentId,
                   canCarpool: canCarpool,
                   carpoolingWith: carpoolingWith,
                   airline: airline.trim(),
@@ -152,7 +152,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
               try {
                 final String action = 'Sending notifications to access users for $documentId';
                 CloudFunction().logEvent(action);
-                for (final String f in widget.trip.accessUsers!) {
+                for (final String f in widget.trip.accessUsers) {
                   if(f != userService.currentUserID){
                     CloudFunction().addNewNotification(
                       message: message,

@@ -25,8 +25,8 @@ class _AddToListPageState extends State<AddToListPage> {
     final List<Widget> widgetOptions = <Widget>[
       TabBarView(
         children: [
-          BringingList(documentID: widget.trip.documentId!,controller: widget.controller,),
-          CustomList(documentID: widget.trip.documentId!,)
+          BringingList(documentID: widget.trip.documentId,controller: widget.controller,),
+          CustomList(documentID: widget.trip.documentId,)
         ],
       )
     ];

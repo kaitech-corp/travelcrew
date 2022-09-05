@@ -26,7 +26,7 @@ class CrewTripCard extends StatelessWidget {
     return Card(
       elevation: 5,
       shadowColor: Colors.blueGrey,
-      key: Key(trip.documentId!),
+      key: Key(trip.documentId),
       margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
@@ -37,7 +37,7 @@ class CrewTripCard extends StatelessWidget {
           navigationService.navigateTo(ExploreRoute, arguments: trip);
         },
         child: Container(
-          height: (trip.urlToImage?.isNotEmpty ?? false) ? size * .31 : size * .11,
+          height: (trip.urlToImage.isNotEmpty) ? size * .31 : size * .11,
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
@@ -53,19 +53,19 @@ class CrewTripCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    if(trip.urlToImage?.isNotEmpty ?? false)
+                    if(trip.urlToImage.isNotEmpty)
                       Flexible(
                           flex: 3,
                           child: Hero(
                               tag: heroTag,
                               transitionOnUserGestures: true,
-                              child: ImageLayout(trip.urlToImage!))),
+                              child: ImageLayout(trip.urlToImage))),
                     Flexible(
                       child: ListTile(
                         title: Tooltip(
                             message: trip.tripName,
                             child: Text(
-                              trip.tripName ?? '',
+                              trip.tripName,
                               style: Theme.of(context).textTheme.headline5,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -73,7 +73,7 @@ class CrewTripCard extends StatelessWidget {
                         subtitle: Text(
                           trip.startDate != null
                               ? '${TCFunctions()
-                              .dateToMonthDay(trip.startDate!)} '
+                              .dateToMonthDay(trip.startDate)} '
                               '- ${trip.endDate}'
                               : 'Dates',
                           style: Theme.of(context).textTheme.subtitle2,
@@ -85,7 +85,7 @@ class CrewTripCard extends StatelessWidget {
                             spacing: 3,
                             children: <Widget>[
                               Text(
-                                '${trip.accessUsers!.length} ',
+                                '${trip.accessUsers.length} ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                               const IconThemeWidget(
@@ -108,7 +108,7 @@ class CrewTripCard extends StatelessWidget {
                                   Icons.favorite,
                                   color: Colors.redAccent,
                                 ),
-                                badgeCount: trip.favorite!.length,
+                                badgeCount: trip.favorite.length,
                               ),
                             ),
                           chatNotificationBadges(trip),
@@ -130,7 +130,7 @@ class CrewTripCard extends StatelessWidget {
     if (trip.ownerID == currentUserID) {
       return 'You';
     } else {
-      return trip.displayName!;
+      return trip.displayName;
     }
   }
 
@@ -182,7 +182,7 @@ class CrewTripCard extends StatelessWidget {
           return Container();
         }
       },
-      stream: DatabaseService().getNeedList(trip.documentId!),
+      stream: DatabaseService().getNeedList(trip.documentId),
     );
   }
 }
