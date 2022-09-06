@@ -107,7 +107,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           ) else CircleAvatar(
                                             radius:
                                                 SizeConfig.screenWidth / 2.25,
-                                            child: FadeInImage.assetNetwork(placeholder: _image.path, image: user.urlToImage),
+                                            backgroundImage: NetworkImage(user.urlToImage),
                                           ),
                                     ElevatedButton(
                                       onPressed: () {

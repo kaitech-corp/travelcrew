@@ -61,7 +61,7 @@ class DMChatListPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: SizeConfig.blockSizeHorizontal * 7,
-                child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage),
+                backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : const AssetImage(profileImagePlaceholder) as ImageProvider,
               ),
             ),
             Expanded(

@@ -52,9 +52,10 @@ class _TCUserCardState extends State<TCUserCard> {
                     radius: SizeConfig.tablet
                         ? SizeConfig.blockSizeHorizontal * 8
                         : SizeConfig.blockSizeHorizontal * 11,
-                    child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: widget.allUsers.urlToImage),
+                    backgroundImage: widget.allUsers.urlToImage.isNotEmpty ? NetworkImage(widget.allUsers.urlToImage,) : const AssetImage(profileImagePlaceholder) as ImageProvider,
 
-                  ),
+                  )
+                  ,
                 ),
               ),
               Expanded(

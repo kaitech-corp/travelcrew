@@ -48,7 +48,7 @@ class ProfileWidget extends StatelessWidget {
                         width: profileSize,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth / 1.8,
-                          child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage ),
+                          backgroundImage: NetworkImage(urlToImage.value),
                         ),
                       ),
                     ),
