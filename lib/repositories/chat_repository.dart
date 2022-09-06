@@ -22,8 +22,7 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
   List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
     try {
       return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return ChatData.fromData(data);
+          return ChatData.fromDocument(doc);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
@@ -57,8 +56,7 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
   List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
     try {
       return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return ChatData.fromData(data);
+        return ChatData.fromDocument(doc);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
