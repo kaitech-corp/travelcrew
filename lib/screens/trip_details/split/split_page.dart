@@ -44,7 +44,7 @@ class _SplitPageState extends State<SplitPage> {
                     itemDocID: splitObject.itemDocID,
                     tripDocID: splitObject.tripDocID)
                 .costDataList,
-            DatabaseService().getcrewList(widget.trip.accessUsers),
+            DatabaseService().getcrewList(widget.trip.accessUsers ),
           ),
           builder: (BuildContext context, SnapshotTuple2<Object?, Object?> snapshots) {
             if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {

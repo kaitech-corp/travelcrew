@@ -31,7 +31,7 @@ class _DMChatState extends State<DMChat> {
     clearChat(widget.user.uid);
 
     return StreamProvider<List<ChatData>>.value(
-      initialData: const [],
+      initialData:  <ChatData>[defaultChatData],
       value: DatabaseService(userID: widget.user.uid).dmChatList,
       child: GestureDetector(
         onTap: () {

@@ -9,15 +9,16 @@ import 'dm_chat_message_layout.dart';
 
 
 class DMChatList extends StatefulWidget {
-  const DMChatList({required this.user});
+  const DMChatList({Key? key, required this.user}) : super(key: key);
 
   final UserPublicProfile user;
 
   @override
-  _DMChatListState createState() => _DMChatListState();
+  State<DMChatList> createState() => _DMChatListState();
 }
 
 class _DMChatListState extends State<DMChatList> {
+
   @override
   Widget build(BuildContext context) {
 

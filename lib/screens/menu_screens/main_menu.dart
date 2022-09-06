@@ -62,23 +62,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                         Align(
                           child: CircleAvatar(
                               radius: imageSize,
-                              child: CachedNetworkImage(
-                                imageUrl: currentUser!.urlToImage,
-                                placeholder:
-                                    (BuildContext context, String url) =>
-                                        Image.asset(profileImagePlaceholder),
-                                errorWidget: (BuildContext context, String url,
-                                        dynamic error) =>
-                                    Image.asset(profileImagePlaceholder),
-                              )
-                              // FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: currentUser.urlToImage,fit: BoxFit.fill,width: imageSize, height: imageSize,)
-                              ),
-                        ),
+                              backgroundImage: NetworkImage(urlToImage.value),
+                        ),)
                       ],
                     );
                   } else {
                     return Stack(
-                      children: [
+                      children: <Widget>[
                         Align(
                           alignment: Alignment.topLeft,
                           child: Text('TC',

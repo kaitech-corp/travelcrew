@@ -45,7 +45,7 @@ class UserProfileService {
     } catch (e) {
       CloudFunction().logError('Error in User Public Profile service:  ${e.toString()}');
     }
-    return profile;
+    return defaultProfile;
   }
 
   UserPublicProfile currentUserProfileDirect(){

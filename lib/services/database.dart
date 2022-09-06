@@ -771,7 +771,7 @@ class DatabaseService {
         } catch (e){
           CloudFunction().logError('Deleting public trip after converting it to private: ${e.toString()}');
         }
-        for (final String member in trip.accessUsers) {
+        for (final String member in trip.accessUsers as List<String>) {
           CloudFunction().addPrivateMember(trip.documentId, member);
         }
       }
@@ -845,7 +845,6 @@ class DatabaseService {
   Future<UserPublicProfile?> followingList() async{
     final DocumentSnapshot<Object?> ref = await userPublicProfileCollection.doc(userService.currentUserID).get();
     if(ref.exists){
-      final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
       return UserPublicProfile.fromDocument(ref);
     }
     // else {
@@ -930,8 +929,7 @@ class DatabaseService {
         final QuerySnapshot<Object?> ref = await tripsCollectionUnordered.doc(docID).collection(
             'Members').get();
         final List<Members> memberList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-          return Members.fromData(data);
+          return Members.fromDocument(doc);
         }).toList();
         memberList.sort((Members a, Members b) => a.lastName!.compareTo(b.lastName!));
         return memberList;
@@ -949,8 +947,7 @@ class DatabaseService {
             'Members').get();
 
           final List<Members> memberList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
-            final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-            return Members.fromData(data);
+            return Members.fromDocument(doc);
           }).toList();
           memberList.sort((Members a, Members b) => a.lastName!.compareTo(b.lastName!));
           return memberList;
@@ -1345,15 +1342,13 @@ class DatabaseService {
 
   /// Get all chat messages
   List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object?> snapshot){
-
     try {
       return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-        return ChatData.fromData(data);
+        return ChatData.fromDocument(doc);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return [];
+      return <ChatData>[defaultChatData];
     }
   }
   Stream<List<ChatData>>? get chatListNotification {

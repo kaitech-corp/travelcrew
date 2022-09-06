@@ -14,14 +14,15 @@ import '../sliver_grid_view.dart';
 
 
 /// Current trips
-class CurrentTrips extends StatefulWidget{
+class CurrentTrips extends StatefulWidget {
   const CurrentTrips({Key? key}) : super(key: key);
 
   @override
-  _CurrentTripsState createState() => _CurrentTripsState();
+  State<CurrentTrips> createState() => _CurrentTripsState();
 }
 
-class _CurrentTripsState extends State<CurrentTrips>{
+class _CurrentTripsState extends State<CurrentTrips> {
+
   late GenericBloc<Trip,CurrentTripRepository> bloc;
 
   @override

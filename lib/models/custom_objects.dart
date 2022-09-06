@@ -5,6 +5,7 @@ import '../services/functions/cloud_functions.dart';
 ///Model for user
 class User {
   User({this.displayName, this.email, this.firstName, this.lastName, this.uid});
+
   final String? displayName;
   final String? email;
   final String? firstName;
@@ -16,6 +17,7 @@ class User {
 class UserSignUp {
   UserSignUp(
       {this.displayName, this.email, this.firstName, this.lastName, this.uid});
+
   String? displayName;
   String? email;
   String? firstName;
@@ -25,22 +27,21 @@ class UserSignUp {
 
 ///Model for user public profile
 class UserPublicProfile {
-  UserPublicProfile(
-      {required this.tripsJoined,
-      required this.tripsCreated,
-      required this.hometown,
-      required this.instagramLink,
-      required this.facebookLink,
-      required this.topDestinations,
-      required this.blockedList,
-      required this.displayName,
-      required this.email,
-      required this.following,
-      required this.followers,
-      required this.firstName,
-      required this.lastName,
-      required this.uid,
-      required this.urlToImage});
+  UserPublicProfile({required this.tripsJoined,
+    required this.tripsCreated,
+    required this.hometown,
+    required this.instagramLink,
+    required this.facebookLink,
+    required this.topDestinations,
+    required this.blockedList,
+    required this.displayName,
+    required this.email,
+    required this.following,
+    required this.followers,
+    required this.firstName,
+    required this.lastName,
+    required this.uid,
+    required this.urlToImage});
 
   factory UserPublicProfile.fromDocument(DocumentSnapshot<Object?> doc) {
     List<dynamic> blockedList = <String>[];
@@ -191,24 +192,56 @@ class UserPublicProfile {
 
 ///Model for members of trip
 class Members {
-  Members(
-      {this.displayName,
-      this.firstName,
-      this.lastName,
-      this.uid,
-      this.urlToImage});
+  Members({required this.displayName,
+    required this.firstName,
+    required this.lastName,
+    required this.uid,
+    required this.urlToImage});
 
-  Members.fromData(Map<String, dynamic> data)
-      : displayName = data['displayName'] as String,
-        firstName = data['firstName'] as String,
-        lastName = data['lastName'] as String,
-        uid = data['uid'] as String,
-        urlToImage = data['urlToImage'] as String;
-  String? uid;
-  String? displayName;
-  String? firstName;
-  String? lastName;
-  String? urlToImage;
+  factory Members.fromDocument(DocumentSnapshot<Object?> doc) {
+    String displayName = '';
+    String firstName = '';
+    String lastName = '';
+    String uid = '';
+    String urlToImage = '';
+
+    try {
+      displayName = doc.get('displayName') as String;
+    } catch (e) {
+      CloudFunction().logError('Display name error: ${e.toString()}');
+    }
+    try {
+      firstName = doc.get('firstName') as String;
+    } catch (e) {
+      CloudFunction().logError('First name error: ${e.toString()}');
+    }
+    try {
+      lastName = doc.get('lastName') as String;
+    } catch (e) {
+      CloudFunction().logError('Last name error: ${e.toString()}');
+    }
+    try {
+      uid = doc.get('uid') as String;
+    } catch (e) {
+      CloudFunction().logError('UID error: ${e.toString()}');
+    }
+    try {
+      urlToImage = doc.get('urlToImage') as String;
+    } catch (e) {
+      CloudFunction().logError('Image url error: ${e.toString()}');
+    }
+    return Members(displayName: displayName,
+        firstName: firstName,
+        lastName: lastName,
+        uid: uid,
+        urlToImage: urlToImage);
+  }
+
+  String uid;
+  String displayName;
+  String firstName;
+  String lastName;
+  String urlToImage;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -318,6 +351,7 @@ class Department {
 ///Model for quantity from Walmart API
 class WalmartProductsItem {
   WalmartProductsItem({this.quantity = 1, this.walmartProducts});
+
   int quantity;
   final WalmartProducts? walmartProducts;
 
@@ -329,6 +363,7 @@ class WalmartProductsItem {
 ///Model for user feedback
 class TCFeedback {
   TCFeedback({this.fieldID, this.message, this.timestamp, this.uid});
+
   final String? message;
   final Timestamp? timestamp;
   final String? uid;
@@ -340,23 +375,23 @@ class TCReports {}
 ///Model for Google Places
 class GoogleData {
   GoogleData({this.location, this.geoLocation});
+
   String? location;
   GeoPoint? geoLocation;
 }
 
 ///Model for trip ads show
 class TripAds {
-  TripAds(
-      {this.link,
-      this.urlToImage,
-      this.tripName,
-      this.geoPoint,
-      this.location,
-      this.dateCreated,
-      this.documentID,
-      this.favorites,
-      this.clicks,
-      this.clickers});
+  TripAds({this.link,
+    this.urlToImage,
+    this.tripName,
+    this.geoPoint,
+    this.location,
+    this.dateCreated,
+    this.documentID,
+    this.favorites,
+    this.clicks,
+    this.clickers});
 
   TripAds.fromData(Map<String, dynamic> data)
       : tripName = data['tripName'] as String,
@@ -384,6 +419,7 @@ class TripAds {
 ///Model for suggestions
 class Suggestions {
   Suggestions({this.fieldID, this.url, this.timestamp, this.tags});
+
   final String? url;
   final Timestamp? timestamp;
   final List<String>? tags;
@@ -418,6 +454,7 @@ class CountDownDate {
 ///Model for user purchase details: Split Feature
 class UserPurchaseDetails {
   UserPurchaseDetails({this.total, this.uid});
+
   String? uid;
   double? total;
 }
@@ -425,6 +462,7 @@ class UserPurchaseDetails {
 ///Model for start and end dates
 class DateTimeModel {
   DateTimeModel({this.endDate, this.startDate});
+
   DateTime? startDate;
   DateTime? endDate;
 }

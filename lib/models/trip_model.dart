@@ -24,7 +24,7 @@ class Trip {
       required this.urlToImage});
 
   factory Trip.fromDocument(DocumentSnapshot<Object?> doc) {
-    List<String> accessUsers = <String>[];
+    List<dynamic> accessUsers = <String>[];
     String comment = '';
     Timestamp dateCreatedTimeStamp = Timestamp.now();
     String displayName = '';
@@ -45,7 +45,7 @@ class Trip {
     try {
       accessUsers = doc.get('accessUsers') as List<String>;
     } catch (e) {
-      CloudFunction().logError('accessUsers error: ${e.toString()}');
+      // CloudFunction().logError('accessUsers error: ${e.toString()}');
     }
     try {
       comment = doc.get('comment') as String;
@@ -133,7 +133,7 @@ class Trip {
         dateCreatedTimeStamp: dateCreatedTimeStamp,
         displayName: displayName,
         favorite: favorite,
-        accessUsers: accessUsers,
+        accessUsers: accessUsers as List<String>,
         documentId: documentId,
         endDate: endDate,
         endDateTimeStamp: endDateTimeStamp,
