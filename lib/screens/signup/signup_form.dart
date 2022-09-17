@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -31,7 +32,7 @@ class _SignupFormState extends State<SignupForm> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _displayNameController = TextEditingController();
-  final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
+  final ValueNotifier<File> _urlToImage = ValueNotifier<File>(File(''));
 
   bool imagePicked = false;
   bool get isPopulated =>
@@ -82,14 +83,14 @@ class _SignupFormState extends State<SignupForm> {
   Future<void>  _cropImage() async {
     final CroppedFile? croppedImage = await ImageCropper().cropImage(
       sourcePath: _pickedFile!.path,
-      aspectRatioPresets: [
+      aspectRatioPresets: <CropAspectRatioPreset>[
         CropAspectRatioPreset.square,
         CropAspectRatioPreset.ratio3x2,
         CropAspectRatioPreset.original,
         CropAspectRatioPreset.ratio4x3,
         CropAspectRatioPreset.ratio16x9
       ],
-      uiSettings: [
+      uiSettings: <PlatformUiSettings>[
         AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: Colors.deepOrange,
@@ -168,53 +169,54 @@ class _SignupFormState extends State<SignupForm> {
                 children: <Widget>[
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: 'Email',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.email),
+                      labelText: AppLocalizations.of(context)!.email,
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    // autovalidate: true,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
+                      return !state.isEmailValid ? AppLocalizations.of(context)!.invalid_email : null;
                     },
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: 'Password',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.lock),
+                      labelText: AppLocalizations.of(context)!.password,
                     ),
                     obscureText: true,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
+                      return !state.isPasswordValid ? AppLocalizations.of(context)!.invalid_password : null;
                     },
                   ),
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Display Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: AppLocalizations.of(context)!.display_name,
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'First Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: AppLocalizations.of(context)!.first_name,
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Last Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: AppLocalizations.of(context)!.last_name,
                     ),
                     keyboardType: TextInputType.name,
                   ),
@@ -230,8 +232,8 @@ class _SignupFormState extends State<SignupForm> {
                               image: DecorationImage(
                                   image: FileImage(_urlToImage.value),
                                   fit: BoxFit.cover)),
-                        ) else const Text('Select a Profile Picture.',
-                          style: TextStyle(
+                        ) else Text(AppLocalizations.of(context)!.select_photo,
+                          style: const TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
                   ElevatedButton(
@@ -255,8 +257,8 @@ class _SignupFormState extends State<SignupForm> {
                           onPressed: () {
                             TCFunctions().launchURL(urlToTerms);
                           },
-                          child: const Text('Terms of Service',
-                              style: TextStyle(
+                          child: Text(AppLocalizations.of(context)!.terms_of_service,
+                              style: const TextStyle(
                                 fontFamily: 'Cantata One',
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -266,8 +268,8 @@ class _SignupFormState extends State<SignupForm> {
                           onPressed: () {
                             TCFunctions().launchURL(urlToPrivacyPolicy);
                           },
-                          child: const Text('Privacy Policy',
-                              style: TextStyle(
+                          child: Text(AppLocalizations.of(context)!.privacy_policy,
+                              style: const TextStyle(
                                   fontFamily: 'Cantata One',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18)),
@@ -286,9 +288,9 @@ class _SignupFormState extends State<SignupForm> {
                         _onFormSubmitted();
                       }
                     },
-                    text: const Text(
-                      'Signup',
-                      style: TextStyle(
+                    text: Text(
+                      AppLocalizations.of(context)!.sign_up,
+                      style: const TextStyle(
                         color: Colors.black,
                       ),
                     ),

@@ -11,6 +11,8 @@ import 'login_form.dart';
 
 /// Login screen
 class LoginScreen extends StatelessWidget {
+  LoginScreen({Key? key}) : super(key: key);
+
   final UserRepository _userRepository = UserRepository();
 
   @override
@@ -29,7 +31,7 @@ class LoginScreen extends StatelessWidget {
               gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [canvasColor, Colors.blueAccent.shade100],
+            colors: <Color>[canvasColor, Colors.blueAccent.shade100],
           )),
           child: SingleChildScrollView(
             child: Stack(
@@ -45,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.white, Colors.white.withOpacity(0.4)],
+                          colors: <Color>[Colors.white, Colors.white.withOpacity(0.4)],
                         ),
                       ),
                       child: const AutoSizeText(
@@ -62,8 +64,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 230),
-                  child: LoginForm(
-                    userRepository: _userRepository,
+                  child: const LoginForm(
                   ),
                 )
               ],

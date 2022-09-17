@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
@@ -16,13 +17,12 @@ import '../alerts/alert_dialogs.dart';
 
 /// Form for login screen
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key, UserRepository? userRepository})
-      : _userRepository = userRepository,
-        super(key: key);
-  final UserRepository? _userRepository;
+  const LoginForm({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<LoginForm> createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
@@ -31,6 +31,8 @@ class _LoginFormState extends State<LoginForm> {
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+  bool get isEmailPopulated => _emailController.text.isNotEmpty;
+  bool get isPasswordPopulated => _passwordController.text.isNotEmpty;
 
   bool isLoginWithEmailAndPasswordButtonEnabled(LoginState state) {
     return state.isFormValid && isPopulated && !state.isSubmitting;
@@ -68,27 +70,31 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, LoginState state) {
               return Column(children: <Widget>[
                 TextFormField(
+                  key: const Key('email'),
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.email),
-                    labelText: 'Email',
+                  decoration: InputDecoration(
+                    icon: const Icon(Icons.email),
+                    labelText: AppLocalizations.of(context)!.email,
                   ),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_) {
-                    return !state.isEmailValid ? 'Invalid Email' : null;
+                    return state.isEmailValid ? null : AppLocalizations.of(context)!.invalid_email;
                   },
                 ),
                 TextFormField(
+                  key: const Key('password'),
                   controller: _passwordController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.lock),
-                    labelText: 'Password',
+                  decoration: InputDecoration(
+                    icon: const Icon(Icons.lock),
+                    labelText: AppLocalizations.of(context)!.password,
                   ),
                   obscureText: true,
                   autocorrect: false,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_) {
-                    return !state.isPasswordValid ? 'Invalid Password' : null;
+                    return state.isPasswordValid ? null : AppLocalizations.of(context)!.invalid_password;
                   },
                 ),
                 const SizedBox(
@@ -106,7 +112,7 @@ class _LoginFormState extends State<LoginForm> {
                           }
                         },
                         text: Text(
-                          'Login',
+                          AppLocalizations.of(context)!.login,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         icon: const Icon(
@@ -119,7 +125,7 @@ class _LoginFormState extends State<LoginForm> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextButton(
-                            child: const Text('Forgot Password?'),
+                            child: Text(AppLocalizations.of(context)!.forgot_password),
                             onPressed: () {
                               TravelCrewAlertDialogs()
                                   .resetPasswordDialog(context);
@@ -130,7 +136,7 @@ class _LoginFormState extends State<LoginForm> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          signUpOrSignIn(),
+                          AppLocalizations.of(context)!.sign_up_or_sign_in,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
@@ -209,10 +215,9 @@ class _LoginFormState extends State<LoginForm> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: <Widget>[
-                              Text(Intl.message("Don't have an account?")),
+                              Text(AppLocalizations.of(context)!.dont_have_an_account),
                               TextButton(
-                                child: Text(
-                                  Intl.message('Sign Up'),
+                                child: Text(AppLocalizations.of(context)!.sign_up,
                                 ),
                                 onPressed: () {
                                   navigationService
@@ -246,7 +251,7 @@ class _LoginFormState extends State<LoginForm> {
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(Intl.message('Login Failure')),
+                Text(AppLocalizations.of(context)!.login_failed),
                 const Icon(Icons.error),
               ],
             ),
@@ -263,7 +268,7 @@ class _LoginFormState extends State<LoginForm> {
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(Intl.message('Logging In...')),
+                Text(AppLocalizations.of(context)!.logging_in),
                 const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
@@ -289,13 +294,13 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onEmailChange() {
-    if (isPopulated) {
+    if (isEmailPopulated) {
       _loginBloc.add(LoginEmailChange(email: _emailController.text));
     }
   }
 
   void _onPasswordChange() {
-    if (isPopulated) {
+    if (isPasswordPopulated) {
       _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
     }
   }
