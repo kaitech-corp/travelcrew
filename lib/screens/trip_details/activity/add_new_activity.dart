@@ -19,7 +19,7 @@ import '../../../services/widgets/time_picker.dart';
 import '../../add_trip/google_autocomplete.dart';
 
 class AddNewActivity extends StatefulWidget {
-  const AddNewActivity({required this.trip});
+  const AddNewActivity({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
 
@@ -73,7 +73,7 @@ class AddNewActivityState extends State<AddNewActivity> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? const Loading()
         : GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -272,7 +272,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                               location: controller.text,
                               startTime: startTime.value.toString(),
                               uid: userService.currentUserID,
-                              voters: [], dateTimestamp: Timestamp.now()),
+                              voters: <String>[], dateTimestamp: Timestamp.now()),
                           documentID);
                     } on Exception catch (e) {
                       CloudFunction().logError(
