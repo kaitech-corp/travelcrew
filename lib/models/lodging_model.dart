@@ -31,7 +31,7 @@ class LodgingData {
     String location = '';
     String startTime = '';
     String uid = '';
-    List<dynamic> voters = <String>[];
+    List<String> voters = <String>[];
     try {
       lodgingType = doc.get('lodgingType') as String;
     } catch (e) {
@@ -83,7 +83,8 @@ class LodgingData {
       CloudFunction().logError('startTime error: ${e.toString()}');
     }
     try {
-      voters = doc.get('voters') as List<String>;
+      var votes = doc.get('voters') as List<dynamic>;
+      votes.forEach((dynamic element) {voters.add(element.toString());});
     } catch (e) {
       CloudFunction().logError('voters error: ${e.toString()}');
     }
@@ -118,7 +119,7 @@ class LodgingData {
   String lodgingType;
   String startTime;
   String uid;
-  List<dynamic> voters;
+  List<String> voters;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

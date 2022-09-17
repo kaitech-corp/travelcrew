@@ -14,6 +14,8 @@ import '../../main_menu.dart';
 import 'dm_chat.dart';
 
 class DMChatListPage extends StatelessWidget {
+  const DMChatListPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +34,7 @@ class DMChatListPage extends StatelessWidget {
                 'Error streaming dm chat list: ${users.error.toString()}');
           }
           if (users.hasData) {
-            final List<UserPublicProfile> chats = users.data as List<UserPublicProfile>;
+            final List<UserPublicProfile> chats = users.data!;
             return ListView.builder(
               itemCount: chats.length,
               itemBuilder: (BuildContext context, int index) {
@@ -41,7 +43,7 @@ class DMChatListPage extends StatelessWidget {
               },
             );
           } else {
-            return Loading();
+            return const Loading();
           }
         },
       ),
@@ -61,7 +63,7 @@ class DMChatListPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: SizeConfig.blockSizeHorizontal * 7,
-                backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : const AssetImage(profileImagePlaceholder) as ImageProvider,
+                backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : const NetworkImage(profileImagePlaceholder),
               ),
             ),
             Expanded(
@@ -97,7 +99,7 @@ Widget chatNotificationBadges(UserPublicProfile user) {
             'for DM notifications: ${chats.error.toString()}');
       }
       if (chats.hasData) {
-        final List<ChatData> chatList = chats.data as List<ChatData>;
+        final List<ChatData> chatList = chats.data!;
         if (chatList.isNotEmpty) {
           chatNotifier.value = 1;
           return Tooltip(

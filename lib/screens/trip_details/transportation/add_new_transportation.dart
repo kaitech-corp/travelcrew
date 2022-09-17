@@ -9,11 +9,11 @@ import '../../../services/widgets/appearance_widgets.dart';
 
 /// Add new mode of Transportation
 class AddNewModeOfTransport extends StatefulWidget {
-  const AddNewModeOfTransport({required this.trip});
+  const AddNewModeOfTransport({Key? key, required this.trip}) : super(key: key);
   final Trip trip;
 
   @override
-  _AddNewModeOfTransportState createState() => _AddNewModeOfTransportState();
+  State<AddNewModeOfTransport> createState() => _AddNewModeOfTransportState();
 }
 class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -37,95 +37,93 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
       },
       child: Scaffold(
           appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline5,),),
-          body: Container(
-              child: SingleChildScrollView(
-                  padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                  child: Builder(
-                      builder: (BuildContext context) => Form(
-                          key: _formKey,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                DropdownButton<String>(
-                                  value: dropdownValue,
-                                  isExpanded: true,
-                                  elevation: 16,
-                                  underline: Container(
-                                    height: 2,
-                                    color: Colors.blueAccent,
+          body: SingleChildScrollView(
+              padding:
+              const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: Builder(
+                  builder: (BuildContext context) => Form(
+                      key: _formKey,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            DropdownButton<String>(
+                              value: dropdownValue,
+                              isExpanded: true,
+                              elevation: 16,
+                              underline: Container(
+                                height: 2,
+                                color: Colors.blueAccent,
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownValue = newValue ?? '';
+                                });
+                              },
+                              items: modes
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                            if(dropdownValue == 'Driving') SwitchListTile(
+                                title: const Text('Open to Carpooling?'),
+                                value: canCarpool,
+                                onChanged: (bool val) =>
+                                {
+                                  setState((){
+                                    canCarpool = val;
+                                  }),
+                                }
+                            ),
+                            if(dropdownValue == 'Carpool') TextFormField(
+                                decoration:
+                                const InputDecoration(labelText: 'Carpool with who?'),
+                                textCapitalization: TextCapitalization.words,
+                                keyboardType: TextInputType.name,
+                                onChanged: (String val) =>
+                                {
+                                  carpoolingWith = val,
+                                }
+                            ),
+                            if(dropdownValue == 'Flying') TextFormField(
+                                decoration:
+                                const InputDecoration(labelText: 'Airline'),
+                                textCapitalization: TextCapitalization.characters,
+                                onChanged: (String val) =>
+                                {
+                                  airline = val,
+                                }
+                            ),
+                            if(dropdownValue == 'Flying') TextFormField(
+                                decoration:
+                                const InputDecoration(labelText: 'Flight Number'),
+                                textCapitalization: TextCapitalization.characters,
+                                onChanged: (String val) =>
+                                {
+                                  flightNumber = val,
+                                }
+                            ),
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                              child: Text('Comment',style: Theme.of(context).textTheme.subtitle2),
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                                   ),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      dropdownValue = newValue ?? '';
-                                    });
-                                  },
-                                  items: modes
-                                      .map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                                if(dropdownValue == 'Driving') SwitchListTile(
-                                    title: const Text('Open to Carpooling?'),
-                                    value: canCarpool,
-                                    onChanged: (bool val) =>
-                                    {
-                                      setState((){
-                                        canCarpool = val;
-                                      }),
-                                    }
-                                ),
-                                if(dropdownValue == 'Carpool') TextFormField(
-                                    decoration:
-                                    const InputDecoration(labelText: 'Carpool with who?'),
-                                    textCapitalization: TextCapitalization.words,
-                                    keyboardType: TextInputType.name,
-                                    onChanged: (String val) =>
-                                    {
-                                      carpoolingWith = val,
-                                    }
-                                ),
-                                if(dropdownValue == 'Flying') TextFormField(
-                                    decoration:
-                                    const InputDecoration(labelText: 'Airline'),
-                                    textCapitalization: TextCapitalization.characters,
-                                    onChanged: (String val) =>
-                                    {
-                                      airline = val,
-                                    }
-                                ),
-                                if(dropdownValue == 'Flying') TextFormField(
-                                    decoration:
-                                    const InputDecoration(labelText: 'Flight Number'),
-                                    textCapitalization: TextCapitalization.characters,
-                                    onChanged: (String val) =>
-                                    {
-                                      flightNumber = val,
-                                    }
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                  child: Text('Comment',style: Theme.of(context).textTheme.subtitle2),
-                                ),
-                                TextFormField(
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
-                                      ),
-                                      hintText: 'Add a comment.'),
-                                  textCapitalization: TextCapitalization.sentences,
-                                  maxLines: 10,
-                                  onChanged: (String val){
-                                    comment = val;
-                                  },
-                                ),
-                              ]),
-                      )
+                                  hintText: 'Add a comment.'),
+                              textCapitalization: TextCapitalization.sentences,
+                              maxLines: 10,
+                              onChanged: (String val){
+                                comment = val;
+                              },
+                            ),
+                          ]),
                   )
-              ),
+              )
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -177,5 +175,3 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
     );
   }
 }
-
-

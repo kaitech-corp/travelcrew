@@ -13,7 +13,7 @@ import '../../alerts/alert_dialogs.dart';
 
 /// Favorites card layout
 class FavoritesCard extends StatelessWidget {
-  FavoritesCard({required this.trip});
+  FavoritesCard({Key? key, required this.trip}) : super(key: key);
 
   final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final Trip trip;
@@ -39,7 +39,7 @@ class FavoritesCard extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
+                colors: <Color>[
                   Colors.blue.shade50,
                   Colors.lightBlueAccent.shade200
                 ]
@@ -75,7 +75,7 @@ class FavoritesCard extends StatelessWidget {
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
+                      colors: <Color>[
                         Colors.blue,
                         Colors.lightBlueAccent
                       ]

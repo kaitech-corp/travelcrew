@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/lodging_model.dart';
@@ -64,8 +65,9 @@ class LodgingCard extends StatelessWidget {
                               users: trip.accessUsers,
                               itemName: lodging.lodgingType,
                               itemDescription: lodging.comment,
-                              itemType: 'Lodging'
+                              itemType: 'Lodging', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: ''
                           ), trip: trip),
+
                       IconButton(
                           visualDensity: const VisualDensity(vertical: -4),
                           icon: FavoriteWidget(uid: userService.currentUserID,voters: lodging.voters,),

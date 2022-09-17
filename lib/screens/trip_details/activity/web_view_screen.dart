@@ -12,7 +12,7 @@ class WebViewScreen extends StatefulWidget {
 
 
   @override
-  _WebViewScreenState createState() => _WebViewScreenState();
+  State<WebViewScreen> createState() => _WebViewScreenState();
 
 }
   class _WebViewScreenState extends State<WebViewScreen>{
@@ -42,7 +42,7 @@ class WebViewScreen extends StatefulWidget {
       ),
       body:
       Stack(
-        children: [
+        children: <Widget>[
           WebView(
             key: widget.key,
             javascriptMode: JavascriptMode.unrestricted,
@@ -52,7 +52,7 @@ class WebViewScreen extends StatefulWidget {
               loading = false;
             });},
           ),
-          if (loading) Center(child: Loading()) else Stack(),
+          if (loading) const Center(child: Loading()) else Stack(),
         ],
       ),
     );

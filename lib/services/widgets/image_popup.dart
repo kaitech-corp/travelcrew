@@ -5,7 +5,7 @@ import '../constants/constants.dart';
 
 class ImagePopup extends StatelessWidget{
 
-  const ImagePopup({this.imagePath});
+  const ImagePopup({Key? key, this.imagePath}) : super(key: key);
 
   final String? imagePath;
 

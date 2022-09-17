@@ -61,9 +61,9 @@ class LodgingDataLayout extends StatelessWidget {
     return StreamBuilder<LodgingData>(
       stream:
           DatabaseService(fieldID: fieldID, tripDocID: trip.documentId).lodging,
-      builder: (BuildContext context, AsyncSnapshot<Object?> document) {
+      builder: (BuildContext context, AsyncSnapshot<LodgingData?> document) {
         if (document.hasData) {
-          final LodgingData lodging = document.data as LodgingData;
+          final LodgingData lodging = document.data!;
           final DateTimeModel timeModel = DateTimeModel(
               startDate: lodging.startDateTimestamp.toDate(),
               endDate: lodging.endDateTimestamp.toDate());
@@ -226,7 +226,7 @@ class LodgingDataLayout extends StatelessWidget {
             ],
           );
         } else {
-          return Loading();
+          return const Loading();
         }
       },
     );

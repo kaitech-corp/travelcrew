@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-ThemeData ThemeDataBuilder() {
+ThemeData themeDataBuilder() {
   return ThemeData(
     fontFamily: 'Cantata One',
     textTheme: const TextTheme(
@@ -19,7 +19,7 @@ ThemeData ThemeDataBuilder() {
       headline6: TextStyle(fontWeight: FontWeight.bold,
       ),
       subtitle1: TextStyle(fontWeight: FontWeight.bold),
-      subtitle2: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,),
+      subtitle2: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 10),
       button: TextStyle(
           fontWeight: FontWeight.bold, color: Colors.black),
     ),
@@ -92,7 +92,7 @@ ThemeData ThemeDataBuilder() {
       color: Colors.white,
       size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
     ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.blueAccent),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {
+    pageTransitionsTheme: const PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
       TargetPlatform.iOS: ZoomPageTransitionsBuilder()
     }),

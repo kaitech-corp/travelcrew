@@ -41,5 +41,3 @@ const String WebViewScreenRoute = 'WebViewScreen';
 const String ProfileStreamRoute = 'ProfileStream';
 const String CompleteProfileRoute = 'CompleteProfile';
 const String AddToListPageRoute = 'AddToListPage';
-
-

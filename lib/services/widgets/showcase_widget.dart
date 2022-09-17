@@ -3,11 +3,11 @@ import 'package:showcaseview/showcaseview.dart';
 
 class CustomShowcaseWidget extends StatelessWidget {
 
-  const CustomShowcaseWidget({
+  const CustomShowcaseWidget({Key? key,
     required this.description,
     required this.child,
     required this.globalKey,
-  });
+  }) : super(key: key);
   final Widget child;
   final String description;
   final GlobalKey globalKey;

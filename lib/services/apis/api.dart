@@ -97,7 +97,7 @@ import '../../models/custom_objects.dart';
 
 class WalmartProductSearch {
   // API key
-   final String? _api_key = dotenv.env['rapidAPIKey'];
+   late final String? _api_key = dotenv.env['rapidAPIKey'];
   // Base API url
   static const String _baseUrl = 'https://walmart.p.rapidapi.com/v2/auto-complete?term=';
   // Base headers for Response url

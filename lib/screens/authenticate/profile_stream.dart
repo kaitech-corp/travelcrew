@@ -29,7 +29,7 @@ class ProfileStream extends StatefulWidget {
   final String uid;
 
   @override
-  _ProfileStreamState createState() => _ProfileStreamState();
+  State<ProfileStream> createState() => _ProfileStreamState();
 }
 
 class _ProfileStreamState extends State<ProfileStream> {
@@ -59,7 +59,7 @@ class _ProfileStreamState extends State<ProfileStream> {
         child: BlocBuilder<NotificationBloc, NotificationState>(
             builder: (BuildContext context, NotificationState state){
               if(state is NotificationLoadingState){
-                return Loading();
+                return const Loading();
               } else if (state is NotificationHasDataState){
                 FlutterAppBadger.updateBadgeCount(state.data.length);
                 return MainTabPage(notifications: state.data,);
@@ -69,4 +69,3 @@ class _ProfileStreamState extends State<ProfileStream> {
         ));
   }
 }
-

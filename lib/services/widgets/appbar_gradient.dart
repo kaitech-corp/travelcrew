@@ -12,12 +12,12 @@ class AppBarGradient extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
+            colors: <Color>[
               Colors.blue[900]!,
               Colors.lightBlueAccent
             ]
         ),
-        boxShadow: const [
+        boxShadow: const <BoxShadow>[
           BoxShadow(
             blurRadius: 10.0,
           ),

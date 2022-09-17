@@ -13,7 +13,7 @@ import '../../alerts/alert_dialogs.dart';
 
 class ChatCard extends StatelessWidget {
 
-  const ChatCard({required this.message, required this.tripDocID});
+  const ChatCard({Key? key, required this.message, required this.tripDocID}) : super(key: key);
   final ChatData message;
   final String tripDocID;
 
@@ -36,7 +36,7 @@ class ChatCard extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
+                        children: <Widget>[
                           OutlinedButton(
                             // color: Colors.grey,
                             child: Text(
@@ -84,7 +84,7 @@ class ChatCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 Container(
                     margin: const EdgeInsets.fromLTRB(80, 5, 5, 5),
                     decoration: BoxDecoration(
@@ -98,10 +98,10 @@ class ChatCard extends StatelessWidget {
                               const EdgeInsets.fromLTRB(5.0, 5.0, 10.0, 5.0),
                           child: Linkify(
                             onOpen: (LinkableElement link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
                             text: message.message,
@@ -136,7 +136,7 @@ class ChatCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Container(
                     margin: const EdgeInsets.fromLTRB(5, 5, 80, 5),
                     decoration: BoxDecoration(
@@ -158,10 +158,10 @@ class ChatCard extends StatelessWidget {
                               const EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                           child: Linkify(
                             onOpen: (LinkableElement link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
                             text: message.message,

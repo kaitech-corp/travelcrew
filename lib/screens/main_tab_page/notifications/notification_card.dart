@@ -16,7 +16,7 @@ import '../../alerts/alert_dialogs.dart';
 
 /// Layout for notifications
 class NotificationsCard extends StatelessWidget{
-  NotificationsCard({required this.notification});
+  NotificationsCard({Key? key, required this.notification}) : super(key: key);
   final NotificationData notification;
   final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
@@ -24,7 +24,7 @@ class NotificationsCard extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    final Map<String, Widget> notificationType = {
+    final Map<String, Widget> notificationType = <String, Widget>{
       'Activity' : notificationType1(context),
       'Lodging' : notificationType1(context),
       'Travel' :notificationType1(context),
@@ -116,8 +116,8 @@ class NotificationsCard extends StatelessWidget{
       child: ListTile(
         title: Linkify(
           onOpen: (LinkableElement link) async {
-            if (await canLaunch(link.url)) {
-              await launch(link.url);
+            if (await canLaunchUrl(Uri(path: link.url))) {
+              await launchUrl(Uri(path: link.url));
             } else {
               throw 'Could not launch $link';
             }
@@ -180,8 +180,7 @@ class NotificationsCard extends StatelessWidget{
     );
   }
 
-  _showDialog(BuildContext context) {
+  void _showDialog(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Request accepted.')));
   }
 }
-

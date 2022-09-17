@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sizer/sizer.dart';
+import 'package:travelcrew/services/l10n.dart';
 
 import '../blocs/authentication_bloc/authentication_bloc.dart';
 import '../blocs/authentication_bloc/authentication_event.dart';
@@ -25,7 +27,9 @@ import '../services/theme/theme_data.dart';
 import '../services/widgets/launch_icon_badger.dart';
 import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
+import 'generated/l10n.dart';
 import 'repositories/user_repository.dart';
+
 
 void main() async {
   await projectInitializer();
@@ -67,7 +71,6 @@ class _TravelCrewState extends State<TravelCrew> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseCrashlytics.instance.log('App Started');
     return Sizer(builder:
         (BuildContext context, Orientation orientation, DeviceType deviceType) {
       return MaterialApp(
@@ -94,7 +97,7 @@ class _TravelCrewState extends State<TravelCrew> {
                       userRepository: widget.userRepository,
                     );
                   }
-                  return Loading();
+                  return const Loading();
                 },
                 future: DatabaseService(uid: state.firebaseUser!.uid)
                     .checkUserHasProfile(),
@@ -104,8 +107,15 @@ class _TravelCrewState extends State<TravelCrew> {
             }
           }),
         ),
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: L10n.all,
         debugShowCheckedModeBanner: false,
-        theme: ThemeDataBuilder(),
+        theme: themeDataBuilder(),
         navigatorKey: locator<NavigationService>().navigationKey,
         onGenerateRoute: generateRoute,
         navigatorObservers: <NavigatorObserver>[

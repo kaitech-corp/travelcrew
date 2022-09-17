@@ -7,12 +7,15 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../../services/widgets/appbar_gradient.dart';
 import '../../alerts/alert_dialogs.dart';
 
-class FeedbackPage extends StatefulWidget{
+class FeedbackPage extends StatefulWidget {
+  const FeedbackPage({Key? key}) : super(key: key);
+
   @override
-  _FeedbackPageState createState() => _FeedbackPageState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
+
   late TextEditingController _controller;
 
   @override
@@ -46,7 +49,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             height: MediaQuery.of(context).size.height *.5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const Padding(padding: EdgeInsets.all(5.0),),
                 Center(child: Text(Intl.message('Feel free to share your thoughts with us.'),style: Theme.of(context).textTheme.subtitle1,)),
                 _buildTextField(),

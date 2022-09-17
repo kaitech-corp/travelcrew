@@ -74,7 +74,7 @@ class ImageBanner extends StatelessWidget{
 
 
 class AnimatedClipRRect extends StatelessWidget {
-  const AnimatedClipRRect({
+  const AnimatedClipRRect({Key? key,
     required this.duration,
     this.curve = Curves.linear,
     required this.borderRadius,
@@ -82,7 +82,7 @@ class AnimatedClipRRect extends StatelessWidget {
   })  : assert(duration != null),
         assert(curve != null),
         assert(borderRadius != null),
-        assert(child != null);
+        assert(child != null), super(key: key);
 
   final Duration duration;
   final Curve curve;
@@ -99,7 +99,7 @@ class AnimatedClipRRect extends StatelessWidget {
     return TweenAnimationBuilder<BorderRadius>(
       duration: duration,
       curve: curve,
-      tween: Tween(begin: BorderRadius.zero, end: borderRadius),
+      tween: Tween<BorderRadius>(begin: BorderRadius.zero, end: borderRadius),
       builder: _builder,
       child: child,
     );
@@ -156,7 +156,7 @@ class HangingImageTheme3 extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(8.0,0,8.0,0),
               child:
               Stack(
-                children: [
+                children: <Widget>[
                   Positioned.fill(
                     child: AppBar(
                       shadowColor: const Color(0x00000000),
@@ -263,7 +263,7 @@ class DateGauge extends StatelessWidget {
       case 'during':
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             const Text('Trip has started.'),
             Gauge(countDownDate: countDownDateReturn, color: Colors.blue,),
           ],
@@ -338,9 +338,9 @@ class RecentTripTile extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        builder: (BuildContext context, AsyncSnapshot<Object?> streamData){
+        builder: (BuildContext context, AsyncSnapshot<List<Trip>?> streamData){
           if(streamData.hasData){
-            final List<Trip> trips = streamData.data as List<Trip>;
+            final List<Trip> trips = streamData.data!;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: (trips.length > 10) ? 10 : trips.length,
@@ -369,7 +369,7 @@ class RecentTripTile extends StatelessWidget{
                         gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
+                            colors: <Color>[
                               Colors.blue,
                               Colors.lightBlueAccent
                             ]
@@ -396,7 +396,7 @@ class RecentTripTile extends StatelessWidget{
                 );
               });
           } else {
-            return Loading();
+            return const Loading();
           }
         },
         stream: DatabaseService().pastCrewTripsCustom(uid),

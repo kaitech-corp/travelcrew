@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// Widget for trip image layout
 class ImageLayout extends StatelessWidget{
 
-  const ImageLayout(this._assetPath);
+  const ImageLayout(this._assetPath, {Key? key}) : super(key: key);
   final String _assetPath;
 
   @override

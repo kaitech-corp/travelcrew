@@ -13,7 +13,7 @@ import '../../../alerts/alert_dialogs.dart';
 
 class DMChatMessageLayout extends StatelessWidget {
 
-  const DMChatMessageLayout({required this.message, required this.user});
+  const DMChatMessageLayout({Key? key, required this.message, required this.user}) : super(key: key);
   final ChatData message;
   final UserPublicProfile user;
 
@@ -33,7 +33,7 @@ class DMChatMessageLayout extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
+                        children: <Widget>[
                           OutlinedButton(
                             onPressed: () {
                               FlutterClipboard.copy(message.message)
@@ -74,7 +74,7 @@ class DMChatMessageLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 Container(
                     margin: const EdgeInsets.fromLTRB(80, 5, 5, 5),
                     decoration: BoxDecoration(
@@ -88,10 +88,10 @@ class DMChatMessageLayout extends StatelessWidget {
                               const EdgeInsets.fromLTRB(5.0, 5.0, 10.0, 5.0),
                           child: Linkify(
                             onOpen: (LinkableElement link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
                             text: message.message,
@@ -121,7 +121,7 @@ class DMChatMessageLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Container(
                     margin: const EdgeInsets.fromLTRB(5, 5, 80, 5),
                     decoration: BoxDecoration(
@@ -135,10 +135,10 @@ class DMChatMessageLayout extends StatelessWidget {
                               const EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                           child: Linkify(
                             onOpen: (LinkableElement link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
                             text: message.message,

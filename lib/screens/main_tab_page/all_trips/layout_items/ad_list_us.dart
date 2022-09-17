@@ -12,9 +12,11 @@ import '../ad_card.dart';
 
 /// Grid list for ads
 class SliverGridAdList extends StatefulWidget {
+  const SliverGridAdList({Key? key}) : super(key: key);
+
 
   @override
-  _SliverGridAdListState createState() => _SliverGridAdListState();
+  State<SliverGridAdList> createState() => _SliverGridAdListState();
 }
 
 class _SliverGridAdListState extends State<SliverGridAdList> {
@@ -40,14 +42,14 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
     return BlocBuilder<GenericBloc<TripAds,TripAdRepository>, GenericState>(
         builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(child: Loading());
+            return const Flexible(child: Loading());
           } else if (state is HasDataState) {
             final List<TripAds> adList = state.data as List<TripAds>;
             return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: List.generate(adList.length, (int index) {
+                children: List<Widget>.generate(adList.length, (int index) {
                   return AdCard(tripAds: adList[index]);
                 }),
               ),

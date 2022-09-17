@@ -30,12 +30,12 @@ class CustomAppBar extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
+                colors: <Color>[
                   Colors.blue[900]!,
                   Colors.lightBlueAccent
                 ]
             ),
-            boxShadow: const [
+            boxShadow: const <BoxShadow>[
               BoxShadow(
                 blurRadius: 10.0,
               ),
@@ -62,7 +62,7 @@ class CustomAppBar extends StatelessWidget {
                         transitionOnUserGestures: true,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth/8.0,
-                          backgroundImage: urlToImage.value.isNotEmpty ? NetworkImage(urlToImage.value,) : const AssetImage(profileImagePlaceholder) as ImageProvider,
+                          backgroundImage: urlToImage.value.isNotEmpty ? NetworkImage(urlToImage.value,) : const NetworkImage(profileImagePlaceholder),
                         ),
                       ),
                     ),

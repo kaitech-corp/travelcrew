@@ -29,17 +29,16 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
             .where(
                 (Trip trip) => trip.endDateTimeStamp.toDate().compareTo(past) == 1)
             .toList();
-        print(crewTrips.length);
         return crewTrips;
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving current trip list:  ${e.toString()}');
-        return [];
+        return <Trip>[];
       }
     }
 
     return tripCollection
-        .where('accessUsers', arrayContainsAny: [userService.currentUserID])
+        .where('accessUsers', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
         .map(_currentCrewTripListFromSnapshot);
   }

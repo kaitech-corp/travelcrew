@@ -44,7 +44,7 @@ class SearchBarController<T> {
     _controllerListener.onClear();
   }
 
-  void _search(
+  Future<void> _search(
       String text, Future<List<T>> Function(String text) onSearch) async {
     _controllerListener.onLoading();
     try {
@@ -142,11 +142,11 @@ class SearchBar<T> extends StatefulWidget {
     this.header,
     this.placeHolder,
     this.icon = const Icon(Icons.search),
-    this.hintText = "",
+    this.hintText = '',
     this.hintStyle = const TextStyle(color: Color.fromRGBO(142, 142, 147, 1)),
     this.iconActiveColor = Colors.black,
     this.textStyle = const TextStyle(color: Colors.black),
-    this.cancellationWidget = const Text("Cancel"),
+    this.cancellationWidget = const Text('Cancel'),
     this.onCancelled,
     this.suggestions = const [],
     this.buildSuggestion,
@@ -157,9 +157,9 @@ class SearchBar<T> extends StatefulWidget {
     this.scrollDirection = Axis.vertical,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
-    this.listPadding = const EdgeInsets.all(0),
-    this.searchBarPadding = const EdgeInsets.all(0),
-    this.headerPadding = const EdgeInsets.all(0),
+    this.listPadding = EdgeInsets.zero,
+    this.searchBarPadding = EdgeInsets.zero,
+    this.headerPadding = EdgeInsets.zero,
   }) : super(key: key);
   /// Future returning searched items
   final Future<List<T>> Function(String text) onSearch;
@@ -298,11 +298,11 @@ class _SearchBarState<T> extends State<SearchBar<T>>
   void onError(Error error) {
     setState(() {
       _loading = false;
-      _error = widget.onError != null ? widget.onError!(error) : Text("error");
+      _error = widget.onError != null ? widget.onError!(error) : const Text('error');
     });
   }
 
-  _onTextChanged(String newText) async {
+  Future<void> _onTextChanged(String newText) async {
     if (_debounce?.isActive ?? false) {
       _debounce!.cancel();
     }
@@ -348,7 +348,6 @@ class _SearchBarState<T> extends State<SearchBar<T>>
         scrollDirection: widget.scrollDirection,
         mainAxisSpacing: widget.mainAxisSpacing,
         crossAxisSpacing: widget.crossAxisSpacing,
-        addAutomaticKeepAlives: true,
         itemBuilder: (BuildContext context, int index) {
           return builder(items[index], index);
         },
@@ -363,7 +362,9 @@ class _SearchBarState<T> extends State<SearchBar<T>>
     } else if (_loading) {
       return widget.loader;
     } else if (_searchQueryController.text.length < widget.minimumChars) {
-      if (widget.placeHolder != null) return widget.placeHolder!;
+      if (widget.placeHolder != null) {
+        return widget.placeHolder!;
+      }
       return _buildListView(
           // widget.suggestions, widget.buildSuggestion ?? widget.onItemFound);
           widget.suggestions, widget.onItemFound);
@@ -382,14 +383,13 @@ class _SearchBarState<T> extends State<SearchBar<T>>
       children: <Widget>[
         Padding(
           padding: widget.searchBarPadding,
-          child: Container(
+          child: SizedBox(
             height: 80,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Flexible(
                   child: AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     width: _animate ? widthMax * .8 : widthMax,
                     decoration: BoxDecoration(
                       borderRadius: widget.searchBarStyle.borderRadius,
@@ -398,6 +398,9 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                     child: Padding(
                       padding: widget.searchBarStyle.padding,
                       child: Theme(
+                        data: Theme.of(context).copyWith(
+                          primaryColor: Colors.white,
+                        ),
                         child: TextField(
                           controller: _searchQueryController,
                           onChanged: _onTextChanged,
@@ -411,9 +414,6 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                             filled: true,
                           ),
                         ),
-                        data: Theme.of(context).copyWith(
-                          primaryColor: Colors.white,
-                        ),
                       ),
                     ),
                   ),
@@ -425,7 +425,7 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                     curve: Curves.easeIn,
                     duration: Duration(milliseconds: _animate ? 1000 : 0),
                     child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 200),
                       width:
                       _animate ? MediaQuery.of(context).size.width * .2 : 0,
                       child: Container(

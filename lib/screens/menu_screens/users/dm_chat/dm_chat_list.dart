@@ -31,7 +31,7 @@ class _DMChatListState extends State<DMChatList> {
 
     }
 
-    return loading ? Loading() : ListView.builder(
+    return loading ? const Loading() : ListView.builder(
         padding: const EdgeInsets.all(8.0),
         reverse: true,
         itemCount: chatList != null ? chatList.length : 0,

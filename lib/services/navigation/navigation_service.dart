@@ -14,7 +14,7 @@ class NavigationService {
   }
 
   Future<Object?> pushNamedAndRemoveUntil(String routeName){
-    return _navigationKey.currentState!.pushNamedAndRemoveUntil(routeName, (Route route) => false);
+    return _navigationKey.currentState!.pushNamedAndRemoveUntil(routeName, (Route<dynamic> route) => false);
   }
 
   Future<dynamic> navigateTo(String routeName, {dynamic arguments}) {

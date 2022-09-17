@@ -24,16 +24,17 @@ class CompleteProfileForm extends StatefulWidget {
   const CompleteProfileForm({Key? key}) : super(key: key);
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<CompleteProfileForm> createState() => _CompleteProfileFormState();
 }
 
-class _LoginFormState extends State<CompleteProfileForm> {
+class _CompleteProfileFormState extends State<CompleteProfileForm> {
+
   File? image;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _displayNameController = TextEditingController();
-  final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
+  final ValueNotifier<File> _urlToImage = ValueNotifier<File>(File(''));
 
   final ImagePicker _picker = ImagePicker();
 

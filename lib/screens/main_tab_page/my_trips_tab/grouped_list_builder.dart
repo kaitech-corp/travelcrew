@@ -8,13 +8,14 @@ import 'crew_trip_card.dart';
 
 /// Grouped list view for current past and private trips
 class GroupedListTripView extends StatefulWidget {
-  const GroupedListTripView({Key? key, required this.data, required this.isPast})
+  const GroupedListTripView(
+      {Key? key, required this.data, required this.isPast})
       : super(key: key);
   final List<Trip> data;
   final bool isPast;
 
   @override
-  _GroupedListTripViewState createState() => _GroupedListTripViewState();
+  State<GroupedListTripView> createState() => _GroupedListTripViewState();
 }
 
 class _GroupedListTripViewState extends State<GroupedListTripView> {

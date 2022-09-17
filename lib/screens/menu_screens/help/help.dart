@@ -21,16 +21,16 @@ class HelpPage extends StatelessWidget{
           height: MediaQuery.of(context).size.height *.5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const Padding(padding: EdgeInsets.only(top: 5),),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(Intl.message('About'),style: Theme.of(context).textTheme.subtitle1,),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: const <Widget>[
                         Text('Terms of Service'),
                         Icon(Icons.navigate_next),
                       ],
@@ -42,7 +42,7 @@ class HelpPage extends StatelessWidget{
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: const <Widget>[
                         Text('Privacy Policy'),
                         Icon(Icons.navigate_next),
                       ],
@@ -56,12 +56,12 @@ class HelpPage extends StatelessWidget{
               const Padding(padding: EdgeInsets.only(top: 5, bottom: 5),),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(Intl.message('Feedback'),style: Theme.of(context).textTheme.subtitle1,),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                      children: <Widget>[
                         Text(Intl.message('Provide Feedback')),
                         const Icon(Icons.navigate_next),
                       ],
@@ -77,5 +77,4 @@ class HelpPage extends StatelessWidget{
         )
     );
   }
-
 }

@@ -7,7 +7,8 @@ import '../../size_config/size_config.dart';
 /// Assets
 const String error = 'assets/images/error.jpg';
 const String splashScreenLogo = 'assets/images/v1.gif';
-const String profileImagePlaceholder = 'assets/images/blank_profile_picture.png';
+// const String profileImagePlaceholder = 'assets/images/blank_profile_picture.png';
+const String profileImagePlaceholder = 'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/web_images%2Fblank_profile_picture.png?alt=media&token=892980e3-ff20-4a6d-832f-9ef877c1a2af';
 const String spaceImage = 'assets/images/space3.jpg';
 const String skyImage = 'assets/images/sky.jpg';
 const String travelImage = 'assets/images/travelPics.png';
@@ -95,14 +96,14 @@ const List<String> modes = <String>[
   'Flying',
   'Train',
   'Uber/Lift'];
-const List<String> tabs = [
+const List<String> tabs = <String>[
   'Explore', 
   'Split', 
   'Transportation', 
   'Lodging', 
   'Activities', 
   'Chat'];
-const List<String> placeTypes = [
+const List<String> placeTypes = <String>[
   'bar',
   'cafe',
   'campground',
@@ -114,7 +115,7 @@ const List<String> placeTypes = [
 const String signInWithGoogle = '  Google';
 const String signInWithApple = '  Apple';
 
-const List urls = [];
+const List<String> urls = <String>[];
 const String splitWiseToken = 'splitWiseToken';
 
 
@@ -148,5 +149,3 @@ const String submitted = 'Submitted';
 const String customNotification = 'Custom Notification';
 const String push = 'Push';
 const String enterMessage = 'Enter a message';
-
-

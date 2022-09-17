@@ -15,16 +15,16 @@ class ListPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+        children: <Widget>[
           Expanded(
             flex: 2,
             child:
             Column(
-              children: [
+              children: <Widget>[
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Who's bringing what...",style: Theme.of(context).textTheme.headline6,),
@@ -43,7 +43,7 @@ class ListPage extends StatelessWidget{
             child:
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

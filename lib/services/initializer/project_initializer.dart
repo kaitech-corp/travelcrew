@@ -15,7 +15,7 @@ Future<void> projectInitializer() async {
   await dotenv.load();
   await Firebase.initializeApp();
   setupLocator();
-  SystemChrome.setPreferredOrientations([
+  SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
   ]);

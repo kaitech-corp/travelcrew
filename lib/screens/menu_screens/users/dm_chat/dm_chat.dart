@@ -9,7 +9,7 @@ import '../../../../services/widgets/appearance_widgets.dart';
 import 'dm_chat_list.dart';
 
 class DMChat extends StatefulWidget {
-  const DMChat({required this.user});
+  const DMChat({Key? key, required this.user}) : super(key: key);
   final UserPublicProfile user;
 
   @override
@@ -108,8 +108,8 @@ class _DMChatState extends State<DMChat> {
   }
 
   Map<String, bool> createStatus() {
-    final List<String> members = [userService.currentUserID, widget.user.uid];
-    final Map<String, bool> status = {};
+    final List<String> members = <String>[userService.currentUserID, widget.user.uid];
+    final Map<String, bool> status = <String, bool>{};
     final Iterable<String> users = members.where((String f) => f != userService.currentUserID);
     for (final String f in users) {
       status[f] = false;

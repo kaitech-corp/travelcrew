@@ -58,7 +58,7 @@ class _ChatPageState extends State<ChatPage> {
           height: SizeConfig.screenHeight,
           child: BlocBuilder<GenericBloc<ChatData,ChatRepository>, GenericState>(builder: (BuildContext context, GenericState state) {
             if (state is LoadingState) {
-              return Align(child: Loading());
+              return const Align(child: Loading());
             } else if (state is HasDataState) {
               final List<ChatData> chatData = state.data as List<ChatData>;
               return Column(
@@ -139,7 +139,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Map<String, bool> createStatus() {
-    final Map<String, bool> status = {};
+    final Map<String, bool> status = <String, bool>{};
     final Iterable<String> users =
         widget.trip.accessUsers.where((String f) => f != userService.currentUserID);
     for (final String f in users) {

@@ -12,7 +12,7 @@ import 'explore_basic_layout.dart';
 
 /// Basic layout for Explore page.
 class ExploreBasic extends StatelessWidget {
-  const ExploreBasic({required this.trip});
+  const ExploreBasic({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
 
@@ -28,7 +28,7 @@ class ExploreBasic extends StatelessWidget {
         drawer: BlocProvider(
           create: (BuildContext context) => PublicProfileBloc(
               profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
-          child: MenuDrawer(),),
+          child: const MenuDrawer(),),
           appBar: AppBar(
             centerTitle: true,
             backgroundColor: canvasColor,

@@ -17,7 +17,7 @@ class PastTrips extends StatefulWidget{
   const PastTrips({Key? key}) : super(key: key);
 
   @override
-  _PastTripsState createState() => _PastTripsState();
+  State<PastTrips> createState() => _PastTripsState();
 
 }
 
@@ -43,7 +43,7 @@ class _PastTripsState extends State<PastTrips>{
     return BlocBuilder<GenericBloc<Trip,PastTripRepository>, GenericState>(
         builder: (BuildContext context, GenericState state){
           if(state is LoadingState){
-            return Loading();
+            return const Loading();
           } else if (state is HasDataState){
             final List<Trip> tripsData = state.data as List<Trip>;
             return SizeConfig.tablet ?

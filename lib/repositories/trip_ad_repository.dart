@@ -21,16 +21,14 @@ class TripAdRepository extends GenericBlocRepository<TripAds> {
 
       try {
         return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return TripAds.fromData(data);
+          return TripAds.fromDocument(doc);
         }).toList().reversed.toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving ad list:  ${e.toString()}');
-        return [];
+        return <TripAds>[];
       }
 
     }
     return adsCollection.snapshots().map(_adListFromSnapshot);
   }
 }
-

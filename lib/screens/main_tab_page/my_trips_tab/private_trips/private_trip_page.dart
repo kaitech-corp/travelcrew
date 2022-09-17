@@ -19,7 +19,7 @@ class PrivateTrips extends StatefulWidget{
 
 
   @override
-  _PrivateTripsState createState() => _PrivateTripsState();
+  State<PrivateTrips> createState() => _PrivateTripsState();
 
 }
 
@@ -46,7 +46,7 @@ class _PrivateTripsState extends State<PrivateTrips>{
     return BlocBuilder<GenericBloc<Trip,PrivateTripRepository>, GenericState>(
         builder: (BuildContext context, GenericState state){
           if(state is LoadingState){
-            return Loading();
+            return const Loading();
           } else if (state is HasDataState){
             final List<Trip> tripsData = state.data as List<Trip>;
             return SizeConfig.tablet ?

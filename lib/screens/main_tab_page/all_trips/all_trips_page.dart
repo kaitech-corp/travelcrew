@@ -8,8 +8,10 @@ import 'layout_items/trip_list.dart';
 
 /// All public trips page
 class AllTrips extends StatefulWidget {
+  const AllTrips({Key? key}) : super(key: key);
+
   @override
-  _AllTripsState createState() => _AllTripsState();
+  State<AllTrips> createState() => _AllTripsState();
 }
 
 class _AllTripsState extends State<AllTrips>
@@ -22,11 +24,11 @@ class _AllTripsState extends State<AllTrips>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             RichText(
               text: TextSpan(
                   style: responsiveTextStyleTopics(context),
-                  children: [
+                  children: <TextSpan>[
                     TextSpan(
                         text: " What's",
                         style: responsiveTextStyleTopics(context).copyWith(color: Colors.greenAccent,),),
@@ -36,11 +38,11 @@ class _AllTripsState extends State<AllTrips>
                     ),
                   ]),
             ),
-            SliverGridTripList(),
+            const SliverGridTripList(),
             RichText(
               text: TextSpan(
                   // style: ,
-                  children: [
+                  children: <TextSpan>[
                     TextSpan(
                         text: ' Nature',
                         style: responsiveTextStyleTopics(context).copyWith(color: Colors.redAccent,),),
@@ -55,10 +57,10 @@ class _AllTripsState extends State<AllTrips>
                     ),
                   ]),
             ),
-            SliverGridAdList(),
+            const SliverGridAdList(),
             RichText(
               text: TextSpan(
-                  children: [
+                  children: <TextSpan>[
                     TextSpan(
                         text: ' Friend',
                         style: responsiveTextStyleTopics(context).copyWith(color: Colors.orangeAccent,),),
@@ -68,15 +70,10 @@ class _AllTripsState extends State<AllTrips>
                     ),
                   ]),
             ),
-            SliverGridTripSuggestionList(),
+            const SliverGridTripSuggestionList(),
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-

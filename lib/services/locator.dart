@@ -36,7 +36,7 @@ class UserService {
 class UserProfileService {
 
   UserService userService = locator<UserService>();
-  late UserPublicProfile profile;
+  UserPublicProfile profile = defaultProfile;
 
   Future<UserPublicProfile> currentUserProfile() async {
     try {
@@ -53,4 +53,3 @@ class UserProfileService {
     return profile;
   }
 }
-

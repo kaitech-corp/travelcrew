@@ -10,7 +10,6 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../alerts/alert_dialogs.dart';
 
 class ReportContent extends StatefulWidget {
-
   const ReportContent(
       {Key? key,
       required this.type,
@@ -24,8 +23,9 @@ class ReportContent extends StatefulWidget {
   final ActivityData? activity;
   final LodgingData? lodging;
   final Trip? trip;
+
   @override
-  _ReportContentState createState() => _ReportContentState();
+  State<ReportContent> createState() => _ReportContentState();
 }
 
 class _ReportContentState extends State<ReportContent> {
@@ -137,8 +137,8 @@ class _ReportContentState extends State<ReportContent> {
                 const Padding(
                   padding: EdgeInsets.only(top: 5),
                 ),
-                Text(Intl.message
-                  ('Report this user for...'),
+                Text(
+                  Intl.message('Report this user for...'),
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 const Padding(
@@ -149,7 +149,7 @@ class _ReportContentState extends State<ReportContent> {
                   child: ListView.builder(
                       itemCount: reportList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return RadioListTile(
+                        return RadioListTile<String>(
                             title: Text(
                               reportList[index],
                               style: Theme.of(context).textTheme.subtitle1,
@@ -172,7 +172,7 @@ class _ReportContentState extends State<ReportContent> {
                   Center(
                       child: Text(
                     'Reporting: ${widget.userAccount!.firstName} '
-                        '${widget.userAccount!.lastName}',
+                    '${widget.userAccount!.lastName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 if (widget.activity != null)
@@ -235,8 +235,9 @@ class _ReportContentState extends State<ReportContent> {
         controller: _controller,
         maxLines: maxLines,
         decoration: InputDecoration(
-          hintText: Intl.message('Please describe the reasoning for this report '
-              'and/or add additional details.'),
+          hintText:
+              Intl.message('Please describe the reasoning for this report '
+                  'and/or add additional details.'),
           fillColor: Colors.grey,
           filled: true,
         ),

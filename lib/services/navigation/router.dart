@@ -93,7 +93,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AllTripsPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: AllTrips(),
+        viewToShow: const AllTrips(),
       );
     case BasketListPageRoute:
       final BasketListArguments arguments = settings.arguments as BasketListArguments;
@@ -140,7 +140,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case DMChatListPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: DMChatListPage(),
+        viewToShow: const DMChatListPage(),
       );
     case EditActivityRoute:
       final EditActivityArguments arguments = settings.arguments as EditActivityArguments;
@@ -186,12 +186,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case FavoritesRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: FavoritesPage(),
+        viewToShow: const FavoritesPage(),
       );
     case FeedbackPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: FeedbackPage(),
+        viewToShow: const FeedbackPage(),
       );
     case FollowingListRoute:
       return _getPageRoute(
@@ -243,12 +243,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case MenuDrawerRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: MenuDrawer(),
+        viewToShow: const MenuDrawer(),
       );
     case NotificationsRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: NotificationPage(),
+        viewToShow: const NotificationPage(),
       );
     case ReportContentRoute:
       final ReportArguments arguments = settings.arguments as ReportArguments;
@@ -264,7 +264,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: BlocProvider(
             create: (BuildContext context) => UserSettingsBloc(
                 userSettingsRepository: UserSettingsRepository()..refresh())
-            ,child: Settings()),
+            ,child: const Settings()),
       );
     case SignUpScreenRoute:
       return _getPageRoute(
@@ -277,7 +277,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name!,
         viewToShow: SplitDetailsPage(
           trip: arguments.trip,
-          purchasedByUID: arguments.purchasedByUID,
           splitObject: arguments.splitObject,),
       );
     case UsersRoute:
@@ -297,7 +296,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ProfilePageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: ProfilePage(),
+        viewToShow: const ProfilePage(),
       );
     default:
       return MaterialPageRoute(
@@ -307,7 +306,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             ),
             body: Center(
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     const SizedBox(height: 10,),
                     Image.asset(error,fit: BoxFit.cover,width: SizeConfig.screenWidth*.9,height: SizeConfig.screenWidth*.9,),
                     const Text('Something went wrong. Sorry about that.',textScaleFactor: 1.5,textAlign: TextAlign.center,style: TextStyle(color: Colors.redAccent),),
@@ -361,7 +360,7 @@ class AddToListPageArguments{
   AddToListPageArguments({required this.trip, required this.scaffoldKey, required this.controller});
   final Trip trip;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
+  final PersistentBottomSheetController<dynamic> controller;
 }
 class MembersLayoutArguments{
 
@@ -391,9 +390,8 @@ class SplitArguments{
 }
 class SplitDetailsArguments{
 
-  SplitDetailsArguments({required this.splitObject, required this.purchasedByUID, required this.trip});
+  SplitDetailsArguments({required this.splitObject, required this.trip});
   final SplitObject splitObject;
-  final String purchasedByUID;
   final Trip trip;
 
 }

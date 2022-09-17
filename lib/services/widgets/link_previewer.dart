@@ -6,17 +6,16 @@ class ViewAnyLink extends StatefulWidget {
     Key? key,
     required this.link,
     required this.function,
-}) : super(key: key);
+  }) : super(key: key);
 
   final String link;
   final Function() function;
 
   @override
-  _ViewAnyLinkState createState() => _ViewAnyLinkState();
+  State<ViewAnyLink> createState() => _ViewAnyLinkState();
 }
 
 class _ViewAnyLinkState extends State<ViewAnyLink> {
-
   @override
   Widget build(BuildContext context) {
     return AnyLinkPreview(
@@ -26,4 +25,3 @@ class _ViewAnyLinkState extends State<ViewAnyLink> {
     );
   }
 }
-

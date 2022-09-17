@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class BadgeIcon extends StatelessWidget {
   const BadgeIcon(
-      {required this.icon,
+      {Key? key, required this.icon,
         this.badgeCount = 0,
         this.showIfZero = false,
         this.badgeColor = Colors.red,
@@ -11,7 +11,7 @@ class BadgeIcon extends StatelessWidget {
       const TextStyle(
         color: Colors.white,
         fontSize: 8,
-      );
+      ), super(key: key);
   final Widget icon;
   final int badgeCount;
   final bool showIfZero;

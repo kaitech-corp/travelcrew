@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,14 +11,14 @@ import '../../../services/widgets/appbar_gradient.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 
-class Settings extends StatefulWidget{
+class Settings extends StatefulWidget {
+  const Settings({Key? key}) : super(key: key);
 
   @override
-  _SettingsState createState() => _SettingsState();
+  State<Settings> createState() => _SettingsState();
 }
 
 class _SettingsState extends State<Settings> {
-
   bool isSwitched = false;
   bool isLinked = false;
   bool buttonOnePressed = false;
@@ -36,7 +37,7 @@ class _SettingsState extends State<Settings> {
   }
 
   ///Retrieve Splitwise access token from shared preferences.
-  getAccessToken() async {
+  Future<void> getAccessToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       accessToken = prefs.getString('accessToken') ?? '';
@@ -49,8 +50,6 @@ class _SettingsState extends State<Settings> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -60,7 +59,10 @@ class _SettingsState extends State<Settings> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Settings',style: Theme.of(context).textTheme.headline5,),
+          title: Text(
+            'Settings',
+            style: Theme.of(context).textTheme.headline5,
+          ),
           flexibleSpace: const AppBarGradient(),
         ),
         body: Container(
@@ -68,7 +70,7 @@ class _SettingsState extends State<Settings> {
           height: SizeConfig.screenHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const Padding(padding: EdgeInsets.only(top: 25)),
               // Text('Notifications',style: Theme.of(context).textTheme.headline6,),
               // Container(
@@ -222,17 +224,28 @@ class _SettingsState extends State<Settings> {
               //       }
               //     }),
               // SizedBox(height: 20,),
-              Center(child: Text('Social',style: Theme.of(context).textTheme.headline4,)),
+              Center(
+                  child: Text(
+                'Social',
+                style: Theme.of(context).textTheme.headline4,
+              )),
               Container(
                   height: 2,
-                  decoration: BoxDecoration(border: Border.all(),)),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                  )),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Center(child: Text("Follow us on social media for 'How to' videos and new feature updates!",style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center,)),
+                child: Center(
+                    child: Text(
+                  "Follow us on social media for 'How to' videos and new feature updates!",
+                  style: Theme.of(context).textTheme.subtitle1,
+                  textAlign: TextAlign.center,
+                )),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
+                children: <Widget>[
                   // Container(height: SizeConfig.screenWidth*.1,),
                   _instagramButton(),
                   // Container(height: SizeConfig.screenWidth*.1,),
@@ -241,23 +254,34 @@ class _SettingsState extends State<Settings> {
                   _twitterButton(),
                 ],
               ),
-              const SizedBox(height: 20,),
-              Center(child: Text('Account',style: Theme.of(context).textTheme.headline4,)),
+              const SizedBox(
+                height: 20,
+              ),
+              Center(
+                  child: Text(
+                'Account',
+                style: Theme.of(context).textTheme.headline4,
+              )),
               Container(
                   height: 2,
-                  decoration: BoxDecoration(border: Border.all(),)),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                  )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Text('Delete this account:', style: Theme.of(context).textTheme.subtitle1,),
+                    child: Text(
+                      'Delete this account:',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
                   ),
                   ElevatedButton(
-                    onPressed: (){
-                      TravelCrewAlertDialogs().disableAccount(context);
-                    },
-                    child: const Text('Delete')),
+                      onPressed: () {
+                        TravelCrewAlertDialogs().disableAccount(context);
+                      },
+                      child: const Text('Delete')),
                 ],
               )
             ],
@@ -285,6 +309,7 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
+
   Widget _facebookButton() {
     return OutlinedButton(
       onPressed: () {
@@ -322,5 +347,4 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
-  }
-
+}

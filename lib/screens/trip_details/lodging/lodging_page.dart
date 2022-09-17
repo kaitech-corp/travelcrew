@@ -15,7 +15,7 @@ import 'lodging_card.dart';
 
 /// Lodging page
 class LodgingPage extends StatefulWidget {
-  const LodgingPage({required this.trip});
+  const LodgingPage({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
 
@@ -46,16 +46,14 @@ class _LodgingPageState extends State<LodgingPage> {
         body: BlocBuilder<GenericBloc<LodgingData,LodgingRepository>, GenericState>(
             builder: (BuildContext context, GenericState state){
               if(state is LoadingState){
-                return Loading();
+                return const Loading();
               } else if (state is HasDataState){
                 final List<LodgingData> lodgingList = state.data as List<LodgingData>;
-                return Container(
-                  child: ListView.builder(
-                      itemCount: lodgingList.length,
-                      itemBuilder: (BuildContext context, int index){
-                        return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
-                      }),
-                );
+                return ListView.builder(
+                    itemCount: lodgingList.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
+                    });
               } else {
                 return nil;
               }

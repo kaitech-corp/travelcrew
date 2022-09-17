@@ -44,7 +44,7 @@ class _CurrentTripsState extends State<CurrentTrips> {
     return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
       builder: (BuildContext context, GenericState state){
         if(state is LoadingState){
-            return Loading();
+            return const Loading();
         } else if (state is HasDataState){
           final List<Trip> tripsData = state.data as List<Trip>;
         return SizeConfig.tablet ?

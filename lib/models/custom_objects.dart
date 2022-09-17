@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../services/constants/constants.dart';
 import '../services/functions/cloud_functions.dart';
 
 ///Model for user
@@ -27,21 +28,22 @@ class UserSignUp {
 
 ///Model for user public profile
 class UserPublicProfile {
-  UserPublicProfile({required this.tripsJoined,
-    required this.tripsCreated,
-    required this.hometown,
-    required this.instagramLink,
-    required this.facebookLink,
-    required this.topDestinations,
-    required this.blockedList,
-    required this.displayName,
-    required this.email,
-    required this.following,
-    required this.followers,
-    required this.firstName,
-    required this.lastName,
-    required this.uid,
-    required this.urlToImage});
+  UserPublicProfile(
+      {required this.tripsJoined,
+      required this.tripsCreated,
+      required this.hometown,
+      required this.instagramLink,
+      required this.facebookLink,
+      required this.topDestinations,
+      required this.blockedList,
+      required this.displayName,
+      required this.email,
+      required this.following,
+      required this.followers,
+      required this.firstName,
+      required this.lastName,
+      required this.uid,
+      required this.urlToImage});
 
   factory UserPublicProfile.fromDocument(DocumentSnapshot<Object?> doc) {
     List<dynamic> blockedList = <String>[];
@@ -192,11 +194,12 @@ class UserPublicProfile {
 
 ///Model for members of trip
 class Members {
-  Members({required this.displayName,
-    required this.firstName,
-    required this.lastName,
-    required this.uid,
-    required this.urlToImage});
+  Members(
+      {required this.displayName,
+      required this.firstName,
+      required this.lastName,
+      required this.uid,
+      required this.urlToImage});
 
   factory Members.fromDocument(DocumentSnapshot<Object?> doc) {
     String displayName = '';
@@ -230,7 +233,8 @@ class Members {
     } catch (e) {
       CloudFunction().logError('Image url error: ${e.toString()}');
     }
-    return Members(displayName: displayName,
+    return Members(
+        displayName: displayName,
         firstName: firstName,
         lastName: lastName,
         uid: uid,
@@ -362,12 +366,37 @@ class WalmartProductsItem {
 
 ///Model for user feedback
 class TCFeedback {
-  TCFeedback({this.fieldID, this.message, this.timestamp, this.uid});
+  TCFeedback(
+      {required this.fieldID,
+      required this.message,
+      required this.timestamp,
+      required this.uid});
+  factory TCFeedback.fromDocument(DocumentSnapshot<Object?> doc) {
+    String message = '';
+    String fieldID = '';
+    Timestamp timestamp = Timestamp.now();
+    String uid = '';
 
-  final String? message;
-  final Timestamp? timestamp;
-  final String? uid;
-  final String? fieldID;
+    try {
+      message = doc.get('message') as String;
+    } catch (e) {}
+    try {
+      fieldID = doc.get('fieldID') as String;
+    } catch (e) {}
+    try {
+      timestamp = doc.get('timestamp') as Timestamp;
+    } catch (e) {}
+    try {
+      uid = doc.get('uid') as String;
+    } catch (e) {}
+    return TCFeedback(
+        fieldID: fieldID, message: message, timestamp: timestamp, uid: uid);
+  }
+
+  final String message;
+  final Timestamp timestamp;
+  final String uid;
+  final String fieldID;
 }
 
 class TCReports {}
@@ -382,38 +411,109 @@ class GoogleData {
 
 ///Model for trip ads show
 class TripAds {
-  TripAds({this.link,
-    this.urlToImage,
-    this.tripName,
-    this.geoPoint,
-    this.location,
-    this.dateCreated,
-    this.documentID,
-    this.favorites,
-    this.clicks,
-    this.clickers});
+  TripAds(
+      {required this.link,
+      required this.urlToImage,
+      required this.tripName,
+      required this.geoPoint,
+      required this.location,
+      required this.dateCreated,
+      required this.documentID,
+      required this.favorites,
+      required this.clicks,
+      required this.clickers});
 
-  TripAds.fromData(Map<String, dynamic> data)
-      : tripName = data['tripName'] as String,
-        documentID = data['documentID'] as String,
-        geoPoint = data['geoPoint'] as GeoPoint,
-        link = data['link'] as String,
-        location = data['location'] as String,
-        dateCreated = data['dateCreated'] as Timestamp,
-        clicks = data['clicks'] as int,
-        favorites = List<String>.from(data['favorites'] as List<String>),
-        clickers = List<String>.from(data['clickers'] as List<String>),
-        urlToImage = data['urlToImage'] as String;
-  final String? tripName;
-  final GeoPoint? geoPoint;
-  final String? link;
-  final String? location;
-  final Timestamp? dateCreated;
-  final String? documentID;
-  final List<String>? favorites;
-  final int? clicks;
-  final List<String>? clickers;
-  final String? urlToImage;
+  factory TripAds.fromDocument(DocumentSnapshot<Object?> doc) {
+    String tripName = '';
+    GeoPoint geoPoint = const GeoPoint(0, 0);
+    String link = '';
+    String location = '';
+    Timestamp dateCreated = Timestamp.now();
+    String documentID = '';
+    List<String> favorites = <String>[''];
+    int clicks = 0;
+    List<String> clickers = <String>[''];
+    String urlToImage = '';
+
+    try {
+      tripName = doc.get('tripName') as String;
+    } catch (e) {
+      CloudFunction().logError('tripName error: ${e.toString()}');
+    }
+    try {
+      geoPoint = doc.get('geoPoint') as GeoPoint;
+    } catch (e) {
+      CloudFunction().logError('geoPoint error: ${e.toString()}');
+    }
+    try {
+      link = doc.get('link') as String;
+    } catch (e) {
+      CloudFunction().logError('link error: ${e.toString()}');
+    }
+    try {
+      location = doc.get('location') as String;
+    } catch (e) {
+      CloudFunction().logError('location error: ${e.toString()}');
+    }
+    try {
+      dateCreated = doc.get('dateCreated') as Timestamp;
+    } catch (e) {
+      CloudFunction().logError('dateCreated error: ${e.toString()}');
+    }
+    try {
+      documentID = doc.get('documentID') as String;
+    } catch (e) {
+      CloudFunction().logError('documentID error: ${e.toString()}');
+    }
+    try {
+      var fav = doc.get('favorites') as List<dynamic>;
+      fav.forEach((dynamic element) {
+        favorites.add(element.toString());
+      });
+    } catch (e) {
+      CloudFunction().logError('favorites error: ${e.toString()}');
+    }
+    try {
+      var clicker = doc.get('clickers') as List<dynamic>;
+      clicker.forEach((dynamic element) {
+        clickers.add(element.toString());
+      });
+    } catch (e) {
+      CloudFunction().logError('clickers error: ${e.toString()}');
+    }
+    try {
+      clicks = doc.get('clicks') as int;
+    } catch (e) {
+      CloudFunction().logError('endTime error: ${e.toString()}');
+    }
+    try {
+      urlToImage = doc.get('urlToImage') as String;
+    } catch (e) {
+      CloudFunction().logError('urlToImage error: ${e.toString()}');
+    }
+    return TripAds(
+        link: link,
+        urlToImage: urlToImage,
+        tripName: tripName,
+        geoPoint: geoPoint,
+        location: location,
+        dateCreated: dateCreated,
+        documentID: documentID,
+        favorites: favorites,
+        clicks: clicks,
+        clickers: clickers);
+  }
+
+  String tripName;
+  GeoPoint geoPoint;
+  String link;
+  String location;
+  Timestamp dateCreated;
+  String documentID;
+  List<String> favorites;
+  int clicks;
+  List<String> clickers;
+  String urlToImage;
 }
 
 ///Model for suggestions
@@ -453,10 +553,10 @@ class CountDownDate {
 
 ///Model for user purchase details: Split Feature
 class UserPurchaseDetails {
-  UserPurchaseDetails({this.total, this.uid});
+  UserPurchaseDetails({required this.total, this.uid});
 
   String? uid;
-  double? total;
+  double total;
 }
 
 ///Model for start and end dates
@@ -473,13 +573,13 @@ UserPublicProfile defaultProfile = UserPublicProfile(
     hometown: 'hometown',
     instagramLink: 'instagramLink',
     facebookLink: 'facebookLink',
-    topDestinations: ['t'],
-    blockedList: [],
-    displayName: 'displayName',
+    topDestinations: <String>['Mars'],
+    blockedList: <String>[],
+    displayName: 'unknown',
     email: 'email',
-    following: [],
-    followers: [],
+    following: <String>[],
+    followers: <String>[],
     firstName: 'firstName',
     lastName: 'lastName',
     uid: 'uid',
-    urlToImage: 'urlToImage');
+    urlToImage: profileImagePlaceholder);

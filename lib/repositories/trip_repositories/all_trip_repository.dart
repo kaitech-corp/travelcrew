@@ -39,7 +39,7 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving all trip list:  ${e.toString()}');
-        return [];
+        return <Trip>[];
       }
     }
 

@@ -26,7 +26,7 @@ class TripDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
-      children: [
+      children: <Widget>[
         Visibility(
           visible: !expandController.expanded,
           child: Padding(
@@ -50,7 +50,7 @@ class TripDetailsWidget extends StatelessWidget {
                   expanded: Padding(
                     padding: EdgeInsets.all(detailsPadding),
                     child: Column(
-                      children: [
+                      children: <Widget>[
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.location_pin,),
                           title: Text(tripDetails.location,

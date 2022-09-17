@@ -29,7 +29,7 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
       } catch (e) {
         CloudFunction().logError(
             'Error retrieving stream of all users: ${e.toString()}');
-        return [];
+        return <UserPublicProfile>[];
       }
     }
     // get all users

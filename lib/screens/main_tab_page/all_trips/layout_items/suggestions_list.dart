@@ -13,9 +13,11 @@ import '../../../../size_config/size_config.dart';
 
 /// Grid list for trip suggestions
 class SliverGridTripSuggestionList extends StatefulWidget {
+  const SliverGridTripSuggestionList({Key? key}) : super(key: key);
+
 
   @override
-  _SliverGridTripSuggestionListState createState() => _SliverGridTripSuggestionListState();
+  State<SliverGridTripSuggestionList> createState() => _SliverGridTripSuggestionListState();
 }
 
 class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionList> {
@@ -39,15 +41,14 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
     return BlocBuilder<GenericBloc<Trip,AllTripsSuggestionRepository>, GenericState>(
         builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(child: Loading());
+            return const Flexible(child: Loading());
           } else if (state is HasDataState) {
             final List<Trip> tripList = state.data as List<Trip>;
-            print(tripList.length);
         return SizedBox(
               height: SizeConfig.screenWidth*.2,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: List.generate(5, (int index) {
+                children: List<Widget>.generate(5, (int index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(

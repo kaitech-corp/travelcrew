@@ -26,7 +26,7 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return [];
+      return <ChatData>[];
     }
   }
 
@@ -60,7 +60,7 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  ${e.toString()}');
-      return [];
+      return <ChatData>[];
     }
   }
 

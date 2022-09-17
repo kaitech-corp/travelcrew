@@ -7,11 +7,11 @@ import 'appearance_widgets.dart';
 class CalendarWidget  extends StatefulWidget{
 
   const CalendarWidget(
-      { this.startDate,
+      {Key? key,  this.startDate,
         this.endDate,
         required this.startDateTimeStamp,
         required this.endDateTimeStamp,
-        this.context, required this.showBoth});
+        this.context, required this.showBoth}) : super(key: key);
 
   final ValueNotifier<String>? startDate;
   final ValueNotifier<String>? endDate;
@@ -21,7 +21,7 @@ class CalendarWidget  extends StatefulWidget{
   final bool showBoth;
 
   @override
-  _CalendarWidgetState createState() => _CalendarWidgetState();
+  State<CalendarWidget> createState() => _CalendarWidgetState();
 
 }
 class _CalendarWidgetState extends State<CalendarWidget> {
@@ -73,94 +73,88 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return widget.showBoth ? Column(
-      children: [
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                    const SizedBox(width: 8,),
-                    Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
-                  ],
-                ),
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                  const SizedBox(width: 8,),
+                  Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
+                ],
               ),
+            ),
 //                                SizedBox(height: 16),
-              ButtonTheme(
-                minWidth: 150,
-                child: ElevatedButton(
-                  child: const Text(
-                    'Start Date',
-                  ),
-                  onPressed: () async {
-                    showDatePickerDepart();
-                  },
+            ButtonTheme(
+              minWidth: 150,
+              child: ElevatedButton(
+                child: const Text(
+                  'Start Date',
                 ),
+                onPressed: () async {
+                  showDatePickerDepart();
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                    const SizedBox(width: 8,),
-                    Text(labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
-                  ],
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                  const SizedBox(width: 8,),
+                  Text(labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
+                ],
               ),
+            ),
 //                                SizedBox(height: 16),
-              ButtonTheme(
-                minWidth: 150,
-                child: ElevatedButton(
-                  child: const Text(
-                    'End  Date',
-                  ),
-                  onPressed: () {
-                    showDatePickerReturn();
-                  },
-                  //
+            ButtonTheme(
+              minWidth: 150,
+              child: ElevatedButton(
+                child: const Text(
+                  'End  Date',
                 ),
+                onPressed: () {
+                  showDatePickerReturn();
+                },
+                //
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     ):
-    Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                const SizedBox(width: 8,),
-                Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
-              ],
-            ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+              const SizedBox(width: 8,),
+              Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
+            ],
           ),
+        ),
 //                                SizedBox(height: 16),
-          ButtonTheme(
-            minWidth: 150,
-            child: IconButton(
-              icon: const IconThemeWidget(icon: Icons.edit,),
-              onPressed: () async {
-                showDatePickerDepart();
-              },
-            ),
+        ButtonTheme(
+          minWidth: 150,
+          child: IconButton(
+            icon: const IconThemeWidget(icon: Icons.edit,),
+            onPressed: () async {
+              showDatePickerDepart();
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

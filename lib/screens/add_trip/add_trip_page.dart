@@ -30,22 +30,22 @@ class AddTripPage extends StatefulWidget {
 
 
   @override
-  _AddTripPageState createState() => _AddTripPageState();
+  State<AddTripPage> createState() => _AddTripPageState();
 }
 
 final AnalyticsService _analyticsService = AnalyticsService();
 final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
 final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 final TextEditingController myController = TextEditingController();
-final ValueNotifier<GoogleData> googleData2 = ValueNotifier(googleData!);
+final ValueNotifier<GoogleData> googleData2 = ValueNotifier<GoogleData>(googleData!);
 
 class _AddTripPageState extends State<AddTripPage> {
   UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
-  final ValueNotifier<String> startDate = ValueNotifier('');
-  final ValueNotifier<String> endDate = ValueNotifier('');
-  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier(Timestamp.now());
-  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier(Timestamp.now());
+  final ValueNotifier<String> startDate = ValueNotifier<String>('');
+  final ValueNotifier<String> endDate = ValueNotifier<String>('');
+  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier<Timestamp>(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier<Timestamp>(Timestamp.now());
 
 
   @override
@@ -88,11 +88,11 @@ class _AddTripPageState extends State<AddTripPage> {
 
 
 
-  updateGoogleDataValueNotifier() {
+  void updateGoogleDataValueNotifier() {
     googleData2.value = GoogleData();
   }
 
-  Future getImageAddTrip() async {
+  Future<void> getImageAddTrip() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
 
 
@@ -111,7 +111,7 @@ class _AddTripPageState extends State<AddTripPage> {
             builder: (BuildContext context) => Form(
                 key: _formKey,
                 child: Column(
-                    children: [
+                    children: <Widget>[
                       TextFormField(
                           enableInteractiveSelection: true,
                           textCapitalization: TextCapitalization.words,
@@ -154,10 +154,7 @@ class _AddTripPageState extends State<AddTripPage> {
                             }
                             return null;
                           },
-                          onChanged: (String val) =>
-                          {
-                            travelType = val,
-                          }
+                          onChanged: (String val) => <String>{travelType = val,}
                       ),
                       TextFormField(
                         controller: myController,
@@ -255,7 +252,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                   CloudFunction().logEvent(action);
                                   DatabaseService().addNewTripData(
                                       Trip(
-                                        accessUsers: [userService.currentUserID],
+                                        accessUsers: <String>[userService.currentUserID],
                                         comment: comment,
                                         endDate: endDate.value,
                                         endDateTimeStamp:endDateTimestamp.value,
@@ -265,7 +262,7 @@ class _AddTripPageState extends State<AddTripPage> {
                                         startDate: startDate.value,
                                         travelType: travelType,
                                         tripGeoPoint: googleData2.value.geoLocation!,
-                                        tripName: tripName, ownerID: '', displayName: '', dateCreatedTimeStamp: Timestamp.now(), urlToImage: '', documentId: '', favorite: [],
+                                        tripName: tripName, ownerID: '', displayName: '', dateCreatedTimeStamp: Timestamp.now(), urlToImage: '', documentId: '', favorite: <String>[],
                                       ),
                                       urlToImage,
                                       );

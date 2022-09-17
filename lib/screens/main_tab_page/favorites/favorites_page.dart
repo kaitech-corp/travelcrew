@@ -13,8 +13,10 @@ import 'favorites_card.dart';
 
 /// Favorites page
 class FavoritesPage extends StatefulWidget {
+  const FavoritesPage({Key? key}) : super(key: key);
+
   @override
-  _FavoriteTripState createState() => _FavoriteTripState();
+  State<FavoritesPage> createState() => _FavoriteTripState();
 
 }
 
@@ -35,14 +37,14 @@ class _FavoriteTripState extends State<FavoritesPage> {
     return BlocBuilder<GenericBloc<Trip,FavoriteTripRepository>, GenericState>(
         builder: (BuildContext context, GenericState state){
           if(state is LoadingState){
-            return Loading();
+            return const Loading();
           } else if (state is HasDataState){
             final List<Trip> trips = state.data as List<Trip>;
             return SizedBox(
               height: double.infinity,
               width: double.infinity,
               child: ListView.builder(
-                  padding: const EdgeInsets.all(0.0),
+                  padding: EdgeInsets.zero,
                   itemCount: trips.length,
                   itemBuilder: (BuildContext context, int index){
                     final Trip item = trips[index];
@@ -71,4 +73,3 @@ class _FavoriteTripState extends State<FavoritesPage> {
         });
   }
 }
-

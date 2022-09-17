@@ -49,9 +49,8 @@ class SliverGridView extends StatelessWidget {
 
 class TappableCrewTripGrid extends StatelessWidget {
 
-  const TappableCrewTripGrid({required this.trip, this.heroTag});
+  const TappableCrewTripGrid({Key? key, required this.trip,}) : super(key: key);
   final Trip trip;
-  final heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +71,10 @@ class TappableCrewTripGrid extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
-                colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+                colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
           ),
           child: Stack(
-            children: [
+            children: <Widget>[
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -123,7 +122,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                   ),
                   child: ButtonBar(
                     alignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       favoriteIcon(),
                       chatNotificationBadges(trip),
                       needListBadges(trip),
@@ -175,15 +174,15 @@ class TappableCrewTripGrid extends StatelessWidget {
   }
 
   Widget chatNotificationBadges(Trip trip) {
-    return StreamBuilder(
-      builder: (BuildContext context, AsyncSnapshot<Object?> chats) {
+    return StreamBuilder<List<ChatData>>(
+      builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
         if (chats.hasError) {
           CloudFunction()
               .logError('Error streaming chats for '
               'notifications on Crew cards: ${chats.error.toString()}');
         }
         if (chats.hasData) {
-          final List<ChatData> chatList = chats.data as List<ChatData>;
+          final List<ChatData> chatList = chats.data!;
             return Tooltip(
               message: 'New Messages',
               child: BadgeIcon(
@@ -207,7 +206,7 @@ class TappableCrewTripGrid extends StatelessWidget {
   Widget needListBadges(Trip trip) {
     return StreamBuilder<List<Need>>(
       builder: (BuildContext context, AsyncSnapshot<List<Need>> items) {
-        final List<Need> needs = items.data as List<Need>;
+        final List<Need> needs = items.data!;
         if (items.hasError) {
           CloudFunction()
               .logError('Error streaming need '

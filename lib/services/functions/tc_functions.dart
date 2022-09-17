@@ -108,17 +108,17 @@ class TCFunctions {
     return time;
   }
 
-  launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  Future<void> launchURL(String url) async {
+    if (await canLaunchUrl(Uri(path: url))) {
+      await launchUrl(Uri(path: url));
     } else {
       throw 'Could not launch $url';
     }
   }
 
   dynamic launchURL2(String url) async {
-    if (await canLaunch(url)) {
-      return await launch(url);
+    if (await canLaunchUrl(Uri(path: url))) {
+      return await launchUrl(Uri(path: url));
     } else {
       throw 'Could not launch $url';
     }

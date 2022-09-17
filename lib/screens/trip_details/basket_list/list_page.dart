@@ -46,7 +46,7 @@ class BasketListPage extends StatelessWidget{
               return LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints){
                     return Stack(
-                      children: [
+                      children: <Widget>[
                         AnimatedPositioned(
                             duration: listAnimationDuration,
                             top: controller.homeState == BasketState.cart
@@ -84,12 +84,12 @@ class BasketListPage extends StatelessWidget{
                                     :
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                                  children: <Widget>[
                                     Padding(
                                       padding: EdgeInsets.all(SizeConfig.defaultPadding),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
+                                        children: <Widget>[
                                           Text('Full List:',style: Theme.of(context).textTheme.headline5,),
                                           Text('List of items your crew will bring.',style: Theme.of(context).textTheme.caption,),
                                         ],

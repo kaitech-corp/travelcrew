@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/custom_objects.dart';
@@ -15,7 +16,7 @@ import '../split/split_package.dart';
 
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
-  TransportationCard({required this.transportationData, required this.trip});
+  TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
   final UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
   final TransportationData transportationData;
@@ -29,7 +30,7 @@ class TransportationCard extends StatelessWidget {
           padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               ListTile(
                 visualDensity: const VisualDensity(vertical: -4),
                 title: Text(
@@ -39,7 +40,7 @@ class TransportationCard extends StatelessWidget {
                       : Theme.of(context).textTheme.headline6,
                 ),
                 subtitle: Text(
-                  transportationData.displayName!,
+                  transportationData.displayName,
                   style: Theme.of(context).textTheme.subtitle1,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -50,7 +51,7 @@ class TransportationCard extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16.0, top: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     if (transportationData.mode == 'Flying')
                       Tooltip(
                           message: 'Airline and Flight Number',
@@ -63,9 +64,9 @@ class TransportationCard extends StatelessWidget {
                         'Open to Carpool',
                         style: Theme.of(context).textTheme.subtitle2,
                       ),
-                    if (transportationData.comment?.isNotEmpty ?? false)
+                    if (transportationData.comment.isNotEmpty)
                       Text(
-                        transportationData.comment!,
+                        transportationData.comment,
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                   ],
@@ -103,7 +104,7 @@ class TransportationCard extends StatelessWidget {
                             itemName: transportationData.mode,
                             itemDescription: 'Transportation',
                             details: transportationData.comment,
-                            itemType: 'Transportation'),
+                            itemType: 'Transportation', dateCreated: Timestamp.now(), userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: '',),
                         trip: trip);
                   }
                   break;
@@ -117,7 +118,7 @@ class TransportationCard extends StatelessWidget {
               }
             },
             padding: EdgeInsets.zero,
-            itemBuilder: (BuildContext context) => [
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
               const PopupMenuItem<String>(
                 value: 'Edit',
                 child: ListTile(
@@ -158,7 +159,7 @@ class TransportationCard extends StatelessWidget {
               }
             },
             padding: EdgeInsets.zero,
-            itemBuilder: (BuildContext context) => [
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
               const PopupMenuItem<String>(
                 value: 'report',
                 child: ListTile(

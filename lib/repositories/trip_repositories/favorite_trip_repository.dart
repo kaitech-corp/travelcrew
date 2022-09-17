@@ -30,13 +30,13 @@ class FavoriteTripRepository extends GenericBlocRepository<Trip> {
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving favorites trip list:  ${e.toString()}');
-        return [];
+        return <Trip>[];
       }
     }
 
     // get trips stream
     return tripCollection
-        .where('favorite', arrayContainsAny: [userService.currentUserID])
+        .where('favorite', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
         .map(_tripListFromSnapshot);
   }

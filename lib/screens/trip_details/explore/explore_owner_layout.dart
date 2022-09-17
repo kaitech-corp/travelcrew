@@ -21,15 +21,15 @@ import 'members/members_layout.dart';
 class ExploreOwnerLayout extends StatefulWidget {
 
 
-  const ExploreOwnerLayout({required this.trip, this.heroTag, required this.scaffoldKey,});
+  const ExploreOwnerLayout({Key? key, required this.trip, required this.scaffoldKey,}) : super(key: key);
 
   final Trip trip;
-  final heroTag;
+
 
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
-  _ExploreOwnerLayoutState createState() => _ExploreOwnerLayoutState();
+  State<ExploreOwnerLayout> createState() => _ExploreOwnerLayoutState();
 }
 
 class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
@@ -39,8 +39,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight*.35;
-  double tabletSize = SizeConfig.defaultSize.toDouble() * 13.0;
-  double mobileSize = SizeConfig.defaultSize.toDouble() * 10.0;
+  double tabletSize = SizeConfig.defaultSize * 13.0;
+  double mobileSize = SizeConfig.defaultSize * 10.0;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
     expandController.addListener(onExpand);
   }
 
-  onExpand(){
+  void onExpand(){
     if(mounted){
       setState(() {
         if (expandController.expanded) {
@@ -89,54 +89,52 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-          body: Container(
-            child: SingleChildScrollView(
-              child: Stack(
+          body: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                if(showImage) ImagePopup(imagePath: widget.trip.urlToImage,),
+                Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if(showImage) ImagePopup(imagePath: widget.trip.urlToImage,),
-                  Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (widget.trip.urlToImage.isNotEmpty) Stack(
-                      children: [
-                        GestureDetector(
-                          onLongPress: (){
-                            setState(() {
-                              showImage = true;
-                              image = widget.trip.urlToImage;
-                            });
-                          },
-                          onLongPressEnd: (LongPressEndDetails details) {
-                            setState(() {
-                              showImage = false;
-                            });
-                          },
-                          child: ImageAnimation(trip: widget.trip,
-                            expandController: expandController,),
-                        ),
-                        AnimatedPadding(
-                            duration: const Duration(milliseconds: 250),
-                            padding: EdgeInsets.only(top: _padding),
-                            child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
-                      ],
-                    ) else Stack(
-                      children: [
-                        const HangingImageTheme(),
-                        Padding(
-                            padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
-                            child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
-                      ],
-                    ),
-                    Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
-                    TripDetailsWidget(
-                      expandController: expandController,
-                      tripDetails: widget.trip,
-                      event: event,
-                      detailsPadding: detailsPadding,
-                    )
-                  ],
-                ),]
-              ),
+                  if (widget.trip.urlToImage.isNotEmpty) Stack(
+                    children: <Widget>[
+                      GestureDetector(
+                        onLongPress: (){
+                          setState(() {
+                            showImage = true;
+                            image = widget.trip.urlToImage;
+                          });
+                        },
+                        onLongPressEnd: (LongPressEndDetails details) {
+                          setState(() {
+                            showImage = false;
+                          });
+                        },
+                        child: ImageAnimation(trip: widget.trip,
+                          expandController: expandController,),
+                      ),
+                      AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(top: _padding),
+                          child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                    ],
+                  ) else Stack(
+                    children: <Widget>[
+                      const HangingImageTheme(),
+                      Padding(
+                          padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
+                          child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                    ],
+                  ),
+                  Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
+                  TripDetailsWidget(
+                    expandController: expandController,
+                    tripDetails: widget.trip,
+                    event: event,
+                    detailsPadding: detailsPadding,
+                  )
+                ],
+              ),]
             ),
           )
       ),
@@ -163,7 +161,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         ListTile(
           title: Text(trip.tripName,
             style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
@@ -176,7 +174,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
         Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
         ButtonBar(
           alignment: MainAxisAlignment.spaceEvenly,
-        children: [
+        children: <Widget>[
           IconButton(
             onPressed: (){
               MapsLauncher.launchQuery(trip.location);
@@ -255,29 +253,29 @@ class PopupMenuButtonWidget extends StatelessWidget {
       },
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context) =>
-      [
-        const PopupMenuItem(
+      <PopupMenuItem<String>>[
+        const PopupMenuItem<String>(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
             title: Text('Edit'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
             title: Text('Save to Calendar'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Invite',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.person_add),
             title: Text('Invite'),
           ),
         ),
-        PopupMenuItem(
+        PopupMenuItem<String>(
           value: 'Convert',
           child: ListTile(
             leading: trip.ispublic ? const IconThemeWidget(icon: Icons
@@ -288,7 +286,7 @@ class PopupMenuButtonWidget extends StatelessWidget {
                 : const Text('Make Public'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.exit_to_app),
@@ -299,6 +297,3 @@ class PopupMenuButtonWidget extends StatelessWidget {
     );
   }
 }
-
-
-

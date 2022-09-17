@@ -31,7 +31,7 @@ import 'explore_owner_layout.dart';
 
 /// Explore page for trip
 class Explore extends StatefulWidget {
-  const Explore({required this.trip,});
+  const Explore({Key? key, required this.trip,}) : super(key: key);
 
   final Trip trip;
   
@@ -43,7 +43,7 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<String> title = ValueNotifier('Explore');
+  ValueNotifier<String> title = ValueNotifier<String>('Explore');
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class _ExploreState extends State<Explore> {
         drawer: BlocProvider(
           create: (BuildContext context) => PublicProfileBloc(
               profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
-          child: MenuDrawer(),),
+          child: const MenuDrawer(),),
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: canvasColor,
@@ -118,7 +118,7 @@ class _ExploreState extends State<Explore> {
         stream: DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
         builder: (BuildContext context, AsyncSnapshot<Trip?> document){
           if(document.hasData){
-            final Trip tripDetails = document.data as Trip;
+            final Trip tripDetails = document.data!;
             return ExploreOwnerLayout(
               trip: tripDetails,
               scaffoldKey: scaffoldKey,);
@@ -143,7 +143,7 @@ Widget getChatNotificationBadge (){
                 ' chat notification: ${chats.error.toString()}');
           }
           if(chats.hasData){
-            final List<ChatData> chatList = chats.data as List<ChatData>;
+            final List<ChatData> chatList = chats.data!;
             if(chatList.isNotEmpty) {
               final int chatNotifications = chatList.length;
               return Tooltip(
@@ -168,4 +168,3 @@ Widget getChatNotificationBadge (){
     );
 }
 }
-

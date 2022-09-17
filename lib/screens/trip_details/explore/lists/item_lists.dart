@@ -15,12 +15,14 @@ import '../../basket_list/controller/basket_controller.dart';
 
 /// Bringing List
 class BringingList extends StatefulWidget {
-  const BringingList({Key? key, required this.documentID, required this.controller}) : super(key: key);
+  const BringingList(
+      {Key? key, required this.documentID, required this.controller})
+      : super(key: key);
   final String documentID;
   final BasketController controller;
 
   @override
-  _BringingListState createState() => _BringingListState();
+  State<BringingList> createState() => _BringingListState();
 }
 
 class _BringingListState extends State<BringingList> {
@@ -82,7 +84,7 @@ class NeedList extends StatefulWidget {
   final String documentID;
 
   @override
-  _NeedListState createState() => _NeedListState();
+  State<NeedList> createState() => _NeedListState();
 }
 
 class _NeedListState extends State<NeedList> {
@@ -225,9 +227,7 @@ class _NeedListState extends State<NeedList> {
               CloudFunction().addItemToNeedList(widget.documentID,
                   product.query!, currentUserProfile.displayName, '');
               ScaffoldMessenger.of(context)
-                  .showSnackBar(
-                  const SnackBar(content: Text('Item added')
-                  ));
+                  .showSnackBar(const SnackBar(content: Text('Item added')));
             } catch (e) {
               CloudFunction()
                   .logError('Error adding item to Need List: ${e.toString()}');
@@ -245,8 +245,8 @@ class _NeedListState extends State<NeedList> {
 }
 
 class NeedListToDisplay extends StatelessWidget {
-
-  const NeedListToDisplay({Key? key, required this.documentID}) : super(key: key);
+  const NeedListToDisplay({Key? key, required this.documentID})
+      : super(key: key);
   final String documentID;
 
   @override
@@ -261,8 +261,7 @@ class NeedListToDisplay extends StatelessWidget {
     return StreamBuilder<List<Need>>(
       builder: (BuildContext context, AsyncSnapshot<List<Need>> items) {
         if (items.hasError) {
-          CloudFunction()
-              .logError('Error streaming items in need '
+          CloudFunction().logError('Error streaming items in need '
               'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
@@ -311,7 +310,7 @@ class NeedListToDisplay extends StatelessWidget {
             },
           );
         } else {
-          return Loading();
+          return const Loading();
         }
       },
       stream: DatabaseService().getNeedList(documentID),
@@ -320,7 +319,8 @@ class NeedListToDisplay extends StatelessWidget {
 }
 
 class BringListToDisplay extends StatelessWidget {
-  const BringListToDisplay({Key? key, required this.tripDocID}) : super(key: key);
+  const BringListToDisplay({Key? key, required this.tripDocID})
+      : super(key: key);
   final String tripDocID;
 
   @override
@@ -329,8 +329,7 @@ class BringListToDisplay extends StatelessWidget {
       stream: DatabaseService().getBringingList(tripDocID),
       builder: (BuildContext context, AsyncSnapshot<List<Bringing>> items) {
         if (items.hasError) {
-          CloudFunction()
-              .logError('Error streaming items in bringing '
+          CloudFunction().logError('Error streaming items in bringing '
               'list to display: ${items.error.toString()}');
         }
         if (items.hasData) {
@@ -345,7 +344,7 @@ class BringListToDisplay extends StatelessWidget {
                   TravelCrewAlertDialogs().deleteBringingItemAlert(
                       context, tripDocID, item.documentID!);
                 },
-                leading: BasketIcon(item.type),
+                leading: basketIcon(item.type),
                 title: Text(
                   item.item!.toUpperCase(),
                   style: Theme.of(context).textTheme.subtitle1,
@@ -358,7 +357,8 @@ class BringListToDisplay extends StatelessWidget {
                   icon: BadgeIcon(
                     icon: FavoriteWidget(
                       uid: userService.currentUserID,
-                      voters: item.voters ?? <String>[],),
+                      voters: item.voters ?? <String>[],
+                    ),
                     badgeCount: item.voters?.length ?? 0,
                   ),
                   onPressed: () {
@@ -376,22 +376,19 @@ class BringListToDisplay extends StatelessWidget {
             },
           );
         } else {
-          return Loading();
+          return const Loading();
         }
       },
     );
   }
-
-
 }
 
 class CustomList extends StatefulWidget {
-
   const CustomList({Key? key, required this.documentID}) : super(key: key);
   final String documentID;
 
   @override
-  _CustomListState createState() => _CustomListState();
+  State<CustomList> createState() => _CustomListState();
 }
 
 class _CustomListState extends State<CustomList> {
@@ -415,24 +412,24 @@ class _CustomListState extends State<CustomList> {
                     children: <Widget>[
                       TextFormField(
                         controller: controller,
-                          enableInteractiveSelection: true,
-                          textCapitalization: TextCapitalization.sentences,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Custom Item',
-                          ),
-                          validator: (String? value) {
+                        enableInteractiveSelection: true,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Custom Item',
+                        ),
+                        validator: (String? value) {
+                          // ignore: missing_return
+                          if (value?.isEmpty ?? false) {
+                            return 'Please enter an item first.';
                             // ignore: missing_return
-                            if (value?.isEmpty ?? false) {
-                              return 'Please enter an item first.';
-                              // ignore: missing_return
-                            }
-                            return null;
-                          },
-                          // onChanged: (val) => {
-                          //       item = val,
-                          //     }
-                              ),
+                          }
+                          return null;
+                        },
+                        // onChanged: (val) => {
+                        //       item = val,
+                        //     }
+                      ),
                       const Padding(
                         padding: EdgeInsets.only(top: 20),
                       ),
@@ -465,8 +462,8 @@ class _CustomListState extends State<CustomList> {
                                   widget.documentID, controller.text, '');
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text(
-                                          'Item added to Bringing list')));
+                                      content:
+                                          Text('Item added to Bringing list')));
                               form.reset();
                             }
                           },

@@ -8,8 +8,10 @@ import '../../size_config/size_config.dart';
 import 'profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -21,16 +23,17 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Stack(
         children: <Widget>[
           StreamBuilder<UserPublicProfile>(
-            builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> userData) {
+            builder: (BuildContext context,
+                AsyncSnapshot<UserPublicProfile> userData) {
               if (userData.hasError) {
                 CloudFunction()
                     .logError('Error streaming user data for Profile Page: '
-                    '${userData.error.toString()}');
+                        '${userData.error.toString()}');
               }
               if (userData.hasData) {
                 final UserPublicProfile user = userData.data!;
 
-                return Stack(children: [
+                return Stack(children: <Widget>[
                   HangingImageTheme3(
                     user: user,
                   ),

@@ -91,7 +91,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             stream: DatabaseService().currentUserPublicProfile,
             builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> snapshot) {
               if (snapshot.hasData) {
-                final UserPublicProfile user = snapshot.data as UserPublicProfile;
+                final UserPublicProfile user = snapshot.data!;
                 return SingleChildScrollView(
                   child: Container(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -99,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           builder: (BuildContext context) => Form(
                               key: _formKey,
                               child: Column(
-                                  children: [
+                                  children: <Widget>[
                                     if (user.urlToImage == null) Container(
                                             child: _image == null
                                                 ? const Text('No image selected.')
@@ -141,7 +141,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           labelText: 'Last Name'),
                                       textCapitalization:
                                           TextCapitalization.words,
-                                      inputFormatters: [
+                                      inputFormatters: <FilteringTextInputFormatter>[
                                         FilteringTextInputFormatter.deny(
                                             RegExp(r'\s\b|\b\s'))
                                       ],
@@ -257,7 +257,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
-                                          children: [
+                                          children: <Widget>[
                                             TextFormField(
                                                 initialValue: (user
                                                         .topDestinations[0]
@@ -265,7 +265,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                         .isNotEmpty)
                                                     ? user.topDestinations[0].toString()
                                                     : '',
-                                                inputFormatters: [
+                                                inputFormatters: <LengthLimitingTextInputFormatter>[
                                                   LengthLimitingTextInputFormatter(
                                                       30),
                                                 ],
@@ -284,7 +284,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                         .isNotEmpty)
                                                     ? user.topDestinations[1].toString()
                                                     : '',
-                                                inputFormatters: [
+                                                inputFormatters: <LengthLimitingTextInputFormatter>[
                                                   LengthLimitingTextInputFormatter(
                                                       30),
                                                 ],
@@ -303,7 +303,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                         .isNotEmpty)
                                                     ? user.topDestinations[2].toString()
                                                     : '',
-                                                inputFormatters: [
+                                                inputFormatters: <LengthLimitingTextInputFormatter>[
                                                   LengthLimitingTextInputFormatter(
                                                       30),
                                                 ],
@@ -326,7 +326,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         onPressed: () async {
                                           final FormState form = _formKey.currentState!;
                                           form.save();
-                                          _user.topDestinations = [
+                                          _user.topDestinations = <String>[
                                             destination1,
                                             destination2,
                                             destination3
@@ -367,7 +367,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ])))),
                 );
               } else {
-                return Loading();
+                return const Loading();
               }
             }));
   }

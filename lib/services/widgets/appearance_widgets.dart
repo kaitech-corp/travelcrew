@@ -33,7 +33,7 @@ class IconThemeWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Icon(icon ,color: Theme.of(context).accentIconTheme.color);
+    return Icon(icon ,color: Colors.black);
   }
 
 }
@@ -70,8 +70,8 @@ class SplitIconWidget extends StatelessWidget{
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.yellow[100]!, Colors.yellow[50]!],
-                    stops: const [0.4,1.0]
+                    colors:  <Color>[Colors.yellow[100]!, Colors.yellow[50]!],
+                    stops: const <double>[0.4,1.0]
                 )
             ),
             child: Icon(Icons.directions_bike ,color: Colors.amber.shade600));
@@ -84,8 +84,8 @@ class SplitIconWidget extends StatelessWidget{
               shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.orange[100]!, Colors.orange[50]!],
-                    stops: const [0.4,1.0]
+                    colors:  <Color>[Colors.orange[100]!, Colors.orange[50]!],
+                    stops: const <double>[0.4,1.0]
                 )
             ),
             child: const Icon(Icons.hotel ,color: Colors.orangeAccent,)
@@ -98,8 +98,8 @@ class SplitIconWidget extends StatelessWidget{
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.purple[100]!, Colors.purple[50]!],
-                    stops: const [0.4,1.0]
+                    colors:  <Color>[Colors.purple[100]!, Colors.purple[50]!],
+                    stops: const <double>[0.4,1.0]
                 )
             ),
             child: const Icon(Icons.flight ,color: Colors.purpleAccent));
@@ -111,8 +111,8 @@ class SplitIconWidget extends StatelessWidget{
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   // radius: 15,
-                    colors:  [Colors.green.shade100, Colors.green.shade50],
-                    stops: const [0.4,1.0]
+                    colors:  <Color>[Colors.green.shade100, Colors.green.shade50],
+                    stops: const <double>[0.4,1.0]
                 )
             ),
             child: const Icon(Icons.monetization_on ,color: Colors.green));
@@ -165,7 +165,7 @@ class ChatTextStyle {
 
 class TransportationIcon extends StatelessWidget{
 
-  const TransportationIcon(this.mode);
+  const TransportationIcon(this.mode, {Key? key}) : super(key: key);
   final String mode;
 
   @override

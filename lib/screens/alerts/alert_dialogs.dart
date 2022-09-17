@@ -325,15 +325,15 @@ class TravelCrewAlertDialogs {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Intl.message('User has been unblocked.'))));
   }
 
-  followRequestDialog(BuildContext context) {
+  void followRequestDialog(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Intl.message('Request sent.'))));
   }
 
-  newMessageDialog(BuildContext context, String message) {
+  void newMessageDialog(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  newTripErrorDialog(BuildContext context,) {
+  void newTripErrorDialog(BuildContext context,) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Intl.message('Unable to create trip at this time.'))));
   }
 
@@ -479,7 +479,7 @@ class TravelCrewAlertDialogs {
   Future<void> resetPasswordDialog(BuildContext context) async {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     String? email;
-    return await showDialog<void>(
+    return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
       return _SystemPadding(
@@ -571,7 +571,7 @@ class TravelCrewAlertDialogs {
           title: const Center(child: Text('Delete?',textScaleFactor: 1.5,)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
+            children: <Widget>[
               TextButton(
                 child: Text(yesMessage()),
                 onPressed: () {
@@ -601,7 +601,7 @@ class TravelCrewAlertDialogs {
           title: Center(child: Text(deleteMessage(),textScaleFactor: 1.5,)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
+            children: <Widget>[
               TextButton(
                 child: Text(yesMessage()),
                 onPressed: () {
@@ -637,4 +637,3 @@ class _SystemPadding extends StatelessWidget {
         child: child);
   }
 }
-

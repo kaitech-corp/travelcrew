@@ -15,9 +15,11 @@ import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 
 class SliverGridTripList extends StatefulWidget {
+  const SliverGridTripList({Key? key}) : super(key: key);
+
 
   @override
-  _SliverGridTripListState createState() => _SliverGridTripListState();
+  State<SliverGridTripList> createState() => _SliverGridTripListState();
 }
 
 class _SliverGridTripListState extends State<SliverGridTripList> {
@@ -48,7 +50,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     return BlocBuilder<GenericBloc<Trip,AllTripsRepository>, GenericState>(
         builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(child: Loading());
+            return const Flexible(child: Loading());
           } else if (state is HasDataState) {
             final List<Trip> tripList = state.data as List<Trip>;
             return SizedBox(
@@ -56,7 +58,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                children: List.generate(tripList.length, (int index) {
+                children: List<Widget>.generate(tripList.length, (int index) {
                   return tripList[index].urlToImage == null
                       ? cardWithoutImage(
                       context, tripList[index])
@@ -174,11 +176,11 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+                colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
           ),
           child: Stack(
             // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Align(
                 alignment: Alignment.topLeft,
                 child: Tooltip(

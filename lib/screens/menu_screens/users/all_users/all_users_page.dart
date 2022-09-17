@@ -78,7 +78,7 @@ class _AllUserPageState extends State<AllUserPage> {
           // bloc: blocCurrent,
           builder: (BuildContext context, GenericState state) {
         if (state is LoadingState) {
-          return Loading();
+          return const Loading();
         } else if (state is HasDataState) {
           final List<UserPublicProfile> allUsersList =
               state.data as List<UserPublicProfile>;

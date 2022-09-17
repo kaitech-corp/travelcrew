@@ -64,7 +64,7 @@ class UserRepository {
   Future<UserCredential?> signInWithApple() async {
     try {
       final AuthorizationCredentialAppleID appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
+          scopes: <AppleIDAuthorizationScopes>[
             AppleIDAuthorizationScopes.email,
             AppleIDAuthorizationScopes.fullName
           ]);
@@ -119,7 +119,7 @@ class UserRepository {
     }
     await DatabaseService(uid: currentUser!.uid).updateUserData(
         firstname, lastName, currentUser.email, currentUser.uid);
-    return await DatabaseService(uid: currentUser.uid)
+    return DatabaseService(uid: currentUser.uid)
         .updateUserPublicProfileData(displayName, firstname, lastName,
             currentUser.email, currentUser.uid, urlToImage);
   }

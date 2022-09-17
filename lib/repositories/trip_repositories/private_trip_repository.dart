@@ -28,12 +28,12 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving private trip list:  ${e.toString()}');
-        return [];
+        return <Trip>[];
       }
     }
 
     return privateTripCollection
-        .where('accessUsers', arrayContainsAny: [userService.currentUserID])
+        .where('accessUsers', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
         .map(_privateTripListFromSnapshot);
   }

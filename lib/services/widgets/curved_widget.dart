@@ -42,7 +42,7 @@ class CurvedWidgetBackgroundClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper oldClipper) {
+  bool shouldReclip(CustomClipper<dynamic> oldClipper) {
     return false;
   }
 }

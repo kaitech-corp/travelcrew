@@ -36,7 +36,7 @@ class CompleteProfile extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [canvasColor, Colors.blueAccent.shade100],
+              colors: <Color>[canvasColor, Colors.blueAccent.shade100],
               // colors: [Colors.white, Colors.white.withOpacity(0.4)],
             ),
           ),
@@ -52,7 +52,7 @@ class CompleteProfile extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.white, Colors.white.withOpacity(0.4)],
+                        colors: <Color>[Colors.white, Colors.white.withOpacity(0.4)],
                       ),
                     ),
                     child: const Text(

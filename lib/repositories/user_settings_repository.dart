@@ -22,7 +22,7 @@ class UserSettingsRepository {
 
   void refresh() {
     // Get settings for current user.
-    UserNotificationSettingsData _settingsFromSnapshot(DocumentSnapshot snapshot){
+    UserNotificationSettingsData _settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
       if(snapshot.exists) {
         try {
           final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;

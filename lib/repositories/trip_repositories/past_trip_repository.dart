@@ -35,12 +35,12 @@ class PastTripRepository extends GenericBlocRepository<Trip> {
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving past trip list:  ${e.toString()}');
-        return [];
+        return <Trip>[];
       }
     }
 
     return tripCollection
-        .where('accessUsers', arrayContainsAny: [userService.currentUserID])
+        .where('accessUsers', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
         .map(_pastCrewTripListFromSnapshot);
   }

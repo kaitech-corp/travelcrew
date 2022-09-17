@@ -23,7 +23,7 @@ class MembersLayout extends StatefulWidget{
   final String ownerID;
 
   @override
-  _MembersLayoutState createState() => _MembersLayoutState();
+  State<MembersLayout> createState() => _MembersLayoutState();
 }
 
 class _MembersLayoutState extends State<MembersLayout> {
@@ -42,7 +42,7 @@ class _MembersLayoutState extends State<MembersLayout> {
 
   Widget getMember(BuildContext context, Trip trip){
     return Stack(
-      children: [
+      children: <Widget>[
         StreamBuilder<List<UserPublicProfile>>(
           builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> userData){
             if(userData.hasError){
@@ -51,7 +51,7 @@ class _MembersLayoutState extends State<MembersLayout> {
                   'for members layout: ${userData.error.toString()}');
             }
             if(userData.hasData){
-              final List<UserPublicProfile> crew = userData.data as List<UserPublicProfile>;
+              final List<UserPublicProfile> crew = userData.data!;
               return ListView.builder(
                     itemCount: crew.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -60,11 +60,11 @@ class _MembersLayoutState extends State<MembersLayout> {
                     },
                   );
             } else {
-              return Loading();
+              return const Loading();
             }
           },
         stream: DatabaseService().getcrewList(widget.trip.accessUsers),),
-        if (_showImage) ...[
+        if (_showImage) ...<Widget>[
           BackdropFilter(
             filter: ImageFilter.blur(
               sigmaX: 5.0,
@@ -75,22 +75,20 @@ class _MembersLayoutState extends State<MembersLayout> {
             ),
           ),
           Center(
-            child: Container(
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: _image.isNotEmpty
-                      ? Image.network(
-                    _image,
-                    height: SizeConfig.screenWidth*.5,
-                    width: SizeConfig.screenWidth*.5,
-                    fit: BoxFit.fill,)
-                      : Image.asset(
-                    profileImagePlaceholder,
-                    height: SizeConfig.screenWidth*.5,
-                    width: SizeConfig.screenWidth*.5,
-                    fit: BoxFit.fill,),
-                ),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: _image.isNotEmpty
+                    ? Image.network(
+                  _image,
+                  height: SizeConfig.screenWidth*.5,
+                  width: SizeConfig.screenWidth*.5,
+                  fit: BoxFit.fill,)
+                    : Image.network(
+                  profileImagePlaceholder,
+                  height: SizeConfig.screenWidth*.5,
+                  width: SizeConfig.screenWidth*.5,
+                  fit: BoxFit.fill,),
               ),
             ),
           ),
@@ -124,11 +122,11 @@ class _MembersLayoutState extends State<MembersLayout> {
             navigationService.navigateTo(UserProfilePageRoute, arguments: member);
           },
           child: Row(
-            children: [
+            children: <Widget>[
               Center(
                 child: CircleAvatar(
                   radius: SizeConfig.blockSizeHorizontal*7,
-                  child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: member.urlToImage),
+                  backgroundImage: (member.urlToImage.isEmpty) ? const NetworkImage(profileImagePlaceholder) : NetworkImage(member.urlToImage),
                 ),
               ),
               Expanded(

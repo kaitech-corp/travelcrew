@@ -31,7 +31,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
         return lodgingList;
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
-        return [];
+        return <LodgingData>[];
       }
     }
     //Get Lodging List

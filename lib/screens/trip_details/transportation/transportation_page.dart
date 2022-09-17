@@ -17,7 +17,7 @@ import 'transportation_card.dart';
 
 /// Transportation page
 class TransportationPage extends StatefulWidget {
-  const TransportationPage({required this.trip});
+  const TransportationPage({Key? key, required this.trip}) : super(key: key);
   final Trip trip;
 
   @override
@@ -47,11 +47,11 @@ class _TransportationPageState extends State<TransportationPage> {
         body: BlocBuilder<GenericBloc<TransportationData,TransportationRepository>, GenericState>(
             builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Loading();
+            return const Loading();
           } else if (state is HasDataState) {
             final List<TransportationData> modeList = state.data as List<TransportationData>;
             return Column(
-              children: [
+              children: <Widget>[
                 Container(
                   height: 16,
                 ),
@@ -63,13 +63,13 @@ class _TransportationPageState extends State<TransportationPage> {
                         return Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Column(
-                            children: [
+                            children: <Widget>[
                               CircleAvatar(
                                 radius: SizeConfig.screenWidth / 10.0,
                                 // backgroundColor: Colors.yellow,
                                 child: TransportationIcon(modeList[index].mode),
                               ),
-                              Text(modeList[index].displayName!)
+                              Text(modeList[index].displayName)
                             ],
                           ),
                         );
@@ -77,16 +77,14 @@ class _TransportationPageState extends State<TransportationPage> {
                 ),
                 Expanded(
                   flex: 5,
-                  child: Container(
-                    child: ListView.builder(
-                        itemCount: modeList != null ? modeList.length : 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return TransportationCard(
-                            transportationData: modeList[index],
-                            trip: widget.trip,
-                          );
-                        }),
-                  ),
+                  child: ListView.builder(
+                      itemCount: modeList != null ? modeList.length : 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TransportationCard(
+                          transportationData: modeList[index],
+                          trip: widget.trip,
+                        );
+                      }),
                 ),
               ],
             );

@@ -166,8 +166,8 @@ class DatabaseService {
         return UserPublicProfile.fromDocument(userData);
       }
     } catch(e){
-      // CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
-      print('Error retrieving single user profile:  ${e.toString()}');
+      CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
+      // print('Error retrieving single user profile:  ${e.toString()}');
       // return ;
     }
     return defaultProfile;
@@ -197,7 +197,7 @@ class DatabaseService {
     final DocumentSnapshot<Map<String, dynamic>> ref2 = await ref.get();
     if(!ref2.exists) {
       try {
-        for (final String element in splitObject.userSelectedList!) {
+        for (final String element in splitObject.userSelectedList) {
           createSplitItemCostDetailsPerUser(splitObject, element);
         }
         return await ref.set(splitObject.toJson());
@@ -207,7 +207,7 @@ class DatabaseService {
       }
     } else {
       try {
-        for (final String element in splitObject.userSelectedList!) {
+        for (final String element in splitObject.userSelectedList) {
           createSplitItemCostDetailsPerUser(splitObject, element);
         }
         return await ref.update(splitObject.toJson());
@@ -225,7 +225,7 @@ class DatabaseService {
         .collection('Item').doc(splitObject.itemDocID);
     try {
       try {
-        for (final String element in splitObject.userSelectedList!) {
+        for (final String element in splitObject.userSelectedList) {
           costDetailsCollection.doc(splitObject.itemDocID)
               .collection('Users')
               .doc(element).delete();
@@ -256,14 +256,13 @@ class DatabaseService {
   List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot<Object?> snapshot) {
     try {
       final List<SplitObject> splitItemData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-        return SplitObject.fromData(data);
+        return SplitObject.fromDocument(doc);
       }).toList();
 
       return splitItemData;
     } catch (e) {
       CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
-      return [];
+      return <SplitObject>[];
     }
   }
   //// Stream in split item
@@ -290,7 +289,7 @@ class DatabaseService {
         uid: userUID,
         amountOwe: SplitPackage()
             .standardSplit(splitObject
-            .userSelectedList!.length, splitObject.itemTotal!));
+            .userSelectedList.length, splitObject.itemTotal),);
 
     final DocumentReference<Map<String, dynamic>> ref = costDetailsCollection
         .doc(costObject.itemDocID)
@@ -357,7 +356,7 @@ class DatabaseService {
         .collection('Item')
         .doc(splitObject.itemDocID);
     try {
-       splitObject.userSelectedList!.remove(costObject.uid);
+       splitObject.userSelectedList.remove(costObject.uid);
        ref.delete();
        ref2.update(<String, dynamic>{
          'userSelectedList':FieldValue.arrayRemove(<String?>[costObject.uid])
@@ -370,18 +369,17 @@ class DatabaseService {
     /// }
   }
 //// Stream in Cost Details
-  List<CostObject> _costObjectDataFromSnapshot(QuerySnapshot snapshot) {
+  List<CostObject> _costObjectDataFromSnapshot(QuerySnapshot<Object?> snapshot) {
     try {
       final List<CostObject> costObjectData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-        final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-        return CostObject.fromData(data);
+        return CostObject.fromDocument(doc);
       }).toList();
 
       return costObjectData;
     } catch (e) {
       CloudFunction()
           .logError('Error in streaming cost details: ${e.toString()}');
-      return [];
+      return <CostObject>[];
     }
   }
 ////Stream cost data
@@ -542,7 +540,7 @@ class DatabaseService {
         const String action = 'Adding new trip';
         CloudFunction().logEvent(action);
          addTripRef.set(
-            {
+             <String,dynamic>{
               'favorite': <String>[],
               'accessUsers': <String>[userService.currentUserID],
               'comment': trip.comment,
@@ -703,7 +701,7 @@ class DatabaseService {
         const String action = 'Converting trip from private to public';
         CloudFunction().logEvent(action);
         await tripsCollectionUnordered.doc(trip.documentId).set(
-            {
+            <String, dynamic>{
               'favorite': trip.favorite,
               'accessUsers': trip.accessUsers,
               'comment': trip.comment,
@@ -771,7 +769,7 @@ class DatabaseService {
         } catch (e){
           CloudFunction().logError('Deleting public trip after converting it to private: ${e.toString()}');
         }
-        for (final String member in trip.accessUsers as List<String>) {
+        for (final String member in trip.accessUsers) {
           CloudFunction().addPrivateMember(trip.documentId, member);
         }
       }
@@ -886,7 +884,7 @@ class DatabaseService {
 
   
   ////Retrieve bringing list
-  List<Bringing> _retrieveBringingItems(QuerySnapshot snapshot) {
+  List<Bringing> _retrieveBringingItems(QuerySnapshot<Object?> snapshot) {
     
           return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
             final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
@@ -912,7 +910,7 @@ class DatabaseService {
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving need list:  ${e.toString()}');
-      return [];
+      return <Need>[];
     }
   }
   Stream<List<Need>> getNeedList(String docID){
@@ -931,13 +929,13 @@ class DatabaseService {
         final List<Members> memberList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return Members.fromDocument(doc);
         }).toList();
-        memberList.sort((Members a, Members b) => a.lastName!.compareTo(b.lastName!));
+        memberList.sort((Members a, Members b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving all members from trip:  '
             '${e.toString()}');
-        return [];
+        return <Members>[];
       }
     } else {
       try {
@@ -949,13 +947,13 @@ class DatabaseService {
           final List<Members> memberList = ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
             return Members.fromDocument(doc);
           }).toList();
-          memberList.sort((Members a, Members b) => a.lastName!.compareTo(b.lastName!));
+          memberList.sort((Members a, Members b) => a.lastName.compareTo(b.lastName));
           return memberList;
         } catch (e) {
         CloudFunction()
             .logError('Error retrieving members from private trip:  '
             '${e.toString()}');
-        return [];
+        return <Members>[];
       }
     }
 
@@ -997,7 +995,7 @@ class DatabaseService {
     } catch (e) {
       CloudFunction()
           .logError('Error retrieving bringing items docID:  ${e.toString()}');
-      return [];
+      return <Bringing>[];
     }
 
 
@@ -1084,7 +1082,7 @@ class DatabaseService {
       final String action = 'Editing lodging for $documentID';
       CloudFunction().logEvent(action);
       editLodgingRef.update(
-          {'comment': comment,
+          <String,dynamic>{'comment': comment,
             'link': link,
             'lodgingType' : lodgingType,
             'startTime': startTime,
@@ -1153,7 +1151,7 @@ class DatabaseService {
       final String action = 'Editing activity for $documentID';
       CloudFunction().logEvent(action);
       addNewActivityRef.update(
-      {'comment': comment,
+          <String,dynamic>{'comment': comment,
         'displayName': displayName,
         'link': link,
         'activityType' : activityType,
@@ -1220,7 +1218,7 @@ class DatabaseService {
       return userList;
     } catch (e) {
       CloudFunction().logError('Error retrieving all users: ${e.toString()}');
-      return [];
+      return <UserPublicProfile>[];
     }
     }
 
@@ -1263,18 +1261,18 @@ class DatabaseService {
       return crewTrips;
     } catch (e) {
       CloudFunction().logError('Error retrieving past trip list:  ${e.toString()}');
-      return [];
+      return <Trip>[];
     }
   }
 
   Stream<List<Trip>> pastCrewTripsCustom(String uid) {
-    return tripCollection.where('accessUsers', arrayContainsAny: [uid]).snapshots()
+    return tripCollection.where('accessUsers', arrayContainsAny: <String>[uid]).snapshots()
         .map(_pastCrewTripListFromSnapshot);
   }
 
 
 /// check uniqueness to avoid duplicate function calls or writes
-   addToUniqueDocs(String key2){
+   void addToUniqueDocs(String key2){
     try {
       const String action = 'creating unique key';
       CloudFunction().logEvent(action);
@@ -1291,7 +1289,7 @@ class DatabaseService {
 
     try {
       return await chatCollection.doc(tripDocID).collection('messages').doc(key).set(
-          {
+          <String,dynamic>{
             'displayName': displayName,
             'fieldID': key,
             'message': message,
@@ -1364,15 +1362,8 @@ class DatabaseService {
   List<TCFeedback> _feedbackSnapshot (QuerySnapshot<Object?> snapshot) {
 
     final List<TCFeedback> feedback = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-          return TCFeedback(
-            fieldID: data['fieldID'] as String,
-            message: data['message'] as String,
-            uid: data['uid'] as String,
-            timestamp: data['timestamp'] as Timestamp,
-          );
-        }).toList();
-      feedback.sort((TCFeedback a,TCFeedback b) => b.timestamp!.compareTo(a.timestamp!));
+          return TCFeedback.fromDocument(doc);}).toList();
+      feedback.sort((TCFeedback a,TCFeedback b) => b.timestamp.compareTo(a.timestamp));
 
       return feedback;
 
@@ -1420,7 +1411,7 @@ class DatabaseService {
   }
 
   /// Add new direct message
-  Future<void> addNewDMChatMessage(String displayName, String message, String uid, Map status) async {
+  Future<void> addNewDMChatMessage(String displayName, String message, String uid, Map<String,dynamic> status) async {
     final String key = chatCollection.doc().id;
 
     final String chatID = TCFunctions().createChatDoc(userService.currentUserID, userID!);
@@ -1428,7 +1419,7 @@ class DatabaseService {
     final DocumentSnapshot<Object?> ref = await dmChatCollection.doc(chatID).get();
     if(!ref.exists) {
       await dmChatCollection.doc(chatID).set(<String, dynamic>{
-        'ids': [userID, userService.currentUserID],
+        'ids': <String?>[userID, userService.currentUserID],
         'lastUpdatedTimestamp': FieldValue.serverTimestamp(),
       });
     } else{
@@ -1438,7 +1429,7 @@ class DatabaseService {
     }
     try {
       return await dmChatCollection.doc(chatID).collection('messages').doc(key).set(
-          {
+          <String, dynamic>{
             'chatID': chatID,
             'displayName': displayName,
             'fieldID': key,
@@ -1513,14 +1504,14 @@ class DatabaseService {
       for (final QueryDocumentSnapshot<Object?> doc in ref.docs) {
         uidsOfAllChats.add(doc.id);
       }
-      final List idList = <String>[];
+      final List<String> idList = <String>[];
       for (final String id in uidsOfAllChats) {
         final List<String> y = id.split('_');
         y.remove(userService.currentUserID);
         idList.add(y[0]);
       }
 
-      for (final profile in idList) {
+      for (final String profile in idList) {
         sortedUserList.add(user.where((UserPublicProfile element) => profile == element.uid).first);
       }
     yield sortedUserList;
@@ -1542,7 +1533,7 @@ class DatabaseService {
 
   Future<void>writeSuggestions() async{
     final CollectionReference<Object?> ref = suggestionsCollection;
-    for (final url in urls) {
+    for (final String url in urls) {
       final String key = suggestionsCollection.doc().id;
       ref.doc(key).set(<String, dynamic>{
         'fieldID': key,

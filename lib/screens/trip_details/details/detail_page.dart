@@ -10,7 +10,7 @@ import 'transportation_details.dart';
 
 class DetailsPage extends StatelessWidget{
 
-  const DetailsPage({required this.activity,this.lodging,required this.transport,required this.type, required this.trip});
+  const DetailsPage({Key? key, required this.activity,this.lodging,required this.transport,required this.type, required this.trip}) : super(key: key);
 
   final ActivityData? activity;
   final LodgingData? lodging;
@@ -33,8 +33,3 @@ class DetailsPage extends StatelessWidget{
   }
 
 }
-
-
-
-
-

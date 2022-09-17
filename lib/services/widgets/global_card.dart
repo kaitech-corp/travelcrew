@@ -22,7 +22,7 @@ class GlobalCard extends StatelessWidget{
             gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
-                colors: [
+                colors: <Color>[
                   Colors.blue.shade50,
                   Colors.lightBlueAccent.shade200
                 ]

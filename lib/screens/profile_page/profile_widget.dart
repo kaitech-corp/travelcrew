@@ -38,7 +38,7 @@ class ProfileWidget extends StatelessWidget {
                   EdgeInsets.fromLTRB(10.0, sizeFromHangingTheme, 10.0, 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Flexible(
                     child: Hero(
                       tag: user.uid,
@@ -48,7 +48,7 @@ class ProfileWidget extends StatelessWidget {
                         width: profileSize,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth / 1.8,
-                          backgroundImage: NetworkImage(urlToImage.value),
+                          backgroundImage: (user.urlToImage.isEmpty) ? const NetworkImage(profileImagePlaceholder) : NetworkImage(user.urlToImage),
                         ),
                       ),
                     ),
@@ -60,7 +60,7 @@ class ProfileWidget extends StatelessWidget {
                           right: 8.0, left: 8.0, top: sizeFromHangingTheme / 3),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Text(
                             '${user.firstName} ${user.lastName}',
                             textScaleFactor: 1.1,
@@ -92,7 +92,7 @@ class ProfileWidget extends StatelessWidget {
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                                  children: <Widget>[
                                     if (user.hometown.isNotEmpty) Text(
                                             user.hometown,
                                             style: Theme.of(context)
@@ -132,7 +132,7 @@ class ProfileWidget extends StatelessWidget {
                     width: SizeConfig.screenWidth,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Center(
                             child: Text(
                           'Destination Wish List',
@@ -181,7 +181,7 @@ class ProfileWidget extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                            children: <Widget>[
                               Text(
                                 'IG: ',
                                 style: Theme.of(context).textTheme.subtitle1,
@@ -207,7 +207,7 @@ class ProfileWidget extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                            children: <Widget>[
                               Text(
                                 'Facebook: ',
                                 style: Theme.of(context).textTheme.subtitle1,
@@ -270,10 +270,10 @@ class FollowerBar extends StatelessWidget {
       onTap: () {},
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
+        children: <Widget>[
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               Text('Followers', style: Theme.of(context).textTheme.subtitle1),
               Text(
                 '${user.followers.length}',
@@ -283,7 +283,7 @@ class FollowerBar extends StatelessWidget {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               Text('Following', style: Theme.of(context).textTheme.subtitle1),
               Text('${user.following.length}',
                   style: ReusableThemeColor().greenOrBlueTextColor(context)),
@@ -301,7 +301,7 @@ class FollowList extends StatefulWidget {
   final bool isFollowers;
   final UserPublicProfile user;
   @override
-  _FollowListState createState() => _FollowListState();
+  State<FollowList> createState() => _FollowListState();
 }
 
 class _FollowListState extends State<FollowList> {
@@ -316,14 +316,14 @@ class _FollowListState extends State<FollowList> {
   Widget getMember(BuildContext context, String image, bool showImage) {
     return StreamBuilder(
       stream: DatabaseService().retrieveFollowList(widget.user),
-      builder: (BuildContext context, AsyncSnapshot<Object?> users) {
+      builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
         if (users.hasError) {
           CloudFunction().logError(
               'Error streaming follow list in profile widget: ${users.error.toString()}');
         }
         if (users.hasData) {
-          final List<UserPublicProfile> followList = users.data as List<UserPublicProfile>;
-          return Stack(children: [
+          final List<UserPublicProfile> followList = users.data!;
+          return Stack(children: <Widget>[
             ListView.builder(
               itemCount: followList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -331,7 +331,7 @@ class _FollowListState extends State<FollowList> {
                 return userCard(context, user, widget.user);
               },
             ),
-            if (showImage) ...[
+            if (showImage) ...<Widget>[
               BackdropFilter(
                 filter: ImageFilter.blur(
                   sigmaX: 5.0,
@@ -352,7 +352,7 @@ class _FollowListState extends State<FollowList> {
                             width: 300,
                             fit: BoxFit.fill,
                           )
-                        : Image.asset(
+                        : Image.network(
                             profileImagePlaceholder,
                             height: 300,
                             width: 300,
@@ -364,7 +364,7 @@ class _FollowListState extends State<FollowList> {
             ],
           ]);
         } else {
-          return Loading();
+          return const Loading();
         }
       },
     );
