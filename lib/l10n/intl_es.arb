@@ -1,0 +1,22 @@
+{
+  "@@locale": "es",
+  "title": "Travel Amigos",
+  "email": "Correo Electrónico",
+  "password": "La Contraseña",
+  "login": "Entrar",
+  "forgot_password": "¿Has olvidado tu contraseña?",
+  "dont_have_an_account": "¿No tienes una cuenta?",
+  "sign_up": "Regístrate Ahora",
+  "login_failed": "Error de inicio de sesion.",
+  "logging_in": "Iniciando sesión...",
+  "invalid_email": "Email inválido",
+  "invalid_password": "Contraseña invalida",
+  "sign_up_or_sign_in": "Regístrese o inicie sesión con",
+  "display_name": "Apodo",
+  "first_name": "Nombre de pila",
+  "last_name": "Apellido",
+  "select_photo": "Seleccione una imagen de perfil",
+  "agreement": "Al presionar Registrarse, acepta nuestros Términos de servicio y Política de privacidad.",
+  "terms_of_service": "Términos de servicio",
+  "privacy_policy": "Política de privacidad"
+}

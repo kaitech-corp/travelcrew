@@ -1,1 +1,22 @@
-{}
+{
+  "@@locale": "en",
+  "title": "Travel Crew",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "forgot_password": "Forgot Password",
+  "dont_have_an_account": "Don't have an account?",
+  "sign_up": "Sign Up",
+  "login_failed": "Login Failed",
+  "logging_in": "Logging In...",
+  "invalid_email": "Invalid Email",
+  "invalid_password": "Invalid Password",
+  "sign_up_or_sign_in": "Sign Up or Login with",
+  "display_name": "Display Name",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "select_photo": "Select a Profile Picture",
+  "agreement": "By pressing Signup you are agreeing to our Term's of Service and Privacy Policy.",
+  "terms_of_service": "Terms of Service",
+  "privacy_policy": "Privacy Policy"
+}
