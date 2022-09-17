@@ -1,35 +1,31 @@
-
 import 'package:flutter_test/flutter_test.dart';
-
-import '../lib/utils/validators.dart';
+import 'package:travelcrew/utils/validators.dart';
 
 /// Tests for the Validators.isValidEmail static method.
 void testIsValidEmail() {
-  const String validEmail = "example@example.com";
+  const String validEmail = 'robdoe@gmail.com';
   expect(isValidEmail(validEmail), true);
 
-  const String invalidEmail = "example@example@example.com";
+  const String invalidEmail = 'example@example@example.com';
   expect(isValidEmail(invalidEmail), false);
 }
 
 /// Tests for the Validators.isValidFirstName static method.
-void testIsValidFirstName() {
-  const String validFirstName = "Charlie";
-  expect(isValidFirstName(validFirstName), true);
+void testIsValidPassword() {
+  const String validPassword = 'password!';
+  expect(isValidPassword(validPassword), true);
 
-  const String invalidFirstName = "";
-  expect(isValidFirstName(invalidFirstName), false);
+  const String invalidPassword = '';
+  expect(isValidPassword(invalidPassword), false);
 }
-
 
 void main() {
   group('validators', () {
     test('isValidEmail', () {
       testIsValidEmail();
     });
-    test('isValidFirstName', () {
-      testIsValidFirstName();
+    test('isValidPassword', () {
+      testIsValidPassword();
     });
   });
 }
-
