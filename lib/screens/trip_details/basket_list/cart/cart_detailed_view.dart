@@ -17,9 +17,9 @@ class CartDetailsView extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Text('Recently Added:', style: Theme.of(context).textTheme.headline6),
-          ...List.generate(
+          ...List<Widget>.generate(
             controller.cart.length,
             (int index) => CartDetailsViewCard(item: controller.cart[index]),
           ),

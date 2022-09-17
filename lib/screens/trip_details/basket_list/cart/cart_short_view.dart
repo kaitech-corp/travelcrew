@@ -16,7 +16,7 @@ class CartShortView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
+      children: <Widget>[
         Text(
           'Recent:',
           style: Theme.of(context).textTheme.headline6,
@@ -32,7 +32,7 @@ class CartShortView extends StatelessWidget {
                   padding: const EdgeInsets.only(right: defaultPadding / 2),
                   child: Hero(
                     tag: '${controller.cart[index].walmartProducts!.query} + _cartTag',
-                    child: BasketIcon(controller.cart[index].walmartProducts!.type),
+                    child: basketIcon(controller.cart[index].walmartProducts!.type),
                   ),
                 ),
               ),

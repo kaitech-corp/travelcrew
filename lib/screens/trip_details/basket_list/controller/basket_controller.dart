@@ -7,7 +7,7 @@ enum BasketState { normal, cart, add }
 class BasketController extends ChangeNotifier {
   BasketState homeState = BasketState.normal;
 
-  List<WalmartProductsItem> cart = [];
+  List<WalmartProductsItem> cart = <WalmartProductsItem>[];
 
   void changeBasketState(BasketState state) {
     homeState = state;
@@ -29,4 +29,3 @@ class BasketController extends ChangeNotifier {
   int totalCartItems() => cart.fold(
       0, (int previousValue, WalmartProductsItem element) => previousValue + element.quantity);
 }
-

@@ -18,12 +18,12 @@ class BasketHeader extends StatelessWidget {
       child: AnimatedSwitcher(
         duration: listAnimationDuration,
         child: Column(
-          children: [
+          children: <Widget>[
             if (controller.homeState == BasketState.normal)
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: <Widget>[
                     Text('Add to List',
                         style: Theme.of(context).textTheme.headline6
                         // .copyWith(color: Colors.black54),
@@ -46,7 +46,7 @@ class BasketHeader extends StatelessWidget {
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: <Widget>[
                     Text('Full List',
                         style: Theme.of(context).textTheme.headline6
                         // .copyWith(color: Colors.black54),

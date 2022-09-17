@@ -18,7 +18,7 @@ class CartDetailsViewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-      leading: BasketIcon(item.walmartProducts!.type),
+      leading: basketIcon(item.walmartProducts!.type),
       title: Text(
         item.walmartProducts!.query!,
         style: Theme.of(context)
@@ -28,7 +28,7 @@ class CartDetailsViewCard extends StatelessWidget {
       ),
       trailing: FittedBox(
         child: Row(
-          children: [
+          children: <Widget>[
             // Price(amount: "20"),
             Text(
               '  x ${item.quantity}',
