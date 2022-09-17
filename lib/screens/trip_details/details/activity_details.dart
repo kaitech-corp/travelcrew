@@ -217,7 +217,7 @@ class ActivityDataLayout extends StatelessWidget {
             ],
           );
         } else {
-          return Loading();
+          return const Loading();
         }
       },
     );

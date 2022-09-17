@@ -48,7 +48,7 @@ class _ActivityPageState extends State<ActivityPage> {
         body: BlocBuilder<GenericBloc<ActivityData,ActivityRepository>, GenericState>(
             builder: (BuildContext context, GenericState state){
               if(state is LoadingState){
-                return Loading();
+                return const Loading();
               } else if (state is HasDataState){
                 final List<ActivityData> activityList = state.data as List<ActivityData>;
             return GroupedListView<ActivityData, String>(
@@ -85,4 +85,3 @@ class _ActivityPageState extends State<ActivityPage> {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/activity_model.dart';
@@ -45,7 +46,7 @@ class ActivityMenuButton extends StatelessWidget{
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
                     amountRemaining: 0,
-                    itemType: 'Activity' ),
+                    itemType: 'Activity', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[],  itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: ''),
                 trip: trip);
 
           }
@@ -129,7 +130,7 @@ class ActivityMenuButton extends StatelessWidget{
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
                     amountRemaining: 0.01,
-                    itemType: 'Activity' ),
+                    itemType: 'Activity', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[], itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: '' ),
                 trip: trip
             );
           }

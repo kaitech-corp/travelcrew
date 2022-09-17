@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/activity_model.dart';
@@ -74,7 +75,7 @@ class ActivityCard extends StatelessWidget {
                                 users: trip.accessUsers,
                                 itemName: activity.activityType,
                                 itemDescription: activity.comment,
-                                itemType: 'Activity'),
+                                itemType: 'Activity', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: ''),
                             trip: trip),
                         IconButton(
                             visualDensity: const VisualDensity(vertical: -4),
