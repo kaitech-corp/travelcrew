@@ -31,15 +31,15 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
-            colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+            colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
       ),
       padding: const EdgeInsets.all(10),
       height: SizeConfig.screenHeight * .5,
       child: Column(
-        children: [
+        children: <Widget>[
           CircleAvatar(
             radius: SizeConfig.screenWidth / 6,
-            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: user.urlToImage),
+            backgroundImage: NetworkImage(user.urlToImage),
           ),
           Text(user.displayName, style: Theme.of(context).textTheme.headline5),
           Container(
@@ -58,7 +58,7 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
           ),
           ListTile(
             title: (costObject.paid == false)
-                ? Text('Owe: \$${costObject.amountOwe!.toStringAsFixed(2)}',
+                ? Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.subtitle1)
                 : Text('Paid', style: Theme.of(context).textTheme.subtitle1),
             subtitle: (userService.currentUserID == purchasedByUser.uid)

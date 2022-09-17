@@ -37,7 +37,7 @@ class SplitPackage {
   double sumRemainingBalance(List<CostObject> coList) {
     double total = 0;
     for (final CostObject element in coList) {
-      total = total + (((element.paid ?? false) == false) ? element.amountOwe! : 0);
+      total = total + ((element.paid == false) ? element.amountOwe : 0);
     }
     return total;
   }
@@ -50,7 +50,7 @@ class SplitPackage {
       builder: (BuildContext context) {
         return FutureBuilder<bool>(
           builder: (BuildContext context, AsyncSnapshot<bool> response) {
-            if (response.hasData && response.data == true) {
+            if (response.hasData) {
               return AlertDialog(
                 title: Text(
                   '${splitObject.itemName} has already been split.',
@@ -84,7 +84,7 @@ class SplitPackage {
             }
           },
           future: DatabaseService(tripDocID: trip.documentId)
-              .checkSplitItemExist(splitObject.itemDocID!),
+              .checkSplitItemExist(splitObject.itemDocID),
         );
       },
     );
@@ -115,7 +115,7 @@ class SplitPackage {
         }
       },
       future: DatabaseService(tripDocID: trip.documentId)
-          .checkSplitItemExist(splitObject.itemDocID!),
+          .checkSplitItemExist(splitObject.itemDocID),
     );
   }
 
@@ -142,7 +142,7 @@ class SplitPackage {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        splitObject.itemName!,
+                        splitObject.itemName,
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.center,
                       ),
@@ -172,9 +172,9 @@ class SplitPackage {
                                         return null;
                                       }
                                     },
-                                    onChanged: (String val) => {
+                                    onChanged: (String val)  {
                                           splitObject.itemTotal =
-                                              double.parse(val),
+                                              double.parse(val);
                                         }))),
                       ),
                       Padding(
@@ -200,10 +200,10 @@ class SplitPackage {
                                         !selectedList.value.contains(user))
                                     .toList();
                                 splitObject.amountRemaining =
-                                    splitObject.itemTotal! -
+                                    splitObject.itemTotal -
                                         standardSplit(
-                                            splitObject.userSelectedList!.length,
-                                            splitObject.itemTotal!);
+                                            splitObject.userSelectedList.length,
+                                            splitObject.itemTotal);
                               } catch (e) {
                                 CloudFunction().logError(
                                     'Tried saving splitObject data: $e');
@@ -253,9 +253,9 @@ class SplitPackage {
                 width: SizeConfig.screenWidth * .75,
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       Text(
-                        splitObject.itemName!,
+                        splitObject.itemName,
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.center,
                       ),
@@ -285,14 +285,14 @@ class SplitPackage {
                                       }
                                       return null;
                                     },
-                                    onChanged: (String val) => {
+                                    onChanged: (String val) {
                                           splitObject.itemTotal =
-                                              double.parse(val),
+                                              double.parse(val);
                                         }))),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
@@ -315,7 +315,7 @@ class SplitPackage {
                                     navigationService.pop();
                                   }
                                 } catch(e){
-
+                                  print('Error saving split form');
                                 }
                               },
                               child: Text(
@@ -364,7 +364,7 @@ class SplitMembersLayout extends StatefulWidget {
   final String? ownerID;
 
   @override
-  _SplitMembersLayoutState createState() => _SplitMembersLayoutState();
+  State<SplitMembersLayout> createState() => _SplitMembersLayoutState();
 }
 
 class _SplitMembersLayoutState extends State<SplitMembersLayout> {
@@ -375,7 +375,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
 
   @override
   void initState() {
-    selectedList = ValueNotifier([]);
+    selectedList = ValueNotifier<List<String>>(<String>[]);
     super.initState();
   }
 
@@ -392,16 +392,16 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
 
   Widget getMember(BuildContext context, Trip trip) {
     return Stack(
-      children: [
-        StreamBuilder(
-          builder: (BuildContext context, AsyncSnapshot<Object?> userData) {
+      children: <Widget>[
+        StreamBuilder<List<UserPublicProfile>>(
+          builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> userData) {
             if (userData.hasError) {
               CloudFunction()
                   .logError('Error streaming user data for '
                   'members layout: ${userData.error.toString()}');
             }
             if (userData.hasData) {
-              final List<UserPublicProfile> crew = userData.data as List<UserPublicProfile>;
+              final List<UserPublicProfile> crew = userData.data!;
               return ListView.builder(
                 itemCount: crew.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -410,12 +410,12 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
                 },
               );
             } else {
-              return Loading();
+              return const Loading();
             }
           },
           stream: DatabaseService().getcrewList(widget.trip.accessUsers),
         ),
-        if (_showImage) ...[
+        if (_showImage) ...<Widget>[
           BackdropFilter(
             filter: ImageFilter.blur(
               sigmaX: 5.0,
@@ -436,7 +436,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
                         width: 300,
                         fit: BoxFit.fill,
                       )
-                    : Image.asset(
+                    : Image.network(
                         profileImagePlaceholder,
                         height: 300,
                         width: 300,

@@ -43,7 +43,7 @@ class PaymentDetailsMenuButton extends StatelessWidget {
       },
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context) =>
-      [
+      <PopupMenuItem<String>>[
         // const PopupMenuItem(
         //   value: 'Edit',
         //   child: ListTile(
@@ -51,7 +51,7 @@ class PaymentDetailsMenuButton extends StatelessWidget {
         //     title: const Text('Edit'),
         //   ),
         // ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),

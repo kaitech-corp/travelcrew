@@ -21,14 +21,13 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
     List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         final List<SplitObject> splitItemData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return SplitObject.fromData(data);
+          return SplitObject.fromDocument(doc);
         }).toList();
 
         return splitItemData;
       } catch (e) {
         CloudFunction().logError('Error retrieving split list:  ${e.toString()}');
-        return [];
+        return <SplitObject>[];
       }
     }
 

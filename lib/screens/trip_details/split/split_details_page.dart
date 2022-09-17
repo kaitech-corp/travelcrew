@@ -9,17 +9,18 @@ import '../../../models/trip_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
+import '../../../size_config/size_config.dart';
 import 'details_bottom_sheet.dart';
 import 'split_package.dart';
 
 /// Details page for split items
 class SplitDetailsPage extends StatelessWidget {
-
   const SplitDetailsPage(
-      {Key? key, required this.splitObject, required this.purchasedByUID, required this.trip})
+      {Key? key,
+      required this.splitObject,
+      required this.trip})
       : super(key: key);
   final SplitObject splitObject;
-  final String purchasedByUID;
   final Trip trip;
 
   @override
@@ -27,7 +28,7 @@ class SplitDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          splitObject.itemName!,
+          splitObject.itemName,
           style: Theme.of(context).textTheme.headline5,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -41,13 +42,15 @@ class SplitDetailsPage extends StatelessWidget {
               .costDataList,
           DatabaseService().getcrewList(trip.accessUsers),
         ),
-        builder: (BuildContext context, SnapshotTuple2<Object?, Object?> snapshots) {
+        builder: (BuildContext context,
+            SnapshotTuple2<List<CostObject>, List<UserPublicProfile>>
+                snapshots) {
           if (snapshots.snapshot1.hasData && snapshots.snapshot2.hasData) {
-            final List<CostObject> userCostData = snapshots.snapshot1.data as List<CostObject>;
-            final List<String> uidList = [];
+            final List<CostObject> userCostData = snapshots.snapshot1.data!;
+            final List<String> uidList = <String>[];
             for (final CostObject element in userCostData) {
               if (!uidList.contains(element.uid)) {
-                uidList.add(element.uid!);
+                uidList.add(element.uid);
               }
             }
             final double amountRemaining =
@@ -59,16 +62,25 @@ class SplitDetailsPage extends StatelessWidget {
               DatabaseService().updateRemainingBalance(
                   splitObject, amountRemaining, uidList);
             }
-            final List<UserPublicProfile> userPublicData = snapshots.snapshot2.data as List<UserPublicProfile>;
+            final List<UserPublicProfile> userPublicData =
+                snapshots.snapshot2.data!;
+            print(userCostData);
             return ListView.builder(
                 itemCount: userCostData.length,
                 itemBuilder: (BuildContext context, int index) {
                   final CostObject costObject = userCostData[index];
-                  final UserPublicProfile userPublicProfile = userPublicData
-                      .firstWhere((UserPublicProfile element) => element.uid == costObject.uid);
-                  final UserPublicProfile purchasedByUser = userPublicData
-                      .firstWhere((UserPublicProfile element) => element.uid == purchasedByUID);
-                  if (userPublicProfile.uid != purchasedByUID) {
+                  UserPublicProfile userPublicProfile = defaultProfile;
+                  userPublicProfile = userPublicData.firstWhere(
+                      (UserPublicProfile element) =>
+                          element.uid == costObject.uid,
+                      orElse: () => defaultProfile);
+
+                  final UserPublicProfile purchasedByUser =
+                      userPublicData.firstWhere(
+                          (UserPublicProfile element) =>
+                              element.uid == splitObject.purchasedByUID,
+                          orElse: () => defaultProfile);
+                  if (userPublicProfile.uid != splitObject.purchasedByUID) {
                     return InkWell(
                       onTap: () {
                         showModalBottomSheet(
@@ -77,7 +89,8 @@ class SplitDetailsPage extends StatelessWidget {
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20),
                                   topRight: Radius.circular(20))),
-                          builder: (BuildContext context) => UserSplitCostDetailsBottomSheet(
+                          builder: (BuildContext context) =>
+                              UserSplitCostDetailsBottomSheet(
                             user: userPublicProfile,
                             costObject: costObject,
                             purchasedByUser: purchasedByUser,
@@ -86,47 +99,37 @@ class SplitDetailsPage extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        // height: SizeConfig.screenHeight * .1,
-                        // width: SizeConfig.screenWidth,
-                        decoration: BoxDecoration(
-                            border: Border(
-                                top: BorderSide(
-                          color: Colors.grey[100]!,
-                        ))),
+                        height: SizeConfig.screenHeight * .1,
+                        width: SizeConfig.screenWidth,
+                        // decoration: BoxDecoration(
+                        //     border: Border(
+                        //         top: BorderSide(
+                        //   color: Colors.grey[100]!,
+                        // ))),
+                        color: (costObject.paid)
+                            ? Colors.greenAccent
+                            : Colors.white,
                         padding: const EdgeInsets.all(4),
                         child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: userPublicProfile.urlToImage,height: 50,
-                              width: 50,
-                              fit: BoxFit.fill,)
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage:
+                                NetworkImage(userPublicProfile.urlToImage),
                           ),
                           title: Text(userPublicProfile.displayName,
                               style: Theme.of(context).textTheme.subtitle1),
                           subtitle: (costObject.paid == false)
                               ? Text(
-                                  'Owe: \$${costObject.amountOwe!.toStringAsFixed(2)}',
+                                  'Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Cantata One',
                                       color: Colors.red))
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text('Paid',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Cantata One',
-                                            color: Colors.green)),
-                                    Text(
-                                        TCFunctions().formatTimestamp(
-                                            costObject.datePaid!,
-                                            wTime: true),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle2),
-                                  ],
-                                ),
+                              : Text(
+                                  TCFunctions().formatTimestamp(
+                                      costObject.datePaid!,
+                                      wTime: true),
+                                  style: Theme.of(context).textTheme.subtitle2),
                           trailing: (splitObject.purchasedByUID ==
                                       userService.currentUserID ||
                                   costObject.uid == userService.currentUserID &&
