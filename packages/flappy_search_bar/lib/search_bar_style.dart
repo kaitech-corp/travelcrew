@@ -17,6 +17,5 @@ class SearchBarStyle {
 
   static const BorderSide _borderSide = BorderSide(
       color: Color(0xffdcdcdc),
-      width: 1.0
   );
 }
