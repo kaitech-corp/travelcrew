@@ -7,19 +7,23 @@ import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-
   LoginBloc({UserRepository? userRepository})
       : _userRepository = userRepository,
         super(LoginState.initial()) {
-    on<LoginEmailChange>((LoginEmailChange event, Emitter<LoginState> emit) async =>
-        state.update(isEmailValid: isValidEmail(event.email!)));
-    on<LoginPasswordChanged>((LoginPasswordChanged event, Emitter<LoginState> emit) async => state.update(
-        isPasswordValid: isValidPassword(event.password!)));
-    on<LoginWithCredentialsPressed>((LoginWithCredentialsPressed event, Emitter<LoginState> emit) async {
+    on<LoginEmailChange>(
+        (LoginEmailChange event, Emitter<LoginState> emit) async =>
+            emit(state.update(isEmailValid: isValidEmail(event.email!))));
+
+    on<LoginPasswordChanged>((LoginPasswordChanged event,
+            Emitter<LoginState> emit) async =>
+        emit(state.update(isPasswordValid: isValidPassword(event.password!))));
+    on<LoginWithCredentialsPressed>(
+        (LoginWithCredentialsPressed event, Emitter<LoginState> emit) async {
       emit(LoginState.loading());
       try {
-        final UserCredential? firebaseUser = await _userRepository?.signInWithCredentials(
-            email: event.email!, password: event.password!);
+        final UserCredential? firebaseUser =
+            await _userRepository?.signInWithCredentials(
+                email: event.email!, password: event.password!);
         if (firebaseUser!.user!.uid.isNotEmpty) {
           emit(LoginState.success());
         }
@@ -28,7 +32,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginState.failure());
       }
     });
-    on<LoginWithApplePressed>((LoginWithApplePressed event, Emitter<LoginState> emit) async {
+    on<LoginWithApplePressed>(
+        (LoginWithApplePressed event, Emitter<LoginState> emit) async {
       emit(LoginState.loading());
       try {
         final UserCredential? user = await _userRepository?.signInWithApple();
@@ -39,7 +44,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginState.failure());
       }
     });
-    on<LoginWithGooglePressed>((LoginWithGooglePressed event, Emitter<LoginState> emit) async {
+    on<LoginWithGooglePressed>(
+        (LoginWithGooglePressed event, Emitter<LoginState> emit) async {
       emit(LoginState.loading());
       try {
         final UserCredential? user = await _userRepository?.signInWithGoogle();
