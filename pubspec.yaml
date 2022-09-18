@@ -111,6 +111,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_intl:
+  enabled: true
 
 flutter:
   generate: true
@@ -138,5 +140,3 @@ flutter:
       style: italic
 
 
-flutter_intl:
-  enabled: true
