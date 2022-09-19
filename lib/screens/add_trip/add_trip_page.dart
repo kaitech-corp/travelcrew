@@ -251,7 +251,6 @@ class _AddTripPageState extends State<AddTripPage> {
                               vertical: 16.0, horizontal: 16.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              // splitWiseAPI();
                               final FormState? form = _formKey.currentState;
                               form?.save();
                               if (form!.validate()) {
