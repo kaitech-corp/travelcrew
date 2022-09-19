@@ -115,6 +115,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "password": MessageLookupByLibrary.simpleMessage("La Contraseña"),
         "privacy_policy":
             MessageLookupByLibrary.simpleMessage("Política de privacidad"),
+        "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+        "removeMessage": MessageLookupByLibrary.simpleMessage(
+            " will no longer be able to view this trip."),
         "report": MessageLookupByLibrary.simpleMessage("Reporte"),
         "reportMessage": MessageLookupByLibrary.simpleMessage(
             "Envíe un informe y lo revisaremos dentro de las 24 horas. Si se considera \'\n         \'inapropiado, tomaremos medidas eliminando el contenido y/o la cuenta\'\n         \'dentro de ese plazo."),

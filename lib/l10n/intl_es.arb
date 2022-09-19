@@ -62,5 +62,7 @@
   "convertToPrivateTrip": "¿Convertir a viaje privado?",
   "convertToPrivateTripMessage": "Este viaje solo será visible para los miembros.",
   "convertToPublicTrip": "¿Convertir a viaje público?",
-  "convertToPublicTripMessage": "El viaje será visible para todos."
+  "convertToPublicTripMessage": "El viaje será visible para todos.",
+  "remove": "Remove",
+  "removeMessage": " will no longer be able to view this trip."
 }
