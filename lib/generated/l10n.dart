@@ -239,6 +239,466 @@ class S {
       args: [],
     );
   }
+
+  /// `By pressing Signup you are agreeing to our Term's of Service and Privacy Policy.`
+  String get agreementMessage {
+    return Intl.message(
+      'By pressing Signup you are agreeing to our Term\'s of Service and Privacy Policy.',
+      name: 'agreementMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interested in collaborating? Email Randy@kaitechcorp.com directly.`
+  String get collaboratingText {
+    return Intl.message(
+      'Interested in collaborating? Email Randy@kaitechcorp.com directly.',
+      name: 'collaboratingText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trip name`
+  String get addTripNameLabel {
+    return Intl.message(
+      'Trip name',
+      name: 'addTripNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a trip name.`
+  String get addTripNameValidator {
+    return Intl.message(
+      'Please enter a trip name.',
+      name: 'addTripNameValidator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type (i.e. work, vacation, wedding)`
+  String get addTripTypeLabel {
+    return Intl.message(
+      'Type (i.e. work, vacation, wedding)',
+      name: 'addTripTypeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a type.`
+  String get addTripTypeValidator {
+    return Intl.message(
+      'Please enter a type.',
+      name: 'addTripTypeValidator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location`
+  String get addTripLocation {
+    return Intl.message(
+      'Location',
+      name: 'addTripLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a location.`
+  String get addTripLocationValidator {
+    return Intl.message(
+      'Please enter a location.',
+      name: 'addTripLocationValidator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Public`
+  String get addTripPublic {
+    return Intl.message(
+      'Public',
+      name: 'addTripPublic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No image selected.`
+  String get addTripImageMessage {
+    return Intl.message(
+      'No image selected.',
+      name: 'addTripImageMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get addTripDescriptionMessage {
+    return Intl.message(
+      'Description',
+      name: 'addTripDescriptionMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a short description.`
+  String get addTripAddDescriptionMessage {
+    return Intl.message(
+      'Add a short description.',
+      name: 'addTripAddDescriptionMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saving new Trip data.`
+  String get addTripSavingDataMessage {
+    return Intl.message(
+      'Saving new Trip data.',
+      name: 'addTripSavingDataMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Trip`
+  String get addTripAddTripButton {
+    return Intl.message(
+      'Add Trip',
+      name: 'addTripAddTripButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Trip`
+  String get editTripPageTitle {
+    return Intl.message(
+      'Edit Trip',
+      name: 'editTripPageTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Location`
+  String get editTripPageEditLocation {
+    return Intl.message(
+      'Edit Location',
+      name: 'editTripPageEditLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit a report and we will review this report within 24 hrs and if deemed '\n        'inappropriate we will take action by removing the content and/or account '\n        'within that time frame.`
+  String get reportMessage {
+    return Intl.message(
+      'Submit a report and we will review this report within 24 hrs and if deemed \'\n        \'inappropriate we will take action by removing the content and/or account \'\n        \'within that time frame.',
+      name: 'reportMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This user will be removed from all of your trips (public and private) and '\n        'will not be able to view any of your content. Please note this user will '\n        'not be removed from shared trips where neither party is the owner. It is '\n        'your responsibility to exit such trips.`
+  String get blockMessage {
+    return Intl.message(
+      'This user will be removed from all of your trips (public and private) and \'\n        \'will not be able to view any of your content. Please note this user will \'\n        \'not be removed from shared trips where neither party is the owner. It is \'\n        \'your responsibility to exit such trips.',
+      name: 'blockMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We're sad to see you leave. Please review our Privacy Policy on 'Data "\n        "Retention' before confirming the deletion of this account.`
+  String get deleteAccountMessage {
+    return Intl.message(
+      'We\'re sad to see you leave. Please review our Privacy Policy on \'Data "\n        "Retention\' before confirming the deletion of this account.',
+      name: 'deleteAccountMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We'll send you an email with instructions to reset your password.`
+  String get forgotPassword {
+    return Intl.message(
+      'We\'ll send you an email with instructions to reset your password.',
+      name: 'forgotPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancelMessage {
+    return Intl.message(
+      'Cancel',
+      name: 'cancelMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report`
+  String get report {
+    return Intl.message(
+      'Report',
+      name: 'report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get deleteMessage {
+    return Intl.message(
+      'Delete',
+      name: 'deleteMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Account`
+  String get deleteAccount {
+    return Intl.message(
+      'Delete Account',
+      name: 'deleteAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Delete`
+  String get confirmDelete {
+    return Intl.message(
+      'Confirm Delete',
+      name: 'confirmDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get closeMessage {
+    return Intl.message(
+      'Close',
+      name: 'closeMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yesMessage {
+    return Intl.message(
+      'Yes',
+      name: 'yesMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get noMessage {
+    return Intl.message(
+      'No',
+      name: 'noMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Dates`
+  String get editDates {
+    return Intl.message(
+      'Edit Dates',
+      name: 'editDates',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block`
+  String get block {
+    return Intl.message(
+      'Block',
+      name: 'block',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block Account`
+  String get blockAccount {
+    return Intl.message(
+      'Block Account',
+      name: 'blockAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Action Completed`
+  String get actionCompleted {
+    return Intl.message(
+      'Action Completed',
+      name: 'actionCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable Notifications`
+  String get disableNotifications {
+    return Intl.message(
+      'Disable Notifications',
+      name: 'disableNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please go to your device settings to disable notifications.`
+  String get notificationMessage {
+    return Intl.message(
+      'Please go to your device settings to disable notifications.',
+      name: 'notificationMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear all notifications?`
+  String get clearNotifications {
+    return Intl.message(
+      'Clear all notifications?',
+      name: 'clearNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join requests and follow requests will also be removed.`
+  String get clearNotificationMessage {
+    return Intl.message(
+      'Join requests and follow requests will also be removed.',
+      name: 'clearNotificationMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to leave this Trip?`
+  String get leaveTrip {
+    return Intl.message(
+      'Are you sure you want to leave this Trip?',
+      name: 'leaveTrip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will no longer have access to this Trip`
+  String get leaveTripMessage {
+    return Intl.message(
+      'You will no longer have access to this Trip',
+      name: 'leaveTripMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to leave this Trip?`
+  String get deleteTrip {
+    return Intl.message(
+      'Are you sure you want to leave this Trip?',
+      name: 'deleteTrip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will no longer have access to this Trip`
+  String get deleteTripMessage {
+    return Intl.message(
+      'You will no longer have access to this Trip',
+      name: 'deleteTripMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Convert to Private Trip?`
+  String get convertToPrivateTrip {
+    return Intl.message(
+      'Convert to Private Trip?',
+      name: 'convertToPrivateTrip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This trip will only be visible to members.`
+  String get convertToPrivateTripMessage {
+    return Intl.message(
+      'This trip will only be visible to members.',
+      name: 'convertToPrivateTripMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Convert to Public Trip?`
+  String get convertToPublicTrip {
+    return Intl.message(
+      'Convert to Public Trip?',
+      name: 'convertToPublicTrip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trip will be become visible to everyone.`
+  String get convertToPublicTripMessage {
+    return Intl.message(
+      'Trip will be become visible to everyone.',
+      name: 'convertToPublicTripMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get remove {
+    return Intl.message(
+      'Remove',
+      name: 'remove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` will no longer be able to view this trip.`
+  String get removeMessage {
+    return Intl.message(
+      ' will no longer be able to view this trip.',
+      name: 'removeMessage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -29,18 +30,18 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message('Delete Account'),textScaleFactor: 1.5,),
+          title: Text(AppLocalizations.of(context)!.deleteAccount,textScaleFactor: 1.5,),
           content: Text(
             deleteAccountMessage(),),
           actions: <Widget>[
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
             ),
             TextButton(
-              child: Text(Intl.message('Confirm Delete'),),
+              child: Text(AppLocalizations.of(context)!.confirmDelete,),
               onPressed: () async {
                 navigationService.pop();
                 BlocProvider.of<AuthenticationBloc>(context)
@@ -61,12 +62,12 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message('Block Account'),textScaleFactor: 1.5,),
+          title: Text(AppLocalizations.of(context)!.blockAccount,textScaleFactor: 1.5,),
           content: Text(
-              blockMessage(),),
+            AppLocalizations.of(context)!.blockMessage,),
           actions: <Widget>[
             TextButton(
-              child: Text(Intl.message('Block'),),
+              child: Text(AppLocalizations.of(context)!.block,),
               onPressed: () {
                 CloudFunction().blockUser(blockedUserID);
                 navigationService.pop();
@@ -74,7 +75,7 @@ class TravelCrewAlertDialogs {
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -90,19 +91,19 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(report(),textScaleFactor: 1.5,),
+          title: Text(AppLocalizations.of(context)!.report,textScaleFactor: 1.5,),
           content: Text(
               reportMessage(),style: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
-              child: Text(report(),),
+              child: Text(AppLocalizations.of(context)!.report,),
               onPressed: () {
                 navigationService.pop();
                 navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile ?? defaultProfile, activityData, tripDetails, lodgingData));
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -121,11 +122,10 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message
-              ('Action completed.'),),
+          title: Text(AppLocalizations.of(context)!.actionCompleted,),
           actions: <Widget>[
             TextButton(
-              child: Text(closeMessage(),),
+              child: Text(AppLocalizations.of(context)!.closeMessage,),
               onPressed: () {
                 navigationService.pop();
               },
@@ -142,12 +142,11 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message('Disable Notifications?'),textAlign: TextAlign.center,),
-          content: Text(Intl.message
-            ('Please go to your device settings to disable notifications.'),textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.disableNotifications,textAlign: TextAlign.center,),
+          content: Text(AppLocalizations.of(context)!.notificationMessage,textAlign: TextAlign.center,),
           actions: <Widget>[
             TextButton(
-              child: Text(closeMessage(),),
+              child: Text(AppLocalizations.of(context)!.closeMessage,),
               onPressed: () {
                 navigationService.pop();
               },
@@ -164,17 +163,17 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message('Clear all notifications?'),textScaleFactor: 1.2,),
-          content: Text(Intl.message('Join requests and follow requests will also be removed.'),),
+          title: Text(AppLocalizations.of(context)!.clearNotifications,textScaleFactor: 1.2,),
+          content: Text(AppLocalizations.of(context)!.clearNotificationMessage,),
           actions: <Widget>[
             TextButton(
-              child: const Text('No'),
+              child: Text(AppLocalizations.of(context)!.noMessage),
               onPressed: () {
                 navigationService.pop();
               },
             ),
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 CloudFunction().removeAllNotifications();
                 // DatabaseService(uid: uid).removeAllNotificationData();
@@ -193,19 +192,18 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message
-              ('Are you sure you want to leave this Trip?'),textScaleFactor: 1.2,),
-          content: Text(Intl.message('You will no longer have access to this Trip'),),
+          title: Text(AppLocalizations.of(context)!.leaveTrip,textScaleFactor: 1.2,),
+          content: Text(AppLocalizations.of(context)!.leaveTripMessage,),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage(),),
+              child: Text(AppLocalizations.of(context)!.yesMessage,),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId, userUID: uid, ispublic: tripDetails.ispublic);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
             TextButton(
-              child: Text(noMessage()),
+              child: Text(AppLocalizations.of(context)!.noMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -222,19 +220,18 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(Intl.message('Are you sure you want to delete this trip?'),textScaleFactor: 1.2,),
-          content: Text(Intl.message
-            ('All data associated with this trip will be deleted.'),),
+          title: Text(AppLocalizations.of(context)!.deleteTrip,textScaleFactor: 1.2,),
+          content: Text(AppLocalizations.of(context)!.deleteTripMessage,),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -253,23 +250,21 @@ class TravelCrewAlertDialogs {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           title: tripDetails.ispublic
-              ? Text(Intl.message
-            ('Convert to Private Trip?'),textScaleFactor: 1.2,)
-              : Text(Intl.message
-            ('Convert to Public Trip?'),),
+              ? Text(AppLocalizations.of(context)!.convertToPrivateTrip,textScaleFactor: 1.2,)
+              : Text(AppLocalizations.of(context)!.convertToPublicTrip,),
           content: tripDetails.ispublic
-              ? Text(Intl.message('This trip will only be visible to members.'))
-              : Text(Intl.message('Trip will be become public for followers to see.'),),
+              ? Text(AppLocalizations.of(context)!.convertToPrivateTripMessage)
+              : Text(AppLocalizations.of(context)!.convertToPublicTripMessage,),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 DatabaseService().convertTrip(tripDetails);
                 navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -286,21 +281,19 @@ class TravelCrewAlertDialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          title: Text(
-            Intl.message('Remove ${member?.displayName}?'),
+          title: Text('${AppLocalizations.of(context)!.remove} ${member?.displayName}?',
             textScaleFactor: 1.5,),
-          content: Text(Intl.message(
-              '${member?.displayName} will no longer be able to view this trip.'),),
+          content: Text('${member?.displayName} ${AppLocalizations.of(context)!.removeMessage}'),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId, userUID: member!.uid, ispublic: tripDetails.ispublic);
                 navigationService.pop();
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -401,14 +394,14 @@ class TravelCrewAlertDialogs {
           title: Center(child: Text(Intl.message('Follow back?'),textScaleFactor: 1.5,)),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 CloudFunction().followBack(userUID);
                 navigationService.pop();
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -429,14 +422,14 @@ class TravelCrewAlertDialogs {
           title: Center(child: Text(Intl.message('Finalize?'),textScaleFactor: 1.5,)),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
 
                 navigationService.pop();
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -457,14 +450,14 @@ class TravelCrewAlertDialogs {
           title: Center(child: Text(Intl.message('Unfollow?'),textScaleFactor: 1.5,)),
           actions: <Widget>[
             TextButton(
-              child: Text(yesMessage()),
+              child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 CloudFunction().unFollowUser(userUID);
                 navigationService.pop();
               },
             ),
             TextButton(
-              child: Text(cancelMessage()),
+              child: Text(AppLocalizations.of(context)!.cancelMessage),
               onPressed: () {
                 navigationService.pop();
               },
@@ -519,7 +512,7 @@ class TravelCrewAlertDialogs {
           ),
           actions: <Widget>[
             TextButton(
-                child: Text(cancelMessage()),
+                child: Text(AppLocalizations.of(context)!.cancelMessage),
                 onPressed: () {
                   navigationService.pop();
                 }),
@@ -573,14 +566,14 @@ class TravelCrewAlertDialogs {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               TextButton(
-                child: Text(yesMessage()),
+                child: Text(AppLocalizations.of(context)!.yesMessage),
                 onPressed: () {
                   CloudFunction().deleteTransportation(tripDocID: transportationData.tripDocID,fieldID: transportationData.fieldID);
                   navigationService.pop();
                 },
               ),
               TextButton(
-                child: Text(cancelMessage()),
+                child: Text(AppLocalizations.of(context)!.cancelMessage),
                 onPressed: () {
                   navigationService.pop();
                 },
@@ -603,14 +596,14 @@ class TravelCrewAlertDialogs {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               TextButton(
-                child: Text(yesMessage()),
+                child: Text(AppLocalizations.of(context)!.yesMessage),
                 onPressed: () {
                   CloudFunction().removeItemFromBringingList(tripDocID, itemID);
                   navigationService.pop();
                 },
               ),
               TextButton(
-                child: Text(cancelMessage()),
+                child: Text(AppLocalizations.of(context)!.cancelMessage),
                 onPressed: () {
                   navigationService.pop();
                 },

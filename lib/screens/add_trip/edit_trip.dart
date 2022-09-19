@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/trip_model.dart';
@@ -96,7 +97,7 @@ class EditTripDataState extends State<EditTripData> {
 
     return Scaffold(
         appBar: AppBar(
-            title: Text(editTripPageTitle(), style: Theme.of(context).textTheme.headline5,)),
+            title: Text(AppLocalizations.of(context)!.editTripPageTitle, style: Theme.of(context).textTheme.headline5,)),
         body: SingleChildScrollView(
             padding:
             const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -112,11 +113,11 @@ class EditTripDataState extends State<EditTripData> {
                                 LengthLimitingTextInputFormatter(75),
                               ],
                               decoration:
-                              InputDecoration(labelText: addTripNameLabel()),
+                              InputDecoration(labelText: AppLocalizations.of(context)!.addTripNameLabel),
                               // ignore: missing_return
                               validator: (String? value) {
                                 if (value?.isEmpty ?? true) {
-                                  return addTripNameValidator();
+                                  return AppLocalizations.of(context)!.addTripNameValidator;
                                 }
                                 return null;
                               },
@@ -128,11 +129,11 @@ class EditTripDataState extends State<EditTripData> {
                                 LengthLimitingTextInputFormatter(30),
                               ],
                               decoration:
-                              InputDecoration(labelText: addTripTypeLabel()),
+                              InputDecoration(labelText: AppLocalizations.of(context)!.addTripTypeLabel),
                               // ignore: missing_return
                               validator: (String? value) {
                                 if (value?.isEmpty ?? true) {
-                                  return addTripTypeValidator();
+                                  return AppLocalizations.of(context)!.addTripTypeValidator;
                                 }
                                 return null;
                               },
@@ -143,11 +144,11 @@ class EditTripDataState extends State<EditTripData> {
                                 controller: controllerLocation,
                                 enableInteractiveSelection: true,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(labelText:addTripLocation()),
+                                decoration: InputDecoration(labelText:AppLocalizations.of(context)!.addTripLocation),
                                 // ignore: missing_return
                                 validator: (String? value) {
                                   if (value?.isEmpty ?? true) {
-                                    return addTripLocationValidator();
+                                    return AppLocalizations.of(context)!.addTripLocationValidator;
                                     // ignore: missing_return
                                   }
                                   return null;
@@ -164,10 +165,10 @@ class EditTripDataState extends State<EditTripData> {
                                   textCapitalization: TextCapitalization.words,
                                   enabled: false,
                                   decoration:
-                                  InputDecoration(labelText: addTripLocation()),
+                                  InputDecoration(labelText: AppLocalizations.of(context)!.addTripLocation),
                               ),
                               ElevatedButton(
-                                child: Text(editTripPageEditLocation()),
+                                child: Text(AppLocalizations.of(context)!.editTripPageEditLocation),
                                 onPressed: (){
                                   setState(() {
                                     locationChangeVisible = true;
@@ -192,7 +193,7 @@ class EditTripDataState extends State<EditTripData> {
                               Text('Departure Date: ${widget.trip.startDate}',style: const TextStyle(fontSize: 15),),
                               Text('Return Date: ${widget.trip.endDate}',style: const TextStyle(fontSize: 15)),
                               ElevatedButton(
-                                child: const Text('Edit Dates'),
+                                child: Text(AppLocalizations.of(context)!.editDates),
                                 onPressed: (){
                                   setState(() {
                                     dateChangeVisible = true;
@@ -205,7 +206,7 @@ class EditTripDataState extends State<EditTripData> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 16.0, horizontal: 16.0),
                             child: _image == null
-                                ? Text(addTripImageMessage())
+                                ? Text(AppLocalizations.of(context)!.addTripImageMessage)
                                 : Image.file(_image!),
                           ),
                           ElevatedButton(
@@ -217,7 +218,7 @@ class EditTripDataState extends State<EditTripData> {
                           ),
                           Container(
                             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                            child: Text(addTripDescriptionMessage(),style: Theme.of(context).textTheme.subtitle1,),
+                            child: Text(AppLocalizations.of(context)!.addTripDescriptionMessage,style: Theme.of(context).textTheme.subtitle1,),
                           ),
                           TextFormField(
                             controller: controllerComment,
@@ -226,7 +227,7 @@ class EditTripDataState extends State<EditTripData> {
                             textCapitalization: TextCapitalization.words,
                             decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
-                                hintText: addTripAddDescriptionMessage()),
+                                hintText: AppLocalizations.of(context)!.addTripAddDescriptionMessage),
                           ),
                         ]),
                 ))),

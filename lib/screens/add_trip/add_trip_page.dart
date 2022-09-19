@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/custom_objects.dart';
@@ -118,7 +119,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           initialValue: '',
                           decoration:
                           InputDecoration(
-                              labelText: addTripNameLabel(),
+                              labelText: AppLocalizations.of(context)!.addTripNameLabel,
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                               )
@@ -126,7 +127,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           // ignore: missing_return
                           validator: (String? value) {
                             if (value?.isEmpty ?? true) {
-                              return addTripNameValidator();
+                              return AppLocalizations.of(context)!.addTripNameValidator;
                               // ignore: missing_return
                             }
                             return null;
@@ -141,7 +142,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           textCapitalization: TextCapitalization.words,
                           initialValue: '',
                           decoration:
-                          InputDecoration(labelText: addTripTypeLabel(),
+                          InputDecoration(labelText: AppLocalizations.of(context)!.addTripTypeLabel,
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                               )
@@ -149,7 +150,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           // ignore: missing_return
                           validator: (String? value) {
                             if (value?.isEmpty ?? true) {
-                              return addTripTypeValidator();
+                              return AppLocalizations.of(context)!.addTripTypeValidator;
                               // ignore: missing_return
                             }
                             return null;
@@ -160,11 +161,18 @@ class _AddTripPageState extends State<AddTripPage> {
                         controller: myController,
                         enableInteractiveSelection: true,
                         textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(labelText:addTripLocation(),
+                        decoration: InputDecoration(labelText:AppLocalizations.of(context)!.addTripLocation,
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                             )
                         ),
+                        validator: (String? value) {
+                          if (value?.isEmpty ?? true) {
+                            return AppLocalizations.of(context)!.addTripLocationValidator;
+                            // ignore: missing_return
+                          }
+                          return null;
+                        },
                         onChanged: (String value){
                           location = value;
                         },
@@ -186,7 +194,7 @@ class _AddTripPageState extends State<AddTripPage> {
                         showBoth: true,
                       ),
                       SwitchListTile(
-                          title: Text(addTripPublic()),
+                          title: Text(AppLocalizations.of(context)!.addTripPublic),
                           value: ispublic,
                           onChanged: (bool val) =>
                           {
@@ -203,7 +211,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           });})) else Container(),
                       Container(
                         child: _image == null
-                            ? Text(addTripImageMessage(),style: Theme.of(context).textTheme.headline6,)
+                            ? Text(AppLocalizations.of(context)!.addTripImageMessage,style: Theme.of(context).textTheme.headline6,)
                             : Image.file(_image!),
                       ),
                       Padding(
@@ -219,7 +227,7 @@ class _AddTripPageState extends State<AddTripPage> {
                       ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                        child: Text(addTripDescriptionMessage(),style: Theme.of(context).textTheme.subtitle1,),
+                        child: Text(AppLocalizations.of(context)!.addTripDescriptionMessage,style: Theme.of(context).textTheme.subtitle1,),
                       ),
                       TextFormField(
                         enableInteractiveSelection: true,
@@ -230,7 +238,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context)),
                             ),
                             border: const OutlineInputBorder(),
-                            hintText: addTripAddDescriptionMessage(),
+                            hintText: AppLocalizations.of(context)!.addTripAddDescriptionMessage,
                             hintStyle: Theme.of(context).textTheme.subtitle1
                         ),
                         style: Theme.of(context).textTheme.subtitle1,
@@ -248,7 +256,7 @@ class _AddTripPageState extends State<AddTripPage> {
                               form?.save();
                               if (form!.validate()) {
                                 try {
-                                  final String action = addTripSavingDataMessage();
+                                  final String action = AppLocalizations.of(context)!.addTripSavingDataMessage;
                                   CloudFunction().logEvent(action);
                                   DatabaseService().addNewTripData(
                                       Trip(

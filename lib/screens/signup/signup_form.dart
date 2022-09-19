@@ -11,7 +11,9 @@ import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../blocs/signup_bloc/signup_bloc.dart';
 import '../../blocs/signup_bloc/signup_event.dart';
 import '../../blocs/signup_bloc/signup_state.dart';
+import '../../services/analytics_service.dart';
 import '../../services/constants/constants.dart';
+import '../../services/functions/cloud_functions.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
@@ -71,13 +73,20 @@ class _SignupFormState extends State<SignupForm> {
   CroppedFile? _croppedFile;
 
   Future<void> _uploadImage() async {
-    final XFile? pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _pickedFile = pickedFile;
-      });
+    try {
+      final XFile? pickedFile =
+      await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _pickedFile = pickedFile;
+          imagePicked = true;
+        });
+        _urlToImage.value = File(_pickedFile!.path);
+      }
+    } catch (e) {
+      CloudFunction().logError('Error Picking signup image: ${e.toString()}');
     }
+
     _cropImage();
   }
   Future<void>  _cropImage() async {
@@ -104,7 +113,7 @@ class _SignupFormState extends State<SignupForm> {
     );
 
     if (croppedImage != null) {
-      _urlToImage.value = croppedImage as File;
+      _urlToImage.value = File(croppedImage.path) ;
     } else {
       _urlToImage.value = File(image.path);
     }
@@ -114,6 +123,7 @@ class _SignupFormState extends State<SignupForm> {
     setState(() {
       _pickedFile = null;
       _croppedFile = null;
+      imagePicked = false;
     });
   }
 
@@ -223,16 +233,28 @@ class _SignupFormState extends State<SignupForm> {
                   const SizedBox(
                     height: 8,
                   ),
-                  if (imagePicked) Container(
-                          height: (SizeConfig.screenWidth / 3) * 2.5,
-                          // width: (SizeConfig.screenWidth/3)*1.9,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // color: Colors.orange,
-                              image: DecorationImage(
-                                  image: FileImage(_urlToImage.value),
-                                  fit: BoxFit.cover)),
-                        ) else Text(AppLocalizations.of(context)!.select_photo,
+                  if (imagePicked) Column(
+                    children: <Widget>[
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: (){
+                            _clear();
+                          },
+                          child: const Icon(Icons.close),
+                        ),
+                      ),
+                      Container(
+                              height: (SizeConfig.screenWidth / 3) * 2.5,
+                              // width: (SizeConfig.screenWidth/3)*1.9,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  // color: Colors.orange,
+                                  image: DecorationImage(
+                                      image: FileImage(_urlToImage.value),
+                                      fit: BoxFit.cover)),
+                            ),
+                    ],
+                  ) else Text(AppLocalizations.of(context)!.select_photo,
                           style: const TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
@@ -289,7 +311,7 @@ class _SignupFormState extends State<SignupForm> {
                       }
                     },
                     text: Text(
-                      AppLocalizations.of(context)!.sign_up,
+                      AppLocalizations.of(context)!.login,
                       style: const TextStyle(
                         color: Colors.black,
                       ),
