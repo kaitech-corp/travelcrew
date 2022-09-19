@@ -27,7 +27,6 @@ import '../services/theme/theme_data.dart';
 import '../services/widgets/launch_icon_badger.dart';
 import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
-import 'generated/l10n.dart';
 import 'repositories/user_repository.dart';
 
 

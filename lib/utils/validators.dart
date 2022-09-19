@@ -1,3 +1,5 @@
+import 'dart:io';
+
 /// Static functions to validate some specific string patterns.
 
 RegExp _emailRegExp = RegExp(
@@ -20,16 +22,18 @@ bool isValidPassword(String password) {
   // return true;
 }
 
-bool isValidFirstName(String firstName) {
-  return firstName.trim().isNotEmpty;
+bool isValidFirstName(String? firstName) {
+  return firstName?.trim().isNotEmpty ?? false;
 }
 
-bool isValidLastName(String lastName) {
-  return lastName.trim().isNotEmpty;
+bool isValidLastName(String? lastName) {
+  return lastName?.trim().isNotEmpty ?? false;
 }
 
-bool isValidDisplayName(String displayName) {
-  return displayName.trim().isNotEmpty;
+bool isValidDisplayName(String? displayName) {
+  return displayName?.trim().isNotEmpty ?? false;
 }
 
-
+bool isValidImagePath(File? image) {
+  return image?.path.isNotEmpty ?? false;
+}
