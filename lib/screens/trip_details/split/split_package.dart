@@ -315,7 +315,7 @@ class SplitPackage {
                                     navigationService.pop();
                                   }
                                 } catch(e){
-                                  print('Error saving split form');
+
                                 }
                               },
                               child: Text(

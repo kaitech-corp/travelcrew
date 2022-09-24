@@ -7,7 +7,7 @@ class CustomBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase<dynamic> bloc, Change change) {
     super.onChange(bloc, change);
-    print('onChange -- ${bloc.runtimeType}, $change');
+    // print('onChange -- ${bloc.runtimeType}, $change');
   }
 
   @override
@@ -20,6 +20,6 @@ class CustomBlocObserver extends BlocObserver {
   @override
   void onClose(BlocBase<dynamic> bloc) {
     super.onClose(bloc);
-    print('onClose -- ${bloc.runtimeType}');
+    // print('onClose -- ${bloc.runtimeType}');
   }
 }

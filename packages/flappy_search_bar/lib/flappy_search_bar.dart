@@ -69,7 +69,6 @@ class SearchBarController<T> {
       _controllerListener.onListChanged(_list);
     } catch (error) {
       // _controllerListener.onError(error);
-      print(error.toString());
     }
   }
 

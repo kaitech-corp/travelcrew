@@ -11,13 +11,11 @@ RegExp _passwordRegExp = RegExp(
 );
 
 bool isValidEmail(String email) {
-  // print(email);
   return _emailRegExp.hasMatch(email);
   // return email.length ==4;
 }
 
 bool isValidPassword(String password) {
-  print(password);
   return _passwordRegExp.hasMatch(password);
   // return true;
 }
@@ -35,5 +33,33 @@ bool isValidDisplayName(String? displayName) {
 }
 
 bool isValidImagePath(File? image) {
-  return image?.path.isNotEmpty ?? false;
+  if (image == null) {
+    return false;
+  } else {
+    return image.path
+        .isNotEmpty;
+  }
+}
+
+bool isTripNameValid(String? tripName) {
+  if(tripName == null){
+    return false;
+  } else {
+    return tripName
+        .trim()
+        .isNotEmpty;
+  }
+}
+
+bool isTripTypeValid(String? tripType) {
+  if(tripType == null){
+    return false;
+  } else {
+    return tripType
+        .trim()
+        .isNotEmpty;
+  }
+}
+bool isTripImageValid(File? tripType) {
+  return tripType?.path.isNotEmpty ?? false;
 }

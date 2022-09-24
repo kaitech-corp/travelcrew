@@ -64,7 +64,6 @@ class SplitDetailsPage extends StatelessWidget {
             }
             final List<UserPublicProfile> userPublicData =
                 snapshots.snapshot2.data!;
-            print(userCostData);
             return ListView.builder(
                 itemCount: userCostData.length,
                 itemBuilder: (BuildContext context, int index) {
