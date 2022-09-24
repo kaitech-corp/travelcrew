@@ -3,18 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../blocs/signup_bloc/signup_bloc.dart';
 import '../../blocs/signup_bloc/signup_event.dart';
 import '../../blocs/signup_bloc/signup_state.dart';
-import '../../services/analytics_service.dart';
 import '../../services/constants/constants.dart';
-import '../../services/functions/cloud_functions.dart';
 import '../../services/functions/tc_functions.dart';
+import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
 
@@ -26,8 +23,6 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-
-  late File image;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -67,64 +62,6 @@ class _SignupFormState extends State<SignupForm> {
     _displayNameController.dispose();
     _emailController.dispose();
     super.dispose();
-  }
-
-  XFile? _pickedFile;
-  CroppedFile? _croppedFile;
-
-  Future<void> _uploadImage() async {
-    try {
-      final XFile? pickedFile =
-      await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          _pickedFile = pickedFile;
-          imagePicked = true;
-        });
-        _urlToImage.value = File(_pickedFile!.path);
-      }
-    } catch (e) {
-      CloudFunction().logError('Error Picking signup image: ${e.toString()}');
-    }
-
-    _cropImage();
-  }
-  Future<void>  _cropImage() async {
-    final CroppedFile? croppedImage = await ImageCropper().cropImage(
-      sourcePath: _pickedFile!.path,
-      aspectRatioPresets: <CropAspectRatioPreset>[
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
-      uiSettings: <PlatformUiSettings>[
-        AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        IOSUiSettings(
-          title: 'Cropper',
-        ),
-      ],
-    );
-
-    if (croppedImage != null) {
-      _urlToImage.value = File(croppedImage.path) ;
-    } else {
-      _urlToImage.value = File(image.path);
-    }
-  }
-
-  void _clear() {
-    setState(() {
-      _pickedFile = null;
-      _croppedFile = null;
-      imagePicked = false;
-    });
   }
 
   @override
@@ -238,7 +175,9 @@ class _SignupFormState extends State<SignupForm> {
                       Center(
                         child: ElevatedButton(
                           onPressed: (){
-                            _clear();
+                            setState(() {
+                              imagePicked = true;
+                            });
                           },
                           child: const Icon(Icons.close),
                         ),
@@ -260,7 +199,12 @@ class _SignupFormState extends State<SignupForm> {
                               fontWeight: FontWeight.bold)),
                   ElevatedButton(
                     onPressed: () {
-                      _uploadImage();
+                      ImagePickerAndCropper().uploadImage(_urlToImage);
+                      if(_urlToImage.value.path.isNotEmpty){
+                        setState(() {
+                          imagePicked = true;
+                        });
+                      }
                     },
                     child: const Icon(Icons.add_a_photo),
                   ),

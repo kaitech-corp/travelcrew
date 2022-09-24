@@ -56,11 +56,11 @@ class SignupState {
 
   SignupState update({
     bool? isEmailValid,
-    bool?isPasswordValid,
-    bool?imageAdded,
-    bool?isDisplayNameValid,
-    bool?isFirstNameValid,
-    bool?isLastNameValid,
+    bool? isPasswordValid,
+    bool? imageAdded,
+    bool? isDisplayNameValid,
+    bool? isFirstNameValid,
+    bool? isLastNameValid,
   }) {
     return copyWith(
       isEmailValid: isEmailValid,
