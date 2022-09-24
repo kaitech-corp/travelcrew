@@ -7,12 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/custom_objects.dart';
 import '../../models/trip_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/calendar_widget.dart';
+import 'add_trip_form.dart';
 import 'add_trip_page.dart';
 import 'google_autocomplete.dart';
 
@@ -39,7 +41,8 @@ class EditTripDataState extends State<EditTripData> {
   final TextEditingController controllerTripName = TextEditingController();
   final TextEditingController controllerType = TextEditingController();
   final TextEditingController controllerComment = TextEditingController();
-
+  final ValueNotifier<GoogleData> googleData =
+  ValueNotifier<GoogleData>(GoogleData());
 
   bool dateChangeVisible = false;
   bool locationChangeVisible = false;
@@ -76,7 +79,7 @@ class EditTripDataState extends State<EditTripData> {
     controllerType.dispose();
     controllerTripName.dispose();
     controllerComment.dispose();
-    googleData2.dispose();
+    googleData.dispose();
     super.dispose();
   }
 
@@ -237,7 +240,7 @@ class EditTripDataState extends State<EditTripData> {
           if (form!.validate()) {
             if(locationChangeVisible){
               // location = myController.text;
-              tripGeoPoint = googleData2.value.geoLocation;
+              tripGeoPoint = googleData.value.geoLocation;
             }
             navigationService.pop();
             try {
