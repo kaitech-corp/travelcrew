@@ -318,8 +318,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   }
 }
 
-MaterialPageRoute _getPageRoute({required String routeName, required Widget viewToShow }) {
-  return MaterialPageRoute(
+MaterialPageRoute<Object> _getPageRoute({required String routeName, required Widget viewToShow }) {
+  return MaterialPageRoute<Object>(
       settings: RouteSettings(
         name: routeName,
       ),
