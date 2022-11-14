@@ -33,7 +33,7 @@ class IconThemeWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Icon(icon ,color: Colors.black);
+    return Icon(icon ,color: Colors.black, size: 30,);
   }
 
 }
