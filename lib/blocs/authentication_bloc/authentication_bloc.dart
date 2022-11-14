@@ -27,11 +27,10 @@ class AuthenticationBloc
     });
     // Authentication Logged Out
     on<AuthenticationLoggedOut>(
-        (AuthenticationLoggedOut event, Emitter<AuthenticationState> emit) async => emit(AuthenticationFailure()));
-        // (event, emit) async {
-        //   _userRepository!.signOut();
-        //   emit(AuthenticationFailure());
-        // });
+        (AuthenticationLoggedOut event, Emitter<AuthenticationState> emit) async {
+          _userRepository!.signOut();
+          emit(AuthenticationFailure());
+        } );
     }
   final UserRepository? _userRepository;
 }
