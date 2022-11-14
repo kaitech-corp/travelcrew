@@ -19,7 +19,7 @@ ThemeData themeDataBuilder() {
       headline6: TextStyle(fontWeight: FontWeight.bold,
       ),
       subtitle1: TextStyle(fontWeight: FontWeight.bold),
-      subtitle2: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 10),
+      subtitle2: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 14),
       button: TextStyle(
           fontWeight: FontWeight.bold, color: Colors.black),
     ),
