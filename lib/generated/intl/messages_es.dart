@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dont_have_an_account":
             MessageLookupByLibrary.simpleMessage("¿No tienes una cuenta?"),
         "editDates": MessageLookupByLibrary.simpleMessage("Editar fechas"),
+        "editTripImageMessage":
+            MessageLookupByLibrary.simpleMessage("Editar imagen."),
         "editTripPageEditLocation":
             MessageLookupByLibrary.simpleMessage("Editar ubicación"),
         "editTripPageTitle":
