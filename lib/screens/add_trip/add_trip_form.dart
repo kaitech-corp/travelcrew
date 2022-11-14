@@ -57,6 +57,13 @@ class _AddTripFormState extends State<AddTripForm> {
 
   late AddTripBloc _addTripBloc;
 
+  bool get isPopulated =>
+      tripNameController.text.isNotEmpty && travelTypeController.text.isNotEmpty;
+
+  bool isAddTripButtonEnabled(AddTripState state) {
+    return state.isFormValid && isPopulated && !state.isSubmitting;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -75,11 +82,12 @@ class _AddTripFormState extends State<AddTripForm> {
     // startDateTimestamp.dispose();
     // endDate.dispose();
     // endDateTimestamp.dispose();
-    // commentController.dispose();
-    // locationController.dispose();
-    // tripNameController.dispose();
     // travelTypeController.dispose();
-    // _urlToImage.dispose();
+    // tripNameController.dispose();
+    // urlToImage.dispose();
+    // locationController.dispose();
+    googleData.dispose();
+    // commentController.dispose();
     super.dispose();
   }
 
@@ -243,10 +251,13 @@ class _AddTripFormState extends State<AddTripForm> {
                         vertical: 16.0, horizontal: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (isButtonEnabled(state)) {
+                        if (isAddTripButtonEnabled(state)) {
                           _onFormSubmitted();
                           navigationService.pushNamedAndRemoveUntil(
                               LaunchIconBadgerRoute);
+                        } else {
+                          _onTripNameChange();
+                          _onTripTypeChange();
                         }
                       },
                       child: Text(addTripAddTripButton()),
@@ -255,9 +266,7 @@ class _AddTripFormState extends State<AddTripForm> {
     }));
   }
 
-  bool isButtonEnabled(AddTripState state) {
-    return state.isFormValid && !state.isSubmitting;
-  }
+
 
   void _onTripNameChange(){
     _addTripBloc.add(AddTripNameChange(tripName: tripNameController.text));
