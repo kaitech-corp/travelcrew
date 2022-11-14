@@ -112,7 +112,7 @@ const List<String> placeTypes = <String>[
   'zoo',
 ];
 
-const String signInWithGoogle = '  Google';
+const String signInWithGoogle = ' Sign in with Google';
 const String signInWithApple = '  Apple';
 
 const List<String> urls = <String>[];
