@@ -29,6 +29,7 @@
   "addTripLocationValidator": "Please enter a location.",
   "addTripPublic": "Public",
   "addTripImageMessage": "No image selected.",
+  "editTripImageMessage": "Edit image.",
   "addTripDescriptionMessage": "Description",
   "addTripAddDescriptionMessage": "Add a short description.",
   "addTripSavingDataMessage": "Saving new Trip data.",

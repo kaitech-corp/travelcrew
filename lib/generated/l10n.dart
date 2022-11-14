@@ -340,6 +340,16 @@ class S {
     );
   }
 
+  /// `Edit image.`
+  String get editTripImageMessage {
+    return Intl.message(
+      'Edit image.',
+      name: 'editTripImageMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Description`
   String get addTripDescriptionMessage {
     return Intl.message(
