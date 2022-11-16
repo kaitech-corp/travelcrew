@@ -34,16 +34,14 @@ class _FollowingListState extends State<FollowingList> {
       appBar: AppBar(
         title: Text('Followers',style: Theme.of(context).textTheme.headline5,),
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<List<UserPublicProfile>>(
         stream: DatabaseService().retrieveFollowingList(),
-        builder: (BuildContext context, AsyncSnapshot<Object?> users) {
+        builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if(users.hasError){
            CloudFunction().logError('Error streaming Following list for invites: ${users.error.toString()}');
           }
           if (users.hasData) {
-            final List<UserPublicProfile> usersList = users.data as List<UserPublicProfile>;
-            final List<UserPublicProfile> followingList =
-            usersList.where((UserPublicProfile user) => currentUserProfile.following.contains(user.uid)).toList();
+            final List<UserPublicProfile> followingList = users.data!;
             return Stack(
               children: <Widget>[
                 ListView.builder(
@@ -112,13 +110,14 @@ class _FollowingListState extends State<FollowingList> {
               Image.network(profileImagePlaceholder,fit: BoxFit.fill,),
             ),
           ),
-          title: Text('${user.firstName} ${user.lastName}'),
-          subtitle: Text(user.displayName,
-            textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
+          subtitle: Text('${user.firstName} ${user.lastName}', textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
+          title: Text(user.displayName,
+            ),
           trailing: !widget.trip.accessUsers.contains(user.uid) ? IconButton(
             icon: const Icon(Icons.add),
-            onPressed: (){
-              final String message = '${currentUserProfile.displayName} invited you to ${widget.trip.tripName}.';
+            onPressed: () async{
+              final UserPublicProfile profile = await DatabaseService().getUserProfile(userService.currentUserID);
+              final String message = '${profile.displayName} invited you to ${widget.trip.tripName}.';
               const String type = 'Invite';
               CloudFunction().addNewNotification(
                   ownerID: user.uid,
