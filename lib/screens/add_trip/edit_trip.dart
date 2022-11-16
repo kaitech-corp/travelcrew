@@ -12,6 +12,7 @@ import '../../models/trip_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
+import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/calendar_widget.dart';
 import 'add_trip_form.dart';
@@ -43,12 +44,12 @@ class EditTripDataState extends State<EditTripData> {
   final TextEditingController controllerComment = TextEditingController();
   final ValueNotifier<GoogleData> googleData =
   ValueNotifier<GoogleData>(GoogleData());
+  final ValueNotifier<File> urlToImage = ValueNotifier<File>(File(''));
 
   bool dateChangeVisible = false;
   bool locationChangeVisible = false;
 
-  File? _image;
-  File? urlToImage;
+  bool imagePicked = false;
   String? documentID;
   bool ispublic = true;
   GeoPoint? tripGeoPoint;
@@ -66,9 +67,10 @@ class EditTripDataState extends State<EditTripData> {
     startDateTimestamp.value = widget.trip.startDateTimeStamp;
     ispublic = widget.trip.ispublic;
     documentID = widget.trip.documentId;
-
-
-
+    tripGeoPoint = widget.trip.tripGeoPoint;
+    if(widget.trip.urlToImage.isNotEmpty){
+      urlToImage.value = File(widget.trip.urlToImage);
+    }
   }
 
   @override
@@ -81,16 +83,6 @@ class EditTripDataState extends State<EditTripData> {
     controllerComment.dispose();
     googleData.dispose();
     super.dispose();
-  }
-
-
-  Future<void> getImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
-
-    setState(() {
-      _image = File(image!.path);
-      urlToImage = _image;
-    });
   }
 
 
@@ -206,15 +198,19 @@ class EditTripDataState extends State<EditTripData> {
                             ],
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 16.0),
-                            child: _image == null
-                                ? Text(AppLocalizations.of(context)!.addTripImageMessage)
-                                : Image.file(_image!),
-                          ),
+                              child: imagePicked
+                                  ? Image.file(urlToImage.value)
+                                  : Text(
+                                AppLocalizations.of(context)!
+                                .editTripImageMessage,
+                                style: Theme.of(context).textTheme.headline6,
+                              )),
                           ElevatedButton(
-                            onPressed: () {
-                              getImage();
+                            onPressed: () async {
+                              urlToImage.value = await ImagePickerAndCropper().uploadImage(urlToImage);
+                              setState(() {
+                                imagePicked = true;
+                              });
                             },
 //                              tooltip: 'Pick Image',
                             child: const Icon(Icons.add_a_photo),
@@ -256,7 +252,7 @@ class EditTripDataState extends State<EditTripData> {
                   startDate.value,
                   startDateTimestamp.value,
                   controllerType.text,
-                  urlToImage,
+                  urlToImage.value,
                   controllerTripName.text,
                   tripGeoPoint);
             } on Exception catch (e) {
