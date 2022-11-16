@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../services/constants/constants.dart';
+
 
 /// Widget for trip image layout
 class ImageLayout extends StatelessWidget{
@@ -17,6 +19,9 @@ class ImageLayout extends StatelessWidget{
           borderRadius: const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
           child: _assetPath.contains('https') ? FadeInImage.assetNetwork(
             placeholder: 'assets/images/travelPics.png',
+            imageErrorBuilder: (BuildContext context, Object object, trace){
+              return Image.asset(travelImage, fit: BoxFit.cover,);
+            },
             image: _assetPath, fit: BoxFit.cover,) : Image.asset(_assetPath,
             fit: BoxFit.cover,
           )
