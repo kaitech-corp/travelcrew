@@ -23,9 +23,9 @@ import '../../services/notifications/notifications.dart';
 import 'analytics_service.dart';
 
 UserService userService = locator<UserService>();
-UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 NavigationService navigationService = locator<NavigationService>();
 ValueNotifier<String> urlToImage = ValueNotifier<String>('');
+UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
 
 ////Database class for all firebase api functions
 class DatabaseService {
@@ -453,7 +453,7 @@ class DatabaseService {
              .ref()
              .child('users/$uid');
          final UploadTask uploadTask = storageReference.putFile(urlToImage);
-         
+
          return await ref.update(<String, dynamic>{
            'urlToImage': await storageReference.getDownloadURL().then((String fileURL) {
              urlForImage = fileURL;
@@ -530,9 +530,8 @@ class DatabaseService {
 
 
   //// Add new trip
-  Future<void> addNewTripData(Trip trip, File? urlToImage)
-  async {
-
+  Future<void> addNewTripData(Trip trip, File? urlToImage) async {
+    final UserPublicProfile currentUserProfile = await getUserProfile(userService.currentUserID);
     final String key = tripsCollectionUnordered.doc().id;
     if (trip.ispublic) {
       final DocumentReference<Object?> addTripRef =  tripsCollectionUnordered.doc(key);
@@ -649,8 +648,6 @@ class DatabaseService {
     if (urlToImage != null) {
       if(trip.ispublic) {
         try {
-          const String action = 'Saving Trip image';
-          CloudFunction().logEvent(action);
           String urlForImage;
           final Reference storageReference = FirebaseStorage.instance
               .ref()
@@ -658,11 +655,7 @@ class DatabaseService {
           final UploadTask uploadTask = storageReference.putFile(urlToImage);
 
           return await tripsCollectionUnordered.doc(key).update(<String, dynamic>{
-            'urlToImage': await storageReference.getDownloadURL().then((
-                String fileURL) {
-              urlForImage = fileURL;
-              return urlForImage;
-            })
+            'urlToImage': await storageReference.getDownloadURL()
           });
         } catch (e) {
           CloudFunction()
@@ -680,11 +673,7 @@ class DatabaseService {
           
 
           return await privateTripsCollectionUnordered.doc(key).update(<String, dynamic>{
-            'urlToImage': await storageReference.getDownloadURL().then((
-                String fileURL) {
-              urlForImage = fileURL;
-              return urlForImage;
-            })
+            'urlToImage': await storageReference.getDownloadURL()
           });
         } catch (e) {
           CloudFunction()
@@ -796,14 +785,16 @@ class DatabaseService {
       String tripName,
       GeoPoint? tripGeoPoint)
   async {
+    print('Image file: ${urlToImage?.path}');
     final DocumentReference<Object?> addTripRef = ispublic ? tripsCollectionUnordered.doc(documentID) : privateTripsCollectionUnordered.doc(documentID);
-
+    final UserPublicProfile userPublicProfile = await getUserProfile(userService.currentUserID);
 
     try {
       const String action = 'Editing Trip';
       CloudFunction().logEvent(action);
       await addTripRef.update(<String, dynamic>{
         'comment': comment,
+        'displayName': userPublicProfile.displayName,
         'endDate': endDate,
         'endDateTimeStamp': endDateTimeStamp,
         'ispublic': ispublic,
@@ -821,17 +812,13 @@ class DatabaseService {
       const String action = 'Updating image after editing trip';
       CloudFunction().logEvent(action);
       if (urlToImage != null) {
-        String urlForImage;
         final Reference storageReference = FirebaseStorage.instance
             .ref()
             .child('trips/${addTripRef.id}');
-        final UploadTask uploadTask = storageReference.putFile(urlToImage);
+        storageReference.putFile(urlToImage);
 
         return await addTripRef.update(<String, dynamic>{
-          'urlToImage': await storageReference.getDownloadURL().then((String fileURL) {
-            urlForImage = fileURL;
-            return urlForImage;
-          })
+          'urlToImage': await storageReference.getDownloadURL()
         });
       }
     } catch (e) {
@@ -1569,7 +1556,7 @@ class DatabaseService {
 
   ///Check if user already submitted or view app Review this month
   Future<bool> appReviewExists(String docID) async {
-    final QuerySnapshot<Object?> ref = await addReviewCollection.doc(currentUserProfile.uid).collection('review').get();
+    final QuerySnapshot<Object?> ref = await addReviewCollection.doc(userService.currentUserID).collection('review').get();
     final bool reviewExists = ref.docs.contains(docID);
     return reviewExists;
   }
