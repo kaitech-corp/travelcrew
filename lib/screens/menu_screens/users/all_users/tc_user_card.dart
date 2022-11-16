@@ -68,7 +68,7 @@ class _TCUserCardState extends State<TCUserCard> {
                         // leading:
                         title: Text(widget.allUsers.displayName,
                             style: SizeConfig.mobile
-                                ? Theme.of(context).textTheme.subtitle1
+                                ? Theme.of(context).textTheme.headline6
                                 : Theme.of(context).textTheme.headline5),
                         subtitle: Text(
                           '${widget.allUsers.firstName} '

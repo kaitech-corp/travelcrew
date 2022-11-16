@@ -34,7 +34,7 @@ class ProfileStream extends StatefulWidget {
 
 class _ProfileStreamState extends State<ProfileStream> {
   late NotificationBloc bloc;
-  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _ProfileStreamState extends State<ProfileStream> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
+        providers: <BlocProvider>[
           BlocProvider(create: (BuildContext context) => GenericBloc<Trip,CurrentTripRepository>(repository: CurrentTripRepository())),
           BlocProvider(create: (BuildContext context) => GenericBloc<Trip,PastTripRepository>(repository: PastTripRepository())),
           BlocProvider(create: (BuildContext context) => GenericBloc<Trip,PrivateTripRepository>(repository: PrivateTripRepository())),

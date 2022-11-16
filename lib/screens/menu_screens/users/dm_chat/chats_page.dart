@@ -78,7 +78,7 @@ class DMChatListPage extends StatelessWidget {
                 title: Text(
                   user.displayName,
                   textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 trailing: chatNotificationBadges(user),
               ),

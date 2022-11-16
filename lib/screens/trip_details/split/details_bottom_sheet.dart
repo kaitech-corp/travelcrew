@@ -4,7 +4,6 @@ import 'package:nil/nil.dart';
 import '../../../models/cost_model.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
-import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../size_config/size_config.dart';
 import 'payment_details_menu_button.dart';

@@ -11,6 +11,7 @@ import '../../../../services/widgets/favorite_widget.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
+import '../../../authenticate/profile_stream.dart';
 import '../../basket_list/controller/basket_controller.dart';
 
 /// Bringing List

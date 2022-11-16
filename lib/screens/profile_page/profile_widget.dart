@@ -1,13 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
 
 import '../../models/custom_objects.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/functions/tc_functions.dart';
-import '../../services/locator.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/loading.dart';
 import '../../services/widgets/reusableWidgets.dart';
@@ -21,8 +21,6 @@ class ProfileWidget extends StatelessWidget {
   }) : super(key: key);
   final UserPublicProfile user;
   final double profileSize = SizeConfig.screenWidth * .45;
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,9 @@ class ProfileWidget extends StatelessWidget {
                         width: profileSize,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth / 1.8,
-                          backgroundImage: (user.urlToImage.isEmpty) ? const NetworkImage(profileImagePlaceholder) : NetworkImage(user.urlToImage),
+                          backgroundImage: (user.urlToImage.isEmpty)
+                              ? const NetworkImage(profileImagePlaceholder)
+                              : NetworkImage(user.urlToImage),
                         ),
                       ),
                     ),
@@ -93,18 +93,21 @@ class ProfileWidget extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    if (user.hometown.isNotEmpty) Text(
-                                            user.hometown,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            softWrap: true,
-                                          ) else Text('Hometown',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2),
+                                    if (user.hometown.isNotEmpty)
+                                      Text(
+                                        user.hometown,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                      )
+                                    else
+                                      Text('Hometown',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2),
                                   ],
                                 ),
                               ),
@@ -186,17 +189,19 @@ class ProfileWidget extends StatelessWidget {
                                 'IG: ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              if (user.instagramLink.isNotEmpty) GestureDetector(
-                                      onTap: () {
-                                        TCFunctions()
-                                            .launchURL(user.instagramLink);
-                                      },
-                                      child: const Text('Instagram Link',
-                                          style: TextStyle(color: Colors.blue))) else Text(
-                                      '',
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ),
+                              if (user.instagramLink.isNotEmpty)
+                                GestureDetector(
+                                    onTap: () {
+                                      TCFunctions()
+                                          .launchURL(user.instagramLink);
+                                    },
+                                    child: const Text('Instagram Link',
+                                        style: TextStyle(color: Colors.blue)))
+                              else
+                                Text(
+                                  '',
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
                             ],
                           ),
                         ),
@@ -212,17 +217,19 @@ class ProfileWidget extends StatelessWidget {
                                 'Facebook: ',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              if (user.facebookLink.isNotEmpty) GestureDetector(
-                                      onTap: () {
-                                        TCFunctions()
-                                            .launchURL(user.facebookLink);
-                                      },
-                                      child: const Text('Facebook Link',
-                                          style: TextStyle(color: Colors.blue))) else Text(
-                                      '',
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ),
+                              if (user.facebookLink.isNotEmpty)
+                                GestureDetector(
+                                    onTap: () {
+                                      TCFunctions()
+                                          .launchURL(user.facebookLink);
+                                    },
+                                    child: const Text('Facebook Link',
+                                        style: TextStyle(color: Colors.blue)))
+                              else
+                                Text(
+                                  '',
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
                             ],
                           ),
                         ),
@@ -296,8 +303,8 @@ class FollowerBar extends StatelessWidget {
 }
 
 class FollowList extends StatefulWidget {
-
-  const FollowList({Key? key, required this.isFollowers, required this.user}) : super(key: key);
+  const FollowList({Key? key, required this.isFollowers, required this.user})
+      : super(key: key);
   final bool isFollowers;
   final UserPublicProfile user;
   @override
@@ -314,9 +321,10 @@ class _FollowListState extends State<FollowList> {
   }
 
   Widget getMember(BuildContext context, String image, bool showImage) {
-    return StreamBuilder(
+    return StreamBuilder<List<UserPublicProfile>>(
       stream: DatabaseService().retrieveFollowList(widget.user),
-      builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
         if (users.hasError) {
           CloudFunction().logError(
               'Error streaming follow list in profile widget: ${users.error.toString()}');
@@ -412,7 +420,7 @@ class _FollowListState extends State<FollowList> {
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.start,
           ),
-          trailing: (profile.uid == currentUserProfile.uid)
+          trailing: (profile.uid == userService.currentUserID)
               ? trailingButton(member)
               : null,
         ),
@@ -421,38 +429,49 @@ class _FollowListState extends State<FollowList> {
   }
 
   Widget trailingButton(UserPublicProfile member) {
-    return (!currentUserProfile.following.contains(member.uid))
-        ? ElevatedButton(
-            onPressed: () {
-              // Send a follow request notification to user
-              final String message =
-                  'Follow request from ${currentUserProfile.displayName}';
-              const String type = 'Follow';
-              if (userService.currentUserID != member.uid) {
-                if (currentUserProfile.blockedList.contains(member.uid)) {
-                } else {
-                  CloudFunction().addNewNotification(
-                      message: message,
-                      ownerID: member.uid,
-                      documentID: member.uid,
-                      type: type,
-                      uidToUse: currentUserProfile.uid);
-                  TravelCrewAlertDialogs().followRequestDialog(context);
-                }
-              }
-            },
-            child: Text('Follow Back',
-                style: Theme.of(context).textTheme.subtitle1),
-          )
-        : ElevatedButton(
-            onPressed: () {
-              if (currentUserProfile.blockedList.contains(member.uid)) {
-              } else {
-                TravelCrewAlertDialogs().unFollowAlert(context, member.uid);
-              }
-            },
-            child:
-                Text('Unfollow', style: Theme.of(context).textTheme.subtitle1),
-          );
+    return FutureBuilder<UserPublicProfile>(
+        future: DatabaseService().getUserProfile(userService.currentUserID),
+        builder:
+            (BuildContext context, AsyncSnapshot<UserPublicProfile> result) {
+          final UserPublicProfile? user = result.data;
+          if (result.hasData) {
+            return (user?.following.contains(member.uid) ?? false)
+                ? ElevatedButton(
+                    onPressed: () {
+                      if (user?.blockedList.contains(member.uid) ?? false) {
+                      } else {
+                        TravelCrewAlertDialogs()
+                            .unFollowAlert(context, member.uid);
+                      }
+                    },
+                    child: Text('Unfollow',
+                        style: Theme.of(context).textTheme.subtitle1),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      // Send a follow request notification to user
+                      final String message =
+                          'Follow request from ${user?.displayName}';
+                      const String type = 'Follow';
+                      if (userService.currentUserID != member.uid) {
+                        if (user?.blockedList.contains(member.uid) ?? false) {
+                        } else {
+                          CloudFunction().addNewNotification(
+                              message: message,
+                              ownerID: member.uid,
+                              documentID: member.uid,
+                              type: type,
+                              uidToUse: user?.uid);
+                          TravelCrewAlertDialogs().followRequestDialog(context);
+                        }
+                      }
+                    },
+                    child: Text('Follow Back',
+                        style: Theme.of(context).textTheme.subtitle1),
+                  );
+          } else {
+            return nil;
+          }
+        });
   }
 }
