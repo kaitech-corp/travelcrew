@@ -17,6 +17,12 @@ class CloudFunction {
       .currentUserProfileDirect();
   final AnalyticsService _analyticsService = AnalyticsService();
 
+  Future<void> getDestinations() async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('get_destinations');
+    final HttpsCallableResult<dynamic> result = await callable();
+    print(result.data);
+  }
+  
   Future<dynamic> connectSplitwise() async {
     final HttpsCallable callable = FirebaseFunctions.instance
         .httpsCallable('connectSplitwise');
