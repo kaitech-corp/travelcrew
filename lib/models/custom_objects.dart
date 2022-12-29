@@ -583,3 +583,25 @@ UserPublicProfile defaultProfile = UserPublicProfile(
     lastName: 'lastName',
     uid: 'uid',
     urlToImage: profileImagePlaceholder);
+
+class DestinationModel {
+
+  DestinationModel(
+      {required this.name,
+      required this.city,
+      required this.country,
+      required this.url,
+      required this.urlToImage});
+
+  DestinationModel.fromJSON(Map<String, dynamic> json) :
+        name = json['name'] as String?,
+        city = json['city'] as String?,
+        country = json['country'] as String?,
+        url = json['url'] as String?,
+        urlToImage = json['urlToImage'] as String?;
+  final String? name;
+  final String? city;
+  final String? country;
+  final String? url;
+  final String? urlToImage;
+}
