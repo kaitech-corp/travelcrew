@@ -34,7 +34,6 @@ class UserRepository {
     await DatabaseService(uid: user.uid).updateUserPublicProfileData(
         displayName, firstname, lastName, email, user.uid, urlToImage);
     await _analyticsService.logSignUp();
-    // return result;
   }
 
   Future<List<dynamic>> signOut() async {
@@ -55,9 +54,7 @@ class UserRepository {
     return _firebaseAuth.currentUser;
   }
 
-  Stream<User?> get user {
-    return _firebaseAuth.authStateChanges().map((User? user) => user);
-  }
+  Stream<User?> get user => _firebaseAuth.authStateChanges().map((User? user) => user);
 
   bool get appleSignInAvailable => Platform.isIOS;
 
@@ -84,9 +81,9 @@ class UserRepository {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
-          await googleSignIn.signIn();
+      await googleSignIn.signIn();
       final GoogleSignInAuthentication? googleSignInAuthentication =
-          await googleSignInAccount?.authentication;
+      await googleSignInAccount?.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication?.accessToken,
@@ -94,7 +91,7 @@ class UserRepository {
       );
 
       final UserCredential authResult =
-          await _firebaseAuth.signInWithCredential(credential);
+      await _firebaseAuth.signInWithCredential(credential);
       final User? user = authResult.user;
 
       assert(!user!.isAnonymous);
@@ -115,12 +112,12 @@ class UserRepository {
     final User? currentUser = _firebaseAuth.currentUser;
     if (displayName?.isEmpty ?? true) {
       displayName =
-          'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
+      'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
     }
     await DatabaseService(uid: currentUser!.uid).updateUserData(
         firstname, lastName, currentUser.email, currentUser.uid);
     return DatabaseService(uid: currentUser.uid)
         .updateUserPublicProfileData(displayName, firstname, lastName,
-            currentUser.email, currentUser.uid, urlToImage);
+        currentUser.email, currentUser.uid, urlToImage);
   }
 }

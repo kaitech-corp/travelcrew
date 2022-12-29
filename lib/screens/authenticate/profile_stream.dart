@@ -17,7 +17,6 @@ import '../../repositories/trip_repositories/current_trip_repository.dart';
 import '../../repositories/trip_repositories/favorite_trip_repository.dart';
 import '../../repositories/trip_repositories/past_trip_repository.dart';
 import '../../repositories/trip_repositories/private_trip_repository.dart';
-import '../../services/locator.dart';
 import '../../services/widgets/loading.dart';
 import '../main_tab_page/main_tab_page.dart';
 
@@ -46,7 +45,7 @@ class _ProfileStreamState extends State<ProfileStream> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: <BlocProvider>[
+        providers: [
           BlocProvider(create: (BuildContext context) => GenericBloc<Trip,CurrentTripRepository>(repository: CurrentTripRepository())),
           BlocProvider(create: (BuildContext context) => GenericBloc<Trip,PastTripRepository>(repository: PastTripRepository())),
           BlocProvider(create: (BuildContext context) => GenericBloc<Trip,PrivateTripRepository>(repository: PrivateTripRepository())),
