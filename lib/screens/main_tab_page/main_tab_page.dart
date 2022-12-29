@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/custom_objects.dart';
 import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
 import '../../services/database.dart';
@@ -15,7 +14,6 @@ import '../../services/widgets/badge_icon.dart';
 import '../../size_config/size_config.dart';
 import '../add_trip/add_trip_page.dart';
 import '../app_bar/app_bar.dart';
-import '../authenticate/profile_stream.dart';
 import '../menu_screens/main_menu.dart';
 import 'all_trips/all_trips_page.dart';
 import 'favorites/favorites_page.dart';
