@@ -18,6 +18,48 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
+  @override
+  Widget build(BuildContext context) {
+    return adminDashboard();
+  }
+}
+
+Widget adminDashboard() {
+  return DefaultTabController(
+    length: 5,
+    child: Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Dashboard'),
+        bottom: const TabBar(
+          isScrollable: true,
+          tabs: [
+            Tab(text: 'User Data'),
+            Tab(text: 'User Activity'),
+            Tab(text: 'Trip Data'),
+            Tab(text: 'Feedback'),
+            Tab(text: 'Custom Notifications'),
+          ],
+        ),
+      ),
+      body: TabBarView(children: [
+        UserData(),
+        UserActivity(),
+        TripData(),
+        FeedbackA(),
+        CustomNotifications()
+      ]),
+    ),
+  );
+}
+
+class CustomNotifications extends StatefulWidget {
+  const CustomNotifications({Key? key}) : super(key: key);
+
+  @override
+  State<CustomNotifications> createState() => _CustomNotificationsState();
+}
+
+class _CustomNotificationsState extends State<CustomNotifications> {
   TextEditingController? _controller;
 
   @override
@@ -36,129 +78,131 @@ class _AdminPageState extends State<AdminPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            admin,
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          flexibleSpace: const AppBarGradient(),
+    return Column(
+      children: [
+        Text(
+          customNotification,
+          style: Theme.of(context).textTheme.headline5,
+          textAlign: TextAlign.center,
         ),
-        body: SingleChildScrollView(
+        Flexible(
+          flex: 2,
           child: Container(
-            margin: const EdgeInsets.all(10),
-            height: SizeConfig.screenHeight,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  feedback,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                Flexible(
-                  flex: 2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                    ),
-                    child: StreamBuilder<List<TCFeedback>>(
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<TCFeedback>> feedbackData) {
-                        if (feedbackData.hasData) {
-                          final List<TCFeedback> feedbackList = feedbackData.data!;
-                          return ListView.builder(
-                            itemCount: feedbackList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final TCFeedback item = feedbackList[index];
-                              return Dismissible(
-                                direction: DismissDirection.endToStart,
-                                background: Container(
-                                  color: Colors.red,
-                                  child: const Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                      )),
-                                ),
-                                key: Key(item.fieldID),
-                                onDismissed: (DismissDirection direction) {
-                                  CloudFunction().removeFeedback(item.fieldID);
-                                },
-                                child: ListTile(
-                                  key: Key(item.fieldID),
-                                  title: Text(
-                                    item.message,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1,
-                                  ),
-                                  subtitle: Text(
-                                    '$submitted: ${item.timestamp.toDate()}',
-                                    style:
-                                        Theme.of(context).textTheme.subtitle2,
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          return const Loading();
-                        }
-                      },
-                      stream: DatabaseService().feedback,
-                    ),
-                  ),
-                ),
-                Text(
-                  customNotification,
-                  style: Theme.of(context).textTheme.headline5,
-                  textAlign: TextAlign.center,
-                ),
-                Flexible(flex: 2, child: _buildTextField()),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_message?.isNotEmpty ?? false) {
-                        TravelCrewAlertDialogs()
-                            .pushCustomNotification(context);
-                        CloudFunction().addCustomNotification(_message!);
-                      }
-                    },
-                    child: const Text(push, style: TextStyle(fontSize: 20)),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.only(top: 15)),
-              ],
+            margin: const EdgeInsets.all(12),
+            height: textBoxHeight,
+            child: TextField(
+              enableInteractiveSelection: true,
+              controller: _controller,
+              maxLines: maxLines,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                hintText: enterMessage,
+                filled: true,
+              ),
+              onChanged: (String value) {
+                setState(() {
+                  _message = value;
+                });
+              },
             ),
           ),
         ),
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              if (_message?.isNotEmpty ?? false) {
+                TravelCrewAlertDialogs().pushCustomNotification(context);
+                CloudFunction().addCustomNotification(_message!);
+              }
+            },
+            child: const Text(push, style: TextStyle(fontSize: 20)),
+          ),
+        ),
+        const Padding(padding: EdgeInsets.only(top: 15)),
+      ],
+    );
+    ;
+  }
+}
+
+class FeedbackA extends StatelessWidget {
+  const FeedbackA({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: StreamBuilder<List<TCFeedback>>(
+        builder:
+            (BuildContext context, AsyncSnapshot<List<TCFeedback>> feedbackData) {
+          if (feedbackData.hasData) {
+            final List<TCFeedback> feedbackList = feedbackData.data!;
+            return ListView.builder(
+              itemCount: feedbackList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final TCFeedback item = feedbackList[index];
+                return Dismissible(
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    color: Colors.red,
+                    child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        )),
+                  ),
+                  key: Key(item.fieldID),
+                  onDismissed: (DismissDirection direction) {
+                    CloudFunction().removeFeedback(item.fieldID);
+                  },
+                  child: ListTile(
+                    key: Key(item.fieldID),
+                    title: Text(
+                      item.message,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    subtitle: Text(
+                      '$submitted: ${item.timestamp.toDate()}',
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Loading();
+          }
+        },
+        stream: DatabaseService().feedback,
       ),
     );
   }
+}
 
-  Widget _buildTextField() {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      height: textBoxHeight,
-      child: TextField(
-        enableInteractiveSelection: true,
-        controller: _controller,
-        maxLines: maxLines,
-        textCapitalization: TextCapitalization.sentences,
-        decoration: const InputDecoration(
-          hintText: enterMessage,
-          filled: true,
-        ),
-        onChanged: (String value) {
-          setState(() {
-            _message = value;
-          });
-        },
-      ),
-    );
+class TripData extends StatelessWidget {
+  const TripData({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class UserActivity extends StatelessWidget {
+  const UserActivity({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class UserData extends StatelessWidget {
+  const UserData({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
