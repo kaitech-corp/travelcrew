@@ -27,17 +27,18 @@ class _CurrentTripsState extends State<CurrentTrips> {
 
   @override
   void initState() {
+    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);//dependency injection
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
 
-  @override
-  void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);//dependency injection
-    bloc.add(LoadingGenericData());
-    context.dependOnInheritedWidgetOfExactType();
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //
+  //   context.dependOnInheritedWidgetOfExactType();
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
