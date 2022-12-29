@@ -1,10 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:http/http.dart' as http;
 import '../../models/activity_model.dart';
 import '../../models/chat_model.dart';
 import '../../models/cost_model.dart';
@@ -74,6 +75,42 @@ class DatabaseService {
   final CollectionReference<Object?>  splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
   final CollectionReference<Object?>  costDetailsCollection = FirebaseFirestore.instance.collection('costDetails');
   final CollectionReference<Object?>  settingsCollection = FirebaseFirestore.instance.collection('settings');
+
+
+  // static
+
+  // Future<List<DestinationModel>> getDestinations() async {
+  //   const String url = 'https://storage.googleapis.com/universal-code-135522.appspot.com/apis/destination_list.json';
+  //     try {
+  //       final http.Response response = await http.get(Uri.parse(url));
+  //     if (200 == response.statusCode) {
+  //       final dynamic result = json.decode(response.body);
+  //       final Iterable<dynamic> list = result as Iterable<dynamic>;
+  //       List<DestinationModel> destinations = list.map((e) => DestinationModel.fromJSON(e as Map<String, dynamic>)).toList();
+  //       return destinations;
+  //     } else {
+  //       }
+  //     } catch (e) {
+  //       print(e.toString());
+  //   }
+  //     return null;
+  //   }
+
+  Future<List<DestinationModel>> getDestinations() async {
+    const String url = 'https://storage.googleapis.com/universal-code-135522.appspot.com/apis/destination_list.json';
+      final http.Response response = await http.get(Uri.parse(url));
+      if (200 == response.statusCode) {
+        final dynamic result = json.decode(response.body);
+        final Iterable<dynamic> list = result as Iterable<dynamic>;
+        List<DestinationModel> destinations = list.map((e) => DestinationModel.fromJSON(e as Map<String, dynamic>)).toList();
+        return destinations;
+      } else {
+        final dynamic result = json.decode(response.body);
+        final Iterable<dynamic> list = result as Iterable<dynamic>;
+        List<DestinationModel> destinations = list.map((e) => DestinationModel.fromJSON(e as Map<String, dynamic>)).toList();
+        return destinations;
+      }
+  }
 
   //// Shows latest app version to display in main menu.
   Future<String> getVersion() async{
