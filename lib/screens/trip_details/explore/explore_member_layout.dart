@@ -1,13 +1,13 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:maps_launcher/maps_launcher.dart';
 
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
 import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/map_launcher.dart';
 import '../../../services/widgets/reusableWidgets.dart';
 import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
@@ -171,7 +171,7 @@ class MemberPopupMenuButton extends StatelessWidget {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                MapsLauncher.launchQuery(tripDetails.location);
+                MapSearch().searchAddress(tripDetails.location, context);
               },
               icon: const TripDetailsIconThemeWidget(
                 icon: Icons.map,

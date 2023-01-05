@@ -1,7 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:maps_launcher/maps_launcher.dart';
 
 import '../../../models/activity_model.dart';
 import '../../../models/custom_objects.dart';
@@ -13,6 +12,7 @@ import '../../../services/functions/tc_functions.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../services/widgets/loading.dart';
+import '../../../services/widgets/map_launcher.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 import '../activity/activity_menu_button.dart';
@@ -144,7 +144,8 @@ class ActivityDataLayout extends StatelessWidget {
                           style: const TextStyle(color: Colors.blue),
                         ),
                         onTap: () {
-                          MapsLauncher.launchQuery(activity.location);
+                          MapSearch().searchAddress(activity.location, context);
+                          // MapLauncher.(activity.location);
                         },
                         onLongPress: () {
                           FlutterClipboard.copy(activity.location)
