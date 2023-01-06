@@ -62,9 +62,7 @@ Future<void> _handlePressButton(BuildContext context) {
               getPlaceDetailWithLatLng: (Prediction prediction) {
                 final double lat = double.parse(prediction.lat!);
                 final double lng = double.parse(prediction.lng!);
-                googleData.value = GoogleData(
-                    geoLocation: GeoPoint(lat, lng));
-                print('${googleData.value.geoLocation?.latitude ?? 'nothing'}');
+                googleData.value = GoogleData(geoLocation: GeoPoint(lat, lng));
               }, // this callback is called when isLatLngRequired is true
               itmClick: (Prediction prediction) {
                 if (prediction != null) {

@@ -18,7 +18,7 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
     final CollectionReference<Object> splitItemCollection = FirebaseFirestore.instance.collection('splitItem');
 
     /// Stream in split item data
-    List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<SplitObject> splitItemDataFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         final List<SplitObject> splitItemData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return SplitObject.fromDocument(doc);
@@ -34,7 +34,7 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
     return splitItemCollection.doc(tripDocID)
         .collection('Item')
         .snapshots()
-        .map(_splitItemDataFromSnapshot);
+        .map(splitItemDataFromSnapshot);
 
   }
 

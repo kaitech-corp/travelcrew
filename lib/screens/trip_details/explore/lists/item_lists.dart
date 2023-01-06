@@ -11,7 +11,6 @@ import '../../../../services/widgets/favorite_widget.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
-import '../../../authenticate/profile_stream.dart';
 import '../../basket_list/controller/basket_controller.dart';
 
 /// Bringing List
@@ -50,7 +49,7 @@ class _BringingListState extends State<BringingList> {
       child: Container(
         height: MediaQuery.of(context).size.height,
         color: Colors.blue.shade100,
-        child: SearchBar(
+        child: SearchBar<WalmartProducts>(
             textStyle: Theme.of(context).textTheme.subtitle2!,
             cancellationWidget: const Text('Clear'),
             placeHolder: Text(
@@ -177,7 +176,7 @@ class _NeedListState extends State<NeedList> {
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).size.height,
-        child: SearchBar(
+        child: SearchBar<WalmartProducts>(
             textStyle: Theme.of(context).textTheme.subtitle2!,
             cancellationWidget: const Text('Clear'),
             placeHolder: NeedListToDisplay(
@@ -252,7 +251,7 @@ class NeedListToDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void _onSelectedItems(Need item) {
+    void onSelectedItems(Need item) {
       CloudFunction().addItemToBringingList(documentID, item.item, item.type);
       CloudFunction().removeItemFromNeedList(documentID, item.documentID!);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -304,7 +303,7 @@ class NeedListToDisplay extends StatelessWidget {
                   ),
                   trailing: const Icon(Icons.add),
                   onTap: () {
-                    _onSelectedItems(item);
+                    onSelectedItems(item);
                   },
                 ),
               );

@@ -10,7 +10,6 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/time_picker.dart';
 import '../../add_trip/google_autocomplete.dart';
-import '../../authenticate/profile_stream.dart';
 
 /// Add new lodging item
 class AddNewLodging extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';

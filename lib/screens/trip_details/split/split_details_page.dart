@@ -6,7 +6,6 @@ import '../../../models/cost_model.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
-import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../size_config/size_config.dart';

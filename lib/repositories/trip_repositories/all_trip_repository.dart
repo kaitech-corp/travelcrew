@@ -18,23 +18,20 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
         .where('ispublic', isEqualTo: true);
 
     // Get all trips
-    List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<Trip> tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
           return Trip.fromDocument(doc);
         }).toList();
-        // trips.where((trip) => {
-        //   trip.
-        // })
         trips.sort(
             (Trip a, Trip b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
         trips = trips
             .where(
                 (Trip trip) => !trip.accessUsers.contains(userService.currentUserID))
-            .toList()
-            .where((Trip trip) =>
-                trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
             .toList();
+            // .where((Trip trip) =>
+            //     trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
+            // .toList();
         return trips;
       } catch (e) {
         CloudFunction()
@@ -46,6 +43,6 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
     // get trips stream
     return tripCollection
         .snapshots()
-        .map(_tripListFromSnapshot);
+        .map(tripListFromSnapshot);
   }
 }

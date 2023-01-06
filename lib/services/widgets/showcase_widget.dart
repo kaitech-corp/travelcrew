@@ -15,9 +15,9 @@ class CustomShowcaseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Showcase(
     key: globalKey,
-    showcaseBackgroundColor: Colors.grey.shade400,
-    contentPadding: const EdgeInsets.all(12),
-    disableAnimation: false,
+    // showcaseBackgroundColor: Colors.grey.shade400,
+    // contentPadding: const EdgeInsets.all(12),
+    // disableAnimation: false,
     // title: 'Hello',
     // titleTextStyle: TextStyle(color: Colors.white, fontSize: 32),
     description: description,

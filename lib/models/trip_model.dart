@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../services/functions/cloud_functions.dart';
-
 ///Model for trip details
 class Trip {
   Trip(
@@ -51,83 +49,83 @@ class Trip {
     try {
       comment = doc.get('comment') as String;
     } catch (e) {
-      CloudFunction().logError('comment error: ${e.toString()}');
+      // CloudFunction().logError('comment error: ${e.toString()}');
     }
     try {
       dateCreatedTimeStamp = doc.get('dateCreatedTimeStamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('dateCreatedTimeStamp error: ${e.toString()}');
+      // CloudFunction().logError('dateCreatedTimeStamp error: ${e.toString()}');
     }
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('displayName error: ${e.toString()}');
+      // CloudFunction().logError('displayName error: ${e.toString()}');
     }
     try {
       documentId = doc.get('documentId') as String;
     } catch (e) {
-      CloudFunction().logError('documentId error: ${e.toString()}');
+      // CloudFunction().logError('documentId error: ${e.toString()}');
     }
     try {
       endDate = doc.get('endDate') as String;
     } catch (e) {
-      CloudFunction().logError('endDate error: ${e.toString()}');
+      // CloudFunction().logError('endDate error: ${e.toString()}');
     }
     try {
       endDateTimeStamp = doc.get('endDateTimeStamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('endDateTimeStamp error: ${e.toString()}');
+      // CloudFunction().logError('endDateTimeStamp error: ${e.toString()}');
     }
     try {
       var fav = doc.get('favorite') as List<dynamic>;
       fav.forEach((element) {favorite.add(element.toString());});
     } catch (e) {
-      CloudFunction().logError('favorite error: ${e.toString()}');
+      // CloudFunction().logError('favorite error: ${e.toString()}');
     }
     try {
       ispublic = doc.get('ispublic') as bool;
     } catch (e) {
-      CloudFunction().logError('Iispublic error: ${e.toString()}');
+      // CloudFunction().logError('Iispublic error: ${e.toString()}');
     }
     try {
       location = doc.get('location') as String;
     } catch (e) {
-      CloudFunction().logError('location error: ${e.toString()}');
+      // CloudFunction().logError('location error: ${e.toString()}');
     }
     try {
       ownerID = doc.get('ownerID') as String;
     } catch (e) {
-      CloudFunction().logError('ownerID error: ${e.toString()}');
+      // CloudFunction().logError('ownerID error: ${e.toString()}');
     }
     try {
       startDate = doc.get('startDate') as String;
     } catch (e) {
-      CloudFunction().logError('startDate error: ${e.toString()}');
+      // CloudFunction().logError('startDate error: ${e.toString()}');
     }
     try {
       startDateTimeStamp = doc.get('startDateTimeStamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('startDateTimeStamp error: ${e.toString()}');
+      // CloudFunction().logError('startDateTimeStamp error: ${e.toString()}');
     }
     try {
       travelType = doc.get('travelType') as String;
     } catch (e) {
-      CloudFunction().logError('travelType error: ${e.toString()}');
+      // CloudFunction().logError('travelType error: ${e.toString()}');
     }
     try {
       tripGeoPoint = doc.get('tripGeoPoint') as GeoPoint;
     } catch (e) {
-      CloudFunction().logError('tripGeoPoint error: ${e.toString()}');
+      // CloudFunction().logError('tripGeoPoint error: ${e.toString()}');
     }
     try {
       tripName = doc.get('tripName') as String;
     } catch (e) {
-      CloudFunction().logError('tripName error: ${e.toString()}');
+      // CloudFunction().logError('tripName error: ${e.toString()}');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      CloudFunction().logError('Image url error: ${e.toString()}');
+      // CloudFunction().logError('Image url error: ${e.toString()}');
     }
     return Trip(
         tripGeoPoint: tripGeoPoint,

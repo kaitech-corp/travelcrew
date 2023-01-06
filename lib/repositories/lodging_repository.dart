@@ -22,7 +22,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
     final CollectionReference<Object> lodgingCollection =  FirebaseFirestore.instance.collection('lodging');
 
     //Get Lodging items
-    List<LodgingData> _lodgingListFromSnapshot(QuerySnapshot<Object> snapshot){
+    List<LodgingData> lodgingListFromSnapshot(QuerySnapshot<Object> snapshot){
       try {
         final List<LodgingData> lodgingList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return LodgingData.fromDocument(doc);
@@ -38,7 +38,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
     return lodgingCollection.doc(tripDocID)
         .collection('lodging')
         .snapshots()
-        .map(_lodgingListFromSnapshot);
+        .map(lodgingListFromSnapshot);
   }
 
 }

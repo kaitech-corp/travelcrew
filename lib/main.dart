@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sizer/sizer.dart';
-import 'package:travelcrew/services/l10n.dart';
 
 import '../blocs/authentication_bloc/authentication_bloc.dart';
 import '../blocs/authentication_bloc/authentication_event.dart';
@@ -28,6 +27,7 @@ import '../services/widgets/launch_icon_badger.dart';
 import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
 import 'repositories/user_repository.dart';
+import 'services/l10n.dart';
 
 
 void main() async {

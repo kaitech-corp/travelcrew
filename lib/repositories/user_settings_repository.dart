@@ -22,7 +22,7 @@ class UserSettingsRepository {
 
   void refresh() {
     // Get settings for current user.
-    UserNotificationSettingsData _settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
+    UserNotificationSettingsData settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
       if(snapshot.exists) {
         try {
           final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -37,7 +37,7 @@ class UserSettingsRepository {
 
     final Stream<UserNotificationSettingsData> settings = settingsCollection
         .doc(userService.currentUserID)
-        .snapshots().map(_settingsFromSnapshot);
+        .snapshots().map(settingsFromSnapshot);
 
 
     _loadedData.addStream(settings);

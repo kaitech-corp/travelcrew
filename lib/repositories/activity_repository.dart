@@ -14,7 +14,7 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
         FirebaseFirestore.instance.collection('activities');
 
     // Get all Activities
-    List<ActivityData> _activitiesListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<ActivityData> activitiesListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         final List<ActivityData> activityList =
             snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
@@ -33,6 +33,6 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
         .doc(tripDocID)
         .collection('activity')
         .snapshots()
-        .map(_activitiesListFromSnapshot);
+        .map(activitiesListFromSnapshot);
   }
 }

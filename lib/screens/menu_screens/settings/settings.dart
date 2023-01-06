@@ -1,10 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../blocs/settings_bloc/settings_bloc.dart';
-import '../../../blocs/settings_bloc/settings_event.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/widgets/appbar_gradient.dart';
@@ -25,23 +20,15 @@ class _SettingsState extends State<Settings> {
   bool buttonTwoPressed = false;
   bool buttonThreePressed = false;
   final TextEditingController myController = TextEditingController();
-  late UserSettingsBloc _bloc;
+  // late UserSettingsBloc _bloc;
   late String accessToken;
 
   @override
   void initState() {
-    _bloc = BlocProvider.of<UserSettingsBloc>(context);
-    _bloc.add(LoadingUserSettingsData());
-    getAccessToken();
+    // _bloc = BlocProvider.of<UserSettingsBloc>(context);
+    // _bloc.add(LoadingUserSettingsData());
+    // getAccessToken();
     super.initState();
-  }
-
-  ///Retrieve Splitwise access token from shared preferences.
-  Future<void> getAccessToken() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      accessToken = prefs.getString('accessToken') ?? '';
-    });
   }
 
   @override

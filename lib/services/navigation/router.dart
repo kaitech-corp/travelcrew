@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../admin/admin_page.dart';
 import '../../blocs/generics/generic_bloc.dart';
-import '../../blocs/settings_bloc/settings_bloc.dart';
 import '../../models/activity_model.dart';
 import '../../models/custom_objects.dart';
 import '../../models/lodging_model.dart';
@@ -12,7 +11,6 @@ import '../../models/split_model.dart';
 import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
-import '../../repositories/user_settings_repository.dart';
 import '../../screens/add_trip/add_trip_page.dart';
 import '../../screens/add_trip/edit_trip.dart';
 import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
@@ -63,7 +61,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ActivityRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: ActivityPage(trip: args as Trip,),
+        viewToShow: ActivityPage(trip: args! as Trip,),
       );
     case AddNewActivityRoute:
       return _getPageRoute(
@@ -261,10 +259,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SettingsRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: BlocProvider(
-            create: (BuildContext context) => UserSettingsBloc(
-                userSettingsRepository: UserSettingsRepository()..refresh())
-            ,child: const Settings()),
+        viewToShow:
+        // BlocProvider(
+        //     create: (BuildContext context) => UserSettingsBloc(
+        //         userSettingsRepository: UserSettingsRepository()..refresh())
+        //     ,child:
+        const Settings()
+      // ),
       );
     case SignUpScreenRoute:
       return _getPageRoute(

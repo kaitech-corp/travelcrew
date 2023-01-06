@@ -16,7 +16,7 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
         .where('ispublic', isEqualTo: true);
 
     // Get all trips
-    List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<Trip> tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
           return Trip.fromDocument(doc);
@@ -36,6 +36,6 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
     // get trips stream
     return tripCollection
         .snapshots()
-        .map(_tripListFromSnapshot);
+        .map(tripListFromSnapshot);
   }
 }

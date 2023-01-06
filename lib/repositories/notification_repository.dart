@@ -18,7 +18,7 @@ class NotificationRepository {
 
   void refresh() {
     // Get all Notifications
-    List<NotificationData> _notificationListFromSnapshot(QuerySnapshot<Object> snapshot){
+    List<NotificationData> notificationListFromSnapshot(QuerySnapshot<Object> snapshot){
 
       try {
         return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
@@ -33,7 +33,7 @@ class NotificationRepository {
     final Stream<List<NotificationData>> notificationList =
     notificationCollection.doc(userService.currentUserID)
         .collection('notifications').orderBy('timestamp', descending: true)
-        .snapshots().map(_notificationListFromSnapshot);
+        .snapshots().map(notificationListFromSnapshot);
 
     _loadedData.addStream(notificationList);
 

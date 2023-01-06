@@ -7,14 +7,14 @@ import '../../models/custom_objects.dart';
 
 // class APIService {
 //   // API key
-//   static const String _api_key = '';
+//   static const String apiKey = '';
 //   // Base API url
 //   static const String _baseUrl = 'https://ajayakv-rest-countries-v1.p.rapidapi.com/rest/v1/all';
 //   // Base headers for Response url
 //   static const Map<String, String> _headers = {
 //     'content-type': 'application/json',
 //     'x-rapidapi-host': 'ajayakv-rest-countries-v1.p.rapidapi.com',
-//     'x-rapidapi-key': _api_key,
+//     'x-rapidapi-key': apiKey,
 //   };
 
   // Base API request to get response
@@ -37,14 +37,14 @@ import '../../models/custom_objects.dart';
 
 // class PublicHolidayAPI {
 //   // API key
-//   static const String _api_key = '';
+//   static const String apiKey = '';
 //   // Base API url
 //   static const String _baseUrl = 'https://public-holiday.p.rapidapi.com/';
 //   // Base headers for Response url
 //   static const Map<String, String> _headers = {
 // //    "content-type": "application/json",
 //     'x-rapidapi-host': 'public-holiday.p.rapidapi.com',
-//     'x-rapidapi-key': _api_key,
+//     'x-rapidapi-key': apiKey,
 //   };
 
   // Base API request to get response
@@ -67,14 +67,14 @@ import '../../models/custom_objects.dart';
 
 // class RestCountries {
 //   // API key
-//   static const String _api_key = '';
+//   static const String apiKey = '';
 //   // Base API url
 //   static const String _baseUrl = 'https://restcountries-v1.p.rapidapi.com/name/';
 //   // Base headers for Response url
 //   static const Map<String, String> _headers = {
 //     'content-type': 'application/json',
 //     'x-rapidapi-host': 'restcountries-v1.p.rapidapi.com',
-//     'x-rapidapi-key': _api_key,
+//     'x-rapidapi-key': apiKey,
 //   };
 
   // Base API request to get response
@@ -97,7 +97,7 @@ import '../../models/custom_objects.dart';
 
 class WalmartProductSearch {
   // API key
-   late final String? _api_key = dotenv.env['rapidAPIKey'];
+   late final String? apiKey = dotenv.env['rapidAPIKey'];
   // Base API url
   static const String _baseUrl = 'https://walmart.p.rapidapi.com/v2/auto-complete?term=';
   // Base headers for Response url
@@ -106,10 +106,10 @@ class WalmartProductSearch {
   // Base API request to get response
   Future<List<WalmartProducts>> getProducts(String name) async {
 
-    final Map<String, String> headers = {
+    final Map<String, String> headers = <String, String>{
 //    "content-type": "application/json",
     'x-rapidapi-host': 'walmart.p.rapidapi.com',
-    'x-rapidapi-key': _api_key!,
+    'x-rapidapi-key': apiKey!,
     };
 
 //    Uri uri = Uri.https(_baseUrl, endpoint);
@@ -128,7 +128,7 @@ class WalmartProductSearch {
 
 // class PlacesNearby {
 //   // API key
-//   static const String _api_key = '';
+//   static const String apiKey = '';
 //
 //   // Base API url
 //   static const String _baseUrl = 'https://rapidapi.p.rapidapi.com/FindPlacesNearby';
@@ -137,7 +137,7 @@ class WalmartProductSearch {
 //   static const Map<String, String> _headers = {
 // //    "content-type": "application/json",
 //     'x-rapidapi-host': 'trueway-places.p.rapidapi.com',
-//     'x-rapidapi-key': _api_key,
+//     'x-rapidapi-key': apiKey,
 //   };
 //
 //

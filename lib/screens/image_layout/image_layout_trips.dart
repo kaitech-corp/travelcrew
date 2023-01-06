@@ -19,7 +19,7 @@ class ImageLayout extends StatelessWidget{
           borderRadius: const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
           child: _assetPath.contains('https') ? FadeInImage.assetNetwork(
             placeholder: 'assets/images/travelPics.png',
-            imageErrorBuilder: (BuildContext context, Object object, trace){
+            imageErrorBuilder: (BuildContext context, Object object, StackTrace? trace){
               return Image.asset(travelImage, fit: BoxFit.cover,);
             },
             image: _assetPath, fit: BoxFit.cover,) : Image.asset(_assetPath,

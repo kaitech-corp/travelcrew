@@ -35,63 +35,63 @@ class LodgingData {
     try {
       lodgingType = doc.get('lodgingType') as String;
     } catch (e) {
-      CloudFunction().logError('activityType error: ${e.toString()}');
+      // CloudFunction().logError('activityType error: ${e.toString()}');
     }
     try {
       comment = doc.get('comment') as String;
     } catch (e) {
-      CloudFunction().logError('comment error: ${e.toString()}');
+      // CloudFunction().logError('comment error: ${e.toString()}');
     }
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('Display name error: ${e.toString()}');
+      // CloudFunction().logError('Display name error: ${e.toString()}');
     }
     try {
       endTime = doc.get('endTime') as String;
     } catch (e) {
-      CloudFunction().logError('endTime error: ${e.toString()}');
+      // CloudFunction().logError('endTime error: ${e.toString()}');
     }
     try {
       endDateTimestamp = doc.get('endDateTimestamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('endDateTimestamp error: ${e.toString()}');
+      // CloudFunction().logError('endDateTimestamp error: ${e.toString()}');
     }
     try {
       startDateTimestamp = doc.get('startDateTimestamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('startDateTimestamp error: ${e.toString()}');
+      // CloudFunction().logError('startDateTimestamp error: ${e.toString()}');
     }
     try {
       fieldID = doc.get('fieldID') as String;
     } catch (e) {
-      CloudFunction().logError('fieldID error: ${e.toString()}');
+      // CloudFunction().logError('fieldID error: ${e.toString()}');
     }
     try {
       link = doc.get('link') as String;
     } catch (e) {
-      CloudFunction().logError('link error: ${e.toString()}');
+      // CloudFunction().logError('link error: ${e.toString()}');
     }
     try {
       location = doc.get('location') as String;
     } catch (e) {
-      CloudFunction().logError('location error: ${e.toString()}');
+      // CloudFunction().logError('location error: ${e.toString()}');
     }
     try {
       startTime = doc.get('startTime') as String;
     } catch (e) {
-      CloudFunction().logError('startTime error: ${e.toString()}');
+      // CloudFunction().logError('startTime error: ${e.toString()}');
     }
     try {
       var votes = doc.get('voters') as List<dynamic>;
       votes.forEach((dynamic element) {voters.add(element.toString());});
     } catch (e) {
-      CloudFunction().logError('voters error: ${e.toString()}');
+      // CloudFunction().logError('voters error: ${e.toString()}');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('UID error: ${e.toString()}');
+      // CloudFunction().logError('UID error: ${e.toString()}');
     }
     return LodgingData(
         endTime: endTime,

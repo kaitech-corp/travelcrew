@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../models/custom_objects.dart';
 import '../../models/trip_model.dart';
@@ -16,9 +14,7 @@ import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/calendar_widget.dart';
 import 'add_trip_form.dart';
-import 'add_trip_page.dart';
 import 'google_autocomplete.dart';
-
 
 /// Edit trip page
 class EditTripData extends StatefulWidget {
@@ -27,23 +23,23 @@ class EditTripData extends StatefulWidget {
   @override
   EditTripDataState createState() => EditTripDataState();
 }
+
 class EditTripDataState extends State<EditTripData> {
-
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final ImagePicker _picker = ImagePicker();
 
   final ValueNotifier<String> startDate = ValueNotifier<String>('');
   final ValueNotifier<String> endDate = ValueNotifier<String>('');
-  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier<Timestamp>(Timestamp.now());
-  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier<Timestamp>(Timestamp.now());
+  final ValueNotifier<Timestamp> startDateTimestamp =
+      ValueNotifier<Timestamp>(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp =
+      ValueNotifier<Timestamp>(Timestamp.now());
 
   final TextEditingController controllerLocation = TextEditingController();
   final TextEditingController controllerTripName = TextEditingController();
   final TextEditingController controllerType = TextEditingController();
   final TextEditingController controllerComment = TextEditingController();
   final ValueNotifier<GoogleData> googleData =
-  ValueNotifier<GoogleData>(GoogleData());
+      ValueNotifier<GoogleData>(GoogleData());
   final ValueNotifier<File> urlToImage = ValueNotifier<File>(File(''));
 
   bool dateChangeVisible = false;
@@ -68,7 +64,7 @@ class EditTripDataState extends State<EditTripData> {
     ispublic = widget.trip.ispublic;
     documentID = widget.trip.documentId;
     tripGeoPoint = widget.trip.tripGeoPoint;
-    if(widget.trip.urlToImage.isNotEmpty){
+    if (widget.trip.urlToImage.isNotEmpty) {
       urlToImage.value = File(widget.trip.urlToImage);
     }
   }
@@ -85,156 +81,185 @@ class EditTripDataState extends State<EditTripData> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-        appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.editTripPageTitle, style: Theme.of(context).textTheme.headline5,)),
-        body: SingleChildScrollView(
-            padding:
-            const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-            child: Builder(
-                builder: (BuildContext context) => Form(
+      appBar: AppBar(
+          title: Text(
+        AppLocalizations.of(context)!.editTripPageTitle,
+        style: Theme.of(context).textTheme.headline5,
+      )),
+      body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          child: Builder(
+              builder: (BuildContext context) => Form(
                     key: _formKey,
-                    child: Column(
-                        children: <Widget>[
-                          TextFormField(
-                            controller: controllerTripName,
+                    child: Column(children: <Widget>[
+                      TextFormField(
+                        controller: controllerTripName,
+                        textCapitalization: TextCapitalization.words,
+                        inputFormatters: <LengthLimitingTextInputFormatter>[
+                          LengthLimitingTextInputFormatter(75),
+                        ],
+                        decoration: InputDecoration(
+                            labelText:
+                                AppLocalizations.of(context)!.addTripNameLabel),
+                        // ignore: missing_return
+                        validator: (String? value) {
+                          if (value?.isEmpty ?? true) {
+                            return AppLocalizations.of(context)!
+                                .addTripNameValidator;
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: controllerType,
+                        textCapitalization: TextCapitalization.words,
+                        inputFormatters: <LengthLimitingTextInputFormatter>[
+                          LengthLimitingTextInputFormatter(30),
+                        ],
+                        decoration: InputDecoration(
+                            labelText:
+                                AppLocalizations.of(context)!.addTripTypeLabel),
+                        // ignore: missing_return
+                        validator: (String? value) {
+                          if (value?.isEmpty ?? true) {
+                            return AppLocalizations.of(context)!
+                                .addTripTypeValidator;
+                          }
+                          return null;
+                        },
+                      ),
+                      if (locationChangeVisible)
+                        Column(
+                          children: <Widget>[
+                            TextFormField(
+                              controller: controllerLocation,
+                              enableInteractiveSelection: true,
                               textCapitalization: TextCapitalization.words,
-                              inputFormatters: <LengthLimitingTextInputFormatter>[
-                                LengthLimitingTextInputFormatter(75),
-                              ],
-                              decoration:
-                              InputDecoration(labelText: AppLocalizations.of(context)!.addTripNameLabel),
+                              decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context)!
+                                      .addTripLocation),
                               // ignore: missing_return
                               validator: (String? value) {
                                 if (value?.isEmpty ?? true) {
-                                  return AppLocalizations.of(context)!.addTripNameValidator;
+                                  return AppLocalizations.of(context)!
+                                      .addTripLocationValidator;
+                                  // ignore: missing_return
                                 }
                                 return null;
                               },
-                          ),
-                          TextFormField(
-                            controller: controllerType,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 5, bottom: 5),
+                              child: GooglePlaces(
+                                homeScaffoldKey: homeScaffoldKey,
+                                searchScaffoldKey: searchScaffoldKey,
+                                controller: controllerLocation,
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        Column(
+                          children: <Widget>[
+                            TextFormField(
+                              controller: controllerLocation,
                               textCapitalization: TextCapitalization.words,
-                              inputFormatters: <LengthLimitingTextInputFormatter>[
-                                LengthLimitingTextInputFormatter(30),
-                              ],
-                              decoration:
-                              InputDecoration(labelText: AppLocalizations.of(context)!.addTripTypeLabel),
-                              // ignore: missing_return
-                              validator: (String? value) {
-                                if (value?.isEmpty ?? true) {
-                                  return AppLocalizations.of(context)!.addTripTypeValidator;
-                                }
-                                return null;
+                              enabled: false,
+                              decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context)!
+                                      .addTripLocation),
+                            ),
+                            ElevatedButton(
+                              child: Text(AppLocalizations.of(context)!
+                                  .editTripPageEditLocation),
+                              onPressed: () {
+                                setState(() {
+                                  locationChangeVisible = true;
+                                });
                               },
-                          ),
-                          if (locationChangeVisible) Column(
-                            children: <Widget>[
-                              TextFormField(
-                                controller: controllerLocation,
-                                enableInteractiveSelection: true,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(labelText:AppLocalizations.of(context)!.addTripLocation),
-                                // ignore: missing_return
-                                validator: (String? value) {
-                                  if (value?.isEmpty ?? true) {
-                                    return AppLocalizations.of(context)!.addTripLocationValidator;
-                                    // ignore: missing_return
-                                  }
-                                  return null;
-                                },
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                                child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controllerLocation,),),
-                            ],
-                          ) else Column(
-                            children: <Widget>[
-                              TextFormField(
-                                controller: controllerLocation,
-                                  textCapitalization: TextCapitalization.words,
-                                  enabled: false,
-                                  decoration:
-                                  InputDecoration(labelText: AppLocalizations.of(context)!.addTripLocation),
-                              ),
-                              ElevatedButton(
-                                child: Text(AppLocalizations.of(context)!.editTripPageEditLocation),
-                                onPressed: (){
-                                  setState(() {
-                                    locationChangeVisible = true;
-                                  });
-                                },
-                              )
-                            ],
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10),
-                          ),
-                          if (dateChangeVisible) CalendarWidget(
-                            startDate: startDate,
-                            startDateTimeStamp: startDateTimestamp,
-                            endDate: endDate,
-                            endDateTimeStamp: endDateTimestamp,
-                            context: context,
-                            showBoth: true,
-                          ) else Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Text('Departure Date: ${widget.trip.startDate}',style: const TextStyle(fontSize: 15),),
-                              Text('Return Date: ${widget.trip.endDate}',style: const TextStyle(fontSize: 15)),
-                              ElevatedButton(
-                                child: Text(AppLocalizations.of(context)!.editDates),
-                                onPressed: (){
-                                  setState(() {
-                                    dateChangeVisible = true;
-                                  });
-                                },
-                              )
-                            ],
-                          ),
-                          Container(
-                              child: imagePicked
-                                  ? Image.file(urlToImage.value)
-                                  : Text(
-                                AppLocalizations.of(context)!
-                                .editTripImageMessage,
-                                style: Theme.of(context).textTheme.headline6,
-                              )),
-                          ElevatedButton(
-                            onPressed: () async {
-                              urlToImage.value = await ImagePickerAndCropper().uploadImage(urlToImage);
-                              setState(() {
-                                imagePicked = true;
-                              });
-                            },
+                            )
+                          ],
+                        ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                      ),
+                      if (dateChangeVisible)
+                        CalendarWidget(
+                          startDate: startDate,
+                          startDateTimeStamp: startDateTimestamp,
+                          endDate: endDate,
+                          endDateTimeStamp: endDateTimestamp,
+                          context: context,
+                          showBoth: true,
+                        )
+                      else
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(
+                              'Departure Date: ${widget.trip.startDate}',
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                            Text('Return Date: ${widget.trip.endDate}',
+                                style: const TextStyle(fontSize: 15)),
+                            ElevatedButton(
+                              child:
+                                  Text(AppLocalizations.of(context)!.editDates),
+                              onPressed: () {
+                                setState(() {
+                                  dateChangeVisible = true;
+                                });
+                              },
+                            )
+                          ],
+                        ),
+                      Container(
+                          child: imagePicked
+                              ? Image.file(urlToImage.value)
+                              : Text(
+                                  AppLocalizations.of(context)!
+                                      .editTripImageMessage,
+                                  style: Theme.of(context).textTheme.headline6,
+                                )),
+                      ElevatedButton(
+                        onPressed: () async {
+                          urlToImage.value = await ImagePickerAndCropper()
+                              .uploadImage(urlToImage);
+                          setState(() {
+                            imagePicked = true;
+                          });
+                        },
 //                              tooltip: 'Pick Image',
-                            child: const Icon(Icons.add_a_photo),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                            child: Text(AppLocalizations.of(context)!.addTripDescriptionMessage,style: Theme.of(context).textTheme.subtitle1,),
-                          ),
-                          TextFormField(
-                            controller: controllerComment,
-                            cursorColor: Colors.grey,
-                            maxLines: 3,
-                            textCapitalization: TextCapitalization.words,
-                            decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                hintText: AppLocalizations.of(context)!.addTripAddDescriptionMessage),
-                          ),
-                        ]),
-                ))),
+                        child: const Icon(Icons.add_a_photo),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .addTripDescriptionMessage,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                      TextFormField(
+                        controller: controllerComment,
+                        cursorColor: Colors.grey,
+                        maxLines: 3,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            hintText: AppLocalizations.of(context)!
+                                .addTripAddDescriptionMessage),
+                      ),
+                    ]),
+                  ))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final FormState? form = _formKey.currentState;
           if (form!.validate()) {
-            if(locationChangeVisible){
+            if (locationChangeVisible) {
               // location = myController.text;
               tripGeoPoint = googleData.value.geoLocation;
             }
@@ -256,7 +281,8 @@ class EditTripDataState extends State<EditTripData> {
                   controllerTripName.text,
                   tripGeoPoint);
             } on Exception catch (e) {
-              CloudFunction().logError('Error in edit trip function: ${e.toString()}');
+              CloudFunction()
+                  .logError('Error in edit trip function: ${e.toString()}');
             }
             _showDialog(context);
           }
@@ -266,8 +292,10 @@ class EditTripDataState extends State<EditTripData> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+
   void _showDialog(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(addTripSavingDataMessage())));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(addTripSavingDataMessage())));
     navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
   }
 }

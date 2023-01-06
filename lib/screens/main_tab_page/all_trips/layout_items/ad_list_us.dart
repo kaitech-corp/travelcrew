@@ -46,8 +46,7 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            List<DestinationModel> destinations = snapshot.data!;
-            print(destinations.length);
+            final List<DestinationModel> destinations = snapshot.data!;
             return SizedBox(
               height: SizeConfig.screenWidth * .55,
               child: ListView(

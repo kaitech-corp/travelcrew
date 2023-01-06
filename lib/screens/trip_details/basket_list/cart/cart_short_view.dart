@@ -26,7 +26,7 @@ class CartShortView extends StatelessWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: List.generate(
+              children: List<Widget>.generate(
                 controller.cart.length,
                     (int index) => Padding(
                   padding: const EdgeInsets.only(right: defaultPadding / 2),

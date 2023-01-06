@@ -22,7 +22,7 @@ class CurrentUserProfileRepository {
 
   void refresh() {
     // Get Public Profile
-    UserPublicProfile _userProfileFromSnapshot(DocumentSnapshot<Object> snapshot){
+    UserPublicProfile userProfileFromSnapshot(DocumentSnapshot<Object> snapshot){
       if(snapshot.exists) {
         try {
           // final Map<String, dynamic> data = snapshot.data()  as Map<String, dynamic>;
@@ -38,7 +38,7 @@ class CurrentUserProfileRepository {
 
     final Stream<UserPublicProfile> profile = userPublicProfileCollection
         .doc(userService.currentUserID)
-        .snapshots().map(_userProfileFromSnapshot);
+        .snapshots().map(userProfileFromSnapshot);
 
 
 

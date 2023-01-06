@@ -127,6 +127,7 @@ class _AddTripFormState extends State<AddTripForm> {
                       return AppLocalizations.of(context)!
                           .addTripNameValidator;
                     }
+                    return null;
                   },
                   autovalidateMode: AutovalidateMode.always,
                 ),
@@ -216,7 +217,6 @@ class _AddTripFormState extends State<AddTripForm> {
                   child: ElevatedButton(
                     onPressed: () async {
                       _urlToImage.value = await ImagePickerAndCropper().uploadImage(_urlToImage);
-                      print(_urlToImage.value.path);
                     },
 //                              tooltip: 'Pick Image',
                     child: const Icon(Icons.add_a_photo),

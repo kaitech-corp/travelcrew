@@ -71,7 +71,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 title: const Text('Open to Carpooling?'),
                                 value: canCarpool,
                                 onChanged: (bool val) =>
-                                {
+                                <void>{
                                   setState((){
                                     canCarpool = val;
                                   }),
@@ -83,7 +83,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 textCapitalization: TextCapitalization.words,
                                 keyboardType: TextInputType.name,
                                 onChanged: (String val) =>
-                                {
+                                <void>{
                                   carpoolingWith = val,
                                 }
                             ),
@@ -92,7 +92,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 const InputDecoration(labelText: 'Airline'),
                                 textCapitalization: TextCapitalization.characters,
                                 onChanged: (String val) =>
-                                {
+                                <void>{
                                   airline = val,
                                 }
                             ),
@@ -101,7 +101,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                                 const InputDecoration(labelText: 'Flight Number'),
                                 textCapitalization: TextCapitalization.characters,
                                 onChanged: (String val) =>
-                                {
+                                <void>{
                                   flightNumber = val,
                                 }
                             ),

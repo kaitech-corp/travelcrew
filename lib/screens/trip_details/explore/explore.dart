@@ -51,7 +51,7 @@ class _ExploreState extends State<Explore> {
       length: 6,
       child: Scaffold(
         key: scaffoldKey,
-        drawer: BlocProvider(
+        drawer: BlocProvider<PublicProfileBloc>(
           create: (BuildContext context) => PublicProfileBloc(
               profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
           child: const MenuDrawer(),),
@@ -84,16 +84,16 @@ class _ExploreState extends State<Explore> {
         ),
         body: MultiBlocProvider(
           providers: [
-            BlocProvider(create: (BuildContext context) => GenericBloc<ActivityData,ActivityRepository>(
+            BlocProvider<GenericBloc>(create: (BuildContext context) => GenericBloc<ActivityData,ActivityRepository>(
                 repository: ActivityRepository(tripDocID:widget.trip.documentId)
               )),
-            BlocProvider(create: (BuildContext context) => GenericBloc<ChatData,ChatRepository>(
+            BlocProvider<GenericBloc>(create: (BuildContext context) => GenericBloc<ChatData,ChatRepository>(
                 repository: ChatRepository(tripDocID: widget.trip.documentId))),
-            BlocProvider(create: (BuildContext context) => GenericBloc<LodgingData,LodgingRepository>(
+            BlocProvider<GenericBloc>(create: (BuildContext context) => GenericBloc<LodgingData,LodgingRepository>(
                 repository: LodgingRepository(tripDocID: widget.trip.documentId))),
-            BlocProvider(create: (BuildContext context) => GenericBloc<TransportationData,TransportationRepository>(
+            BlocProvider<GenericBloc>(create: (BuildContext context) => GenericBloc<TransportationData,TransportationRepository>(
                 repository: TransportationRepository(tripDocID: widget.trip.documentId))),
-            BlocProvider(create: (BuildContext context) => GenericBloc<SplitObject,SplitRepository>(
+            BlocProvider<GenericBloc>(create: (BuildContext context) => GenericBloc<SplitObject,SplitRepository>(
                 repository: SplitRepository(tripDocID: widget.trip.documentId))),
           ],
           child: TabBarView(

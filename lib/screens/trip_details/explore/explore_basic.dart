@@ -18,14 +18,14 @@ class ExploreBasic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> tabs = [
+    final List<String> tabs = <String>[
       'Explore',
     ];
 
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        drawer: BlocProvider(
+        drawer: BlocProvider<PublicProfileBloc>(
           create: (BuildContext context) => PublicProfileBloc(
               profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
           child: const MenuDrawer(),),
@@ -50,7 +50,7 @@ class ExploreBasic extends StatelessWidget {
             bottom: TabBar(
               labelStyle: SizeConfig.tablet ? Theme.of(context).textTheme.headline5 : Theme.of(context).textTheme.subtitle1,
               isScrollable: true,
-              tabs: [
+              tabs: <Tab>[
                 for (final String tab in tabs) Tab(text: tab),
               ],
             ),

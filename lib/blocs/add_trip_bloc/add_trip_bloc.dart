@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/validators.dart';
 import '../../models/trip_model.dart';
-import '../../screens/authenticate/profile_stream.dart';
 import '../../services/database.dart';
 import 'add_trip_event.dart';
 import 'add_trip_state.dart';

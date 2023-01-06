@@ -69,7 +69,7 @@ class DMChatListPage extends StatelessWidget {
             Expanded(
               child: ListTile(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
                       builder: (BuildContext context) => DMChat(
                             user: user,
                           )));

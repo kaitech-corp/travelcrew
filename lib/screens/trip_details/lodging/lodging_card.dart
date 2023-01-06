@@ -53,7 +53,7 @@ class LodgingCard extends StatelessWidget {
                   ),
                   if(lodging.link.isNotEmpty) Padding(
                     padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: ViewAnyLink(link: lodging.link,function: ()=>{},),
+                    child: ViewAnyLink(link: lodging.link,function: ()=><void>{},),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

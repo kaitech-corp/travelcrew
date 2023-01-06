@@ -18,7 +18,7 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
         .orderBy('endDateTimeStamp')
         .where('ispublic', isEqualTo: true);
 
-    List<Trip> _currentCrewTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<Trip> currentCrewTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         final DateTime now = DateTime.now().toUtc();
         final DateTime past = DateTime(now.year, now.month, now.day - 2);
@@ -40,6 +40,6 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
     return tripCollection
         .where('accessUsers', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
-        .map(_currentCrewTripListFromSnapshot);
+        .map(currentCrewTripListFromSnapshot);
   }
 }

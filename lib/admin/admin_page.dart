@@ -5,9 +5,7 @@ import '../screens/alerts/alert_dialogs.dart';
 import '../services/constants/constants.dart';
 import '../services/database.dart';
 import '../services/functions/cloud_functions.dart';
-import '../services/widgets/appbar_gradient.dart';
 import '../services/widgets/loading.dart';
-import '../size_config/size_config.dart';
 
 /// Admin page
 class AdminPage extends StatefulWidget {
@@ -32,7 +30,7 @@ Widget adminDashboard() {
         title: const Text('Admin Dashboard'),
         bottom: const TabBar(
           isScrollable: true,
-          tabs: [
+          tabs: <Tab>[
             Tab(text: 'User Data'),
             Tab(text: 'User Activity'),
             Tab(text: 'Trip Data'),
@@ -41,7 +39,7 @@ Widget adminDashboard() {
           ],
         ),
       ),
-      body: TabBarView(children: [
+      body: const TabBarView(children: <Widget>[
         UserData(),
         UserActivity(),
         TripData(),
@@ -79,7 +77,7 @@ class _CustomNotificationsState extends State<CustomNotifications> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         Text(
           customNotification,
           style: Theme.of(context).textTheme.headline5,
@@ -121,7 +119,6 @@ class _CustomNotificationsState extends State<CustomNotifications> {
         const Padding(padding: EdgeInsets.only(top: 15)),
       ],
     );
-    ;
   }
 }
 

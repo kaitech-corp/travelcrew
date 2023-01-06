@@ -18,7 +18,7 @@ class FavoriteTripRepository extends GenericBlocRepository<Trip> {
         .where('ispublic', isEqualTo: true);
 
 
-    List<Trip> _tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<Trip> tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
           return Trip.fromDocument(doc);
@@ -38,6 +38,6 @@ class FavoriteTripRepository extends GenericBlocRepository<Trip> {
     return tripCollection
         .where('favorite', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
-        .map(_tripListFromSnapshot);
+        .map(tripListFromSnapshot);
   }
 }

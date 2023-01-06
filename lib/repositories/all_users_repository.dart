@@ -16,7 +16,7 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
   Stream<List<UserPublicProfile>> data() {
     final CollectionReference<Object> userPublicProfileCollection = FirebaseFirestore.instance
         .collection('userPublicProfile');
-    List<UserPublicProfile> _userListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<UserPublicProfile> userListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         List<UserPublicProfile> userList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return UserPublicProfile.fromDocument(doc);
@@ -34,6 +34,6 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
     }
     // get all users
     return userPublicProfileCollection.snapshots()
-        .map(_userListFromSnapshot);
+        .map(userListFromSnapshot);
   }
 }

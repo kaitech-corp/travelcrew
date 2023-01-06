@@ -18,7 +18,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
         .collection('transport');
 
     // Get all transportation items
-    List<TransportationData> _transportListFromSnapshot(
+    List<TransportationData> transportListFromSnapshot(
         QuerySnapshot<Object> snapshot) {
       try {
         final List<TransportationData> transportList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
@@ -36,6 +36,6 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
     return transportCollection
         .doc(tripDocID).collection('mode')
         .snapshots()
-        .map(_transportListFromSnapshot);
+        .map(transportListFromSnapshot);
   }
 }

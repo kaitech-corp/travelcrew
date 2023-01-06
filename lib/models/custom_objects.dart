@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../services/constants/constants.dart';
-import '../services/functions/cloud_functions.dart';
 
 ///Model for user
 class User {
@@ -65,77 +65,80 @@ class UserPublicProfile {
     try {
       blockedList = doc.get('blockedList') as List<dynamic>;
     } catch (e) {
-      CloudFunction().logError('Blocked List error: ${e.toString()}');
+      if(kDebugMode){
+        print('Blocked List error: ${e.toString()}');
+      }
+
     }
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('Display name error: ${e.toString()}');
+      // print('Display name error: ${e.toString()}');
     }
     try {
       email = doc.get('email') as String;
     } catch (e) {
-      CloudFunction().logError('Email error: ${e.toString()}');
+      // print('Email error: ${e.toString()}');
     }
     try {
       facebookLink = doc.get('facebookLink') as String;
     } catch (e) {
-      CloudFunction().logError('Facebook link error: ${e.toString()}');
+      // print('Facebook link error: ${e.toString()}');
     }
     try {
       firstName = doc.get('firstName') as String;
     } catch (e) {
-      CloudFunction().logError('First name error: ${e.toString()}');
+      // print('First name error: ${e.toString()}');
     }
     try {
       followers = doc.get('followers') as List<dynamic>;
     } catch (e) {
-      CloudFunction().logError('Followers error: ${e.toString()}');
+      // print('Followers error: ${e.toString()}');
     }
     try {
       following = doc.get('following') as List<dynamic>;
     } catch (e) {
-      CloudFunction().logError('Following error: ${e.toString()}');
+      // print('Following error: ${e.toString()}');
     }
     try {
       hometown = doc.get('hometown') as String;
     } catch (e) {
-      CloudFunction().logError('Hometown error: ${e.toString()}');
+      // print('Hometown error: ${e.toString()}');
     }
     try {
       instagramLink = doc.get('instagramLink') as String;
     } catch (e) {
-      CloudFunction().logError('Instagram link error: ${e.toString()}');
+      // print('Instagram link error: ${e.toString()}');
     }
     try {
       lastName = doc.get('lastName') as String;
     } catch (e) {
-      CloudFunction().logError('Last name error: ${e.toString()}');
+      // print('Last name error: ${e.toString()}');
     }
     try {
       topDestinations = doc.get('topDestinations') as List<dynamic>;
     } catch (e) {
-      CloudFunction().logError('Destinations error: ${e.toString()}');
+      // print('Destinations error: ${e.toString()}');
     }
     try {
       tripsCreated = doc.get('tripsCreated') as int;
     } catch (e) {
-      CloudFunction().logError('Trips created error: ${e.toString()}');
+      // print('Trips created error: ${e.toString()}');
     }
     try {
       tripsJoined = doc.get('tripsJoined') as int;
     } catch (e) {
-      CloudFunction().logError('Trips joined error: ${e.toString()}');
+      // print('Trips joined error: ${e.toString()}');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('UID error: ${e.toString()}');
+      // print('UID error: ${e.toString()}');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      CloudFunction().logError('Image url error: ${e.toString()}');
+      // print('Image url error: ${e.toString()}');
     }
     return UserPublicProfile(
         tripsJoined: tripsJoined,
@@ -211,27 +214,27 @@ class Members {
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('Display name error: ${e.toString()}');
+      // print('Display name error: ${e.toString()}');
     }
     try {
       firstName = doc.get('firstName') as String;
     } catch (e) {
-      CloudFunction().logError('First name error: ${e.toString()}');
+      // print('First name error: ${e.toString()}');
     }
     try {
       lastName = doc.get('lastName') as String;
     } catch (e) {
-      CloudFunction().logError('Last name error: ${e.toString()}');
+      // print('Last name error: ${e.toString()}');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('UID error: ${e.toString()}');
+      // print('UID error: ${e.toString()}');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      CloudFunction().logError('Image url error: ${e.toString()}');
+      // print('Image url error: ${e.toString()}');
     }
     return Members(
         displayName: displayName,
@@ -379,16 +382,28 @@ class TCFeedback {
 
     try {
       message = doc.get('message') as String;
-    } catch (e) {}
+    } catch (e) {
+      if(kDebugMode){
+        print(e.toString());
+      }
+    }
     try {
       fieldID = doc.get('fieldID') as String;
-    } catch (e) {}
+    } catch (e) {
+      if(kDebugMode){
+      print(e.toString());
+    }
+    }
     try {
       timestamp = doc.get('timestamp') as Timestamp;
-    } catch (e) {}
+    } catch (e) {      if(kDebugMode){
+      print(e.toString());
+    }}
     try {
       uid = doc.get('uid') as String;
-    } catch (e) {}
+    } catch (e) {      if(kDebugMode){
+      print(e.toString());
+    }}
     return TCFeedback(
         fieldID: fieldID, message: message, timestamp: timestamp, uid: uid);
   }
@@ -438,32 +453,34 @@ class TripAds {
     try {
       tripName = doc.get('tripName') as String;
     } catch (e) {
-      CloudFunction().logError('tripName error: ${e.toString()}');
+      if(kDebugMode){
+        print(e.toString());
+      }
     }
     try {
       geoPoint = doc.get('geoPoint') as GeoPoint;
     } catch (e) {
-      CloudFunction().logError('geoPoint error: ${e.toString()}');
+      // print('geoPoint error: ${e.toString()}');
     }
     try {
       link = doc.get('link') as String;
     } catch (e) {
-      CloudFunction().logError('link error: ${e.toString()}');
+      // print('link error: ${e.toString()}');
     }
     try {
       location = doc.get('location') as String;
     } catch (e) {
-      CloudFunction().logError('location error: ${e.toString()}');
+      // print('location error: ${e.toString()}');
     }
     try {
       dateCreated = doc.get('dateCreated') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('dateCreated error: ${e.toString()}');
+      // print('dateCreated error: ${e.toString()}');
     }
     try {
       documentID = doc.get('documentID') as String;
     } catch (e) {
-      CloudFunction().logError('documentID error: ${e.toString()}');
+      // print('documentID error: ${e.toString()}');
     }
     try {
       var fav = doc.get('favorites') as List<dynamic>;
@@ -471,7 +488,7 @@ class TripAds {
         favorites.add(element.toString());
       });
     } catch (e) {
-      CloudFunction().logError('favorites error: ${e.toString()}');
+      // print('favorites error: ${e.toString()}');
     }
     try {
       var clicker = doc.get('clickers') as List<dynamic>;
@@ -479,17 +496,17 @@ class TripAds {
         clickers.add(element.toString());
       });
     } catch (e) {
-      CloudFunction().logError('clickers error: ${e.toString()}');
+      // print('clickers error: ${e.toString()}');
     }
     try {
       clicks = doc.get('clicks') as int;
     } catch (e) {
-      CloudFunction().logError('endTime error: ${e.toString()}');
+      // print('endTime error: ${e.toString()}');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      CloudFunction().logError('urlToImage error: ${e.toString()}');
+      // print('urlToImage error: ${e.toString()}');
     }
     return TripAds(
         link: link,

@@ -17,7 +17,7 @@ class TripAdRepository extends GenericBlocRepository<TripAds> {
     final CollectionReference<Object> adsCollection = FirebaseFirestore.instance.collection('tripAds');
 
 // Get all Ads
-    List<TripAds> _adListFromSnapshot(QuerySnapshot<Object> snapshot){
+    List<TripAds> adListFromSnapshot(QuerySnapshot<Object> snapshot){
 
       try {
         return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
@@ -29,6 +29,6 @@ class TripAdRepository extends GenericBlocRepository<TripAds> {
       }
 
     }
-    return adsCollection.snapshots().map(_adListFromSnapshot);
+    return adsCollection.snapshots().map(adListFromSnapshot);
   }
 }

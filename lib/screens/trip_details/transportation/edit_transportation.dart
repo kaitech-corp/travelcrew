@@ -66,7 +66,7 @@ class _EditTransportationState extends State<EditTransportation> {
                               title: const Text('Open to Carpooling?'),
                               value: canCarpool,
                               onChanged: (bool val) =>
-                              {
+                              <void>{
                                 setState((){
                                   canCarpool = val;
                                 }),
