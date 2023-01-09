@@ -92,7 +92,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                         message: trip.tripName,
                         child: Text(
                           trip.tripName,
-                          style: Theme.of(context).textTheme.headline4,
+                          style: Theme.of(context).textTheme.headline5,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textScaleFactor: 1.2,
@@ -106,7 +106,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                           .dateToMonthDay(trip.startDate)} - ${trip.endDate}'
                           : 'Dates',
                       style: Theme.of(context).textTheme.subtitle2,
-                      textScaleFactor: 2,
+                      textScaleFactor: 1.2,
                     ),
                   ),
                 ],
@@ -118,7 +118,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                   width: SizeConfig.screenWidth*.25,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Colors.white,
+                    color: Colors.transparent,
                   ),
                   child: ButtonBar(
                     alignment: MainAxisAlignment.spaceEvenly,

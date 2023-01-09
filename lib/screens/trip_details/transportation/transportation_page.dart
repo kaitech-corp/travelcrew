@@ -27,12 +27,12 @@ class TransportationPage extends StatefulWidget {
 }
 
 class _TransportationPageState extends State<TransportationPage> {
-
-  late GenericBloc<TransportationData,TransportationRepository> bloc;
+  late GenericBloc<TransportationData, TransportationRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<TransportationData,TransportationRepository>>(context);
+    bloc = BlocProvider.of<
+        GenericBloc<TransportationData, TransportationRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
@@ -44,39 +44,49 @@ class _TransportationPageState extends State<TransportationPage> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<GenericBloc<TransportationData,TransportationRepository>, GenericState>(
-            builder: (BuildContext context, GenericState state) {
+        body: BlocBuilder<
+            GenericBloc<TransportationData, TransportationRepository>,
+            GenericState>(builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
             return const Loading();
           } else if (state is HasDataState) {
-            final List<TransportationData> modeList = state.data as List<TransportationData>;
+            final List<TransportationData> modeList =
+                state.data as List<TransportationData>;
             return Column(
               children: <Widget>[
-                Container(
-                  height: 16,
-                ),
+                const SizedBox(height: 8),
                 Expanded(
+                  flex: 2,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: modeList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            children: <Widget>[
-                              CircleAvatar(
+                        return Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
                                 radius: SizeConfig.screenWidth / 10.0,
                                 // backgroundColor: Colors.yellow,
                                 child: TransportationIcon(modeList[index].mode),
                               ),
-                              Text(modeList[index].displayName)
-                            ],
-                          ),
+                            ),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(
+                                  modeList[index].displayName.length > 10 ? '${modeList[index].displayName.substring(0, 10)}...' : modeList[index].displayName,
+                                  style:
+                                      Theme.of(context).textTheme.subtitle1,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ))
+                          ],
                         );
                       }),
                 ),
+                const SizedBox(height:8),
                 Expanded(
-                  flex: 5,
+                  flex: 4,
                   child: ListView.builder(
                       itemCount: modeList != null ? modeList.length : 0,
                       itemBuilder: (BuildContext context, int index) {

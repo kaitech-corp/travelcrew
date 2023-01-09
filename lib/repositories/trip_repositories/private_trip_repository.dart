@@ -16,7 +16,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
         .collection('privateTrips')
         .orderBy('endDateTimeStamp');
 
-    List<Trip> _privateTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
+    List<Trip> privateTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         return snapshot.docs
             .map((QueryDocumentSnapshot<Object> doc) {
@@ -35,6 +35,6 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
     return privateTripCollection
         .where('accessUsers', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
-        .map(_privateTripListFromSnapshot);
+        .map(privateTripListFromSnapshot);
   }
 }

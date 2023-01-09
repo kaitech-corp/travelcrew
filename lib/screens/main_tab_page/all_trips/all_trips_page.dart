@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../services/widgets/appearance_widgets.dart';
 
-import 'layout_items/ad_list_us.dart';
+import '../../../services/widgets/appearance_widgets.dart';
 import 'layout_items/suggestions_list.dart';
 import 'layout_items/trip_list.dart';
 
@@ -38,13 +37,13 @@ class _AllTripsState extends State<AllTrips>
                     ),
                   ]),
             ),
-            const SliverGridTripList(),
+            const SliverGridTripList(isPast: false,),
             RichText(
               text: TextSpan(
                   // style: ,
                   children: <TextSpan>[
                     TextSpan(
-                        text: ' Nature',
+                        text: ' Past',
                         style: responsiveTextStyleTopics(context).copyWith(color: Colors.redAccent,),),
 
                         // TextStyle(
@@ -52,12 +51,12 @@ class _AllTripsState extends State<AllTrips>
                         //     color: Colors.redAccent,
                         //     fontSize: 28)),
                     TextSpan(
-                      text: ' Lovers',
+                      text: ' Gems',
                       style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),
-            const SliverGridAdList(),
+            const SliverGridTripList(isPast: true,),
             RichText(
               text: TextSpan(
                   children: <TextSpan>[

@@ -38,9 +38,9 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
   final BasketController basketController = BasketController();
 
   bool didAnimate = true;
-  double _padding = SizeConfig.screenHeight*.35;
-  double tabletSize = SizeConfig.defaultSize * 13.0;
-  double mobileSize = SizeConfig.defaultSize * 10.0;
+  double _padding = 10;
+  double tabletSize = 15;
+  double mobileSize = 10.0;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
         if (expandController.expanded) {
           _padding = SizeConfig.tablet ? tabletSize : mobileSize;
         } else {
-          _padding = SizeConfig.screenHeight*.35;
+          _padding = 10;
         }
       });
     }
@@ -96,7 +96,7 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                 Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (widget.trip.urlToImage.isNotEmpty) Stack(
+                  if (widget.trip.urlToImage.isNotEmpty) Column(
                     children: <Widget>[
                       GestureDetector(
                         onLongPress: (){
