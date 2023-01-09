@@ -1,18 +1,3 @@
-// import 'package:map_launcher/map_launcher.dart';
-//
-// import '../../models/activity_model.dart';
-//
-// class MapLauncherWidget {
-//
-//   Future<void> openMap(ActivityData activity) async {
-//     final availableMaps = await MapLauncher.installedMaps;
-//
-//     await availableMaps.first.showMarker(
-//       coords: Coords(activity, lng),
-//       title: "Ocean Beach",
-//     );
-//   }
-// }
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
