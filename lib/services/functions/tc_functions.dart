@@ -109,16 +109,16 @@ class TCFunctions {
   }
 
   Future<void> launchURL(String url) async {
-    if (await canLaunchUrl(Uri(path: url))) {
-      await launchUrl(Uri(path: url));
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
   }
 
   dynamic launchURL2(String url) async {
-    if (await canLaunchUrl(Uri(path: url))) {
-      return await launchUrl(Uri(path: url));
+    if (await canLaunchUrl(Uri.parse(url))) {
+      return await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
