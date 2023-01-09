@@ -15,7 +15,8 @@ import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 
 class SliverGridTripList extends StatefulWidget {
-  const SliverGridTripList({Key? key}) : super(key: key);
+  const SliverGridTripList({Key? key, required this.isPast}) : super(key: key);
+  final bool isPast;
 
 
   @override
@@ -52,14 +53,23 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
           if (state is LoadingState) {
             return const Flexible(child: Loading());
           } else if (state is HasDataState) {
-            final List<Trip> tripList = state.data as List<Trip>;
+            final List<Trip> result = state.data as List<Trip>;
+            final List<Trip> tripList = (widget.isPast) ?
+            result.where((Trip trip) =>
+                trip.endDateTimeStamp.toDate().isBefore(DateTime.now()))
+                .toList()
+                .sublist(3,25)
+            .where((Trip trip) => trip.urlToImage.isNotEmpty).toList()
+                : result.where((Trip trip) =>
+                trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
+                .toList();
             return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 children: List<Widget>.generate(tripList.length, (int index) {
-                  return tripList[index].urlToImage == null
+                  return tripList[index].urlToImage.isEmpty
                       ? cardWithoutImage(
                       context, tripList[index])
                       : cardWithImage(context, tripList[index]);
@@ -108,10 +118,8 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                  trip.urlToImage,
-                ),
-                fit: BoxFit.fill,
+                image: NetworkImage(trip.urlToImage),
+                fit: BoxFit.fill
               ),
               color: const Color(0xAA91AFD0), //
               borderRadius: const BorderRadius.only(
