@@ -1,3 +1,5 @@
+// ignore_for_file: eol_at_end_of_file
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:travelcrew/utils/validators.dart';
 
