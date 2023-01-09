@@ -151,7 +151,7 @@ class FeedbackA extends StatelessWidget {
                   ),
                   key: Key(item.fieldID),
                   onDismissed: (DismissDirection direction) {
-                    CloudFunction().removeFeedback(item.fieldID);
+                    // CloudFunction().removeFeedback(item.fieldID);
                   },
                   child: ListTile(
                     key: Key(item.fieldID),
