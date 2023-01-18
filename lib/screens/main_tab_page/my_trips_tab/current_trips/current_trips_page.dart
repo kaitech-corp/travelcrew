@@ -32,14 +32,6 @@ class _CurrentTripsState extends State<CurrentTrips> {
     super.initState();
   }
 
-
-  // @override
-  // void didChangeDependencies() {
-  //
-  //   context.dependOnInheritedWidgetOfExactType();
-  //   super.didChangeDependencies();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
