@@ -16,9 +16,7 @@ class TCFunctions {
 
   int calculateTimeDifference(DateTime date) {
     final DateTime now = DateTime.now();
-    return DateTime(date.year, date.month, date.day)
-        .difference(DateTime(now.year, now.month, now.day))
-        .inDays;
+    return date.difference(now).inDays;
   }
 
   String appReviewDocID() {
@@ -45,70 +43,56 @@ class TCFunctions {
   }
 
   String chatViewGroupByDateTimeOnlyTime(Timestamp timestamp) {
-    final String dateTime = formatTimestampTimeOnly(timestamp);
-    // print(dateTime);
-    return dateTime;
+    return formatTimestampTimeOnly(timestamp);
   }
 
   String dateToYearMonthFromTimestamp(Timestamp timestamp) {
-    final String dateTime = formatTimestampYM(timestamp, wTime: false);
-    // print(dateTime);
-    return dateTime.split(',')[0];
+    return formatTimestampYM(timestamp, wTime: false).split(',')[0];
+  }
+
+  String dateToMonthDayYear(String dateTime) {
+    return '${dateTime.split(',')[0]} ${dateTime.split(',')[1]}';
   }
 
   CountDownDate dateGauge(int dateCreatedTimeStamp, int startDateTimeStamp) {
-    final DateTime now = DateTime.now();
-    final DateTime createdDate =
-        DateTime.fromMillisecondsSinceEpoch(dateCreatedTimeStamp);
-    final DateTime startDate =
-        DateTime.fromMillisecondsSinceEpoch(startDateTimeStamp);
-    final double daysLeft = (startDate.difference(now).inDays > 0)
-        ? (startDate.difference(now).inHours / 24.0).ceil().toDouble()
-        : 0.0;
-    final double initialDayCount =
-        startDate.difference(createdDate).inDays.toDouble();
-    double gaugeCount = initialDayCount - daysLeft;
-    gaugeCount = (gaugeCount > 0) ? gaugeCount : initialDayCount;
+    final int nowMillis = DateTime.now().millisecondsSinceEpoch;
+    final int daysLeft = (startDateTimeStamp - nowMillis) ~/ 86400000;
+    final int initialDayCount =
+        (startDateTimeStamp - dateCreatedTimeStamp) ~/ 86400000;
+    final int gaugeCount = daysLeft - initialDayCount;
     return CountDownDate(
-      daysLeft: daysLeft,
-      initialDayCount: initialDayCount,
-      gaugeCount: gaugeCount,
+      daysLeft: daysLeft.toDouble(),
+      initialDayCount: initialDayCount.toDouble(),
+      gaugeCount: gaugeCount.toDouble(),
     );
   }
-
+// This function returns a string that indicates whether today is before, after, 
+// or during a given time frame specified by start and end times.
   String checkDate(int startDateTimeStamp, int endDateTimeStamp) {
-    final DateTime now = DateTime.now();
-    final DateTime startDate =
-        DateTime.fromMillisecondsSinceEpoch(startDateTimeStamp);
-    final DateTime endDate =
-        DateTime.fromMillisecondsSinceEpoch(endDateTimeStamp);
-    if (startDate.difference(now).inDays > 0) {
+    final int today = DateTime.now().millisecondsSinceEpoch;
+    if (today < startDateTimeStamp) {
       return 'before';
-    } else if (endDate.difference(now).inDays > 0) {
-      return 'during';
-    } else {
+    } else if (today > endDateTimeStamp) {
       return 'after';
+    } else {
+      return 'during';
     }
   }
 
   String readTimestamp(int timestamp) {
-    final DateTime now = DateTime.now();
-    final DateFormat format = DateFormat('HH:mm a');
-    final DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    final Duration diff = date.difference(now);
-    String time = '';
-    if (diff.inDays == 0) {
-      time = format.format(date);
-    } else {
-      if ((diff.inDays).abs() == 1) {
-        time = '1 DAY AGO';
-      } else {
-        time = '${(diff.inDays).abs()} DAYS AGO';
-      }
-    }
-
-    return time;
+  final DateTime currentTime = DateTime.now();
+  final DateTime timestampTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  
+  final Duration difference = currentTime.difference(timestampTime);
+  final int days = difference.inDays;
+  final int hours = difference.inHours;
+  
+  if (days > 0) {
+    return '$days days ago';
+  } else {
+    return '$hours hours ago';
   }
+}
 
   Future<void> launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
