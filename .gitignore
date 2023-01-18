@@ -34,8 +34,13 @@
 # Web related
 lib/generated_plugin_registrant.dart
 
-# Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+# Android Studio will place build artifacts here
+/android/
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/app/main
 
-/ios/build/
+# IOS
+/ios/
 /ios/build/Pods.build/Release-iphonesimulator/
