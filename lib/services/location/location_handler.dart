@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:location/location.dart';
-import 'package:travelcrew/models/location_model.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/location/geo_location_handler.dart';
+import '../../models/location_model.dart';
+import '../functions/cloud_functions.dart';
+import 'geo_location_handler.dart';
 
 class LocationHandler {
 
-  Location location = new Location();
-  bool _serviceEnabled;
-  PermissionStatus _permissionStatus;
-  LocationData _locationData;
+  Location location = Location();
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionStatus;
+  late LocationData _locationData;
 
   Future<void> enableLocation() async {
     _serviceEnabled = await location.serviceEnabled();
@@ -36,15 +37,16 @@ class LocationHandler {
   }
 
   Future<void> getLocationData() async {
-    bool hasPermission = await getPermission();
+    final bool hasPermission = await getPermission();
       if(hasPermission == true) {
         _locationData = await location.getLocation();
-        LocationModel locationModel = await GeoLocationHandler().getAddressFromLatLng(GeoPoint(_locationData.latitude,_locationData.longitude));
+        final LocationModel locationModel = await GeoLocationHandler().getAddressFromLatLng(GeoPoint(_locationData.latitude!,_locationData.longitude!));
         if(locationModel != null){
-          print('Got here: ${locationModel.geoPoint.longitude}');
+          if (kDebugMode) {
+            print('Got here: ${locationModel.geoPoint?.longitude}');
+          }
         CloudFunction().recordLocation(locationModel:locationModel);
         }
       }
   }
 }
-

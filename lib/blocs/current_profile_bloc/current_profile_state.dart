@@ -1,17 +1,17 @@
 import 'package:equatable/equatable.dart';
-import 'package:travelcrew/models/custom_objects.dart';
+import '../../models/custom_objects.dart';
 
 
 abstract class CurrentProfileState extends Equatable{
-  CurrentProfileState();
+  const CurrentProfileState();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 class CurrentProfileLoadingState extends CurrentProfileState {}
 class CurrentProfileHasDataState extends CurrentProfileState {
+  const CurrentProfileHasDataState(this.data);
   final UserPublicProfile data;
-  CurrentProfileHasDataState(this.data);
   @override
-  List<Object> get props => [data];
+  List<Object> get props => <Object>[data];
 }

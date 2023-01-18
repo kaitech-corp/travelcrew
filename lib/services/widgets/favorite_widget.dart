@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/services/widgets/badge_icon.dart';
+import 'badge_icon.dart';
 
 class FavoriteWidget extends StatelessWidget {
-  final List<String> voters;
-  final String uid;
 
-  const FavoriteWidget({Key key, this.voters, this.uid}) : super(key: key);
+  const FavoriteWidget({Key? key, required this.voters, required this.uid}) : super(key: key);
+  final List<dynamic> voters;
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
-    return (voters.length > 0)
+    return (voters.isNotEmpty)
         ? (voters.contains(uid))
             ? BadgeIcon(
                 icon: const Icon(

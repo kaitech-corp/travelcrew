@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/generics/generic_bloc.dart';
-import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/custom_objects.dart';
 import '../../../../repositories/trip_ad_repository.dart';
-import '../../../../services/widgets/loading.dart';
+import '../../../../services/database.dart';
 import '../../../../size_config/size_config.dart';
 import '../ad_card.dart';
 
 /// Grid list for ads
 class SliverGridAdList extends StatefulWidget {
+  const SliverGridAdList({Key? key}) : super(key: key);
 
   @override
-  _SliverGridAdListState createState() => _SliverGridAdListState();
+  State<SliverGridAdList> createState() => _SliverGridAdListState();
 }
 
 class _SliverGridAdListState extends State<SliverGridAdList> {
-
-  GenericBloc<TripAds,TripAdRepository>  tripAdBloc;
+  late GenericBloc<TripAds, TripAdRepository> tripAdBloc;
 
   int crossAxisCount = 2;
 
   @override
   void initState() {
     super.initState();
-    tripAdBloc = BlocProvider.of<GenericBloc<TripAds,TripAdRepository>>(context);
+    tripAdBloc =
+        BlocProvider.of<GenericBloc<TripAds, TripAdRepository>>(context);
     tripAdBloc.add(LoadingGenericData());
   }
 
@@ -37,31 +37,49 @@ class _SliverGridAdListState extends State<SliverGridAdList> {
         crossAxisCount = 4;
       });
     }
-    return BlocBuilder<GenericBloc<TripAds,TripAdRepository>, GenericState>(
-        builder: (context, state) {
-          if (state is LoadingState) {
-            return Flexible(fit:FlexFit.loose,child: Loading());
-          } else if (state is HasDataState) {
-            List<TripAds> adList = state.data;
+    return FutureBuilder<List<DestinationModel>>(
+        future: DatabaseService().getDestinations(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<DestinationModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            final List<DestinationModel> destinations = snapshot.data!;
             return SizedBox(
-              height: SizeConfig.screenWidth*.55,
+              height: SizeConfig.screenWidth * .55,
               child: ListView(
-                // padding: EdgeInsets.all(8),
-                // crossAxisCount: crossAxisCount,
                 scrollDirection: Axis.horizontal,
-                // itemCount: adList.length,
-                // itemBuilder: (context, index){
-                //   return AdCard(tripAds: adList[index]);
-                // },
-                children: List.generate(adList.length, (index) {
-                  return AdCard(tripAds: adList[index]);
-                }
-                ),
+                children:
+                    List<Widget>.generate(destinations.length, (int index) {
+                  return AdCard(tripAds: destinations[index]);
+                }),
               ),
             );
           } else {
-            return Container();
+            return const Text('No destinations found');
           }
+          // return BlocBuilder<GenericBloc<DestinationModel,DestinationRepository>, GenericState>(
+          //     builder: (BuildContext context, GenericState state) {
+          //       if (state is LoadingState) {
+          //         return const Flexible(child: Loading());
+          //       } else if (state is HasDataState) {
+          //         final List<DestinationModel> adList = state.data as List<DestinationModel>;
+          //         return SizedBox(
+          //           height: SizeConfig.screenWidth*.55,
+          //           child: ListView(
+          //             scrollDirection: Axis.horizontal,
+          //             children: List<Widget>.generate(adList.length, (int index) {
+          //               return AdCard(tripAds: adList[index]);
+          //             }),
+          //           ),
+          //         );
+          //       } else {
+          //         return Container();
+          //       }
+          //     });
+          // }
         });
   }
 }

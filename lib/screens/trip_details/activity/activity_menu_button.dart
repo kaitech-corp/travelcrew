@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/activity_model.dart';
@@ -15,27 +16,29 @@ import '../split/split_package.dart';
 
 class ActivityMenuButton extends StatelessWidget{
 
+  const ActivityMenuButton({Key? key, required this.activity, required this.trip, this.event}) : super(key: key);
+
   final ActivityData activity;
   final Trip trip;
-  final Event event;
-
-  const ActivityMenuButton({Key key, this.activity, this.trip,this.event}) : super(key: key);
+  final Event? event;
 
   @override
   Widget build(BuildContext context) {
     return activity.uid == userService.currentUserID ? PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value){
         switch (value){
-          case "Edit": {
+          case 'Edit': {
             navigationService.navigateTo(EditActivityRoute, arguments: EditActivityArguments(activity, trip));
           }
           break;
-          case "View": {
-            if(activity.link.isNotEmpty) TCFunctions().launchURL(activity.link);
+          case 'View': {
+            if(activity.link.isNotEmpty) {
+              TCFunctions().launchURL(activity.link);
+            }
           }
           break;
-          case "Split": {
+          case 'Split': {
             SplitPackage().splitItemAlert(context,
                 SplitObject(itemDocID:activity.fieldID,
                     tripDocID: trip.documentId,
@@ -43,14 +46,14 @@ class ActivityMenuButton extends StatelessWidget{
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
                     amountRemaining: 0,
-                    itemType: "Activity" ),
+                    itemType: 'Activity', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[],  itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: ''),
                 trip: trip);
 
           }
           break;
-          case "Calendar":
+          case 'Calendar':
             {
-              Add2Calendar.addEvent2Cal(event);
+              Add2Calendar.addEvent2Cal(event!);
             }
           break;
           default: {
@@ -60,64 +63,64 @@ class ActivityMenuButton extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
-        const PopupMenuItem(
+      itemBuilder: (BuildContext context) =><PopupMenuItem<String>>[
+        const PopupMenuItem<String>(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.people),
-            title: const Text('View Link'),
+            title: Text('View Link'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
-            title: const Text('Split'),
+            title: Text('Split'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
-            title: const Text('Delete Activity'),
+            title: Text('Delete Activity'),
           ),
         ),
       ],
     ):
     PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(icon: Icons.more_horiz,),
+      onSelected: (String value){
         switch (value){
-          case "Edit": {
+          case 'Edit': {
             navigationService.navigateTo(EditActivityRoute, arguments: EditActivityArguments(activity, trip));
           }
           break;
-          case "report":
+          case 'report':
             {
               TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
             }
             break;
-          case "View": {
+          case 'View': {
             if (activity.link.isNotEmpty) {
               TCFunctions().launchURL(activity.link);
             }
           }
           break;
-          case "Split": {
+          case 'Split': {
             // if (false) {
             SplitPackage().splitItemExist(context,
                 SplitObject(
@@ -127,14 +130,14 @@ class ActivityMenuButton extends StatelessWidget{
                     itemName: activity.activityType,
                     itemDescription: activity.comment,
                     amountRemaining: 0.01,
-                    itemType: "Activity" ),
+                    itemType: 'Activity', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[], itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: '' ),
                 trip: trip
             );
           }
           break;
-          case "Calendar":
+          case 'Calendar':
             {
-              Add2Calendar.addEvent2Cal(event);
+              Add2Calendar.addEvent2Cal(event!);
             }
             break;
           default: {
@@ -143,45 +146,43 @@ class ActivityMenuButton extends StatelessWidget{
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
-        const PopupMenuItem(
+      itemBuilder: (BuildContext context) =><PopupMenuItem<String>>[
+        const PopupMenuItem<String>(
           value: 'report',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.report),
-            title: const Text('Report'),
+            title: Text('Report'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Edit',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.edit),
-            title: const Text('Edit'),
+            title: Text('Edit'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'View',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.link),
-            title: const Text('View Link'),
+            title: Text('View Link'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Split',
           child: ListTile(
             leading: IconThemeWidget(icon:Icons.attach_money),
-            title: const Text('Split'),
+            title: Text('Split'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
       ],
     );
   }
-
-
 }

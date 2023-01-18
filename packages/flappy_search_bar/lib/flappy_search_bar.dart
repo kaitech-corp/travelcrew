@@ -3,10 +3,10 @@ library flappy_search_bar;
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:flappy_search_bar/scaled_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import 'scaled_tile.dart';
 import 'search_bar_style.dart';
 
 mixin _ControllerListener<T> on State<SearchBar<T>> {
@@ -33,7 +33,7 @@ class SearchBarController<T> {
 
   void setTextController(TextEditingController _searchQueryController, minimumChars) {
     this._searchQueryController = _searchQueryController;
-    this.minimumChars = minimumChars;
+    this.minimumChars = minimumChars as int;
   }
 
   void setListener(_ControllerListener _controllerListener) {
@@ -44,7 +44,7 @@ class SearchBarController<T> {
     _controllerListener.onClear();
   }
 
-  void _search(
+  Future<void> _search(
       String text, Future<List<T>> Function(String text) onSearch) async {
     _controllerListener.onLoading();
     try {
@@ -58,7 +58,7 @@ class SearchBarController<T> {
         onCancel: () => {},
       );
 
-      final List<T> items = await _cancelableOperation?.value;
+      final List<T> items = await _cancelableOperation?.value as List<T>;
       _lastSearchFunction = onSearch;
       _lastSearchedText = text;
       _list.clear();
@@ -69,7 +69,6 @@ class SearchBarController<T> {
       _controllerListener.onListChanged(_list);
     } catch (error) {
       // _controllerListener.onError(error);
-      print(error.toString());
     }
   }
 
@@ -128,6 +127,39 @@ class SearchBarController<T> {
 typedef ScaledTile IndexedScaledTileBuilder(int index);
 
 class SearchBar<T> extends StatefulWidget {
+
+  const SearchBar({
+    Key? key,
+    required this.onSearch,
+    required this.onItemFound,
+    this.searchBarController,
+    this.minimumChars = 3,
+    this.debounceDuration = const Duration(milliseconds: 500),
+    this.loader = const Center(child: CircularProgressIndicator()),
+    this.onError,
+    this.emptyWidget = const SizedBox.shrink(),
+    this.header,
+    this.placeHolder,
+    this.icon = const Icon(Icons.search),
+    this.hintText = '',
+    this.hintStyle = const TextStyle(color: Color.fromRGBO(142, 142, 147, 1)),
+    this.iconActiveColor = Colors.black,
+    this.textStyle = const TextStyle(color: Colors.black),
+    this.cancellationWidget = const Text('Cancel'),
+    this.onCancelled,
+    this.suggestions = const [],
+    this.buildSuggestion,
+    this.searchBarStyle = const SearchBarStyle(),
+    this.crossAxisCount = 1,
+    this.shrinkWrap = false,
+    this.indexedScaledTileBuilder,
+    this.scrollDirection = Axis.vertical,
+    this.mainAxisSpacing = 0.0,
+    this.crossAxisSpacing = 0.0,
+    this.listPadding = EdgeInsets.zero,
+    this.searchBarPadding = EdgeInsets.zero,
+    this.headerPadding = EdgeInsets.zero,
+  }) : super(key: key);
   /// Future returning searched items
   final Future<List<T>> Function(String text) onSearch;
 
@@ -216,39 +248,6 @@ class SearchBar<T> extends StatefulWidget {
   /// Set a padding on the list
   final EdgeInsetsGeometry listPadding;
 
-  SearchBar({
-    Key? key,
-    required this.onSearch,
-    required this.onItemFound,
-    this.searchBarController,
-    this.minimumChars = 3,
-    this.debounceDuration = const Duration(milliseconds: 500),
-    this.loader = const Center(child: CircularProgressIndicator()),
-    this.onError,
-    this.emptyWidget = const SizedBox.shrink(),
-    this.header,
-    this.placeHolder,
-    this.icon = const Icon(Icons.search),
-    this.hintText = "",
-    this.hintStyle = const TextStyle(color: Color.fromRGBO(142, 142, 147, 1)),
-    this.iconActiveColor = Colors.black,
-    this.textStyle = const TextStyle(color: Colors.black),
-    this.cancellationWidget = const Text("Cancel"),
-    this.onCancelled,
-    this.suggestions = const [],
-    this.buildSuggestion,
-    this.searchBarStyle = const SearchBarStyle(),
-    this.crossAxisCount = 1,
-    this.shrinkWrap = false,
-    this.indexedScaledTileBuilder,
-    this.scrollDirection = Axis.vertical,
-    this.mainAxisSpacing = 0.0,
-    this.crossAxisSpacing = 0.0,
-    this.listPadding = const EdgeInsets.all(0),
-    this.searchBarPadding = const EdgeInsets.all(0),
-    this.headerPadding = const EdgeInsets.all(0),
-  }) : super(key: key);
-
   @override
   _SearchBarState createState() => _SearchBarState<T>();
 }
@@ -298,11 +297,11 @@ class _SearchBarState<T> extends State<SearchBar<T>>
   void onError(Error error) {
     setState(() {
       _loading = false;
-      _error = widget.onError != null ? widget.onError!(error) : Text("error");
+      _error = widget.onError != null ? widget.onError!(error) : const Text('error');
     });
   }
 
-  _onTextChanged(String newText) async {
+  Future<void> _onTextChanged(String newText) async {
     if (_debounce?.isActive ?? false) {
       _debounce!.cancel();
     }
@@ -348,7 +347,6 @@ class _SearchBarState<T> extends State<SearchBar<T>>
         scrollDirection: widget.scrollDirection,
         mainAxisSpacing: widget.mainAxisSpacing,
         crossAxisSpacing: widget.crossAxisSpacing,
-        addAutomaticKeepAlives: true,
         itemBuilder: (BuildContext context, int index) {
           return builder(items[index], index);
         },
@@ -363,7 +361,9 @@ class _SearchBarState<T> extends State<SearchBar<T>>
     } else if (_loading) {
       return widget.loader;
     } else if (_searchQueryController.text.length < widget.minimumChars) {
-      if (widget.placeHolder != null) return widget.placeHolder!;
+      if (widget.placeHolder != null) {
+        return widget.placeHolder!;
+      }
       return _buildListView(
           // widget.suggestions, widget.buildSuggestion ?? widget.onItemFound);
           widget.suggestions, widget.onItemFound);
@@ -382,14 +382,13 @@ class _SearchBarState<T> extends State<SearchBar<T>>
       children: <Widget>[
         Padding(
           padding: widget.searchBarPadding,
-          child: Container(
+          child: SizedBox(
             height: 80,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Flexible(
                   child: AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     width: _animate ? widthMax * .8 : widthMax,
                     decoration: BoxDecoration(
                       borderRadius: widget.searchBarStyle.borderRadius,
@@ -398,6 +397,9 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                     child: Padding(
                       padding: widget.searchBarStyle.padding,
                       child: Theme(
+                        data: Theme.of(context).copyWith(
+                          primaryColor: Colors.white,
+                        ),
                         child: TextField(
                           controller: _searchQueryController,
                           onChanged: _onTextChanged,
@@ -411,9 +413,6 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                             filled: true,
                           ),
                         ),
-                        data: Theme.of(context).copyWith(
-                          primaryColor: Colors.white,
-                        ),
                       ),
                     ),
                   ),
@@ -425,7 +424,7 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                     curve: Curves.easeIn,
                     duration: Duration(milliseconds: _animate ? 1000 : 0),
                     child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 200),
                       width:
                       _animate ? MediaQuery.of(context).size.width * .2 : 0,
                       child: Container(

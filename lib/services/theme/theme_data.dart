@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-ThemeData ThemeDataBuilder() {
+ThemeData themeDataBuilder() {
   return ThemeData(
     fontFamily: 'Cantata One',
-    textTheme: TextTheme(
-      headline1: const TextStyle(fontWeight: FontWeight.bold,
+    textTheme: const TextTheme(
+      headline1: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black),
-      headline2: const TextStyle(fontWeight: FontWeight.bold,
+      headline2: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black),
-      headline3: const TextStyle(fontWeight: FontWeight.bold,
+      headline3: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black,
           fontStyle: FontStyle.italic),
-      headline4: const TextStyle(fontWeight: FontWeight.bold,
+      headline4: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black),
-      headline5: const TextStyle(fontWeight: FontWeight.bold,
+      headline5: TextStyle(fontWeight: FontWeight.bold,
         color: Colors.black,),
-      headline6: const TextStyle(fontWeight: FontWeight.bold,
+      headline6: TextStyle(fontWeight: FontWeight.bold,
       ),
-      subtitle1: const TextStyle(fontWeight: FontWeight.bold),
-      subtitle2: const TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,),
-      button: const TextStyle(
+      subtitle1: TextStyle(fontWeight: FontWeight.bold),
+      subtitle2: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 14),
+      button: TextStyle(
           fontWeight: FontWeight.bold, color: Colors.black),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -32,7 +32,7 @@ ThemeData ThemeDataBuilder() {
               )
           ),
           textStyle: MaterialStateProperty.all<TextStyle>(
-            TextStyle(fontFamily: 'Cantata One',
+            const TextStyle(fontFamily: 'Cantata One',
               fontWeight: FontWeight.bold,),
           ),
           foregroundColor: MaterialStateProperty.all<Color>(
@@ -49,7 +49,7 @@ ThemeData ThemeDataBuilder() {
           ),
         ),
         textStyle: MaterialStateProperty.all<TextStyle>(
-          TextStyle(fontFamily: 'Cantata One',
+          const TextStyle(fontFamily: 'Cantata One',
             fontWeight: FontWeight.bold,),
         ),
       ),
@@ -57,46 +57,42 @@ ThemeData ThemeDataBuilder() {
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         textStyle: MaterialStateProperty.all<TextStyle>(
-          TextStyle(fontFamily: 'Cantata One',
+          const TextStyle(fontFamily: 'Cantata One',
               fontWeight: FontWeight.bold,
               color: Colors.lightBlue),
         ),
       ),
     ),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Colors.black),),
     primaryIconTheme: IconThemeData(
         size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
         color: Colors.black
     ),
-    buttonColor: Colors.blue,
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue
     ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF121212),
         selectedItemColor: Colors.blueAccent,
         unselectedItemColor: Color(0xFF121212)
     ),
-    canvasColor: Color(0xFFFAFAFA),
-    accentIconTheme: IconThemeData(
-        color: Colors.black
-    ),
+    canvasColor: const Color(0xFFFAFAFA),
     brightness: Brightness.light,
     primaryColor: Colors.white,
     inputDecorationTheme: InputDecorationTheme(
-      labelStyle: TextStyle(color: Colors.black),
+      labelStyle: const TextStyle(color: Colors.black),
       fillColor: Colors.grey[300],
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
+      focusedBorder: const UnderlineInputBorder(
+        
       ),
     ),
     iconTheme: IconThemeData(
       color: Colors.white,
       size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
     ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.blueAccent),
-    pageTransitionsTheme: PageTransitionsTheme(builders: {
+    pageTransitionsTheme: const PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
       TargetPlatform.iOS: ZoomPageTransitionsBuilder()
     }),

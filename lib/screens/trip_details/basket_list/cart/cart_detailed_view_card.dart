@@ -8,8 +8,8 @@ import '../../../../services/widgets/basket_icon.dart';
 
 class CartDetailsViewCard extends StatelessWidget {
   const CartDetailsViewCard({
-    Key key,
-    this.item,
+    Key? key,
+    required this.item,
   }) : super(key: key);
 
   final WalmartProductsItem item;
@@ -18,24 +18,24 @@ class CartDetailsViewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-      leading: BasketIcon(item.walmartProducts.type),
+      leading: basketIcon(item.walmartProducts!.type),
       title: Text(
-        item.walmartProducts.query,
+        item.walmartProducts!.query!,
         style: Theme.of(context)
             .textTheme
             .subtitle1
-            .copyWith(fontWeight: FontWeight.bold),
+            !.copyWith(fontWeight: FontWeight.bold),
       ),
       trailing: FittedBox(
         child: Row(
-          children: [
+          children: <Widget>[
             // Price(amount: "20"),
             Text(
-              "  x ${item.quantity}",
+              '  x ${item.quantity}',
               style: Theme.of(context)
                   .textTheme
                   .subtitle1
-                  .copyWith(fontWeight: FontWeight.bold),
+                  !.copyWith(fontWeight: FontWeight.bold),
             )
           ],
         ),

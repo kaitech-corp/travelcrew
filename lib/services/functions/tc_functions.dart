@@ -1,309 +1,142 @@
+// ignore_for_file: only_throw_errors
+
 import 'dart:math';
 
-import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:google_maps_webservice/places.dart';
+import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../models/activity_model.dart';
 import '../../models/custom_objects.dart';
-import '../../models/lodging_model.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../locator.dart';
 
 class TCFunctions {
-
-  var userService = locator<UserService>();
-
-  TimeOfDay stringToTimeOfDay(String time) {
-    final DateFormat format = DateFormat.jm(); //"6:00 AM"
-
-    return TimeOfDay.fromDateTime(format.parse(time));
-  }
-  
-  Event createEvent(
-      {ActivityData activity,
-      DateTimeModel timeModel,
-      LodgingData lodging,
-      String type}){
-
-    if(type == 'Activity') {
-      final Event event = Event(
-        title: activity.activityType,
-        description: activity.comment,
-        location: activity.location,
-        startDate: timeModel.startDate,
-        endDate: timeModel.endDate,
-      );
-      return event;
-    } else{
-      final Event event = Event(
-        title: lodging.lodgingType,
-        description: lodging.comment,
-        location: lodging.location,
-        startDate: timeModel.startDate,
-        endDate: timeModel.endDate,
-        // allDay: true,
-      );
-      return event;
-    }
-
-  }
-
-
-  DateTimeModel addDateAndTime(
-      {Timestamp startDate,
-      Timestamp endDate,
-      String startTime,
-      String endTime,
-      bool hasEndDate}){
-
-    if(hasEndDate){
-      try {
-        TimeOfDay _startTime = TimeOfDay.now();
-        TimeOfDay _endTime = TimeOfDay.now();
-        Timestamp _startDateX = Timestamp.now();
-        Timestamp _endDateX = Timestamp.now();
-
-        _startTime = stringToTimeOfDay(startTime) ?? TimeOfDay.now();
-        _endTime = stringToTimeOfDay(endTime) ?? TimeOfDay.now();
-
-        _startDateX = startDate ?? Timestamp.now();
-        _endDateX = endDate ?? Timestamp.now();
-
-        final DateTime _startDate = DateTime(
-            _startDateX.toDate().year,
-            _startDateX.toDate().month,
-            _startDateX.toDate().day,
-            _startTime.hour,
-            _startTime.minute
-        );
-        final DateTime _endDate = DateTime(
-            _endDateX.toDate().year,
-            _endDateX.toDate().month,
-            _endDateX.toDate().day,
-            _endTime.hour,
-            _endTime.minute
-        );
-        return DateTimeModel(endDate: _endDate,startDate: _startDate);
-      } catch (e) {
-        final TimeOfDay _startTime = TimeOfDay.now();
-        final TimeOfDay _endTime = TimeOfDay.now();
-        final Timestamp _startDateX = Timestamp.now();
-        final Timestamp _endDateX = Timestamp.now();
-
-        final DateTime _startDate = DateTime(
-            _startDateX.toDate().year,
-            _startDateX.toDate().month,
-            _startDateX.toDate().day,
-            _startTime.hour,
-            _startTime.minute
-        );
-        final DateTime _endDate = DateTime(
-            _endDateX.toDate().year,
-            _endDateX.toDate().month,
-            _endDateX.toDate().day,
-            _endTime.hour,
-            _endTime.minute
-        );
-        return DateTimeModel(endDate: _endDate,startDate: _startDate);
-      }
-    } else {
-      try {
-        TimeOfDay _startTime = TimeOfDay.now();
-        TimeOfDay _endTime = TimeOfDay.now();
-        Timestamp _startDateX = Timestamp.now();
-        Timestamp _endDateX = Timestamp.now();
-
-        _startTime = stringToTimeOfDay(startTime) ?? TimeOfDay.now();
-        _endTime = stringToTimeOfDay(endTime) ?? TimeOfDay.now();
-        _startDateX = startDate;
-        _endDateX = startDate;
-
-
-        final DateTime _startDate = DateTime(
-            _startDateX.toDate().year,
-            _startDateX.toDate().month,
-            _startDateX.toDate().day,
-            _startTime.hour,
-            _startTime.minute
-        );
-        final DateTime _endDate = DateTime(
-            _endDateX.toDate().year,
-            _endDateX.toDate().month,
-            _endDateX.toDate().day,
-            _endTime.hour,
-            _endTime.minute
-        );
-        return DateTimeModel(endDate: _endDate,startDate: _startDate);
-      } catch (e) {
-        final TimeOfDay _startTime = TimeOfDay.now();
-        final TimeOfDay _endTime = TimeOfDay.now();
-        final Timestamp _startDateX = Timestamp.now();
-        final Timestamp _endDateX = Timestamp.now();
-
-        final DateTime _startDate = DateTime(
-            _startDateX.toDate().year,
-            _startDateX.toDate().month,
-            _startDateX.toDate().day,
-            _startTime.hour,
-            _startTime.minute
-        );
-        final DateTime _endDate = DateTime(
-            _endDateX.toDate().year,
-            _endDateX.toDate().month,
-            _endDateX.toDate().day,
-            _endTime.hour,
-            _endTime.minute
-        );
-        return DateTimeModel(endDate: _endDate,startDate: _startDate);
-      }
-    }
-  }
-
+  UserService userService = locator<UserService>();
 
   int calculateTimeDifference(DateTime date) {
     final DateTime now = DateTime.now();
-    return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+    return date.difference(now).inDays;
   }
 
   String appReviewDocID() {
     final DateTime now = DateTime.now();
-    if(now.month < 6){
+    if (now.month < 6) {
       return '${DateFormat('y').format(now)}first';
-    } else{
+    } else {
       return '${DateFormat('y').format(now)}second';
     }
   }
 
-  String dateToMonthDay(String dateTime){
+  String dateToMonthDay(String dateTime) {
     return dateTime.split(',')[0];
   }
 
-  String dateToMonthDayFromTimestamp(Timestamp timestamp){
+  String dateToMonthDayFromTimestamp(Timestamp timestamp) {
     final String dateTime = formatTimestamp(timestamp, wTime: false);
     return dateTime.split(',')[0];
   }
-  String chatViewGroupByDateTime(Timestamp timestamp){
+
+  String chatViewGroupByDateTime(Timestamp timestamp) {
     final String dateTime = formatTimestamp(timestamp, wTime: true);
     return dateTime;
   }
 
-  String chatViewGroupByDateTimeOnlyTime(Timestamp timestamp){
-    final String dateTime = formatTimestampTimeOnly(timestamp);
-    // print(dateTime);
-    return dateTime;
+  String chatViewGroupByDateTimeOnlyTime(Timestamp timestamp) {
+    return formatTimestampTimeOnly(timestamp);
   }
 
-
-
-  String dateToYearMonthFromTimestamp(Timestamp timestamp){
-    final String dateTime = formatTimestampYM(timestamp, wTime: false);
-    // print(dateTime);
-    return dateTime.split(',')[0];
+  String dateToYearMonthFromTimestamp(Timestamp timestamp) {
+    return formatTimestampYM(timestamp, wTime: false).split(',')[0];
   }
 
-  CountDownDate dateGauge(int dateCreatedTimeStamp, int startDateTimeStamp){
-    final DateTime now = DateTime.now();
-    final DateTime createdDate = DateTime
-        .fromMillisecondsSinceEpoch(dateCreatedTimeStamp);
-    final DateTime startDate = DateTime
-        .fromMillisecondsSinceEpoch(startDateTimeStamp);
-    final double daysLeft = (startDate.difference(now).inDays > 0)
-        ? (startDate.difference(now).inHours/24.0).ceil().toDouble()
-        : 0.0;
-    final double initialDayCount = startDate
-        .difference(createdDate).inDays.toDouble();
-    var gaugeCount = initialDayCount - daysLeft;
-    gaugeCount = (gaugeCount>0)
-        ? gaugeCount
-        : initialDayCount;
+  String dateToMonthDayYear(String dateTime) {
+    return '${dateTime.split(',')[0]} ${dateTime.split(',')[1]}';
+  }
+
+  CountDownDate dateGauge(int dateCreatedTimeStamp, int startDateTimeStamp) {
+    final int nowMillis = DateTime.now().millisecondsSinceEpoch;
+    final int daysLeft = (startDateTimeStamp - nowMillis) ~/ 86400000;
+    final int initialDayCount =
+        (startDateTimeStamp - dateCreatedTimeStamp) ~/ 86400000;
+    final int gaugeCount = daysLeft - initialDayCount;
     return CountDownDate(
-      daysLeft: daysLeft,
-      initialDayCount: initialDayCount,
-      gaugeCount: gaugeCount,
+      daysLeft: daysLeft.toDouble(),
+      initialDayCount: initialDayCount.toDouble(),
+      gaugeCount: gaugeCount.toDouble(),
     );
   }
-
-  String checkDate(int startDateTimeStamp, int endDateTimeStamp){
-    final DateTime now = DateTime.now();
-    final DateTime startDate = DateTime
-        .fromMillisecondsSinceEpoch(startDateTimeStamp);
-    final DateTime endDate = DateTime
-        .fromMillisecondsSinceEpoch(endDateTimeStamp);
-    if(startDate.difference(now).inDays > 0){
+// This function returns a string that indicates whether today is before, after, 
+// or during a given time frame specified by start and end times.
+  String checkDate(int startDateTimeStamp, int endDateTimeStamp) {
+    final int today = DateTime.now().millisecondsSinceEpoch;
+    if (today < startDateTimeStamp) {
       return 'before';
-    } else if(endDate.difference(now).inDays > 0){
-      return 'during';
-    } else{
+    } else if (today > endDateTimeStamp) {
       return 'after';
+    } else {
+      return 'during';
     }
   }
 
   String readTimestamp(int timestamp) {
-    final DateTime now = DateTime.now();
-    final DateFormat format = DateFormat('HH:mm a');
-    final DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    final Duration diff = date.difference(now);
-    var time = '';
-    if (diff.inDays == 0) {
-      time = format.format(date);
-    } else {
-      if ((diff.inDays).abs() == 1) {
-        time = '1 DAY AGO';
-      } else {
-        time = (diff.inDays).abs().toString() + ' DAYS AGO';
-      }
-    }
-
-    return time;
+  final DateTime currentTime = DateTime.now();
+  final DateTime timestampTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  
+  final Duration difference = currentTime.difference(timestampTime);
+  final int days = difference.inDays;
+  final int hours = difference.inHours;
+  
+  if (days > 0) {
+    return '$days days ago';
+  } else {
+    return '$hours hours ago';
   }
+}
 
-  launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  Future<void> launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
   }
 
   dynamic launchURL2(String url) async {
-    if (await canLaunch(url)) {
-      return await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      return await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
   }
 
-  String createChatDoc(String x, String y){
-    final _userList = [x,y];
-    _userList.sort();
-    final String _docID = '${_userList[0]}_${_userList[1]}';
-    return _docID;
+  String createChatDoc(String x, String y) {
+    final List<String> userList = <String>[x, y];
+    userList.sort();
+    final String docID = '${userList[0]}_${userList[1]}';
+    return docID;
   }
 
-  List<String> splitDocID(List<String> x){
-    final _idList = [];
-    x.forEach((id) {
-      final _y = id.split('_');
-      _y.remove(userService.currentUserID);
-      _idList.add(_y[0]);
-    });
-    return _idList;
+  List<String> splitDocID(List<String> x) {
+    final List<String> idList = <String>[];
+    for (final String id in x) {
+      final List<String> y = id.split('_');
+      y.remove(userService.currentUserID);
+      idList.add(y[0]);
+    }
+    return idList;
   }
 
-  dynamic getLocation(dynamic lat, dynamic lng){
+  dynamic getLocation(double lat, double lng) {
     return Location(lat: lat, lng: lng);
   }
 
-  String formatTimestamp (Timestamp timestamp, {bool wTime}){
+  String formatTimestamp(Timestamp timestamp, {required bool wTime}) {
     try {
       final DateFormat format = DateFormat('yMMMd');
       final DateFormat format2 = DateFormat('yMMMd').add_jm();
-      final DateTime date = DateTime
-          .fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      final DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return wTime ? format2.format(date) : format.format(date);
     } catch (e) {
       CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
@@ -311,12 +144,12 @@ class TCFunctions {
     }
   }
 
-  String formatTimestampTimeOnly (Timestamp timestamp){
+  String formatTimestampTimeOnly(Timestamp timestamp) {
     try {
       final DateFormat format = DateFormat.jm();
 
-      final DateTime date = DateTime
-          .fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      final DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return format.format(date);
     } catch (e) {
       CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
@@ -324,12 +157,12 @@ class TCFunctions {
     }
   }
 
-  String formatTimestampYM (Timestamp timestamp, {bool wTime}){
+  String formatTimestampYM(Timestamp timestamp, {required bool wTime}) {
     try {
       final DateFormat format = DateFormat('yMMM');
       final DateFormat format2 = DateFormat('yMMM').add_jm();
-      final DateTime date = DateTime
-          .fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      final DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return wTime ? format2.format(date) : format.format(date);
     } catch (e) {
       CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
@@ -337,18 +170,10 @@ class TCFunctions {
     }
   }
 
-  List<int> randomList(int num) {
-    // Random random = new Random();
-    // List<int> x = List<int>.generate(5, (index) => random.nextInt(num));
-    List<int> numberList=[];
-    Random random = new Random();
-    while(numberList.length<5){
-      int random_number = random.nextInt(num);
-      if (!numberList.contains(random_number)){
-        numberList.add(random_number);
-      }
-    }
-    return numberList;
+  List<int> randomList() {
+    final Random random = Random();
+    final List<int> x =
+        List<int>.generate(5, (int index) => random.nextInt(28));
+    return x;
   }
-
 }

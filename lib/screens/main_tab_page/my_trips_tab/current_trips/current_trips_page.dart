@@ -14,42 +14,35 @@ import '../sliver_grid_view.dart';
 
 
 /// Current trips
-class CurrentTrips extends StatefulWidget{
+class CurrentTrips extends StatefulWidget {
+  const CurrentTrips({Key? key}) : super(key: key);
 
   @override
-  _CurrentTripsState createState() => _CurrentTripsState();
+  State<CurrentTrips> createState() => _CurrentTripsState();
 }
 
-class _CurrentTripsState extends State<CurrentTrips>{
-  GenericBloc bloc;
+class _CurrentTripsState extends State<CurrentTrips> {
+
+  late GenericBloc<Trip,CurrentTripRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);
-    bloc.add(LoadingGenericData());
-    super.initState();
-  }
-
-
-  @override
-  void didChangeDependencies() {
     bloc = BlocProvider.of<GenericBloc<Trip,CurrentTripRepository>>(context);//dependency injection
     bloc.add(LoadingGenericData());
-    context.dependOnInheritedWidgetOfExactType();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GenericBloc<Trip,CurrentTripRepository>, GenericState>(
-      // bloc: bloc,
-      builder: (context, state){
+      builder: (BuildContext context, GenericState state){
         if(state is LoadingState){
-            return Loading();
-        } else if (state is HasDataState<Trip>){
+            return const Loading();
+        } else if (state is HasDataState){
+          final List<Trip> tripsData = state.data as List<Trip>;
         return SizeConfig.tablet ?
-        SliverGridView(trips: state.data, length: state.data.length):
-        GroupedListTripView(data: state.data, isPast: false,);
+        SliverGridView(trips: tripsData, length: tripsData.length):
+        GroupedListTripView(data: tripsData, isPast: false,);
         } else {
             return nil;
         }

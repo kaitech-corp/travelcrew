@@ -10,13 +10,13 @@ import 'transportation_details.dart';
 
 class DetailsPage extends StatelessWidget{
 
-  final ActivityData activity;
-  final LodgingData lodging;
-  final TransportationData transport;
+  const DetailsPage({Key? key, required this.activity,this.lodging,required this.transport,required this.type, required this.trip}) : super(key: key);
+
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final TransportationData? transport;
   final Trip trip;
   final String type;
-
-  DetailsPage({this.activity,this.lodging,this.transport,this.type, this.trip});
 
 
 
@@ -24,17 +24,12 @@ class DetailsPage extends StatelessWidget{
   Widget build(BuildContext context) {
     switch (type){
       case 'Activity':
-        return ActivityDetails(activity: activity,trip: trip,);
+        return ActivityDetails(activity: activity!,trip: trip,);
       case 'Lodging':
-        return LodgingDetails(lodging:lodging,trip: trip,);
+        return LodgingDetails(lodging:lodging!,trip: trip,);
       default:
-        return TransportationDetails(transport:transport,);
+        return TransportationDetails(transport:transport!,);
     }
   }
 
 }
-
-
-
-
-

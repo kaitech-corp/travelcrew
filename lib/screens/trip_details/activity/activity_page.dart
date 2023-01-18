@@ -16,9 +16,9 @@ import '../../../services/widgets/loading.dart';
 import 'activity_card.dart';
 
 class ActivityPage extends StatefulWidget {
+  const ActivityPage({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
-  ActivityPage({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,7 +28,7 @@ class ActivityPage extends StatefulWidget {
 
 class _ActivityPageState extends State<ActivityPage> {
 
-  GenericBloc<ActivityData,ActivityRepository> bloc;
+  late GenericBloc<ActivityData,ActivityRepository> bloc;
 
   @override
   void initState() {
@@ -42,38 +42,34 @@ class _ActivityPageState extends State<ActivityPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         body: BlocBuilder<GenericBloc<ActivityData,ActivityRepository>, GenericState>(
-            builder: (context, state){
+            builder: (BuildContext context, GenericState state){
               if(state is LoadingState){
-                return Loading();
-              } else if (state is HasDataState<ActivityData>){
-                List<ActivityData> activityList = state.data;
-            return Container(
-                  child:
-                    GroupedListView<ActivityData, String>(
-                      elements: activityList,
-                      groupBy: (activity) => DateTime(
-                          activity.startDateTimestamp.toDate().year,
-                          activity.startDateTimestamp.toDate().month,
-                          activity.startDateTimestamp.toDate().day,).toString(),
-                      order: GroupedListOrder.ASC,
-                      groupSeparatorBuilder: (activity) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: Center(
-                            child: Text(
-                              TCFunctions().dateToMonthDayFromTimestamp(
-                                  Timestamp.fromDate(DateTime.parse(activity))),
-                              style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.black54),)),
-                      ),
-                      itemComparator: (a,b) => (a.startTime.compareTo(b.startTime)),
-                      itemBuilder: (context, activity){
-                        return ActivityCard(activity: activity,trip: widget.trip,);
-                      },
-                    )
-                );
+                return const Loading();
+              } else if (state is HasDataState){
+                final List<ActivityData> activityList = state.data as List<ActivityData>;
+            return GroupedListView<ActivityData, String>(
+              elements: activityList,
+              groupBy: (ActivityData activity) => DateTime(
+                  activity.startDateTimestamp.toDate().year,
+                  activity.startDateTimestamp.toDate().month,
+                  activity.startDateTimestamp.toDate().day,).toString(),
+              groupSeparatorBuilder: (String activity) => Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Center(
+                    child: Text(
+                      TCFunctions().dateToMonthDayFromTimestamp(
+                          Timestamp.fromDate(DateTime.parse(activity))),
+                      style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black54),)),
+              ),
+              itemComparator: (ActivityData a,ActivityData b) => a.startTime.compareTo(b.startTime),
+              itemBuilder: (BuildContext context, ActivityData activity){
+                return ActivityCard(activity: activity,trip: widget.trip,);
+              },
+            );
               } else {
                 return Container();
               }
@@ -89,4 +85,3 @@ class _ActivityPageState extends State<ActivityPage> {
     );
   }
 }
-

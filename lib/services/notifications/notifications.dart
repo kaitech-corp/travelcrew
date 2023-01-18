@@ -12,7 +12,7 @@ class SettingsNotifications {
   ///
   ///Check permission status for notifications
   Future<bool> permissionStatus() async {
-    return NotificationPermissions.getNotificationPermissionStatus().then((value) {
+    return NotificationPermissions.getNotificationPermissionStatus().then((PermissionStatus value) {
       if(value == PermissionStatus.granted){
         return true;
       } else{
@@ -24,8 +24,7 @@ class SettingsNotifications {
   ///Request permission if permission is not granted.
   Future<PermissionStatus> requestPermission() {
     return NotificationPermissions.requestNotificationPermissions(
-        iosSettings: const NotificationSettingsIos(
-            sound: true, badge: true, alert: true),openSettings: true
+        
         );
   }
 }

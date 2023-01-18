@@ -4,16 +4,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../size_config/size_config.dart';
 
 class Loading extends StatelessWidget{
+  const Loading({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: SizeConfig.screenHeight,
       width: SizeConfig.screenWidth,
       color: Colors.white,
-      child: Center(
+      child: const Center(
         child: SpinKitChasingDots(
           color: Colors.blue,
-          size: 50.0,
           duration: Duration(seconds: 5),
         ),
       ),

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
-Widget BasketIcon(String department) {
+Widget basketIcon(String? department) {
 
     switch (department){
       case 'Food':
-        return CircleAvatar(child: Icon(Icons.fastfood));
-      break;
+        return const CircleAvatar(child: Icon(Icons.fastfood));
       case 'Toys':
-        return CircleAvatar(child: Icon(Icons.games));
-      break;
+        return const CircleAvatar(child: Icon(Icons.games));
       case 'Home':
-        return CircleAvatar(child: Icon(Icons.shopping_cart));
-      break;
+        return const CircleAvatar(child: Icon(Icons.shopping_cart));
       default:
-        return CircleAvatar(child: Icon(Icons.shopping_basket));
+        return const CircleAvatar(child: Icon(Icons.shopping_basket));
     }
 
 }

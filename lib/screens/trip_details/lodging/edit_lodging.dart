@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -6,53 +5,62 @@ import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/functions/date_time_retrieval.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
-import '../../../services/widgets/reusableWidgets.dart';
-import '../../add_trip/google_places.dart';
+import '../../../services/widgets/time_picker.dart';
+import '../../add_trip/google_autocomplete.dart';
 
 /// Edit lodging data
 class EditLodging extends StatefulWidget {
+  const EditLodging({Key? key, required this.lodging, required this.trip})
+      : super(key: key);
 
   final LodgingData lodging;
   final Trip trip;
-  EditLodging({this.lodging, this.trip});
 
   @override
-  _EditLodgingState createState() => _EditLodgingState();
-
+  State<EditLodging> createState() => _EditLodgingState();
 }
+
 class _EditLodgingState extends State<EditLodging> {
 
-  final homeScaffoldKey = GlobalKey<ScaffoldState>();
-  final searchScaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 
-  final ValueNotifier<String> startTime = ValueNotifier('');
-  final ValueNotifier<String> endTime = ValueNotifier('');
-  final ValueNotifier<Timestamp> startDateTimestamp = ValueNotifier(Timestamp.now());
-  final ValueNotifier<Timestamp> endDateTimestamp = ValueNotifier(Timestamp.now());
+  final ValueNotifier<Timestamp> startDateTimestamp =
+      ValueNotifier<Timestamp>(Timestamp.now());
+  final ValueNotifier<Timestamp> endDateTimestamp =
+      ValueNotifier<Timestamp>(Timestamp.now());
+  final ValueNotifier<TimeOfDay> startTime =
+      ValueNotifier<TimeOfDay>(TimeOfDay.now());
+  final ValueNotifier<TimeOfDay> endTime =
+      ValueNotifier<TimeOfDay>(TimeOfDay.now());
   final TextEditingController controller = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
-  String link;
-  String lodgingType;
-  String comment;
-  String documentID;
-  String fieldID;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? link;
+  String? lodgingType;
+  String? comment;
+  late String documentID;
+  late String fieldID;
   bool calendarVisible = false;
   bool timePickerVisible = false;
 
-
   @override
   void initState() {
-    controller.text = widget.lodging?.location ?? '';
-    endDateTimestamp.value = widget.lodging?.endDateTimestamp ?? widget.trip.endDateTimeStamp;
-    startDateTimestamp.value = widget.lodging?.startDateTimestamp ?? widget.trip.startDateTimeStamp;
+    controller.text = widget.lodging.location;
+    endDateTimestamp.value =
+        widget.lodging.endDateTimestamp;
+    startDateTimestamp.value =
+        widget.lodging.startDateTimestamp;
     link = widget.lodging.link;
     lodgingType = widget.lodging.lodgingType;
     comment = widget.lodging.comment;
-    startTime.value = widget.lodging.startTime;
-    endTime.value = widget.lodging.endTime;
+    startTime.value =
+        TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp.toDate());
+    endTime.value =
+        TimeOfDay.fromDateTime(widget.lodging.startDateTimestamp.toDate());
     documentID = widget.trip.documentId;
     fieldID = widget.lodging.fieldID;
     super.initState();
@@ -60,182 +68,215 @@ class _EditLodgingState extends State<EditLodging> {
 
   @override
   void dispose() {
-   controller.dispose();
-   endDateTimestamp.dispose();
-   startDateTimestamp.dispose();
-   super.dispose();
+    controller.dispose();
+    endDateTimestamp.dispose();
+    startDateTimestamp.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('Edit Lodging',style: Theme.of(context).textTheme.headline5,),
+        appBar: AppBar(
+          title: Text(
+            'Edit Lodging',
+            style: Theme.of(context).textTheme.headline5,
           ),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Builder(
-              builder: (context) => Form(
-                key: _formKey,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      TextFormField(
-                        onSaved: (val){
-                          setState(() => lodgingType = val);
-                        },
-                        textCapitalization: TextCapitalization.sentences,
-                        enableInteractiveSelection: true,
-                        initialValue: lodgingType,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
-                          ),
-                          labelText: "Hotel, Airbnb, etc",
-                        ),
-                        // ignore: missing_return
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter a lodging type.';
-                          }
-                        },
-                      ),
-                      const Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      ),
-                      TextFormField(
-                        onSaved: (val){
-                          setState(() => link = val);
-                        },
-                        enableInteractiveSelection: true,
-                        initialValue: link,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
-                          ),
-                          labelText: "Link",
-                        ),
-                        // ignore: missing_return
-                        validator: (value) {
-                          if ( value.isNotEmpty && !value.startsWith('https')){
-                            return 'Please enter a valid link with including https.';
-                          }
-                        },
-                          autovalidateMode: AutovalidateMode.onUserInteraction
-                      ),
-                      const Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      ),
-                      TextFormField(
-                        onSaved: (val){
-                          setState(() => comment = val);
-                        },
-                        textCapitalization: TextCapitalization.sentences,
-                        enableInteractiveSelection: true,
-                        obscureText: false,
-                        initialValue: comment,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
-                          ),
-                          labelText: "Description",
-                        ),
-                        maxLines: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                        child: TextFormField(
-                          controller: controller,
-                          enableInteractiveSelection: true,
-                          // maxLines: 2,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: ReusableThemeColor().colorOpposite(context), width: 1.0),
-                            ),
-                            labelText: "Address",
-                          ),
-                          // ignore: missing_return
-                        ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 16.0),
-                          child: GooglePlaces(homeScaffoldKey: homeScaffoldKey,searchScaffoldKey: searchScaffoldKey,controller: controller,),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Schedule',style: Theme.of(context).textTheme.headline6,),
-                      ),
-                      Container(height: 2,color: Colors.black,),
-                      calendarVisible ? CalendarWidget(
-                        startDateTimeStamp: startDateTimestamp,
-                        endDateTimeStamp: endDateTimestamp,
-                        showBoth: true,):
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          child: Text('Edit Dates',style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              calendarVisible = true;
-                            });
-                          },
-                        ),
-                      ),
-                      timePickerVisible ? TimePickers(lodging: true,startTime: startTime,endTime: endTime,) :
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          child: Text('CheckIn/Checkout',style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              timePickerVisible = true;
-                            });
-                          },
-                        ),
-                      ),
-                    ]
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Builder(
+            builder: (BuildContext context) => Form(
+              key: _formKey,
+              child: Column(children: <Widget>[
+                TextFormField(
+                  onSaved: (String? val) {
+                    setState(() => lodgingType = val);
+                  },
+                  textCapitalization: TextCapitalization.sentences,
+                  enableInteractiveSelection: true,
+                  initialValue: lodgingType,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: ReusableThemeColor().colorOpposite(context)),
+                    ),
+                    labelText: 'Hotel, Airbnb, etc',
+                  ),
+                  // ignore: missing_return
+                  validator: (String? value) {
+                    if (value?.isEmpty ?? false) {
+                      return 'Please enter a lodging type.';
+                    }
+                    return null;
+                  },
                 ),
-              ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                ),
+                TextFormField(
+                    onSaved: (String? val) {
+                      setState(() => link = val);
+                    },
+                    enableInteractiveSelection: true,
+                    initialValue: link,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: ReusableThemeColor().colorOpposite(context)),
+                      ),
+                      labelText: 'Link',
+                    ),
+                    // ignore: missing_return
+                    validator: (String? value) {
+                      if ((value?.isNotEmpty ?? false) &&
+                          !value!.startsWith('https')) {
+                        return 'Please enter a valid link with including https.';
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                ),
+                TextFormField(
+                  onSaved: (String? val) {
+                    setState(() => comment = val);
+                  },
+                  textCapitalization: TextCapitalization.sentences,
+                  enableInteractiveSelection: true,
+                  initialValue: comment,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: ReusableThemeColor().colorOpposite(context)),
+                    ),
+                    labelText: 'Description',
+                  ),
+                  maxLines: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: TextFormField(
+                    controller: controller,
+                    enableInteractiveSelection: true,
+                    // maxLines: 2,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: ReusableThemeColor().colorOpposite(context)),
+                      ),
+                      labelText: 'Address',
+                    ),
+                    // ignore: missing_return
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 16.0),
+                    child: GooglePlaces(
+                      homeScaffoldKey: homeScaffoldKey,
+                      searchScaffoldKey: searchScaffoldKey,
+                      controller: controller,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Schedule',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                Container(
+                  height: 2,
+                  color: Colors.black,
+                ),
+                if (calendarVisible)
+                  CalendarWidget(
+                    startDateTimeStamp: startDateTimestamp,
+                    endDateTimeStamp: endDateTimestamp,
+                    showBoth: true,
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      child: Text(
+                        'Edit Dates',
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          calendarVisible = true;
+                        });
+                      },
+                    ),
+                  ),
+                if (timePickerVisible)
+                  TimePickers(
+                    lodging: true,
+                    startTime: startTime,
+                    endTime: endTime,
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      child: Text(
+                        'CheckIn/Checkout',
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          timePickerVisible = true;
+                        });
+                      },
+                    ),
+                  ),
+              ]),
             ),
           ),
+        ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () async{
-            final form = _formKey.currentState;
+          onPressed: () async {
+            final FormState form = _formKey.currentState!;
+            startDateTimestamp.value = DateTimeRetrieval()
+                .createNewTimestamp(startDateTimestamp.value, startTime.value);
+            endDateTimestamp.value = DateTimeRetrieval()
+                .createNewTimestamp(startDateTimestamp.value, endTime.value);
             if (form.validate()) {
               form.save();
-              String message = 'A lodging option has been modified within ${widget.trip.tripName}';
+              final String message =
+                  'A lodging option has been modified within ${widget.trip.tripName}';
 
               try {
                 DatabaseService().editLodgingData(
                   comment: comment,
                   documentID: documentID,
                   endDateTimestamp: endDateTimestamp.value,
-                  endTime: endTime.value,
+                  endTime: endTime.value.toString(),
                   fieldID: fieldID,
                   link: link,
                   location: controller.text,
                   lodgingType: lodgingType,
                   startDateTimestamp: startDateTimestamp.value,
-                  startTime: startTime.value,
+                  startTime: startTime.value.toString(),
                 );
               } on Exception catch (e) {
-                CloudFunction().logError('Error adding new Trip:  ${e.toString()}');
+                CloudFunction()
+                    .logError('Error adding new Trip:  ${e.toString()}');
               }
               try {
-                String action = 'Sending notifications for $documentID lodging';
+                final String action =
+                    'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
-                widget.trip.accessUsers.forEach((f) {
+                for (final String f in widget.trip.accessUsers) {
                   if (f != currentUserProfile.uid) {
                     CloudFunction().addNewNotification(
                       message: message,
@@ -245,9 +286,10 @@ class _EditLodgingState extends State<EditLodging> {
                       ownerID: currentUserProfile.uid,
                     );
                   }
-                });
-              } catch(e){
-                CloudFunction().logError('Error sending notifications for edited lodging:  ${e.toString()}');
+                }
+              } catch (e) {
+                CloudFunction().logError(
+                    'Error sending notifications for edited lodging:  ${e.toString()}');
               }
               navigationService.pop();
             }
@@ -258,6 +300,4 @@ class _EditLodgingState extends State<EditLodging> {
       ),
     );
   }
-
-
 }

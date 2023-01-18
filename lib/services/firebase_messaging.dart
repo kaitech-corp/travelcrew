@@ -8,15 +8,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class FBMessaging {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  requestPermissions() async {
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
+  Future<void> requestPermissions() async {
+    final NotificationSettings settings = await messaging.requestPermission(
+      
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -33,7 +27,6 @@ class FBMessaging {
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
 
-    print("Handling a background message: ${message.messageId}");
   }
 
   static const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -46,7 +39,7 @@ class FBMessaging {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  androidFCMSetting() async {
+  Future<void> androidFCMSetting() async {
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);

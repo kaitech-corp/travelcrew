@@ -6,22 +6,22 @@ import 'appearance_widgets.dart';
 
 class CalendarWidget  extends StatefulWidget{
 
-  final ValueNotifier<String> startDate;
-  final ValueNotifier<String> endDate;
+  const CalendarWidget(
+      {Key? key,  this.startDate,
+        this.endDate,
+        required this.startDateTimeStamp,
+        required this.endDateTimeStamp,
+        this.context, required this.showBoth}) : super(key: key);
+
+  final ValueNotifier<String>? startDate;
+  final ValueNotifier<String>? endDate;
   final ValueNotifier<Timestamp> startDateTimeStamp;
   final ValueNotifier<Timestamp> endDateTimeStamp;
-  final BuildContext context;
+  final BuildContext? context;
   final bool showBoth;
 
-  CalendarWidget(
-      {this.startDate,
-        this.endDate,
-        this.startDateTimeStamp,
-        this.endDateTimeStamp,
-        this.context, this.showBoth});
-
   @override
-  _CalendarWidgetState createState() => _CalendarWidgetState();
+  State<CalendarWidget> createState() => _CalendarWidgetState();
 
 }
 class _CalendarWidgetState extends State<CalendarWidget> {
@@ -31,21 +31,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   
 
   String get labelTextDepart {
-    if(widget.startDate != null) widget.startDate.value = DateFormat.yMMMd().format(_fromDateDepart);
+    widget.startDate?.value = DateFormat.yMMMd().format(_fromDateDepart);
     widget.startDateTimeStamp.value = Timestamp.fromDate(_fromDateDepart);
     return DateFormat.yMMMd().format(_fromDateDepart);
   }
   String get labelTextReturn {
-    if(widget.endDate != null) widget.endDate.value = DateFormat.yMMMd().format(_fromDateReturn);
-    if(widget.endDateTimeStamp != null) widget.endDateTimeStamp.value = Timestamp.fromDate(_fromDateReturn);
+    widget.endDate?.value = DateFormat.yMMMd().format(_fromDateReturn);
+    widget.endDateTimeStamp.value = Timestamp.fromDate(_fromDateReturn);
     return DateFormat.yMMMd().format(_fromDateReturn);
   }
 
   Future<void> showDatePickerDepart() async {
-    final picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _fromDateDepart,
-      firstDate: DateTime(2015, 1),
+      firstDate: DateTime(2015),
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _fromDateDepart) {
@@ -57,10 +57,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     }
   }
   Future<void> showDatePickerReturn() async {
-    final picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _fromDateReturn,
-      firstDate: DateTime(2015, 1),
+      firstDate: DateTime(2015),
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _fromDateReturn) {
@@ -73,94 +73,88 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return widget.showBoth ? Column(
-      children: [
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                    SizedBox(width: 8,),
-                    Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
-                  ],
-                ),
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                  const SizedBox(width: 8,),
+                  Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
+                ],
               ),
+            ),
 //                                SizedBox(height: 16),
-              ButtonTheme(
-                minWidth: 150,
-                child: ElevatedButton(
-                  child: const Text(
-                    'Start Date',
-                  ),
-                  onPressed: () async {
-                    showDatePickerDepart();
-                  },
+            ButtonTheme(
+              minWidth: 150,
+              child: ElevatedButton(
+                child: const Text(
+                  'Start Date',
                 ),
+                onPressed: () async {
+                  showDatePickerDepart();
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                    SizedBox(width: 8,),
-                    Text(labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
-                  ],
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                  const SizedBox(width: 8,),
+                  Text(labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
+                ],
               ),
+            ),
 //                                SizedBox(height: 16),
-              ButtonTheme(
-                minWidth: 150,
-                child: ElevatedButton(
-                  child: const Text(
-                    'End  Date',
-                  ),
-                  onPressed: () {
-                    showDatePickerReturn();
-                  },
-                  //
+            ButtonTheme(
+              minWidth: 150,
+              child: ElevatedButton(
+                child: const Text(
+                  'End  Date',
                 ),
+                onPressed: () {
+                  showDatePickerReturn();
+                },
+                //
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     ):
-    Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                SizedBox(width: 8,),
-                Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
-              ],
-            ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+              const SizedBox(width: 8,),
+              Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
+            ],
           ),
+        ),
 //                                SizedBox(height: 16),
-          ButtonTheme(
-            minWidth: 150,
-            child: IconButton(
-              icon: IconThemeWidget(icon: Icons.edit,),
-              onPressed: () async {
-                showDatePickerDepart();
-              },
-            ),
+        ButtonTheme(
+          minWidth: 150,
+          child: IconButton(
+            icon: const IconThemeWidget(icon: Icons.edit,),
+            onPressed: () async {
+              showDatePickerDepart();
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

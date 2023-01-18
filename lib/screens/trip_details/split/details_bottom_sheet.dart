@@ -4,7 +4,6 @@ import 'package:nil/nil.dart';
 import '../../../models/cost_model.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
-import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../size_config/size_config.dart';
 import 'payment_details_menu_button.dart';
@@ -12,11 +11,11 @@ import 'payment_details_menu_button.dart';
 /// Bottom sheet for split cost details
 class UserSplitCostDetailsBottomSheet extends StatelessWidget {
   const UserSplitCostDetailsBottomSheet({
-    Key key,
-    @required this.user,
-    @required this.costObject,
-    this.splitObject,
-    this.purchasedByUser,
+    Key? key,
+    required this.user,
+    required this.costObject,
+    required this.splitObject,
+    required this.purchasedByUser,
   }) : super(key: key);
 
   final UserPublicProfile user;
@@ -31,21 +30,15 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
-            colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+            colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
       ),
       padding: const EdgeInsets.all(10),
       height: SizeConfig.screenHeight * .5,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        children: <Widget>[
           CircleAvatar(
             radius: SizeConfig.screenWidth / 6,
-            backgroundImage: user.urlToImage.isNotEmpty
-                ? NetworkImage(
-                    user.urlToImage,
-                  )
-                : AssetImage(profileImagePlaceholder),
+            backgroundImage: NetworkImage(user.urlToImage),
           ),
           Text(user.displayName, style: Theme.of(context).textTheme.headline5),
           Container(
@@ -80,15 +73,13 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
                   )
                 : null,
           ),
-          (user.uid == userService.currentUserID ||
-                  userService.currentUserID == purchasedByUser.uid)
-              ? ElevatedButton(
+          if (user.uid == userService.currentUserID ||
+                  userService.currentUserID == purchasedByUser.uid) ElevatedButton(
                   onPressed: () {
                     DatabaseService().markAsPaid(costObject, splitObject);
                   },
                   child: const Text('Paid'),
-                )
-              : nil,
+                ) else nil,
         ],
       ),
     );

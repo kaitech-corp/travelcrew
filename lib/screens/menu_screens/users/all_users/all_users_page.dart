@@ -13,29 +13,28 @@ import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/loading.dart';
 import 'tc_user_card.dart';
 
-
-
 class AllUserPage extends StatefulWidget {
-  @override
-  _AllUserPageState createState() => _AllUserPageState();
+  const AllUserPage({Key? key}) : super(key: key);
 
+  @override
+  State<AllUserPage> createState() => _AllUserPageState();
 }
 
 class _AllUserPageState extends State<AllUserPage> {
-
-  GenericBloc<UserPublicProfile,AllUserRepository> bloc;
+  late GenericBloc<UserPublicProfile, AllUserRepository> bloc;
 
   final ScrollController controller = ScrollController();
   bool _isSearching = false;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<UserPublicProfile, AllUserRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<UserPublicProfile, AllUserRepository>>(
+        context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
 
-  void pressedSearch(){
+  void pressedSearch() {
     setState(() {
       _isSearching = !_isSearching;
     });
@@ -43,69 +42,77 @@ class _AllUserPageState extends State<AllUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    late List<UserPublicProfile> allUsersSearchList;
 
-    List<UserPublicProfile> allUsersSearchList;
+    Future<List<UserPublicProfile>> userSearchList(String name) async {
+      final String val = name.toLowerCase();
 
-    Future<List<UserPublicProfile>> userSearchList (String name) async {
-      String val = name.toLowerCase();
-
-      var results = allUsersSearchList.where((user) =>
-      user.displayName.toLowerCase().contains(val)
-          || user.firstName.toLowerCase().contains(val) ||
-          user.lastName.toLowerCase().contains(val) || user.displayName.toLowerCase().contains(val)
-      ).toList();
+      final List<UserPublicProfile> results = allUsersSearchList
+          .where((UserPublicProfile user) =>
+              user.displayName.toLowerCase().contains(val) ||
+              user.firstName.toLowerCase().contains(val) ||
+              user.lastName.toLowerCase().contains(val) ||
+              user.displayName.toLowerCase().contains(val))
+          .toList();
       return results;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('TC Members',style: Theme.of(context).textTheme.headline5,),
+        title: Text(
+          'TC Members',
+          style: Theme.of(context).textTheme.headline5,
+        ),
         actions: <Widget>[
-          IconButton(icon: const Icon(Icons.search),
-            onPressed: (){
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
               pressedSearch();
-            },)
+            },
+          )
         ],
-        flexibleSpace: AppBarGradient(),
+        flexibleSpace: const AppBarGradient(),
       ),
-      body: BlocBuilder<GenericBloc<UserPublicProfile, AllUserRepository>, GenericState>(
-        // bloc: blocCurrent,
-          builder: (context, state){
-            if(state is LoadingState){
-              return Loading();
-            } else if (state is HasDataState<UserPublicProfile>){
-              List<UserPublicProfile> allUsersList = state.data;
-                allUsersSearchList = allUsersList;
-              return _isSearching ? SearchBar(
-                onSearch: userSearchList,
-                textStyle: Theme.of(context).textTheme.subtitle1,
-                placeHolder: DraggableScrollbar.semicircle(
+      body: BlocBuilder<GenericBloc<UserPublicProfile, AllUserRepository>,
+              GenericState>(
+          // bloc: blocCurrent,
+          builder: (BuildContext context, GenericState state) {
+        if (state is LoadingState) {
+          return const Loading();
+        } else if (state is HasDataState) {
+          final List<UserPublicProfile> allUsersList =
+              state.data as List<UserPublicProfile>;
+          allUsersSearchList = allUsersList;
+          return _isSearching
+              ? SearchBar<UserPublicProfile>(
+                  onSearch: userSearchList,
+                  textStyle: Theme.of(context).textTheme.subtitle1!,
+                  placeHolder: DraggableScrollbar.semicircle(
+                    controller: controller,
+                    child: ListView.builder(
+                        controller: controller,
+                        itemCount: allUsersList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return TCUserCard(allUsers: allUsersList[index]);
+                        }),
+                  ),
+                  onItemFound: (UserPublicProfile user, int index) {
+                    return TCUserCard(allUsers: user);
+                  },
+                )
+              : DraggableScrollbar.semicircle(
                   controller: controller,
                   child: ListView.builder(
                       controller: controller,
-                      itemCount: allUsersList.length ?? 0,
-                      itemBuilder: (context, index){
+                      itemCount: allUsersList.length,
+                      itemBuilder: (BuildContext context, int index) {
                         return TCUserCard(allUsers: allUsersList[index]);
                       }),
-                ),
-                onItemFound: (UserPublicProfile user, int index){
-                  return TCUserCard(allUsers: user);
-                },
-              ): DraggableScrollbar.semicircle(
-                controller: controller,
-                child: ListView.builder(
-                    controller: controller,
-                    itemCount: allUsersList.length ?? 0,
-                    itemBuilder: (context, index){
-                      return TCUserCard(allUsers: allUsersList[index]);
-                    }),
-
-              );
-            } else {
-              return nil;
-            }
-          }),
+                );
+        } else {
+          return nil;
+        }
+      }),
     );
   }
 }
-

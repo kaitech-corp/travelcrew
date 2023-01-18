@@ -3,27 +3,25 @@ import 'package:flutter/material.dart';
 
 class ViewAnyLink extends StatefulWidget {
   const ViewAnyLink({
-    Key key,
-    @required this.link,
-    @required this.function,
-}) : super(key: key);
+    Key? key,
+    required this.link,
+    required this.function,
+  }) : super(key: key);
 
   final String link;
-  final Function function;
+  final Function() function;
 
   @override
-  _ViewAnyLinkState createState() => _ViewAnyLinkState();
+  State<ViewAnyLink> createState() => _ViewAnyLinkState();
 }
 
 class _ViewAnyLinkState extends State<ViewAnyLink> {
-
   @override
   Widget build(BuildContext context) {
     return AnyLinkPreview(
       link: widget.link,
-      bodyStyle: TextStyle(color: Colors.blueGrey),
+      bodyStyle: const TextStyle(color: Colors.blueGrey),
       onTap: widget.function,
     );
   }
 }
-

@@ -6,24 +6,24 @@ import '../controller/basket_controller.dart';
 import 'cart_detailed_view_card.dart';
 
 class CartDetailsView extends StatelessWidget {
-  const CartDetailsView({Key key, this.controller, this.tripDetails})
+  const CartDetailsView({Key? key, required this.controller, required this.trip})
       : super(key: key);
 
   final BasketController controller;
-  final Trip tripDetails;
+  final Trip trip;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Recently Added:", style: Theme.of(context).textTheme.headline6),
-          ...List.generate(
+        children: <Widget>[
+          Text('Recently Added:', style: Theme.of(context).textTheme.headline6),
+          ...List<Widget>.generate(
             controller.cart.length,
-            (index) => CartDetailsViewCard(item: controller.cart[index]),
+            (int index) => CartDetailsViewCard(item: controller.cart[index]),
           ),
-          SizedBox(height: defaultPadding),
+          const SizedBox(height: defaultPadding),
         ],
       ),
     );

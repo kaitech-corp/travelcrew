@@ -1,3 +1,5 @@
+// ignore_for_file: only_throw_errors
+
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -12,10 +14,10 @@ import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
 
 class DMChatMessageLayout extends StatelessWidget {
+
+  const DMChatMessageLayout({Key? key, required this.message, required this.user}) : super(key: key);
   final ChatData message;
   final UserPublicProfile user;
-
-  DMChatMessageLayout({this.message, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +27,15 @@ class DMChatMessageLayout extends StatelessWidget {
             onLongPress: () {
               showBottomSheet(
                   context: context,
-                  builder: (context) {
+                  builder: (BuildContext context) {
                     return Container(
                       height: SizeConfig.screenHeight * .3,
                       width: SizeConfig.screenWidth,
                       color: Colors.grey.shade200,
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
+                        children: <Widget>[
                           OutlinedButton(
                             onPressed: () {
                               FlutterClipboard.copy(message.message)
@@ -74,7 +76,7 @@ class DMChatMessageLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 Container(
                     margin: const EdgeInsets.fromLTRB(80, 5, 5, 5),
                     decoration: BoxDecoration(
@@ -87,14 +89,14 @@ class DMChatMessageLayout extends StatelessWidget {
                           margin:
                               const EdgeInsets.fromLTRB(5.0, 5.0, 10.0, 5.0),
                           child: Linkify(
-                            onOpen: (link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                            onOpen: (LinkableElement link) async {
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: Theme.of(context).textTheme.subtitle1,
                             // textScaleFactor: 1.2,
                             maxLines: 50,
@@ -104,11 +106,10 @@ class DMChatMessageLayout extends StatelessWidget {
                           ),
                         ),
                         Container(
-                            margin: EdgeInsets.all(10),
+                            margin: const EdgeInsets.all(10),
                             child: Text(
                               readTimestamp(
-                                  message.timestamp.millisecondsSinceEpoch ??
-                                      ''),
+                                  message.timestamp.millisecondsSinceEpoch),
                               style: ChatTextStyle().timestampStyle(),
                               textScaleFactor: 0.75,
                             )),
@@ -122,9 +123,9 @@ class DMChatMessageLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Container(
-                    margin: EdgeInsets.fromLTRB(5, 5, 80, 5),
+                    margin: const EdgeInsets.fromLTRB(5, 5, 80, 5),
                     decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(15.0)),
@@ -135,14 +136,14 @@ class DMChatMessageLayout extends StatelessWidget {
                           margin:
                               const EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                           child: Linkify(
-                            onOpen: (link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                            onOpen: (LinkableElement link) async {
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: Theme.of(context).textTheme.subtitle1,
                             // textScaleFactor: 1.2,
                             maxLines: 50,
@@ -154,8 +155,7 @@ class DMChatMessageLayout extends StatelessWidget {
                             margin: const EdgeInsets.all(10),
                             child: Text(
                                 readTimestamp(
-                                    message.timestamp.millisecondsSinceEpoch ??
-                                        ''),
+                                    message.timestamp.millisecondsSinceEpoch),
                                 style: ChatTextStyle().timestampStyle(),
                                 textScaleFactor: 0.75)),
                       ],
@@ -170,7 +170,7 @@ class DMChatMessageLayout extends StatelessWidget {
     final DateFormat format = DateFormat('HH:mm a');
     final DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     final Duration diff = date.difference(now);
-    var time = '';
+    String time = '';
     if (diff.inDays == 0) {
       time = format.format(date);
     } else {

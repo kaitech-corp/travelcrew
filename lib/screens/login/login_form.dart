@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/screens/login/third_party_login.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -14,19 +15,23 @@ import '../alerts/alert_dialogs.dart';
 
 /// Form for login screen
 class LoginForm extends StatefulWidget {
-
-  const LoginForm({Key key,}) :super(key: key);
+  const LoginForm({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<LoginForm> createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+  bool get isEmailPopulated => _emailController.text.isNotEmpty;
+  bool get isPasswordPopulated => _passwordController.text.isNotEmpty;
 
   bool isLoginWithEmailAndPasswordButtonEnabled(LoginState state) {
     return state.isFormValid && isPopulated && !state.isSubmitting;
@@ -34,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
 
 
 
-  LoginBloc _loginBloc;
+  late LoginBloc _loginBloc;
 
   @override
   void initState() {
@@ -46,67 +51,61 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<LoginBloc, LoginState>(listener: (context, state) {
-          listenerMethod(state, context);
-        }),
-      ],
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (BuildContext context, LoginState state) {
+        listenerMethod(state, context);
+      },
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
           child: BlocBuilder<LoginBloc, LoginState>(
             bloc: _loginBloc,
-            builder: (context, state) {
+            builder: (BuildContext context, LoginState state) {
               return Column(children: <Widget>[
                 TextFormField(
+                  key: const Key('email'),
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.email),
-                    labelText: 'Email',
+                  decoration: InputDecoration(
+                    icon: const Icon(Icons.email),
+                    labelText: AppLocalizations.of(context)!.email,
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  // autovalidate: true,
                   autocorrect: false,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_) {
-                    return !state.isEmailValid ? 'Invalid Email' : null;
+                    return state.isEmailValid ? null : AppLocalizations.of(context)!.invalid_email;
                   },
                 ),
                 TextFormField(
+                  key: const Key('password'),
                   controller: _passwordController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.lock),
-                    labelText: 'Password',
+                  decoration: InputDecoration(
+                    icon: const Icon(Icons.lock),
+                    labelText: AppLocalizations.of(context)!.password,
                   ),
                   obscureText: true,
-                  // autovalidate: true,
                   autocorrect: false,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_) {
-                    return !state.isPasswordValid
-                        ? 'Invalid Password'
-                        : null;
+                    return state.isPasswordValid ? null : AppLocalizations.of(context)!.invalid_password;
                   },
                 ),
                 const SizedBox(
                   height: 25,
                 ),
-
-
                 IntrinsicWidth(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       GradientButton(
                         width: 150,
                         height: 45,
                         onPressed: () {
-                          if (isLoginWithEmailAndPasswordButtonEnabled(
-                              state)) {
+                          if (isLoginWithEmailAndPasswordButtonEnabled(state)) {
                             _onFormSubmitted();
                           }
                         },
                         text: Text(
-                          'Login',
+                          AppLocalizations.of(context)!.login,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         icon: const Icon(
@@ -117,33 +116,77 @@ class _LoginFormState extends State<LoginForm> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.fromLTRB(8,8,8.0,16),
                           child: TextButton(
-                            child: Text(
-                                'Forgot Password?'
-                            ),
+                            child: Text(AppLocalizations.of(context)!.forgot_password),
                             onPressed: () {
-                              TravelCrewAlertDialogs().resetPasswordDialog(context);
+                              TravelCrewAlertDialogs()
+                                  .resetPasswordDialog(context);
                             },
                           ),
                         ),
                       ),
-                      ThirdPartyLogin(loginBloc: _loginBloc,state: state,),
+                      IntrinsicWidth(
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            ElevatedButton(
+                              onPressed: () {
+                                if (isGoogleLoginButtonEnabled(state)) {
+                                  _onPressedGoogleSignIn();
+                                }
+                              },
+                              style: ElevatedButtonTheme.of(context)
+                                  .style
+                                  ?.copyWith(
+                                  backgroundColor:
+                                  MaterialStateProperty.all(canvasColor)),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Image(
+                                        image: AssetImage(google_logo),
+                                        height: 25.0),
+                                    Text(signInWithGoogle,
+                                        style:
+                                        Theme.of(context).textTheme.subtitle1)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            if (UserRepository().appleSignInAvailable)
+                              const SizedBox(
+                                height: 16,
+                              ),
+                            if (UserRepository().appleSignInAvailable)
+                              SignInWithAppleButton(onPressed: (){
+                                if (isAppleLoginButtonEnabled(state)) {
+                                  _onPressedAppleSignIn();
+                                }
+                              }),
+
+
+                          ],
+                        ),
+                      ),
+
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
-                            children: [
-                              Text(
-                                  "Don't have an account?"
-                              ),
+                            children: <Widget>[
+                              Text(AppLocalizations.of(context)!.dont_have_an_account),
                               TextButton(
-                                child: Text(
-                                  "Sign Up",
+                                child: Text(AppLocalizations.of(context)!.sign_up,
                                 ),
                                 onPressed: () {
-                                  navigationService.navigateTo(SignUpScreenRoute);
+                                  navigationService
+                                      .navigateTo(SignUpScreenRoute);
                                 },
                               ),
                             ],
@@ -153,15 +196,18 @@ class _LoginFormState extends State<LoginForm> {
                     ],
                   ),
                 ),
-                SizedBox(height: 15,),
+                const SizedBox(
+                  height: 15,
+                ),
               ]);
-            },),
+            },
+          ),
         ),
       ),
     );
   }
 
-  void listenerMethod(dynamic state, BuildContext context) {
+  void listenerMethod(LoginState state, BuildContext context) {
     if (state.isFailure) {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -169,9 +215,9 @@ class _LoginFormState extends State<LoginForm> {
           SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const <Widget>[
-                Text('Login Failure'),
-                Icon(Icons.error),
+              children: <Widget>[
+                Text(AppLocalizations.of(context)!.login_failed),
+                const Icon(Icons.error),
               ],
             ),
             backgroundColor: const Color(0xffffae88),
@@ -186,9 +232,9 @@ class _LoginFormState extends State<LoginForm> {
           SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const <Widget>[
-                Text('Logging In...'),
-                CircularProgressIndicator(
+              children: <Widget>[
+                Text(AppLocalizations.of(context)!.logging_in),
+                const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
               ],
@@ -213,11 +259,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onEmailChange() {
-    _loginBloc.add(LoginEmailChange(email: _emailController.text));
+    if (isEmailPopulated) {
+      _loginBloc.add(LoginEmailChange(email: _emailController.text));
+    }
   }
 
   void _onPasswordChange() {
-    _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
+    if (isPasswordPopulated) {
+      _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
+    }
   }
 
   void _onFormSubmitted() {

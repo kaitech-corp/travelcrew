@@ -9,35 +9,35 @@ import '../../blocs/generics/generic_bloc.dart';
 
 class FavoriteTripRepository extends GenericBlocRepository<Trip> {
 
+  @override
   Stream<List<Trip>> data() {
 
-    final Query tripCollection = FirebaseFirestore.instance
-        .collection("trips")
+    final Query<Object> tripCollection = FirebaseFirestore.instance
+        .collection('trips')
         .orderBy('endDateTimeStamp')
         .where('ispublic', isEqualTo: true);
 
 
-    List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
+    List<Trip> tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
-          return Trip.fromData(data);
+        final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         }).toList();
         trips.sort(
-            (a, b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
+            (Trip a, Trip b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
 
         return trips;
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving favorites trip list:  ${e.toString()}');
-        return null;
+        return <Trip>[];
       }
     }
 
     // get trips stream
     return tripCollection
-        .where('favorite', arrayContainsAny: [userService.currentUserID])
+        .where('favorite', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
-        .map(_tripListFromSnapshot);
+        .map(tripListFromSnapshot);
   }
 }

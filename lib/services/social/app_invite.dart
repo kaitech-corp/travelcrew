@@ -1,18 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_sms/flutter_sms.dart';
-import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/constants/constants.dart';
+import '../analytics_service.dart';
+import '../constants/constants.dart';
 
 class AppInvite{
 
   Future<void> sendInvite() async{
 
     try{
-      String _result = await sendSMS(message: "Join me on Travel Crew!\n\n Apple: $appleStore\n\n Google: $googleplay", recipients: []);
-      print(_result);
+      final String result = await sendSMS(message: 'Join me on Travel Crew!\n\n Apple: $appleStore\n\n Google: $googleplay', recipients: <String>[]);
+      if (kDebugMode) {
+        print(result);
+      }
     } catch (e){
       AnalyticsService().writeError(e.toString());
     }
   }
-
-
 }

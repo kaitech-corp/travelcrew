@@ -15,9 +15,9 @@ import 'lodging_card.dart';
 
 /// Lodging page
 class LodgingPage extends StatefulWidget {
+  const LodgingPage({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
-  LodgingPage({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -26,7 +26,7 @@ class LodgingPage extends StatefulWidget {
 }
 
 class _LodgingPageState extends State<LodgingPage> {
-  GenericBloc<LodgingData,LodgingRepository> bloc;
+  late GenericBloc<LodgingData,LodgingRepository> bloc;
 
   @override
   void initState() {
@@ -40,22 +40,20 @@ class _LodgingPageState extends State<LodgingPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         body: BlocBuilder<GenericBloc<LodgingData,LodgingRepository>, GenericState>(
-            builder: (context, state){
+            builder: (BuildContext context, GenericState state){
               if(state is LoadingState){
-                return Loading();
-              } else if (state is HasDataState<LodgingData>){
-                List<LodgingData> lodgingList = state.data;
-                return Container(
-                  child: ListView.builder(
-                      itemCount: lodgingList != null ? lodgingList.length : 0,
-                      itemBuilder: (context, index){
-                        return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
-                      }),
-                );
+                return const Loading();
+              } else if (state is HasDataState){
+                final List<LodgingData> lodgingList = state.data as List<LodgingData>;
+                return ListView.builder(
+                    itemCount: lodgingList.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
+                    });
               } else {
                 return nil;
               }

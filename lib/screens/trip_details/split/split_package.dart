@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/cost_model.dart';
@@ -15,7 +16,7 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 
-ValueNotifier<List<String>> selectedList;
+late ValueNotifier<List<String>> selectedList;
 
 /// Split Package for all split functions
 class SplitPackage {
@@ -35,20 +36,21 @@ class SplitPackage {
   /// Sum up outstanding balance
   double sumRemainingBalance(List<CostObject> coList) {
     double total = 0;
-    coList.forEach((element) =>
-        total = total + ((element.paid == false) ? element.amountOwe : 0));
+    for (final CostObject element in coList) {
+      total = total + ((element.paid == false) ? element.amountOwe : 0);
+    }
     return total;
   }
 
   /// Split item alert which checks if item has already been split.
   Future<void> splitItemAlert(BuildContext context, SplitObject splitObject,
-      {Trip trip}) {
+      {required Trip trip}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return FutureBuilder<bool>(
-          builder: (context, response) {
-            if (response.hasData && response.data == true) {
+          builder: (BuildContext context, AsyncSnapshot<bool> response) {
+            if (response.hasData) {
               return AlertDialog(
                 title: Text(
                   '${splitObject.itemName} has already been split.',
@@ -91,9 +93,9 @@ class SplitPackage {
   /// Logic for icon button to check it item has been split
   /// and directs the user accordingly.
   Widget splitItemExist(BuildContext context, SplitObject splitObject,
-      {Trip trip}) {
+      {required Trip trip}) {
     return FutureBuilder<bool>(
-      builder: (BuildContext context, response) {
+      builder: (BuildContext context, AsyncSnapshot<bool> response) {
         if (response.hasData && response.data == false) {
           return IconButton(
               visualDensity: const VisualDensity(vertical: -4),
@@ -118,8 +120,8 @@ class SplitPackage {
   }
 
   /// Popup dialog to create split item.
-  Future<Widget> splitDialog(BuildContext context, SplitObject splitObject,
-      {Trip trip}) async {
+  Future<Widget?> splitDialog(BuildContext context, SplitObject splitObject,
+      {required Trip trip}) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -162,16 +164,17 @@ class SplitPackage {
                                                   .colorOpposite(context)),
                                         )),
                                     // ignore: missing_return
-                                    validator: (value) {
-                                      if (value.isEmpty) {
+                                    validator: (String? value) {
+                                      if (value?.isEmpty ?? false) {
                                         return 'Please enter an amount.';
                                         // ignore: missing_return
+                                      } else {
+                                        return null;
                                       }
                                     },
-                                    onChanged: (val) => {
-                                          splitObject.itemTotal =
-                                              double.parse(val),
-                                        }))),
+                                    onChanged: (String val) {
+                                      splitObject.itemTotal = double.parse(val);
+                                    }))),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -183,7 +186,7 @@ class SplitPackage {
                             )),
                           ),
                           onPressed: () {
-                            final form = _formKey.currentState;
+                            final FormState form = _formKey.currentState!;
                             form.save();
                             if (form.validate()) {
                               try {
@@ -192,7 +195,7 @@ class SplitPackage {
                                 splitObject.purchasedByUID =
                                     userService.currentUserID;
                                 splitObject.userSelectedList = trip.accessUsers
-                                    .where((user) =>
+                                    .where((String user) =>
                                         !selectedList.value.contains(user))
                                     .toList();
                                 splitObject.amountRemaining =
@@ -218,18 +221,19 @@ class SplitPackage {
                           height: SizeConfig.screenHeight * .3,
                           width: double.infinity,
                           child: SplitMembersLayout(
-                            tripDetails: trip,
+                            trip: trip,
                           )),
                     ],
                   ),
                 ),
               ));
         });
+    return null;
   }
 
   /// Edit Split Dialog
-  Future<Widget> editSplitDialog(BuildContext context, SplitObject splitObject,
-      {Trip trip}) async {
+  Future<Widget?> editSplitDialog(BuildContext context, SplitObject splitObject,
+      {Trip? trip}) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -248,7 +252,7 @@ class SplitPackage {
                 width: SizeConfig.screenWidth * .75,
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       Text(
                         splitObject.itemName,
                         style: Theme.of(context).textTheme.subtitle1,
@@ -273,20 +277,20 @@ class SplitPackage {
                                                   .colorOpposite(context)),
                                         )),
                                     // ignore: missing_return
-                                    validator: (value) {
-                                      if (value.isEmpty) {
+                                    validator: (String? value) {
+                                      if (value?.isEmpty ?? false) {
                                         return 'Please enter an amount.';
                                         // ignore: missing_return
                                       }
+                                      return null;
                                     },
-                                    onChanged: (val) => {
-                                          splitObject.itemTotal =
-                                              double.parse(val),
-                                        }))),
+                                    onChanged: (String val) {
+                                      splitObject.itemTotal = double.parse(val);
+                                    }))),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
@@ -298,13 +302,20 @@ class SplitPackage {
                                 )),
                               ),
                               onPressed: () {
-                                final FormState form = _formKey2.currentState;
-                                form.save();
-                                if (form.validate()) {
-                                  splitObject.lastUpdated = Timestamp.now();
-                                  DatabaseService()
-                                      .createSplitItem(splitObject);
-                                  navigationService.pop();
+                                try {
+                                  final FormState form =
+                                      _formKey2.currentState!;
+                                  form.save();
+                                  if (form.validate()) {
+                                    splitObject.lastUpdated = Timestamp.now();
+                                    DatabaseService()
+                                        .createSplitItem(splitObject);
+                                    navigationService.pop();
+                                  }
+                                } catch (e) {
+                                  if (kDebugMode) {
+                                    print(e.toString());
+                                  }
                                 }
                               },
                               child: Text(
@@ -341,29 +352,29 @@ class SplitPackage {
                 ),
               ));
         });
+    return null;
   }
 }
 
 class SplitMembersLayout extends StatefulWidget {
-  final Trip tripDetails;
-  final String ownerID;
-
-  SplitMembersLayout({Key key, this.tripDetails, this.ownerID})
+  const SplitMembersLayout({Key? key, required this.trip, this.ownerID})
       : super(key: key);
+  final Trip trip;
+  final String? ownerID;
 
   @override
-  _SplitMembersLayoutState createState() => _SplitMembersLayoutState();
+  State<SplitMembersLayout> createState() => _SplitMembersLayoutState();
 }
 
 class _SplitMembersLayoutState extends State<SplitMembersLayout> {
-  var _showImage = false;
-  String _image;
+  bool _showImage = false;
+  late String _image;
 
   final ScrollController controller = ScrollController();
 
   @override
   void initState() {
-    selectedList = ValueNotifier([]);
+    selectedList = ValueNotifier<List<String>>(<String>[]);
     super.initState();
   }
 
@@ -375,35 +386,35 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return getMember(context, widget.tripDetails);
+    return getMember(context, widget.trip);
   }
 
-  Widget getMember(BuildContext context, Trip tripDetails) {
+  Widget getMember(BuildContext context, Trip trip) {
     return Stack(
-      children: [
-        StreamBuilder(
-          builder: (BuildContext context, userData) {
+      children: <Widget>[
+        StreamBuilder<List<UserPublicProfile>>(
+          builder: (BuildContext context,
+              AsyncSnapshot<List<UserPublicProfile>> userData) {
             if (userData.hasError) {
-              CloudFunction()
-                  .logError('Error streaming user data for '
+              CloudFunction().logError('Error streaming user data for '
                   'members layout: ${userData.error.toString()}');
             }
             if (userData.hasData) {
-              final List<UserPublicProfile> crew = userData.data;
+              final List<UserPublicProfile> crew = userData.data!;
               return ListView.builder(
                 itemCount: crew.length,
                 itemBuilder: (BuildContext context, int index) {
                   final UserPublicProfile member = crew[index];
-                  return userCard(context, member, tripDetails);
+                  return userCard(context, member, trip);
                 },
               );
             } else {
-              return Loading();
+              return const Loading();
             }
           },
-          stream: DatabaseService().getcrewList(widget.tripDetails.accessUsers),
+          stream: DatabaseService().getcrewList(widget.trip.accessUsers),
         ),
-        if (_showImage) ...[
+        if (_showImage) ...<Widget>[
           BackdropFilter(
             filter: ImageFilter.blur(
               sigmaX: 5.0,
@@ -424,7 +435,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
                         width: 300,
                         fit: BoxFit.fill,
                       )
-                    : Image.asset(
+                    : Image.network(
                         profileImagePlaceholder,
                         height: 300,
                         width: 300,
@@ -438,8 +449,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
     );
   }
 
-  Widget userCard(
-      BuildContext context, UserPublicProfile member, Trip tripDetails) {
+  Widget userCard(BuildContext context, UserPublicProfile member, Trip trip) {
     return Card(
       key: Key(member.uid),
       color: Colors.white,
@@ -456,14 +466,13 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
           });
         },
         onTap: () {
-          navigationService.navigateTo(UserProfilePageRoute,
-              arguments: member);
+          navigationService.navigateTo(UserProfilePageRoute, arguments: member);
         },
         child: CheckboxListTile(
           value: !selectedList.value.contains(member.uid),
-          onChanged: (bool value) {
+          onChanged: (bool? value) {
             setState(() {
-              if (value) {
+              if (value ?? false) {
                 selectedList.value.remove(member.uid);
               } else {
                 selectedList.value.add(member.uid);
@@ -479,7 +488,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: member.urlToImage.isNotEmpty
+              child: (member.urlToImage.isNotEmpty)
                   ? Image.network(
                       member.urlToImage,
                       height: 75,

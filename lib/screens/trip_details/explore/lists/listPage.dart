@@ -8,55 +8,51 @@ import 'item_lists.dart';
 /// List page
 class ListPage extends StatelessWidget{
 
-  final Trip tripDetails;
+  const ListPage({Key? key, required this.trip}) : super(key: key);
 
-  const ListPage({Key key, this.tripDetails}) : super(key: key);
+  final Trip trip;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+        children: <Widget>[
           Expanded(
             flex: 2,
             child:
             Column(
-              children: [
+              children: <Widget>[
                 Expanded(
-                  flex: 1,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Who's bringing what...",style: Theme.of(context).textTheme.headline6,),
                       ),
-                      IconThemeWidget(icon: EvaIcons.arrowDown)
+                      const IconThemeWidget(icon: EvaIcons.arrowDown)
                     ],
                   ),
                 ),
                 Expanded(
                   flex: 5,
-                  child: BringListToDisplay(tripDocID: tripDetails.documentId,)),
+                  child: BringListToDisplay(tripDocID: trip.documentId,)),
               ],
             )
     ),
           Expanded(
-            flex: 1,
             child:
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Expanded(
-                  flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("Items still needed...",style: Theme.of(context).textTheme.headline6,),
+                    child: Text('Items still needed...',style: Theme.of(context).textTheme.headline6,),
                   ),
                 ),
                 Expanded(
                   flex: 5,
-                  child: NeedListToDisplay(documentID: tripDetails.documentId,)),
+                  child: NeedListToDisplay(documentID: trip.documentId,)),
               ],
             )
     )

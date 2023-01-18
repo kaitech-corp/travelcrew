@@ -12,8 +12,8 @@ import '../../../../services/functions/cloud_functions.dart';
 /// Relies on a remote NoSQL document-oriented database.
 class UserSettingsRepository {
 
-  final CollectionReference settingsCollection = FirebaseFirestore.instance.collection('settings');
-  final _loadedData = StreamController<UserNotificationSettingsData>.broadcast();
+  final CollectionReference<Map<String, dynamic>> settingsCollection = FirebaseFirestore.instance.collection('settings');
+  final StreamController<UserNotificationSettingsData> _loadedData = StreamController<UserNotificationSettingsData>.broadcast();
 
 
   void dispose() {
@@ -22,10 +22,10 @@ class UserSettingsRepository {
 
   void refresh() {
     // Get settings for current user.
-    UserNotificationSettingsData _settingsFromSnapshot(DocumentSnapshot snapshot){
+    UserNotificationSettingsData settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
       if(snapshot.exists) {
         try {
-          Map<String, dynamic> data = snapshot.data();
+          final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
           return UserNotificationSettingsData.fromData(data);
         } catch(e){
           CloudFunction().logError('Error retrieving settings for user:  ${e.toString()}');
@@ -35,9 +35,9 @@ class UserSettingsRepository {
       }
     }
 
-    Stream<UserNotificationSettingsData> settings = settingsCollection
+    final Stream<UserNotificationSettingsData> settings = settingsCollection
         .doc(userService.currentUserID)
-        .snapshots().map(_settingsFromSnapshot);
+        .snapshots().map(settingsFromSnapshot);
 
 
     _loadedData.addStream(settings);

@@ -5,16 +5,17 @@ import '../../../services/widgets/reusableWidgets.dart';
 import '../../profile_page/profile_widget.dart';
 
 class UserProfilePage extends StatelessWidget{
+
+  const UserProfilePage({Key? key,  required this.user}) : super(key: key);
   final UserPublicProfile user;
 
-  UserProfilePage({this.user});
-
+  @override
   Widget build(BuildContext context) {
 
 
     return Scaffold(
       body: Stack(
-        children: [
+        children: <Widget>[
           HangingImageTheme3(user: user,),
           ProfileWidget(user: user),
         ],
@@ -22,4 +23,3 @@ class UserProfilePage extends StatelessWidget{
     );
   }
 }
-

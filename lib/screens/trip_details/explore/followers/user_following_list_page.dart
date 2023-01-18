@@ -1,31 +1,31 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/constants/constants.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
-import 'package:travelcrew/services/locator.dart';
 
+import '../../../../models/custom_objects.dart';
+import '../../../../models/trip_model.dart';
+import '../../../../services/constants/constants.dart';
+import '../../../../services/database.dart';
+import '../../../../services/functions/cloud_functions.dart';
+import '../../../../services/locator.dart';
 import '../../../../services/widgets/loading.dart';
+import '../../../alerts/alert_dialogs.dart';
 
 /// Following list
 class FollowingList extends StatefulWidget{
+  const FollowingList({Key? key, required this.trip}) : super(key: key);
 
-  final Trip tripDetails;
-  FollowingList({this.tripDetails});
+  final Trip trip;
 
   @override
-  _FollowingListState createState() => _FollowingListState();
+  State<FollowingList> createState() => _FollowingListState();
 }
 
 class _FollowingListState extends State<FollowingList> {
 
-  var currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  var _showImage = false;
-  String _image;
+  UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
+  bool _showImage = false;
+  late String _image;
 
   @override
   Widget build(BuildContext context) {
@@ -34,25 +34,24 @@ class _FollowingListState extends State<FollowingList> {
       appBar: AppBar(
         title: Text('Followers',style: Theme.of(context).textTheme.headline5,),
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<List<UserPublicProfile>>(
         stream: DatabaseService().retrieveFollowingList(),
-        builder: (context, users) {
+        builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if(users.hasError){
            CloudFunction().logError('Error streaming Following list for invites: ${users.error.toString()}');
           }
           if (users.hasData) {
-            var followingList =
-                users.data.where((user) => currentUserProfile.following.contains(user.uid)).toList();
+            final List<UserPublicProfile> followingList = users.data!;
             return Stack(
-              children: [
+              children: <Widget>[
                 ListView.builder(
                   itemCount: followingList.length,
-                  itemBuilder: (context, index) {
-                    UserPublicProfile user = followingList[index];
+                  itemBuilder: (BuildContext context, int index) {
+                    final UserPublicProfile user = followingList[index];
                     return userCard(context, user);
                   },
                 ),
-                if (_showImage) ...[
+                if (_showImage) ...<Widget>[
                   BackdropFilter(
                     filter: ImageFilter.blur(
                       sigmaX: 5.0,
@@ -63,22 +62,20 @@ class _FollowingListState extends State<FollowingList> {
                     ),
                   ),
                   Center(
-                    child: Container(
-                      child: Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: _image.isNotEmpty ? Image.network(_image,height: 300,
-                            width: 300, fit: BoxFit.fill,) : Image.asset(
-                            profileImagePlaceholder,height: 300,
-                            width: 300,fit: BoxFit.fill,),
-                        ),
+                    child: Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: _image.isNotEmpty ? Image.network(_image,height: 300,
+                          width: 300, fit: BoxFit.fill,) : Image.network(
+                          profileImagePlaceholder,height: 300,
+                          width: 300,fit: BoxFit.fill,),
                       ),
                     ),
                   ),
                 ],
             ]);
           } else {
-            return Loading();
+            return const Loading();
           }
         },
       ),
@@ -87,54 +84,53 @@ class _FollowingListState extends State<FollowingList> {
 
   Widget userCard(BuildContext context, UserPublicProfile user){
     return Card(
-      child: Container(
-          child: GestureDetector(
-            onLongPress: (){
-              setState(() {
-                _showImage = true;
-                _image = user.urlToImage;
-              });
-            },
-            onLongPressEnd: (details) {
-              setState(() {
-                _showImage = false;
-              });
-            },
-            child: ListTile(
-              leading: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25.0),
-                  color: Colors.blue,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: user.urlToImage?.isNotEmpty ?? false  ? Image.network(user.urlToImage,fit: BoxFit.fill,):
-                  Image.asset(profileImagePlaceholder,fit: BoxFit.fill,),
-                ),
-              ),
-              title: Text('${user.firstName} ${user.lastName}'),
-              subtitle: Text("${user.displayName}",
-                textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
-              trailing: !widget.tripDetails.accessUsers.contains(user.uid) ? IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: (){
-                  var message = '${currentUserProfile.displayName} invited you to ${widget.tripDetails.tripName}.';
-                  var type = 'Invite';
-                  CloudFunction().addNewNotification(
-                      ownerID: user.uid,
-                      message: message,
-                      documentID: widget.tripDetails.documentId,
-                      type: type,
-                      ispublic: widget.tripDetails.ispublic,
-                      uidToUse: user.uid);
-                  TravelCrewAlertDialogs().invitationDialog(context);
-                },
-              ) : const Icon(Icons.check_box),
+      child: GestureDetector(
+        onLongPress: (){
+          setState(() {
+            _showImage = true;
+            _image = user.urlToImage;
+          });
+        },
+        onLongPressEnd: (LongPressEndDetails details) {
+          setState(() {
+            _showImage = false;
+          });
+        },
+        child: ListTile(
+          leading: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.blue,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: user.urlToImage.isNotEmpty  ? Image.network(user.urlToImage,fit: BoxFit.fill,):
+              Image.network(profileImagePlaceholder,fit: BoxFit.fill,),
             ),
           ),
+          subtitle: Text('${user.firstName} ${user.lastName}', textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
+          title: Text(user.displayName,
+            ),
+          trailing: !widget.trip.accessUsers.contains(user.uid) ? IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async{
+              final UserPublicProfile profile = await DatabaseService().getUserProfile(userService.currentUserID);
+              final String message = '${profile.displayName} invited you to ${widget.trip.tripName}.';
+              const String type = 'Invite';
+              CloudFunction().addNewNotification(
+                  ownerID: user.uid,
+                  message: message,
+                  documentID: widget.trip.documentId,
+                  type: type,
+                  ispublic: widget.trip.ispublic,
+                  uidToUse: user.uid);
+              TravelCrewAlertDialogs().invitationDialog(context);
+            },
+          ) : const Icon(Icons.check_box),
         ),
+      ),
       );
   }
 

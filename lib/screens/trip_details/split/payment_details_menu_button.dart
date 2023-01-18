@@ -8,9 +8,9 @@ import '../../../services/widgets/appearance_widgets.dart';
 /// Payment details menu button
 class PaymentDetailsMenuButton extends StatelessWidget {
   const PaymentDetailsMenuButton({
-    Key key,
-    @required this.costObject,
-    this.splitObject,
+    Key? key,
+    required this.costObject,
+    required this.splitObject,
 
   }) : super(key: key);
 
@@ -20,15 +20,15 @@ class PaymentDetailsMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.edit,),
-      onSelected: (value) {
+      icon: const IconThemeWidget(icon: Icons.edit,),
+      onSelected: (String value) {
         switch (value) {
-          case "Edit":
+          case 'Edit':
             {
 
             }
             break;
-          case "Delete":
+          case 'Delete':
             {
               DatabaseService().deleteCostObject(costObject, splitObject);
               navigationService.pop();
@@ -42,8 +42,8 @@ class PaymentDetailsMenuButton extends StatelessWidget {
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>
-      [
+      itemBuilder: (BuildContext context) =>
+      <PopupMenuItem<String>>[
         // const PopupMenuItem(
         //   value: 'Edit',
         //   child: ListTile(
@@ -51,11 +51,11 @@ class PaymentDetailsMenuButton extends StatelessWidget {
         //     title: const Text('Edit'),
         //   ),
         // ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Delete',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.delete),
-            title: const Text('Remove'),
+            title: Text('Remove'),
           ),
         ),
       ],

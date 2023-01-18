@@ -10,11 +10,11 @@ import '../../size_config/size_config.dart';
 import 'signup_form.dart';
 
 class SignupScreen extends StatelessWidget {
-  final UserRepository _userRepository;
 
-  const SignupScreen({Key key, UserRepository userRepository})
+  const SignupScreen({Key? key, UserRepository? userRepository})
       : _userRepository = userRepository,
         super(key: key);
+  final UserRepository? _userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +23,19 @@ class SignupScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Color(0xff6a515e),
         ),
       ),
       body: BlocProvider<SignupBloc>(
-        create: (context) => SignupBloc(userRepository: _userRepository),
+        create: (BuildContext context) => SignupBloc(userRepository: _userRepository),
         child: Container(
           height: SizeConfig.screenHeight,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [canvasColor, Colors.blueAccent.shade100],
+              colors: <Color>[canvasColor, Colors.blueAccent.shade100],
               // colors: [Colors.white, Colors.white.withOpacity(0.4)],
             ),
           ),
@@ -51,11 +51,11 @@ class SignupScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.white, Colors.white.withOpacity(0.4)],
+                        colors: <Color>[Colors.white, Colors.white.withOpacity(0.4)],
                         // colors: [canvasColor, Colors.blueAccent.shade100],
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Signup',
                       style: TextStyle(
                         fontSize: 40,
@@ -66,7 +66,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 230),
-                  child: SignupForm(),
+                  child: const SignupForm(),
                 )
               ],
             ),

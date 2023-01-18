@@ -5,6 +5,7 @@ import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
 import '../../../models/chat_model.dart';
+import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../repositories/chat_repository.dart';
 import '../../../services/database.dart';
@@ -16,8 +17,8 @@ import '../../../size_config/size_config.dart';
 import 'grouped_list_chat_builder.dart';
 
 class ChatPage extends StatefulWidget {
+  const ChatPage({Key? key, required this.trip}) : super(key: key);
   final Trip trip;
-  ChatPage({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -26,9 +27,9 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  GenericBloc<ChatData,ChatRepository> bloc;
+  late GenericBloc<ChatData,ChatRepository> bloc;
 
-  var currentUserProfile =
+  UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
   final TextEditingController _chatController = TextEditingController();
@@ -55,15 +56,16 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         body: SizedBox(
           height: SizeConfig.screenHeight,
-          child: BlocBuilder<GenericBloc<ChatData,ChatRepository>, GenericState>(builder: (context, state) {
+          child: BlocBuilder<GenericBloc<ChatData,ChatRepository>, GenericState>(builder: (BuildContext context, GenericState state) {
             if (state is LoadingState) {
-              return Align(alignment: Alignment.center, child: Loading());
-            } else if (state is HasDataState<ChatData>) {
+              return const Align(child: Loading());
+            } else if (state is HasDataState) {
+              final List<ChatData> chatData = state.data as List<ChatData>;
               return Column(
                 children: <Widget>[
                   Expanded(
                       child: GroupedListChatView(
-                    data: state.data,
+                    data: chatData,
                     documentId: widget.trip.documentId,
                   )),
                   const Divider(
@@ -98,7 +100,7 @@ class _ChatPageState extends State<ChatPage> {
                                 onPressed: () async {
                                   if (_chatController.text != '') {
                                     final String message = _chatController.text;
-                                    final status = createStatus();
+                                    final Map<String, bool> status = createStatus();
                                     _chatController.clear();
                                     final String displayName =
                                         currentUserProfile.displayName;
@@ -106,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
                                         userService.currentUserID;
                                     try {
                                       final String action =
-                                          "Saving message for ${widget.trip.documentId}";
+                                          'Saving message for ${widget.trip.documentId}';
                                       CloudFunction().logEvent(action);
                                       await DatabaseService(
                                               tripDocID: widget.trip.documentId)
@@ -137,10 +139,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Map<String, bool> createStatus() {
-    final Map<String, bool> status = {};
-    final users =
-        widget.trip.accessUsers.where((f) => f != userService.currentUserID);
-    users.forEach((f) => status[f] = false);
+    final Map<String, bool> status = <String, bool>{};
+    final Iterable<String> users =
+        widget.trip.accessUsers.where((String f) => f != userService.currentUserID);
+    for (final String f in users) {
+      status[f] = false;
+    }
     return status;
   }
 }

@@ -5,16 +5,20 @@ import '../../basket_list/controller/basket_controller.dart';
 import 'item_lists.dart';
 
 /// Add to list page
-class AddToListPage extends StatefulWidget{
+class AddToListPage extends StatefulWidget {
+  const AddToListPage(
+      {Key? key,
+      required this.trip,
+      this.scaffoldKey,
+      required this.controller})
+      : super(key: key);
 
-  final Trip tripDetails;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final Trip trip;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
   final BasketController controller;
 
-  AddToListPage({Key key, this.tripDetails, this.scaffoldKey,this.controller}) : super(key: key);
-
   @override
-  _AddToListPageState createState() => _AddToListPageState();
+  State<AddToListPage> createState() => _AddToListPageState();
 }
 
 class _AddToListPageState extends State<AddToListPage> {
@@ -22,12 +26,16 @@ class _AddToListPageState extends State<AddToListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _widgetOptions = <Widget>[
+    final List<Widget> widgetOptions = <Widget>[
       TabBarView(
-        children: [
-          BringingList(documentID: widget.tripDetails.documentId,controller: widget.controller,),
-          // NeedList(documentID: widget.tripDetails.documentId,),
-          CustomList(documentID: widget.tripDetails.documentId,)
+        children: <Widget>[
+          BringingList(
+            documentID: widget.trip.documentId,
+            controller: widget.controller,
+          ),
+          CustomList(
+            documentID: widget.trip.documentId,
+          )
         ],
       )
     ];
@@ -36,24 +44,24 @@ class _AddToListPageState extends State<AddToListPage> {
         _selectedIndex = index;
       });
     }
+
     return DefaultTabController(
-              length: 2,
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Colors.blue.shade100,
-                appBar: TabBar(
-                  labelStyle: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
-                  tabs: <Widget>[
-                    const Tab(text: 'Bringing'),
-                    // const Tab(text: 'Need',),
-                    const Tab(text: 'Custom',)
-                  ],
-                ),
-                body: _widgetOptions.elementAt(_selectedIndex),
-              ),
-            );
+      length: 2,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.blue.shade100,
+        appBar: TabBar(
+          labelStyle: Theme.of(context).textTheme.subtitle1,
+          tabs: const <Widget>[
+            Tab(text: 'Bringing'),
+            // const Tab(text: 'Need',),
+            Tab(
+              text: 'Custom',
+            )
+          ],
+        ),
+        body: widgetOptions.elementAt(_selectedIndex),
+      ),
+    );
   }
 }

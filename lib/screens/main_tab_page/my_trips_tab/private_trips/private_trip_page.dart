@@ -15,14 +15,16 @@ import '../sliver_grid_view.dart';
 
 /// Private trips
 class PrivateTrips extends StatefulWidget{
+  const PrivateTrips({Key? key}) : super(key: key);
+
 
   @override
-  _PrivateTripsState createState() => _PrivateTripsState();
+  State<PrivateTrips> createState() => _PrivateTripsState();
 
 }
 
 class _PrivateTripsState extends State<PrivateTrips>{
-  GenericBloc<Trip,PrivateTripRepository> bloc;
+  late GenericBloc<Trip,PrivateTripRepository> bloc;
 
   @override
   void initState() {
@@ -42,18 +44,18 @@ class _PrivateTripsState extends State<PrivateTrips>{
   Widget build(BuildContext context) {
 
     return BlocBuilder<GenericBloc<Trip,PrivateTripRepository>, GenericState>(
-        builder: (context, state){
+        builder: (BuildContext context, GenericState state){
           if(state is LoadingState){
-            return Loading();
-          } else if (state is HasDataState<Trip>){
+            return const Loading();
+          } else if (state is HasDataState){
+            final List<Trip> tripsData = state.data as List<Trip>;
             return SizeConfig.tablet ?
-            SliverGridView(trips: state.data, length: state.data.length):
-            GroupedListTripView(data: state.data, isPast: true,)
+            SliverGridView(trips: tripsData, length: tripsData.length):
+            GroupedListTripView(data: tripsData, isPast: true,)
             ;
           } else {
             return nil;
           }
         });
   }
-
 }

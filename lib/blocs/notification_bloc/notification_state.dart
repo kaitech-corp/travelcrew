@@ -4,15 +4,15 @@ import '../../../models/notification_model.dart';
 
 
 abstract class NotificationState extends Equatable{
-  NotificationState();
+  const NotificationState();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 class NotificationLoadingState extends NotificationState {}
 class NotificationHasDataState extends NotificationState {
+  const NotificationHasDataState(this.data);
   final List<NotificationData> data;
-  NotificationHasDataState(this.data);
   @override
-  List<Object> get props => [data];
+  List<Object> get props => <Object>[data];
 }

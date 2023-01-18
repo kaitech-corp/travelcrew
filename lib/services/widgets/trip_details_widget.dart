@@ -12,9 +12,9 @@ import 'appearance_widgets.dart';
 
 class TripDetailsWidget extends StatelessWidget {
   const TripDetailsWidget({
-    Key key,
-    @required this.expandController,
-    @required this.tripDetails, this.detailsPadding, this.event,
+    Key? key,
+    required this.expandController,
+    required this.tripDetails, required this.detailsPadding, required this.event,
   }) : super(key: key);
 
   final ExpandableController expandController;
@@ -26,7 +26,7 @@ class TripDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
-      children: [
+      children: <Widget>[
         Visibility(
           visible: !expandController.expanded,
           child: Padding(
@@ -39,9 +39,8 @@ class TripDetailsWidget extends StatelessWidget {
           child: ExpandableNotifier(
             controller: expandController,
             child: ScrollOnExpand(
-              scrollOnExpand: true,
               child: ExpandableTheme(
-                data: ExpandableThemeData(
+                data: const ExpandableThemeData(
                   iconSize: 25.0,
                   iconColor: Colors.black,
                 ),
@@ -51,11 +50,10 @@ class TripDetailsWidget extends StatelessWidget {
                   expanded: Padding(
                     padding: EdgeInsets.all(detailsPadding),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.location_pin,),
-                          title: Text('${tripDetails.location}',
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.location_pin,),
+                          title: Text(tripDetails.location,
                             style: Theme.of(context).textTheme.subtitle1,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -66,7 +64,7 @@ class TripDetailsWidget extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
                           title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
@@ -75,21 +73,21 @@ class TripDetailsWidget extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.label,),
-                          title: Text('${tripDetails.travelType}',
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.label,),
+                          title: Text(tripDetails.travelType,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                         ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.people,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.people,),
                           title: Text('${tripDetails.accessUsers.length} Members',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                         ListTile(
                           leading: tripDetails.ispublic ?
-                          TripDetailsIconThemeWidget(icon: Icons.public,) :
-                          TripDetailsIconThemeWidget(icon: Icons.public_off,),
+                          const TripDetailsIconThemeWidget(icon: Icons.public,) :
+                          const TripDetailsIconThemeWidget(icon: Icons.public_off,),
                           title: tripDetails.ispublic ?
                           Text('Public Trip',
                             style: Theme.of(context).textTheme.subtitle1,) :
@@ -97,7 +95,7 @@ class TripDetailsWidget extends StatelessWidget {
                             style: Theme.of(context).textTheme.subtitle1,),
                         ),
                         if(tripDetails.comment.isNotEmpty) ListTile(
-                          leading: TripDetailsIconThemeWidget(icon: Icons.comment,),
+                          leading: const TripDetailsIconThemeWidget(icon: Icons.comment,),
                           title: Text(tripDetails.comment,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),

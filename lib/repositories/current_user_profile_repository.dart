@@ -12,8 +12,8 @@ import '../../../services/functions/cloud_functions.dart';
 /// Relies on a remote NoSQL document-oriented database.
 class CurrentUserProfileRepository {
 
-  final CollectionReference userPublicProfileCollection = FirebaseFirestore.instance.collection("userPublicProfile");
-  final _loadedData = StreamController<UserPublicProfile>.broadcast();
+  final CollectionReference<Object> userPublicProfileCollection = FirebaseFirestore.instance.collection('userPublicProfile');
+  final StreamController<UserPublicProfile> _loadedData = StreamController<UserPublicProfile>.broadcast();
 
 
   void dispose() {
@@ -22,23 +22,23 @@ class CurrentUserProfileRepository {
 
   void refresh() {
     // Get Public Profile
-    UserPublicProfile _userProfileFromSnapshot(DocumentSnapshot snapshot){
+    UserPublicProfile userProfileFromSnapshot(DocumentSnapshot<Object> snapshot){
       if(snapshot.exists) {
         try {
-          Map<String, dynamic> data = snapshot.data();
-          urlToImage.value = UserPublicProfile.fromData(data).urlToImage;
-          return UserPublicProfile.fromData(data);
+          // final Map<String, dynamic> data = snapshot.data()  as Map<String, dynamic>;
+          // urlToImage.value = UserPublicProfile.fromData(data).urlToImage ?? '';
+          return UserPublicProfile.fromDocument(snapshot);
         } catch(e){
           CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
-          return UserPublicProfile();
+          return defaultProfile;
         }} else {
-        return UserPublicProfile();
+        return defaultProfile;
       }
     }
 
-    Stream<UserPublicProfile> profile = userPublicProfileCollection
+    final Stream<UserPublicProfile> profile = userPublicProfileCollection
         .doc(userService.currentUserID)
-        .snapshots().map(_userProfileFromSnapshot);
+        .snapshots().map(userProfileFromSnapshot);
 
 
 

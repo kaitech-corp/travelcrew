@@ -3,10 +3,10 @@ import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.da
 
 class ProgressBarWidget extends StatelessWidget {
 
-  final currentValue;
-  final maxValue;
+  const ProgressBarWidget({Key? key, required this.currentValue, required this.maxValue}) : super(key: key);
 
-  const ProgressBarWidget({Key key, this.currentValue, this.maxValue}) : super(key: key);
+  final double currentValue;
+  final double maxValue;
 
 
   @override
