@@ -1,18 +1,27 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
 
 class CustomBlocObserver extends BlocObserver {
 
+
+  // @override
+  // void onChange(BlocBase<dynamic> bloc, Change change) {
+  //   super.onChange(bloc, change);
+  //   // print('onChange -- ${bloc.runtimeType}, $change');
+  // }
+
   @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    // print(transition);
+  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
+    if (kDebugMode) {
+      print('onError -- ${bloc.runtimeType}, $error');
+    }
+    // CloudFunction().logError('Bloc Observer error: $error');
+    super.onError(bloc, error, stackTrace);
   }
 
-@override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    super.onError(bloc, error, stackTrace);
-    print(error);
-    CloudFunction().logError('Bloc Observer error: $error');
-  }
+  // @override
+  // void onClose(BlocBase<dynamic> bloc) {
+  //   super.onClose(bloc);
+  //   // print('onClose -- ${bloc.runtimeType}');
+  // }
 }

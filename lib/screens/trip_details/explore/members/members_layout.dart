@@ -17,54 +17,54 @@ import '../../../alerts/alert_dialogs.dart';
 /// Layout list for members of trip
 class MembersLayout extends StatefulWidget{
 
-  final Trip tripDetails;
+  const MembersLayout({Key? key, required this.trip, required this.ownerID}) : super(key: key);
+
+  final Trip trip;
   final String ownerID;
 
-  MembersLayout({Key key, this.tripDetails, this.ownerID}) : super(key: key);
-
   @override
-  _MembersLayoutState createState() => _MembersLayoutState();
+  State<MembersLayout> createState() => _MembersLayoutState();
 }
 
 class _MembersLayoutState extends State<MembersLayout> {
 
-  var _showImage = false;
-  String _image;
-  var userService = locator<UserService>();
+  bool _showImage = false;
+  late String _image;
+  UserService userService = locator<UserService>();
 
   final ScrollController controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-  return getMember(context, widget.tripDetails);
+  return getMember(context, widget.trip);
   }
 
 
-  Widget getMember(BuildContext context, Trip tripDetails){
+  Widget getMember(BuildContext context, Trip trip){
     return Stack(
-      children: [
+      children: <Widget>[
         StreamBuilder<List<UserPublicProfile>>(
-          builder: (context, userData){
+          builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> userData){
             if(userData.hasError){
               CloudFunction()
                   .logError('Error streaming user data '
                   'for members layout: ${userData.error.toString()}');
             }
             if(userData.hasData){
-              final List<UserPublicProfile> crew = userData.data;
+              final List<UserPublicProfile> crew = userData.data!;
               return ListView.builder(
                     itemCount: crew.length,
                     itemBuilder: (BuildContext context, int index) {
                       final UserPublicProfile member = crew[index];
-                      return userCard(context, member, tripDetails);
+                      return userCard(context, member, trip);
                     },
                   );
             } else {
-              return Loading();
+              return const Loading();
             }
           },
-        stream: DatabaseService().getcrewList(widget.tripDetails.accessUsers),),
-        if (_showImage) ...[
+        stream: DatabaseService().getcrewList(widget.trip.accessUsers),),
+        if (_showImage) ...<Widget>[
           BackdropFilter(
             filter: ImageFilter.blur(
               sigmaX: 5.0,
@@ -75,22 +75,20 @@ class _MembersLayoutState extends State<MembersLayout> {
             ),
           ),
           Center(
-            child: Container(
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: _image.isNotEmpty
-                      ? Image.network(
-                    _image,
-                    height: SizeConfig.screenWidth*.5,
-                    width: SizeConfig.screenWidth*.5,
-                    fit: BoxFit.fill,)
-                      : Image.asset(
-                    profileImagePlaceholder,
-                    height: SizeConfig.screenWidth*.5,
-                    width: SizeConfig.screenWidth*.5,
-                    fit: BoxFit.fill,),
-                ),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: _image.isNotEmpty
+                    ? Image.network(
+                  _image,
+                  height: SizeConfig.screenWidth*.5,
+                  width: SizeConfig.screenWidth*.5,
+                  fit: BoxFit.fill,)
+                    : Image.network(
+                  profileImagePlaceholder,
+                  height: SizeConfig.screenWidth*.5,
+                  width: SizeConfig.screenWidth*.5,
+                  fit: BoxFit.fill,),
               ),
             ),
           ),
@@ -99,7 +97,7 @@ class _MembersLayoutState extends State<MembersLayout> {
     );
   }
 
-  Widget userCard(BuildContext context, UserPublicProfile member, Trip tripDetails){
+  Widget userCard(BuildContext context, UserPublicProfile member, Trip trip){
 
     return Card(
       key: Key(member.uid),
@@ -107,7 +105,7 @@ class _MembersLayoutState extends State<MembersLayout> {
       child: Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight*.09,
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: GestureDetector(
           onLongPress: (){
             setState(() {
@@ -115,7 +113,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               _image = member.urlToImage;
             });
           },
-          onLongPressEnd: (details) {
+          onLongPressEnd: (LongPressEndDetails details) {
             setState(() {
               _showImage = false;
             });
@@ -124,13 +122,11 @@ class _MembersLayoutState extends State<MembersLayout> {
             navigationService.navigateTo(UserProfilePageRoute, arguments: member);
           },
           child: Row(
-            children: [
+            children: <Widget>[
               Center(
                 child: CircleAvatar(
                   radius: SizeConfig.blockSizeHorizontal*7,
-                  backgroundImage: (member.urlToImage.isNotEmpty ?? false)
-                      ? NetworkImage(member.urlToImage,)
-                      : AssetImage(profileImagePlaceholder),
+                  backgroundImage: (member.urlToImage.isEmpty) ? const NetworkImage(profileImagePlaceholder) : NetworkImage(member.urlToImage),
                 ),
               ),
               Expanded(
@@ -138,13 +134,13 @@ class _MembersLayoutState extends State<MembersLayout> {
                   title: Text(member.displayName,
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.start,),
-                  trailing: (member.uid == userService.currentUserID || member.uid == tripDetails.ownerID)
+                  trailing: (member.uid == userService.currentUserID || member.uid == trip.ownerID)
                       ? const IconThemeWidget(icon:Icons.check)
                   : IconButton(
                     icon: const IconThemeWidget(icon: Icons.close),
                     onPressed: (){
                       TravelCrewAlertDialogs()
-                          .removeMemberAlert(context, tripDetails, member,);
+                          .removeMemberAlert(context, trip, member,);
                     },
                   ),
                 ),

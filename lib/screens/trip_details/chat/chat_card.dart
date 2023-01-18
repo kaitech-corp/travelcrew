@@ -12,10 +12,10 @@ import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 
 class ChatCard extends StatelessWidget {
+
+  const ChatCard({Key? key, required this.message, required this.tripDocID}) : super(key: key);
   final ChatData message;
   final String tripDocID;
-
-  ChatCard({this.message, this.tripDocID});
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +23,20 @@ class ChatCard extends StatelessWidget {
         ? GestureDetector(
             key: Key(message.fieldID),
             onTap: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
+              FocusScope.of(context).requestFocus(FocusNode());
             },
             onLongPress: () {
               showBottomSheet(
                   context: context,
-                  builder: (context) {
+                  builder: (BuildContext context) {
                     return Container(
                       height: SizeConfig.screenHeight * .3,
                       width: SizeConfig.screenWidth,
                       color: Colors.grey.shade200,
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
+                        children: <Widget>[
                           OutlinedButton(
                             // color: Colors.grey,
                             child: Text(
@@ -84,9 +84,9 @@ class ChatCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 Container(
-                    margin: EdgeInsets.fromLTRB(80, 5, 5, 5),
+                    margin: const EdgeInsets.fromLTRB(80, 5, 5, 5),
                     decoration: BoxDecoration(
                         color: Colors.lightBlue[100],
                         borderRadius: BorderRadius.circular(15.0)),
@@ -97,14 +97,14 @@ class ChatCard extends StatelessWidget {
                           margin:
                               const EdgeInsets.fromLTRB(5.0, 5.0, 10.0, 5.0),
                           child: Linkify(
-                            onOpen: (link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                            onOpen: (LinkableElement link) async {
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontFamily: 'Cantata One',
@@ -122,7 +122,7 @@ class ChatCard extends StatelessWidget {
                                 TCFunctions().chatViewGroupByDateTimeOnlyTime(
                                     message.timestamp),
                                 textScaleFactor: .75,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontStyle: FontStyle.italic,
                                     fontFamily: 'Cantata One'))),
@@ -136,7 +136,7 @@ class ChatCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Container(
                     margin: const EdgeInsets.fromLTRB(5, 5, 80, 5),
                     decoration: BoxDecoration(
@@ -148,8 +148,8 @@ class ChatCard extends StatelessWidget {
                         Container(
                             margin: const EdgeInsets.all(5),
                             child: Text(
-                              message.displayName ?? '',
-                              style: TextStyle(
+                              message.displayName,
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontFamily: 'Cantata One'),
                             )),
@@ -157,14 +157,14 @@ class ChatCard extends StatelessWidget {
                           margin:
                               const EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                           child: Linkify(
-                            onOpen: (link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
+                            onOpen: (LinkableElement link) async {
+                              if (await canLaunchUrl(Uri(path: link.url))) {
+                                await launchUrl(Uri(path: link.url));
                               } else {
-                                throw 'Could not launch $link';
+                                throw 'Could not launch ${link.url}';
                               }
                             },
-                            text: message.message ?? '',
+                            text: message.message,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontFamily: 'Cantata One',
@@ -181,7 +181,7 @@ class ChatCard extends StatelessWidget {
                               TCFunctions().chatViewGroupByDateTimeOnlyTime(
                                   message.timestamp),
                               textScaleFactor: .75,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontStyle: FontStyle.italic,
                                   fontFamily: 'Cantata One'),
@@ -196,18 +196,18 @@ class ChatCard extends StatelessWidget {
   //
   String readTimestamp(int timestamp) {
     if (timestamp != null) {
-      var now = new DateTime.now();
-      var format = new DateFormat.jm();
-      var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
-      var diff = date.difference(now);
-      var time = '';
+      final DateTime now = DateTime.now();
+      final DateFormat format = DateFormat.jm();
+      final DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+      final Duration diff = date.difference(now);
+      String time = '';
       if (diff.inDays == 0) {
         time = format.format(date);
       } else {
         if ((diff.inDays).abs() == 1) {
           time = '1 DAY AGO';
         } else {
-          time = (diff.inDays).abs().toString() + ' DAYS AGO';
+          time = '${(diff.inDays).abs()} DAYS AGO';
         }
       }
 

@@ -9,43 +9,40 @@ import '../../blocs/generics/generic_bloc.dart';
 
 class AllTripsRepository extends GenericBlocRepository<Trip> {
 
+  @override
   Stream<List<Trip>> data() {
     //Firebase Collection
-    final Query tripCollection = FirebaseFirestore.instance
-        .collection("trips")
+    final Query<Object> tripCollection = FirebaseFirestore.instance
+        .collection('trips')
         .orderBy('endDateTimeStamp')
         .where('ispublic', isEqualTo: true);
 
     // Get all trips
-    List<Trip> _tripListFromSnapshot(QuerySnapshot snapshot) {
+    List<Trip> tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
-          return Trip.fromData(data);
+        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         }).toList();
-        // trips.where((trip) => {
-        //   trip.
-        // })
         trips.sort(
-            (a, b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
+            (Trip a, Trip b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
         trips = trips
             .where(
-                (trip) => !trip.accessUsers.contains(userService.currentUserID))
-            .toList()
-            .where((trip) =>
-                trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
+                (Trip trip) => !trip.accessUsers.contains(userService.currentUserID))
             .toList();
+            // .where((Trip trip) =>
+            //     trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
+            // .toList();
         return trips;
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving all trip list:  ${e.toString()}');
-        return null;
+        return <Trip>[];
       }
     }
 
     // get trips stream
     return tripCollection
         .snapshots()
-        .map(_tripListFromSnapshot);
+        .map(tripListFromSnapshot);
   }
 }

@@ -1,18 +1,11 @@
 class LoginState {
-  final bool isEmailValid;
-  final bool isPasswordValid;
-  final bool isSubmitting;
-  final bool isSuccess;
-  final bool isFailure;
-
-  bool get isFormValid => isEmailValid && isPasswordValid;
 
   LoginState(
-      {this.isEmailValid,
-        this.isPasswordValid,
-        this.isSubmitting,
-        this.isSuccess,
-        this.isFailure});
+      {required this.isEmailValid,
+      required  this.isPasswordValid,
+      required  this.isSubmitting,
+      required  this.isSuccess,
+      required  this.isFailure});
 
   factory LoginState.initial() {
     return LoginState(
@@ -53,10 +46,17 @@ class LoginState {
       isFailure: false,
     );
   }
+  final bool isEmailValid;
+  final bool isPasswordValid;
+  final bool isSubmitting;
+  final bool isSuccess;
+  final bool isFailure;
+
+  bool get isFormValid => isEmailValid && isPasswordValid;
 
   LoginState update({
-    bool isEmailValid,
-    bool isPasswordValid,
+    bool? isEmailValid,
+    bool? isPasswordValid,
   }) {
     return copyWith(
       isEmailValid: isEmailValid,
@@ -68,11 +68,11 @@ class LoginState {
   }
 
   LoginState copyWith({
-    bool isEmailValid,
-    bool isPasswordValid,
-    bool isSubmitting,
-    bool isSuccess,
-    bool isFailure,
+    bool? isEmailValid,
+    bool? isPasswordValid,
+    bool? isSubmitting,
+    bool? isSuccess,
+    bool? isFailure,
   }) {
     return LoginState(
       isEmailValid: isEmailValid ?? this.isEmailValid,

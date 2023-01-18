@@ -15,16 +15,19 @@ import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 
 class SliverGridTripList extends StatefulWidget {
+  const SliverGridTripList({Key? key, required this.isPast}) : super(key: key);
+  final bool isPast;
+
 
   @override
-  _SliverGridTripListState createState() => _SliverGridTripListState();
+  State<SliverGridTripList> createState() => _SliverGridTripListState();
 }
 
 class _SliverGridTripListState extends State<SliverGridTripList> {
 
   final AnalyticsService _analyticsService = AnalyticsService();
 
-  GenericBloc<Trip,AllTripsRepository> allTripBloc;
+  late GenericBloc<Trip,AllTripsRepository> allTripBloc;
 
   int crossAxisCount = 2;
   int count = 3;
@@ -46,18 +49,26 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     }
 
     return BlocBuilder<GenericBloc<Trip,AllTripsRepository>, GenericState>(
-        builder: (context, state) {
+        builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Flexible(fit:FlexFit.loose,child: Loading());
-          } else if (state is HasDataState<Trip>) {
-            List<Trip> tripList = state.data;
-            print(tripList.length);
-        return SizedBox(
+            return const Flexible(child: Loading());
+          } else if (state is HasDataState) {
+            final List<Trip> result = state.data as List<Trip>;
+            final List<Trip> tripList = (widget.isPast) ?
+            result.where((Trip trip) =>
+                trip.endDateTimeStamp.toDate().isBefore(DateTime.now()))
+                .toList()
+                .sublist(3,25)
+            .where((Trip trip) => trip.urlToImage.isNotEmpty).toList()
+                : result.where((Trip trip) =>
+                trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
+                .toList();
+            return SizedBox(
               height: SizeConfig.screenWidth*.55,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                children: List.generate(tripList.length, (index) {
+                children: List<Widget>.generate(tripList.length, (int index) {
                   return tripList[index].urlToImage.isEmpty
                       ? cardWithoutImage(
                       context, tripList[index])
@@ -107,10 +118,8 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                  trip.urlToImage,
-                ),
-                fit: BoxFit.fill,
+                image: NetworkImage(trip.urlToImage),
+                fit: BoxFit.fill
               ),
               color: const Color(0xAA91AFD0), //
               borderRadius: const BorderRadius.only(
@@ -175,26 +184,26 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+                colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
           ),
           child: Stack(
             // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Align(
                 alignment: Alignment.topLeft,
                 child: Tooltip(
-                  message: '${trip.tripName}',
+                  message: trip.tripName,
                   child: ListTile(
                     contentPadding: const EdgeInsets.only(left: 15, right: 5),
                     title: Text(
-                      (trip.tripName),
+                      trip.tripName,
                       style: const TextStyle(fontFamily: 'RockSalt', color: Colors.black),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
                     ),
                     subtitle: Text(
-                      '${trip.displayName}',
+                      trip.displayName,
                       style: Theme.of(context).textTheme.subtitle1,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

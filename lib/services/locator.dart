@@ -24,7 +24,7 @@ class UserService {
 
   String get currentUserID {
     try {
-      return _auth.currentUser.uid;
+      return _auth.currentUser?.uid ?? '';
     } catch (e) {
       CloudFunction().logError('Error retrieving uid for locator: ${e.toString()}');
       return '';
@@ -35,24 +35,21 @@ class UserService {
 /// Provides the user profile of the current user.
 class UserProfileService {
 
-  var userService = locator<UserService>();
-  UserPublicProfile profile;
+  UserService userService = locator<UserService>();
+  UserPublicProfile profile = defaultProfile;
 
   Future<UserPublicProfile> currentUserProfile() async {
-
     try {
       profile = await DatabaseService().getUserProfile(userService.currentUserID);
       urlToImage.value = profile.urlToImage;
     } catch (e) {
       CloudFunction().logError('Error in User Public Profile service:  ${e.toString()}');
     }
-
-    return profile;
+    return defaultProfile;
   }
 
   UserPublicProfile currentUserProfileDirect(){
-    currentUserProfile().then((value) => profile = value);
+    currentUserProfile().then((UserPublicProfile value) => profile = value);
     return profile;
   }
 }
-

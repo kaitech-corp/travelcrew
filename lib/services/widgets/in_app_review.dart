@@ -3,7 +3,7 @@ import 'package:in_app_review/in_app_review.dart';
 class InAppReviewClass {
   final InAppReview inAppReview = InAppReview.instance;
 
-  requestReviewFunc() async {
+  Future<void> requestReviewFunc() async {
     if(await inAppReview.isAvailable()){
       inAppReview.requestReview();
     }

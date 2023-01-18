@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:travelcrew/models/activity_model.dart';
-import 'package:travelcrew/models/custom_objects.dart';
-import 'package:travelcrew/models/lodging_model.dart';
-import 'package:travelcrew/models/trip_model.dart';
-import 'package:travelcrew/screens/alerts/alert_dialogs.dart';
-import 'package:travelcrew/services/database.dart';
-import 'package:travelcrew/services/functions/cloud_functions.dart';
+import 'package:intl/intl.dart';
+
+import '../../../models/activity_model.dart';
+import '../../../models/custom_objects.dart';
+import '../../../models/lodging_model.dart';
+import '../../../models/trip_model.dart';
+import '../../../services/database.dart';
+import '../../../services/functions/cloud_functions.dart';
+import '../../alerts/alert_dialogs.dart';
 
 class ReportContent extends StatefulWidget {
-  final String type;
-  final UserPublicProfile userAccount;
-  final ActivityData activity;
-  final LodgingData lodging;
-  final Trip tripDetails;
-
   const ReportContent(
-      {Key key,
-      this.type,
+      {Key? key,
+      required this.type,
       this.userAccount,
       this.activity,
       this.lodging,
-      this.tripDetails})
+      this.trip})
       : super(key: key);
+  final String type;
+  final UserPublicProfile? userAccount;
+  final ActivityData? activity;
+  final LodgingData? lodging;
+  final Trip? trip;
+
   @override
-  _ReportContentState createState() => _ReportContentState();
+  State<ReportContent> createState() => _ReportContentState();
 }
 
 class _ReportContentState extends State<ReportContent> {
-  String collection;
-  String docID;
-  String offenderID;
-  String urlToImage;
+  late String collection;
+  late String docID;
+  late String offenderID;
+  late String urlToImage;
 
   void saveData(String type) {
     switch (type) {
@@ -38,9 +40,9 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'users';
-            docID = widget.userAccount.uid;
+            docID = widget.userAccount!.uid;
             offenderID = docID;
-            urlToImage = widget.userAccount.urlToImage;
+            urlToImage = widget.userAccount!.urlToImage;
           });
         }
         break;
@@ -48,8 +50,8 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'activities';
-            docID = widget.activity.fieldID;
-            offenderID = widget.activity.uid;
+            docID = widget.activity!.fieldID;
+            offenderID = widget.activity!.uid;
           });
         }
         break;
@@ -57,22 +59,22 @@ class _ReportContentState extends State<ReportContent> {
         {
           setState(() {
             collection = 'lodging';
-            docID = widget.lodging.fieldID;
-            offenderID = widget.lodging.uid;
+            docID = widget.lodging!.fieldID;
+            offenderID = widget.lodging!.uid;
           });
         }
         break;
-      case 'tripDetails':
+      case 'trip':
         {
           setState(() {
-            if (widget.tripDetails.ispublic) {
+            if (widget.trip!.ispublic) {
               collection = 'trips';
             } else {
               collection = 'privateTrips';
             }
-            docID = widget.tripDetails.documentId;
-            offenderID = widget.tripDetails.ownerID;
-            urlToImage = widget.tripDetails.urlToImage;
+            docID = widget.trip!.documentId;
+            offenderID = widget.trip!.ownerID;
+            urlToImage = widget.trip!.urlToImage;
           });
         }
         break;
@@ -89,7 +91,7 @@ class _ReportContentState extends State<ReportContent> {
     }
   }
 
-  TextEditingController _controller;
+  late TextEditingController _controller;
 
   @override
   void initState() {
@@ -104,15 +106,15 @@ class _ReportContentState extends State<ReportContent> {
     super.dispose();
   }
 
-  String _message;
+  late String _message;
 
-  Map<String, String> reportType = {
-    'Content': 'Content (i.e. image, language) is inappropriate.',
-    'Identity': 'This account is pretending to be someone else.',
-    'Spam': 'You believe this to be a spam account.',
-    'Other': 'Please describe below.'
+  Map<String, String> reportType = <String, String>{
+    'Content': Intl.message('Content (i.e. image, language) is inappropriate.'),
+    'Identity': Intl.message('This account is pretending to be someone else.'),
+    'Spam': Intl.message('You believe this to be a spam account.'),
+    'Other': Intl.message('Please describe below.')
   };
-  List<String> reportList = ['Content', 'Identity', 'Spam', 'Other'];
+  List<String> reportList = <String>['Content', 'Identity', 'Spam', 'Other'];
   String itemType = 'Content';
 
   @override
@@ -131,12 +133,12 @@ class _ReportContentState extends State<ReportContent> {
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const Padding(
                   padding: EdgeInsets.only(top: 5),
                 ),
                 Text(
-                  'Report this user for...',
+                  Intl.message('Report this user for...'),
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 const Padding(
@@ -147,20 +149,20 @@ class _ReportContentState extends State<ReportContent> {
                   child: ListView.builder(
                       itemCount: reportList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return RadioListTile(
+                        return RadioListTile<String>(
                             title: Text(
                               reportList[index],
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                             subtitle: Text(
-                              reportType[reportList[index]],
+                              reportType[reportList[index]]!,
                               style: Theme.of(context).textTheme.subtitle2,
                             ),
                             value: reportList[index],
                             groupValue: itemType,
-                            onChanged: (value) {
+                            onChanged: (String? value) {
                               setState(() {
-                                itemType = value;
+                                itemType = value!;
                               });
                             });
                       }),
@@ -169,26 +171,26 @@ class _ReportContentState extends State<ReportContent> {
                 if (widget.userAccount != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.userAccount.firstName} '
-                        '${widget.userAccount.lastName}',
+                    'Reporting: ${widget.userAccount!.firstName} '
+                    '${widget.userAccount!.lastName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 if (widget.activity != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.activity.displayName}',
+                    'Reporting: ${widget.activity!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 if (widget.lodging != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.lodging.displayName}',
+                    'Reporting: ${widget.lodging!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
-                if (widget.tripDetails != null)
+                if (widget.trip != null)
                   Center(
                       child: Text(
-                    'Reporting: ${widget.tripDetails.displayName}',
+                    'Reporting: ${widget.trip!.displayName}',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
                 const SizedBox(height: 30),
@@ -232,9 +234,10 @@ class _ReportContentState extends State<ReportContent> {
         style: Theme.of(context).textTheme.subtitle1,
         controller: _controller,
         maxLines: maxLines,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           hintText:
-              'Please describe the reasoning for this report and/or add additional details.',
+              Intl.message('Please describe the reasoning for this report '
+                  'and/or add additional details.'),
           fillColor: Colors.grey,
           filled: true,
         ),

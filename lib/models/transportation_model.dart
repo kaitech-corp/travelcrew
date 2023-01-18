@@ -1,86 +1,200 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../services/functions/cloud_functions.dart';
 
 ///Model for transportation data
 class TransportationData {
-  final String _mode;
-  final String _airline;
-  final String _airportCode;
-  final bool _canCarpool;
-  final String _carpoolingWith;
-  final String _comment;
-  final String _departureDate;
-  final String _departureDateArrivalTime;
-  final String _departureDateDepartTime;
-  final String _displayName;
-  final String _fieldID;
-  final String _flightNumber;
-  final String _location;
-  final String _returnDateArrivalTime;
-  final String _returnDateDepartTime;
-  final String _returnDate;
-  final String _uid;
-  final String _tripDocID;
+  TransportationData({
+    required this.mode,
+    required this.airline,
+    required this.airportCode,
+    required this.canCarpool,
+    required this.carpoolingWith,
+    required this.comment,
+    required this.departureDate,
+    required this.departureDateArrivalTime,
+    required this.departureDateDepartTime,
+    required this.displayName,
+    required this.fieldID,
+    required this.flightNumber,
+    required this.location,
+    required this.returnDateArrivalTime,
+    required this.returnDateDepartTime,
+    required this.returnDate,
+    required this.uid,
+    required this.tripDocID,
+  });
 
-
-  TransportationData.fromData(Map<String, dynamic> data)
-      : _mode = data['mode'],
-        _airline = data['airline'],
-        _airportCode = data['airportCode'],
-        _canCarpool = data['canCarpool'],
-        _carpoolingWith = data['carpoolingWith'],
-        _comment = data['comment'],
-        _departureDate = data['departureDate'],
-        _departureDateArrivalTime = data['departureDateArrivalTime'],
-        _departureDateDepartTime = data['departureDateDepartTime'],
-        _displayName = data['displayName'],
-        _fieldID = data['fieldID'],
-        _flightNumber = data['flightNumber'],
-        _location = data['location'],
-        _returnDateArrivalTime = data['returnDateArrivalTime'],
-        _returnDateDepartTime = data['returnDateDepartTime'],
-        _returnDate = data['returnDate'],
-        _tripDocID = data['tripDocID'],
-        _uid = data['uid'];
+  factory TransportationData.fromDocument(DocumentSnapshot<Object?> doc) {
+    String mode = '';
+    String airline = '';
+    String airportCode = '';
+    bool canCarpool = false;
+    String carpoolingWith = '';
+    String comment = '';
+    String departureDate = '';
+    String departureDateArrivalTime = '';
+    String departureDateDepartTime = '';
+    String displayName = '';
+    String fieldID = '';
+    String flightNumber = '';
+    String location = '';
+    String returnDateArrivalTime = '';
+    String returnDateDepartTime = '';
+    String returnDate = '';
+    String uid = '';
+    String tripDocID = '';
+    try {
+      airline = doc.get('airline') as String;
+    } catch (e) {
+      CloudFunction().logError('amountRemaining error: ${e.toString()}');
+    }
+    try {
+      airportCode = doc.get('airportCode') as String;
+    } catch (e) {
+      CloudFunction().logError('airportCode error: ${e.toString()}');
+    }
+    try {
+      comment = doc.get('comment') as String;
+    } catch (e) {
+      CloudFunction().logError('comment error: ${e.toString()}');
+    }
+    try {
+      canCarpool = doc.get('canCarpool') as bool;
+    } catch (e) {
+      CloudFunction().logError('canCarpool error: ${e.toString()}');
+    }
+    try {
+      carpoolingWith = doc.get('carpoolingWith') as String;
+    } catch (e) {
+      CloudFunction().logError('carpoolingWith error: ${e.toString()}');
+    }
+    try {
+      comment = doc.get('comment') as String;
+    } catch (e) {
+      CloudFunction().logError('comment error: ${e.toString()}');
+    }
+    try {
+      displayName = doc.get('displayName') as String;
+    } catch (e) {
+      CloudFunction().logError('displayName error: ${e.toString()}');
+    }
+    try {
+      departureDateArrivalTime = doc.get('departureDateArrivalTime') as String;
+    } catch (e) {
+      CloudFunction()
+          .logError('departureDateArrivalTime error: ${e.toString()}');
+    }
+    try {
+      departureDateDepartTime = doc.get('departureDateDepartTime') as String;
+    } catch (e) {
+      CloudFunction()
+          .logError('departureDateDepartTime error: ${e.toString()}');
+    }
+    try {
+      departureDate = doc.get('departureDate') as String;
+    } catch (e) {
+      CloudFunction().logError('departureDate error: ${e.toString()}');
+    }
+    try {
+      fieldID = doc.get('fieldID') as String;
+    } catch (e) {
+      CloudFunction().logError('fieldID error: ${e.toString()}');
+    }
+    try {
+      flightNumber = doc.get('flightNumber') as String;
+    } catch (e) {
+      CloudFunction().logError('flightNumber error: ${e.toString()}');
+    }
+    try {
+      location = doc.get('location') as String;
+    } catch (e) {
+      CloudFunction().logError('location error: ${e.toString()}');
+    }
+    try {
+      returnDate = doc.get('returnDate') as String;
+    } catch (e) {
+      CloudFunction().logError('returnDate error: ${e.toString()}');
+    }
+    try {
+      returnDateDepartTime = doc.get('returnDateDepartTime') as String;
+    } catch (e) {
+      CloudFunction().logError('returnDateDepartTime error: ${e.toString()}');
+    }
+    try {
+      returnDateArrivalTime = doc.get('returnDateArrivalTime') as String;
+    } catch (e) {
+      CloudFunction().logError('returnDateArrivalTime error: ${e.toString()}');
+    }
+    try {
+      uid = doc.get('uid') as String;
+    } catch (e) {
+      CloudFunction().logError('uid error: ${e.toString()}');
+    }
+    try {
+      tripDocID = doc.get('tripDocID') as String;
+    } catch (e) {
+      CloudFunction().logError('tripDocID error: ${e.toString()}');
+    }
+    return TransportationData(
+        mode: mode,
+        airline: airline,
+        airportCode: airportCode,
+        canCarpool: canCarpool,
+        carpoolingWith: carpoolingWith,
+        comment: comment,
+        departureDate: departureDate,
+        departureDateArrivalTime: departureDateArrivalTime,
+        departureDateDepartTime: departureDateDepartTime,
+        displayName: displayName,
+        fieldID: fieldID,
+        flightNumber: flightNumber,
+        location: location,
+        returnDateArrivalTime: returnDateArrivalTime,
+        returnDateDepartTime: returnDateDepartTime,
+        returnDate: returnDate,
+        uid: uid,
+        tripDocID: tripDocID);
+  }
+  String mode;
+  String airline;
+  String airportCode;
+  bool canCarpool;
+  String carpoolingWith;
+  String comment;
+  String departureDate;
+  String departureDateArrivalTime;
+  String departureDateDepartTime;
+  String displayName;
+  String fieldID;
+  String flightNumber;
+  String location;
+  String returnDateArrivalTime;
+  String returnDateDepartTime;
+  String returnDate;
+  String uid;
+  String tripDocID;
 
   Map<String, dynamic> toJson() {
-    return {
-      'mode': _mode,
-      'airline': _airline,
-      'airportCode': _airportCode,
-      'canCarpool': _canCarpool,
-      'carpoolingWith': _carpoolingWith,
-      'comment': _comment,
-      'departureDate': _departureDate,
-      'departureDateArrivalTime': _departureDateArrivalTime,
-      'departureDateDepartTime': _departureDateDepartTime,
-      'displayName': _displayName,
-      'fieldID': _fieldID,
-      'flightNumber': _flightNumber,
-      'location': _location,
-      'returnDateArrivalTime': _returnDateArrivalTime,
-      'returnDateDepartTime': _returnDateDepartTime,
-      'returnDate': _returnDate,
-      'tripDocID': _tripDocID,
-      'uid': _uid,
+    return <String, dynamic>{
+      'mode': mode,
+      'airline': airline,
+      'airportCode': airportCode,
+      'canCarpool': canCarpool,
+      'carpoolingWith': carpoolingWith,
+      'comment': comment,
+      'departureDate': departureDate,
+      'departureDateArrivalTime': departureDateArrivalTime,
+      'departureDateDepartTime': departureDateDepartTime,
+      'displayName': displayName,
+      'fieldID': fieldID,
+      'flightNumber': flightNumber,
+      'location': location,
+      'returnDateArrivalTime': returnDateArrivalTime,
+      'returnDateDepartTime': returnDateDepartTime,
+      'returnDate': returnDate,
+      'tripDocID': tripDocID,
+      'uid': uid,
     };
   }
-
-  String get  mode => _mode;
-  String get  airline => _airline;
-  String get  airportCode => _airportCode;
-  bool get canCarpool => _canCarpool;
-  String get  carpoolingWith => _carpoolingWith;
-  String get  comment => _comment;
-  String get  departureDate => _departureDate;
-  String get  departureDateArrivalTime => _departureDateArrivalTime;
-  String get  departureDateDepartTime => _departureDateDepartTime;
-  String get  displayName => _displayName;
-  String get  fieldID => _fieldID;
-  String get  flightNumber => _flightNumber;
-  String get  location => _location;
-  String get  returnDateArrivalTime => _returnDateArrivalTime;
-  String get  returnDateDepartTime => _returnDateDepartTime;
-  String get  returnDate => _returnDate;
-  String get  uid => _uid;
-  String get  tripDocID => _tripDocID;
-
 }

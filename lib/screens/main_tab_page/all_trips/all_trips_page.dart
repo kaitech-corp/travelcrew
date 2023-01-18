@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'layout_items/ad_list_us.dart';
+import '../../../services/widgets/appearance_widgets.dart';
 import 'layout_items/suggestions_list.dart';
 import 'layout_items/trip_list.dart';
 
 
 /// All public trips page
 class AllTrips extends StatefulWidget {
+  const AllTrips({Key? key}) : super(key: key);
+
   @override
-  _AllTripsState createState() => _AllTripsState();
+  State<AllTrips> createState() => _AllTripsState();
 }
 
 class _AllTripsState extends State<AllTrips>
@@ -21,66 +23,56 @@ class _AllTripsState extends State<AllTrips>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             RichText(
               text: TextSpan(
-                  style: Theme.of(context).textTheme.headline3,
-                  children: [
-                    const TextSpan(
+                  style: responsiveTextStyleTopics(context),
+                  children: <TextSpan>[
+                    TextSpan(
                         text: " What's",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.greenAccent,
-                            fontSize: 28)),
+                        style: responsiveTextStyleTopics(context).copyWith(color: Colors.greenAccent,),),
                     TextSpan(
                       text: ' New',
-                      style: Theme.of(context).textTheme.headline6,
+                      style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),
-            SliverGridTripList(),
+            const SliverGridTripList(isPast: false,),
             RichText(
               text: TextSpan(
-                  style: Theme.of(context).textTheme.headline3,
-                  children: [
-                    const TextSpan(
-                        text: " Nature",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                            fontSize: 28)),
+                  // style: ,
+                  children: <TextSpan>[
                     TextSpan(
-                      text: " Lovers",
-                      style: Theme.of(context).textTheme.headline6,
+                        text: ' Past',
+                        style: responsiveTextStyleTopics(context).copyWith(color: Colors.redAccent,),),
+
+                        // TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.redAccent,
+                        //     fontSize: 28)),
+                    TextSpan(
+                      text: ' Gems',
+                      style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),
-            SliverGridAdList(),
+            const SliverGridTripList(isPast: true,),
             RichText(
               text: TextSpan(
-                  style: Theme.of(context).textTheme.headline3,
-                  children: [
-                    const TextSpan(
-                        text: " Friend",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orangeAccent,
-                            fontSize: 28)),
+                  children: <TextSpan>[
                     TextSpan(
-                      text: " Recommendations",
-                      style: Theme.of(context).textTheme.headline6,
+                        text: ' Friend',
+                        style: responsiveTextStyleTopics(context).copyWith(color: Colors.orangeAccent,),),
+                    TextSpan(
+                      text: ' Recommendations',
+                      style: responsiveTextStyleTopicsSub(context),
                     ),
                   ]),
             ),
-            SliverGridTripSuggestionList(),
+            const SliverGridTripSuggestionList(),
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-

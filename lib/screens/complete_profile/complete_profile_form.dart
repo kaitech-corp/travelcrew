@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -20,23 +21,26 @@ import '../../size_config/size_config.dart';
 
 /// Form for complete profile page
 class CompleteProfileForm extends StatefulWidget {
+  const CompleteProfileForm({Key? key}) : super(key: key);
+
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<CompleteProfileForm> createState() => _CompleteProfileFormState();
 }
 
-class _LoginFormState extends State<CompleteProfileForm> {
-  File image;
+class _CompleteProfileFormState extends State<CompleteProfileForm> {
+
+  File? image;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _displayNameController = TextEditingController();
-  final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
+  final ValueNotifier<File> _urlToImage = ValueNotifier<File>(File(''));
 
   final ImagePicker _picker = ImagePicker();
 
   bool imagePicked = false;
 
-  CompleteProfileBloc _completeProfileBloc;
+  late CompleteProfileBloc _completeProfileBloc;
 
   bool get isPopulated =>
       _firstNameController.text.isNotEmpty ||
@@ -67,25 +71,25 @@ class _LoginFormState extends State<CompleteProfileForm> {
     super.dispose();
   }
 
-  getImage() async {
-    var image =
+  Future<void> getImage() async {
+    final XFile? image =
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
 
-    _cropImage(image.path, image);
+    _cropImage(image!.path, image);
     setState(() {
       imagePicked = true;
     });
   }
 
-  _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper.cropImage(
+  Future<void> _cropImage(String imagePath, XFile image) async {
+    final CroppedFile? croppedImage = await ImageCropper().cropImage(
       sourcePath: imagePath,
       maxHeight: 1080,
       maxWidth: 1080,
     );
 
     if (croppedImage != null) {
-      _urlToImage.value = croppedImage;
+      _urlToImage.value = croppedImage as File;
     } else {
       _urlToImage.value = File(image.path);
     }
@@ -94,14 +98,14 @@ class _LoginFormState extends State<CompleteProfileForm> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CompleteProfileBloc, CompleteProfileState>(
-      listener: (context, state) {
+      listener: (BuildContext context, CompleteProfileState state) {
         if (state.isFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text('CompleteProfile Failure'),
+                  Text(Intl.message('CompleteProfile Failure')),
                   const Icon(Icons.error),
                 ],
               ),
@@ -115,7 +119,7 @@ class _LoginFormState extends State<CompleteProfileForm> {
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text('Registering...'),
+                  Text(Intl.message('Registering...')),
                   const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
@@ -143,35 +147,34 @@ class _LoginFormState extends State<CompleteProfileForm> {
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Display Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: Intl.message('Display Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'First Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: Intl.message('First Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Last Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: Intl.message('Last Name'),
                     ),
                     keyboardType: TextInputType.name,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
-                  imagePicked
-                      ? Container(
+                  if (imagePicked) Container(
                           height: (SizeConfig.screenWidth / 3) * 2.5,
                           // width: (SizeConfig.screenWidth/3)*1.9,
                           decoration: BoxDecoration(
@@ -180,9 +183,8 @@ class _LoginFormState extends State<CompleteProfileForm> {
                               image: DecorationImage(
                                   image: FileImage(_urlToImage.value),
                                   fit: BoxFit.cover)),
-                        )
-                      : const Text('Select a Profile Picture.',
-                          style: TextStyle(
+                        ) else Text(Intl.message('Select a Profile Picture.'),
+                          style: const TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
                   ElevatedButton(
@@ -196,10 +198,9 @@ class _LoginFormState extends State<CompleteProfileForm> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          agreement,
+                          agreementMessage(),
                           style: Theme.of(context).textTheme.subtitle1,
                           textAlign: TextAlign.center,
                         ),
@@ -240,9 +241,9 @@ class _LoginFormState extends State<CompleteProfileForm> {
                         _onFormSubmittedEmpty();
                       }
                     },
-                    text: const Text(
-                      'Continue',
-                      style: TextStyle(
+                    text: Text(Intl.message
+                      ('Continue'),
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),

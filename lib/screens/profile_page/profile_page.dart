@@ -1,4 +1,3 @@
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/custom_objects.dart';
@@ -9,8 +8,10 @@ import '../../size_config/size_config.dart';
 import 'profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -20,44 +21,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
-        children: [
-          StreamBuilder(
-            builder: (context, userData) {
+        children: <Widget>[
+          StreamBuilder<UserPublicProfile>(
+            builder: (BuildContext context,
+                AsyncSnapshot<UserPublicProfile> userData) {
               if (userData.hasError) {
                 CloudFunction()
                     .logError('Error streaming user data for Profile Page: '
-                    '${userData.error.toString()}');
+                        '${userData.error.toString()}');
               }
               if (userData.hasData) {
-                final UserPublicProfile user = userData.data;
+                final UserPublicProfile user = userData.data!;
 
-                return Stack(children: [
+                return Stack(children: <Widget>[
                   HangingImageTheme3(
                     user: user,
                   ),
                   ProfileWidget(user: user)
                 ]);
               } else {
-                final Faker faker = Faker();
-                final UserPublicProfile blankUser = UserPublicProfile(
-                    uid: faker.phoneNumber.toString(),
-                    email: '',
-                    urlToImage: faker.image.toString(),
-                    firstName: faker.person.firstName(),
-                    lastName: faker.person.lastName(),
-                    displayName: faker.person.name(),
-                    hometown: faker.address.city(),
-                    topDestinations: [
-                      faker.address.country(),
-                      faker.address.country(),
-                      faker.address.country()],
-                    blockedList: [],
-                    followers: [],
-                    following: [],
-                    facebookLink: '',
-                    instagramLink: '',
-                );
-                return ProfileWidget(user: blankUser);
+                return ProfileWidget(user: defaultProfile);
               }
             },
             stream: DatabaseService().currentUserPublicProfile,

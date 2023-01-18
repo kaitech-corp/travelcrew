@@ -8,34 +8,34 @@ import '../blocs/generics/generic_bloc.dart';
 
 class TransportationRepository extends GenericBlocRepository<TransportationData> {
 
+  TransportationRepository({required this.tripDocID});
+
   final String tripDocID;
 
-  TransportationRepository({this.tripDocID});
-
+  @override
   Stream<List<TransportationData>> data() {
-    final CollectionReference transportCollection = FirebaseFirestore.instance
-        .collection("transport");
+    final CollectionReference<Object> transportCollection = FirebaseFirestore.instance
+        .collection('transport');
 
     // Get all transportation items
-    List<TransportationData> _transportListFromSnapshot(
-        QuerySnapshot snapshot) {
+    List<TransportationData> transportListFromSnapshot(
+        QuerySnapshot<Object> snapshot) {
       try {
-        List<TransportationData> transportList = snapshot.docs.map((doc) {
-          Map<String, dynamic> data = doc.data();
-          return TransportationData.fromData(data);
+        final List<TransportationData> transportList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          return TransportationData.fromDocument(doc);
         }).toList();
 
         return transportList;
       } catch (e) {
         CloudFunction().logError(
             'Error retrieving transportation list:  ${e.toString()}');
-        return [];
+        return <TransportationData>[];
       }
     }
 
     return transportCollection
         .doc(tripDocID).collection('mode')
         .snapshots()
-        .map(_transportListFromSnapshot);
+        .map(transportListFromSnapshot);
   }
 }

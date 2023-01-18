@@ -12,25 +12,17 @@ import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
 
 Future<void> projectInitializer() async {
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load(fileName: ".env");
-    await Firebase.initializeApp();
-    setupLocator();
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-    // Pass all uncaught errors from the framework to Crashlytics.
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-    FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
+  await Firebase.initializeApp();
+  setupLocator();
+  SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
 
     Bloc.observer = CustomBlocObserver();
 
-    // Enable location services
-    LocationHandler().enableLocation();
-
-  } catch (e){
-    AnalyticsService().writeError("Project Initializer: $e");
-  }
+  Bloc.observer = CustomBlocObserver();
 }

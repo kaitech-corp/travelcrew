@@ -7,9 +7,9 @@ import '../../services/constants/constants.dart';
 
 class UserPopupProfile extends StatelessWidget{
 
-  final Members member;
+  const UserPopupProfile({Key? key, required this.member}) : super(key: key);
 
-  UserPopupProfile({this.member});
+  final Members member;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +30,8 @@ class UserPopupProfile extends StatelessWidget{
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: (member.urlToImage?.isNotEmpty ?? false) ? NetworkImage(member.urlToImage) : Image.asset(
-                profileImagePlaceholder,
-                height: 300,
-                width: 300,
-              ),
+              child: (member.urlToImage.isEmpty) ? Image.network(profileImagePlaceholder) : Image.network(member.urlToImage),
+
             ),
           ),
         ),

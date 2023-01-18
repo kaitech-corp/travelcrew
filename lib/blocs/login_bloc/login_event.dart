@@ -2,35 +2,35 @@ import 'package:equatable/equatable.dart';
 
 abstract class LoginEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class LoginEmailChange extends LoginEvent {
-  final String email;
 
   LoginEmailChange({this.email});
+  final String? email;
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => <Object>[email!];
 }
 
 class LoginPasswordChanged extends LoginEvent {
-  final String password;
 
-  LoginPasswordChanged({this.password});
+  LoginPasswordChanged({required this.password});
+  final String? password;
 
   @override
-  List<Object> get props => [password];
+  List<Object> get props => <Object>[password!];
 }
 
 class LoginWithCredentialsPressed extends LoginEvent {
-  final String email;
-  final String password;
 
   LoginWithCredentialsPressed({this.email, this.password});
+  final String? email;
+  final String? password;
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => <Object>[email!, password!];
 }
 
 class LoginWithApplePressed extends LoginEvent {
@@ -39,7 +39,7 @@ class LoginWithApplePressed extends LoginEvent {
   LoginWithApplePressed();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class LoginWithGooglePressed extends LoginEvent {
@@ -47,5 +47,5 @@ class LoginWithGooglePressed extends LoginEvent {
   LoginWithGooglePressed();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }

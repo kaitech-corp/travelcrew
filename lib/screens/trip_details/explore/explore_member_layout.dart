@@ -1,13 +1,13 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:maps_launcher/maps_launcher.dart';
 
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
 import '../../../services/widgets/appearance_widgets.dart';
+import '../../../services/widgets/map_launcher.dart';
 import '../../../services/widgets/reusableWidgets.dart';
 import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
@@ -17,27 +17,27 @@ import 'ImageAnimation.dart';
 import 'members/members_layout.dart';
 
 /// Layout for members of trip.
-class ExploreMemberLayout extends StatefulWidget{
+class ExploreMemberLayout extends StatefulWidget {
+  const ExploreMemberLayout({
+    Key? key,
+    required this.tripDetails,
+    required this.scaffoldKey,
+  }) : super(key: key);
 
   final Trip tripDetails;
 
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
-
-
-  ExploreMemberLayout({this.tripDetails, this.scaffoldKey, this.controller,});
 
   @override
-  _ExploreMemberLayoutState createState() => _ExploreMemberLayoutState();
+  State<ExploreMemberLayout> createState() => _ExploreMemberLayoutState();
 }
 
 class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
-
-  final expandController = ExpandableController();
-  final basketController = BasketController();
+  final ExpandableController expandController = ExpandableController();
+  final BasketController basketController = BasketController();
 
   bool didAnimate = true;
-  double _padding = SizeConfig.screenHeight*.35;
+  double _padding = SizeConfig.screenHeight * .35;
 
   @override
   void initState() {
@@ -45,17 +45,18 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
     expandController.addListener(onExpand);
   }
 
-  onExpand(){
-    if(mounted){
+  void onExpand() {
+    if (mounted) {
       setState(() {
         if (expandController.expanded) {
-          _padding = SizeConfig.defaultSize.toDouble() * 10.0;
+          _padding = SizeConfig.defaultSize * 10.0;
         } else {
-          _padding = SizeConfig.screenHeight*.35;
+          _padding = SizeConfig.screenHeight * .35;
         }
       });
     }
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -64,9 +65,8 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
 
   @override
   Widget build(BuildContext context) {
-
     // double _height = 3.0;
-    double _detailsPadding = SizeConfig.screenWidth*.05;
+    final double detailsPadding = SizeConfig.screenWidth * .05;
 
     final Event event = Event(
       title: widget.tripDetails.tripName,
@@ -78,102 +78,137 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
 
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-          body: Container(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  (widget.tripDetails.urlToImage.isNotEmpty) ? Stack(
-                    children: [
-                      ImageAnimation(tripDetails: widget.tripDetails,
-                        expandController: expandController,),
-                      AnimatedPadding(
-                          duration: Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(top: _padding),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
-                    ],
-                  ):
-                  Stack(
-                    children: [
-                      HangingImageTheme(),
-                      Padding(
-                          padding: EdgeInsets.only(top:  SizeConfig.screenHeight*.16),
-                          child: MemberPopupMenuButton(tripDetails: widget.tripDetails,event: event,controller: widget.controller,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
-                    ],
-                  ),
-                  Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
-                  TripDetailsWidget(
-                    expandController: expandController,
-                    tripDetails: widget.tripDetails,
-                    event: event,
-                    detailsPadding: _detailsPadding,
-                  )
-                ]
-              ),
+          body: SingleChildScrollView(
+        child: Column(children: <Widget>[
+          if (widget.tripDetails.urlToImage.isNotEmpty)
+            Stack(
+              children: <Widget>[
+                ImageAnimation(
+                  trip: widget.tripDetails,
+                  expandController: expandController,
+                ),
+                AnimatedPadding(
+                    duration: const Duration(milliseconds: 250),
+                    padding: EdgeInsets.only(top: _padding),
+                    child: MemberPopupMenuButton(
+                      tripDetails: widget.tripDetails,
+                      event: event,
+                      scaffoldKey: widget.scaffoldKey,
+                      basketController: basketController,
+                    )),
+              ],
+            )
+          else
+            Stack(
+              children: <Widget>[
+                const HangingImageTheme(),
+                Padding(
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.screenHeight * .16),
+                    child: MemberPopupMenuButton(
+                      tripDetails: widget.tripDetails,
+                      event: event,
+                      scaffoldKey: widget.scaffoldKey,
+                      basketController: basketController,
+                    )),
+              ],
             ),
+          Container(
+            height: 1,
+            color: ReusableThemeColor().colorOpposite(context),
+          ),
+          TripDetailsWidget(
+            expandController: expandController,
+            tripDetails: widget.tripDetails,
+            event: event,
+            detailsPadding: detailsPadding,
           )
-      ),
+        ]),
+      )),
     );
   }
 }
 
 class MemberPopupMenuButton extends StatelessWidget {
   const MemberPopupMenuButton({
-    Key key,
-    @required this.tripDetails,
-    @required this.event, this.scaffoldKey, this.controller,this.basketController,
-
+    Key? key,
+    required this.tripDetails,
+    required this.event,
+    required this.scaffoldKey,
+    this.basketController,
   }) : super(key: key);
 
   final Trip tripDetails;
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController controller;
-  final BasketController basketController;
+  final BasketController? basketController;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         ListTile(
-          title: Text('${tripDetails.tripName}',
-            style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+          title: Text(
+            tripDetails.tripName,
+            style: SizeConfig.tablet
+                ? Theme.of(context).textTheme.headline4
+                : Theme.of(context).textTheme.headline6,
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,),
-          trailing: PopupMenuButtonWidget(tripDetails: tripDetails, event: event),
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing:
+              PopupMenuButtonWidget(tripDetails: tripDetails, event: event),
         ),
-        Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
+        Container(
+          height: 1,
+          color: ReusableThemeColor().colorOpposite(context),
+        ),
         ButtonBar(
           alignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: <Widget>[
             IconButton(
-              onPressed: (){
-                MapsLauncher.launchQuery(tripDetails.location);
+              onPressed: () {
+                MapSearch().searchAddress(tripDetails.location, context);
               },
-              icon: TripDetailsIconThemeWidget(icon: Icons.map,),),
+              icon: const TripDetailsIconThemeWidget(
+                icon: Icons.map,
+              ),
+            ),
             IconButton(
-              onPressed: (){
-                navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(tripDetails: tripDetails,basketController: basketController));
-                },
-              icon: TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
+              onPressed: () {
+                navigationService.navigateTo(BasketListPageRoute,
+                    arguments: BasketListArguments(
+                        trip: tripDetails,
+                        basketController: basketController!));
+              },
+              icon: const TripDetailsIconThemeWidget(
+                icon: Icons.shopping_basket,
+              ),
+            ),
             IconButton(
-                onPressed: (){
+                onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-                    ),
-                    builder: (context) => Container(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20))),
+                    builder: (BuildContext context) => Container(
                       padding: const EdgeInsets.all(10),
-                      height: SizeConfig.screenHeight*.7,
-                      child: MembersLayout(tripDetails: tripDetails,ownerID: userService.currentUserID,),
+                      height: SizeConfig.screenHeight * .7,
+                      child: MembersLayout(
+                        trip: tripDetails,
+                        ownerID: userService.currentUserID,
+                      ),
                     ),
-                  );},
-                icon: TripDetailsIconThemeWidget(icon: Icons.people,)),
-
+                  );
+                },
+                icon: const TripDetailsIconThemeWidget(
+                  icon: Icons.people,
+                )),
           ],
         )
       ],
@@ -183,9 +218,9 @@ class MemberPopupMenuButton extends StatelessWidget {
 
 class PopupMenuButtonWidget extends StatelessWidget {
   const PopupMenuButtonWidget({
-    Key key,
-    @required this.tripDetails,
-    @required this.event,
+    Key? key,
+    required this.tripDetails,
+    required this.event,
   }) : super(key: key);
 
   final Trip tripDetails;
@@ -194,69 +229,72 @@ class PopupMenuButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: IconThemeWidget(icon: Icons.more_horiz,),
-      onSelected: (value){
+      icon: const IconThemeWidget(
+        icon: Icons.more_horiz,
+      ),
+      onSelected: (String value) {
         switch (value) {
-          case "Report":
+          case 'Report':
             {
-              TravelCrewAlertDialogs().reportAlert(context: context, tripDetails: tripDetails, type: 'tripDetails');
+              TravelCrewAlertDialogs().reportAlert(
+                  context: context,
+                  tripDetails: tripDetails,
+                  type: 'tripDetails');
             }
             break;
-          case "Calendar":
+          case 'Calendar':
             {
               Add2Calendar.addEvent2Cal(event);
             }
             break;
-          case "Invite":
+          case 'Invite':
             {
-              navigationService.navigateTo(FollowingListRoute, arguments: tripDetails);
+              navigationService.navigateTo(FollowingListRoute,
+                  arguments: tripDetails);
             }
             break;
-          case "Leave":
+          case 'Leave':
             {
-              TravelCrewAlertDialogs().leaveTripAlert(context,userService.currentUserID, tripDetails);
+              TravelCrewAlertDialogs().leaveTripAlert(
+                  context, userService.currentUserID, tripDetails);
             }
             break;
           default:
-            {
-
-            }
+            {}
             break;
         }
       },
       padding: EdgeInsets.zero,
-      itemBuilder: (context) =>[
-        const PopupMenuItem(
+      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+        const PopupMenuItem<String>(
           value: 'Report',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.report),
-            title: const Text('Report'),
+            title: Text('Report'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Calendar',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.calendar_today_outlined),
-            title: const Text('Save to Calendar'),
+            title: Text('Save to Calendar'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Invite',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.person_add),
-            title: const Text('Invite'),
+            title: Text('Invite'),
           ),
         ),
-        const PopupMenuItem(
+        const PopupMenuItem<String>(
           value: 'Leave',
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.exit_to_app),
-            title: const Text('Leave Group'),
+            title: Text('Leave Group'),
           ),
         ),
       ],
     );
   }
 }
-
-

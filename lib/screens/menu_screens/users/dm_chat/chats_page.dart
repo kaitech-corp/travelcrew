@@ -14,6 +14,8 @@ import '../../main_menu.dart';
 import 'dm_chat.dart';
 
 class DMChatListPage extends StatelessWidget {
+  const DMChatListPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,26 +24,26 @@ class DMChatListPage extends StatelessWidget {
           'Chats',
           style: Theme.of(context).textTheme.headline5,
         ),
-        flexibleSpace: AppBarGradient(),
+        flexibleSpace: const AppBarGradient(),
       ),
       body: StreamBuilder<List<UserPublicProfile>>(
         stream: DatabaseService().retrieveDMChats(),
-        builder: (context, users) {
+        builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if (users.hasError) {
             CloudFunction().logError(
                 'Error streaming dm chat list: ${users.error.toString()}');
           }
           if (users.hasData) {
-            final List<UserPublicProfile> chats = users.data;
+            final List<UserPublicProfile> chats = users.data!;
             return ListView.builder(
               itemCount: chats.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (BuildContext context, int index) {
                 final UserPublicProfile user = chats[index];
                 return userCard(context, user);
               },
             );
           } else {
-            return Loading();
+            return const Loading();
           }
         },
       ),
@@ -61,17 +63,13 @@ class DMChatListPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: SizeConfig.blockSizeHorizontal * 7,
-                backgroundImage: (user.urlToImage.isNotEmpty ?? false)
-                    ? NetworkImage(
-                        user.urlToImage,
-                      )
-                    : AssetImage(profileImagePlaceholder),
+                backgroundImage: user.urlToImage.isNotEmpty ? NetworkImage(user.urlToImage,) : const NetworkImage(profileImagePlaceholder),
               ),
             ),
             Expanded(
               child: ListTile(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
                       builder: (BuildContext context) => DMChat(
                             user: user,
                           )));
@@ -80,7 +78,7 @@ class DMChatListPage extends StatelessWidget {
                 title: Text(
                   user.displayName,
                   textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 trailing: chatNotificationBadges(user),
               ),
@@ -94,14 +92,14 @@ class DMChatListPage extends StatelessWidget {
 
 Widget chatNotificationBadges(UserPublicProfile user) {
   return StreamBuilder<List<ChatData>>(
-    builder: (context, chats) {
+    builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
       if (chats.hasError) {
         CloudFunction()
             .logError('Error streaming chats '
             'for DM notifications: ${chats.error.toString()}');
       }
       if (chats.hasData) {
-        final List<ChatData> chatList = chats.data;
+        final List<ChatData> chatList = chats.data!;
         if (chatList.isNotEmpty) {
           chatNotifier.value = 1;
           return Tooltip(
@@ -111,7 +109,7 @@ Widget chatNotificationBadges(UserPublicProfile user) {
                 Icons.chat,
                 color: Colors.grey,
               ),
-              badgeCount: chats.data.length,
+              badgeCount: chatList.length,
             ),
           );
         } else {

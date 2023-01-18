@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -12,35 +11,35 @@ import '../../blocs/signup_bloc/signup_event.dart';
 import '../../blocs/signup_bloc/signup_state.dart';
 import '../../services/constants/constants.dart';
 import '../../services/functions/tc_functions.dart';
+import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
 
 class SignupForm extends StatefulWidget {
+  const SignupForm({Key? key}) : super(key: key);
+
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<SignupForm> createState() => _SignupFormState();
 }
 
-class _LoginFormState extends State<SignupForm> {
-  File image;
+class _SignupFormState extends State<SignupForm> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _displayNameController = TextEditingController();
-  final ValueNotifier<File> _urlToImage = ValueNotifier(File(''));
-
-  final ImagePicker _picker = ImagePicker();
+  final ValueNotifier<File> _urlToImage = ValueNotifier<File>(File(''));
 
   bool imagePicked = false;
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   bool isButtonEnabled(SignupState state) {
-    return state.isFormValid && isPopulated && !state.isSubmitting;
+    return state.isFormValid! && isPopulated && !state.isSubmitting;
   }
 
-  SignupBloc _signupBloc;
+  late SignupBloc _signupBloc;
 
   @override
   void initState() {
@@ -65,42 +64,18 @@ class _LoginFormState extends State<SignupForm> {
     super.dispose();
   }
 
-  getImage() async {
-    var image =
-        await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
-
-    _cropImage(image.path, image);
-    setState(() {
-      imagePicked = true;
-    });
-  }
-
-  _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper.cropImage(
-      sourcePath: imagePath,
-      maxHeight: 1080,
-      maxWidth: 1080,
-    );
-
-    if (croppedImage != null) {
-      _urlToImage.value = croppedImage;
-    } else {
-      _urlToImage.value = File(image.path);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignupBloc, SignupState>(
-      listener: (context, state) {
+      listener: (BuildContext context, SignupState state) {
         if (state.isFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text('Signup Failure'),
-                  const Icon(Icons.error),
+                children: const <Widget>[
+                  Text('Signup Failure'),
+                  Icon(Icons.error),
                 ],
               ),
               backgroundColor: const Color(0xffffae88),
@@ -133,7 +108,7 @@ class _LoginFormState extends State<SignupForm> {
         }
       },
       child: BlocBuilder<SignupBloc, SignupState>(
-        builder: (context, state) {
+        builder: (BuildContext context, SignupState state) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
@@ -141,77 +116,95 @@ class _LoginFormState extends State<SignupForm> {
                 children: <Widget>[
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: 'Email',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.email),
+                      labelText: AppLocalizations.of(context)!.email,
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    // autovalidate: true,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
+                      return !state.isEmailValid ? AppLocalizations.of(context)!.invalid_email : null;
                     },
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: 'Password',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.lock),
+                      labelText: AppLocalizations.of(context)!.password,
                     ),
                     obscureText: true,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
+                      return !state.isPasswordValid ? AppLocalizations.of(context)!.invalid_password : null;
                     },
                   ),
                   TextFormField(
                     controller: _displayNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Display Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: AppLocalizations.of(context)!.display_name,
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _firstNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'First Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: AppLocalizations.of(context)!.first_name,
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   TextFormField(
                     controller: _lastNameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Last Name',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.person),
+                      labelText: AppLocalizations.of(context)!.last_name,
                     ),
                     keyboardType: TextInputType.name,
                   ),
                   const SizedBox(
                     height: 8,
                   ),
-                  imagePicked
-                      ? Container(
-                          height: (SizeConfig.screenWidth / 3) * 2.5,
-                          // width: (SizeConfig.screenWidth/3)*1.9,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // color: Colors.orange,
-                              image: DecorationImage(
-                                  image: FileImage(_urlToImage.value),
-                                  fit: BoxFit.cover)),
-                        )
-                      : const Text('Select a Profile Picture.',
-                          style: TextStyle(
+                  if (imagePicked) Column(
+                    children: <Widget>[
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: (){
+                            setState(() {
+                              imagePicked = true;
+                            });
+                          },
+                          child: const Icon(Icons.close),
+                        ),
+                      ),
+                      Container(
+                              height: (SizeConfig.screenWidth / 3) * 2.5,
+                              // width: (SizeConfig.screenWidth/3)*1.9,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  // color: Colors.orange,
+                                  image: DecorationImage(
+                                      image: FileImage(_urlToImage.value),
+                                      fit: BoxFit.cover)),
+                            ),
+                    ],
+                  ) else Text(AppLocalizations.of(context)!.select_photo,
+                          style: const TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.bold)),
                   ElevatedButton(
                     onPressed: () {
-                      getImage();
+                      ImagePickerAndCropper().uploadImage(_urlToImage);
+                      if(_urlToImage.value.path.isNotEmpty){
+                        setState(() {
+                          imagePicked = true;
+                        });
+                      }
                     },
                     child: const Icon(Icons.add_a_photo),
                   ),
@@ -220,10 +213,9 @@ class _LoginFormState extends State<SignupForm> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          agreement,
+                          agreementMessage(),
                           style: Theme.of(context).textTheme.subtitle1,
                           textAlign: TextAlign.center,
                         ),
@@ -231,8 +223,8 @@ class _LoginFormState extends State<SignupForm> {
                           onPressed: () {
                             TCFunctions().launchURL(urlToTerms);
                           },
-                          child: const Text('Terms of Service',
-                              style: TextStyle(
+                          child: Text(AppLocalizations.of(context)!.terms_of_service,
+                              style: const TextStyle(
                                 fontFamily: 'Cantata One',
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -242,8 +234,8 @@ class _LoginFormState extends State<SignupForm> {
                           onPressed: () {
                             TCFunctions().launchURL(urlToPrivacyPolicy);
                           },
-                          child: const Text('Privacy Policy',
-                              style: TextStyle(
+                          child: Text(AppLocalizations.of(context)!.privacy_policy,
+                              style: const TextStyle(
                                   fontFamily: 'Cantata One',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18)),
@@ -262,9 +254,9 @@ class _LoginFormState extends State<SignupForm> {
                         _onFormSubmitted();
                       }
                     },
-                    text: const Text(
-                      'Signup',
-                      style: TextStyle(
+                    text: Text(
+                      AppLocalizations.of(context)!.login,
+                      style: const TextStyle(
                         color: Colors.black,
                       ),
                     ),

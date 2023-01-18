@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
 
@@ -18,8 +17,8 @@ import 'transportation_card.dart';
 
 /// Transportation page
 class TransportationPage extends StatefulWidget {
+  const TransportationPage({Key? key, required this.trip}) : super(key: key);
   final Trip trip;
-  TransportationPage({this.trip});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,12 +27,12 @@ class TransportationPage extends StatefulWidget {
 }
 
 class _TransportationPageState extends State<TransportationPage> {
-
-  GenericBloc<TransportationData,TransportationRepository> bloc;
+  late GenericBloc<TransportationData, TransportationRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<TransportationData,TransportationRepository>>(context);
+    bloc = BlocProvider.of<
+        GenericBloc<TransportationData, TransportationRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
@@ -42,53 +41,60 @@ class _TransportationPageState extends State<TransportationPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<GenericBloc<TransportationData,TransportationRepository>, GenericState>(
-            builder: (context, state) {
+        body: BlocBuilder<
+            GenericBloc<TransportationData, TransportationRepository>,
+            GenericState>(builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
-            return Loading();
-          } else if (state is HasDataState<TransportationData>) {
-            List<TransportationData> modeList = state.data;
+            return const Loading();
+          } else if (state is HasDataState) {
+            final List<TransportationData> modeList =
+                state.data as List<TransportationData>;
             return Column(
-              children: [
-                Container(
-                  height: 16,
-                ),
+              children: <Widget>[
+                const SizedBox(height: 8),
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: modeList != null ? modeList.length : 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            children: [
-                              CircleAvatar(
+                      itemCount: modeList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
                                 radius: SizeConfig.screenWidth / 10.0,
                                 // backgroundColor: Colors.yellow,
                                 child: TransportationIcon(modeList[index].mode),
                               ),
-                              Text(modeList[index].displayName)
-                            ],
-                          ),
+                            ),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(
+                                  modeList[index].displayName.length > 10 ? '${modeList[index].displayName.substring(0, 10)}...' : modeList[index].displayName,
+                                  style:
+                                      Theme.of(context).textTheme.subtitle1,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ))
+                          ],
                         );
                       }),
                 ),
+                const SizedBox(height:8),
                 Expanded(
-                  flex: 5,
-                  child: Container(
-                    child: ListView.builder(
-                        itemCount: modeList != null ? modeList.length : 0,
-                        itemBuilder: (context, index) {
-                          return TransportationCard(
-                            transportationData: modeList[index],
-                            trip: widget.trip,
-                          );
-                        }),
-                  ),
+                  flex: 4,
+                  child: ListView.builder(
+                      itemCount: modeList != null ? modeList.length : 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TransportationCard(
+                          transportationData: modeList[index],
+                          trip: widget.trip,
+                        );
+                      }),
                 ),
               ],
             );
@@ -101,7 +107,7 @@ class _TransportationPageState extends State<TransportationPage> {
             navigationService.navigateTo(AddNewTransportationRoute,
                 arguments: widget.trip);
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

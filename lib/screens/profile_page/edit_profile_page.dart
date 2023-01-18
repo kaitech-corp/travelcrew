@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/custom_objects.dart';
 import '../../services/database.dart';
@@ -13,85 +14,104 @@ import '../../services/widgets/loading.dart';
 import '../../size_config/size_config.dart';
 
 class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({Key? key}) : super(key: key);
+
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _SignupScreenState extends State {
+class _EditProfilePageState extends State<EditProfilePage> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final UserPublicProfile _user = UserPublicProfile();
-  File _image;
+  final UserPublicProfile _user = defaultProfile;
+  late File _image;
   final ImagePicker _picker = ImagePicker();
   String error = '';
   String destination1 = '';
   String destination2 = '';
   String destination3 = '';
 
-  Key get key => null;
+  XFile? _pickedFile;
+  CroppedFile? _croppedFile;
 
-  getImage() async {
-    var image =
-        await _picker.getImage(source: ImageSource.gallery, imageQuality: 80);
-
-    _cropImage(image.path, image);
+  Future<void> _uploadImage() async {
+    final XFile? pickedFile =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedFile = pickedFile;
+      });
+    }
+    _cropImage();
   }
-
-  _cropImage(imagePath, image) async {
-    File croppedImage = await ImageCropper.cropImage(
-      sourcePath: imagePath,
-      maxHeight: 1080,
-      maxWidth: 1080,
+  Future<void>  _cropImage() async {
+    final CroppedFile? croppedImage = await ImageCropper().cropImage(
+      sourcePath: _pickedFile!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
     );
 
     if (croppedImage != null) {
-      setState(() {
-        _image = croppedImage;
-      });
+      _image = croppedImage as File;
     } else {
-      setState(() {
-        _image = File(image.path);
-      });
+      _image = File(_user.urlToImage);
     }
+  }
+
+  void _clear() {
+    setState(() {
+      _pickedFile = null;
+      _croppedFile = null;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text('Edit Profile',
+            title: Text(Intl.message('Edit Profile'),
                 style: Theme.of(context).textTheme.headline5)),
         body: StreamBuilder<UserPublicProfile>(
             stream: DatabaseService().currentUserPublicProfile,
-            builder: (context, snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> snapshot) {
               if (snapshot.hasData) {
-                UserPublicProfile user = snapshot.data;
+                final UserPublicProfile user = snapshot.data!;
                 return SingleChildScrollView(
                   child: Container(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: Builder(
-                          builder: (context) => Form(
+                          builder: (BuildContext context) => Form(
                               key: _formKey,
                               child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    (user.urlToImage == null)
-                                        ? Container(
+                                  children: <Widget>[
+                                    if (user.urlToImage == null) Container(
                                             child: _image == null
-                                                ? Text('No image selected.')
+                                                ? const Text('No image selected.')
                                                 : Image.file(_image),
-                                          )
-                                        : CircleAvatar(
+                                          ) else CircleAvatar(
                                             radius:
                                                 SizeConfig.screenWidth / 2.25,
-                                            backgroundImage: _image == null
-                                                ? NetworkImage(user.urlToImage)
-                                                : FileImage(
-                                                    _image,
-                                                  ),
+                                            backgroundImage: NetworkImage(user.urlToImage),
                                           ),
                                     ElevatedButton(
                                       onPressed: () {
-                                        getImage();
+                                        _uploadImage();
                                       },
 //                              tooltip: 'Pick Image',
                                       child: const Icon(Icons.add_a_photo),
@@ -107,32 +127,36 @@ class _SignupScreenState extends State {
                                         ],
                                         initialValue: user.firstName,
                                         // ignore: missing_return
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please first name.';
+                                        validator: (String? value) {
+                                          if (value!.isEmpty) {
+                                            return 'Please add first name.';
+                                          } else {
+                                            return null;
                                           }
                                         },
-                                        onSaved: (val) => setState(
-                                            () => _user.firstName = val)),
+                                        onSaved: (String? val) => setState(
+                                            () => _user.firstName = val!)),
                                     TextFormField(
                                       decoration: const InputDecoration(
                                           labelText: 'Last Name'),
                                       textCapitalization:
                                           TextCapitalization.words,
-                                      inputFormatters: [
+                                      inputFormatters: <FilteringTextInputFormatter>[
                                         FilteringTextInputFormatter.deny(
                                             RegExp(r'\s\b|\b\s'))
                                       ],
                                       initialValue: user.lastName,
                                       // ignore: missing_return
-                                      validator: (value) {
+                                      validator: (String? value) {
                                         // ignore: missing_return
-                                        if (value.isEmpty) {
+                                        if (value!.isEmpty) {
                                           return 'Please enter last name';
+                                        } else {
+                                          return null;
                                         }
                                       },
-                                      onSaved: (val) =>
-                                          setState(() => _user.lastName = val),
+                                      onSaved: (String? val) =>
+                                          setState(() => _user.lastName = val!),
                                     ),
                                     TextFormField(
                                         initialValue: user.displayName,
@@ -141,20 +165,22 @@ class _SignupScreenState extends State {
                                         textCapitalization:
                                             TextCapitalization.words,
                                         // ignore: missing_return
-                                        validator: (value) {
+                                        validator: (String? value) {
                                           // ignore: missing_return,
-                                          if (value.isEmpty) {
+                                          if (value!.isEmpty) {
                                             return 'Please enter a display name.';
+                                          } else {
+                                            return null;
                                           }
                                         },
-                                        onSaved: (val) => setState(
-                                            () => _user.displayName = val)),
+                                        onSaved: (String? val) => setState(
+                                            () => _user.displayName = val!)),
                                     TextFormField(
-                                        initialValue: user.hometown ?? '',
+                                        initialValue: user.hometown,
                                         decoration: const InputDecoration(
                                             labelText: 'Hometown'),
-                                        onSaved: (val) => setState(
-                                            () => _user.hometown = val.trim())),
+                                        onSaved: (String? val) => setState(
+                                            () => _user.hometown = val!.trim())),
                                     const SizedBox(
                                       height: 20,
                                     ),
@@ -172,45 +198,44 @@ class _SignupScreenState extends State {
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
                                           children: [
                                             TextFormField(
                                                 initialValue:
-                                                    user.instagramLink ?? '',
+                                                    user.instagramLink,
                                                 decoration:
                                                     const InputDecoration(
                                                         labelText: 'Instagram'),
                                                 // ignore: missing_return
-                                                validator: (value) {
+                                                validator: (String? value) {
                                                   // ignore: missing_return,
-                                                  if (value.isNotEmpty &&
+                                                  if (value!.isNotEmpty &&
                                                       !value.contains(
                                                           'https://www.instagram.com/')) {
                                                     return 'i.e. https://www.instagram.com/username';
                                                   }
+                                                  return null;
                                                 },
-                                                onSaved: (val) => setState(() =>
-                                                    _user.instagramLink = val)),
+                                                onSaved: (String? val) => setState(() =>
+                                                    _user.instagramLink = val!)),
                                             TextFormField(
                                                 initialValue: user
-                                                        .facebookLink ??
-                                                    '',
+                                                        .facebookLink,
                                                 decoration:
                                                     const InputDecoration(
                                                         labelText:
                                                             'Facebook Link'),
                                                 // ignore: missing_return
-                                                validator: (value) {
+                                                validator: (String? value) {
                                                   // ignore: missing_return,
-                                                  if (value.isNotEmpty &&
+                                                  if (value!.isNotEmpty &&
                                                       !value.contains(
                                                           'https://www.facebook.com/')) {
                                                     return 'i.e. https://www.facebook.com/username';
                                                   }
+                                                  return null;
                                                 },
-                                                onSaved: (val) => setState(() =>
-                                                    _user.facebookLink = val)),
+                                                onSaved: (String? val) => setState(() =>
+                                                    _user.facebookLink = val!)),
                                           ],
                                         ),
                                       ),
@@ -232,16 +257,15 @@ class _SignupScreenState extends State {
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
+                                          children: <Widget>[
                                             TextFormField(
                                                 initialValue: (user
                                                         .topDestinations[0]
+                                                .toString()
                                                         .isNotEmpty)
-                                                    ? user.topDestinations[0]
+                                                    ? user.topDestinations[0].toString()
                                                     : '',
-                                                inputFormatters: [
+                                                inputFormatters: <LengthLimitingTextInputFormatter>[
                                                   LengthLimitingTextInputFormatter(
                                                       30),
                                                 ],
@@ -251,15 +275,16 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText:
                                                             'Destination 1'),
-                                                onSaved: (val) => setState(() =>
-                                                    destination1 = val.trim())),
+                                                onSaved: (String? val) => setState(() =>
+                                                    destination1 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
                                                         .topDestinations[1]
+                                                .toString()
                                                         .isNotEmpty)
-                                                    ? user.topDestinations[1]
+                                                    ? user.topDestinations[1].toString()
                                                     : '',
-                                                inputFormatters: [
+                                                inputFormatters: <LengthLimitingTextInputFormatter>[
                                                   LengthLimitingTextInputFormatter(
                                                       30),
                                                 ],
@@ -269,15 +294,16 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText:
                                                             'Destination 2'),
-                                                onSaved: (val) => setState(() =>
-                                                    destination2 = val.trim())),
+                                                onSaved: (String? val) => setState(() =>
+                                                    destination2 = val!.trim())),
                                             TextFormField(
                                                 initialValue: (user
                                                         .topDestinations[2]
+                                                .toString()
                                                         .isNotEmpty)
-                                                    ? user.topDestinations[2]
+                                                    ? user.topDestinations[2].toString()
                                                     : '',
-                                                inputFormatters: [
+                                                inputFormatters: <LengthLimitingTextInputFormatter>[
                                                   LengthLimitingTextInputFormatter(
                                                       30),
                                                 ],
@@ -287,8 +313,8 @@ class _SignupScreenState extends State {
                                                     const InputDecoration(
                                                         labelText:
                                                             'Destination 3'),
-                                                onSaved: (val) => setState(() =>
-                                                    destination3 = val.trim())),
+                                                onSaved: (String? val) => setState(() =>
+                                                    destination3 = val!.trim())),
                                           ],
                                         ),
                                       ),
@@ -298,16 +324,16 @@ class _SignupScreenState extends State {
                                     ),
                                     ElevatedButton(
                                         onPressed: () async {
-                                          final form = _formKey.currentState;
+                                          final FormState form = _formKey.currentState!;
                                           form.save();
-                                          _user.topDestinations = [
+                                          _user.topDestinations = <String>[
                                             destination1,
                                             destination2,
                                             destination3
                                           ];
                                           if (form.validate()) {
                                             try {
-                                              String action =
+                                              const String action =
                                                   'Editing Public Profile page from page';
                                               CloudFunction().logEvent(action);
                                               DatabaseService(uid: user.uid)
@@ -341,7 +367,7 @@ class _SignupScreenState extends State {
                                   ])))),
                 );
               } else {
-                return Loading();
+                return const Loading();
               }
             }));
   }

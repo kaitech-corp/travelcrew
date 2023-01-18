@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
@@ -14,11 +16,11 @@ import '../split/split_package.dart';
 
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
-  final currentUserProfile =
+  TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
+  final UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
   final TransportationData transportationData;
   final Trip trip;
-  TransportationCard({this.transportationData, this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class TransportationCard extends StatelessWidget {
           padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               ListTile(
                 visualDensity: const VisualDensity(vertical: -4),
                 title: Text(
@@ -49,7 +51,7 @@ class TransportationCard extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16.0, top: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     if (transportationData.mode == 'Flying')
                       Tooltip(
                           message: 'Airline and Flight Number',
@@ -78,12 +80,12 @@ class TransportationCard extends StatelessWidget {
   }
 
   Widget menuButton(BuildContext context) {
-    return transportationData.uid == currentUserProfile?.uid ?? ''
+    return transportationData.uid == currentUserProfile.uid
         ? PopupMenuButton<String>(
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,
             ),
-            onSelected: (value) {
+            onSelected: (String value) {
               switch (value) {
                 case 'Edit':
                   {
@@ -102,7 +104,7 @@ class TransportationCard extends StatelessWidget {
                             itemName: transportationData.mode,
                             itemDescription: 'Transportation',
                             details: transportationData.comment,
-                            itemType: 'Transportation'),
+                            itemType: 'Transportation', dateCreated: Timestamp.now(), userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: '',),
                         trip: trip);
                   }
                   break;
@@ -116,7 +118,7 @@ class TransportationCard extends StatelessWidget {
               }
             },
             padding: EdgeInsets.zero,
-            itemBuilder: (BuildContext context) => [
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
               const PopupMenuItem<String>(
                 value: 'Edit',
                 child: ListTile(
@@ -144,7 +146,7 @@ class TransportationCard extends StatelessWidget {
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,
             ),
-            onSelected: (value) {
+            onSelected: (String value) {
               switch (value) {
                 case 'report':
                   {
@@ -157,7 +159,7 @@ class TransportationCard extends StatelessWidget {
               }
             },
             padding: EdgeInsets.zero,
-            itemBuilder: (BuildContext context) => [
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
               const PopupMenuItem<String>(
                 value: 'report',
                 child: ListTile(

@@ -1,13 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:travelcrew/services/constants/constants.dart';
+import '../constants/constants.dart';
 
 class ImagePopup extends StatelessWidget{
 
-  final String imagePath;
+  const ImagePopup({Key? key, this.imagePath}) : super(key: key);
 
-  ImagePopup({this.imagePath});
+  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +28,8 @@ class ImagePopup extends StatelessWidget{
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: (imagePath?.isNotEmpty ?? false) ? NetworkImage(imagePath) : Image.asset(
-                profileImagePlaceholder,
-                height: 300,
-                width: 300,
-              ),
+              child:FadeInImage.assetNetwork(placeholder: profileImagePlaceholder, image: imagePath!,height: 300,
+                width: 300,) ,
             ),
           ),
         ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppBarGradient extends StatelessWidget {
   const AppBarGradient({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -12,17 +12,16 @@ class AppBarGradient extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.blue[900],
+            colors: <Color>[
+              Colors.blue[900]!,
               Colors.lightBlueAccent
             ]
         ),
-        boxShadow: [
-          const BoxShadow(
-            color: Colors.black,
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
             blurRadius: 10.0,
           ),
-          const BoxShadow(
+          BoxShadow(
             color: Colors.blueAccent,
             blurRadius: 10.0,
           ),

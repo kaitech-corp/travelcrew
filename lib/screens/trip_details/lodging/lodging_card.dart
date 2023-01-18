@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/lodging_model.dart';
@@ -18,10 +18,10 @@ import 'lodging_menu_button.dart';
 /// Lodging card
 class LodgingCard extends StatelessWidget {
 
+   const LodgingCard({Key? key, required this.lodging, required this.trip}) : super(key: key);
+
   final LodgingData lodging;
   final Trip trip;
-
-  LodgingCard({this.lodging, this.trip});
 
 
   @override
@@ -46,18 +46,18 @@ class LodgingCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   ListTile(
-                    visualDensity: VisualDensity(horizontal: 0,vertical: -4),
-                    title: Text('${lodging.lodgingType}',style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
-                    subtitle: (lodging.startTime?.isNotEmpty ?? false) ? Text('Check in: ${lodging.startTime}',style: Theme.of(context).textTheme.subtitle2,): null,
+                    visualDensity: const VisualDensity(vertical: -4),
+                    title: Text(lodging.lodgingType,style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
+                    subtitle: (lodging.startTime.isNotEmpty) ? Text('Check in: ${lodging.startTime}',style: Theme.of(context).textTheme.subtitle2,): null,
                     trailing: LodgingMenuButton(trip: trip,lodging: lodging,),
                   ),
-                  if(lodging.link?.isNotEmpty ?? false) Padding(
+                  if(lodging.link.isNotEmpty) Padding(
                     padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: ViewAnyLink(link: lodging.link,function: ()=>{},),
+                    child: ViewAnyLink(link: lodging.link,function: ()=><void>{},),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                    children: <Widget>[
                       SplitPackage().splitItemExist(context,
                           SplitObject(
                               itemDocID:lodging.fieldID,
@@ -65,14 +65,15 @@ class LodgingCard extends StatelessWidget {
                               users: trip.accessUsers,
                               itemName: lodging.lodgingType,
                               itemDescription: lodging.comment,
-                              itemType: "Lodging"
+                              itemType: 'Lodging', dateCreated: Timestamp.now(), details: '', userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: ''
                           ), trip: trip),
+
                       IconButton(
-                          visualDensity: VisualDensity(horizontal: 0,vertical: -4),
-                          icon: FavoriteWidget(uid: userService.currentUserID,voters:lodging.voters ,),
+                          visualDensity: const VisualDensity(vertical: -4),
+                          icon: FavoriteWidget(uid: userService.currentUserID,voters: lodging.voters,),
                           onPressed: () {
-                            String fieldID = lodging.fieldID;
-                            String uid = userService.currentUserID;
+                            final String fieldID = lodging.fieldID;
+                            final String uid = userService.currentUserID;
                             if (!lodging.voters.contains(userService.currentUserID)) {
                               CloudFunction().addVoterToLodging(trip.documentId, fieldID, uid);
                             } else {

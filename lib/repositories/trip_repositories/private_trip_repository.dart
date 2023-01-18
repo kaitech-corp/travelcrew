@@ -9,18 +9,18 @@ import '../../blocs/generics/generic_bloc.dart';
 
 class PrivateTripRepository extends GenericBlocRepository<Trip> {
 
+  @override
   Stream<List<Trip>> data() {
 
-    final Query privateTripCollection = FirebaseFirestore.instance
-        .collection("privateTrips")
+    final Query<Object> privateTripCollection = FirebaseFirestore.instance
+        .collection('privateTrips')
         .orderBy('endDateTimeStamp');
 
-    List<Trip> _privateTripListFromSnapshot(QuerySnapshot snapshot) {
+    List<Trip> privateTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         return snapshot.docs
-            .map((doc) {
-          Map<String, dynamic> data = doc.data();
-          return Trip.fromData(data);
+            .map((QueryDocumentSnapshot<Object> doc) {
+          return Trip.fromDocument(doc);
         })
             .toList()
             .reversed
@@ -28,13 +28,13 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
       } catch (e) {
         CloudFunction()
             .logError('Error retrieving private trip list:  ${e.toString()}');
-        return null;
+        return <Trip>[];
       }
     }
 
     return privateTripCollection
-        .where('accessUsers', arrayContainsAny: [userService.currentUserID])
+        .where('accessUsers', arrayContainsAny: <String>[userService.currentUserID])
         .snapshots()
-        .map(_privateTripListFromSnapshot);
+        .map(privateTripListFromSnapshot);
   }
 }

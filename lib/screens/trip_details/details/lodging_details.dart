@@ -1,7 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:maps_launcher/maps_launcher.dart';
 import 'package:nil/nil.dart';
 
 import '../../../models/custom_objects.dart';
@@ -9,19 +8,21 @@ import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
+import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../services/widgets/loading.dart';
+import '../../../services/widgets/map_launcher.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 import '../lodging/lodging_menu_button.dart';
 
 class LodgingDetails extends StatelessWidget {
+  const LodgingDetails({Key? key, required this.lodging, required this.trip})
+      : super(key: key);
   final LodgingData lodging;
   final Trip trip;
-
-  const LodgingDetails({Key key, this.lodging, this.trip}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +34,7 @@ class LodgingDetails extends StatelessWidget {
           backgroundColor: canvasColor,
         ),
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: SizeConfig.screenHeight,
             width: SizeConfig.screenWidth,
             child: LodgingDataLayout(
@@ -47,9 +48,9 @@ class LodgingDetails extends StatelessWidget {
 
 class LodgingDataLayout extends StatelessWidget {
   const LodgingDataLayout({
-    Key key,
-    @required this.fieldID,
-    @required this.trip,
+    Key? key,
+    required this.fieldID,
+    required this.trip,
   }) : super(key: key);
 
   final String fieldID;
@@ -57,34 +58,30 @@ class LodgingDataLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<LodgingData>(
       stream:
           DatabaseService(fieldID: fieldID, tripDocID: trip.documentId).lodging,
-      builder: (context, document) {
+      builder: (BuildContext context, AsyncSnapshot<LodgingData?> document) {
         if (document.hasData) {
-          LodgingData lodging = document.data;
-          DateTimeModel timeModel = TCFunctions().addDateAndTime(
-              startDate: lodging.startDateTimestamp,
-              endDate: lodging.endDateTimestamp,
-              startTime: lodging.startTime,
-              endTime: lodging.endTime,
-              hasEndDate: true);
+          final LodgingData lodging = document.data!;
+          final DateTimeModel timeModel = DateTimeModel(
+              startDate: lodging.startDateTimestamp.toDate(),
+              endDate: lodging.endDateTimestamp.toDate());
 
-          Event event = TCFunctions().createEvent(
-              lodging: lodging, timeModel: timeModel, type: "Lodging");
+          final Event event = createEvent(
+              lodging: lodging, timeModel: timeModel, type: 'Lodging');
           return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(
                 padding: EdgeInsets.all(SizeConfig.defaultPadding),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(45),
                       bottomRight: Radius.circular(45)),
                 ),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     ListTile(
                       title: Text(
                         lodging.lodgingType,
@@ -102,37 +99,38 @@ class LodgingDataLayout extends StatelessWidget {
                         event: event,
                       ),
                     ),
-                    Divider(
+                    const Divider(
                       color: Colors.black,
                       thickness: 2,
                     ),
-                    lodging.startDateTimestamp != null ?? false
-                        ? ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.calendar_today,
-                            ),
-                            title: Text(
-                              "${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp)} - "
-                              "${TCFunctions().formatTimestamp(lodging.endDateTimestamp, wTime: false)}",
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            onTap: () {
-                              Add2Calendar.addEvent2Cal(event);
-                            },
-                          )
-                        : ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.calendar_today,
-                            ),
-                            title: Text(
-                              '...',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            onTap: () {},
-                          ),
-                    if (lodging.startTime?.isNotEmpty ?? false)
+                    if (lodging.startDateTimestamp != null)
                       ListTile(
-                        leading: TripDetailsIconThemeWidget(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.calendar_today,
+                        ),
+                        title: Text(
+                          '${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp)} - '
+                          '${TCFunctions().formatTimestamp(lodging.endDateTimestamp, wTime: false)}',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        onTap: () {
+                          Add2Calendar.addEvent2Cal(event);
+                        },
+                      )
+                    else
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.calendar_today,
+                        ),
+                        title: Text(
+                          '...',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        onTap: () {},
+                      ),
+                    if (lodging.startTime.isNotEmpty)
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
                           icon: Icons.access_time,
                         ),
                         title: Text(
@@ -141,9 +139,9 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    if (lodging.endTime?.isNotEmpty ?? false)
+                    if (lodging.endTime.isNotEmpty)
                       ListTile(
-                        leading: TripDetailsIconThemeWidget(
+                        leading: const TripDetailsIconThemeWidget(
                           icon: Icons.access_time,
                         ),
                         title: Text(
@@ -152,77 +150,83 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         onTap: () {},
                       ),
-                    lodging.location?.isNotEmpty ?? false
-                        ? ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.map,
-                            ),
-                            title: Text(lodging.location,
-                                style: TextStyle(color: Colors.blue)),
-                            onTap: () {
-                              MapsLauncher.launchQuery(lodging.location);
-                            },
-                            onLongPress: () {
-                              FlutterClipboard.copy(lodging.location)
-                                  .whenComplete(() => TravelCrewAlertDialogs()
-                                      .copiedToClipboardDialog(context));
-                            },
-                          )
-                        : ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.map,
-                            ),
-                            title: Text(
+                    if (lodging.location.isNotEmpty)
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.map,
+                        ),
+                        title: Text(lodging.location,
+                            style: const TextStyle(color: Colors.blue)),
+                        onTap: () {
+                          MapSearch().searchAddress(lodging.location, context);
+                        },
+                        onLongPress: () {
+                          FlutterClipboard.copy(lodging.location).whenComplete(
+                              () => TravelCrewAlertDialogs()
+                                  .copiedToClipboardDialog(context));
+                        },
+                      )
+                    else
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.map,
+                        ),
+                        title: Text(
+                          '...',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    if (lodging.comment.isNotEmpty)
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.comment,
+                        ),
+                        title: Tooltip(
+                            message: lodging.comment,
+                            child: Text(
+                              lodging.comment,
+                              style: Theme.of(context).textTheme.subtitle1,
+                              maxLines: 10,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                      )
+                    else
+                      ListTile(
+                        leading: const TripDetailsIconThemeWidget(
+                          icon: Icons.comment,
+                        ),
+                        title: Tooltip(
+                            message: lodging.comment,
+                            child: Text(
                               '...',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                          ),
-                    lodging.comment?.isNotEmpty ?? false
-                        ? ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.comment,
-                            ),
-                            title: Tooltip(
-                                message: lodging.comment,
-                                child: Text(
-                                  lodging.comment,
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                  maxLines: 10,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                          )
-                        : ListTile(
-                            leading: TripDetailsIconThemeWidget(
-                              icon: Icons.comment,
-                            ),
-                            title: Tooltip(
-                                message: lodging.comment,
-                                child: Text(
-                                  '...',
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                  maxLines: 10,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                          ),
+                              maxLines: 10,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                      ),
                   ],
                 ),
               ),
-              lodging.link?.isNotEmpty ?? false
-                  ? Container(
-                      padding: EdgeInsets.all(SizeConfig.defaultPadding),
-                      width: double.infinity,
-                      child: InkWell(
-                        child: ViewAnyLink(link: lodging.link,function: null,),
-                        onTap: () {
-                          TCFunctions().launchURL(lodging.link);
-                        },
-                      ),
-                    )
-                  : nil,
+              if (lodging.link.isNotEmpty)
+                Container(
+                  padding: EdgeInsets.all(SizeConfig.defaultPadding),
+                  width: double.infinity,
+                  child: InkWell(
+                    child: ViewAnyLink(
+                      link: lodging.link,
+                      function: () {},
+                    ),
+                    onTap: () {
+                      TCFunctions().launchURL(lodging.link);
+                    },
+                  ),
+                )
+              else
+                nil,
             ],
           );
         } else {
-          return Loading();
+          return const Loading();
         }
       },
     );
