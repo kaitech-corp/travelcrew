@@ -6,6 +6,7 @@ import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
 import '../../../../repositories/trip_repositories/all_trip_suggestion_repository.dart';
+import '../../../../services/functions/tc_functions.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
@@ -25,6 +26,7 @@ class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionL
 
   int crossAxisCount = 2;
 
+List<int> randomList = TCFunctions().randomList();
 
   @override
   void initState() {
