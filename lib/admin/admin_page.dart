@@ -43,7 +43,7 @@ Widget adminDashboard() {
         UserData(),
         UserActivity(),
         TripData(),
-        FeedbackA(),
+        Feedback(),
         CustomNotifications()
       ]),
     ),
@@ -122,16 +122,16 @@ class _CustomNotificationsState extends State<CustomNotifications> {
   }
 }
 
-class FeedbackA extends StatelessWidget {
-  const FeedbackA({Key? key}) : super(key: key);
+class Feedback extends StatelessWidget {
+  const Feedback({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: StreamBuilder<List<TCFeedback>>(
-        builder:
-            (BuildContext context, AsyncSnapshot<List<TCFeedback>> feedbackData) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<TCFeedback>> feedbackData) {
           if (feedbackData.hasData) {
             final List<TCFeedback> feedbackList = feedbackData.data!;
             return ListView.builder(
