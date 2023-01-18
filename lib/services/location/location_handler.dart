@@ -41,7 +41,7 @@ class LocationHandler {
         _locationData = await location.getLocation();
         final LocationModel locationModel = await GeoLocationHandler().getAddressFromLatLng(GeoPoint(_locationData.latitude!,_locationData.longitude!));
         if(locationModel != null){
-          print('Got here: ${locationModel.geoPoint.longitude}');
+          print('Got here: ${locationModel.geoPoint?.longitude}');
         CloudFunction().recordLocation(locationModel:locationModel);
         }
       }

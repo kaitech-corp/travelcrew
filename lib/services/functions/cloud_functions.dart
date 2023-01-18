@@ -492,8 +492,8 @@ class CloudFunction {
       'city': locationModel.city,
       'country': locationModel.country,
       'documentID': locationModel.documentID,
-      'latitude': locationModel.geoPoint.latitude,
-      'longitude': locationModel.geoPoint.longitude,
+      'latitude': locationModel.geoPoint?.latitude,
+      'longitude': locationModel.geoPoint?.longitude,
       'zipcode': locationModel.zipcode,
     });
   }
