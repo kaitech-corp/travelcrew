@@ -8,6 +8,8 @@ import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../blocs/login_bloc/login_bloc.dart';
 import '../../blocs/login_bloc/login_event.dart';
 import '../../blocs/login_bloc/login_state.dart';
+import '../../repositories/user_repository.dart';
+import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/gradient_button.dart';
@@ -37,7 +39,13 @@ class _LoginFormState extends State<LoginForm> {
     return state.isFormValid && isPopulated && !state.isSubmitting;
   }
 
+  bool isAppleLoginButtonEnabled(LoginState state) {
+    return !state.isSubmitting;
+  }
 
+  bool isGoogleLoginButtonEnabled(LoginState state) {
+    return !state.isSubmitting;
+  }
 
   late LoginBloc _loginBloc;
 
@@ -275,5 +283,11 @@ class _LoginFormState extends State<LoginForm> {
         email: _emailController.text, password: _passwordController.text));
   }
 
+  void _onPressedAppleSignIn() {
+    _loginBloc.add(LoginWithApplePressed());
+  }
 
+  void _onPressedGoogleSignIn() {
+    _loginBloc.add(LoginWithGooglePressed());
+  }
 }
