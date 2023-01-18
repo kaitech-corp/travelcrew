@@ -8,7 +8,6 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../blocs/generics/generic_bloc.dart';
 
 class AllTripsRepository extends GenericBlocRepository<Trip> {
-
   @override
   Stream<List<Trip>> data() {
     //Firebase Collection
@@ -20,18 +19,16 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
     // Get all trips
     List<Trip> tripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
+        List<Trip> trips =
+            snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
           return Trip.fromDocument(doc);
         }).toList();
-        trips.sort(
-            (Trip a, Trip b) => a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
+        trips.sort((Trip a, Trip b) =>
+            a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
         trips = trips
-            .where(
-                (Trip trip) => !trip.accessUsers.contains(userService.currentUserID))
+            .where((Trip trip) =>
+                !trip.accessUsers.contains(userService.currentUserID))
             .toList();
-            // .where((Trip trip) =>
-            //     trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
-            // .toList();
         return trips;
       } catch (e) {
         CloudFunction()
@@ -41,8 +38,6 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
     }
 
     // get trips stream
-    return tripCollection
-        .snapshots()
-        .map(tripListFromSnapshot);
+    return tripCollection.snapshots().map(tripListFromSnapshot);
   }
 }
