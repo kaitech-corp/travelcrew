@@ -1,3 +1,5 @@
+// ignore_for_file: only_throw_errors
+
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';

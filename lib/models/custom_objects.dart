@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_locals, always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
@@ -484,17 +486,17 @@ class TripAds {
     }
     try {
       var fav = doc.get('favorites') as List<dynamic>;
-      fav.forEach((dynamic element) {
+      for (final element in fav) {
         favorites.add(element.toString());
-      });
+      }
     } catch (e) {
       // print('favorites error: ${e.toString()}');
     }
     try {
       var clicker = doc.get('clickers') as List<dynamic>;
-      clicker.forEach((dynamic element) {
+      for (final element in clicker) {
         clickers.add(element.toString());
-      });
+      }
     } catch (e) {
       // print('clickers error: ${e.toString()}');
     }

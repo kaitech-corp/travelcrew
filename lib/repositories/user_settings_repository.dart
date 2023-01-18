@@ -12,7 +12,7 @@ import '../../../../services/functions/cloud_functions.dart';
 /// Relies on a remote NoSQL document-oriented database.
 class UserSettingsRepository {
 
-  final CollectionReference settingsCollection = FirebaseFirestore.instance.collection('settings');
+  final CollectionReference<Map<String, dynamic>> settingsCollection = FirebaseFirestore.instance.collection('settings');
   final StreamController<UserNotificationSettingsData> _loadedData = StreamController<UserNotificationSettingsData>.broadcast();
 
 

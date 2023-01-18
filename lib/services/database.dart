@@ -121,7 +121,7 @@ class DatabaseService {
       final dynamic result = json.decode(response.body);
       final Iterable<dynamic> list = result as Iterable<dynamic>;
       final List<DestinationModel> destinations = list
-          .map((e) => DestinationModel.fromJSON(e as Map<String, dynamic>))
+          .map((dynamic e) => DestinationModel.fromJSON(e as Map<String, dynamic>))
           .toList();
       return destinations;
     }
@@ -132,7 +132,7 @@ class DatabaseService {
     try {
       // TODO(Randy): change version doc for new releases
       final DocumentSnapshot<Object?> ref =
-          await versionCollection.doc('version3_1_0').get();
+          await versionCollection.doc('version3_1_1').get();
       final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
       final String version = data['version'] as String;
       if (version.isNotEmpty) {

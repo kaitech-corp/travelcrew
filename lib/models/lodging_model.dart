@@ -1,6 +1,7 @@
+// ignore_for_file: prefer_final_locals, always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../services/functions/cloud_functions.dart';
 
 ///Model for lodging data
 class LodgingData {
@@ -84,7 +85,8 @@ class LodgingData {
     }
     try {
       var votes = doc.get('voters') as List<dynamic>;
-      votes.forEach((dynamic element) {voters.add(element.toString());});
+      for (final element in votes) 
+      {voters.add(element.toString());}
     } catch (e) {
       // CloudFunction().logError('voters error: ${e.toString()}');
     }

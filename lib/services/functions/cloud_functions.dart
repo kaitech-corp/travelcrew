@@ -3,9 +3,9 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travelcrew/models/location_model.dart';
 
 import '../../models/custom_objects.dart';
+import '../../models/location_model.dart';
 import '../../services/analytics_service.dart';
 import '../../services/locator.dart';
 
@@ -124,7 +124,7 @@ class CloudFunction {
       'ispublic': ispublic,
       'ownerID': ownerID
     }).then((HttpsCallableResult<dynamic> value) =>
-    {
+    <void>{
       _analyticsService.joinedTrip(true),
     });
   }
@@ -138,7 +138,7 @@ class CloudFunction {
     }).then((HttpsCallableResult<dynamic> value) =>
     <void>{
       _analyticsService.joinedTrip(true),
-      if(ispublic){
+      if(ispublic)<void>{
         addMember(docID, uidInvitee),
       } else
         <void>{
@@ -488,7 +488,7 @@ class CloudFunction {
     // Record Location
   Future<void> recordLocation({required LocationModel locationModel}) async {
     final HttpsCallable functionData = FirebaseFunctions.instance.httpsCallable('recordLocation');
-    functionData({
+    functionData(<String, dynamic>{
       'city': locationModel.city,
       'country': locationModel.country,
       'documentID': locationModel.documentID,

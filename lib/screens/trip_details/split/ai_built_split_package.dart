@@ -1,5 +1,7 @@
 //A Dart function that evenly splits the cost of an item between a list of users.
 
+import 'package:flutter/foundation.dart';
+
 void splitCost(int cost, List<String> users) {
   final int amountPerPerson = cost ~/ users.length;
   int remainder = cost - (amountPerPerson * users.length);
@@ -9,7 +11,9 @@ void splitCost(int cost, List<String> users) {
       total += 1;
       remainder--;
     }
-    print('${users[i]} owes $total');
+    if (kDebugMode) {
+      print('${users[i]} owes $total');
+    }
   }
 }
 

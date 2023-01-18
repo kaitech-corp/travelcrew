@@ -8,7 +8,7 @@ class AppInvite{
   Future<void> sendInvite() async{
 
     try{
-      String result = await sendSMS(message: 'Join me on Travel Crew!\n\n Apple: $appleStore\n\n Google: $googleplay', recipients: <String>[]);
+      final String result = await sendSMS(message: 'Join me on Travel Crew!\n\n Apple: $appleStore\n\n Google: $googleplay', recipients: <String>[]);
       if (kDebugMode) {
         print(result);
       }

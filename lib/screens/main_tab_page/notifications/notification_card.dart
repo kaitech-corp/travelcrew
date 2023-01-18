@@ -1,3 +1,5 @@
+// ignore_for_file: only_throw_errors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';

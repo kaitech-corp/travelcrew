@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_locals, always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/functions/cloud_functions.dart';
@@ -91,13 +93,15 @@ class SplitObject {
     }
     try {
       var x = doc.get('users') as List<dynamic>;
-      x.forEach((dynamic element) {users.add(element.toString());});
+      for (final element in x) 
+      {users.add(element.toString());}
     } catch (e) {
       CloudFunction().logError('users error: ${e.toString()}');
     }
     try {
       var x = doc.get('userSelectedList') as List<dynamic>;
-      x.forEach((dynamic element) {userSelectedList.add(element.toString());});
+      for (final element in x) 
+      {userSelectedList.add(element.toString());}
     } catch (e) {
       CloudFunction().logError('userSelectedList error: ${e.toString()}');
     }

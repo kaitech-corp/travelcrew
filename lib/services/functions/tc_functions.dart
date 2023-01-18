@@ -1,3 +1,5 @@
+// ignore_for_file: only_throw_errors
+
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -125,14 +127,14 @@ class TCFunctions {
   }
 
   String createChatDoc(String x, String y) {
-    final List<String> userList = [x, y];
+    final List<String> userList = <String>[x, y];
     userList.sort();
     final String docID = '${userList[0]}_${userList[1]}';
     return docID;
   }
 
   List<String> splitDocID(List<String> x) {
-    final List<String> idList = [];
+    final List<String> idList = <String>[];
     for (final String id in x) {
       final List<String> y = id.split('_');
       y.remove(userService.currentUserID);

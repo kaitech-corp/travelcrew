@@ -1,7 +1,7 @@
-
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/cost_model.dart';
@@ -172,10 +172,9 @@ class SplitPackage {
                                         return null;
                                       }
                                     },
-                                    onChanged: (String val)  {
-                                          splitObject.itemTotal =
-                                              double.parse(val);
-                                        }))),
+                                    onChanged: (String val) {
+                                      splitObject.itemTotal = double.parse(val);
+                                    }))),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -286,9 +285,8 @@ class SplitPackage {
                                       return null;
                                     },
                                     onChanged: (String val) {
-                                          splitObject.itemTotal =
-                                              double.parse(val);
-                                        }))),
+                                      splitObject.itemTotal = double.parse(val);
+                                    }))),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -314,8 +312,10 @@ class SplitPackage {
                                         .createSplitItem(splitObject);
                                     navigationService.pop();
                                   }
-                                } catch(e){
-
+                                } catch (e) {
+                                  if (kDebugMode) {
+                                    print(e.toString());
+                                  }
                                 }
                               },
                               child: Text(
@@ -357,7 +357,6 @@ class SplitPackage {
 }
 
 class SplitMembersLayout extends StatefulWidget {
-
   const SplitMembersLayout({Key? key, required this.trip, this.ownerID})
       : super(key: key);
   final Trip trip;
@@ -394,10 +393,10 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
     return Stack(
       children: <Widget>[
         StreamBuilder<List<UserPublicProfile>>(
-          builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> userData) {
+          builder: (BuildContext context,
+              AsyncSnapshot<List<UserPublicProfile>> userData) {
             if (userData.hasError) {
-              CloudFunction()
-                  .logError('Error streaming user data for '
+              CloudFunction().logError('Error streaming user data for '
                   'members layout: ${userData.error.toString()}');
             }
             if (userData.hasData) {
@@ -450,8 +449,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
     );
   }
 
-  Widget userCard(
-      BuildContext context, UserPublicProfile member, Trip trip) {
+  Widget userCard(BuildContext context, UserPublicProfile member, Trip trip) {
     return Card(
       key: Key(member.uid),
       color: Colors.white,
@@ -468,8 +466,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
           });
         },
         onTap: () {
-          navigationService.navigateTo(UserProfilePageRoute,
-              arguments: member);
+          navigationService.navigateTo(UserProfilePageRoute, arguments: member);
         },
         child: CheckboxListTile(
           value: !selectedList.value.contains(member.uid),

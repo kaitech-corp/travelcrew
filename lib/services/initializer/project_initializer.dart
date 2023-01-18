@@ -1,12 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:travelcrew/services/analytics_service.dart';
-import 'package:travelcrew/services/location/location_handler.dart';
 
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';

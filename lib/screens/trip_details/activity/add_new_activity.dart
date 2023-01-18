@@ -305,9 +305,9 @@ class AddNewActivityState extends State<AddNewActivity> {
                     navigationService.pop();
                     DatabaseService()
                         .appReviewExists(TCFunctions().appReviewDocID())
-                        .then((bool value) => {
+                        .then((bool value) => <void>{
                               if (!value)
-                                {
+                                <void>{
                                   InAppReviewClass().requestReviewFunc(),
                                   CloudFunction().addReview(
                                       docID: TCFunctions().appReviewDocID()),

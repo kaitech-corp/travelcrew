@@ -23,7 +23,7 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
         }).toList();
         trips = trips
             .where(
-                (Trip trip) => (trip.location.length) < 20 && (trip.location.length) > 0)
+                (Trip trip) => (trip.location.length) < 20 && trip.location.isNotEmpty)
             .toList();
         return trips;
       } catch (e) {

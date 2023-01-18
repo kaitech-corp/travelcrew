@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_locals, always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///Model for trip details
@@ -42,7 +44,8 @@ class Trip {
 
     try {
       var userList = doc.get('accessUsers') as List<dynamic>;
-      userList.forEach((element) {accessUsers.add(element.toString());});
+      for (final element in userList) 
+      {accessUsers.add(element.toString());}
     } catch (e) {
       // CloudFunction().logError('accessUsers error: ${e.toString()}');
     }
@@ -78,7 +81,8 @@ class Trip {
     }
     try {
       var fav = doc.get('favorite') as List<dynamic>;
-      fav.forEach((element) {favorite.add(element.toString());});
+      for (final element in fav) 
+      {favorite.add(element.toString());}
     } catch (e) {
       // CloudFunction().logError('favorite error: ${e.toString()}');
     }
@@ -133,7 +137,7 @@ class Trip {
         dateCreatedTimeStamp: dateCreatedTimeStamp,
         displayName: displayName,
         favorite: favorite,
-        accessUsers: accessUsers as List<String>,
+        accessUsers: accessUsers,
         documentId: documentId,
         endDate: endDate,
         endDateTimeStamp: endDateTimeStamp,

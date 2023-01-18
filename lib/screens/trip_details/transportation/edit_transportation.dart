@@ -78,7 +78,7 @@ class _EditTransportationState extends State<EditTransportation> {
                               textCapitalization: TextCapitalization.words,
                               keyboardType: TextInputType.name,
                               onChanged: (String val) =>
-                              {
+                              <void>{
                                 carpoolingWith = val,
                               }
                           ),
@@ -87,7 +87,7 @@ class _EditTransportationState extends State<EditTransportation> {
                               const InputDecoration(labelText: 'Airline'),
                               textCapitalization: TextCapitalization.characters,
                               onChanged: (String val) =>
-                              {
+                              <void>{
                                 airline = val,
                               }
                           ),
@@ -96,7 +96,7 @@ class _EditTransportationState extends State<EditTransportation> {
                               const InputDecoration(labelText: 'Flight Number'),
                               textCapitalization: TextCapitalization.characters,
                               onChanged: (String val) =>
-                              {
+                              <void>{
                                 flightNumber = val,
                               }
                           ),

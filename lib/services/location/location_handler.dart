@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:location/location.dart';
 import '../../models/location_model.dart';
 import '../functions/cloud_functions.dart';
@@ -41,10 +42,11 @@ class LocationHandler {
         _locationData = await location.getLocation();
         final LocationModel locationModel = await GeoLocationHandler().getAddressFromLatLng(GeoPoint(_locationData.latitude!,_locationData.longitude!));
         if(locationModel != null){
-          print('Got here: ${locationModel.geoPoint?.longitude}');
+          if (kDebugMode) {
+            print('Got here: ${locationModel.geoPoint?.longitude}');
+          }
         CloudFunction().recordLocation(locationModel:locationModel);
         }
       }
   }
 }
-

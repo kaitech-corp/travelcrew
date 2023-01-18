@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types, prefer_final_locals
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/functions/cloud_functions.dart';
@@ -89,8 +91,9 @@ class ActivityData {
       // CloudFunction().logError('startTime error: ${e.toString()}');
     }
     try {
-      var votes = doc.get('voters') as List<dynamic>;
-      for (final element in votes) {voters.add(element.toString());}
+      List<dynamic> votes = doc.get('voters') as List<dynamic>;
+      for (final element in votes) 
+      {voters.add(element.toString());}
     } catch (e) {
       // CloudFunction().logError('voters error: ${e.toString()}');
     }

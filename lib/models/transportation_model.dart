@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_locals
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/functions/cloud_functions.dart';

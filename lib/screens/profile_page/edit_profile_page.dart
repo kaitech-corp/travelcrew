@@ -47,7 +47,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void>  _cropImage() async {
     final CroppedFile? croppedImage = await ImageCropper().cropImage(
       sourcePath: _pickedFile!.path,
-      aspectRatioPresets: [
+      aspectRatioPresets: <CropAspectRatioPreset>[
         CropAspectRatioPreset.square,
         CropAspectRatioPreset.ratio3x2,
         CropAspectRatioPreset.original,
@@ -198,7 +198,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
-                                          children: [
+                                          children: <Widget>[
                                             TextFormField(
                                                 initialValue:
                                                     user.instagramLink,

@@ -337,7 +337,7 @@ class RecentTripTile extends StatelessWidget{
   final String uid;
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<List<Trip>>(
         builder: (BuildContext context, AsyncSnapshot<List<Trip>?> streamData){
           if(streamData.hasData){
             final List<Trip> trips = streamData.data!;

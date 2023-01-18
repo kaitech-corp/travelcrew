@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:travelcrew/services/social/app_invite.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
+import '../../services/social/app_invite.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
 
