@@ -7,8 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../blocs/bloc_observer/custom_bloc_observer.dart';
 import '../locator.dart';
 
-Future<void> projectInitializer() async {
-
+Future<String> projectInitializer() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await Firebase.initializeApp();
@@ -18,7 +17,9 @@ Future<void> projectInitializer() async {
     DeviceOrientation.portraitDown
   ]);
 
-    Bloc.observer = CustomBlocObserver();
+  Bloc.observer = CustomBlocObserver();
 
   Bloc.observer = CustomBlocObserver();
+
+  return 'initialized';
 }

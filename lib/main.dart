@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,7 +29,6 @@ import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
 import 'repositories/user_repository.dart';
 import 'services/l10n.dart';
-
 
 void main() async {
   await projectInitializer();
@@ -60,10 +60,16 @@ class _TravelCrewState extends State<TravelCrew> {
     if (Platform.isIOS) {
       FBMessaging().requestPermissions();
     } else {
-      FBMessaging().androidFCMSetting();
-      FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-        FBMessaging().firebaseMessagingBackgroundHandler(message);
-      });
+      try {
+        FBMessaging().androidFCMSetting();
+        FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+          FBMessaging().firebaseMessagingBackgroundHandler(message);
+        });
+      } on Exception catch (e) {
+        if (kDebugMode) {
+          print(e.toString());
+        }
+      }
     }
     super.initState();
   }
