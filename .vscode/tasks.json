@@ -6,12 +6,27 @@
 			"command": "flutter",
 			"args": [
 				"build",
-				"bundle"
+				"ios"
 			],
 			"group": "build",
 			"problemMatcher": [],
-			"label": "flutter: flutter build bundle",
-			"detail": "packages/flappy_search_bar"
+			"label": "flutter: flutter build ios",
+			"detail": ""
+		},
+		{
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"appbundle"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "flutter: flutter build appbundle",
+			"detail": ""
 		}
 	]
 }
