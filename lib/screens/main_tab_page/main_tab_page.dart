@@ -8,7 +8,7 @@ import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
-import '../../services/location/location_handler.dart';
+// import '../../services/location/location_handler.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/badge_icon.dart';
@@ -38,7 +38,7 @@ class _MainTabPageState extends State<MainTabPage> {
   @override
   void initState() {
     super.initState();
-    LocationHandler().getLocationData();
+    // LocationHandler().getLocationData();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       final RemoteNotification message = event.notification!;
       final String tripDocID = event.data['docID'] as String;
