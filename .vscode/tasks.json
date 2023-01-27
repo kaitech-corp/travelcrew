@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"bundle"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"label": "flutter: flutter build bundle",
+			"detail": "packages/flappy_search_bar"
+		}
+	]
+}
