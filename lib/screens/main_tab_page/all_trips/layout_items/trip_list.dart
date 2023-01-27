@@ -18,16 +18,14 @@ class SliverGridTripList extends StatefulWidget {
   const SliverGridTripList({Key? key, required this.isPast}) : super(key: key);
   final bool isPast;
 
-
   @override
   State<SliverGridTripList> createState() => _SliverGridTripListState();
 }
 
 class _SliverGridTripListState extends State<SliverGridTripList> {
-
   final AnalyticsService _analyticsService = AnalyticsService();
 
-  late GenericBloc<Trip,AllTripsRepository> allTripBloc;
+  late GenericBloc<Trip, AllTripsRepository> allTripBloc;
 
   int crossAxisCount = 2;
   int count = 3;
@@ -35,7 +33,8 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
   @override
   void initState() {
     super.initState();
-    allTripBloc = BlocProvider.of<GenericBloc<Trip,AllTripsRepository>>(context);
+    allTripBloc =
+        BlocProvider.of<GenericBloc<Trip, AllTripsRepository>>(context);
     allTripBloc.add(LoadingGenericData());
   }
 
@@ -48,39 +47,41 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
       });
     }
 
-    return BlocBuilder<GenericBloc<Trip,AllTripsRepository>, GenericState>(
+    return BlocBuilder<GenericBloc<Trip, AllTripsRepository>, GenericState>(
         builder: (BuildContext context, GenericState state) {
-          if (state is LoadingState) {
-            return const Flexible(child: Loading());
-          } else if (state is HasDataState) {
-            final List<Trip> result = state.data as List<Trip>;
-            final List<Trip> tripList = (widget.isPast) ?
-            result.where((Trip trip) =>
-                trip.endDateTimeStamp.toDate().isBefore(DateTime.now()))
+      if (state is LoadingState) {
+        return const Flexible(child: Loading());
+      } else if (state is HasDataState) {
+        final List<Trip> result = state.data as List<Trip>;
+        final List<Trip> tripList = (widget.isPast)
+            ? result
+                .where((Trip trip) =>
+                    trip.endDateTimeStamp.toDate().isBefore(DateTime.now()))
                 .toList()
-                .sublist(3,25)
-            .where((Trip trip) => trip.urlToImage.isNotEmpty).toList()
-                : result.where((Trip trip) =>
-                trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
+                .sublist(0,22)
+                .where((Trip trip) => trip.urlToImage.isNotEmpty)
+                .toList()
+            : result
+                .where((Trip trip) =>
+                    trip.endDateTimeStamp.toDate().isAfter(DateTime.now()))
                 .toList();
-            return SizedBox(
-              height: SizeConfig.screenWidth*.55,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: List<Widget>.generate(tripList.length, (int index) {
-                  return tripList[index].urlToImage.isEmpty
-                      ? cardWithoutImage(
-                      context, tripList[index])
-                      : cardWithImage(context, tripList[index]);
-                }
-                ),
-              ),
-            );
-          } else {
-            return Container();
-          }
-        });
+        return SizedBox(
+          height: SizeConfig.screenWidth * .55,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            children: List<Widget>.generate(tripList.length, (int index) {
+              print(tripList.length);
+              return tripList[index].urlToImage.isEmpty
+                  ? cardWithoutImage(context, tripList[index])
+                  : cardWithImage(context, tripList[index]);
+            }),
+          ),
+        );
+      } else {
+        return Container();
+      }
+    });
   }
 
   Widget cardWithImage(BuildContext context, Trip trip) {
@@ -112,15 +113,13 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
           tag: trip.urlToImage,
           transitionOnUserGestures: true,
           child: Container(
-            height: SizeConfig.screenWidth*.5,
-            width: SizeConfig.screenWidth*.5,
+            height: SizeConfig.screenWidth * .5,
+            width: SizeConfig.screenWidth * .5,
             margin:
-            const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
+                const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 10),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(trip.urlToImage),
-                fit: BoxFit.fill
-              ),
+                  image: NetworkImage(trip.urlToImage), fit: BoxFit.fill),
               color: const Color(0xAA91AFD0), //
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(40),
@@ -166,25 +165,28 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     }
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         _analyticsService.viewedTrip();
-        navigationService.navigateTo(ExploreBasicRoute,
-            arguments: trip);
+        navigationService.navigateTo(ExploreBasicRoute, arguments: trip);
       },
       child: InkWell(
         key: Key(trip.documentId),
         splashColor: Colors.blue.withAlpha(30),
         child: Container(
-          height: SizeConfig.screenWidth*.5,
-          width: SizeConfig.screenWidth*.5,
-          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 10),
+          height: SizeConfig.screenWidth * .5,
+          width: SizeConfig.screenWidth * .5,
+          margin:
+              const EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 10),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: <Color>[Colors.blue.shade50, Colors.lightBlueAccent.shade200]),
+                colors: <Color>[
+                  Colors.blue.shade50,
+                  Colors.lightBlueAccent.shade200
+                ]),
           ),
           child: Stack(
             // crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +199,8 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                     contentPadding: const EdgeInsets.only(left: 15, right: 5),
                     title: Text(
                       trip.tripName,
-                      style: const TextStyle(fontFamily: 'RockSalt', color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'RockSalt', color: Colors.black),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
@@ -236,7 +239,8 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                   },
                   child: favorite(
                     userService.currentUserID,
-                    trip,),
+                    trip,
+                  ),
                 ),
               ),
             ],
