@@ -1,7 +1,9 @@
-// ignore_for_file: eol_at_end_of_file
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:travelcrew/services/initializer/project_initializer.dart';
 import 'package:travelcrew/utils/validators.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// Tests for the Validators.isValidEmail static method.
 void testIsValidEmail() {
@@ -21,6 +23,10 @@ void testIsValidPassword() {
   expect(isValidPassword(invalidPassword), false);
 }
 
+Future<void> testIsProjectInitialized() async {
+  expect(await projectInitializer(), 'initialized');
+}
+
 void main() {
   group('validators', () {
     test('isValidEmail', () {
@@ -29,13 +35,15 @@ void main() {
     test('isValidPassword', () {
       testIsValidPassword();
     });
+    test('projectInitializer', () {
+      testIsProjectInitialized();
+    });
   });
 }
 
 // Write a unit test simulating a user logging in using Firebase, Dart
 //
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter_test/flutter_test.dart';
+
 //
 // void main() {
 //   FirebaseAuth auth;
