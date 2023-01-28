@@ -40,30 +40,3 @@ void main() {
     });
   });
 }
-
-// Write a unit test simulating a user logging in using Firebase, Dart
-//
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter_test/flutter_test.dart';
-//
-// void main() {
-//   FirebaseAuth auth;
-//   String email = 'test@example.com';
-//   String password = 'password123';
-//
-//   setUp(() {
-//     auth = FirebaseAuth.instance;
-//   });
-//
-//   test('User login with correct credentials', () async {
-//     final user = await auth.signInWithEmailAndPassword(
-//         email: email, password: password);
-//     expect(user.email, equals(email));
-//   });
-//
-//   test('User login with wrong credentials', () async {
-//     final user = await auth.signInWithEmailAndPassword(
-//         email: email, password: 'wrong_password');
-//     expect(user, isNull);
-//   });
-// }
