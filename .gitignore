@@ -43,6 +43,6 @@ lib/generated_plugin_registrant.dart
 
 # IOS
 
-/ios
+/ios/Runner/
 /ios/build/
 /pubspec.yaml
