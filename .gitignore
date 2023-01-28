@@ -42,6 +42,6 @@ lib/generated_plugin_registrant.dart
 /android/app/main
 
 # IOS
-/ios/
-/ios/build/Pods.build/Release-iphonesimulator/
+
+/ios/build/
 /pubspec.yaml
