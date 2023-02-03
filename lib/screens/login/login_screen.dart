@@ -24,7 +24,8 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       body: BlocProvider<LoginBloc>(
-        create: (BuildContext context) => LoginBloc(userRepository: _userRepository),
+        create: (BuildContext context) =>
+            LoginBloc(userRepository: _userRepository),
         child: Container(
           height: double.infinity,
           decoration: BoxDecoration(
@@ -47,7 +48,10 @@ class LoginScreen extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: <Color>[Colors.white, Colors.white.withOpacity(0.4)],
+                          colors: <Color>[
+                            Colors.white,
+                            Colors.white.withOpacity(0.4)
+                          ],
                         ),
                       ),
                       child: const AutoSizeText(
@@ -64,8 +68,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 230),
-                  child: const LoginForm(
-                  ),
+                  child: const LoginForm(),
                 )
               ],
             ),
