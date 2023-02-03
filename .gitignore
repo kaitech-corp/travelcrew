@@ -42,7 +42,5 @@ lib/generated_plugin_registrant.dart
 /android/app/main
 
 # IOS
-
-/ios/Runner/
 /ios/build/
 /pubspec.yaml
