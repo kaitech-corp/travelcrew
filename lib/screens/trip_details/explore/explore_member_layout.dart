@@ -178,17 +178,6 @@ class MemberPopupMenuButton extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {
-                navigationService.navigateTo(BasketListPageRoute,
-                    arguments: BasketListArguments(
-                        trip: tripDetails,
-                        basketController: basketController!));
-              },
-              icon: const TripDetailsIconThemeWidget(
-                icon: Icons.shopping_basket,
-              ),
-            ),
-            IconButton(
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,

@@ -180,12 +180,6 @@ class OwnerPopupMenuButton extends StatelessWidget {
               MapSearch().searchAddress(trip.location, context);
               },
             icon: const TripDetailsIconThemeWidget(icon: Icons.map,),),
-          // IconButton(
-          //   onPressed: (){
-          //     navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: trip,basketController: basketController));
-
-          //   },
-          //   icon: const TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
           IconButton(
             onPressed: (){
               showModalBottomSheet(
