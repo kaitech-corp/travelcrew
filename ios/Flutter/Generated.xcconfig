@@ -9,6 +9,6 @@ FLUTTER_BUILD_NUMBER=77
 EXCLUDED_ARCHS[sdk=iphonesimulator*]=i386 arm64
 EXCLUDED_ARCHS[sdk=iphoneos*]=armv7
 DART_OBFUSCATION=false
-TRACK_WIDGET_CREATION=true
-TREE_SHAKE_ICONS=false
-PACKAGE_CONFIG=.dart_tool/package_config.json
+TRACK_WIDGET_CREATION=false
+TREE_SHAKE_ICONS=true
+PACKAGE_CONFIG=/Users/randynolden/StudioProjects/travelcrew/.dart_tool/package_config.json
