@@ -93,15 +93,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name!,
         viewToShow: const AllTrips(),
       );
-    case BasketListPageRoute:
-      final BasketListArguments arguments = settings.arguments as BasketListArguments;
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: BasketListPage(
-          trip: arguments.trip,
-          controller: arguments.basketController,
-        ),
-      );
+    // case BasketListPageRoute:
+    //   final BasketListArguments arguments = settings.arguments as BasketListArguments;
+    //   return _getPageRoute(
+    //     routeName: settings.name!,
+    //     viewToShow: BasketListPage(
+    //       trip: arguments.trip,
+    //       controller: arguments.basketController,
+    //     ),
+    //   );
     case ChatRoute:
       return _getPageRoute(
         routeName: settings.name!,

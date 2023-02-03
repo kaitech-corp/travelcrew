@@ -116,14 +116,14 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
                       AnimatedPadding(
                           duration: const Duration(milliseconds: 250),
                           padding: EdgeInsets.only(top: _padding),
-                          child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                          child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,)),
                     ],
                   ) else Stack(
                     children: <Widget>[
                       const HangingImageTheme(),
                       Padding(
                           padding: EdgeInsets.only(top: SizeConfig.screenHeight*.16),
-                          child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,basketController: basketController,)),
+                          child: OwnerPopupMenuButton(trip: widget.trip, event: event,scaffoldKey: widget.scaffoldKey,)),
                     ],
                   ),
                   Container(height: 1,color: ReusableThemeColor().colorOpposite(context),),
@@ -149,14 +149,14 @@ class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({
     Key? key,
     required this.trip,
-    required this.event, required this.scaffoldKey,required this.basketController
+    required this.event, required this.scaffoldKey,
 
   }) : super(key: key);
 
   final Trip trip;
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final BasketController basketController;
+
 
   @override
   Widget build(BuildContext context) {
@@ -180,12 +180,12 @@ class OwnerPopupMenuButton extends StatelessWidget {
               MapSearch().searchAddress(trip.location, context);
               },
             icon: const TripDetailsIconThemeWidget(icon: Icons.map,),),
-          IconButton(
-            onPressed: (){
-              navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: trip,basketController: basketController));
+          // IconButton(
+          //   onPressed: (){
+          //     navigationService.navigateTo(BasketListPageRoute, arguments: BasketListArguments(trip: trip,basketController: basketController));
 
-            },
-            icon: const TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
+          //   },
+          //   icon: const TripDetailsIconThemeWidget(icon: Icons.shopping_basket,),),
           IconButton(
             onPressed: (){
               showModalBottomSheet(
