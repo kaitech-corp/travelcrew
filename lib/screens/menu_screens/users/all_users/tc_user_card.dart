@@ -13,10 +13,10 @@ import '../../../alerts/alert_dialogs.dart';
 class TCUserCard extends StatefulWidget {
   const TCUserCard({
     Key? key,
-    required this.allUsers,
+    required this.user,
   }) : super(key: key);
 
-  final UserPublicProfile allUsers;
+  final UserPublicProfile user;
 
   @override
   State<TCUserCard> createState() => _TCUserCardState();
@@ -30,115 +30,50 @@ class _TCUserCardState extends State<TCUserCard> {
   Widget build(BuildContext context) {
     return Card(
       color: ReusableThemeColor().color(context),
-      key: Key(widget.allUsers.uid),
+      key: Key(widget.user.uid),
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
           navigationService.navigateTo(UserProfilePageRoute,
-              arguments: widget.allUsers);
+              arguments: widget.user);
         },
         child: SizedBox(
-          height: SizeConfig.screenHeight * .135,
+          height: SizeConfig.screenHeight * .12,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Center(
+              Expanded(
                 child: Hero(
-                  tag: widget.allUsers.uid,
+                  tag: widget.user.uid,
                   transitionOnUserGestures: true,
                   child: CircleAvatar(
                     radius: SizeConfig.tablet
                         ? SizeConfig.blockSizeHorizontal * 8
                         : SizeConfig.blockSizeHorizontal * 11,
-                    backgroundImage: widget.allUsers.urlToImage.isNotEmpty
+                    backgroundImage: widget.user.urlToImage.isNotEmpty
                         ? NetworkImage(
-                            widget.allUsers.urlToImage,
+                            widget.user.urlToImage,
                           )
                         : const NetworkImage(profileImagePlaceholder),
                   ),
                 ),
               ),
               Expanded(
-                child: Stack(
-                  // crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: ListTile(
-                        // leading:
-                        title: Text(widget.allUsers.displayName,
-                            style: SizeConfig.mobile
-                                ? Theme.of(context).textTheme.headline6
-                                : Theme.of(context).textTheme.headline5),
-                        subtitle: Text(
-                          '${widget.allUsers.firstName} '
-                          '${widget.allUsers.lastName}',
-                          textAlign: TextAlign.start,
-                          style: SizeConfig.mobile
-                              ? Theme.of(context).textTheme.subtitle2
-                              : Theme.of(context).textTheme.subtitle1,
-                        ),
-                        trailing: (currentUserProfile.blockedList
-                                .contains(widget.allUsers.uid))
-                            ? UnblockedPopupMenu(allUsers: widget.allUsers)
-                            : BlockedPopupMenu(allUsers: widget.allUsers),
-                      ),
-                    ),
-                    if (widget.allUsers.followers
-                        .contains(userService.currentUserID))
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: ElevatedButton(
-                            child: Text('Unfollow',
-                                style: Theme.of(context).textTheme.subtitle1),
-                            onPressed: () {
-                              if (currentUserProfile.blockedList
-                                  .contains(widget.allUsers.uid)) {
-                              } else {
-                                TravelCrewAlertDialogs().unFollowAlert(
-                                    context, widget.allUsers.uid);
-                              }
-                            },
-                          ),
-                        ),
-                      )
-                    else
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: ElevatedButton(
-                            child: Text('Follow',
-                                style: Theme.of(context).textTheme.subtitle1),
-                            onPressed: () {
-                              // Send a follow request notification to user
-                              final String message =
-                                  'Follow request from ${currentUserProfile.displayName}';
-                              const String type = 'Follow';
-                              if (userService.currentUserID !=
-                                  widget.allUsers.uid) {
-                                if (currentUserProfile.blockedList
-                                    .contains(widget.allUsers.uid)) {
-                                } else {
-                                  CloudFunction().addNewNotification(
-                                      message: message,
-                                      ownerID: widget.allUsers.uid,
-                                      documentID: widget.allUsers.uid,
-                                      type: type,
-                                      uidToUse: currentUserProfile.uid);
-                                  TravelCrewAlertDialogs()
-                                      .followRequestDialog(context);
-                                }
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                  ],
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(widget.user.displayName,
+                      style: SizeConfig.mobile
+                          ? Theme.of(context).textTheme.headline6
+                          : Theme.of(context).textTheme.headline5),
                 ),
               ),
+              Expanded(
+                child: Align(
+                    alignment: Alignment.topRight,
+                    child: checkBlockList(widget.user.uid,
+                        currentUserProfile.blockedList, widget.user)),
+              )
             ],
           ),
         ),
@@ -147,22 +82,37 @@ class _TCUserCardState extends State<TCUserCard> {
   }
 }
 
+Widget checkBlockList(String uid, List<dynamic> blockedList,
+    UserPublicProfile userPublicProfile) {
+  if (blockedList.contains(uid)) {
+    print(blockedList);
+    // show UnblockedPopupMenu for the user
+    return BlockedPopupMenu(user: userPublicProfile) ;
+  } else {
+    // show BlockedPopupMenu for the user
+    return UnblockedPopupMenu(user: userPublicProfile);
+  }
+}
+
 class BlockedPopupMenu extends StatelessWidget {
   const BlockedPopupMenu({
     Key? key,
-    required this.allUsers,
+    required this.user,
   }) : super(key: key);
 
-  final UserPublicProfile allUsers;
+  final UserPublicProfile user;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      icon: const IconThemeWidget(
+        icon: Icons.more_horiz,
+      ),
       onSelected: (String value) {
         switch (value) {
           case 'unblock':
             {
-              CloudFunction().unBlockUser(allUsers.uid);
+              CloudFunction().unBlockUser(user.uid);
               TravelCrewAlertDialogs().unblockDialog(context);
             }
             break;
@@ -191,15 +141,15 @@ class BlockedPopupMenu extends StatelessWidget {
 class UnblockedPopupMenu extends StatelessWidget {
   const UnblockedPopupMenu({
     Key? key,
-    required this.allUsers,
+    required this.user,
   }) : super(key: key);
 
-  final UserPublicProfile allUsers;
+  final UserPublicProfile user;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      color: Colors.white,
+      color: Colors.white30,
       icon: const IconThemeWidget(
         icon: Icons.more_horiz,
       ),
@@ -207,18 +157,18 @@ class UnblockedPopupMenu extends StatelessWidget {
         switch (value) {
           case 'chat':
             {
-              navigationService.navigateTo(DMChatRoute, arguments: allUsers);
+              navigationService.navigateTo(DMChatRoute, arguments: user);
             }
             break;
           case 'block':
             {
-              TravelCrewAlertDialogs().blockAlert(context, allUsers.uid);
+              TravelCrewAlertDialogs().blockAlert(context, user.uid);
             }
             break;
           case 'report':
             {
               TravelCrewAlertDialogs().reportAlert(
-                  context: context, userProfile: allUsers, type: 'userAccount');
+                  context: context, userProfile: user, type: 'userAccount');
             }
             break;
           default:

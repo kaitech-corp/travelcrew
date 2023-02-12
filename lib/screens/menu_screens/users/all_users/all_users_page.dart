@@ -93,11 +93,11 @@ class _AllUserPageState extends State<AllUserPage> {
                         controller: controller,
                         itemCount: allUsersList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return TCUserCard(allUsers: allUsersList[index]);
+                          return TCUserCard(user: allUsersList[index]);
                         }),
                   ),
                   onItemFound: (UserPublicProfile user, int index) {
-                    return TCUserCard(allUsers: user);
+                    return TCUserCard(user: user);
                   },
                 )
               : DraggableScrollbar.semicircle(
@@ -106,7 +106,7 @@ class _AllUserPageState extends State<AllUserPage> {
                       controller: controller,
                       itemCount: allUsersList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return TCUserCard(allUsers: allUsersList[index]);
+                        return TCUserCard(user: allUsersList[index]);
                       }),
                 );
         } else {
