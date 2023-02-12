@@ -38,7 +38,7 @@ void main() async {
   runApp(BlocProvider<AuthenticationBloc>(
       create: (BuildContext context) =>
           AuthenticationBloc(userRepository: userRepository)
-            ..add(AuthenticationLoggedOut()),
+            ..add(AuthenticationLoggedIn()),
       child: TravelCrew(
         userRepository: userRepository,
       )));
