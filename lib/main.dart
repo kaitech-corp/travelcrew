@@ -67,7 +67,7 @@ class _TravelCrewState extends State<TravelCrew> {
         });
       } on Exception catch (e) {
         if (kDebugMode) {
-          print(e.toString());
+          print(e);
         }
       }
     }

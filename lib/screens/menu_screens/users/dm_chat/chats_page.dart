@@ -31,7 +31,7 @@ class DMChatListPage extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if (users.hasError) {
             CloudFunction().logError(
-                'Error streaming dm chat list: ${users.error.toString()}');
+                'Error streaming dm chat list: ${users.error}');
           }
           if (users.hasData) {
             final List<UserPublicProfile> chats = users.data!;
@@ -96,7 +96,7 @@ Widget chatNotificationBadges(UserPublicProfile user) {
       if (chats.hasError) {
         CloudFunction()
             .logError('Error streaming chats '
-            'for DM notifications: ${chats.error.toString()}');
+            'for DM notifications: ${chats.error}');
       }
       if (chats.hasData) {
         final List<ChatData> chatList = chats.data!;

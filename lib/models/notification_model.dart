@@ -35,62 +35,62 @@ class NotificationData {
     try {
       documentID = doc.get('documentID') as String;
     } catch (e) {
-      CloudFunction().logError('documentID error: ${e.toString()}');
+      CloudFunction().logError('documentID error: $e');
     }
     try {
       ownerID = doc.get('ownerID') as String;
     } catch (e) {
-      CloudFunction().logError('ownerID error: ${e.toString()}');
+      CloudFunction().logError('ownerID error: $e');
     }
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('Display name error: ${e.toString()}');
+      CloudFunction().logError('Display name error: $e');
     }
     try {
       ownerDisplayName = doc.get('ownerDisplayName') as String;
     } catch (e) {
-      CloudFunction().logError('ownerDisplayName error: ${e.toString()}');
+      CloudFunction().logError('ownerDisplayName error: $e');
     }
     try {
       timestamp = doc.get('timestamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('timestamp error: ${e.toString()}');
+      CloudFunction().logError('timestamp error: $e');
     }
     try {
       fieldID = doc.get('fieldID') as String;
     } catch (e) {
-      CloudFunction().logError('fieldID error: ${e.toString()}');
+      CloudFunction().logError('fieldID error: $e');
     }
     try {
       firstname = doc.get('firstname') as String;
     } catch (e) {
-      CloudFunction().logError('firstname error: ${e.toString()}');
+      CloudFunction().logError('firstname error: $e');
     }
     try {
       ispublic = doc.get('ispublic') as bool;
     } catch (e) {
-      CloudFunction().logError('ispublic error: ${e.toString()}');
+      CloudFunction().logError('ispublic error: $e');
     }
     try {
       lastname = doc.get('lastname') as String;
     } catch (e) {
-      CloudFunction().logError('lastname error: ${e.toString()}');
+      CloudFunction().logError('lastname error: $e');
     }
     try {
       message = doc.get('message') as String;
     } catch (e) {
-      CloudFunction().logError('message error: ${e.toString()}');
+      CloudFunction().logError('message error: $e');
     }
     try {
       type = doc.get('type') as String;
     } catch (e) {
-      CloudFunction().logError('type error: ${e.toString()}');
+      CloudFunction().logError('type error: $e');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('UID error: ${e.toString()}');
+      CloudFunction().logError('UID error: $e');
     }
     return NotificationData(type: type,
         ownerID: ownerID,

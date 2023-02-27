@@ -39,71 +39,71 @@ class SplitObject {
     try {
       amountRemaining = doc.get('amountRemaining') as double;
     } catch (e) {
-      CloudFunction().logError('amountRemaining error: ${e.toString()}');
+      CloudFunction().logError('amountRemaining error: $e');
     }
     try {
       dateCreated = doc.get('dateCreated') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('dateCreated error: ${e.toString()}');
+      CloudFunction().logError('dateCreated error: $e');
     }
     try {
       details = doc.get('details') as String;
     } catch (e) {
-      CloudFunction().logError('details error: ${e.toString()}');
+      CloudFunction().logError('details error: $e');
     }
     try {
       itemName = doc.get('itemName') as String;
     } catch (e) {
-      CloudFunction().logError('itemName error: ${e.toString()}');
+      CloudFunction().logError('itemName error: $e');
     }
     try {
       itemDescription = doc.get('itemDescription') as String;
     } catch (e) {
-      CloudFunction().logError('itemDescription error: ${e.toString()}');
+      CloudFunction().logError('itemDescription error: $e');
     }
     try {
       itemDocID = doc.get('itemDocID') as String;
     } catch (e) {
-      CloudFunction().logError('itemDocID error: ${e.toString()}');
+      CloudFunction().logError('itemDocID error: $e');
     }
     try {
       itemTotal = doc.get('itemTotal') as double;
     } catch (e) {
-      CloudFunction().logError('itemTotal error: ${e.toString()}');
+      CloudFunction().logError('itemTotal error: $e');
     }
     try {
       itemType = doc.get('itemType') as String;
     } catch (e) {
-      CloudFunction().logError('itemType error: ${e.toString()}');
+      CloudFunction().logError('itemType error: $e');
     }
     try {
       lastUpdated = doc.get('lastUpdated') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('lastUpdated error: ${e.toString()}');
+      CloudFunction().logError('lastUpdated error: $e');
     }
     try {
       purchasedByUID = doc.get('purchasedByUID') as String;
     } catch (e) {
-      CloudFunction().logError('purchasedByUID error: ${e.toString()}');
+      CloudFunction().logError('purchasedByUID error: $e');
     }
     try {
       tripDocID = doc.get('tripDocID') as String;
     } catch (e) {
-      CloudFunction().logError('tripDocID error: ${e.toString()}');
+      CloudFunction().logError('tripDocID error: $e');
     }
     try {
       var x = doc.get('users') as List<dynamic>;
       for (final element in x) 
       {users.add(element.toString());}
     } catch (e) {
-      CloudFunction().logError('users error: ${e.toString()}');
+      CloudFunction().logError('users error: $e');
     }
     try {
       var x = doc.get('userSelectedList') as List<dynamic>;
       for (final element in x) 
       {userSelectedList.add(element.toString());}
     } catch (e) {
-      CloudFunction().logError('userSelectedList error: ${e.toString()}');
+      CloudFunction().logError('userSelectedList error: $e');
     }
     return SplitObject(
         amountRemaining: amountRemaining,

@@ -32,7 +32,7 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
         return crewTrips;
       } catch (e) {
         CloudFunction()
-            .logError('Error retrieving current trip list:  ${e.toString()}');
+            .logError('Error retrieving current trip list:  $e');
         return <Trip>[];
       }
     }

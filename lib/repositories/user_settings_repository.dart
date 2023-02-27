@@ -28,7 +28,7 @@ class UserSettingsRepository {
           final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
           return UserNotificationSettingsData.fromData(data);
         } catch(e){
-          CloudFunction().logError('Error retrieving settings for user:  ${e.toString()}');
+          CloudFunction().logError('Error retrieving settings for user:  $e');
           return UserNotificationSettingsData().fakerData();
         }} else {
         return UserNotificationSettingsData().fakerData();

@@ -264,7 +264,7 @@ class _EditActivityState extends State<EditActivity> {
                 );
               } on Exception catch (e) {
                 CloudFunction().logError(
-                    'Error saving edited activity data:  ${e.toString()}');
+                    'Error saving edited activity data:  $e');
               }
 
               try {
@@ -283,7 +283,7 @@ class _EditActivityState extends State<EditActivity> {
                 }
               } catch (e) {
                 CloudFunction().logError(
-                    'Error sending notifications for edited activities:  ${e.toString()}');
+                    'Error sending notifications for edited activities:  $e');
               }
             }
             navigationService.pop();

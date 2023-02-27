@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
-import '../../../services/navigation/router.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/image_popup.dart';
 import '../../../services/widgets/map_launcher.dart';

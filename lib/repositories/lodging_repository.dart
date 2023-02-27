@@ -30,7 +30,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingData> {
         lodgingList.sort((LodgingData a, LodgingData b) => b.voters.length.compareTo(a.voters.length));
         return lodgingList;
       } catch (e) {
-        CloudFunction().logError('Error retrieving lodging list:  ${e.toString()}');
+        CloudFunction().logError('Error retrieving lodging list:  $e');
         return <LodgingData>[];
       }
     }

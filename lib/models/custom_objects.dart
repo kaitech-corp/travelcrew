@@ -68,79 +68,79 @@ class UserPublicProfile {
       blockedList = doc.get('blockedList') as List<dynamic>;
     } catch (e) {
       if(kDebugMode){
-        print('Blocked List error: ${e.toString()}');
+        print('Blocked List error: $e');
       }
 
     }
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      // print('Display name error: ${e.toString()}');
+      // print('Display name error: $e');
     }
     try {
       email = doc.get('email') as String;
     } catch (e) {
-      // print('Email error: ${e.toString()}');
+      // print('Email error: $e');
     }
     try {
       facebookLink = doc.get('facebookLink') as String;
     } catch (e) {
-      // print('Facebook link error: ${e.toString()}');
+      // print('Facebook link error: $e');
     }
     try {
       firstName = doc.get('firstName') as String;
     } catch (e) {
-      // print('First name error: ${e.toString()}');
+      // print('First name error: $e');
     }
     try {
       followers = doc.get('followers') as List<dynamic>;
     } catch (e) {
-      // print('Followers error: ${e.toString()}');
+      // print('Followers error: $e');
     }
     try {
       following = doc.get('following') as List<dynamic>;
     } catch (e) {
-      // print('Following error: ${e.toString()}');
+      // print('Following error: $e');
     }
     try {
       hometown = doc.get('hometown') as String;
     } catch (e) {
-      // print('Hometown error: ${e.toString()}');
+      // print('Hometown error: $e');
     }
     try {
       instagramLink = doc.get('instagramLink') as String;
     } catch (e) {
-      // print('Instagram link error: ${e.toString()}');
+      // print('Instagram link error: $e');
     }
     try {
       lastName = doc.get('lastName') as String;
     } catch (e) {
-      // print('Last name error: ${e.toString()}');
+      // print('Last name error: $e');
     }
     try {
       topDestinations = doc.get('topDestinations') as List<dynamic>;
     } catch (e) {
-      // print('Destinations error: ${e.toString()}');
+      // print('Destinations error: $e');
     }
     try {
       tripsCreated = doc.get('tripsCreated') as int;
     } catch (e) {
-      // print('Trips created error: ${e.toString()}');
+      // print('Trips created error: $e');
     }
     try {
       tripsJoined = doc.get('tripsJoined') as int;
     } catch (e) {
-      // print('Trips joined error: ${e.toString()}');
+      // print('Trips joined error: $e');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      // print('UID error: ${e.toString()}');
+      // print('UID error: $e');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      // print('Image url error: ${e.toString()}');
+      // print('Image url error: $e');
     }
     return UserPublicProfile(
         tripsJoined: tripsJoined,
@@ -216,27 +216,27 @@ class Members {
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      // print('Display name error: ${e.toString()}');
+      // print('Display name error: $e');
     }
     try {
       firstName = doc.get('firstName') as String;
     } catch (e) {
-      // print('First name error: ${e.toString()}');
+      // print('First name error: $e');
     }
     try {
       lastName = doc.get('lastName') as String;
     } catch (e) {
-      // print('Last name error: ${e.toString()}');
+      // print('Last name error: $e');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      // print('UID error: ${e.toString()}');
+      // print('UID error: $e');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      // print('Image url error: ${e.toString()}');
+      // print('Image url error: $e');
     }
     return Members(
         displayName: displayName,
@@ -386,25 +386,25 @@ class TCFeedback {
       message = doc.get('message') as String;
     } catch (e) {
       if(kDebugMode){
-        print(e.toString());
+        print(e);
       }
     }
     try {
       fieldID = doc.get('fieldID') as String;
     } catch (e) {
       if(kDebugMode){
-      print(e.toString());
+      print(e);
     }
     }
     try {
       timestamp = doc.get('timestamp') as Timestamp;
     } catch (e) {      if(kDebugMode){
-      print(e.toString());
+      print(e);
     }}
     try {
       uid = doc.get('uid') as String;
     } catch (e) {      if(kDebugMode){
-      print(e.toString());
+      print(e);
     }}
     return TCFeedback(
         fieldID: fieldID, message: message, timestamp: timestamp, uid: uid);
@@ -456,33 +456,33 @@ class TripAds {
       tripName = doc.get('tripName') as String;
     } catch (e) {
       if(kDebugMode){
-        print(e.toString());
+        print(e);
       }
     }
     try {
       geoPoint = doc.get('geoPoint') as GeoPoint;
     } catch (e) {
-      // print('geoPoint error: ${e.toString()}');
+      // print('geoPoint error: $e');
     }
     try {
       link = doc.get('link') as String;
     } catch (e) {
-      // print('link error: ${e.toString()}');
+      // print('link error: $e');
     }
     try {
       location = doc.get('location') as String;
     } catch (e) {
-      // print('location error: ${e.toString()}');
+      // print('location error: $e');
     }
     try {
       dateCreated = doc.get('dateCreated') as Timestamp;
     } catch (e) {
-      // print('dateCreated error: ${e.toString()}');
+      // print('dateCreated error: $e');
     }
     try {
       documentID = doc.get('documentID') as String;
     } catch (e) {
-      // print('documentID error: ${e.toString()}');
+      // print('documentID error: $e');
     }
     try {
       var fav = doc.get('favorites') as List<dynamic>;
@@ -490,7 +490,7 @@ class TripAds {
         favorites.add(element.toString());
       }
     } catch (e) {
-      // print('favorites error: ${e.toString()}');
+      // print('favorites error: $e');
     }
     try {
       var clicker = doc.get('clickers') as List<dynamic>;
@@ -498,17 +498,17 @@ class TripAds {
         clickers.add(element.toString());
       }
     } catch (e) {
-      // print('clickers error: ${e.toString()}');
+      // print('clickers error: $e');
     }
     try {
       clicks = doc.get('clicks') as int;
     } catch (e) {
-      // print('endTime error: ${e.toString()}');
+      // print('endTime error: $e');
     }
     try {
       urlToImage = doc.get('urlToImage') as String;
     } catch (e) {
-      // print('urlToImage error: ${e.toString()}');
+      // print('urlToImage error: $e');
     }
     return TripAds(
         link: link,

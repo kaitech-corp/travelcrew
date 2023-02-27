@@ -314,7 +314,7 @@ class SplitPackage {
                                   }
                                 } catch (e) {
                                   if (kDebugMode) {
-                                    print(e.toString());
+                                    print(e);
                                   }
                                 }
                               },
@@ -397,7 +397,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
               AsyncSnapshot<List<UserPublicProfile>> userData) {
             if (userData.hasError) {
               CloudFunction().logError('Error streaming user data for '
-                  'members layout: ${userData.error.toString()}');
+                  'members layout: ${userData.error}');
             }
             if (userData.hasData) {
               final List<UserPublicProfile> crew = userData.data!;

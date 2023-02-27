@@ -143,7 +143,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                   comment: comment.trim(),
                   flightNumber: flightNumber.trim(),);
               } on Exception catch (e) {
-                CloudFunction().logError('Error adding new Transportation item:  ${e.toString()}');
+                CloudFunction().logError('Error adding new Transportation item:  $e');
               }
 
 
@@ -163,7 +163,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                   }
                 }
               } on Exception catch (e) {
-                CloudFunction().logError('Error sending notifications for new Transportation item:  ${e.toString()}');
+                CloudFunction().logError('Error sending notifications for new Transportation item:  $e');
               }
               navigationService.pop();
             }

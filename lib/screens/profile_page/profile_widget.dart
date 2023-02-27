@@ -327,7 +327,7 @@ class _FollowListState extends State<FollowList> {
           (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
         if (users.hasError) {
           CloudFunction().logError(
-              'Error streaming follow list in profile widget: ${users.error.toString()}');
+              'Error streaming follow list in profile widget: ${users.error}');
         }
         if (users.hasData) {
           final List<UserPublicProfile> followList = users.data!;

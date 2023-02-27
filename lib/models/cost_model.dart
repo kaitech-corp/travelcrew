@@ -25,37 +25,37 @@ class CostObject {
     try {
       amountOwe = doc.get('amountOwe') as double;
     } catch (e) {
-      CloudFunction().logError('amountOwe error: ${e.toString()}');
+      CloudFunction().logError('amountOwe error: $e');
     }
     try {
       datePaid = doc.get('datePaid') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('datePaid error: ${e.toString()}');
+      CloudFunction().logError('datePaid error: $e');
     }
     try {
       itemDocID = doc.get('itemDocID') as String;
     } catch (e) {
-      CloudFunction().logError('itemDocID error: ${e.toString()}');
+      CloudFunction().logError('itemDocID error: $e');
     }
     try {
       lastUpdated = doc.get('lastUpdated') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('lastUpdated error: ${e.toString()}');
+      CloudFunction().logError('lastUpdated error: $e');
     }
     try {
       paid = doc.get('paid') as bool;
     } catch (e) {
-      CloudFunction().logError('paid error: ${e.toString()}');
+      CloudFunction().logError('paid error: $e');
     }
     try {
       tripDocID = doc.get('tripDocID') as String;
     } catch (e) {
-      CloudFunction().logError('tripDocID error: ${e.toString()}');
+      CloudFunction().logError('tripDocID error: $e');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('uid error: ${e.toString()}');
+      CloudFunction().logError('uid error: $e');
     }
     return CostObject(
         amountOwe: amountOwe,

@@ -49,94 +49,94 @@ class TransportationData {
     try {
       airline = doc.get('airline') as String;
     } catch (e) {
-      CloudFunction().logError('amountRemaining error: ${e.toString()}');
+      CloudFunction().logError('amountRemaining error: $e');
     }
     try {
       airportCode = doc.get('airportCode') as String;
     } catch (e) {
-      CloudFunction().logError('airportCode error: ${e.toString()}');
+      CloudFunction().logError('airportCode error: $e');
     }
     try {
       comment = doc.get('comment') as String;
     } catch (e) {
-      CloudFunction().logError('comment error: ${e.toString()}');
+      CloudFunction().logError('comment error: $e');
     }
     try {
       canCarpool = doc.get('canCarpool') as bool;
     } catch (e) {
-      CloudFunction().logError('canCarpool error: ${e.toString()}');
+      CloudFunction().logError('canCarpool error: $e');
     }
     try {
       carpoolingWith = doc.get('carpoolingWith') as String;
     } catch (e) {
-      CloudFunction().logError('carpoolingWith error: ${e.toString()}');
+      CloudFunction().logError('carpoolingWith error: $e');
     }
     try {
       comment = doc.get('comment') as String;
     } catch (e) {
-      CloudFunction().logError('comment error: ${e.toString()}');
+      CloudFunction().logError('comment error: $e');
     }
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('displayName error: ${e.toString()}');
+      CloudFunction().logError('displayName error: $e');
     }
     try {
       departureDateArrivalTime = doc.get('departureDateArrivalTime') as String;
     } catch (e) {
       CloudFunction()
-          .logError('departureDateArrivalTime error: ${e.toString()}');
+          .logError('departureDateArrivalTime error: $e');
     }
     try {
       departureDateDepartTime = doc.get('departureDateDepartTime') as String;
     } catch (e) {
       CloudFunction()
-          .logError('departureDateDepartTime error: ${e.toString()}');
+          .logError('departureDateDepartTime error: $e');
     }
     try {
       departureDate = doc.get('departureDate') as String;
     } catch (e) {
-      CloudFunction().logError('departureDate error: ${e.toString()}');
+      CloudFunction().logError('departureDate error: $e');
     }
     try {
       fieldID = doc.get('fieldID') as String;
     } catch (e) {
-      CloudFunction().logError('fieldID error: ${e.toString()}');
+      CloudFunction().logError('fieldID error: $e');
     }
     try {
       flightNumber = doc.get('flightNumber') as String;
     } catch (e) {
-      CloudFunction().logError('flightNumber error: ${e.toString()}');
+      CloudFunction().logError('flightNumber error: $e');
     }
     try {
       location = doc.get('location') as String;
     } catch (e) {
-      CloudFunction().logError('location error: ${e.toString()}');
+      CloudFunction().logError('location error: $e');
     }
     try {
       returnDate = doc.get('returnDate') as String;
     } catch (e) {
-      CloudFunction().logError('returnDate error: ${e.toString()}');
+      CloudFunction().logError('returnDate error: $e');
     }
     try {
       returnDateDepartTime = doc.get('returnDateDepartTime') as String;
     } catch (e) {
-      CloudFunction().logError('returnDateDepartTime error: ${e.toString()}');
+      CloudFunction().logError('returnDateDepartTime error: $e');
     }
     try {
       returnDateArrivalTime = doc.get('returnDateArrivalTime') as String;
     } catch (e) {
-      CloudFunction().logError('returnDateArrivalTime error: ${e.toString()}');
+      CloudFunction().logError('returnDateArrivalTime error: $e');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('uid error: ${e.toString()}');
+      CloudFunction().logError('uid error: $e');
     }
     try {
       tripDocID = doc.get('tripDocID') as String;
     } catch (e) {
-      CloudFunction().logError('tripDocID error: ${e.toString()}');
+      CloudFunction().logError('tripDocID error: $e');
     }
     return TransportationData(
         mode: mode,

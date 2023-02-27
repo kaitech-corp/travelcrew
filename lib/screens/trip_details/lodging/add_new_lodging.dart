@@ -250,7 +250,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     ));
               } on Exception catch (e) {
                 CloudFunction()
-                    .logError('Error adding new Lodging:  ${e.toString()}');
+                    .logError('Error adding new Lodging:  $e');
               }
               try {
                 final String action =
@@ -270,7 +270,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                 }
               } on Exception catch (e) {
                 CloudFunction().logError(
-                    'Error sending notifications for new lodging:  ${e.toString()}');
+                    'Error sending notifications for new lodging:  $e');
               }
               navigationService.pop();
             }

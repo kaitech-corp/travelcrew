@@ -142,7 +142,7 @@ Widget getChatNotificationBadge (){
           if(chats.hasError){
             CloudFunction()
                 .logError('Error streaming chats for explore'
-                ' chat notification: ${chats.error.toString()}');
+                ' chat notification: ${chats.error}');
           }
           if(chats.hasData){
             final List<ChatData> chatList = chats.data!;

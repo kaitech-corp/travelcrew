@@ -24,7 +24,7 @@ class TripAdRepository extends GenericBlocRepository<TripAds> {
           return TripAds.fromDocument(doc);
         }).toList().reversed.toList();
       } catch (e) {
-        CloudFunction().logError('Error retrieving ad list:  ${e.toString()}');
+        CloudFunction().logError('Error retrieving ad list:  $e');
         return <TripAds>[];
       }
 

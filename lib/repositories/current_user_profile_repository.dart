@@ -29,7 +29,7 @@ class CurrentUserProfileRepository {
           // urlToImage.value = UserPublicProfile.fromData(data).urlToImage ?? '';
           return UserPublicProfile.fromDocument(snapshot);
         } catch(e){
-          CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
+          CloudFunction().logError('Error retrieving single user profile:  $e');
           return defaultProfile;
         }} else {
         return defaultProfile;

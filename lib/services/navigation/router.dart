@@ -34,7 +34,6 @@ import '../../screens/trip_details/activity/activity_page.dart';
 import '../../screens/trip_details/activity/add_new_activity.dart';
 import '../../screens/trip_details/activity/edit_activity.dart';
 import '../../screens/trip_details/basket_list/controller/basket_controller.dart';
-import '../../screens/trip_details/basket_list/list_page.dart';
 import '../../screens/trip_details/chat/chat_page.dart';
 import '../../screens/trip_details/details/detail_page.dart';
 import '../../screens/trip_details/explore/explore.dart';

@@ -181,7 +181,7 @@ class TappableCrewTripGrid extends StatelessWidget {
         if (chats.hasError) {
           CloudFunction()
               .logError('Error streaming chats for '
-              'notifications on Crew cards: ${chats.error.toString()}');
+              'notifications on Crew cards: ${chats.error}');
         }
         if (chats.hasData) {
           final List<ChatData> chatList = chats.data!;
@@ -212,7 +212,7 @@ class TappableCrewTripGrid extends StatelessWidget {
         if (items.hasError) {
           CloudFunction()
               .logError('Error streaming need '
-              'list for Crew trip cards: ${items.error.toString()}');
+              'list for Crew trip cards: ${items.error}');
         }
         if (items.hasData && needs.isNotEmpty) {
           return Tooltip(

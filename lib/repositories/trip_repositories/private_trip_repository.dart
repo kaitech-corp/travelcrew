@@ -27,7 +27,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
             .toList();
       } catch (e) {
         CloudFunction()
-            .logError('Error retrieving private trip list:  ${e.toString()}');
+            .logError('Error retrieving private trip list:  $e');
         return <Trip>[];
       }
     }

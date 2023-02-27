@@ -24,37 +24,37 @@ class ChatData {
     try {
       displayName = doc.get('displayName') as String;
     } catch (e) {
-      CloudFunction().logError('displayName error: ${e.toString()}');
+      CloudFunction().logError('displayName error: $e');
     }
     try {
       fieldID = doc.get('fieldID') as String;
     } catch (e) {
-      CloudFunction().logError('fieldID error: ${e.toString()}');
+      CloudFunction().logError('fieldID error: $e');
     }
     try {
       message = doc.get('message') as String;
     } catch (e) {
-      CloudFunction().logError('message error: ${e.toString()}');
+      CloudFunction().logError('message error: $e');
     }
     try {
       timestamp = doc.get('timestamp') as Timestamp;
     } catch (e) {
-      CloudFunction().logError('timestamp error: ${e.toString()}');
+      CloudFunction().logError('timestamp error: $e');
     }
     try {
       chatID = doc.get('chatID') as String;
     } catch (e) {
-      CloudFunction().logError('chatID error: ${e.toString()}');
+      CloudFunction().logError('chatID error: $e');
     }
     try {
       tripDocID = doc.get('tripDocID') as String;
     } catch (e) {
-      CloudFunction().logError('tripDocID error: ${e.toString()}');
+      CloudFunction().logError('tripDocID error: $e');
     }
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('uid error: ${e.toString()}');
+      CloudFunction().logError('uid error: $e');
     }
     return ChatData(
         timestamp: timestamp,

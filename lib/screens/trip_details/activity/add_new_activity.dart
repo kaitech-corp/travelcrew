@@ -276,7 +276,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                           documentID);
                     } on Exception catch (e) {
                       CloudFunction().logError(
-                          'Error adding new activity:  ${e.toString()}');
+                          'Error adding new activity:  $e');
                     }
                     try {
                       const String action =
@@ -296,7 +296,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                       }
                     } on Exception catch (e) {
                       CloudFunction().logError(
-                          'Error sending notifications for new activity:  ${e.toString()}');
+                          'Error sending notifications for new activity:  $e');
                     }
 
                     setState(() {

@@ -38,7 +38,7 @@ class _FollowingListState extends State<FollowingList> {
         stream: DatabaseService().retrieveFollowingList(),
         builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if(users.hasError){
-           CloudFunction().logError('Error streaming Following list for invites: ${users.error.toString()}');
+           CloudFunction().logError('Error streaming Following list for invites: ${users.error}');
           }
           if (users.hasData) {
             final List<UserPublicProfile> followingList = users.data!;

@@ -341,7 +341,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                       _user, _image);
                                             } on Exception catch (e) {
                                               CloudFunction().logError(
-                                                  'Editing Public Profile page from page: ${e.toString()}');
+                                                  'Editing Public Profile page from page: $e');
                                               Navigator.pop(context);
                                             }
                                           }

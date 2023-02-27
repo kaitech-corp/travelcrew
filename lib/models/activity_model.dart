@@ -100,7 +100,7 @@ class ActivityData {
     try {
       uid = doc.get('uid') as String;
     } catch (e) {
-      CloudFunction().logError('UID error: ${e.toString()}');
+      CloudFunction().logError('UID error: $e.');
     }
     return ActivityData(
         endTime: endTime,

@@ -28,7 +28,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationData>
         return transportList;
       } catch (e) {
         CloudFunction().logError(
-            'Error retrieving transportation list:  ${e.toString()}');
+            'Error retrieving transportation list:  $e');
         return <TransportationData>[];
       }
     }

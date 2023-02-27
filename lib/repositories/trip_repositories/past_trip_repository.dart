@@ -34,7 +34,7 @@ class PastTripRepository extends GenericBlocRepository<Trip> {
         return crewTrips;
       } catch (e) {
         CloudFunction()
-            .logError('Error retrieving past trip list:  ${e.toString()}');
+            .logError('Error retrieving past trip list:  $e');
         return <Trip>[];
       }
     }

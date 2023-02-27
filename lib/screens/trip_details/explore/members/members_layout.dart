@@ -48,7 +48,7 @@ class _MembersLayoutState extends State<MembersLayout> {
             if(userData.hasError){
               CloudFunction()
                   .logError('Error streaming user data '
-                  'for members layout: ${userData.error.toString()}');
+                  'for members layout: ${userData.error}');
             }
             if(userData.hasData){
               final List<UserPublicProfile> crew = userData.data!;

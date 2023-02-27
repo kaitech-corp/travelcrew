@@ -27,7 +27,7 @@ class PublicProfileRepository {
           // final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
           return UserPublicProfile.fromDocument(snapshot);
         } catch(e){
-          CloudFunction().logError('Error retrieving single user profile:  ${e.toString()}');
+          CloudFunction().logError('Error retrieving single user profile:  $e');
           return defaultProfile;
         }} else {
         return defaultProfile;

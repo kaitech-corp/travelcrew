@@ -75,7 +75,7 @@ class UserRepository {
 
       return await _firebaseAuth.signInWithCredential(credential);
     } catch (e) {
-      CloudFunction().logError('Error in Apple sign in: ${e.toString()}');
+      CloudFunction().logError('Error in Apple sign in: $e');
       return null;
     }
   }

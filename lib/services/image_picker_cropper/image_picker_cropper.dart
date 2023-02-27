@@ -23,7 +23,7 @@ class ImagePickerAndCropper {
         return urlToImage.value;
       }
     } catch (e) {
-      CloudFunction().logError('Error Picking signup image: ${e.toString()}');
+      CloudFunction().logError('Error Picking signup image: $e');
       return urlToImage.value;
     }
   }

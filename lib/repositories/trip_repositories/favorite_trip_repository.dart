@@ -29,7 +29,7 @@ class FavoriteTripRepository extends GenericBlocRepository<Trip> {
         return trips;
       } catch (e) {
         CloudFunction()
-            .logError('Error retrieving favorites trip list:  ${e.toString()}');
+            .logError('Error retrieving favorites trip list:  $e');
         return <Trip>[];
       }
     }

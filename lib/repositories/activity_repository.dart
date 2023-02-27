@@ -23,7 +23,7 @@ class ActivityRepository extends GenericBlocRepository<ActivityData> {
         return activityList;
       } catch (e) {
         CloudFunction()
-            .logError('Error retrieving activity list:  ${e.toString()}');
+            .logError('Error retrieving activity list:  $e');
         return <ActivityData>[];
       }
     }

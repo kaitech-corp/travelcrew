@@ -8,7 +8,6 @@ import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
-// import '../../services/location/location_handler.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/badge_icon.dart';
@@ -17,10 +16,8 @@ import '../add_trip/add_trip_page.dart';
 import '../app_bar/app_bar.dart';
 import '../menu_screens/main_menu.dart';
 import 'all_trips/all_trips_page.dart';
-import 'favorites/favorites_page.dart';
 import 'my_trips_tab/current_trips/current_trips_page.dart';
 import 'my_trips_tab/past_trips/past_trip_page.dart';
-import 'my_trips_tab/private_trips/private_trip_page.dart';
 import 'notifications/notification_page.dart';
 
 /// Main screen
@@ -34,7 +31,6 @@ class MainTabPage extends StatefulWidget {
 }
 
 class _MainTabPageState extends State<MainTabPage> {
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +61,7 @@ class _MainTabPageState extends State<MainTabPage> {
           navigationService.navigateTo(ExploreRoute, arguments: trip);
         } catch (e) {
           CloudFunction().logError(
-              'onMessageOpenedApp- Not a valid trip:  ${e.toString()}');
+              'onMessageOpenedApp- Not a valid trip:  $e');
         }
       } else {
         navigationService.navigateTo(DMChatListPageRoute);
@@ -75,21 +71,18 @@ class _MainTabPageState extends State<MainTabPage> {
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
+    const AllTrips(),
     const TabBarView(
       children: <Widget>[
         CurrentTrips(),
         PastTrips(),
-        PrivateTrips(),
       ],
     ),
-    const AllTrips(),
     const AddTripPage(),
-    const FavoritesPage(),
     const NotificationPage(),
   ];
 
   void _onItemTapped(int index) {
-    // FirebaseCrashlytics.instance.crash();
     setState(() {
       _selectedIndex = index;
     });
@@ -102,43 +95,39 @@ class _MainTabPageState extends State<MainTabPage> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           drawer: const MenuDrawer(),
-          body: (_selectedIndex == 0)
-              ? Stack(
-                  clipBehavior: Clip.none,
+          body: (_selectedIndex == 1)
+              ? Column(
                   children: <Widget>[
-                    const CustomAppBar(
-                      bottomNav: true,
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(top: SizeConfig.screenHeight * .18),
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: TabBar(
-                          labelStyle: responsiveTextStyleTopicsSub(context),
-                          isScrollable: true,
-                          tabs: <Widget>[
-                            Tab(
-                              text: Intl.message('Current'),
-                            ),
-                            Tab(
-                              text: Intl.message('Past'),
-                            ),
-                            Tab(
-                              text: Intl.message('Private'),
-                            ),
-                          ],
+                    Stack(
+                      children: [
+                        const CustomAppBar(
+                          bottomNav: true,
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: SizeConfig.screenHeight * .18),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: TabBar(
+                              labelStyle: responsiveTextStyleTopicsSub(context),
+                              isScrollable: true,
+                              tabs: <Widget>[
+                                Tab(
+                                  text: Intl.message('Current'),
+                                ),
+                                Tab(
+                                  text: Intl.message('Past'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: SizeConfig.screenHeight / 2 * .45),
-                      child: _widgetOptions.elementAt(_selectedIndex),
-                    ),
+                    Expanded(child: _widgetOptions.elementAt(_selectedIndex)),
                   ],
                 )
               : Stack(
@@ -159,12 +148,11 @@ class _MainTabPageState extends State<MainTabPage> {
             backgroundColor: ReusableThemeColor().bottomNavColor(context),
             color: ReusableThemeColor().color(context),
             items: <Widget>[
-              const IconThemeWidget(icon: Icons.list_rounded),
-              const IconThemeWidget(icon: Icons.search),
+              const IconThemeWidget(icon: Icons.home),
+              const IconThemeWidget(icon: Icons.people),
               const IconThemeWidget(
                 icon: Icons.add_outlined,
               ),
-              const IconThemeWidget(icon: Icons.favorite_border),
               BadgeIcon(
                 icon: const IconThemeWidget(icon: Icons.notifications_active),
                 badgeCount: widget.notifications != null

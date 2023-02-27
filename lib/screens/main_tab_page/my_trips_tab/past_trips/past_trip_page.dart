@@ -6,23 +6,23 @@ import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
 import '../../../../repositories/trip_repositories/past_trip_repository.dart';
+import '../../../../services/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../grouped_list_builder.dart';
+import '../private_trips/private_trip_page.dart';
 import '../sliver_grid_view.dart';
 
-
 /// Past Trips
-class PastTrips extends StatefulWidget{
+class PastTrips extends StatefulWidget {
   const PastTrips({Key? key}) : super(key: key);
 
   @override
   State<PastTrips> createState() => _PastTripsState();
-
 }
 
-class _PastTripsState extends State<PastTrips>{
-  late GenericBloc<Trip,PastTripRepository> bloc;
+class _PastTripsState extends State<PastTrips> {
+  late GenericBloc<Trip, PastTripRepository> bloc;
 
   @override
   void initState() {
@@ -31,7 +31,8 @@ class _PastTripsState extends State<PastTrips>{
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<Trip,PastTripRepository>>(context);//dependency injection
+    bloc = BlocProvider.of<GenericBloc<Trip, PastTripRepository>>(
+        context); //dependency injection
     bloc.add(LoadingGenericData());
     context.dependOnInheritedWidgetOfExactType();
     super.didChangeDependencies();
@@ -39,19 +40,43 @@ class _PastTripsState extends State<PastTrips>{
 
   @override
   Widget build(BuildContext context) {
-
-    return BlocBuilder<GenericBloc<Trip,PastTripRepository>, GenericState>(
-        builder: (BuildContext context, GenericState state){
-          if(state is LoadingState){
-            return const Loading();
-          } else if (state is HasDataState){
-            final List<Trip> tripsData = state.data as List<Trip>;
-            return SizeConfig.tablet ?
-            SliverGridView(trips: tripsData, length: state.data.length):
-            GroupedListTripView(data: tripsData,isPast: true,);
-          } else {
-            return Container();
-          }
-        });
+    return BlocBuilder<GenericBloc<Trip, PastTripRepository>, GenericState>(
+        builder: (BuildContext context, GenericState state) {
+      if (state is LoadingState) {
+        return const Loading();
+      } else if (state is HasDataState) {
+        final List<Trip> tripsData = state.data as List<Trip>;
+        return SizeConfig.tablet
+            ? SliverGridView(trips: tripsData, length: state.data.length)
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+                    child: Text(
+                      'Public',
+                      style: titleMedium(context),
+                    ),
+                  ),
+                  Expanded(
+                      child: GroupedListTripView(
+                    data: tripsData,
+                    isPast: true,
+                  )),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+                    child: Text(
+                      'Private',
+                      style: titleMedium(context),
+                    ),
+                  ),
+                  const Expanded(
+                      child: PrivateTrips(past: true,)),
+                ],
+              );
+      } else {
+        return Container();
+      }
+    });
   }
 }

@@ -116,7 +116,7 @@ class _ChatPageState extends State<ChatPage> {
                                               message, uid, status);
                                     } on Exception catch (e) {
                                       CloudFunction().logError(
-                                          'Error saving chat message (Chat.dart):  ${e.toString()}');
+                                          'Error saving chat message (Chat.dart):  $e');
                                     }
                                   }
                                 },

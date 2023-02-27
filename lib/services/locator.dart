@@ -26,7 +26,7 @@ class UserService {
     try {
       return _auth.currentUser?.uid ?? '';
     } catch (e) {
-      CloudFunction().logError('Error retrieving uid for locator: ${e.toString()}');
+      CloudFunction().logError('Error retrieving uid for locator: $e');
       return '';
     }
   }
@@ -43,7 +43,7 @@ class UserProfileService {
       profile = await DatabaseService().getUserProfile(userService.currentUserID);
       urlToImage.value = profile.urlToImage;
     } catch (e) {
-      CloudFunction().logError('Error in User Public Profile service:  ${e.toString()}');
+      CloudFunction().logError('Error in User Public Profile service:  $e');
     }
     return defaultProfile;
   }

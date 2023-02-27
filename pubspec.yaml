@@ -96,12 +96,7 @@ dependencies:
   # Other
   nil: ^1.1.1
   cached_network_image: ^3.2.3
-  # flutter_sms: 
-  #   git:
-  #     url: https://github.com/prasadsunny1/flutter_sms.git
-
-#  social_share: ^2.1.1
-#  lint: ^1.6.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

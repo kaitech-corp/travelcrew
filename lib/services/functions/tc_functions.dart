@@ -1,11 +1,10 @@
-// ignore_for_file: only_throw_errors
-
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../models/trip_model.dart';
 
 import '../../models/custom_objects.dart';
 import '../../services/functions/cloud_functions.dart';
@@ -139,7 +138,7 @@ class TCFunctions {
           DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return wTime ? format2.format(date) : format.format(date);
     } catch (e) {
-      CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
+      CloudFunction().logError('Error formatting timestamp: $e');
       return '';
     }
   }
@@ -152,7 +151,7 @@ class TCFunctions {
           DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return format.format(date);
     } catch (e) {
-      CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
+      CloudFunction().logError('Error formatting timestamp: $e');
       return '';
     }
   }
@@ -165,7 +164,7 @@ class TCFunctions {
           DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return wTime ? format2.format(date) : format.format(date);
     } catch (e) {
-      CloudFunction().logError('Error formatting timestamp: ${e.toString()}');
+      CloudFunction().logError('Error formatting timestamp: $e');
       return '';
     }
   }
@@ -176,4 +175,21 @@ class TCFunctions {
         List<int>.generate(5, (int index) => random.nextInt(28));
     return x;
   }
+
+List<Trip> getCurrentPrivateTrips(List<Trip> trips, bool past) {
+  final DateTime today = DateTime.now();
+  final List<Trip> output = <Trip>[];
+  for (int i = 0; i < trips.length; i++) {
+    if (past) {
+      if (trips[i].endDateTimeStamp.toDate().isBefore(today)) {
+        output.add(trips[i]);
+      }
+    } else {
+      if (trips[i].endDateTimeStamp.toDate().isAfter(today)) {
+        output.add(trips[i]);
+      }
+    }
+  }
+  return output;
+}
 }

@@ -16,7 +16,7 @@ class ImageLayout extends StatelessWidget{
         height: 200.0,
       ),
       child: ClipRRect(
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),),
+          borderRadius: const BorderRadius.all(Radius.circular(30),),
           child: _assetPath.contains('https') ? FadeInImage.assetNetwork(
             placeholder: 'assets/images/travelPics.png',
             imageErrorBuilder: (BuildContext context, Object object, StackTrace? trace){

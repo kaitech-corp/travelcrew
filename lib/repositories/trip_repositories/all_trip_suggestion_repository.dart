@@ -28,7 +28,7 @@ class AllTripsSuggestionRepository extends GenericBlocRepository<Trip> {
         return trips;
       } catch (e) {
         CloudFunction()
-            .logError('Error retrieving all trip list:  ${e.toString()}');
+            .logError('Error retrieving all trip list:  $e');
         return <Trip>[];
       }
     }

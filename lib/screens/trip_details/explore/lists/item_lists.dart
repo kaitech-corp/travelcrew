@@ -230,7 +230,7 @@ class _NeedListState extends State<NeedList> {
                   .showSnackBar(const SnackBar(content: Text('Item added')));
             } catch (e) {
               CloudFunction()
-                  .logError('Error adding item to Need List: ${e.toString()}');
+                  .logError('Error adding item to Need List: $e');
             }
           } else {
             // TODO(Randy): change to delete
@@ -262,7 +262,7 @@ class NeedListToDisplay extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<List<Need>> items) {
         if (items.hasError) {
           CloudFunction().logError('Error streaming items in need '
-              'list to display: ${items.error.toString()}');
+              'list to display: ${items.error}');
         }
         if (items.hasData) {
           final List<Need> needList = items.data!;
@@ -330,7 +330,7 @@ class BringListToDisplay extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<List<Bringing>> items) {
         if (items.hasError) {
           CloudFunction().logError('Error streaming items in bringing '
-              'list to display: ${items.error.toString()}');
+              'list to display: ${items.error}');
         }
         if (items.hasData) {
           final List<Bringing> bringingList = items.data!;

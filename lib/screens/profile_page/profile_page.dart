@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
               if (userData.hasError) {
                 CloudFunction()
                     .logError('Error streaming user data for Profile Page: '
-                        '${userData.error.toString()}');
+                        '${userData.error}');
               }
               if (userData.hasData) {
                 final UserPublicProfile user = userData.data!;
