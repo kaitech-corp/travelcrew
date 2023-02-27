@@ -1,0 +1,6 @@
+framework module sign_in_with_apple {
+  umbrella header "sign_in_with_apple-umbrella.h"
+
+  export *
+  module * { export * }
+}

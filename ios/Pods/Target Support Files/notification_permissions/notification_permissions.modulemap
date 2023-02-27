@@ -1,0 +1,6 @@
+framework module notification_permissions {
+  umbrella header "notification_permissions-umbrella.h"
+
+  export *
+  module * { export * }
+}

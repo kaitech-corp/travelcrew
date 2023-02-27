@@ -1,0 +1,6 @@
+framework module cloud_functions {
+  umbrella header "cloud_functions-umbrella.h"
+
+  export *
+  module * { export * }
+}
