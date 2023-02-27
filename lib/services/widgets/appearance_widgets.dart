@@ -202,7 +202,7 @@ TextStyle responsiveTextStyleTopics(BuildContext context){
   if (SizeConfig.tablet) {
     return displayMedium(context)!;
   } else {
-    return headlineLarge(context)!;
+    return headlineMedium(context)!;
   }
 }
 TextStyle responsiveTextStyleTopicsSub(BuildContext context){

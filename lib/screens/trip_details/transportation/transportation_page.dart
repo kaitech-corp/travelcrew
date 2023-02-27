@@ -63,7 +63,7 @@ class _TransportationPageState extends State<TransportationPage> {
               children: <Widget>[
                 const SizedBox(height: 8),
                 Expanded(
-                  flex: 2,
+                  
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: modeList.length,
@@ -82,7 +82,7 @@ class _TransportationPageState extends State<TransportationPage> {
                                 alignment: Alignment.bottomCenter,
                                 child: Text(
                                   modeList[index].displayName.length > 10
-                                      ? '${modeList[index].displayName.substring(0, 10)}...'
+                                      ? '${modeList[index].displayName.substring(0, 7)}...'
                                       : modeList[index].displayName,
                                   style: titleMedium(context),
                                   maxLines: 1,
@@ -92,7 +92,7 @@ class _TransportationPageState extends State<TransportationPage> {
                         );
                       }),
                 ),
-                const SizedBox(height: 8),
+            
                 Expanded(
                   flex: 4,
                   child: ListView.builder(

@@ -46,18 +46,22 @@ class PrepaidDetailsCard extends StatelessWidget {
                       width: SizeConfig.screenWidth * .5,
                       child: Column(
                         children: <Widget>[
-                          Text(
-                            user.displayName,
-                            style: SizeConfig.tablet
-                                ? headlineMedium(context)
-                                : titleMedium(context),
+                          Expanded(
+                            child: Text(
+                              user.displayName,
+                              style: SizeConfig.tablet
+                                  ? headlineMedium(context)
+                                  : titleMedium(context),
+                            ),
                           ),
-                          Text(
-                            'Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',
-                            style: SizeConfig.tablet
-                                ? headlineMedium(context)
-                                : titleMedium(context),
-                            textAlign: TextAlign.center,
+                          Expanded(
+                            child: Text(
+                              'Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',
+                              style: SizeConfig.tablet
+                                  ? headlineMedium(context)
+                                  : titleMedium(context),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           Container(
                             height: 2,

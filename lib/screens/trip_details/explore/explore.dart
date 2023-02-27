@@ -66,7 +66,7 @@ class _ExploreState extends State<Explore> {
             backgroundColor: canvasColor,
             title: Text(
               widget.trip.tripName,
-              style: headlineMedium(context),
+              style: headlineSmall(context),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

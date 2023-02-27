@@ -71,7 +71,7 @@ class _ActivityPageState extends State<ActivityPage> {
                     child: Text(
                   TCFunctions().dateToMonthDayFromTimestamp(
                       Timestamp.fromDate(DateTime.parse(activity))),
-                  style: headlineMedium(context)!
+                  style: headlineSmall(context)!
                       .copyWith(color: Colors.black54),
                 )),
               ),
