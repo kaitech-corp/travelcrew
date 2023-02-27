@@ -8,9 +8,10 @@ import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/functions/tc_functions.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/loading.dart';
-import '../../services/widgets/reusableWidgets.dart';
+import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
 import '../alerts/alert_dialogs.dart';
 
@@ -64,7 +65,7 @@ class ProfileWidget extends StatelessWidget {
                           Text(
                             '${user.firstName} ${user.lastName}',
                             textScaleFactor: 1.1,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                             maxLines: 2,
                           ),
                           SizedBox(
@@ -78,7 +79,7 @@ class ProfileWidget extends StatelessWidget {
                               Flexible(
                                   child: Text(
                                 user.displayName,
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: titleMedium(context),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                               )),
@@ -96,18 +97,14 @@ class ProfileWidget extends StatelessWidget {
                                     if (user.hometown.isNotEmpty)
                                       Text(
                                         user.hometown,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1,
+                                        style: titleMedium(context),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         softWrap: true,
                                       )
                                     else
                                       Text('Hometown',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2),
+                                          style: titleSmall(context)),
                                   ],
                                 ),
                               ),
@@ -139,7 +136,7 @@ class ProfileWidget extends StatelessWidget {
                         Center(
                             child: Text(
                           'Destination Wish List',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                           textScaleFactor: 1.1,
                         )),
                         const SizedBox(
@@ -174,7 +171,7 @@ class ProfileWidget extends StatelessWidget {
                         Center(
                             child: Text(
                           'Social Media',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                           textScaleFactor: 1.1,
                         )),
                         const SizedBox(
@@ -187,7 +184,7 @@ class ProfileWidget extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                 'IG: ',
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: titleMedium(context),
                               ),
                               if (user.instagramLink.isNotEmpty)
                                 GestureDetector(
@@ -200,7 +197,7 @@ class ProfileWidget extends StatelessWidget {
                               else
                                 Text(
                                   '',
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: titleMedium(context),
                                 ),
                             ],
                           ),
@@ -215,7 +212,7 @@ class ProfileWidget extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                 'Facebook: ',
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: titleMedium(context),
                               ),
                               if (user.facebookLink.isNotEmpty)
                                 GestureDetector(
@@ -228,7 +225,7 @@ class ProfileWidget extends StatelessWidget {
                               else
                                 Text(
                                   '',
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: titleMedium(context),
                                 ),
                             ],
                           ),
@@ -243,7 +240,7 @@ class ProfileWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 58.0),
             child: Text(
               'Recent Trips',
-              style: Theme.of(context).textTheme.subtitle1,
+              style: titleMedium(context),
             ),
           ),
           Flexible(
@@ -281,7 +278,7 @@ class FollowerBar extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Followers', style: Theme.of(context).textTheme.subtitle1),
+              Text('Followers', style: titleMedium(context)),
               Text(
                 '${user.followers.length}',
                 style: ReusableThemeColor().greenOrBlueTextColor(context),
@@ -291,7 +288,7 @@ class FollowerBar extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Following', style: Theme.of(context).textTheme.subtitle1),
+              Text('Following', style: titleMedium(context)),
               Text('${user.following.length}',
                   style: ReusableThemeColor().greenOrBlueTextColor(context)),
             ],
@@ -417,7 +414,7 @@ class _FollowListState extends State<FollowList> {
           ),
           title: Text(
             member.displayName,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: titleMedium(context),
             textAlign: TextAlign.start,
           ),
           trailing: (profile.uid == userService.currentUserID)
@@ -445,7 +442,7 @@ class _FollowListState extends State<FollowList> {
                       }
                     },
                     child: Text('Unfollow',
-                        style: Theme.of(context).textTheme.subtitle1),
+                        style: titleMedium(context)),
                   )
                 : ElevatedButton(
                     onPressed: () {
@@ -467,7 +464,7 @@ class _FollowListState extends State<FollowList> {
                       }
                     },
                     child: Text('Follow Back',
-                        style: Theme.of(context).textTheme.subtitle1),
+                        style: titleMedium(context)),
                   );
           } else {
             return nil;

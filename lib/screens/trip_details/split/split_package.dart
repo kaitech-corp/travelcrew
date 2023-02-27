@@ -12,6 +12,7 @@ import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
@@ -131,7 +132,7 @@ class SplitPackage {
               ),
               title: Text(
                 'Split',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: titleMedium(context),
                 textScaleFactor: 1.5,
                 textAlign: TextAlign.center,
               ),
@@ -143,7 +144,7 @@ class SplitPackage {
                     children: <Widget>[
                       Text(
                         splitObject.itemName,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                         textAlign: TextAlign.center,
                       ),
                       Padding(
@@ -213,7 +214,7 @@ class SplitPackage {
                           },
                           child: Text(
                             'Split evenly',
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                           ),
                         ),
                       ),
@@ -243,7 +244,7 @@ class SplitPackage {
               ),
               title: Text(
                 'Split',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: titleMedium(context),
                 textScaleFactor: 1.5,
                 textAlign: TextAlign.center,
               ),
@@ -255,7 +256,7 @@ class SplitPackage {
                     children: <Widget>[
                       Text(
                         splitObject.itemName,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                         textAlign: TextAlign.center,
                       ),
                       Padding(
@@ -320,7 +321,7 @@ class SplitPackage {
                               },
                               child: Text(
                                 'Save',
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: titleMedium(context),
                               ),
                             ),
                           ),
@@ -341,7 +342,7 @@ class SplitPackage {
                               },
                               child: Text(
                                 'Delete',
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: titleMedium(context),
                               ),
                             ),
                           ),
@@ -500,7 +501,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
           ),
           title: Text(
             member.displayName,
-            style: Theme.of(context).textTheme.subtitle2,
+            style: titleSmall(context),
             textAlign: TextAlign.start,
           ),
         ),

@@ -8,6 +8,7 @@ import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/favorite_widget.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../services/widgets/link_previewer.dart';
@@ -47,8 +48,8 @@ class LodgingCard extends StatelessWidget {
                 children: <Widget>[
                   ListTile(
                     visualDensity: const VisualDensity(vertical: -4),
-                    title: Text(lodging.lodgingType,style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
-                    subtitle: (lodging.startTime.isNotEmpty) ? Text('Check in: ${lodging.startTime}',style: Theme.of(context).textTheme.subtitle2,): null,
+                    title: Text(lodging.lodgingType,style: SizeConfig.tablet ? headlineLarge(context) : headlineSmall(context),),
+                    subtitle: (lodging.startTime.isNotEmpty) ? Text('Check in: ${lodging.startTime}',style: titleSmall(context),): null,
                     trailing: LodgingMenuButton(trip: trip,lodging: lodging,),
                   ),
                   if(lodging.link.isNotEmpty) Padding(

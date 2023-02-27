@@ -8,7 +8,7 @@ import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
-import '../../services/widgets/reusableWidgets.dart';
+import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
 
 /// Custom app bar

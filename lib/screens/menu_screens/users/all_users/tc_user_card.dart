@@ -6,6 +6,7 @@ import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/locator.dart';
 import '../../../../services/navigation/route_names.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
@@ -64,8 +65,8 @@ class _TCUserCardState extends State<TCUserCard> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(widget.user.displayName,
                       style: SizeConfig.mobile
-                          ? Theme.of(context).textTheme.headline6
-                          : Theme.of(context).textTheme.headline5),
+                          ? headlineSmall(context)
+                          : headlineMedium(context),),
                 ),
               ),
               Expanded(
@@ -85,7 +86,6 @@ class _TCUserCardState extends State<TCUserCard> {
 Widget checkBlockList(String uid, List<dynamic> blockedList,
     UserPublicProfile userPublicProfile) {
   if (blockedList.contains(uid)) {
-    print(blockedList);
     // show UnblockedPopupMenu for the user
     return BlockedPopupMenu(user: userPublicProfile) ;
   } else {
@@ -130,7 +130,7 @@ class BlockedPopupMenu extends StatelessWidget {
               icon: Icons.block,
             ),
             title:
-                Text('Unblock', style: Theme.of(context).textTheme.subtitle2),
+                Text('Unblock', style: titleSmall(context)),
           ),
         ),
       ],
@@ -184,7 +184,7 @@ class UnblockedPopupMenu extends StatelessWidget {
             leading: const IconThemeWidget(
               icon: Icons.message,
             ),
-            title: Text('Chat', style: Theme.of(context).textTheme.subtitle2),
+            title: Text('Chat', style: titleSmall(context)),
           ),
         ),
         PopupMenuItem<String>(
@@ -194,7 +194,7 @@ class UnblockedPopupMenu extends StatelessWidget {
               icon: Icons.block,
             ),
             title: Text('Block Account',
-                style: Theme.of(context).textTheme.subtitle2),
+                style: titleSmall(context)),
           ),
         ),
         PopupMenuItem<String>(
@@ -203,7 +203,7 @@ class UnblockedPopupMenu extends StatelessWidget {
             leading: const IconThemeWidget(
               icon: Icons.report,
             ),
-            title: Text('Report', style: Theme.of(context).textTheme.subtitle2),
+            title: Text('Report', style: titleSmall(context)),
           ),
         ),
       ],

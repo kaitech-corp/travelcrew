@@ -17,6 +17,7 @@ import '../../services/functions/cloud_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/navigation/router.dart';
+import '../../services/theme/text_styles.dart';
 
 /// All alert dialogs
 class TravelCrewAlertDialogs {
@@ -544,7 +545,7 @@ class TravelCrewAlertDialogs {
           // content: Text('You will no longer have access to this Trip'),
           actions: <Widget>[
             TextButton(
-              child: Text(closeMessage(),style: Theme.of(context).textTheme.subtitle1,),
+              child: Text(closeMessage(),style: titleMedium(context),),
               onPressed: () {
                 navigationService.pop();
               },

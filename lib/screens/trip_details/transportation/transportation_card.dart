@@ -9,6 +9,7 @@ import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../size_config/size_config.dart';
@@ -36,12 +37,12 @@ class TransportationCard extends StatelessWidget {
                 title: Text(
                   transportationData.mode,
                   style: SizeConfig.tablet
-                      ? Theme.of(context).textTheme.headline4
-                      : Theme.of(context).textTheme.headline6,
+                      ? headlineLarge(context)
+                      : headlineSmall(context),
                 ),
                 subtitle: Text(
                   transportationData.displayName,
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: titleMedium(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -57,17 +58,17 @@ class TransportationCard extends StatelessWidget {
                           message: 'Airline and Flight Number',
                           child: Text(
                             '${transportationData.airline}: ${transportationData.flightNumber}',
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                           )),
                     if (transportationData.canCarpool)
                       Text(
                         'Open to Carpool',
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: titleSmall(context),
                       ),
                     if (transportationData.comment.isNotEmpty)
                       Text(
                         transportationData.comment,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                       ),
                   ],
                 ),

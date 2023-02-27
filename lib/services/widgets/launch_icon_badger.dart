@@ -18,16 +18,13 @@ class LaunchIconBadger extends StatefulWidget {
 }
 
 class _LaunchIconBadgerState extends State<LaunchIconBadger> {
-
-  String _appBadgeSupported = 'Unknown';
-
   @override
   void initState() {
     super.initState();
     initPlatformState();
   }
 
-  Future<void> initPlatformState() async {
+  Future<String> initPlatformState() async {
     String appBadgeSupported;
     try {
       final bool res = await FlutterAppBadger.isAppBadgeSupported();
@@ -36,15 +33,14 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
       } else {
         appBadgeSupported = 'Not supported';
       }
+      return appBadgeSupported;
     } on PlatformException {
       appBadgeSupported = 'Failed to get badge support.';
     }
     if (!mounted) {
-      return;
+      return appBadgeSupported;
     }
-    setState(() {
-      _appBadgeSupported = appBadgeSupported;
-    });
+    return appBadgeSupported;
   }
 
   @override

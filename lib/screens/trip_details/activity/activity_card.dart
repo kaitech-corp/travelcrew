@@ -8,6 +8,7 @@ import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/favorite_widget.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../services/widgets/link_previewer.dart';
@@ -44,8 +45,8 @@ class ActivityCard extends StatelessWidget {
                       title: Text(
                         activity.activityType,
                         style: SizeConfig.tablet
-                            ? Theme.of(context).textTheme.headline4
-                            : Theme.of(context).textTheme.headline6,
+                            ? headlineLarge(context)
+                            : headlineSmall(context),
                         maxLines: 2,
                       ),
                       trailing: ActivityMenuButton(
@@ -55,7 +56,7 @@ class ActivityCard extends StatelessWidget {
                       subtitle: activity.startTime.isNotEmpty
                           ? Text(
                               '${activity.startTime} - ${activity.endTime}',
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: titleSmall(context),
                             )
                           : null,
                     ),

@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../../models/custom_objects.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/loading.dart';
 import '../../size_config/size_config.dart';
 
@@ -86,7 +87,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
         appBar: AppBar(
             title: Text(Intl.message('Edit Profile'),
-                style: Theme.of(context).textTheme.headline5)),
+                style: headlineMedium(context),)),
         body: StreamBuilder<UserPublicProfile>(
             stream: DatabaseService().currentUserPublicProfile,
             builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> snapshot) {
@@ -121,7 +122,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             labelText: 'First Name'),
                                         textCapitalization:
                                             TextCapitalization.words,
-                                        inputFormatters: [
+                                        inputFormatters: <TextInputFormatter>[
                                           FilteringTextInputFormatter.deny(
                                               RegExp(r'\s\b|\b\s'))
                                         ],
@@ -192,9 +193,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       child: ExpandablePanel(
                                         header: Text(
                                           'Social Media',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
+                                          style:headlineSmall(context) ,
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(
@@ -251,9 +250,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       child: ExpandablePanel(
                                         header: Text(
                                           'Destination Wish List',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
+                                          style: headlineSmall(context),
                                         ),
                                         collapsed: Container(),
                                         expanded: Column(

@@ -9,6 +9,7 @@ import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/locator.dart';
 import '../../../../services/navigation/route_names.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
@@ -132,7 +133,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               Expanded(
                 child: ListTile(
                   title: Text(member.displayName,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                     textAlign: TextAlign.start,),
                   trailing: (member.uid == userService.currentUserID || member.uid == trip.ownerID)
                       ? const IconThemeWidget(icon:Icons.check)

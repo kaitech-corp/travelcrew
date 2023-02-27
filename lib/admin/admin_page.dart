@@ -5,6 +5,7 @@ import '../screens/alerts/alert_dialogs.dart';
 import '../services/constants/constants.dart';
 import '../services/database.dart';
 import '../services/functions/cloud_functions.dart';
+import '../services/theme/text_styles.dart';
 import '../services/widgets/loading.dart';
 
 /// Admin page
@@ -80,7 +81,7 @@ class _CustomNotificationsState extends State<CustomNotifications> {
       children: <Widget>[
         Text(
           customNotification,
-          style: Theme.of(context).textTheme.headline5,
+          style: headlineMedium(context),
           textAlign: TextAlign.center,
         ),
         Flexible(
@@ -157,11 +158,11 @@ class Feedback extends StatelessWidget {
                     key: Key(item.fieldID),
                     title: Text(
                       item.message,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: titleMedium(context),
                     ),
                     subtitle: Text(
                       '$submitted: ${item.timestamp.toDate()}',
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: titleSmall(context),
                     ),
                   ),
                 );

@@ -4,6 +4,7 @@ import '../../../models/trip_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 
 
@@ -36,7 +37,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-          appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline5,),),
+          appBar: AppBar(title: Text('Transit',style: headlineMedium(context),),),
           body: SingleChildScrollView(
               padding:
               const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -107,7 +108,7 @@ class _AddNewModeOfTransportState extends State<AddNewModeOfTransport> {
                             ),
                             Container(
                               padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                              child: Text('Comment',style: Theme.of(context).textTheme.subtitle2),
+                              child: Text('Comment',style: titleSmall(context)),
                             ),
                             TextFormField(
                               decoration: InputDecoration(

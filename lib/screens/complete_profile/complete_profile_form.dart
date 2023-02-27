@@ -15,6 +15,7 @@ import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../services/navigation/route_names.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
 
@@ -201,7 +202,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                       children: <Widget>[
                         Text(
                           agreementMessage(),
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                           textAlign: TextAlign.center,
                         ),
                         TextButton(

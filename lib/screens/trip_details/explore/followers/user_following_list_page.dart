@@ -8,6 +8,7 @@ import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/locator.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../alerts/alert_dialogs.dart';
 
@@ -32,7 +33,7 @@ class _FollowingListState extends State<FollowingList> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Followers',style: Theme.of(context).textTheme.headline5,),
+        title: Text('Followers',style: headlineMedium(context),),
       ),
       body: StreamBuilder<List<UserPublicProfile>>(
         stream: DatabaseService().retrieveFollowingList(),
@@ -110,7 +111,7 @@ class _FollowingListState extends State<FollowingList> {
               Image.network(profileImagePlaceholder,fit: BoxFit.fill,),
             ),
           ),
-          subtitle: Text('${user.firstName} ${user.lastName}', textAlign: TextAlign.start,style: Theme.of(context).textTheme.subtitle2,),
+          subtitle: Text('${user.firstName} ${user.lastName}', textAlign: TextAlign.start,style: titleSmall(context),),
           title: Text(user.displayName,
             ),
           trailing: !widget.trip.accessUsers.contains(user.uid) ? IconButton(

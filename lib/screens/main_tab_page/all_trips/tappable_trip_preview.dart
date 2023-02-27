@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/trip_model.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import '../../image_layout/image_layout_trips.dart';
 
@@ -43,7 +44,7 @@ class TappableTripPreview extends StatelessWidget {
                 child: ListTile(
                   title: Text(
                     trip.tripName,
-                    style: Theme.of(context).textTheme.headline4,
+                    style: headlineLarge(context),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -51,7 +52,7 @@ class TappableTripPreview extends StatelessWidget {
                     trip.startDate != null
                         ? '${trip.startDate} - ${trip.endDate}'
                         : 'Dates',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   ),
                   trailing: Tooltip(
                     message: 'Members',
@@ -60,7 +61,7 @@ class TappableTripPreview extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           '${trip.accessUsers.length} ',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         const Icon(Icons.people),
                       ],

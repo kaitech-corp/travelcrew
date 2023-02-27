@@ -20,6 +20,7 @@ import '../../../repositories/user_profile_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
 import '../../menu_screens/main_menu.dart';
@@ -65,7 +66,7 @@ class _ExploreState extends State<Explore> {
             backgroundColor: canvasColor,
             title: Text(
               widget.trip.tripName,
-              style: Theme.of(context).textTheme.headline5,
+              style: headlineMedium(context),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
@@ -79,8 +80,8 @@ class _ExploreState extends State<Explore> {
             ],
             bottom: TabBar(
               labelStyle: SizeConfig.tablet
-                  ? Theme.of(context).textTheme.headline6
-                  : Theme.of(context).textTheme.subtitle2,
+                  ? headlineSmall(context)
+                  : titleSmall(context),
               isScrollable: true,
               tabs: <Tab>[
                 const Tab(

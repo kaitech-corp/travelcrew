@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../models/transportation_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 
 /// Edit transportation data
@@ -31,7 +32,7 @@ class _EditTransportationState extends State<EditTransportation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Transit',style: Theme.of(context).textTheme.headline5,),),
+        appBar: AppBar(title: Text('Transit',style: headlineMedium(context),),),
         body: SingleChildScrollView(
             padding:
             const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -102,7 +103,7 @@ class _EditTransportationState extends State<EditTransportation> {
                           ),
                           Container(
                             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                            child: Text('Comment',style: Theme.of(context).textTheme.subtitle2),
+                            child: Text('Comment',style: titleSmall(context)),
                           ),
                           TextFormField(
                             cursorColor: Colors.grey,

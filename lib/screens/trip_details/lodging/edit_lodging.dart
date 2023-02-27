@@ -6,6 +6,7 @@ import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/date_time_retrieval.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/time_picker.dart';
@@ -84,7 +85,7 @@ class _EditLodgingState extends State<EditLodging> {
         appBar: AppBar(
           title: Text(
             'Edit Lodging',
-            style: Theme.of(context).textTheme.headline5,
+            style: headlineMedium(context),
           ),
         ),
         body: SingleChildScrollView(
@@ -190,7 +191,7 @@ class _EditLodgingState extends State<EditLodging> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Schedule',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: headlineSmall(context),
                   ),
                 ),
                 Container(
@@ -209,7 +210,7 @@ class _EditLodgingState extends State<EditLodging> {
                     child: ElevatedButton(
                       child: Text(
                         'Edit Dates',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                       ),
                       onPressed: () {
                         setState(() {
@@ -230,7 +231,7 @@ class _EditLodgingState extends State<EditLodging> {
                     child: ElevatedButton(
                       child: Text(
                         'CheckIn/Checkout',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                       ),
                       onPressed: () {
                         setState(() {

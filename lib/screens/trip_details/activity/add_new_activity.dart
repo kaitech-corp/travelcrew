@@ -11,6 +11,7 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/date_time_retrieval.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/in_app_review.dart';
@@ -82,7 +83,7 @@ class AddNewActivityState extends State<AddNewActivity> {
               appBar: AppBar(
                 title: Text(
                   'Add Activity',
-                  style: Theme.of(context).textTheme.headline5,
+                  style: headlineMedium(context),
                 ),
               ),
               body: SingleChildScrollView(
@@ -196,7 +197,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'Schedule',
-                              style: Theme.of(context).textTheme.headline6,
+                              style: headlineSmall(context),
                             ),
                           ),
                           Container(
@@ -227,7 +228,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                                     child: Text(
                                       'Start/End Time',
                                       style:
-                                          Theme.of(context).textTheme.subtitle1,
+                                          titleMedium(context),
                                     ),
                                     onPressed: () {
                                       setState(() {

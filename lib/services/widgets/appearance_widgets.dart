@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../size_config/size_config.dart';
+import '../theme/text_styles.dart';
 
 class ReusableThemeColor {
   Color color(BuildContext context){
@@ -191,23 +192,23 @@ class TransportationIcon extends StatelessWidget{
 
 TextStyle responsiveTextStyleSuggestions(BuildContext context){
   if (SizeConfig.tablet) {
-    return Theme.of(context).textTheme.headline4!;
+    return headlineLarge(context)!;
   } else {
-    return Theme.of(context).textTheme.subtitle1!;
+    return titleMedium(context)!;
   }
 }
 
 TextStyle responsiveTextStyleTopics(BuildContext context){
   if (SizeConfig.tablet) {
-    return Theme.of(context).textTheme.headline2!;
+    return displayMedium(context)!;
   } else {
-    return Theme.of(context).textTheme.headline4!;
+    return headlineLarge(context)!;
   }
 }
 TextStyle responsiveTextStyleTopicsSub(BuildContext context){
   if (SizeConfig.tablet) {
-    return Theme.of(context).textTheme.headline4!;
+    return headlineLarge(context)!;
   } else {
-    return Theme.of(context).textTheme.headline6!;
+    return headlineSmall(context)!;
   }
 }

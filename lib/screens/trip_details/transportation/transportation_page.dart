@@ -10,6 +10,7 @@ import '../../../models/trip_model.dart';
 import '../../../repositories/transportation_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
@@ -83,7 +84,7 @@ class _TransportationPageState extends State<TransportationPage> {
                                   modeList[index].displayName.length > 10
                                       ? '${modeList[index].displayName.substring(0, 10)}...'
                                       : modeList[index].displayName,
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: titleMedium(context),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ))

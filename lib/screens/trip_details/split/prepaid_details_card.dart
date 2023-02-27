@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../services/database.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import 'split_functions.dart';
 
@@ -48,14 +49,14 @@ class PrepaidDetailsCard extends StatelessWidget {
                           Text(
                             user.displayName,
                             style: SizeConfig.tablet
-                                ? Theme.of(context).textTheme.headline5
-                                : Theme.of(context).textTheme.subtitle1,
+                                ? headlineMedium(context)
+                                : titleMedium(context),
                           ),
                           Text(
                             'Prepaid: \$${userDetails[index].total.toStringAsFixed(2)}',
                             style: SizeConfig.tablet
-                                ? Theme.of(context).textTheme.headline5
-                                : Theme.of(context).textTheme.subtitle1,
+                                ? headlineMedium(context)
+                                : titleMedium(context),
                             textAlign: TextAlign.center,
                           ),
                           Container(

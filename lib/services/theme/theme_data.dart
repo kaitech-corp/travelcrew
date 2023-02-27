@@ -4,24 +4,22 @@ import 'package:sizer/sizer.dart';
 ThemeData themeDataBuilder() {
   return ThemeData(
     fontFamily: 'Cantata One',
-    textTheme: const TextTheme(
-      headline1: TextStyle(fontWeight: FontWeight.bold,
+    textTheme:  const TextTheme(
+      displayLarge: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black),
-      headline2: TextStyle(fontWeight: FontWeight.bold,
+      displayMedium: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black),
-      headline3: TextStyle(fontWeight: FontWeight.bold,
+      displaySmall: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black,
           fontStyle: FontStyle.italic),
-      headline4: TextStyle(fontWeight: FontWeight.bold,
+      headlineLarge: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.black),
-      headline5: TextStyle(fontWeight: FontWeight.bold,
+      headlineMedium: TextStyle(fontWeight: FontWeight.bold,
         color: Colors.black,),
-      headline6: TextStyle(fontWeight: FontWeight.bold,
+      headlineSmall: TextStyle(fontWeight: FontWeight.bold,
       ),
-      subtitle1: TextStyle(fontWeight: FontWeight.bold),
-      subtitle2: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 14),
-      button: TextStyle(
-          fontWeight: FontWeight.bold, color: Colors.black),
+      titleLarge: TextStyle(fontWeight: FontWeight.bold),
+      titleSmall: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 14),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(

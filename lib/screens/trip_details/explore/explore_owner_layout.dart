@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/image_popup.dart';
 import '../../../services/widgets/map_launcher.dart';
-import '../../../services/widgets/reusableWidgets.dart';
+import '../../../services/widgets/reusable_widgets.dart';
 import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 
-import 'ImageAnimation.dart';
+import 'Image_animation.dart';
 import 'members/members_layout.dart';
 
 /// Layout for owner of trip.
@@ -174,14 +175,14 @@ class OwnerPopupMenuButton extends StatelessWidget {
           title: Text(
             trip.tripName,
             style: SizeConfig.tablet
-                ? Theme.of(context).textTheme.headline4
-                : Theme.of(context).textTheme.headline6,
+                ? headlineLarge(context)
+                : headlineSmall(context),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
             trip.displayName,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: titleMedium(context),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

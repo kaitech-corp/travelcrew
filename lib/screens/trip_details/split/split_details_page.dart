@@ -10,6 +10,7 @@ import '../../../models/split_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import 'details_bottom_sheet.dart';
 import 'split_package.dart';
@@ -30,7 +31,7 @@ class SplitDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           splitObject.itemName,
-          style: Theme.of(context).textTheme.headline5,
+          style: headlineMedium(context),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -117,7 +118,7 @@ class SplitDetailsPage extends StatelessWidget {
                                 NetworkImage(userPublicProfile.urlToImage),
                           ),
                           title: Text(userPublicProfile.displayName,
-                              style: Theme.of(context).textTheme.subtitle1),
+                              style: titleMedium(context)),
                           subtitle: (costObject.paid == false)
                               ? Text(
                                   'Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
@@ -129,7 +130,7 @@ class SplitDetailsPage extends StatelessWidget {
                                   TCFunctions().formatTimestamp(
                                       costObject.datePaid!,
                                       wTime: true),
-                                  style: Theme.of(context).textTheme.subtitle2),
+                                  style: titleSmall(context)),
                           trailing: (splitObject.purchasedByUID ==
                                       userService.currentUserID ||
                                   costObject.uid == userService.currentUserID &&

@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

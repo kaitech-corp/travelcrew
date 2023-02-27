@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/text_styles.dart';
 import 'appearance_widgets.dart';
 
 class TimePickers extends StatefulWidget {
@@ -88,7 +89,7 @@ class _TimePickersState extends State<TimePickers> {
                   ),
                   Text(
                     _labelTextTimeStart,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   ),
                 ],
               ),
@@ -124,7 +125,7 @@ class _TimePickersState extends State<TimePickers> {
                   ),
                   Text(
                     _labelTextTimeEnd,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   ),
                 ],
               ),

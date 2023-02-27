@@ -7,6 +7,7 @@ import '../../../models/lodging_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../alerts/alert_dialogs.dart';
 
 class ReportContent extends StatefulWidget {
@@ -139,7 +140,7 @@ class _ReportContentState extends State<ReportContent> {
                 ),
                 Text(
                   Intl.message('Report this user for...'),
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: titleMedium(context),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 5),
@@ -152,11 +153,11 @@ class _ReportContentState extends State<ReportContent> {
                         return RadioListTile<String>(
                             title: Text(
                               reportList[index],
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                             subtitle: Text(
                               reportType[reportList[index]]!,
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: titleSmall(context),
                             ),
                             value: reportList[index],
                             groupValue: itemType,
@@ -173,25 +174,25 @@ class _ReportContentState extends State<ReportContent> {
                       child: Text(
                     'Reporting: ${widget.userAccount!.firstName} '
                     '${widget.userAccount!.lastName}',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   )),
                 if (widget.activity != null)
                   Center(
                       child: Text(
                     'Reporting: ${widget.activity!.displayName}',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   )),
                 if (widget.lodging != null)
                   Center(
                       child: Text(
                     'Reporting: ${widget.lodging!.displayName}',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   )),
                 if (widget.trip != null)
                   Center(
                       child: Text(
                     'Reporting: ${widget.trip!.displayName}',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   )),
                 const SizedBox(height: 30),
                 Center(
@@ -231,7 +232,7 @@ class _ReportContentState extends State<ReportContent> {
       margin: const EdgeInsets.all(12),
       height: maxLines * 24.0,
       child: TextField(
-        style: Theme.of(context).textTheme.subtitle1,
+        style: titleMedium(context),
         controller: _controller,
         maxLines: maxLines,
         decoration: InputDecoration(

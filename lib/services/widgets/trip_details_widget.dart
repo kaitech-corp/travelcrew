@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import '../../models/trip_model.dart';
 import '../../screens/alerts/alert_dialogs.dart';
 import '../../services/functions/tc_functions.dart';
-import '../../services/widgets/reusableWidgets.dart';
 import '../../size_config/size_config.dart';
+import '../theme/text_styles.dart';
 import 'appearance_widgets.dart';
+import 'reusable_widgets.dart';
 
 class TripDetailsWidget extends StatelessWidget {
   const TripDetailsWidget({
@@ -45,7 +46,7 @@ class TripDetailsWidget extends StatelessWidget {
                   iconColor: Colors.black,
                 ),
                 child: ExpandablePanel(
-                  header: Text('Trip Details', style: SizeConfig.tablet ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,),
+                  header: Text('Trip Details', style: SizeConfig.tablet ? headlineLarge(context) : headlineSmall(context),),
                   collapsed: Container(),
                   expanded: Padding(
                     padding: EdgeInsets.all(detailsPadding),
@@ -54,7 +55,7 @@ class TripDetailsWidget extends StatelessWidget {
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.location_pin,),
                           title: Text(tripDetails.location,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -66,7 +67,7 @@ class TripDetailsWidget extends StatelessWidget {
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
                           title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                           ),
                           onTap: (){
                             Add2Calendar.addEvent2Cal(event);
@@ -75,13 +76,13 @@ class TripDetailsWidget extends StatelessWidget {
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.label,),
                           title: Text(tripDetails.travelType,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                           ),
                         ),
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.people,),
                           title: Text('${tripDetails.accessUsers.length} Members',
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                           ),
                         ),
                         ListTile(
@@ -90,14 +91,14 @@ class TripDetailsWidget extends StatelessWidget {
                           const TripDetailsIconThemeWidget(icon: Icons.public_off,),
                           title: tripDetails.ispublic ?
                           Text('Public Trip',
-                            style: Theme.of(context).textTheme.subtitle1,) :
+                            style: titleMedium(context),) :
                           Text('Private Trip',
-                            style: Theme.of(context).textTheme.subtitle1,),
+                            style: titleMedium(context),),
                         ),
                         if(tripDetails.comment.isNotEmpty) ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.comment,),
                           title: Text(tripDetails.comment,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                           ),
                         ),
                       ],

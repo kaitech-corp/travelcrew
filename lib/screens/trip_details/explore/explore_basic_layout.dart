@@ -6,6 +6,7 @@ import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../alerts/alert_dialogs.dart';
 
 /// Basic Layout for Explore page
@@ -74,7 +75,7 @@ class ExploreBasicLayout extends StatelessWidget {
                 style: const TextStyle(fontSize: 20.0)),
             subtitle: Text(
               'Owner: ${tripDetails.displayName}',
-              style: Theme.of(context).textTheme.subtitle2,
+              style: titleSmall(context),
             ),
             trailing: IconButton(
               icon: const Icon(
@@ -95,11 +96,11 @@ class ExploreBasicLayout extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     tripDetails.travelType.toUpperCase(),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: titleSmall(context),
                   ),
                   Text(
                     '${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   )
                 ],
               ),
@@ -111,7 +112,7 @@ class ExploreBasicLayout extends StatelessWidget {
               decoration: const BoxDecoration(),
               child: Text(
                 tripDetails.comment,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: titleMedium(context),
                 textAlign: TextAlign.center,
               ),
             ),

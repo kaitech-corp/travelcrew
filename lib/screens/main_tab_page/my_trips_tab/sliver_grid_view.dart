@@ -10,6 +10,7 @@ import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
 import '../../image_layout/image_layout_trips.dart';
@@ -94,7 +95,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                         message: trip.tripName,
                         child: Text(
                           trip.tripName,
-                          style: Theme.of(context).textTheme.headline5,
+                          style: headlineMedium(context),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textScaleFactor: 1.2,
@@ -107,7 +108,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                           ? '${TCFunctions()
                           .dateToMonthDay(trip.startDate)} - ${trip.endDate}'
                           : 'Dates',
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: titleSmall(context),
                       textScaleFactor: 1.2,
                     ),
                   ),

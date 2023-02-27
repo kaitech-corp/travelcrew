@@ -5,6 +5,7 @@ import '../../../models/cost_model.dart';
 import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../services/database.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import 'payment_details_menu_button.dart';
 
@@ -40,31 +41,31 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
             radius: SizeConfig.screenWidth / 6,
             backgroundImage: NetworkImage(user.urlToImage),
           ),
-          Text(user.displayName, style: Theme.of(context).textTheme.headline5),
+          Text(user.displayName, style: headlineMedium(context)),
           Container(
             height: 10,
           ),
           Text(
             'Payment details for:',
-            style: Theme.of(context).textTheme.headline6,
+            style: headlineSmall(context),
             textAlign: TextAlign.center,
           ),
           Text(
             '"${splitObject.itemName}"',
-            style: Theme.of(context).textTheme.headline6,
+            style: headlineSmall(context),
             textAlign: TextAlign.center,
             maxLines: 5,
           ),
           ListTile(
             title: (costObject.paid == false)
                 ? Text('Owe: \$${costObject.amountOwe.toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.subtitle1)
-                : Text('Paid', style: Theme.of(context).textTheme.subtitle1),
+                    style: titleMedium(context))
+                : Text('Paid', style: titleMedium(context)),
             subtitle: (userService.currentUserID == purchasedByUser.uid)
                 ? Text('Paid to: You',
-                    style: Theme.of(context).textTheme.subtitle2)
+                    style: titleSmall(context))
                 : Text('Paid to: ${purchasedByUser.displayName}',
-                    style: Theme.of(context).textTheme.subtitle2),
+                    style: titleSmall(context)),
             trailing: (user.uid == userService.currentUserID ||
                     userService.currentUserID == purchasedByUser.uid)
                 ? PaymentDetailsMenuButton(

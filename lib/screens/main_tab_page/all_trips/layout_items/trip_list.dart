@@ -11,6 +11,7 @@ import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/functions/tc_functions.dart';
 import '../../../../services/navigation/route_names.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 
@@ -206,7 +207,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                     ),
                     subtitle: Text(
                       trip.displayName,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: titleMedium(context),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
@@ -221,7 +222,7 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
                   padding: const EdgeInsets.only(left: 15, right: 5),
                   child: Text(
                     '${TCFunctions().dateToMonthDay(trip.startDate)} - ${trip.endDate}',
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: titleSmall(context),
                     textScaleFactor: (SizeConfig.tablet) ? 2 : 1,
                   ),
                 ),

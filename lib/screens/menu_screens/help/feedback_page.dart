@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appbar_gradient.dart';
 import '../../alerts/alert_dialogs.dart';
 
@@ -41,7 +42,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text(Intl.message('Feedback'),style: Theme.of(context).textTheme.headline5,),
+            title: Text(Intl.message('Feedback'),style: headlineMedium(context),),
             flexibleSpace: const AppBarGradient(),
           ),
           body: Container(
@@ -51,7 +52,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 const Padding(padding: EdgeInsets.all(5.0),),
-                Center(child: Text(Intl.message('Feel free to share your thoughts with us.'),style: Theme.of(context).textTheme.subtitle1,)),
+                Center(child: Text(Intl.message('Feel free to share your thoughts with us.'),style: titleMedium(context),)),
                 _buildTextField(),
                 const SizedBox(height: 15),
                 Center(
@@ -65,7 +66,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                Center(child: SelectableText(collaboratingText(),style: Theme.of(context).textTheme.subtitle1,textAlign: TextAlign.center,)),
+                Center(child: SelectableText(collaboratingText(),style: titleMedium(context),textAlign: TextAlign.center,)),
               ],
             ),
           )

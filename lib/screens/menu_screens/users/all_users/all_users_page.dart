@@ -9,6 +9,7 @@ import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/custom_objects.dart';
 import '../../../../repositories/all_users_repository.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/loading.dart';
 import 'tc_user_card.dart';
@@ -61,7 +62,7 @@ class _AllUserPageState extends State<AllUserPage> {
       appBar: AppBar(
         title: Text(
           'TC Members',
-          style: Theme.of(context).textTheme.headline5,
+          style: headlineMedium(context),
         ),
         actions: <Widget>[
           IconButton(
@@ -86,7 +87,7 @@ class _AllUserPageState extends State<AllUserPage> {
           return _isSearching
               ? SearchBar<UserPublicProfile>(
                   onSearch: userSearchList,
-                  textStyle: Theme.of(context).textTheme.subtitle1!,
+                  textStyle: titleMedium(context)!,
                   placeHolder: DraggableScrollbar.semicircle(
                     controller: controller,
                     child: ListView.builder(

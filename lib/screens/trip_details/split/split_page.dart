@@ -10,6 +10,7 @@ import '../../../repositories/split_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
@@ -75,11 +76,11 @@ class _SplitPageState extends State<SplitPage> {
                         children: <Widget>[
                           Text(
                             'Total expenses.',
-                            style: Theme.of(context).textTheme.headline6,
+                            style: headlineSmall(context),
                           ),
                           Text(
                             '\$$total',
-                            style: Theme.of(context).textTheme.headline4,
+                            style: headlineLarge(context),
                           ),
                           Expanded(
                             child: PrepaidDetailsCard(
@@ -127,12 +128,8 @@ class _SplitPageState extends State<SplitPage> {
                                       title: Text(
                                         item.itemName,
                                         style: SizeConfig.tablet
-                                            ? Theme.of(context)
-                                                .textTheme
-                                                .headline4
-                                            : Theme.of(context)
-                                                .textTheme
-                                                .headline6,
+                                            ? headlineLarge(context)
+                                            : headlineSmall(context),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),

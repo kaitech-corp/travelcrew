@@ -5,6 +5,7 @@ import '../../../../models/custom_objects.dart';
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/badge_icon.dart';
@@ -22,7 +23,7 @@ class DMChatListPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Chats',
-          style: Theme.of(context).textTheme.headline5,
+          style: headlineMedium(context),
         ),
         flexibleSpace: const AppBarGradient(),
       ),
@@ -78,7 +79,7 @@ class DMChatListPage extends StatelessWidget {
                 title: Text(
                   user.displayName,
                   textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: titleMedium(context),
                 ),
                 trailing: chatNotificationBadges(user),
               ),

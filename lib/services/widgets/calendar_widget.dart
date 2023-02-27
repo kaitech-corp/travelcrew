@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../theme/text_styles.dart';
 import 'appearance_widgets.dart';
 
 class CalendarWidget  extends StatefulWidget{
@@ -83,7 +84,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 children: <Widget>[
                   const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
                   const SizedBox(width: 8,),
-                  Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
+                  Text(labelTextDepart,style: titleMedium(context),),
                 ],
               ),
             ),
@@ -110,7 +111,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 children: <Widget>[
                   const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
                   const SizedBox(width: 8,),
-                  Text(labelTextReturn,style: Theme.of(context).textTheme.subtitle1,),
+                  Text(labelTextReturn,style: titleMedium(context),),
                 ],
               ),
             ),
@@ -140,7 +141,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             children: <Widget>[
               const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
               const SizedBox(width: 8,),
-              Text(labelTextDepart,style: Theme.of(context).textTheme.subtitle1,),
+              Text(labelTextDepart,style: titleMedium(context),),
             ],
           ),
         ),

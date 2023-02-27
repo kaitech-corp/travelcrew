@@ -9,6 +9,7 @@ import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/tc_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../services/widgets/loading.dart';
@@ -29,7 +30,7 @@ class ActivityDetails extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             'Activity',
-            style: Theme.of(context).textTheme.headline5,
+            style: headlineMedium(context),
           ),
           backgroundColor: canvasColor,
         ),
@@ -83,13 +84,13 @@ class ActivityDataLayout extends StatelessWidget {
                     ListTile(
                       title: Text(
                         activity.activityType,
-                        style: Theme.of(context).textTheme.headline5,
+                        style: headlineMedium(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
                         activity.displayName,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                       ),
                       trailing: ActivityMenuButton(
                           activity: activity, trip: trip, event: event),
@@ -106,7 +107,7 @@ class ActivityDataLayout extends StatelessWidget {
                         title: Text(
                           '${TCFunctions().dateToMonthDayFromTimestamp(activity.startDateTimestamp)} - '
                           '${TCFunctions().formatTimestamp(activity.endDateTimestamp, wTime: false)}',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {
                           Add2Calendar.addEvent2Cal(event);
@@ -119,7 +120,7 @@ class ActivityDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           '...',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {},
                       ),
@@ -130,7 +131,7 @@ class ActivityDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           '${activity.startTime} - ${activity.endTime}',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {},
                       ),
@@ -160,7 +161,7 @@ class ActivityDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           '...',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                       ),
                     if (activity.comment.isNotEmpty)
@@ -172,7 +173,7 @@ class ActivityDataLayout extends StatelessWidget {
                             message: activity.comment,
                             child: Text(
                               activity.comment,
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                               maxLines: 7,
                               overflow: TextOverflow.ellipsis,
                             )),
@@ -186,7 +187,7 @@ class ActivityDataLayout extends StatelessWidget {
                             message: activity.comment,
                             child: Text(
                               '...',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                               maxLines: 10,
                               overflow: TextOverflow.ellipsis,
                             )),

@@ -12,6 +12,7 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../alerts/alert_dialogs.dart';
 
@@ -49,7 +50,7 @@ class NotificationsCard extends StatelessWidget {
         subtitle: Text(
           TCFunctions()
               .readTimestamp(notification.timestamp.millisecondsSinceEpoch),
-          style: Theme.of(context).textTheme.subtitle2,
+          style: titleSmall(context),
         ),
         onTap: () async {
           if (notification.ispublic) {
@@ -87,7 +88,7 @@ class NotificationsCard extends StatelessWidget {
                 subtitle: Text(
                   TCFunctions().readTimestamp(
                       notification.timestamp.millisecondsSinceEpoch),
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: titleSmall(context),
                 ),
               ),
             ),
@@ -119,7 +120,7 @@ class NotificationsCard extends StatelessWidget {
         subtitle: Text(
           TCFunctions()
               .readTimestamp(notification.timestamp.millisecondsSinceEpoch),
-          style: Theme.of(context).textTheme.subtitle2,
+          style: titleSmall(context),
         ),
         trailing: IconButton(
           icon: const IconThemeWidget(icon: Icons.person_add),
@@ -152,7 +153,7 @@ class NotificationsCard extends StatelessWidget {
             }
           },
           text: notification.message,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: titleMedium(context),
           // textScaleFactor: 1.2,
           maxLines: 50,
           overflow: TextOverflow.ellipsis,
@@ -162,7 +163,7 @@ class NotificationsCard extends StatelessWidget {
         subtitle: Text(
           TCFunctions()
               .readTimestamp(notification.timestamp.millisecondsSinceEpoch),
-          style: Theme.of(context).textTheme.subtitle2,
+          style: titleSmall(context),
         ),
       ),
     );
@@ -191,7 +192,7 @@ class NotificationsCard extends StatelessWidget {
                 subtitle: Text(
                   TCFunctions().readTimestamp(
                       notification.timestamp.millisecondsSinceEpoch),
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: titleSmall(context),
                 ),
               ),
             ),
@@ -229,7 +230,7 @@ class NotificationsCard extends StatelessWidget {
           subtitle: Text(
             TCFunctions()
                 .readTimestamp(notification.timestamp.millisecondsSinceEpoch),
-            style: Theme.of(context).textTheme.subtitle2,
+            style: titleSmall(context),
           ),
         ),
       ),

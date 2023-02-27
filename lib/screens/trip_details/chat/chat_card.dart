@@ -10,6 +10,7 @@ import '../../../models/chat_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 
@@ -43,7 +44,7 @@ class ChatCard extends StatelessWidget {
                             // color: Colors.grey,
                             child: Text(
                               'Copy',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                             onPressed: () {
                               FlutterClipboard.copy(message.message)
@@ -56,7 +57,7 @@ class ChatCard extends StatelessWidget {
                             // color: Colors.grey,
                             child: Text(
                               'Delete',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                             onPressed: () {
                               CloudFunction().deleteChatMessage(
@@ -72,7 +73,7 @@ class ChatCard extends StatelessWidget {
                             // color: Colors.grey,
                             child: Text(
                               'Close',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                             onPressed: () {
                               navigationService.pop();

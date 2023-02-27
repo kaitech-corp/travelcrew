@@ -12,6 +12,7 @@ import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../alerts/alert_dialogs.dart';
 
@@ -114,7 +115,7 @@ class _LoginFormState extends State<LoginForm> {
                         },
                         text: Text(
                           AppLocalizations.of(context)!.login,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         icon: const Icon(
                           Icons.check,
@@ -161,7 +162,7 @@ class _LoginFormState extends State<LoginForm> {
                                         height: 25.0),
                                     Text(signInWithGoogle,
                                         style:
-                                        Theme.of(context).textTheme.subtitle1)
+                                        titleMedium(context))
                                   ],
                                 ),
                               ),

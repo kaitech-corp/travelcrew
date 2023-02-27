@@ -5,6 +5,7 @@ import '../../../../models/chat_model.dart';
 import '../../../../models/custom_objects.dart';
 import '../../../../services/database.dart';
 import '../../../../services/locator.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import 'dm_chat_list.dart';
 
@@ -41,7 +42,7 @@ class _DMChatState extends State<DMChat> {
           appBar: AppBar(
             title: Text(
               widget.user.displayName,
-              style: Theme.of(context).textTheme.headline5,
+              style: headlineMedium(context),
               overflow: TextOverflow.ellipsis,
             ),
           ),

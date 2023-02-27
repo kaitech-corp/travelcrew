@@ -6,6 +6,7 @@ import '../../../models/trip_model.dart';
 import '../../../repositories/user_profile_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import '../../menu_screens/main_menu.dart';
 import 'explore_basic_layout.dart';
@@ -36,8 +37,8 @@ class ExploreBasic extends StatelessWidget {
               message: trip.tripName,
               child: Text(trip.tripName.toUpperCase(),
                   style: SizeConfig.tablet ?
-                  Theme.of(context).textTheme.headline5:
-                  Theme.of(context).textTheme.headline6),
+                  headlineMedium(context):
+                  headlineSmall(context)),
             ),
             actions: <Widget>[
               IconButton(
@@ -48,7 +49,7 @@ class ExploreBasic extends StatelessWidget {
               ),
             ],
             bottom: TabBar(
-              labelStyle: SizeConfig.tablet ? Theme.of(context).textTheme.headline5 : Theme.of(context).textTheme.subtitle1,
+              labelStyle: SizeConfig.tablet ? headlineMedium(context) : titleMedium(context),
               isScrollable: true,
               tabs: <Tab>[
                 for (final String tab in tabs) Tab(text: tab),

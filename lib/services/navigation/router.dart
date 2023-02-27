@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types, cast_nullable_to_non_nullable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -12,6 +12,7 @@ import '../../blocs/signup_bloc/signup_state.dart';
 import '../../services/constants/constants.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../services/image_picker_cropper/image_picker_cropper.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
 
@@ -216,7 +217,7 @@ class _SignupFormState extends State<SignupForm> {
                       children: <Widget>[
                         Text(
                           agreementMessage(),
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                           textAlign: TextAlign.center,
                         ),
                         TextButton(

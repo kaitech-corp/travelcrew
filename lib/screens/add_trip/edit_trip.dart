@@ -12,6 +12,7 @@ import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/navigation/route_names.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/calendar_widget.dart';
 import 'add_trip_form.dart';
 import 'google_autocomplete.dart';
@@ -87,7 +88,7 @@ class EditTripDataState extends State<EditTripData> {
       appBar: AppBar(
           title: Text(
         AppLocalizations.of(context)!.editTripPageTitle,
-        style: Theme.of(context).textTheme.headline5,
+        style: headlineMedium(context),
       )),
       body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -222,7 +223,7 @@ class EditTripDataState extends State<EditTripData> {
                               : Text(
                                   AppLocalizations.of(context)!
                                       .editTripImageMessage,
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: headlineSmall(context),
                                 )),
                       ElevatedButton(
                         onPressed: () async {
@@ -240,7 +241,7 @@ class EditTripDataState extends State<EditTripData> {
                         child: Text(
                           AppLocalizations.of(context)!
                               .addTripDescriptionMessage,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                       ),
                       TextFormField(
@@ -281,8 +282,7 @@ class EditTripDataState extends State<EditTripData> {
                   controllerTripName.text,
                   tripGeoPoint);
             } on Exception catch (e) {
-              CloudFunction()
-                  .logError('Error in edit trip function: $e');
+              CloudFunction().logError('Error in edit trip function: $e');
             }
             _showDialog(context);
           }

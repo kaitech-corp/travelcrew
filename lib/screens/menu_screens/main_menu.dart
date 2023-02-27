@@ -9,6 +9,7 @@ import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
 
@@ -56,7 +57,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                               alignment: Alignment.topLeft,
                               child: Text('TC',
                                   style:
-                                      Theme.of(context).textTheme.headline5)),
+                                      headlineMedium(context),)),
                           Align(
                             child: CircleAvatar(
                               radius: imageSize,
@@ -70,7 +71,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text('TC',
-                                style: Theme.of(context).textTheme.headline5),
+                                style: headlineMedium(context),),
                           ),
                           Align(
                             child: CircleAvatar(
@@ -86,7 +87,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ListTile(
               leading: const IconThemeWidget(icon: Icons.people),
               title: Text('TC Members',
-                  style: Theme.of(context).textTheme.subtitle1),
+                  style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(UsersRoute);
               },
@@ -96,7 +97,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 icon: Icons.message,
               ),
               title:
-                  Text('Chats', style: Theme.of(context).textTheme.subtitle1),
+                  Text('Chats', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(DMChatListPageRoute);
               },
@@ -104,7 +105,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ListTile(
               leading: const IconThemeWidget(icon: Icons.info),
               title: Text('Help & Feedback',
-                  style: Theme.of(context).textTheme.subtitle1),
+                  style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(HelpPageRoute);
               },
@@ -112,7 +113,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ListTile(
               leading: const IconThemeWidget(icon: Icons.settings),
               title: Text('Settings',
-                  style: Theme.of(context).textTheme.subtitle1),
+                  style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(SettingsRoute);
               },
@@ -122,7 +123,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 leading:
                     const IconThemeWidget(icon: Icons.admin_panel_settings),
                 title:
-                    Text('Admin', style: Theme.of(context).textTheme.subtitle1),
+                    Text('Admin', style: titleMedium(context)),
                 onTap: () {
                   if (userService.currentUserID.contains('XCVzgl7xIG3')) {
                     navigationService.navigateTo(AdminPageRoute);
@@ -133,7 +134,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             //   ListTile(
             //     leading: const IconThemeWidget(icon: Icons.send),
             //     title: Text('Invite Friends',
-            //         style: Theme.of(context).textTheme.subtitle1),
+            //         style: titleMedium(context)),
             //     onTap: () {
             //       AppInvite().sendInvite();
             //     },
@@ -141,7 +142,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ListTile(
               leading: const IconThemeWidget(icon: Icons.exit_to_app),
               title:
-                  Text('Logout', style: Theme.of(context).textTheme.subtitle1),
+                  Text('Logout', style: titleMedium(context)),
               onTap: () {
                 // locator.reset();
                 BlocProvider.of<AuthenticationBloc>(context)
@@ -164,7 +165,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
       builder: (BuildContext context, AsyncSnapshot<String> data) {
         if (data.hasData) {
           final String version = data.data!;
-          return Text(version, style: Theme.of(context).textTheme.subtitle1);
+          return Text(version, style: titleMedium(context));
         } else {
           return const Text('');
         }

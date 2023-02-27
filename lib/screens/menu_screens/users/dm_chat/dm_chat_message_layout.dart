@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../models/chat_model.dart';
 import '../../../../models/custom_objects.dart';
 import '../../../../services/database.dart';
+import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../size_config/size_config.dart';
 import '../../../alerts/alert_dialogs.dart';
@@ -45,7 +46,7 @@ class DMChatMessageLayout extends StatelessWidget {
                             },
                             child: Text(
                               'Copy',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                           ),
                           OutlinedButton(
@@ -56,7 +57,7 @@ class DMChatMessageLayout extends StatelessWidget {
                             },
                             child: Text(
                               'Delete',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                           ),
                           OutlinedButton(
@@ -65,7 +66,7 @@ class DMChatMessageLayout extends StatelessWidget {
                             },
                             child: Text(
                               'Close',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                             ),
                           ),
                         ],
@@ -97,7 +98,7 @@ class DMChatMessageLayout extends StatelessWidget {
                               }
                             },
                             text: message.message,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                             // textScaleFactor: 1.2,
                             maxLines: 50,
                             overflow: TextOverflow.ellipsis,
@@ -144,7 +145,7 @@ class DMChatMessageLayout extends StatelessWidget {
                               }
                             },
                             text: message.message,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: titleMedium(context),
                             // textScaleFactor: 1.2,
                             maxLines: 50,
                             overflow: TextOverflow.ellipsis,

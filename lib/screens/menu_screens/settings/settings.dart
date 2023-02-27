@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/tc_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appbar_gradient.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
@@ -48,7 +49,7 @@ class _SettingsState extends State<Settings> {
           centerTitle: true,
           title: Text(
             'Settings',
-            style: Theme.of(context).textTheme.headline5,
+            style: headlineMedium(context),
           ),
           flexibleSpace: const AppBarGradient(),
         ),
@@ -66,7 +67,7 @@ class _SettingsState extends State<Settings> {
               // Row(
               //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //   children: [
-              //     Text('Push Notifications:',style: Theme.of(context).textTheme.subtitle1,),
+              //     Text('Push Notifications:',style: titleMedium(context),),
               //     FutureBuilder(
               //       future: SettingsNotifications().permissionStatus(),
               //       builder: (context, status){
@@ -118,7 +119,7 @@ class _SettingsState extends State<Settings> {
               // Row(
               //   mainAxisAlignment: MainAxisAlignment.spaceAround,
               //   children: [
-              //     Text('Splitwise:',style: Theme.of(context).textTheme.subtitle1,),
+              //     Text('Splitwise:',style: titleMedium(context),),
               //     Switch(value: isLinked, onChanged: (value){
               //       var result = CloudFunction().splitwiseAPI();
               //         setState(() {
@@ -214,7 +215,7 @@ class _SettingsState extends State<Settings> {
               Center(
                   child: Text(
                 'Social',
-                style: Theme.of(context).textTheme.headline4,
+                style: headlineLarge(context),
               )),
               Container(
                   height: 2,
@@ -226,7 +227,7 @@ class _SettingsState extends State<Settings> {
                 child: Center(
                     child: Text(
                   "Follow us on social media for 'How to' videos and new feature updates!",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: titleMedium(context),
                   textAlign: TextAlign.center,
                 )),
               ),
@@ -247,7 +248,7 @@ class _SettingsState extends State<Settings> {
               Center(
                   child: Text(
                 'Account',
-                style: Theme.of(context).textTheme.headline4,
+                style: headlineLarge(context),
               )),
               Container(
                   height: 2,
@@ -261,7 +262,7 @@ class _SettingsState extends State<Settings> {
                     padding: const EdgeInsets.all(8),
                     child: Text(
                       'Delete this account:',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: titleMedium(context),
                     ),
                   ),
                   ElevatedButton(

@@ -12,6 +12,7 @@ import '../../../repositories/activity_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/loading.dart';
 import 'activity_card.dart';
 
@@ -70,9 +71,7 @@ class _ActivityPageState extends State<ActivityPage> {
                     child: Text(
                   TCFunctions().dateToMonthDayFromTimestamp(
                       Timestamp.fromDate(DateTime.parse(activity))),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline5!
+                  style: headlineMedium(context)!
                       .copyWith(color: Colors.black54),
                 )),
               ),

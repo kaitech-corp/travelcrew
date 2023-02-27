@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types, strict_raw_type, library_private_types_in_public_api, no_leading_underscores_for_local_identifiers, prefer_generic_function_type_aliases, use_setters_to_change_properties, depend_on_referenced_packages
+
 library flappy_search_bar;
 
 import 'dart:async';

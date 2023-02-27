@@ -10,6 +10,7 @@ import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/tc_functions.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/link_previewer.dart';
 import '../../../services/widgets/loading.dart';
@@ -29,7 +30,7 @@ class LodgingDetails extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             'Lodging',
-            style: Theme.of(context).textTheme.headline5,
+            style: headlineMedium(context),
           ),
           backgroundColor: canvasColor,
         ),
@@ -85,13 +86,13 @@ class LodgingDataLayout extends StatelessWidget {
                     ListTile(
                       title: Text(
                         lodging.lodgingType,
-                        style: Theme.of(context).textTheme.headline5,
+                        style: headlineMedium(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
                         'Creator: ${lodging.displayName}',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                       ),
                       trailing: LodgingMenuButton(
                         lodging: lodging,
@@ -111,7 +112,7 @@ class LodgingDataLayout extends StatelessWidget {
                         title: Text(
                           '${TCFunctions().dateToMonthDayFromTimestamp(lodging.startDateTimestamp)} - '
                           '${TCFunctions().formatTimestamp(lodging.endDateTimestamp, wTime: false)}',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {
                           Add2Calendar.addEvent2Cal(event);
@@ -124,7 +125,7 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           '...',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {},
                       ),
@@ -135,7 +136,7 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           'Check in: ${lodging.startTime} ',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {},
                       ),
@@ -146,7 +147,7 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           'Check out: ${lodging.endTime}',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onTap: () {},
                       ),
@@ -173,7 +174,7 @@ class LodgingDataLayout extends StatelessWidget {
                         ),
                         title: Text(
                           '...',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                       ),
                     if (lodging.comment.isNotEmpty)
@@ -185,7 +186,7 @@ class LodgingDataLayout extends StatelessWidget {
                             message: lodging.comment,
                             child: Text(
                               lodging.comment,
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                               maxLines: 10,
                               overflow: TextOverflow.ellipsis,
                             )),
@@ -199,7 +200,7 @@ class LodgingDataLayout extends StatelessWidget {
                             message: lodging.comment,
                             child: Text(
                               '...',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: titleMedium(context),
                               maxLines: 10,
                               overflow: TextOverflow.ellipsis,
                             )),

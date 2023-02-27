@@ -11,6 +11,7 @@ import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
 import '../constants/constants.dart';
+import '../theme/text_styles.dart';
 import 'loading.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
@@ -319,7 +320,7 @@ class Gauge extends StatelessWidget {
                       angle: 90,
                       widget: Text(
                         '${countDownDate.daysLeft!.toStringAsFixed(0)} Days Left',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: titleMedium(context),
                       ))
                 ])
           ]
@@ -378,16 +379,10 @@ class RecentTripTile extends StatelessWidget{
                       height: 125,
                       width: 125,
                       child: ListTile(
-                        title: Text(trip.tripName,style: Theme
-                            .of(context)
-                            .textTheme
-                            .subtitle1,
+                        title: Text(trip.tripName,style: titleMedium(context),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,),
-                        subtitle: Text(trip.location,style: Theme
-                            .of(context)
-                            .textTheme
-                            .subtitle2,
+                        subtitle: Text(trip.location,style: titleSmall(context),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,),
                       ),

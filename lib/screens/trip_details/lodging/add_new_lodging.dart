@@ -6,6 +6,7 @@ import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/date_time_retrieval.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/time_picker.dart';
@@ -73,7 +74,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
         appBar: AppBar(
           title: Text(
             'Add Lodging',
-            style: Theme.of(context).textTheme.headline5,
+            style: headlineMedium(context),
           ),
         ),
         body: SingleChildScrollView(
@@ -178,7 +179,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Schedule',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: headlineSmall(context),
                   ),
                 ),
                 Container(
@@ -205,7 +206,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                       child: ElevatedButton(
                         child: Text(
                           'CheckIn/Checkout',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: titleMedium(context),
                         ),
                         onPressed: () {
                           setState(() {

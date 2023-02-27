@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../models/trip_model.dart';
 
 import '../../models/custom_objects.dart';
+import '../../models/trip_model.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../locator.dart';
 

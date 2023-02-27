@@ -14,6 +14,7 @@ import '../../services/database.dart';
 import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
+import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/calendar_widget.dart';
 import '../alerts/alert_dialogs.dart';
@@ -209,7 +210,7 @@ class _AddTripFormState extends State<AddTripForm> {
                         : Text(
                             AppLocalizations.of(context)!
                                 .addTripImageMessage,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: headlineSmall(context),
                           )),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -226,7 +227,7 @@ class _AddTripFormState extends State<AddTripForm> {
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Text(
                     AppLocalizations.of(context)!.addTripDescriptionMessage,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: titleMedium(context),
                   ),
                 ),
                 TextFormField(
@@ -243,8 +244,8 @@ class _AddTripFormState extends State<AddTripForm> {
                       border: const OutlineInputBorder(),
                       hintText: AppLocalizations.of(context)!
                           .addTripAddDescriptionMessage,
-                      hintStyle: Theme.of(context).textTheme.subtitle1),
-                  style: Theme.of(context).textTheme.subtitle1,
+                      hintStyle: titleMedium(context)),
+                  style: titleMedium(context),
                 ),
                 Container(
                     padding: const EdgeInsets.symmetric(

@@ -4,6 +4,7 @@ import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/theme/text_styles.dart';
 
 class HelpPage extends StatelessWidget{
 
@@ -14,7 +15,7 @@ class HelpPage extends StatelessWidget{
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(Intl.message('Help & Feedback'),style: Theme.of(context).textTheme.headline5,),
+          title: Text(Intl.message('Help & Feedback'),style: headlineMedium(context),),
         ),
         body: Container(
           margin: const EdgeInsets.all(16),
@@ -26,7 +27,7 @@ class HelpPage extends StatelessWidget{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(Intl.message('About'),style: Theme.of(context).textTheme.subtitle1,),
+                  Text(Intl.message('About'),style: titleMedium(context),),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,7 +58,7 @@ class HelpPage extends StatelessWidget{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(Intl.message('Feedback'),style: Theme.of(context).textTheme.subtitle1,),
+                  Text(Intl.message('Feedback'),style: titleMedium(context),),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/custom_objects.dart';
-import '../../../services/widgets/reusableWidgets.dart';
+import '../../../services/widgets/reusable_widgets.dart';
 import '../../profile_page/profile_widget.dart';
 
 class UserProfilePage extends StatelessWidget{

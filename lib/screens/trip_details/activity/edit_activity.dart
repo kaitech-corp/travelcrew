@@ -7,6 +7,7 @@ import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/time_picker.dart';
@@ -97,7 +98,7 @@ class _EditActivityState extends State<EditActivity> {
         appBar: AppBar(
           title: Text(
             'Edit Activity',
-            style: Theme.of(context).textTheme.headline5,
+            style: headlineMedium(context),
           ),
         ),
         body: SingleChildScrollView(
@@ -182,7 +183,7 @@ class _EditActivityState extends State<EditActivity> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Schedule',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: headlineSmall(context),
                   ),
                 ),
                 Container(
@@ -202,7 +203,7 @@ class _EditActivityState extends State<EditActivity> {
                   ElevatedButton(
                     child: Text(
                       'Edit Date',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: titleMedium(context),
                     ),
                     onPressed: () {
                       setState(() {
@@ -223,7 +224,7 @@ class _EditActivityState extends State<EditActivity> {
                   ElevatedButton(
                     child: Text(
                       'Start/End Time',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: titleMedium(context),
                     ),
                     onPressed: () {
                       setState(() {

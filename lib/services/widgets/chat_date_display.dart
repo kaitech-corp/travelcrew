@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../functions/tc_functions.dart';
+import '../theme/text_styles.dart';
 
 class ChatDateDisplay extends StatelessWidget{
 
@@ -16,10 +17,10 @@ class ChatDateDisplay extends StatelessWidget{
     return dateTime.isToday() ?
     Text(
       TCFunctions().chatViewGroupByDateTimeOnlyTime(Timestamp.fromDate(dateTime)),
-      style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,):
+      style: titleSmall(context),textAlign: TextAlign.center,):
     Text(
       TCFunctions().chatViewGroupByDateTime(Timestamp.fromDate(dateTime)),
-      style: Theme.of(context).textTheme.subtitle2,textAlign: TextAlign.center,);
+      style: titleSmall(context),textAlign: TextAlign.center,);
   }
 
 }
