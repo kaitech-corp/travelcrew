@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,13 +32,13 @@ import '../../screens/signup/signup_page.dart';
 import '../../screens/trip_details/activity/activity_page.dart';
 import '../../screens/trip_details/activity/add_new_activity.dart';
 import '../../screens/trip_details/activity/edit_activity.dart';
-import '../../screens/trip_details/basket_list/controller/basket_controller.dart';
+
 import '../../screens/trip_details/chat/chat_page.dart';
 import '../../screens/trip_details/details/detail_page.dart';
 import '../../screens/trip_details/explore/explore.dart';
 import '../../screens/trip_details/explore/explore_basic.dart';
 import '../../screens/trip_details/explore/followers/user_following_list_page.dart';
-import '../../screens/trip_details/explore/lists/addToListPage.dart';
+
 import '../../screens/trip_details/explore/members/members_layout.dart';
 import '../../screens/trip_details/lodging/add_new_lodging.dart';
 import '../../screens/trip_details/lodging/edit_lodging.dart';
@@ -53,34 +52,43 @@ import '../../services/navigation/route_names.dart';
 import '../../services/widgets/launch_icon_badger.dart';
 import '../../size_config/size_config.dart';
 
-
 Route<dynamic> generateRoute(RouteSettings settings) {
   final Object? args = settings.arguments;
   switch (settings.name!) {
     case ActivityRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: ActivityPage(trip: args! as Trip,),
+        viewToShow: ActivityPage(
+          trip: args! as Trip,
+        ),
       );
     case AddNewActivityRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: AddNewActivity(trip: args as Trip,),
+        viewToShow: AddNewActivity(
+          trip: args as Trip,
+        ),
       );
     case AddNewLodgingRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: AddNewLodging(trip: args as Trip,),
+        viewToShow: AddNewLodging(
+          trip: args as Trip,
+        ),
       );
     case AddNewTransportationRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: AddNewModeOfTransport(trip: args as Trip,),
+        viewToShow: AddNewModeOfTransport(
+          trip: args as Trip,
+        ),
       );
     case AddNewTripRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: AddTripPage(addedLocation: args as String,),
+        viewToShow: AddTripPage(
+          addedLocation: args as String,
+        ),
       );
     case AdminPageRoute:
       return _getPageRoute(
@@ -104,13 +112,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ChatRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: ChatPage(trip: args as Trip,),
+        viewToShow: ChatPage(
+          trip: args as Trip,
+        ),
       );
     case CostPageRoute:
       final Trip arguments = settings.arguments as Trip;
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: SplitPage(trip: arguments,),
+        viewToShow: SplitPage(
+          trip: arguments,
+        ),
       );
     case CurrentCrewTripsRoute:
       return _getPageRoute(
@@ -118,7 +130,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: const CurrentTrips(),
       );
     case DetailsPageRoute:
-      final DetailsPageArguments arguments = settings.arguments as DetailsPageArguments;
+      final DetailsPageArguments arguments =
+          settings.arguments as DetailsPageArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: DetailsPage(
@@ -132,7 +145,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case DMChatRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: DMChat(user: args as UserPublicProfile,),
+        viewToShow: DMChat(
+          user: args as UserPublicProfile,
+        ),
       );
     case DMChatListPageRoute:
       return _getPageRoute(
@@ -140,20 +155,24 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: const DMChatListPage(),
       );
     case EditActivityRoute:
-      final EditActivityArguments arguments = settings.arguments as EditActivityArguments;
+      final EditActivityArguments arguments =
+          settings.arguments as EditActivityArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: EditActivity(
           activity: arguments.activity,
-          trip: arguments.trip,),
+          trip: arguments.trip,
+        ),
       );
     case EditLodgingRoute:
-      final EditLodgingArguments arguments = settings.arguments as EditLodgingArguments;
+      final EditLodgingArguments arguments =
+          settings.arguments as EditLodgingArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: EditLodging(
           trip: arguments.trip,
-          lodging: arguments.lodging,),
+          lodging: arguments.lodging,
+        ),
       );
     case EditProfilePageRoute:
       return _getPageRoute(
@@ -163,22 +182,30 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case EditTransportationRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: EditTransportation(transportationData: args as TransportationData,),
+        viewToShow: EditTransportation(
+          transportationData: args as TransportationData,
+        ),
       );
     case EditTripDataRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: EditTripData(trip: args as Trip,),
+        viewToShow: EditTripData(
+          trip: args as Trip,
+        ),
       );
     case ExploreRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: Explore(trip: args as Trip,),
+        viewToShow: Explore(
+          trip: args as Trip,
+        ),
       );
     case ExploreBasicRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: ExploreBasic(trip: args as Trip,),
+        viewToShow: ExploreBasic(
+          trip: args as Trip,
+        ),
       );
     case FavoritesRoute:
       return _getPageRoute(
@@ -193,7 +220,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case FollowingListRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: FollowingList(trip: args as Trip,),
+        viewToShow: FollowingList(
+          trip: args as Trip,
+        ),
       );
     // case GooglePlacesRoute:
     //   return _getPageRoute(
@@ -210,19 +239,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name!,
         viewToShow: const LaunchIconBadger(),
       );
-    case AddToListPageRoute:
-      final AddToListPageArguments arguments = settings.arguments as AddToListPageArguments;
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: AddToListPage(
-          controller: arguments.controller as BasketController,
-          scaffoldKey: arguments.scaffoldKey,
-          trip: arguments.trip,),
-      );
+
     case LodgingRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: LodgingPage(trip: args as Trip,),
+        viewToShow: LodgingPage(
+          trip: args as Trip,
+        ),
       );
     case MainTabPageRoute:
       return _getPageRoute(
@@ -230,12 +253,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: const MainTabPage(),
       );
     case MembersLayoutRoute:
-      final MembersLayoutArguments arguments = settings.arguments as MembersLayoutArguments;
+      final MembersLayoutArguments arguments =
+          settings.arguments as MembersLayoutArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: MembersLayout(
           trip: arguments.trip,
-          ownerID: arguments.ownerID,),
+          ownerID: arguments.ownerID,
+        ),
       );
     case MenuDrawerRoute:
       return _getPageRoute(
@@ -251,47 +276,57 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final ReportArguments arguments = settings.arguments as ReportArguments;
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: ReportContent(activity: arguments.activity,
-          lodging: arguments.lodging, trip: arguments.trip,
-          type: arguments.type,userAccount: arguments.userAccount,),
+        viewToShow: ReportContent(
+          activity: arguments.activity,
+          lodging: arguments.lodging,
+          trip: arguments.trip,
+          type: arguments.type,
+          userAccount: arguments.userAccount,
+        ),
       );
     case SettingsRoute:
       return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow:
-        // BlocProvider(
-        //     create: (BuildContext context) => UserSettingsBloc(
-        //         userSettingsRepository: UserSettingsRepository()..refresh())
-        //     ,child:
-        const Settings()
-      // ),
-      );
+          routeName: settings.name!,
+          viewToShow:
+              // BlocProvider(
+              //     create: (BuildContext context) => UserSettingsBloc(
+              //         userSettingsRepository: UserSettingsRepository()..refresh())
+              //     ,child:
+              const Settings()
+          // ),
+          );
     case SignUpScreenRoute:
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: const SignupScreen(),
       );
     case SplitDetailsPageRoute:
-      final SplitDetailsArguments arguments = settings.arguments as SplitDetailsArguments;
+      final SplitDetailsArguments arguments =
+          settings.arguments as SplitDetailsArguments;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: SplitDetailsPage(
           trip: arguments.trip,
-          splitObject: arguments.splitObject,),
+          splitObject: arguments.splitObject,
+        ),
       );
     case UsersRoute:
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: BlocProvider(
-            create: (BuildContext context) => GenericBloc<UserPublicProfile, AllUserRepository>(
-                repository: AllUserRepository(),),
+          create: (BuildContext context) =>
+              GenericBloc<UserPublicProfile, AllUserRepository>(
+            repository: AllUserRepository(),
+          ),
           child: const AllUserPage(),
         ),
       );
     case UserProfilePageRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: UserProfilePage(user: args as UserPublicProfile,),
+        viewToShow: UserProfilePage(
+          user: args as UserPublicProfile,
+        ),
       );
     case ProfilePageRoute:
       return _getPageRoute(
@@ -301,24 +336,43 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     default:
       return MaterialPageRoute(
           builder: (_) => Scaffold(
-            appBar: AppBar(
-              title: const Text('Oops!'),
-            ),
-            body: Center(
-                child: Column(
+                appBar: AppBar(
+                  title: const Text('Oops!'),
+                ),
+                body: Center(
+                    child: Column(
                   children: <Widget>[
-                    const SizedBox(height: 10,),
-                    Image.asset(error,fit: BoxFit.cover,width: SizeConfig.screenWidth*.9,height: SizeConfig.screenWidth*.9,),
-                    const Text('Something went wrong. Sorry about that.',textScaleFactor: 1.5,textAlign: TextAlign.center,style: TextStyle(color: Colors.redAccent),),
-                    const SizedBox(height: 10,),
-                    const Text('Be sure to check your network connection just in case.',textScaleFactor: 1.5,textAlign: TextAlign.center,),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Image.asset(
+                      error,
+                      fit: BoxFit.cover,
+                      width: SizeConfig.screenWidth * .9,
+                      height: SizeConfig.screenWidth * .9,
+                    ),
+                    const Text(
+                      'Something went wrong. Sorry about that.',
+                      textScaleFactor: 1.5,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text(
+                      'Be sure to check your network connection just in case.',
+                      textScaleFactor: 1.5,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 )),
-          ));
+              ));
   }
 }
 
-MaterialPageRoute<Object> _getPageRoute({required String routeName, required Widget viewToShow }) {
+MaterialPageRoute<Object> _getPageRoute(
+    {required String routeName, required Widget viewToShow}) {
   return MaterialPageRoute<Object>(
       settings: RouteSettings(
         name: routeName,
@@ -326,80 +380,66 @@ MaterialPageRoute<Object> _getPageRoute({required String routeName, required Wid
       builder: (BuildContext context) => viewToShow);
 }
 
-
-
-class EditActivityArguments{
-
+class EditActivityArguments {
   EditActivityArguments(this.activity, this.trip);
   final Trip trip;
   final ActivityData activity;
 }
-class EditLodgingArguments{
 
+class EditLodgingArguments {
   EditLodgingArguments(this.lodging, this.trip);
   final Trip trip;
-  final LodgingData lodging ;
+  final LodgingData lodging;
 }
-class DetailsPageArguments{
 
-  DetailsPageArguments({
-    this.activity,
-    this.lodging,
-    this.transport,
-    required this.trip,
-    required this.type});
+class DetailsPageArguments {
+  DetailsPageArguments(
+      {this.activity,
+      this.lodging,
+      this.transport,
+      required this.trip,
+      required this.type});
   final ActivityData? activity;
   final LodgingData? lodging;
   final TransportationData? transport;
   final Trip trip;
   final String type;
-
 }
-class AddToListPageArguments{
 
-  AddToListPageArguments({required this.trip, required this.scaffoldKey, required this.controller});
+class AddToListPageArguments {
+  AddToListPageArguments(
+      {required this.trip,
+      required this.scaffoldKey,
+      required this.controller});
   final Trip trip;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final PersistentBottomSheetController<dynamic> controller;
 }
-class MembersLayoutArguments{
 
+class MembersLayoutArguments {
   MembersLayoutArguments(this.members, this.trip, this.ownerID);
   final List<Members> members;
   final Trip trip;
   final String ownerID;
 }
-class ReportArguments{
 
+class ReportArguments {
   ReportArguments(
-      this.type,
-      this.userAccount,
-      this.activity,
-      this.trip,
-      this.lodging);
+      this.type, this.userAccount, this.activity, this.trip, this.lodging);
   final String type;
   final UserPublicProfile userAccount;
   final ActivityData? activity;
   final LodgingData? lodging;
   final Trip? trip;
 }
-class SplitArguments{
 
+class SplitArguments {
   SplitArguments(this.trip);
   final Trip trip;
 }
-class SplitDetailsArguments{
 
+class SplitDetailsArguments {
   SplitDetailsArguments({required this.splitObject, required this.trip});
   final SplitObject splitObject;
   final Trip trip;
-
-}
-
-class BasketListArguments{
-
-  BasketListArguments({required this.trip, required this.basketController});
-  final Trip trip;
-  final BasketController basketController;
-
 }
