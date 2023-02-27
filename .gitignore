@@ -44,5 +44,4 @@ lib/generated_plugin_registrant.dart
 # IOS
 /ios/build/
 /pubspec.yaml
-ios/Runner/GoogleService-Info.plist
 ios/Flutter/Generated.xcconfig
