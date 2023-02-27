@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -72,9 +71,6 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             children: List<Widget>.generate(tripList.length, (int index) {
-              if (kDebugMode) {
-                print(tripList.length);
-              }
               return tripList[index].urlToImage.isEmpty
                   ? cardWithoutImage(context, tripList[index])
                   : cardWithImage(context, tripList[index]);

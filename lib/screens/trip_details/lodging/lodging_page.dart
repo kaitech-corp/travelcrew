@@ -26,15 +26,21 @@ class LodgingPage extends StatefulWidget {
 }
 
 class _LodgingPageState extends State<LodgingPage> {
-  late GenericBloc<LodgingData,LodgingRepository> bloc;
+  late GenericBloc<LodgingData, LodgingRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<LodgingData,LodgingRepository>>(context);
+    bloc =
+        BlocProvider.of<GenericBloc<LodgingData, LodgingRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
 
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,25 +49,29 @@ class _LodgingPageState extends State<LodgingPage> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<GenericBloc<LodgingData,LodgingRepository>, GenericState>(
-            builder: (BuildContext context, GenericState state){
-              if(state is LoadingState){
-                return const Loading();
-              } else if (state is HasDataState){
-                final List<LodgingData> lodgingList = state.data as List<LodgingData>;
-                return ListView.builder(
-                    itemCount: lodgingList.length,
-                    itemBuilder: (BuildContext context, int index){
-                      return LodgingCard(lodging: lodgingList[index],trip: widget.trip,);
-                    });
-              } else {
-                return nil;
-              }
-            }),
+        body: BlocBuilder<GenericBloc<LodgingData, LodgingRepository>,
+            GenericState>(builder: (BuildContext context, GenericState state) {
+          if (state is LoadingState) {
+            return const Loading();
+          } else if (state is HasDataState) {
+            final List<LodgingData> lodgingList =
+                state.data as List<LodgingData>;
+            return ListView.builder(
+                itemCount: lodgingList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return LodgingCard(
+                    lodging: lodgingList[index],
+                    trip: widget.trip,
+                  );
+                });
+          } else {
+            return nil;
+          }
+        }),
         floatingActionButton: FloatingActionButton(
-
           onPressed: () {
-            navigationService.navigateTo(AddNewLodgingRoute, arguments: widget.trip);
+            navigationService.navigateTo(AddNewLodgingRoute,
+                arguments: widget.trip);
           },
           child: const Icon(Icons.add),
         ),

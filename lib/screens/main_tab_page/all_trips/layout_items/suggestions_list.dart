@@ -15,63 +15,67 @@ import '../../../../size_config/size_config.dart';
 class SliverGridTripSuggestionList extends StatefulWidget {
   const SliverGridTripSuggestionList({Key? key}) : super(key: key);
 
-
   @override
-  State<SliverGridTripSuggestionList> createState() => _SliverGridTripSuggestionListState();
+  State<SliverGridTripSuggestionList> createState() =>
+      _SliverGridTripSuggestionListState();
 }
 
-class _SliverGridTripSuggestionListState extends State<SliverGridTripSuggestionList> {
-
-  late GenericBloc<Trip,AllTripsSuggestionRepository> bloc;
+class _SliverGridTripSuggestionListState
+    extends State<SliverGridTripSuggestionList> {
+  late GenericBloc<Trip, AllTripsSuggestionRepository> bloc;
 
   int crossAxisCount = 2;
 
-List<int> randomList = TCFunctions().randomList();
+  List<int> randomList = TCFunctions().randomList();
 
   @override
   void initState() {
     super.initState();
-    bloc = BlocProvider.of<GenericBloc<Trip,AllTripsSuggestionRepository>>(context);
+    bloc = BlocProvider.of<GenericBloc<Trip, AllTripsSuggestionRepository>>(
+        context);
     bloc.add(LoadingGenericData());
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
 
-    return BlocBuilder<GenericBloc<Trip,AllTripsSuggestionRepository>, GenericState>(
-        builder: (BuildContext context, GenericState state) {
-          if (state is LoadingState) {
-            return const Flexible(child: Loading());
-          } else if (state is HasDataState) {
-            final List<Trip> tripList = state.data as List<Trip>;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GenericBloc<Trip, AllTripsSuggestionRepository>,
+        GenericState>(builder: (BuildContext context, GenericState state) {
+      if (state is LoadingState) {
+        return const Flexible(child: Loading());
+      } else if (state is HasDataState) {
+        final List<Trip> tripList = state.data as List<Trip>;
         return SizedBox(
-              height: SizeConfig.screenWidth*.2,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: List<Widget>.generate(5, (int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                        width: SizeConfig.screenWidth*.4,
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            color: Colors.blue[50]
-                        ),
-                        child: Center(
-                            child: Text(tripList[randomList[index]].location,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: responsiveTextStyleSuggestions(context))),
-                    ),
-                  );
-                }
+          height: SizeConfig.screenWidth * .2,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: List<Widget>.generate(5, (int index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  width: SizeConfig.screenWidth * .4,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      color: Colors.blue[50]),
+                  child: Center(
+                      child: Text(tripList[randomList[index]].location,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: responsiveTextStyleSuggestions(context))),
                 ),
-              ),
+              );
+            }),
+          ),
         );
-          } else {
-            return Container();
-          }
-        });
+      } else {
+        return Container();
+      }
+    });
   }
 }

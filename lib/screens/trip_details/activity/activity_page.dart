@@ -27,16 +27,21 @@ class ActivityPage extends StatefulWidget {
 }
 
 class _ActivityPageState extends State<ActivityPage> {
-
-  late GenericBloc<ActivityData,ActivityRepository> bloc;
+  late GenericBloc<ActivityData, ActivityRepository> bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<GenericBloc<ActivityData,ActivityRepository>>(context);
+    bloc =
+        BlocProvider.of<GenericBloc<ActivityData, ActivityRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
 
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,38 +50,49 @@ class _ActivityPageState extends State<ActivityPage> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        body: BlocBuilder<GenericBloc<ActivityData,ActivityRepository>, GenericState>(
-            builder: (BuildContext context, GenericState state){
-              if(state is LoadingState){
-                return const Loading();
-              } else if (state is HasDataState){
-                final List<ActivityData> activityList = state.data as List<ActivityData>;
+        body: BlocBuilder<GenericBloc<ActivityData, ActivityRepository>,
+            GenericState>(builder: (BuildContext context, GenericState state) {
+          if (state is LoadingState) {
+            return const Loading();
+          } else if (state is HasDataState) {
+            final List<ActivityData> activityList =
+                state.data as List<ActivityData>;
             return GroupedListView<ActivityData, String>(
               elements: activityList,
               groupBy: (ActivityData activity) => DateTime(
-                  activity.startDateTimestamp.toDate().year,
-                  activity.startDateTimestamp.toDate().month,
-                  activity.startDateTimestamp.toDate().day,).toString(),
+                activity.startDateTimestamp.toDate().year,
+                activity.startDateTimestamp.toDate().month,
+                activity.startDateTimestamp.toDate().day,
+              ).toString(),
               groupSeparatorBuilder: (String activity) => Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Center(
                     child: Text(
-                      TCFunctions().dateToMonthDayFromTimestamp(
-                          Timestamp.fromDate(DateTime.parse(activity))),
-                      style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black54),)),
+                  TCFunctions().dateToMonthDayFromTimestamp(
+                      Timestamp.fromDate(DateTime.parse(activity))),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(color: Colors.black54),
+                )),
               ),
-              itemComparator: (ActivityData a,ActivityData b) => a.startTime.compareTo(b.startTime),
-              itemBuilder: (BuildContext context, ActivityData activity){
-                return ActivityCard(activity: activity,trip: widget.trip,);
+              itemComparator: (ActivityData a, ActivityData b) =>
+                  a.startTime.compareTo(b.startTime),
+              itemBuilder: (BuildContext context, ActivityData activity) {
+                return ActivityCard(
+                  activity: activity,
+                  trip: widget.trip,
+                );
               },
             );
-              } else {
-                return Container();
-              }
-            }),
+          } else {
+            return Container();
+          }
+        }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            navigationService.navigateTo(AddNewActivityRoute, arguments: widget.trip);
+            navigationService.navigateTo(AddNewActivityRoute,
+                arguments: widget.trip);
           },
           child: const Icon(Icons.add),
         ),

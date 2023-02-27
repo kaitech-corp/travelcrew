@@ -38,6 +38,12 @@ class _TransportationPageState extends State<TransportationPage> {
   }
 
   @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -74,9 +80,10 @@ class _TransportationPageState extends State<TransportationPage> {
                             Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Text(
-                                  modeList[index].displayName.length > 10 ? '${modeList[index].displayName.substring(0, 10)}...' : modeList[index].displayName,
-                                  style:
-                                      Theme.of(context).textTheme.subtitle1,
+                                  modeList[index].displayName.length > 10
+                                      ? '${modeList[index].displayName.substring(0, 10)}...'
+                                      : modeList[index].displayName,
+                                  style: Theme.of(context).textTheme.subtitle1,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ))
@@ -84,7 +91,7 @@ class _TransportationPageState extends State<TransportationPage> {
                         );
                       }),
                 ),
-                const SizedBox(height:8),
+                const SizedBox(height: 8),
                 Expanded(
                   flex: 4,
                   child: ListView.builder(

@@ -1,11 +1,16 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
+import '../../blocs/generics/generic_bloc.dart';
 import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
+import '../../repositories/trip_repositories/all_trip_repository.dart';
+import '../../repositories/trip_repositories/current_trip_repository.dart';
+import '../../repositories/trip_repositories/past_trip_repository.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/navigation/route_names.dart';
@@ -71,11 +76,13 @@ class _MainTabPageState extends State<MainTabPage> {
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
-    const AllTrips(),
-    const TabBarView(
+    BlocProvider(create: (BuildContext context) => GenericBloc<Trip,AllTripsRepository>(repository: AllTripsRepository()),child: const AllTrips(),),
+    
+     TabBarView(
       children: <Widget>[
-        CurrentTrips(),
-        PastTrips(),
+        BlocProvider(create: (BuildContext context) => GenericBloc<Trip,CurrentTripRepository>(repository: CurrentTripRepository()),child: const CurrentTrips(),),
+        BlocProvider(create: (BuildContext context) => GenericBloc<Trip,PastTripRepository>(repository: PastTripRepository()),child: const PastTrips(),),
+        
       ],
     ),
     const AddTripPage(),

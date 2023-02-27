@@ -11,7 +11,6 @@ import '../../../services/widgets/reusableWidgets.dart';
 import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
-import '../basket_list/controller/basket_controller.dart';
 import 'ImageAnimation.dart';
 import 'members/members_layout.dart';
 
@@ -33,7 +32,6 @@ class ExploreMemberLayout extends StatefulWidget {
 
 class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
   final ExpandableController expandController = ExpandableController();
-  final BasketController basketController = BasketController();
 
   bool didAnimate = true;
   double _padding = SizeConfig.screenHeight * .35;
@@ -96,7 +94,6 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       tripDetails: widget.tripDetails,
                       event: event,
                       scaffoldKey: widget.scaffoldKey,
-                      basketController: basketController,
                     )),
               ],
             )
@@ -111,7 +108,6 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
                       tripDetails: widget.tripDetails,
                       event: event,
                       scaffoldKey: widget.scaffoldKey,
-                      basketController: basketController,
                     )),
               ],
             ),
@@ -137,13 +133,11 @@ class MemberPopupMenuButton extends StatelessWidget {
     required this.tripDetails,
     required this.event,
     required this.scaffoldKey,
-    this.basketController,
   }) : super(key: key);
 
   final Trip tripDetails;
   final Event event;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final BasketController? basketController;
 
   @override
   Widget build(BuildContext context) {

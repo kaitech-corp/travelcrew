@@ -27,7 +27,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late GenericBloc<ChatData,ChatRepository> bloc;
+  late GenericBloc<ChatData, ChatRepository> bloc;
 
   UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
@@ -40,10 +40,16 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   @override
-  void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<ChatData,ChatRepository>>(context);
+  void initState() {
+    bloc = BlocProvider.of<GenericBloc<ChatData, ChatRepository>>(context);
     bloc.add(LoadingGenericData());
-    super.didChangeDependencies();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
   }
 
   @override
@@ -56,7 +62,9 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         body: SizedBox(
           height: SizeConfig.screenHeight,
-          child: BlocBuilder<GenericBloc<ChatData,ChatRepository>, GenericState>(builder: (BuildContext context, GenericState state) {
+          child:
+              BlocBuilder<GenericBloc<ChatData, ChatRepository>, GenericState>(
+                  builder: (BuildContext context, GenericState state) {
             if (state is LoadingState) {
               return const Align(child: Loading());
             } else if (state is HasDataState) {
@@ -100,7 +108,8 @@ class _ChatPageState extends State<ChatPage> {
                                 onPressed: () async {
                                   if (_chatController.text != '') {
                                     final String message = _chatController.text;
-                                    final Map<String, bool> status = createStatus();
+                                    final Map<String, bool> status =
+                                        createStatus();
                                     _chatController.clear();
                                     final String displayName =
                                         currentUserProfile.displayName;
@@ -140,8 +149,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Map<String, bool> createStatus() {
     final Map<String, bool> status = <String, bool>{};
-    final Iterable<String> users =
-        widget.trip.accessUsers.where((String f) => f != userService.currentUserID);
+    final Iterable<String> users = widget.trip.accessUsers
+        .where((String f) => f != userService.currentUserID);
     for (final String f in users) {
       status[f] = false;
     }

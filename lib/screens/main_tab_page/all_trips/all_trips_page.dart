@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/generics/generic_bloc.dart';
+import '../../../models/trip_model.dart';
+import '../../../repositories/trip_repositories/all_trip_suggestion_repository.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import 'layout_items/suggestions_list.dart';
 import 'layout_items/trip_list.dart';
@@ -75,7 +79,12 @@ class _AllTripsState extends State<AllTrips>
                 ),
               ]),
             ),
-            const SliverGridTripSuggestionList(),
+            BlocProvider(
+              create: (BuildContext context) =>
+                  GenericBloc<Trip, AllTripsSuggestionRepository>(
+                      repository: AllTripsSuggestionRepository()),
+              child: const SliverGridTripSuggestionList(),
+            ),
           ],
         ),
       ),

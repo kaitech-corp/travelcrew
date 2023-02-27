@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
@@ -20,8 +19,10 @@ import 'split_package.dart';
 
 /// Split Page
 class SplitPage extends StatefulWidget {
-
-  const SplitPage({Key? key, required this.trip,}) : super(key: key);
+  const SplitPage({
+    Key? key,
+    required this.trip,
+  }) : super(key: key);
   final Trip trip;
 
   @override
@@ -36,6 +37,12 @@ class _SplitPageState extends State<SplitPage> {
     bloc = BlocProvider.of<GenericBloc<SplitObject, SplitRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
   }
 
   @override
@@ -101,8 +108,7 @@ class _SplitPageState extends State<SplitPage> {
                               navigationService.navigateTo(
                                   SplitDetailsPageRoute,
                                   arguments: SplitDetailsArguments(
-                                      splitObject: item,
-                                      trip: widget.trip));
+                                      splitObject: item, trip: widget.trip));
                             },
                             child: Container(
                               height: SizeConfig.screenHeight * .1,
@@ -122,11 +128,11 @@ class _SplitPageState extends State<SplitPage> {
                                         item.itemName,
                                         style: SizeConfig.tablet
                                             ? Theme.of(context)
-                                            .textTheme
-                                            .headline4
+                                                .textTheme
+                                                .headline4
                                             : Theme.of(context)
-                                            .textTheme
-                                            .headline6,
+                                                .textTheme
+                                                .headline6,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),

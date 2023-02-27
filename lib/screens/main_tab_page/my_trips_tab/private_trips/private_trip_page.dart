@@ -28,15 +28,15 @@ class _PrivateTripsState extends State<PrivateTrips> {
 
   @override
   void initState() {
+    bloc = BlocProvider.of<GenericBloc<Trip, PrivateTripRepository>>(context);
+    bloc.add(LoadingGenericData());
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
-    bloc = BlocProvider.of<GenericBloc<Trip, PrivateTripRepository>>(context);
-    bloc.add(LoadingGenericData());
-    context.dependOnInheritedWidgetOfExactType();
-    super.didChangeDependencies();
+  void dispose() {
+    bloc.close();
+    super.dispose();
   }
 
   @override

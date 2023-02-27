@@ -33,17 +33,18 @@ import 'explore_owner_layout.dart';
 
 /// Explore page for trip
 class Explore extends StatefulWidget {
-  const Explore({Key? key, required this.trip,}) : super(key: key);
+  const Explore({
+    Key? key,
+    required this.trip,
+  }) : super(key: key);
 
   final Trip trip;
-  
 
   @override
   State<Explore> createState() => _ExploreState();
 }
 
 class _ExploreState extends State<Explore> {
-  
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<String> title = ValueNotifier<String>('Explore');
 
@@ -52,121 +53,182 @@ class _ExploreState extends State<Explore> {
     return DefaultTabController(
       length: 6,
       child: Scaffold(
-        key: scaffoldKey,
-        drawer: BlocProvider<PublicProfileBloc>(
-          create: (BuildContext context) => PublicProfileBloc(
-              profileRepository: PublicProfileRepository()..refresh(userService.currentUserID)),
-          child: const MenuDrawer(),),
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: canvasColor,
-          title: Text(widget.trip.tripName,style: Theme.of(context).textTheme.headline5,overflow: TextOverflow.ellipsis,maxLines: 1,),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                navigationService.pop();
-              },
-            ),
-          ],
-          bottom: TabBar(
-            labelStyle: SizeConfig.tablet
-                ? Theme.of(context).textTheme.headline6
-                : Theme.of(context).textTheme.subtitle2,
-            isScrollable: true,
-            tabs:   <Tab>[
-              const Tab(icon: Icon(Icons.home,),),
-              const Tab(icon: Icon(Icons.monetization_on,),),
-              const Tab(icon: Icon(Icons.flight_takeoff,),),
-              const Tab(icon: Icon(Icons.hotel,),),
-              const Tab(icon: Icon(Icons.directions_bike,),),
-              Tab(icon: getChatNotificationBadge()),
-            ],
+          key: scaffoldKey,
+          drawer: BlocProvider<PublicProfileBloc>(
+            create: (BuildContext context) => PublicProfileBloc(
+                profileRepository: PublicProfileRepository()
+                  ..refresh(userService.currentUserID)),
+            child: const MenuDrawer(),
           ),
-        ),
-        body: MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (BuildContext context) => GenericBloc<ActivityData,ActivityRepository>(
-                repository: ActivityRepository(tripDocID:widget.trip.documentId)
-              )),
-            BlocProvider(create: (BuildContext context) => GenericBloc<ChatData,ChatRepository>(
-                repository: ChatRepository(tripDocID: widget.trip.documentId))),
-            BlocProvider(create: (BuildContext context) => GenericBloc<LodgingData,LodgingRepository>(
-                repository: LodgingRepository(tripDocID: widget.trip.documentId))),
-            BlocProvider(create: (BuildContext context) => GenericBloc<TransportationData,TransportationRepository>(
-                repository: TransportationRepository(tripDocID: widget.trip.documentId))),
-            BlocProvider(create: (BuildContext context) => GenericBloc<SplitObject,SplitRepository>(
-                repository: SplitRepository(tripDocID: widget.trip.documentId))),
-          ],
-          child: TabBarView(
-                    children: <Widget>[
-                      checkOwner(userService.currentUserID),
-                      SplitPage(trip: widget.trip,),
-                      TransportationPage(trip: widget.trip,),
-                      LodgingPage(trip: widget.trip,),
-                      ActivityPage(trip: widget.trip,),
-                      ChatPage(trip: widget.trip,),
-                    ],
-                  )
-        )
-      ),
-    );
-  }
-
-
-   Widget checkOwner(String uid) {
-  if (widget.trip.ownerID == uid){
-    return StreamBuilder<Trip?>(
-        stream: DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
-        builder: (BuildContext context, AsyncSnapshot<Trip?> document){
-          if(document.hasData){
-            final Trip tripDetails = document.data!;
-            return ExploreOwnerLayout(
-              trip: tripDetails,
-              scaffoldKey: scaffoldKey,);
-          } else {
-            return ExploreOwnerLayout(
-              trip: widget.trip,
-              scaffoldKey: scaffoldKey,);
-          }
-        }
-    );
-  } else {
-  return ExploreMemberLayout(tripDetails: widget.trip,scaffoldKey: scaffoldKey,);
-  }
-}
-
-Widget getChatNotificationBadge (){
-    return StreamBuilder<List<ChatData>>(
-        builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats){
-          if(chats.hasError){
-            CloudFunction()
-                .logError('Error streaming chats for explore'
-                ' chat notification: ${chats.error}');
-          }
-          if(chats.hasData){
-            final List<ChatData> chatList = chats.data!;
-            if(chatList.isNotEmpty) {
-              final int chatNotifications = chatList.length;
-              return Tooltip(
-                message: 'Messages',
-                child: BadgeIcon(
-                  icon: const Icon(Icons.chat,),
-                  badgeCount: chatNotifications,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: canvasColor,
+            title: Text(
+              widget.trip.tripName,
+              style: Theme.of(context).textTheme.headline5,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  navigationService.pop();
+                },
+              ),
+            ],
+            bottom: TabBar(
+              labelStyle: SizeConfig.tablet
+                  ? Theme.of(context).textTheme.headline6
+                  : Theme.of(context).textTheme.subtitle2,
+              isScrollable: true,
+              tabs: <Tab>[
+                const Tab(
+                  icon: Icon(
+                    Icons.home,
+                  ),
                 ),
+                const Tab(
+                  icon: Icon(
+                    Icons.monetization_on,
+                  ),
+                ),
+                const Tab(
+                  icon: Icon(
+                    Icons.flight_takeoff,
+                  ),
+                ),
+                const Tab(
+                  icon: Icon(
+                    Icons.hotel,
+                  ),
+                ),
+                const Tab(
+                  icon: Icon(
+                    Icons.directions_bike,
+                  ),
+                ),
+                Tab(icon: getChatNotificationBadge()),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: <Widget>[
+              checkOwner(userService.currentUserID),
+              BlocProvider(
+                create: (BuildContext context) =>
+                    GenericBloc<SplitObject, SplitRepository>(
+                        repository:
+                            SplitRepository(tripDocID: widget.trip.documentId)),
+                child: SplitPage(
+                  trip: widget.trip,
+                ),
+              ),
+              BlocProvider(
+                create: (BuildContext context) =>
+                    GenericBloc<TransportationData, TransportationRepository>(
+                        repository: TransportationRepository(
+                            tripDocID: widget.trip.documentId)),
+                child: TransportationPage(
+                  trip: widget.trip,
+                ),
+              ),
+              BlocProvider(
+                create: (BuildContext context) =>
+                    GenericBloc<LodgingData, LodgingRepository>(
+                        repository: LodgingRepository(
+                            tripDocID: widget.trip.documentId)),
+                child: LodgingPage(
+                  trip: widget.trip,
+                ),
+              ),
+              BlocProvider(
+                create: (BuildContext context) =>
+                    GenericBloc<ActivityData, ActivityRepository>(
+                        repository: ActivityRepository(
+                            tripDocID: widget.trip.documentId)),
+                child: ActivityPage(
+                  trip: widget.trip,
+                ),
+              ),
+              BlocProvider(
+                create: (BuildContext context) =>
+                    GenericBloc<ChatData, ChatRepository>(
+                        repository:
+                            ChatRepository(tripDocID: widget.trip.documentId)),
+                child: ChatPage(
+                  trip: widget.trip,
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget checkOwner(String uid) {
+    if (widget.trip.ownerID == uid) {
+      return StreamBuilder<Trip?>(
+          stream:
+              DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
+          builder: (BuildContext context, AsyncSnapshot<Trip?> document) {
+            if (document.hasData) {
+              final Trip tripDetails = document.data!;
+              return ExploreOwnerLayout(
+                trip: tripDetails,
+                scaffoldKey: scaffoldKey,
               );
             } else {
-              return const BadgeIcon(
-                icon: Icon(Icons.chat, ),
+              return ExploreOwnerLayout(
+                trip: widget.trip,
+                scaffoldKey: scaffoldKey,
               );
             }
+          });
+    } else {
+      return ExploreMemberLayout(
+        tripDetails: widget.trip,
+        scaffoldKey: scaffoldKey,
+      );
+    }
+  }
+
+  Widget getChatNotificationBadge() {
+    return StreamBuilder<List<ChatData>>(
+      builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
+        if (chats.hasError) {
+          CloudFunction().logError('Error streaming chats for explore'
+              ' chat notification: ${chats.error}');
+        }
+        if (chats.hasData) {
+          final List<ChatData> chatList = chats.data!;
+          if (chatList.isNotEmpty) {
+            final int chatNotifications = chatList.length;
+            return Tooltip(
+              message: 'Messages',
+              child: BadgeIcon(
+                icon: const Icon(
+                  Icons.chat,
+                ),
+                badgeCount: chatNotifications,
+              ),
+            );
           } else {
             return const BadgeIcon(
-              icon: Icon(Icons.chat, ),
+              icon: Icon(
+                Icons.chat,
+              ),
             );
           }
-        },
-      stream: DatabaseService(tripDocID: widget.trip.documentId).chatListNotification,
+        } else {
+          return const BadgeIcon(
+            icon: Icon(
+              Icons.chat,
+            ),
+          );
+        }
+      },
+      stream: DatabaseService(tripDocID: widget.trip.documentId)
+          .chatListNotification,
     );
-}
+  }
 }

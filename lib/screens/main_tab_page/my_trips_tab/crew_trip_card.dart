@@ -8,6 +8,7 @@ import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/navigation/route_names.dart';
+import '../../../services/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
@@ -64,7 +65,7 @@ class CrewTripCard extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child: Text(trip.tripName, maxLines: 1,overflow: TextOverflow.ellipsis,))
+          Expanded(child: Text(trip.tripName, style: titleMedium(context), maxLines: 1,overflow: TextOverflow.ellipsis,))
         ],
       ),
     );

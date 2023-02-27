@@ -7,6 +7,7 @@ import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
 import '../../../../repositories/trip_repositories/current_trip_repository.dart';
+import '../../../../repositories/trip_repositories/private_trip_repository.dart';
 import '../../../../services/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
@@ -31,6 +32,12 @@ class _CurrentTripsState extends State<CurrentTrips> {
         context); //dependency injection
     bloc.add(LoadingGenericData());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
   }
 
   @override
@@ -65,8 +72,11 @@ class _CurrentTripsState extends State<CurrentTrips> {
                       style: titleMedium(context),
                     ),
                   ),
-                  const Expanded(
-                      child: PrivateTrips(past: false,)),
+                   Expanded(
+                      child: BlocProvider(
+              create: (BuildContext context) =>
+                  GenericBloc<Trip, PrivateTripRepository>(
+                      repository: PrivateTripRepository()),child: const PrivateTrips(past: false),),),
                 ],
               );
       } else {
