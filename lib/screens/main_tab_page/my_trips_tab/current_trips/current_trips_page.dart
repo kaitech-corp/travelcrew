@@ -61,6 +61,7 @@ class _CurrentTripsState extends State<CurrentTrips> {
                     ),
                   ),
                   Expanded(
+                    flex: 2,
                       child: GroupedListTripView(
                     data: tripsData,
                     isPast: false,
@@ -73,6 +74,7 @@ class _CurrentTripsState extends State<CurrentTrips> {
                     ),
                   ),
                    Expanded(
+                    flex: 2,
                       // ignore: always_specify_types
                       child: BlocProvider(
               create: (BuildContext context) =>

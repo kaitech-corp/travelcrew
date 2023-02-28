@@ -8,6 +8,7 @@ import '../../blocs/generics/generic_bloc.dart';
 import '../../models/activity_model.dart';
 import '../../models/custom_objects.dart';
 import '../../models/lodging_model.dart';
+import '../../models/notification_model.dart';
 import '../../models/split_model.dart';
 import '../../models/transportation_model.dart';
 import '../../models/trip_model.dart';
@@ -18,6 +19,7 @@ import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
 import '../../screens/main_tab_page/favorites/favorites_page.dart';
 import '../../screens/main_tab_page/main_tab_page.dart';
 import '../../screens/main_tab_page/my_trips_tab/current_trips/current_trips_page.dart';
+import '../../screens/main_tab_page/notifications/notification_card.dart';
 import '../../screens/main_tab_page/notifications/notification_page.dart';
 import '../../screens/menu_screens/help/feedback_page.dart';
 import '../../screens/menu_screens/help/help.dart';
@@ -270,9 +272,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: const MenuDrawer(),
       );
     case NotificationsRoute:
+      final List<NotificationData> arguments =
+          settings.arguments as List<NotificationData>;
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: const NotificationPage(),
+        viewToShow: NotificationPage(notifications: arguments,),
       );
     case ReportContentRoute:
       final ReportArguments arguments = settings.arguments as ReportArguments;
@@ -439,6 +443,7 @@ class SplitArguments {
   SplitArguments(this.trip);
   final Trip trip;
 }
+
 
 class SplitDetailsArguments {
   SplitDetailsArguments({required this.splitObject, required this.trip});

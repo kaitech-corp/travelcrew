@@ -4,10 +4,15 @@ import 'package:sizer/sizer.dart';
 import '../../blocs/current_profile_bloc/current_profile_bloc.dart';
 import '../../blocs/current_profile_bloc/current_profile_event.dart';
 
+import '../../blocs/notification_bloc/notification_bloc.dart';
+import '../../blocs/notification_bloc/notification_event.dart';
+import '../../blocs/notification_bloc/notification_state.dart';
+import '../../models/notification_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
+import '../../services/widgets/badge_icon.dart';
 import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
 
@@ -16,21 +21,22 @@ class CustomAppBar extends StatefulWidget {
   const CustomAppBar({
     Key? key,
     required this.bottomNav,
+    this.notifications,
   }) : super(key: key);
 
   final bool bottomNav;
-  
+  final List<NotificationData>? notifications;
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
-  late CurrentProfileBloc bloc;
+  late NotificationBloc bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<CurrentProfileBloc>(context);
-    bloc.add(LoadingCurrentProfileData());
+    bloc = BlocProvider.of<NotificationBloc>(context);
+    bloc.add(LoadingNotificationData());
     super.initState();
   }
 
@@ -57,7 +63,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ],
           ),
           child: Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 16.0, 0),
               child: AppBar(
                 toolbarHeight: SizerUtil.deviceType == DeviceType.tablet
                     ? SizeConfig.screenHeight * .1
@@ -90,6 +96,42 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       navigationService.navigateTo(DMChatListPageRoute);
                     },
                   ),
+                  BlocBuilder<NotificationBloc, NotificationState>(
+                      builder: (BuildContext context, NotificationState state) {
+                    if (state is NotificationLoadingState) {
+                      return IconButton(
+                        icon: const BadgeIcon(
+                          icon: IconThemeWidget(icon: Icons.notifications_none),
+                        ),
+                        onPressed: () {
+                          navigationService.navigateTo(NotificationsRoute);
+                        },
+                      );
+                    } else if (state is NotificationHasDataState) {
+                      final List<NotificationData> notifications = state.data;
+                      return IconButton(
+                        icon: BadgeIcon(
+                          icon: const IconThemeWidget(
+                              icon: Icons.notifications_active),
+                          badgeCount: widget.notifications != null
+                              ? widget.notifications!.length
+                              : 0,
+                        ),
+                        onPressed: () {
+                          navigationService.navigateTo(NotificationsRoute,arguments: notifications);
+                        },
+                      );
+                    } else {
+                      return IconButton(
+                        icon: const BadgeIcon(
+                          icon: IconThemeWidget(icon: Icons.notifications_none),
+                        ),
+                        onPressed: () {
+                          navigationService.navigateTo(NotificationsRoute);
+                        },
+                      );
+                    }
+                  }),
                 ],
               ))),
     );

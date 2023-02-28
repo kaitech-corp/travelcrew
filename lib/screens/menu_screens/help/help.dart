@@ -15,7 +15,7 @@ class HelpPage extends StatelessWidget{
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(Intl.message('Help & Feedback'),style: headlineMedium(context),),
+          title: Text(Intl.message('Help & Feedback'),style: headlineSmall(context),),
         ),
         body: Container(
           margin: const EdgeInsets.all(16),

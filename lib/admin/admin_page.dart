@@ -19,25 +19,27 @@ class AdminPage extends StatefulWidget {
 class _AdminPageState extends State<AdminPage> {
   @override
   Widget build(BuildContext context) {
-    return adminDashboard();
+    return adminDashboard(context);
   }
 }
 
-Widget adminDashboard() {
+Widget adminDashboard(BuildContext context) {
   return DefaultTabController(
     length: 5,
     child: Scaffold(
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
-        bottom: const TabBar(
+        titleTextStyle: headlineSmall(context),
+        bottom:  TabBar(
           isScrollable: true,
-          tabs: <Tab>[
+          tabs: const <Tab>[
             Tab(text: 'User Data'),
             Tab(text: 'User Activity'),
             Tab(text: 'Trip Data'),
             Tab(text: 'Feedback'),
             Tab(text: 'Custom Notifications'),
           ],
+          labelStyle: titleMedium(context),
         ),
       ),
       body: const TabBarView(children: <Widget>[
@@ -78,11 +80,15 @@ class _CustomNotificationsState extends State<CustomNotifications> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          customNotification,
-          style: headlineMedium(context),
-          textAlign: TextAlign.center,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            customNotification,
+            style: titleLarge(context),
+            textAlign: TextAlign.center,
+          ),
         ),
         Flexible(
           flex: 2,
@@ -110,8 +116,9 @@ class _CustomNotificationsState extends State<CustomNotifications> {
           child: ElevatedButton(
             onPressed: () {
               if (_message?.isNotEmpty ?? false) {
-                TravelCrewAlertDialogs().pushCustomNotification(context);
+                
                 CloudFunction().addCustomNotification(_message!);
+                TravelCrewAlertDialogs().pushCustomNotification(context);
               }
             },
             child: const Text(push, style: TextStyle(fontSize: 20)),

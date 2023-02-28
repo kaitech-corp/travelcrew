@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/add_trip_bloc/add_trip_bloc.dart';
-import '../../models/custom_objects.dart';
 import 'add_trip_form.dart';
 
-GoogleData? googleData;
+
 
 /// Add trip page
 class AddTripPage extends StatelessWidget {

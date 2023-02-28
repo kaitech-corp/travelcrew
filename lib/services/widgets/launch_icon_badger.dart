@@ -45,12 +45,6 @@ class _LaunchIconBadgerState extends State<LaunchIconBadger> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NotificationBloc>(
-      create: (BuildContext context) {
-        return NotificationBloc(
-            notificationRepository: NotificationRepository()..refresh());
-      },
-      child: ProfileStream(uid: userService.currentUserID),
-    );
+    return ProfileStream(uid: userService.currentUserID);
   }
 }

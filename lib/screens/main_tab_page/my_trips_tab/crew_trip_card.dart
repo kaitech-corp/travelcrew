@@ -38,29 +38,26 @@ class CrewTripCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
               ),
               color: Colors.white,
-              child: Expanded(
-                flex: 6,
-                child: InkWell(
-                  onTap: () {
-                    navigationService.navigateTo(ExploreRoute, arguments: trip);
-                  },
-                  child: Container(
-                    height: SizeConfig.screenHeight * .25,
-                    width: SizeConfig.screenWidth * .5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: (trip.urlToImage.isNotEmpty)?
-                      Hero(
-                          tag: heroTag,
-                          transitionOnUserGestures: true,
-                          child: ImageLayout(trip.urlToImage))
-                    :
-                      Hero(
-                          tag: trip.documentId,
-                          transitionOnUserGestures: true,
-                          child: const ImageLayout(travelImage)),
+              child: InkWell(
+                onTap: () {
+                  navigationService.navigateTo(ExploreRoute, arguments: trip);
+                },
+                child: Container(
+                  height: SizeConfig.screenHeight * .25,
+                  width: SizeConfig.screenWidth * .5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
                   ),
+                  child: (trip.urlToImage.isNotEmpty)?
+                    Hero(
+                        tag: heroTag,
+                        transitionOnUserGestures: true,
+                        child: ImageLayout(trip.urlToImage))
+                  :
+                    Hero(
+                        tag: trip.documentId,
+                        transitionOnUserGestures: true,
+                        child: const ImageLayout(travelImage)),
                 ),
               ),
             ),

@@ -46,7 +46,7 @@ class ActivityCard extends StatelessWidget {
                         activity.activityType,
                         style: SizeConfig.tablet
                             ? headlineLarge(context)
-                            : headlineSmall(context),
+                            : titleLarge(context),
                         maxLines: 2,
                       ),
                       trailing: ActivityMenuButton(

@@ -35,8 +35,7 @@ class AddTripForm extends StatefulWidget {
 
 final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
 final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
-final ValueNotifier<GoogleData> googleData =
-    ValueNotifier<GoogleData>(GoogleData());
+late ValueNotifier<GoogleData> googleData;
 final TextEditingController locationController = TextEditingController();
 
 class _AddTripFormState extends State<AddTripForm> {
@@ -75,6 +74,8 @@ class _AddTripFormState extends State<AddTripForm> {
     tripNameController.addListener(_onTripNameChange);
     travelTypeController.addListener(_onTripTypeChange);
     _urlToImage.addListener(_onTripImageChange);
+   googleData =
+    ValueNotifier<GoogleData>(GoogleData());
   }
 
   @override

@@ -65,7 +65,7 @@ class _TCUserCardState extends State<TCUserCard> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(widget.user.displayName,
                       style: SizeConfig.mobile
-                          ? headlineSmall(context)
+                          ? titleLarge(context)
                           : headlineMedium(context),),
                 ),
               ),

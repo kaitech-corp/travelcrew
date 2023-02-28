@@ -42,7 +42,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text(Intl.message('Feedback'),style: headlineMedium(context),),
+            title: Text(Intl.message('Feedback'),style: headlineSmall(context),),
             flexibleSpace: const AppBarGradient(),
           ),
           body: Container(

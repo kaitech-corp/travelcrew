@@ -49,7 +49,7 @@ class _SettingsState extends State<Settings> {
           centerTitle: true,
           title: Text(
             'Settings',
-            style: headlineMedium(context),
+            style: headlineSmall(context),
           ),
           flexibleSpace: const AppBarGradient(),
         ),
@@ -212,11 +212,10 @@ class _SettingsState extends State<Settings> {
               //       }
               //     }),
               // SizedBox(height: 20,),
-              Center(
-                  child: Text(
+              Text(
                 'Social',
-                style: headlineLarge(context),
-              )),
+                style: headlineSmall(context),
+              ),
               Container(
                   height: 2,
                   decoration: BoxDecoration(
@@ -245,11 +244,10 @@ class _SettingsState extends State<Settings> {
               const SizedBox(
                 height: 20,
               ),
-              Center(
-                  child: Text(
+              Text(
                 'Account',
-                style: headlineLarge(context),
-              )),
+                style: headlineSmall(context),
+              ),
               Container(
                   height: 2,
                   decoration: BoxDecoration(

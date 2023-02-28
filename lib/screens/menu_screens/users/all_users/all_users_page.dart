@@ -62,7 +62,7 @@ class _AllUserPageState extends State<AllUserPage> {
       appBar: AppBar(
         title: Text(
           'TC Members',
-          style: headlineMedium(context),
+          style: headlineSmall(context),
         ),
         actions: <Widget>[
           IconButton(

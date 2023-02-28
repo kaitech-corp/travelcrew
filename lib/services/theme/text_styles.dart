@@ -12,6 +12,8 @@ TextStyle? headlineMedium(BuildContext context) =>
     Theme.of(context).textTheme.headlineMedium;
 TextStyle? headlineSmall(BuildContext context) =>
     Theme.of(context).textTheme.headlineSmall;
+    TextStyle? titleLarge(BuildContext context) =>
+    Theme.of(context).textTheme.titleLarge;
 TextStyle? titleMedium(BuildContext context) =>
     Theme.of(context).textTheme.titleMedium;
 TextStyle? titleSmall(BuildContext context) =>

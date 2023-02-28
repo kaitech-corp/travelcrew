@@ -65,5 +65,6 @@
   "convertToPublicTrip": "¿Convertir a viaje público?",
   "convertToPublicTripMessage": "El viaje será visible para todos.",
   "remove": "Remove",
-  "removeMessage": " will no longer be able to view this trip."
+  "removeMessage": " will no longer be able to view this trip.",
+  "notifications": "Notificaciones"
 }

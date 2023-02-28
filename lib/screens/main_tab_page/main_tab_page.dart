@@ -8,6 +8,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../../blocs/generics/generic_bloc.dart';
+import '../../blocs/notification_bloc/notification_bloc.dart';
+import '../../blocs/notification_bloc/notification_event.dart';
 import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
 import '../../repositories/trip_repositories/all_trip_repository.dart';
@@ -17,7 +19,6 @@ import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
-import '../../services/widgets/badge_icon.dart';
 import '../../size_config/size_config.dart';
 import '../add_trip/add_trip_page.dart';
 import '../app_bar/app_bar.dart';
@@ -25,13 +26,11 @@ import '../menu_screens/main_menu.dart';
 import 'all_trips/all_trips_page.dart';
 import 'my_trips_tab/current_trips/current_trips_page.dart';
 import 'my_trips_tab/past_trips/past_trip_page.dart';
-import 'notifications/notification_page.dart';
+
 
 /// Main screen
 class MainTabPage extends StatefulWidget {
-  const MainTabPage({Key? key, this.notifications}) : super(key: key);
-
-  final List<NotificationData>? notifications;
+  const MainTabPage({Key? key}) : super(key: key);
 
   @override
   State<MainTabPage> createState() => _MainTabPageState();
@@ -40,7 +39,6 @@ class MainTabPage extends StatefulWidget {
 class _MainTabPageState extends State<MainTabPage> {
   @override
   void initState() {
-    super.initState();
     // LocationHandler().getLocationData();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
       final RemoteNotification message = event.notification!;
@@ -67,28 +65,39 @@ class _MainTabPageState extends State<MainTabPage> {
         try {
           navigationService.navigateTo(ExploreRoute, arguments: trip);
         } catch (e) {
-          CloudFunction().logError(
-              'onMessageOpenedApp- Not a valid trip:  $e');
+          CloudFunction().logError('onMessageOpenedApp- Not a valid trip:  $e');
         }
       } else {
         navigationService.navigateTo(DMChatListPageRoute);
       }
     });
+    super.initState();
   }
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
-    BlocProvider(create: (BuildContext context) => GenericBloc<Trip,AllTripsRepository>(repository: AllTripsRepository()),child: const AllTrips(),),
-    
-     TabBarView(
-      children: <Widget>[
-        BlocProvider(create: (BuildContext context) => GenericBloc<Trip,CurrentTripRepository>(repository: CurrentTripRepository()),child: const CurrentTrips(),),
-        BlocProvider(create: (BuildContext context) => GenericBloc<Trip,PastTripRepository>(repository: PastTripRepository()),child: const PastTrips(),),
-        
-      ],
+    BlocProvider(
+      create: (BuildContext context) => GenericBloc<Trip, AllTripsRepository>(
+          repository: AllTripsRepository()),
+      child: const AllTrips(),
     ),
     const AddTripPage(),
-    const NotificationPage(),
+    TabBarView(
+      children: <Widget>[
+        BlocProvider(
+          create: (BuildContext context) =>
+              GenericBloc<Trip, CurrentTripRepository>(
+                  repository: CurrentTripRepository()),
+          child: const CurrentTrips(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) =>
+              GenericBloc<Trip, PastTripRepository>(
+                  repository: PastTripRepository()),
+          child: const PastTrips(),
+        ),
+      ],
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -107,7 +116,7 @@ class _MainTabPageState extends State<MainTabPage> {
         length: 2,
         child: Scaffold(
           drawer: const MenuDrawer(),
-          body: (_selectedIndex == 1)
+          body: (_selectedIndex == 2)
               ? Column(
                   children: <Widget>[
                     Stack(
@@ -156,18 +165,12 @@ class _MainTabPageState extends State<MainTabPage> {
           bottomNavigationBar: CurvedNavigationBar(
             backgroundColor: ReusableThemeColor().bottomNavColor(context),
             color: ReusableThemeColor().color(context),
-            items: <Widget>[
-              const IconThemeWidget(icon: Icons.home),
-              const IconThemeWidget(icon: Icons.people),
-              const IconThemeWidget(
+            items: const <Widget>[
+              IconThemeWidget(icon: Icons.home),
+              IconThemeWidget(
                 icon: Icons.add_outlined,
               ),
-              BadgeIcon(
-                icon: const IconThemeWidget(icon: Icons.notifications_active),
-                badgeCount: widget.notifications != null
-                    ? widget.notifications!.length
-                    : 0,
-              ),
+              IconThemeWidget(icon: Icons.people),
             ],
             onTap: _onItemTapped,
             index: _selectedIndex,

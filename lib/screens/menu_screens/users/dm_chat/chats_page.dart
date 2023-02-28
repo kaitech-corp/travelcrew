@@ -23,7 +23,7 @@ class DMChatListPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Chats',
-          style: headlineMedium(context),
+          style: headlineSmall(context),
         ),
         flexibleSpace: const AppBarGradient(),
       ),

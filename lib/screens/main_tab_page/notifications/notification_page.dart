@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nil/nil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../blocs/notification_bloc/notification_bloc.dart';
-import '../../../blocs/notification_bloc/notification_event.dart';
-import '../../../blocs/notification_bloc/notification_state.dart';
 import '../../../models/notification_model.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/widgets/loading.dart';
+import '../../../services/theme/text_styles.dart';
 import '../../alerts/alert_dialogs.dart';
 import 'notification_card.dart';
 
 /// Notification page
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+  const NotificationPage({Key? key, required this.notifications})
+      : super(key: key);
+
+  final List<NotificationData> notifications;
 
   @override
   State<NotificationPage> createState() => _NotificationPageState();
@@ -24,58 +24,44 @@ class _NotificationPageState extends State<NotificationPage> {
   late NotificationBloc bloc;
 
   @override
-  void initState() {
-    bloc = BlocProvider.of<NotificationBloc>(context);
-    bloc.add(LoadingNotificationData());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<NotificationBloc, NotificationState>(
-          builder: (BuildContext context, NotificationState state) {
-        if (state is NotificationLoadingState) {
-          return const Loading();
-        } else if (state is NotificationHasDataState) {
-          final List<NotificationData> notifications = state.data;
-          return ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: notifications.length,
-              itemBuilder: (BuildContext context, int index) {
-                final NotificationData item = notifications[index];
-                return Dismissible(
-                  direction: DismissDirection.endToStart,
-                  // Show a red background as the item is swiped away.
-                  background: Container(
-                      color: Colors.red,
-                      alignment: AlignmentDirectional.centerStart,
-                      child: const Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                      )),
-                  key: UniqueKey(),
-                  onDismissed: (DismissDirection direction) {
-                    setState(() {
-                      notifications.removeAt(index);
-                      CloudFunction().removeNotificationData(item.fieldID);
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Notification removed.')));
-                  },
+      appBar: AppBar(
+        title: Text(Intl.message('Notifications'),style: headlineSmall(context),),
+      ),
+      body: ListView.builder(
+          padding: EdgeInsets.zero,
+          itemCount: widget.notifications.length,
+          itemBuilder: (BuildContext context, int index) {
+            final NotificationData item = widget.notifications[index];
+            return Dismissible(
+              direction: DismissDirection.endToStart,
+              // Show a red background as the item is swiped away.
+              background: Container(
+                  color: Colors.red,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: const Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  )),
+              key: UniqueKey(),
+              onDismissed: (DismissDirection direction) {
+                setState(() {
+                  widget.notifications.removeAt(index);
+                  CloudFunction().removeNotificationData(item.fieldID);
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Notification removed.')));
+              },
 
-                  child: NotificationsCard(
-                    notification: notifications[index],
-                  ),
-                );
-              });
-        } else {
-          return nil;
-        }
-      }),
+              child: NotificationsCard(
+                notification: widget.notifications[index],
+              ),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           TravelCrewAlertDialogs().deleteNotificationsAlert(context);
