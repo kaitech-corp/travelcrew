@@ -29,6 +29,7 @@
 .packages
 .pub-cache/
 .pub/
+.vscode
 /build/
 
 # Web related

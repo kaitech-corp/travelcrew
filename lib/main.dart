@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,13 +57,10 @@ class _TravelCrewState extends State<TravelCrew> {
   @override
   void initState() {
     if (Platform.isIOS) {
-      FBMessaging().requestPermissions();
+      requestPermissions();
     } else {
       try {
-        FBMessaging().androidFCMSetting();
-        FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-          FBMessaging().firebaseMessagingBackgroundHandler(message);
-        });
+        androidFCMSetting();
       } on Exception catch (e) {
         if (kDebugMode) {
           print(e);
