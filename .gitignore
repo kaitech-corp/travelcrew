@@ -46,3 +46,5 @@ lib/generated_plugin_registrant.dart
 /ios/build/
 /pubspec.yaml
 ios/Flutter/Generated.xcconfig
+ios/Pods
+ios/Pods/Target Support Files
