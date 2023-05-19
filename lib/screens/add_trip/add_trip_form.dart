@@ -86,7 +86,7 @@ class _AddTripFormState extends State<AddTripForm> {
     // tripNameController.dispose();
     // urlToImage.dispose();
     // locationController.dispose();
-    googleData.dispose();
+    // googleData.dispose();
     // commentController.dispose();
     super.dispose();
   }

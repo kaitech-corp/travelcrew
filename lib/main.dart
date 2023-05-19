@@ -62,9 +62,6 @@ class _TravelCrewState extends State<TravelCrew> {
     } else {
       try {
         FBMessaging().androidFCMSetting();
-        FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-          FBMessaging().firebaseMessagingBackgroundHandler(message);
-        });
       } on Exception catch (e) {
         if (kDebugMode) {
           print(e.toString());
