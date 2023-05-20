@@ -1,9 +1,0 @@
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/FirebaseFirestore.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/gRPC-Core.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/Libuv-gRPC.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/FirebaseCoreExtension.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/gRPC-C++.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/BoringSSL-GRPC.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/FirebaseSharedSwift.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/Base/abseil.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseFirestore/WithLeveldb/leveldb-library.framework

@@ -1,6 +1,0 @@
-framework module add_2_calendar {
-  umbrella header "add_2_calendar-umbrella.h"
-
-  export *
-  module * { export * }
-}
