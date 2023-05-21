@@ -1,19 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_performance/firebase_performance.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/custom_objects.dart';
 import '../../models/location_model.dart';
-import '../../services/analytics_service.dart';
+
 import '../../services/locator.dart';
 
 class CloudFunction {
   UserService userService = locator<UserService>();
   UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
-  final AnalyticsService _analyticsService = AnalyticsService();
 
   Future<void> getDestinations() async {
     final HttpsCallable callable =
@@ -76,9 +72,7 @@ class CloudFunction {
       'docID': docID,
       'ispublic': ispublic,
       'ownerID': ownerID
-    }).then((HttpsCallableResult<dynamic> value) => <void>{
-          _analyticsService.joinedTrip(true),
-        });
+    });
   }
 
   Future<void> joinTripInvite(
@@ -90,7 +84,6 @@ class CloudFunction {
       'uidInvitee': uidInvitee,
       'ispublic': ispublic,
     }).then((HttpsCallableResult<dynamic> value) => <void>{
-          _analyticsService.joinedTrip(true),
           if (ispublic)
             <void>{
               addMember(docID, uidInvitee),
@@ -173,9 +166,7 @@ class CloudFunction {
         FirebaseFunctions.instance.httpsCallable('addFavoriteTrip');
     functionData(<String, dynamic>{
       'docID': docID,
-    }).then((HttpsCallableResult<dynamic> value) => <dynamic>{
-          _analyticsService.likedTrip(),
-        });
+    });
   }
 
   Future<void> removeFavoriteFromTrip(String docID) async {
@@ -438,7 +429,6 @@ class CloudFunction {
       'flightNumber': flightNumber,
       'comment': comment,
     });
-    _analyticsService.createTransportation(true);
   }
 
   Future<void> deleteTransportation(

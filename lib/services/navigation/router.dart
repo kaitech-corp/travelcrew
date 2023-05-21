@@ -19,7 +19,6 @@ import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
 import '../../screens/main_tab_page/favorites/favorites_page.dart';
 import '../../screens/main_tab_page/main_tab_page.dart';
 import '../../screens/main_tab_page/my_trips_tab/current_trips/current_trips_page.dart';
-import '../../screens/main_tab_page/notifications/notification_card.dart';
 import '../../screens/main_tab_page/notifications/notification_page.dart';
 import '../../screens/menu_screens/help/feedback_page.dart';
 import '../../screens/menu_screens/help/help.dart';

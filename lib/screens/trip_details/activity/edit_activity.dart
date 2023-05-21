@@ -260,8 +260,8 @@ class _EditActivityState extends State<EditActivity> {
                   endDateTimestamp: (endDateTimestamp.value == null)
                       ? widget.trip.startDateTimeStamp
                       : endDateTimestamp.value,
-                  startTime: startTime.value.toString(),
-                  endTime: endTime.value.toString(),
+                  startTime: startTime.value.format(context),
+                  endTime: endTime.value.format(context),
                 );
               } on Exception catch (e) {
                 CloudFunction().logError(

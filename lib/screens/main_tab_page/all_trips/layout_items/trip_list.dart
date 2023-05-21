@@ -6,7 +6,7 @@ import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../models/trip_model.dart';
 import '../../../../repositories/trip_repositories/all_trip_repository.dart';
-import '../../../../services/analytics_service.dart';
+
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/functions/tc_functions.dart';
@@ -24,8 +24,6 @@ class SliverGridTripList extends StatefulWidget {
 }
 
 class _SliverGridTripListState extends State<SliverGridTripList> {
-  final AnalyticsService _analyticsService = AnalyticsService();
-
   late GenericBloc<Trip, AllTripsRepository> allTripBloc;
 
   int crossAxisCount = 2;
@@ -37,6 +35,12 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
     allTripBloc =
         BlocProvider.of<GenericBloc<Trip, AllTripsRepository>>(context);
     allTripBloc.add(LoadingGenericData());
+  }
+
+  @override
+  void dispose() {
+    allTripBloc.close();
+    super.dispose();
   }
 
   @override
@@ -106,7 +110,6 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
       splashColor: Colors.blue.withAlpha(30),
       child: GestureDetector(
         onTap: () {
-          _analyticsService.viewedTrip();
           navigationService.navigateTo(ExploreBasicRoute, arguments: trip);
         },
         child: Hero(
@@ -166,7 +169,6 @@ class _SliverGridTripListState extends State<SliverGridTripList> {
 
     return GestureDetector(
       onTap: () {
-        _analyticsService.viewedTrip();
         navigationService.navigateTo(ExploreBasicRoute, arguments: trip);
       },
       child: InkWell(

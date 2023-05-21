@@ -8,9 +8,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../../blocs/generics/generic_bloc.dart';
-import '../../blocs/notification_bloc/notification_bloc.dart';
-import '../../blocs/notification_bloc/notification_event.dart';
-import '../../models/notification_model.dart';
 import '../../models/trip_model.dart';
 import '../../repositories/trip_repositories/all_trip_repository.dart';
 import '../../repositories/trip_repositories/current_trip_repository.dart';
@@ -73,6 +70,8 @@ class _MainTabPageState extends State<MainTabPage> {
     });
     super.initState();
   }
+
+  
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[

@@ -18,15 +18,18 @@ class GroupedListTripView extends StatefulWidget {
 class _GroupedListTripViewState extends State<GroupedListTripView> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.data.length,
-        itemBuilder: (BuildContext context, int index) {
-          final Trip trip = widget.data[index];
-          return CrewTripCard(
-            trip: trip,
-            heroTag: trip.urlToImage,
-          );
-        });
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.data.length,
+          itemBuilder: (BuildContext context, int index) {
+            final Trip trip = widget.data[index];
+            return CrewTripCard(
+              trip: trip,
+              heroTag: trip.urlToImage,
+            );
+          }),
+    );
   }
 }

@@ -4,19 +4,19 @@ import '../theme/text_styles.dart';
 import 'appearance_widgets.dart';
 
 class TimePickers extends StatefulWidget {
-  const TimePickers(
-      {Key? key,
-      required this.lodging,
-      required this.startTime,
-      required this.endTime})
-      : super(key: key);
+  const TimePickers({
+    Key? key,
+    required this.lodging,
+    required this.startTime,
+    required this.endTime,
+  }) : super(key: key);
 
   final bool lodging;
   final ValueNotifier<TimeOfDay> startTime;
   final ValueNotifier<TimeOfDay> endTime;
 
   @override
-  State<TimePickers> createState() => _TimePickersState();
+  _TimePickersState createState() => _TimePickersState();
 }
 
 class _TimePickersState extends State<TimePickers> {
@@ -26,125 +26,72 @@ class _TimePickersState extends State<TimePickers> {
   @override
   void initState() {
     timeStart = widget.lodging
-        ? TimeOfDay.fromDateTime(DateTime.utc(2021, 1, 1, 15))
-        : TimeOfDay.fromDateTime(DateTime.utc(2021, 1, 1, 9));
+        ? const TimeOfDay(hour: 15, minute: 0)
+        : const TimeOfDay(hour: 9, minute: 0);
     timeEnd = widget.lodging
-        ? TimeOfDay.fromDateTime(DateTime.utc(2021, 1, 1, 11))
-        : TimeOfDay.fromDateTime(DateTime.utc(2021, 1, 1, 15));
+        ? const TimeOfDay(hour: 11, minute: 0)
+        : const TimeOfDay(hour: 15, minute: 0);
     super.initState();
   }
 
-  String get _labelTextTimeStart {
-    final String startTime = timeStart.format(context);
-    widget.startTime.value = timeStart;
-    return startTime;
-  }
-
-  String get _labelTextTimeEnd {
-    final String endTime = timeEnd.format(context);
-    widget.endTime.value = timeEnd;
-    return endTime;
-  }
-
-  Future<void> showTimePickerStart(BuildContext context) async {
+  Future<void> showTimePickerDialog(BuildContext context, bool isStartTime) async {
+    final TimeOfDay initialTime = isStartTime ? timeStart : timeEnd;
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: timeStart,
+      initialTime: initialTime,
     );
-    if (picked != null && picked != timeStart) {
+
+    if (picked != null && picked != initialTime) {
       setState(() {
-        timeStart = picked;
+        if (isStartTime) {
+          timeStart = picked;
+          widget.startTime.value = picked;
+        } else {
+          timeEnd = picked;
+          widget.endTime.value = picked;
+        }
       });
     }
   }
 
-  Future<void> showTimePickerEnd(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: timeEnd,
+  Widget _timePickerRow(String labelText, IconData icon, VoidCallback onPressed) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              TripDetailsIconThemeWidget(icon: icon),
+              const SizedBox(width: 8),
+              Text(labelText, style: titleMedium(context)),
+            ],
+          ),
+        ),
+        ButtonTheme(
+          minWidth: 150,
+          child: ElevatedButton(
+            onPressed: onPressed,
+            child: Text(labelText),
+          ),
+        ),
+      ],
     );
-    if (picked != null && picked != timeEnd) {
-      setState(() {
-        timeEnd = picked;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  const TripDetailsIconThemeWidget(
-                    icon: Icons.access_time,
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    _labelTextTimeStart,
-                    style: titleMedium(context),
-                  ),
-                ],
-              ),
-            ),
-//                                SizedBox(height: 16),
-            ButtonTheme(
-              minWidth: 150,
-              child: ElevatedButton(
-                child: widget.lodging
-                    ? const Text('Check In')
-                    : const Text(
-                        'Start Time',
-                      ),
-                onPressed: () async {
-                  showTimePickerStart(context);
-                },
-              ),
-            ),
-          ],
+        _timePickerRow(
+          timeStart.format(context),
+          Icons.access_time,
+          () => showTimePickerDialog(context, true),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  const TripDetailsIconThemeWidget(
-                    icon: Icons.access_time,
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    _labelTextTimeEnd,
-                    style: titleMedium(context),
-                  ),
-                ],
-              ),
-            ),
-//                                SizedBox(height: 16),
-            ButtonTheme(
-              minWidth: 150,
-              child: ElevatedButton(
-                child: widget.lodging
-                    ? const Text('Checkout')
-                    : const Text(
-                        'End Time',
-                      ),
-                onPressed: () {
-                  showTimePickerEnd(context);
-                },
-              ),
-            ),
-          ],
+        _timePickerRow(
+          timeEnd.format(context),
+          Icons.access_time,
+          () => showTimePickerDialog(context, false),
         ),
       ],
     );

@@ -57,8 +57,12 @@ class _CurrentTripsState extends State<CurrentTrips> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                     child: Text(
                       'Public',
-                      style: titleMedium(context),
+                      style: titleLarge(context),
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(height: 2,color:Colors.grey[200]),
                   ),
                   Expanded(
                     flex: 2,
@@ -70,8 +74,12 @@ class _CurrentTripsState extends State<CurrentTrips> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                     child: Text(
                       'Private',
-                      style: titleMedium(context),
+                      style: titleLarge(context),
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(height: 2,color:Colors.grey[200]),
                   ),
                    Expanded(
                     flex: 2,

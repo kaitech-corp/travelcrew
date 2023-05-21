@@ -267,11 +267,11 @@ class AddNewActivityState extends State<AddNewActivity> {
                               startDateTimestamp: startDateTimestamp.value,
                               endDateTimestamp: endDateTimestamp.value,
                               displayName: currentUserProfile.displayName,
-                              endTime: endTime.value.toString(),
+                              endTime: endTime.value.format(context),
                               fieldID: '',
                               link: link,
                               location: controller.text,
-                              startTime: startTime.value.toString(),
+                              startTime: startTime.value.format(context),
                               uid: userService.currentUserID,
                               voters: <String>[], dateTimestamp: Timestamp.now()),
                           documentID);

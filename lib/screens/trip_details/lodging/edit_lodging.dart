@@ -261,13 +261,13 @@ class _EditLodgingState extends State<EditLodging> {
                   comment: comment,
                   documentID: documentID,
                   endDateTimestamp: endDateTimestamp.value,
-                  endTime: endTime.value.toString(),
+                  endTime: endTime.value.format(context),
                   fieldID: fieldID,
                   link: link,
                   location: controller.text,
                   lodgingType: lodgingType,
                   startDateTimestamp: startDateTimestamp.value,
-                  startTime: startTime.value.toString(),
+                  startTime: startTime.value.format(context),
                 );
               } on Exception catch (e) {
                 CloudFunction()

@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../../../services/analytics_service.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 
@@ -14,11 +13,9 @@ import '../../../../services/functions/cloud_functions.dart';
 /// Relies on Firebase authentication.
 /// Allows to sign in with Google or Apple.
 class UserRepository {
-
   UserRepository() : _firebaseAuth = FirebaseAuth.instance;
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final AnalyticsService _analyticsService = AnalyticsService();
 
   Future<UserCredential> signInWithCredentials(
       {required String email, required String password}) async {
@@ -28,14 +25,13 @@ class UserRepository {
 
   Future<void> signUp(String email, String password, String? firstname,
       String? lastName, String? displayName, File? urlToImage) async {
-    final UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
+    final UserCredential result = await _firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: password);
     final User? user = result.user;
     await DatabaseService(uid: user?.uid)
         .updateUserData(firstname, lastName, email, user!.uid);
     await DatabaseService(uid: user.uid).updateUserPublicProfileData(
         displayName, firstname, lastName, email, user.uid, urlToImage);
-    await _analyticsService.logSignUp();
   }
 
   Future<List<dynamic>> signOut() async {
@@ -56,14 +52,16 @@ class UserRepository {
     return _firebaseAuth.currentUser;
   }
 
-  Stream<User?> get user => _firebaseAuth.authStateChanges().map((User? user) => user);
+  Stream<User?> get user =>
+      _firebaseAuth.authStateChanges().map((User? user) => user);
 
   bool get appleSignInAvailable => Platform.isIOS;
 
   Future<UserCredential?> signInWithApple() async {
     try {
-      final AuthorizationCredentialAppleID appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: <AppleIDAuthorizationScopes>[
+      final AuthorizationCredentialAppleID appleCredential =
+          await SignInWithApple.getAppleIDCredential(
+              scopes: <AppleIDAuthorizationScopes>[
             AppleIDAuthorizationScopes.email,
             AppleIDAuthorizationScopes.fullName
           ]);
@@ -83,9 +81,9 @@ class UserRepository {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
-      await googleSignIn.signIn();
+          await googleSignIn.signIn();
       final GoogleSignInAuthentication? googleSignInAuthentication =
-      await googleSignInAccount?.authentication;
+          await googleSignInAccount?.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication?.accessToken,
@@ -93,7 +91,7 @@ class UserRepository {
       );
 
       final UserCredential authResult =
-      await _firebaseAuth.signInWithCredential(credential);
+          await _firebaseAuth.signInWithCredential(credential);
       final User? user = authResult.user;
 
       assert(!user!.isAnonymous);
@@ -101,10 +99,9 @@ class UserRepository {
 
       final User? currentUser = _firebaseAuth.currentUser;
       assert(user?.uid == currentUser?.uid);
-      await _analyticsService.logLoginGoogle();
+
       return authResult;
     } catch (e) {
-      _analyticsService.writeError(e.toString());
       return null;
     }
   }
@@ -114,12 +111,16 @@ class UserRepository {
     final User? currentUser = _firebaseAuth.currentUser;
     if (displayName?.isEmpty ?? true) {
       displayName =
-      'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
+          'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
     }
     await DatabaseService(uid: currentUser!.uid).updateUserData(
         firstname, lastName, currentUser.email, currentUser.uid);
-    return DatabaseService(uid: currentUser.uid)
-        .updateUserPublicProfileData(displayName, firstname, lastName,
-        currentUser.email, currentUser.uid, urlToImage);
+    return DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(
+        displayName,
+        firstname,
+        lastName,
+        currentUser.email,
+        currentUser.uid,
+        urlToImage);
   }
 }

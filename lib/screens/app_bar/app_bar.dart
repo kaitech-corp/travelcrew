@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import '../../blocs/current_profile_bloc/current_profile_bloc.dart';
-import '../../blocs/current_profile_bloc/current_profile_event.dart';
 
 import '../../blocs/notification_bloc/notification_bloc.dart';
 import '../../blocs/notification_bloc/notification_event.dart';

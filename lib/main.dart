@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +51,8 @@ class TravelCrew extends StatefulWidget {
 }
 
 class _TravelCrewState extends State<TravelCrew> {
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  
 
   @override
   void initState() {
@@ -120,7 +120,7 @@ class _TravelCrewState extends State<TravelCrew> {
         navigatorKey: locator<NavigationService>().navigationKey,
         onGenerateRoute: generateRoute,
         navigatorObservers: <NavigatorObserver>[
-          FirebaseAnalyticsObserver(analytics: analytics),
+          // FirebaseAnalyticsObserver(analytics: analytics),
         ],
       );
     });

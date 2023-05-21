@@ -24,7 +24,6 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -125,7 +124,9 @@ class _SignupFormState extends State<SignupForm> {
                     autocorrect: false,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_) {
-                      return !state.isEmailValid ? AppLocalizations.of(context)!.invalid_email : null;
+                      return !state.isEmailValid
+                          ? AppLocalizations.of(context)!.invalid_email
+                          : null;
                     },
                   ),
                   TextFormField(
@@ -138,7 +139,9 @@ class _SignupFormState extends State<SignupForm> {
                     autocorrect: false,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_) {
-                      return !state.isPasswordValid ? AppLocalizations.of(context)!.invalid_password : null;
+                      return !state.isPasswordValid
+                          ? AppLocalizations.of(context)!.invalid_password
+                          : null;
                     },
                   ),
                   TextFormField(
@@ -171,41 +174,40 @@ class _SignupFormState extends State<SignupForm> {
                   const SizedBox(
                     height: 8,
                   ),
-                  if (imagePicked) Column(
-                    children: <Widget>[
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: (){
-                            setState(() {
-                              imagePicked = true;
-                            });
-                          },
-                          child: const Icon(Icons.close),
+                  if (imagePicked)
+                    Column(
+                      children: <Widget>[
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                imagePicked = false;
+                              });
+                            },
+                            child: const Icon(Icons.close),
+                          ),
                         ),
-                      ),
-                      Container(
-                              height: (SizeConfig.screenWidth / 3) * 2.5,
-                              // width: (SizeConfig.screenWidth/3)*1.9,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  // color: Colors.orange,
-                                  image: DecorationImage(
-                                      image: FileImage(_urlToImage.value),
-                                      fit: BoxFit.cover)),
-                            ),
-                    ],
-                  ) else Text(AppLocalizations.of(context)!.select_photo,
-                          style: const TextStyle(
-                              fontFamily: 'Raleway',
-                              fontWeight: FontWeight.bold)),
+                        Container(
+                          height: (SizeConfig.screenWidth / 3) * 2.5,
+                          // width: (SizeConfig.screenWidth/3)*1.9,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              // color: Colors.orange,
+                              image: DecorationImage(
+                                  image: FileImage(_urlToImage.value),
+                                  fit: BoxFit.cover)),
+                        ),
+                      ],
+                    )
+                  else
+                    Text(AppLocalizations.of(context)!.select_photo,
+                        style: const TextStyle(
+                            fontFamily: 'Raleway',
+                            fontWeight: FontWeight.bold)),
                   ElevatedButton(
-                    onPressed: () {
-                      ImagePickerAndCropper().uploadImage(_urlToImage);
-                      if(_urlToImage.value.path.isNotEmpty){
-                        setState(() {
-                          imagePicked = true;
-                        });
-                      }
+                    onPressed: () async {
+                      _urlToImage.value = await ImagePickerAndCropper()
+                          .uploadImage(_urlToImage);
                     },
                     child: const Icon(Icons.add_a_photo),
                   ),
@@ -224,7 +226,8 @@ class _SignupFormState extends State<SignupForm> {
                           onPressed: () {
                             TCFunctions().launchURL(urlToTerms);
                           },
-                          child: Text(AppLocalizations.of(context)!.terms_of_service,
+                          child: Text(
+                              AppLocalizations.of(context)!.terms_of_service,
                               style: const TextStyle(
                                 fontFamily: 'Cantata One',
                                 fontWeight: FontWeight.bold,
@@ -235,7 +238,8 @@ class _SignupFormState extends State<SignupForm> {
                           onPressed: () {
                             TCFunctions().launchURL(urlToPrivacyPolicy);
                           },
-                          child: Text(AppLocalizations.of(context)!.privacy_policy,
+                          child: Text(
+                              AppLocalizations.of(context)!.privacy_policy,
                               style: const TextStyle(
                                   fontFamily: 'Cantata One',
                                   fontWeight: FontWeight.bold,
@@ -302,6 +306,11 @@ class _SignupFormState extends State<SignupForm> {
 
   void _onImageChange() {
     _signupBloc.add(SignupImageChanged(urlToImage: _urlToImage.value));
+    if (_urlToImage.value.path.isNotEmpty) {
+      setState(() {
+        imagePicked = true;
+      });
+    }
   }
 
   void _onFormSubmitted() {

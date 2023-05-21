@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/notification_bloc/notification_bloc.dart';
-import '../../repositories/notification_repository.dart';
 import '../../screens/authenticate/profile_stream.dart';
 import '../database.dart';
 
