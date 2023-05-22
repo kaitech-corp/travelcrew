@@ -193,3 +193,8 @@ List<Trip> getCurrentPrivateTrips(List<Trip> trips, bool past) {
   return output;
 }
 }
+
+int getRandomIndex(List<dynamic> list) {
+  final Random random = Random();
+  return random.nextInt(list.length);
+}

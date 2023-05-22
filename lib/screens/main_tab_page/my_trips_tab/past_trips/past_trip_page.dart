@@ -56,7 +56,7 @@ class _PastTripsState extends State<PastTrips> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                     child: Text(
                       'Public',
-                      style: titleLarge(context),
+                      style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
@@ -73,7 +73,7 @@ class _PastTripsState extends State<PastTrips> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                     child: Text(
                       'Private',
-                      style: titleLarge(context),
+                      style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(

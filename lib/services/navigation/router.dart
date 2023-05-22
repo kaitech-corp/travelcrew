@@ -15,9 +15,6 @@ import '../../models/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
 import '../../screens/add_trip/add_trip_page.dart';
 import '../../screens/add_trip/edit_trip.dart';
-import '../../screens/main_tab_page/all_trips/all_trips_page.dart';
-import '../../screens/main_tab_page/favorites/favorites_page.dart';
-import '../../screens/main_tab_page/main_tab_page.dart';
 import '../../screens/main_tab_page/my_trips_tab/current_trips/current_trips_page.dart';
 import '../../screens/main_tab_page/notifications/notification_page.dart';
 import '../../screens/menu_screens/help/feedback_page.dart';
@@ -35,13 +32,11 @@ import '../../screens/signup/signup_page.dart';
 import '../../screens/trip_details/activity/activity_page.dart';
 import '../../screens/trip_details/activity/add_new_activity.dart';
 import '../../screens/trip_details/activity/edit_activity.dart';
-
 import '../../screens/trip_details/chat/chat_page.dart';
 import '../../screens/trip_details/details/detail_page.dart';
 import '../../screens/trip_details/explore/explore.dart';
 import '../../screens/trip_details/explore/explore_basic.dart';
 import '../../screens/trip_details/explore/followers/user_following_list_page.dart';
-
 import '../../screens/trip_details/explore/members/members_layout.dart';
 import '../../screens/trip_details/lodging/add_new_lodging.dart';
 import '../../screens/trip_details/lodging/edit_lodging.dart';
@@ -98,20 +93,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name!,
         viewToShow: const AdminPage(),
       );
-    case AllTripsPageRoute:
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: const AllTrips(),
-      );
-    // case BasketListPageRoute:
-    //   final BasketListArguments arguments = settings.arguments as BasketListArguments;
-    //   return _getPageRoute(
-    //     routeName: settings.name!,
-    //     viewToShow: BasketListPage(
-    //       trip: arguments.trip,
-    //       controller: arguments.basketController,
-    //     ),
-    //   );
     case ChatRoute:
       return _getPageRoute(
         routeName: settings.name!,
@@ -210,11 +191,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           trip: args as Trip,
         ),
       );
-    case FavoritesRoute:
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: const FavoritesPage(),
-      );
     case FeedbackPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
@@ -250,11 +226,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           trip: args as Trip,
         ),
       );
-    case MainTabPageRoute:
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: const MainTabPage(),
-      );
     case MembersLayoutRoute:
       final MembersLayoutArguments arguments =
           settings.arguments as MembersLayoutArguments;
@@ -275,7 +246,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           settings.arguments as List<NotificationData>;
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: NotificationPage(notifications: arguments,),
+        viewToShow: NotificationPage(
+          notifications: arguments,
+        ),
       );
     case ReportContentRoute:
       final ReportArguments arguments = settings.arguments as ReportArguments;
@@ -442,7 +415,6 @@ class SplitArguments {
   SplitArguments(this.trip);
   final Trip trip;
 }
-
 
 class SplitDetailsArguments {
   SplitDetailsArguments({required this.splitObject, required this.trip});

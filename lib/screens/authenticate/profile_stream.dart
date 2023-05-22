@@ -7,7 +7,7 @@ import '../../blocs/current_profile_bloc/current_profile_bloc.dart';
 import '../../blocs/notification_bloc/notification_bloc.dart';
 import '../../repositories/current_user_profile_repository.dart';
 import '../../repositories/notification_repository.dart';
-import '../main_tab_page/main_tab_page.dart';
+import '../main_page/main_page.dart';
 
 /// Profile stream to initiate all blocs
 class ProfileStream extends StatefulWidget {
@@ -32,6 +32,6 @@ class _ProfileStreamState extends State<ProfileStream> {
       BlocProvider(
           create: (BuildContext context) => NotificationBloc(
               notificationRepository: NotificationRepository()..refresh()))
-    ], child: const MainTabPage());
+    ], child: const MainPage());
   }
 }

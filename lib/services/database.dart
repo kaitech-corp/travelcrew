@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/activity_model.dart';
@@ -22,6 +23,8 @@ import '../../services/functions/tc_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/navigation_service.dart';
 import '../../services/notifications/notifications.dart';
+import '../models/feed_model.dart';
+import '../models/recommended_model.dart';
 
 UserService userService = locator<UserService>();
 NavigationService navigationService = locator<NavigationService>();
@@ -105,6 +108,12 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('costDetails');
   final CollectionReference<Object?> settingsCollection =
       FirebaseFirestore.instance.collection('settings');
+  final CollectionReference<Object?> recActivityCollection =
+      FirebaseFirestore.instance.collection('recommended_activities');
+  final CollectionReference<Object?> recTripCollection =
+      FirebaseFirestore.instance.collection('recommended_trips');
+  final CollectionReference<Object?> feedCollection =
+      FirebaseFirestore.instance.collection('feed');
 
   Future<List<DestinationModel>> getDestinations() async {
     const String url =
@@ -1630,4 +1639,61 @@ class DatabaseService {
     final bool reviewExists = ref.docs.contains(docID);
     return reviewExists;
   }
+
+  Future<void> writeData(List<String> data) async {
+    try {
+      await Future.forEach(data, (String item) async {
+        final DocumentReference<Object?> doc = recTripCollection.doc();
+        doc.set(<String, dynamic>{
+          'name': item,
+          'clicks': 0,
+          'dateCreated': FieldValue.serverTimestamp(),
+          'docID': doc.id,
+          'urlToImage': ''
+        });
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<void> updateUrlToImage() async {
+    final collection = recActivityCollection;
+    final documents = await collection.get();
+
+    for (final document in documents.docs) {
+      await collection.doc(document.id).update({
+        'urlToImage': <String>['']
+      });
+    }
+  }
+
+  Future<List<RecommendedContent>> getRecommendedContent(String content) async {
+    final CollectionReference<Object?> collection =
+        content == 'trip' ? recTripCollection : recActivityCollection;
+    final QuerySnapshot<Object?> docs = await collection.get();
+    final List<RecommendedContent> recommendedContents = docs.docs
+        .map((QueryDocumentSnapshot<Object?> doc) =>
+            RecommendedContent.fromDocument(doc))
+        .toList();
+    return recommendedContents;
+  }
+
+  /// Get Feed
+Stream<List<FeedModel>> getFeed() async* {
+  final QuerySnapshot<Object?> ref = await feedCollection
+      .orderBy('dateCreated', descending: true)
+      .get();
+
+  final List<FeedModel> feedModels = [];
+  for (final doc in ref.docs) {
+    feedModels.add(FeedModel.fromMap(doc.data() as Map<String, dynamic>));
+  }
+
+  yield feedModels;
+}
+
+
 }

@@ -6,38 +6,31 @@ import '../../screens/authenticate/profile_stream.dart';
 import '../database.dart';
 
 class LaunchIconBadger extends StatefulWidget {
-  const LaunchIconBadger({
-    Key? key,
-  }) : super(key: key);
+  const LaunchIconBadger({Key? key}) : super(key: key);
 
   @override
-  State<LaunchIconBadger> createState() => _LaunchIconBadgerState();
+  _LaunchIconBadgerState createState() => _LaunchIconBadgerState();
 }
 
 class _LaunchIconBadgerState extends State<LaunchIconBadger> {
+  String appBadgeSupported = 'Not supported';
+
   @override
   void initState() {
     super.initState();
     initPlatformState();
   }
 
-  Future<String> initPlatformState() async {
-    String appBadgeSupported;
+  Future<void> initPlatformState() async {
     try {
-      final bool res = await FlutterAppBadger.isAppBadgeSupported();
-      if (res) {
-        appBadgeSupported = 'Supported';
-      } else {
-        appBadgeSupported = 'Not supported';
-      }
-      return appBadgeSupported;
+      final bool isBadgeSupported = await FlutterAppBadger.isAppBadgeSupported();
+      appBadgeSupported = isBadgeSupported ? 'Supported' : 'Not supported';
     } on PlatformException {
       appBadgeSupported = 'Failed to get badge support.';
     }
-    if (!mounted) {
-      return appBadgeSupported;
+    if (mounted) {
+      setState(() {});
     }
-    return appBadgeSupported;
   }
 
   @override
