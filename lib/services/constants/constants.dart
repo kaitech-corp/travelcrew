@@ -7,7 +7,6 @@ import '../../size_config/size_config.dart';
 /// Assets
 const String error = 'assets/images/error.jpg';
 const String splashScreenLogo = 'assets/images/v1.gif';
-// const String profileImagePlaceholder = 'assets/images/blank_profile_picture.png';
 const String profileImagePlaceholder = 'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/web_images%2Fblank_profile_picture.png?alt=media&token=892980e3-ff20-4a6d-832f-9ef877c1a2af';
 const String spaceImage = 'assets/images/space3.jpg';
 const String skyImage = 'assets/images/sky.jpg';

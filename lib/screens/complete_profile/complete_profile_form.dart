@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -14,6 +15,7 @@ import '../../blocs/complete_profile_bloc/complete_profile_state.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/tc_functions.dart';
+import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/gradient_button.dart';
@@ -175,7 +177,20 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                   const SizedBox(
                     height: 8,
                   ),
-                  if (imagePicked) Container(
+if (imagePicked)
+                    Column(
+                      children: <Widget>[
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                imagePicked = false;
+                              });
+                            },
+                            child: const Icon(Icons.close),
+                          ),
+                        ),
+                        Container(
                           height: (SizeConfig.screenWidth / 3) * 2.5,
                           // width: (SizeConfig.screenWidth/3)*1.9,
                           decoration: BoxDecoration(
@@ -184,13 +199,18 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                               image: DecorationImage(
                                   image: FileImage(_urlToImage.value),
                                   fit: BoxFit.cover)),
-                        ) else Text(Intl.message('Select a Profile Picture.'),
-                          style: const TextStyle(
-                              fontFamily: 'Raleway',
-                              fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    )
+                  else
+                    Text(AppLocalizations.of(context)!.select_photo,
+                        style: const TextStyle(
+                            fontFamily: 'Raleway',
+                            fontWeight: FontWeight.bold)),
                   ElevatedButton(
-                    onPressed: () {
-                      getImage();
+                    onPressed: () async {
+                      _urlToImage.value = await ImagePickerAndCropper()
+                          .uploadImage(_urlToImage);
                     },
                     child: const Icon(Icons.add_a_photo),
                   ),
@@ -283,6 +303,11 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
   void _onImageChange() {
     _completeProfileBloc
         .add(CompleteProfileImageChanged(urlToImage: _urlToImage.value));
+            if (_urlToImage.value.path.isNotEmpty) {
+      setState(() {
+        imagePicked = true;
+      });
+    }
   }
 
   void _onFormSubmitted() {
