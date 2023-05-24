@@ -176,23 +176,7 @@ class TCFunctions {
     return x;
   }
 
-List<Trip> getCurrentPrivateTrips(List<Trip> trips, bool past) {
-  final DateTime today = DateTime.now();
-  final List<Trip> output = <Trip>[];
-  for (int i = 0; i < trips.length; i++) {
-    if (past) {
-      if (trips[i].endDateTimeStamp.toDate().isBefore(today)) {
-        output.add(trips[i]);
-      }
-    } else {
-      if (trips[i].endDateTimeStamp.toDate().isAfter(today)) {
-        output.add(trips[i]);
-      }
-    }
-  }
-  return output;
-}
-}
+
 
 int getRandomIndex(List<dynamic> list) {
   final Random random = Random();

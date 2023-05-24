@@ -4,7 +4,8 @@ import 'package:bloc/bloc.dart';
 
 import '../../../blocs/public_profile_bloc/public_profile_event.dart';
 import '../../../blocs/public_profile_bloc/public_profile_state.dart';
-import '../../models/custom_objects.dart';
+
+import '../../models/public_profile_model/public_profile_model.dart';
 import '../../repositories/user_profile_repository.dart';
 
 

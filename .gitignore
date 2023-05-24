@@ -48,3 +48,4 @@ lib/generated_plugin_registrant.dart
 ios/Flutter/Generated.xcconfig
 ios/Pods
 ios/Pods/Target Support Files
+lib/models/trip_model/trip_model.freezed.dart

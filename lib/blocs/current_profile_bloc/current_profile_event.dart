@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import '../../models/custom_objects.dart';
+
+import '../../models/public_profile_model/public_profile_model.dart';
+
 
 abstract class CurrentProfileEvent extends Equatable {
   @override

@@ -1,13 +1,15 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 
-import '../../models/activity_model.dart';
-import '../../models/custom_objects.dart';
-import '../../models/lodging_model.dart';
+import '../../models/activity_model/activity_model.dart';
+import '../../models/lodging_model/lodging_model.dart';
+
+
 
 Event createEvent(
-    {ActivityData? activity,
-      required DateTimeModel timeModel,
-      LodgingData? lodging,
+    {ActivityModel? activity,
+      required DateTime startDate,
+      required DateTime endDate,
+      LodgingModel? lodging,
       required String type}){
 
   if(type == 'Activity') {
@@ -15,8 +17,8 @@ Event createEvent(
       title: activity!.activityType,
       description: activity.comment,
       location: activity.location,
-      startDate: timeModel.startDate!,
-      endDate: timeModel.endDate!,
+      startDate: startDate,
+      endDate: endDate!,
     );
     return event;
   } else{
@@ -24,8 +26,8 @@ Event createEvent(
       title: lodging!.lodgingType,
       description: lodging.comment,
       location: lodging.location,
-      startDate: timeModel.startDate!,
-      endDate: timeModel.endDate!,
+      startDate: startDate,
+      endDate: endDate,
       // allDay: true,
     );
     return event;

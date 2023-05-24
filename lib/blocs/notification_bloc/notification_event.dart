@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../models/notification_model.dart';
+import '../../models/notification_model/notification_model.dart';
 
 abstract class NotificationEvent extends Equatable {
   @override
@@ -13,7 +13,7 @@ class LoadingNotificationData extends NotificationEvent {
 class HasDataEvent extends NotificationEvent {
 
   HasDataEvent(this.data);
-  final List<NotificationData> data;
+  final List<NotificationModel> data;
 
   @override
   List<Object> get props => <Object>[data];

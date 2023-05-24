@@ -5,46 +5,46 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../admin/admin_page.dart';
 import '../../blocs/generics/generic_bloc.dart';
-import '../../models/activity_model.dart';
-import '../../models/custom_objects.dart';
-import '../../models/lodging_model.dart';
-import '../../models/notification_model.dart';
-import '../../models/split_model.dart';
-import '../../models/transportation_model.dart';
-import '../../models/trip_model.dart';
+import '../../features/Activities/activity_page.dart';
+import '../../features/Activities/add_new_activity.dart';
+import '../../features/Activities/edit_activity.dart';
+import '../../features/Chat/chat_page.dart';
+import '../../features/DM/dm_chat.dart';
+import '../../features/DM/dm_chats_page.dart';
+import '../../features/Lodging/add_new_lodging.dart';
+import '../../features/Lodging/edit_lodging.dart';
+import '../../features/Lodging/lodging_page.dart';
+import '../../features/Menu/help/feedback_page.dart';
+import '../../features/Menu/help/help.dart';
+import '../../features/Menu/help/report.dart';
+import '../../features/Menu/main_menu.dart';
+import '../../features/Menu/settings/settings.dart';
+import '../../features/Notifications/notification_page.dart';
+import '../../features/Profile/edit_profile_page.dart';
+import '../../features/Profile/profile_page.dart';
+import '../../features/Split/split_details_page.dart';
+import '../../features/Split/split_page.dart';
+import '../../features/Transportation/add_new_transportation.dart';
+import '../../features/Transportation/edit_transportation.dart';
+import '../../features/Trip_Details/detail_page.dart';
+import '../../features/Trip_Details/explore.dart';
+import '../../features/Trip_Details/explore_basic.dart';
+import '../../features/Trip_Details/followers/user_following_list_page.dart';
+import '../../features/Trip_Details/members/members_layout.dart';
+import '../../features/Trip_Management/add_trip_page.dart';
+import '../../features/Trip_Management/edit_trip.dart';
+import '../../features/Trips/current_trips_page.dart';
+import '../../features/Users/all_users_page.dart';
+import '../../features/Users/user_profile_page.dart';
+import '../../models/activity_model/activity_model.dart';
+import '../../models/lodging_model/lodging_model.dart';
+import '../../models/member_model/member_model.dart';
+import '../../models/notification_model/notification_model.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
+import '../../models/split_model/split_model.dart';
+import '../../models/transportation_model/transportation_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
-import '../../screens/add_trip/add_trip_page.dart';
-import '../../screens/add_trip/edit_trip.dart';
-import '../../screens/main_tab_page/my_trips_tab/current_trips/current_trips_page.dart';
-import '../../screens/main_tab_page/notifications/notification_page.dart';
-import '../../screens/menu_screens/help/feedback_page.dart';
-import '../../screens/menu_screens/help/help.dart';
-import '../../screens/menu_screens/help/report.dart';
-import '../../screens/menu_screens/main_menu.dart';
-import '../../screens/menu_screens/settings/settings.dart';
-import '../../screens/menu_screens/users/all_users/all_users_page.dart';
-import '../../screens/menu_screens/users/dm_chat/chats_page.dart';
-import '../../screens/menu_screens/users/dm_chat/dm_chat.dart';
-import '../../screens/menu_screens/users/user_profile_page.dart';
-import '../../screens/profile_page/edit_profile_page.dart';
-import '../../screens/profile_page/profile_page.dart';
-import '../../screens/signup/signup_page.dart';
-import '../../screens/trip_details/activity/activity_page.dart';
-import '../../screens/trip_details/activity/add_new_activity.dart';
-import '../../screens/trip_details/activity/edit_activity.dart';
-import '../../screens/trip_details/chat/chat_page.dart';
-import '../../screens/trip_details/details/detail_page.dart';
-import '../../screens/trip_details/explore/explore.dart';
-import '../../screens/trip_details/explore/explore_basic.dart';
-import '../../screens/trip_details/explore/followers/user_following_list_page.dart';
-import '../../screens/trip_details/explore/members/members_layout.dart';
-import '../../screens/trip_details/lodging/add_new_lodging.dart';
-import '../../screens/trip_details/lodging/edit_lodging.dart';
-import '../../screens/trip_details/lodging/lodging_page.dart';
-import '../../screens/trip_details/split/split_details_page.dart';
-import '../../screens/trip_details/split/split_page.dart';
-import '../../screens/trip_details/transportation/add_new_transportation.dart';
-import '../../screens/trip_details/transportation/edit_transportation.dart';
 import '../../services/constants/constants.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/launch_icon_badger.dart';
@@ -167,7 +167,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: EditTransportation(
-          transportationData: args as TransportationData,
+          transportationData: args as TransportationModel,
         ),
       );
     case EditTripDataRoute:
@@ -203,11 +203,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           trip: args as Trip,
         ),
       );
-    // case GooglePlacesRoute:
-    //   return _getPageRoute(
-    //     routeName: settings.name!,
-    //     viewToShow: GooglePlaces(controller: ,),
-    //   );
     case HelpPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
@@ -242,8 +237,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: const MenuDrawer(),
       );
     case NotificationsRoute:
-      final List<NotificationData> arguments =
-          settings.arguments as List<NotificationData>;
+      final List<NotificationModel> arguments =
+          settings.arguments as List<NotificationModel>;
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: NotificationPage(
@@ -273,11 +268,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               const Settings()
           // ),
           );
-    case SignUpScreenRoute:
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: const SignupScreen(),
-      );
     case SplitDetailsPageRoute:
       final SplitDetailsArguments arguments =
           settings.arguments as SplitDetailsArguments;
@@ -361,13 +351,13 @@ MaterialPageRoute<Object> _getPageRoute(
 class EditActivityArguments {
   EditActivityArguments(this.activity, this.trip);
   final Trip trip;
-  final ActivityData activity;
+  final ActivityModel activity;
 }
 
 class EditLodgingArguments {
   EditLodgingArguments(this.lodging, this.trip);
   final Trip trip;
-  final LodgingData lodging;
+  final LodgingModel lodging;
 }
 
 class DetailsPageArguments {
@@ -377,9 +367,9 @@ class DetailsPageArguments {
       this.transport,
       required this.trip,
       required this.type});
-  final ActivityData? activity;
-  final LodgingData? lodging;
-  final TransportationData? transport;
+  final ActivityModel? activity;
+  final LodgingModel? lodging;
+  final TransportationModel? transport;
   final Trip trip;
   final String type;
 }
@@ -396,7 +386,7 @@ class AddToListPageArguments {
 
 class MembersLayoutArguments {
   MembersLayoutArguments(this.members, this.trip, this.ownerID);
-  final List<Members> members;
+  final List<MemberModel> members;
   final Trip trip;
   final String ownerID;
 }
@@ -406,8 +396,8 @@ class ReportArguments {
       this.type, this.userAccount, this.activity, this.trip, this.lodging);
   final String type;
   final UserPublicProfile userAccount;
-  final ActivityData? activity;
-  final LodgingData? lodging;
+  final ActivityModel? activity;
+  final LodgingModel? lodging;
   final Trip? trip;
 }
 

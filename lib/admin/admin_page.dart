@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../models/custom_objects.dart';
-import '../screens/alerts/alert_dialogs.dart';
+import '../features/Alerts/alert_dialogs.dart';
+
+
+import '../models/feedback_model/feedback_model.dart';
 import '../services/constants/constants.dart';
 import '../services/database.dart';
 import '../services/functions/cloud_functions.dart';
 import '../services/theme/text_styles.dart';
 import '../services/widgets/loading.dart';
+import 'logic/logic.dart';
 
 /// Admin page
 class AdminPage extends StatefulWidget {
@@ -137,15 +140,15 @@ class Feedback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: StreamBuilder<List<TCFeedback>>(
+      child: StreamBuilder<List<FeedbackModel>>(
         builder: (BuildContext context,
-            AsyncSnapshot<List<TCFeedback>> feedbackData) {
+            AsyncSnapshot<List<FeedbackModel>> feedbackData) {
           if (feedbackData.hasData) {
-            final List<TCFeedback> feedbackList = feedbackData.data!;
+            final List<FeedbackModel> feedbackList = feedbackData.data!;
             return ListView.builder(
               itemCount: feedbackList.length,
               itemBuilder: (BuildContext context, int index) {
-                final TCFeedback item = feedbackList[index];
+                final FeedbackModel item = feedbackList[index];
                 return Dismissible(
                   direction: DismissDirection.endToStart,
                   background: Container(
@@ -168,7 +171,7 @@ class Feedback extends StatelessWidget {
                       style: titleMedium(context),
                     ),
                     subtitle: Text(
-                      '$submitted: ${item.timestamp.toDate()}',
+                      '$submitted: ${item.timestamp}',
                       style: titleSmall(context),
                     ),
                   ),
@@ -179,7 +182,7 @@ class Feedback extends StatelessWidget {
             return const Loading();
           }
         },
-        stream: DatabaseService().feedback,
+        stream: feedbackStream,
       ),
     );
   }

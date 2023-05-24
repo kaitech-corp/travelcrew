@@ -11,10 +11,7 @@ import 'package:sizer/sizer.dart';
 import '../blocs/authentication_bloc/authentication_bloc.dart';
 import '../blocs/authentication_bloc/authentication_event.dart';
 import '../blocs/authentication_bloc/authentication_state.dart';
-import '../screens/complete_profile/complete_profile_page.dart';
-import '../screens/login/login_screen.dart';
 import '../services/constants/constants.dart';
-import '../services/database.dart';
 import '../services/firebase_messaging.dart';
 import '../services/initializer/project_initializer.dart';
 import '../services/locator.dart';
@@ -22,9 +19,9 @@ import '../services/navigation/navigation_service.dart';
 import '../services/navigation/router.dart';
 import '../services/responsive/responsive_wrapper.dart';
 import '../services/theme/theme_data.dart';
-import '../services/widgets/launch_icon_badger.dart';
-import '../services/widgets/loading.dart';
 import '../size_config/size_config.dart';
+import 'features/Auth/login_screen.dart';
+import 'features/main_page/main_page.dart';
 import 'repositories/user_repository.dart';
 import 'services/l10n.dart';
 
@@ -52,7 +49,6 @@ class TravelCrew extends StatefulWidget {
 
 class _TravelCrewState extends State<TravelCrew> {
   // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  
 
   @override
   void initState() {
@@ -85,24 +81,8 @@ class _TravelCrewState extends State<TravelCrew> {
           nextScreen: BlocBuilder<AuthenticationBloc, AuthenticationState>(
               builder: (BuildContext context, AuthenticationState state) {
             SizeConfig().init(context);
-            if (state is AuthenticationFailure) {
-              return LoginScreen();
-            }
             if (state is AuthenticationSuccess) {
-              return FutureBuilder<bool>(
-                builder: (BuildContext context, AsyncSnapshot<Object?> data) {
-                  if (data.data == true) {
-                    return const LaunchIconBadger();
-                  } else if (data.data == false) {
-                    return CompleteProfile(
-                      userRepository: widget.userRepository,
-                    );
-                  }
-                  return const Loading();
-                },
-                future: DatabaseService(uid: state.firebaseUser!.uid)
-                    .checkUserHasProfile(),
-              );
+              return const MainPage();
             } else {
               return LoginScreen();
             }

@@ -5,7 +5,8 @@ import 'package:bloc/bloc.dart';
 
 import '../../../blocs/settings_bloc/setting_state.dart';
 import '../../../blocs/settings_bloc/settings_event.dart';
-import '../../models/settings_model.dart';
+
+import '../../models/settings_model/settings_model.dart';
 import '../../repositories/user_settings_repository.dart';
 
 
@@ -27,7 +28,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       _subscription = userSettingsRepository
           ?.settingsData()
           .asBroadcastStream()
-          .listen((UserNotificationSettingsData activity) {add(HasDataEvent(activity)); });
+          .listen((SettingsModel activity) {add(HasDataEvent(activity)); });
     }
     else if(event is HasDataEvent){
       yield UserSettingsHasDataState(event.data);

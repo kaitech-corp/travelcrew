@@ -42,8 +42,8 @@ class AddTripButtonPressed extends AddTripEvent {
   final String travelType;
   final String comment;
   final String endDate;
-  final Timestamp endDateTimestamp;
-  final Timestamp startDateTimestamp;
+  final DateTime endDateTimestamp;
+  final DateTime startDateTimestamp;
   final bool ispublic;
   final String location;
   final String startDate;

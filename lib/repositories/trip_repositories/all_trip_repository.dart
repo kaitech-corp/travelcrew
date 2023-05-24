@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../models/trip_model.dart';
+
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../blocs/generics/generic_bloc.dart';
+import '../../models/trip_model/trip_model.dart';
 
 class AllTripsRepository extends GenericBlocRepository<Trip> {
   @override
@@ -21,10 +22,10 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
       try {
         List<Trip> trips =
             snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
-          return Trip.fromDocument(doc);
+          return Trip.fromJson(doc as Map<String, Object>);
         }).toList();
         trips.sort((Trip a, Trip b) =>
-            a.startDateTimeStamp.compareTo(b.startDateTimeStamp));
+            a.startDateTimeStamp!.compareTo(b.startDateTimeStamp!));
         trips = trips
             .where((Trip trip) =>
                 !trip.accessUsers.contains(userService.currentUserID))

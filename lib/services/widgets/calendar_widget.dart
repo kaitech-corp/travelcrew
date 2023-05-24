@@ -16,8 +16,8 @@ class CalendarWidget  extends StatefulWidget{
 
   final ValueNotifier<String>? startDate;
   final ValueNotifier<String>? endDate;
-  final ValueNotifier<Timestamp> startDateTimeStamp;
-  final ValueNotifier<Timestamp> endDateTimeStamp;
+  final ValueNotifier<DateTime> startDateTimeStamp;
+  final ValueNotifier<DateTime> endDateTimeStamp;
   final BuildContext? context;
   final bool showBoth;
 
@@ -33,12 +33,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   String get labelTextDepart {
     widget.startDate?.value = DateFormat.yMMMd().format(_fromDateDepart);
-    widget.startDateTimeStamp.value = Timestamp.fromDate(_fromDateDepart);
+    widget.startDateTimeStamp.value = _fromDateDepart;
     return DateFormat.yMMMd().format(_fromDateDepart);
   }
   String get labelTextReturn {
     widget.endDate?.value = DateFormat.yMMMd().format(_fromDateReturn);
-    widget.endDateTimeStamp.value = Timestamp.fromDate(_fromDateReturn);
+    widget.endDateTimeStamp.value = _fromDateReturn;
     return DateFormat.yMMMd().format(_fromDateReturn);
   }
 

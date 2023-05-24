@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../models/notification_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../models/notification_model/notification_model.dart';
 
 class NotificationRepository {
   final CollectionReference<Object> notificationCollection = FirebaseFirestore.instance.collection('notifications');
 
-  final StreamController<List<NotificationData>> _loadedData = StreamController<List<NotificationData>>.broadcast();
+  final StreamController<List<NotificationModel>> _loadedData = StreamController<List<NotificationModel>>.broadcast();
 
 
   void dispose() {
@@ -18,19 +18,19 @@ class NotificationRepository {
 
   void refresh() {
     // Get all Notifications
-    List<NotificationData> notificationListFromSnapshot(QuerySnapshot<Object> snapshot){
+    List<NotificationModel> notificationListFromSnapshot(QuerySnapshot<Object> snapshot){
 
       try {
         return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-          return NotificationData.fromDocument(doc);
+          return NotificationModel.fromJson(doc as Map<String, Object>);
         }).toList();
       } catch (e) {
         CloudFunction().logError('Error retrieving notification list: $e');
-        return <NotificationData>[];
+        return <NotificationModel>[];
       }
     }
 
-    final Stream<List<NotificationData>> notificationList =
+    final Stream<List<NotificationModel>> notificationList =
     notificationCollection.doc(userService.currentUserID)
         .collection('notifications').orderBy('timestamp', descending: true)
         .snapshots().map(notificationListFromSnapshot);
@@ -40,6 +40,6 @@ class NotificationRepository {
 
   }
 
-  Stream<List<NotificationData>> notifications() => _loadedData.stream;
+  Stream<List<NotificationModel>> notifications() => _loadedData.stream;
 
 }

@@ -8,6 +8,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
+import '../features/Profile/logic/logic.dart';
 
 /// Interface to the info about the current user.
 /// Relies on Firebase authentication.
@@ -28,9 +29,8 @@ class UserRepository {
     final UserCredential result = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     final User? user = result.user;
-    await DatabaseService(uid: user?.uid)
-        .updateUserData(firstname, lastName, email, user!.uid);
-    await DatabaseService(uid: user.uid).updateUserPublicProfileData(
+    await updateUserData(firstname, lastName, email, user!.uid);
+    await updateUserPublicProfileData(
         displayName, firstname, lastName, email, user.uid, urlToImage);
   }
 
@@ -113,9 +113,9 @@ class UserRepository {
       displayName =
           'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
     }
-    await DatabaseService(uid: currentUser!.uid).updateUserData(
+    await updateUserData(
         firstname, lastName, currentUser.email, currentUser.uid);
-    return DatabaseService(uid: currentUser.uid).updateUserPublicProfileData(
+    return updateUserPublicProfileData(
         displayName,
         firstname,
         lastName,

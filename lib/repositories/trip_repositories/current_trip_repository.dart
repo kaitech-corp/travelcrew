@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../models/trip_model.dart';
+
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../blocs/generics/generic_bloc.dart';
+import '../../models/trip_model/trip_model.dart';
 
 
 class CurrentTripRepository extends GenericBlocRepository<Trip> {
@@ -23,11 +24,11 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
         final DateTime now = DateTime.now().toUtc();
         final DateTime past = DateTime(now.year, now.month, now.day - 2);
         final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
-          return Trip.fromDocument(doc);
+          return Trip.fromJson(doc as Map<String, Object>);
         }).toList();
         final List<Trip> crewTrips = trips
             .where(
-                (Trip trip) => trip.endDateTimeStamp.toDate().compareTo(past) == 1)
+                (Trip trip) => trip.endDateTimeStamp!.compareTo(past) == 1)
             .toList();
         return crewTrips;
       } catch (e) {

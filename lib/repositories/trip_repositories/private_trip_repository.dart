@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../models/trip_model.dart';
+
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../blocs/generics/generic_bloc.dart';
+import '../../models/trip_model/trip_model.dart';
 
 class PrivateTripRepository extends GenericBlocRepository<Trip> {
 
@@ -20,7 +21,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
       try {
         return snapshot.docs
             .map((QueryDocumentSnapshot<Object> doc) {
-          return Trip.fromDocument(doc);
+          return Trip.fromJson(doc as Map<String, Object>);
         })
             .toList()
             .reversed

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../../models/settings_model.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
+import '../models/settings_model/settings_model.dart';
 
 /// Interface to our 'settings' Firebase collection.
 /// It contains the settings for each user.
@@ -13,7 +13,7 @@ import '../../../../services/functions/cloud_functions.dart';
 class UserSettingsRepository {
 
   final CollectionReference<Map<String, dynamic>> settingsCollection = FirebaseFirestore.instance.collection('settings');
-  final StreamController<UserNotificationSettingsData> _loadedData = StreamController<UserNotificationSettingsData>.broadcast();
+  final StreamController<SettingsModel> _loadedData = StreamController<SettingsModel>.broadcast();
 
 
   void dispose() {
@@ -22,20 +22,19 @@ class UserSettingsRepository {
 
   void refresh() {
     // Get settings for current user.
-    UserNotificationSettingsData settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
+    SettingsModel settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
       if(snapshot.exists) {
         try {
-          final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-          return UserNotificationSettingsData.fromData(data);
+          return SettingsModel.fromJson(snapshot.data() as Map<String, Object>);
         } catch(e){
           CloudFunction().logError('Error retrieving settings for user:  $e');
-          return UserNotificationSettingsData().fakerData();
+          return SettingsModel().fakerData();
         }} else {
-        return UserNotificationSettingsData().fakerData();
+        return SettingsModel().fakerData();
       }
     }
 
-    final Stream<UserNotificationSettingsData> settings = settingsCollection
+    final Stream<SettingsModel> settings = settingsCollection
         .doc(userService.currentUserID)
         .snapshots().map(settingsFromSnapshot);
 
@@ -45,6 +44,6 @@ class UserSettingsRepository {
 
   }
 
-  Stream<UserNotificationSettingsData> settingsData() => _loadedData.stream;
+  Stream<SettingsModel> settingsData() => _loadedData.stream;
 
 }

@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../../models/chat_model.dart';
+
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../blocs/generics/generic_bloc.dart';
+import '../models/chat_model/chat_model.dart';
 
 /// Interface to our 'chat' Firebase collection.
 /// It contains the chat messages.
 ///
 /// Relies on a remote NoSQL document-oriented database.
-class ChatRepository extends GenericBlocRepository<ChatData>{
+class ChatRepository extends GenericBlocRepository<ChatModel>{
 
   ChatRepository({required this.tripDocID});
 
@@ -19,19 +20,19 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
 
   final CollectionReference<Object> chatCollection =  FirebaseFirestore.instance.collection('chat');
   // Get all chat messages
-  List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
+  List<ChatModel> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
     try {
       return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-          return ChatData.fromDocument(doc);
+          return ChatModel.fromJson(doc as Map<String, Object>);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  $e');
-      return <ChatData>[];
+      return <ChatModel>[];
     }
   }
 
   @override
-  Stream<List<ChatData>> data() {
+  Stream<List<ChatModel>> data() {
 
     //Stream chats
     return chatCollection
@@ -45,7 +46,7 @@ class ChatRepository extends GenericBlocRepository<ChatData>{
 
 }
 
-class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
+class ChatNotificationRepository extends GenericBlocRepository<ChatModel>{
 
   ChatNotificationRepository({required this.tripDocID});
 
@@ -53,20 +54,20 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatData>{
 
   final CollectionReference<Object> chatCollection =  FirebaseFirestore.instance.collection('chat');
   // Get all chat messages
-  List<ChatData> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
+  List<ChatModel> _chatListFromSnapshot(QuerySnapshot<Object> snapshot){
     try {
       return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-        return ChatData.fromDocument(doc);
+        return ChatModel.fromJson(doc as Map<String, Object>);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  $e');
-      return <ChatData>[];
+      return <ChatModel>[];
     }
   }
 
 
   @override
-  Stream<List<ChatData>> data(){
+  Stream<List<ChatModel>> data(){
     //Stream chat notifications
     return chatCollection
         .doc(tripDocID)

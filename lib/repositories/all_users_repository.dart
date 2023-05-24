@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../models/custom_objects.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../blocs/generics/generic_bloc.dart';
+import '../models/public_profile_model/public_profile_model.dart';
 
 /// Interface to our 'userPublicProfile' Firebase collection.
 ///
@@ -19,7 +19,7 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
     List<UserPublicProfile> userListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         List<UserPublicProfile> userList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return UserPublicProfile.fromDocument(doc);
+          return UserPublicProfile.fromJson(doc as Map<String, Object>);
         }).toList();
         userList.sort((UserPublicProfile a, UserPublicProfile b) => a.displayName.compareTo(b.displayName));
         userList =

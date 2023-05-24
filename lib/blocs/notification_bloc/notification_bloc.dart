@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 
-import '../../models/notification_model.dart';
+import '../../models/notification_model/notification_model.dart';
 import '../../repositories/notification_repository.dart';
 import 'notification_event.dart';
 import 'notification_state.dart';
@@ -15,7 +15,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       _subscription = notificationRepository
           ?.notifications()
           .asBroadcastStream()
-          .listen((List<NotificationData> data) {
+          .listen((List<NotificationModel> data) {
         add(HasDataEvent(data));
       });
     });
