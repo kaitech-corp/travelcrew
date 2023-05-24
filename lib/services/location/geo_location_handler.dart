@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import '../../models/location_model.dart';
+
+import '../../models/location_model/location_model.dart';
 
 class GeoLocationHandler {
   // GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: dotenv.env['kGoogleApiKey']);
@@ -35,7 +36,7 @@ class GeoLocationHandler {
           city: city,
           country: country,
           documentID: date,
-          geoPoint: geoPoint,
+          geoPoint: geoPoint.toString(),
           zipcode: zipcode);
     } catch (e) {
       return LocationModel();

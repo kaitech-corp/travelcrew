@@ -10,6 +10,8 @@ final CollectionReference<Object?> dmChatCollection =
       FirebaseFirestore.instance.collection('dmChat');
   final CollectionReference<Object?> userPublicProfileCollection =
       FirebaseFirestore.instance.collection('userPublicProfile');  
+
+      const String userID = '';
   /// Add new direct message
   Future<void> addNewDMChatMessage(String displayName, String message,
       String uid, Map<String, dynamic> status) async {
@@ -107,7 +109,7 @@ final CollectionReference<Object?> dmChatCollection =
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  $e');
-      return <ChatModel>[defaultChatModel];
+      return <ChatModel>[];
     }
   }
 

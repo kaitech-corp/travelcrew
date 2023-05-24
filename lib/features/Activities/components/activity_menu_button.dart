@@ -62,7 +62,7 @@ class ActivityMenuButton extends StatelessWidget {
         CloudFunction().removeActivity(trip.documentId, activity.fieldID);
         break;
       case 'report':
-        TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
+        // TravelCrewAlertDialogs().reportAlert(context: context, activityData: activity, type: 'activity');
         break;
     }
   }

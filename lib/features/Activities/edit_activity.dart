@@ -40,10 +40,10 @@ class _EditActivityState extends State<EditActivity> {
       ValueNotifier<TimeOfDay>(TimeOfDay.now());
   final ValueNotifier<TimeOfDay> endTime =
       ValueNotifier<TimeOfDay>(TimeOfDay.now());
-  final ValueNotifier<Timestamp> startDateTimestamp =
-      ValueNotifier<Timestamp>(Timestamp.now());
-  final ValueNotifier<Timestamp> endDateTimestamp =
-      ValueNotifier<Timestamp>(Timestamp.now());
+  final ValueNotifier<DateTime> startDateTimestamp =
+      ValueNotifier<DateTime>(DateTime.now());
+  final ValueNotifier<DateTime> endDateTimestamp =
+      ValueNotifier<DateTime>(DateTime.now());
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -59,16 +59,16 @@ class _EditActivityState extends State<EditActivity> {
     super.initState();
     documentID = widget.trip.documentId;
     fieldID = widget.activity.fieldID;
-    startDateTimestamp.value = widget.activity.startDateTimestamp;
-    endDateTimestamp.value = widget.activity.endDateTimestamp;
+    startDateTimestamp.value = widget.activity.startDateTimestamp!;
+    endDateTimestamp.value = widget.activity.endDateTimestamp!;
     controllerComment.text = widget.activity.comment;
     controllerLink.text = widget.activity.link;
     controllerLocation.text = widget.activity.location;
     controllerType.text = widget.activity.activityType;
     startTime.value =
-        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp.toDate());
+        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp!);
     endTime.value =
-        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp.toDate());
+        TimeOfDay.fromDateTime(widget.activity.startDateTimestamp!);
     displayName = widget.activity.displayName;
   }
 

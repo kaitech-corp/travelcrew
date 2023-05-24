@@ -5,12 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/public_profile_bloc/public_profile_bloc.dart';
-import '../../../models/activity_model.dart';
-import '../../../models/chat_model.dart';
-import '../../../models/lodging_model.dart';
-import '../../../models/split_model.dart';
-import '../../../models/transportation_model.dart';
-import '../../../models/trip_model.dart';
 
 import '../../../repositories/chat_repository.dart';
 import '../../../repositories/lodging_repository.dart';
@@ -24,6 +18,12 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
 
+import '../../models/activity_model/activity_model.dart';
+import '../../models/chat_model/chat_model.dart';
+import '../../models/lodging_model/lodging_model.dart';
+import '../../models/split_model/split_model.dart';
+import '../../models/transportation_model/transportation_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../Activities/activity_page.dart';
 import '../Activities/logic/activity_repository.dart';
 import '../Chat/logic/logic.dart';
@@ -31,6 +31,7 @@ import '../Lodging/lodging_page.dart';
 import '../Menu/main_menu.dart';
 import '../Split/split_page.dart';
 import '../Transportation/transportation_page.dart';
+import '../Trips/logic/logic.dart';
 import '../chat/chat_page.dart';
 
 import 'explore_member_layout.dart';
@@ -131,7 +132,7 @@ class _ExploreState extends State<Explore> {
               ),
               BlocProvider(
                 create: (BuildContext context) =>
-                    GenericBloc<TransportationData, TransportationRepository>(
+                    GenericBloc<TransportationModel, TransportationRepository>(
                         repository: TransportationRepository(
                             tripDocID: widget.trip.documentId)),
                 child: TransportationPage(
@@ -140,7 +141,7 @@ class _ExploreState extends State<Explore> {
               ),
               BlocProvider(
                 create: (BuildContext context) =>
-                    GenericBloc<LodgingData, LodgingRepository>(
+                    GenericBloc<LodgingModel, LodgingRepository>(
                         repository: LodgingRepository(
                             tripDocID: widget.trip.documentId)),
                 child: LodgingPage(
@@ -149,7 +150,7 @@ class _ExploreState extends State<Explore> {
               ),
               BlocProvider(
                 create: (BuildContext context) =>
-                    GenericBloc<ActivityData, ActivityRepository>(
+                    GenericBloc<ActivityModel, ActivityRepository>(
                         repository: ActivityRepository(
                             tripDocID: widget.trip.documentId)),
                 child: ActivityPage(
@@ -158,7 +159,7 @@ class _ExploreState extends State<Explore> {
               ),
               BlocProvider(
                 create: (BuildContext context) =>
-                    GenericBloc<ChatData, ChatRepository>(
+                    GenericBloc<ChatModel, ChatRepository>(
                         repository:
                             ChatRepository(tripDocID: widget.trip.documentId)),
                 child: ChatPage(
@@ -174,7 +175,7 @@ class _ExploreState extends State<Explore> {
     if (widget.trip.ownerID == uid) {
       return StreamBuilder<Trip?>(
           stream:
-              DatabaseService(tripDocID: widget.trip.documentId).singleTripData,
+              singleTripData,
           builder: (BuildContext context, AsyncSnapshot<Trip?> document) {
             if (document.hasData) {
               final Trip tripDetails = document.data!;
@@ -198,14 +199,14 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget getChatNotificationBadge() {
-    return StreamBuilder<List<ChatData>>(
-      builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
+    return StreamBuilder<List<ChatModel>>(
+      builder: (BuildContext context, AsyncSnapshot<List<ChatModel>> chats) {
         if (chats.hasError) {
           CloudFunction().logError('Error streaming chats for explore'
               ' chat notification: ${chats.error}');
         }
         if (chats.hasData) {
-          final List<ChatData> chatList = chats.data!;
+          final List<ChatModel> chatList = chats.data!;
           if (chatList.isNotEmpty) {
             final int chatNotifications = chatList.length;
             return Tooltip(

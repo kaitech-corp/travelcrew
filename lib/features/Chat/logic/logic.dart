@@ -7,6 +7,8 @@ import '../../../services/functions/cloud_functions.dart';
 
 final CollectionReference<Object?> chatCollection =
       FirebaseFirestore.instance.collection('chat');
+      const String tripDocID = '';
+      const String uid = '';
  /// Add new chat message
   Future<void> addNewChatMessage(String displayName, String message, String uid,
       Map<String, bool> status) async {
@@ -59,7 +61,7 @@ final CollectionReference<Object?> chatCollection =
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  $e');
-      return <ChatModel>[defaultChatModel];
+      return <ChatModel>[];
     }
   }
 

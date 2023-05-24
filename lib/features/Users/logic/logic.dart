@@ -2,7 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../models/custom_objects.dart';
+
+import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../services/functions/cloud_functions.dart';
 
   final CollectionReference<Object?> userPublicProfileCollection =
@@ -14,8 +15,7 @@ import '../../../services/functions/cloud_functions.dart';
           await userPublicProfileCollection.get();
       final List<UserPublicProfile> userList =
           ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
-        // final Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-        return UserPublicProfile.fromDocument(doc);
+        return UserPublicProfile.fromJson(doc as Map<String, Object>);
       }).toList();
       userList.sort((UserPublicProfile a, UserPublicProfile b) =>
           a.displayName.compareTo(b.displayName));

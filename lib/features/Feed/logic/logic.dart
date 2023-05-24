@@ -13,7 +13,7 @@ final CollectionReference<Object?> feedCollection =
 
     final List<FeedModel> feedModels = [];
     for (final doc in ref.docs) {
-      feedModels.add(FeedModel.fromMap(doc.data() as Map<String, Object>));
+      // feedModels.add(FeedModel.fromMap(doc.data() as Map<String, Object>));
     }
 
     yield feedModels;

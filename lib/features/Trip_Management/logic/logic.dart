@@ -281,8 +281,8 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
     // print('Error retrieving single user profile:  $e');
     // return ;
   }
-  return defaultProfile;
-  // return UserPublicProfile();
+
+  return UserPublicProfile.mock();
 }
 
 /// Get Trip
@@ -295,11 +295,11 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
       if (ref.exists) {
         return Trip.fromJson(ref as Map<String, Object>);
       } else {
-        return defaultTrip;
+        return Trip.mock();
       }
     } catch (e) {
       CloudFunction().logError('Error retrieving single trip by docID:  $e');
-      return defaultTrip;
+      return Trip.mock();
     }
   }
 
@@ -313,10 +313,10 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
       if (ref.exists) {
         return Trip.fromJson(ref as Map<String, Object>);
       } else {
-        return defaultTrip;
+        return Trip.mock();
       }
     } catch (e) {
       CloudFunction().logError('Error retrieving single private trip:  $e');
-      return defaultTrip;
+      return Trip.mock();
     }
   }

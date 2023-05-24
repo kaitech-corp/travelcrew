@@ -12,6 +12,7 @@ import '../../../services/widgets/time_picker.dart';
 import '../../models/lodging_model/lodging_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../Trip_Management/components/google_autocomplete.dart';
+import 'logic/logic.dart';
 
 
 /// Edit lodging data
@@ -249,10 +250,10 @@ class _EditLodgingState extends State<EditLodging> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final FormState form = _formKey.currentState!;
-            startDateTimestamp.value = DateTimeRetrieval()
-                .createNewTimestamp(startDateTimestamp.value, startTime.value);
-            endDateTimestamp.value = DateTimeRetrieval()
-                .createNewTimestamp(startDateTimestamp.value, endTime.value);
+            // startDateTimestamp.value = DateTimeRetrieval()
+            //     .createNewTimestamp(startDateTimestamp.value, startTime.value);
+            // endDateTimestamp.value = DateTimeRetrieval()
+            //     .createNewTimestamp(startDateTimestamp.value, endTime.value);
             if (form.validate()) {
               form.save();
               final String message =
@@ -286,7 +287,7 @@ class _EditLodgingState extends State<EditLodging> {
                       documentID: documentID,
                       type: 'Lodging',
                       uidToUse: f,
-                      ownerID: currentUserProfile.uid,
+                      ownerID: 'currentUserProfile.uid',
                     );
                   }
                 }

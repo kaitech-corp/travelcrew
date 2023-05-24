@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../models/custom_objects.dart';
-import '../../models/trip_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
@@ -41,8 +39,8 @@ class EditTripDataState extends State<EditTripData> {
   final TextEditingController controllerTripName = TextEditingController();
   final TextEditingController controllerType = TextEditingController();
   final TextEditingController controllerComment = TextEditingController();
-  final ValueNotifier<GoogleData> googleData =
-      ValueNotifier<GoogleData>(GoogleData());
+  // final ValueNotifier<GoogleData> googleData =
+  //     ValueNotifier<GoogleData>(GoogleData());
   final ValueNotifier<File> urlToImage = ValueNotifier<File>(File(''));
 
   bool dateChangeVisible = false;
@@ -80,7 +78,7 @@ class EditTripDataState extends State<EditTripData> {
     controllerType.dispose();
     controllerTripName.dispose();
     controllerComment.dispose();
-    googleData.dispose();
+    // googleData.dispose();
     super.dispose();
   }
 
@@ -264,7 +262,7 @@ class EditTripDataState extends State<EditTripData> {
           if (form!.validate()) {
             if (locationChangeVisible) {
               // location = myController.text;
-              tripGeoPoint = googleData.value.geoLocation;
+              // tripGeoPoint = googleData.value.geoLocation;
             }
             navigationService.pop();
             try {

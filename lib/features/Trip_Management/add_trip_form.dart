@@ -35,7 +35,7 @@ class AddTripForm extends StatefulWidget {
 
 final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
 final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
-late ValueNotifier<GoogleData> googleData;
+// late ValueNotifier<GoogleData> googleData;
 final TextEditingController locationController = TextEditingController();
 
 class _AddTripFormState extends State<AddTripForm> {
@@ -74,8 +74,8 @@ class _AddTripFormState extends State<AddTripForm> {
     tripNameController.addListener(_onTripNameChange);
     travelTypeController.addListener(_onTripTypeChange);
     _urlToImage.addListener(_onTripImageChange);
-   googleData =
-    ValueNotifier<GoogleData>(GoogleData());
+  //  googleData =
+  //   ValueNotifier<GoogleData>(GoogleData());
   }
 
   @override
@@ -88,7 +88,7 @@ class _AddTripFormState extends State<AddTripForm> {
     tripNameController.dispose();
     urlToImage.dispose();
     locationController.dispose();
-    googleData.dispose();
+    // googleData.dispose();
     commentController.dispose();
     super.dispose();
   }
@@ -96,7 +96,7 @@ class _AddTripFormState extends State<AddTripForm> {
   bool imagePicked = false;
 
   void updateGoogleDataValueNotifier() {
-    googleData.value = GoogleData();
+    // googleData.value = GoogleData();
   }
 
   @override
@@ -294,7 +294,7 @@ class _AddTripFormState extends State<AddTripForm> {
         ispublic,
         locationController.text,
         startDate.value,
-        googleData.value.geoLocation,
+        const GeoPoint(10,10),
         _urlToImage.value,
         tripName: tripNameController.text,
         travelType: travelTypeController.text));

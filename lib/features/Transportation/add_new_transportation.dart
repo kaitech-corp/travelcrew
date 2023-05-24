@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../models/trip_model.dart';
+
 
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
+import '../../models/trip_model/trip_model.dart';
 
 
 /// Add new mode of Transportation

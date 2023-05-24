@@ -113,14 +113,14 @@ class UserRepository {
       displayName =
           'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
     }
-    await updateUserData(
-        firstname, lastName, currentUser.email, currentUser.uid);
-    return updateUserPublicProfileData(
-        displayName,
-        firstname,
-        lastName,
-        currentUser.email,
-        currentUser.uid,
-        urlToImage);
+    // await updateUserData(
+    //     firstname, lastName, currentUser.email, currentUser.uid);
+  //   return updateUserPublicProfileData(
+  //       displayName,
+  //       firstname,
+  //       lastName,
+  //       currentUser.email,
+  //       currentUser.uid,
+  //       urlToImage);
   }
 }

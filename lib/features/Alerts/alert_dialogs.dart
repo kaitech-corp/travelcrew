@@ -88,7 +88,7 @@ class TravelCrewAlertDialogs {
       },
     );
   }
-  Future<void> reportAlert({required BuildContext context, Trip? tripDetails, UserPublicProfile? userProfile, ActivityDataModel? activityData, LodgingDataModel? lodgingData, required String type}) {
+  Future<void> reportAlert({required BuildContext context, Trip? tripDetails, UserPublicProfile? userProfile, ActivityModel? activityData, LodgingModel? lodgingData, required String type}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -102,7 +102,7 @@ class TravelCrewAlertDialogs {
               child: Text(AppLocalizations.of(context)!.report,),
               onPressed: () {
                 navigationService.pop();
-                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile ?? defaultProfile, activityData, tripDetails, lodgingData));
+                navigationService.navigateTo(ReportContentRoute,arguments: ReportArguments(type, userProfile ?? UserPublicProfile.mock(), activityData, tripDetails, lodgingData));
               },
             ),
             TextButton(

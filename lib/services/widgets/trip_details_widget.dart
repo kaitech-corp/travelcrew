@@ -3,8 +3,9 @@ import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/trip_model.dart';
-import '../../screens/alerts/alert_dialogs.dart';
+
+import '../../features/Alerts/alert_dialogs.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../size_config/size_config.dart';
 import '../theme/text_styles.dart';
@@ -32,7 +33,7 @@ class TripDetailsWidget extends StatelessWidget {
           visible: !expandController.expanded,
           child: Padding(
             padding: const EdgeInsets.only(top: 15.0),
-            child: DateGauge(tripDetails: tripDetails),
+            // child: DateGauge(tripDetails: tripDetails),
           ),
         ),
         Padding(

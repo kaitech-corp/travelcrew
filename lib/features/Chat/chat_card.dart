@@ -111,7 +111,7 @@ class ChatCard extends StatelessWidget {
           Container(
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: Text(
-              TCFunctions().chatViewGroupByDateTimeOnlyTime(message.timestamp),
+              message.timestamp!.hour.toString(),
               textScaleFactor: 0.75,
               style: const TextStyle(
                 color: Colors.black,

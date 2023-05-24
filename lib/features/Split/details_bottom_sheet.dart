@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
 
-import '../../../models/cost_model.dart';
-import '../../../models/custom_objects.dart';
-import '../../../models/split_model.dart';
+
 import '../../../services/database.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/cost_model/cost_object_model.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
+import '../../models/split_model/split_model.dart';
 import 'components/payment_details_menu_button.dart';
 
 /// Bottom sheet for split cost details
@@ -20,7 +21,7 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
   }) : super(key: key);
 
   final UserPublicProfile user;
-  final CostObject costObject;
+  final CostObjectModel costObject;
   final SplitObject splitObject;
   final UserPublicProfile purchasedByUser;
 
@@ -77,7 +78,7 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
           if (user.uid == userService.currentUserID ||
                   userService.currentUserID == purchasedByUser.uid) ElevatedButton(
                   onPressed: () {
-                    DatabaseService().markAsPaid(costObject, splitObject);
+                  //  markAsPaid(costObject, splitObject);
                   },
                   child: const Text('Paid'),
                 ) else nil,

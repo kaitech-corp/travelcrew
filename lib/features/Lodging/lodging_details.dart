@@ -17,6 +17,7 @@ import '../../models/lodging_model/lodging_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../Alerts/alert_dialogs.dart';
 import 'components/lodging_menu_button.dart';
+import 'logic/logic.dart';
 
 
 class LodgingDetails extends StatelessWidget {
@@ -65,12 +66,12 @@ class LodgingModelLayout extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<LodgingModel?> document) {
         if (document.hasData) {
           final LodgingModel lodging = document.data!;
-          final DateTimeModel timeModel = DateTimeModel(
-              startDate: lodging.startDateTimestamp.toDate(),
-              endDate: lodging.endDateTimestamp.toDate());
+          // final DateTimeModel timeModel = DateTimeModel(
+          //     startDate: lodging.startDateTimestamp.toDate(),
+          //     endDate: lodging.endDateTimestamp.toDate());
 
           final Event event = createEvent(
-              lodging: lodging, timeModel: timeModel, type: 'Lodging');
+              lodging: lodging, startDate: lodging.startDateTimestamp!, endDate:lodging.endDateTimestamp!, type: 'Lodging');
           return Column(
             children: <Widget>[
               Container(

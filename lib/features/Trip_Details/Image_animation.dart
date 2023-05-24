@@ -1,8 +1,8 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/trip_model.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/trip_model/trip_model.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 

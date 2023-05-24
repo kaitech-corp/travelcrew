@@ -17,7 +17,8 @@ class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
   Timestamp toJson(DateTime object) => Timestamp.fromDate(object);
 }
 
-class TimestampNullableConverter implements JsonConverter<DateTime?, Timestamp?> {
+class TimestampNullableConverter
+    implements JsonConverter<DateTime?, Timestamp?> {
   const TimestampNullableConverter();
 
   @override
@@ -37,6 +38,15 @@ class SettingsModel with _$SettingsModel {
       bool? isDirectMessagingOn,
       @TimestampConverter() DateTime? lastUpdated}) = _SettingsModel;
 
-        factory SettingsModel.fromJson(Map<String, Object?> json)
-      => _$SettingsModelFromJson(json);
+  factory SettingsModel.fromJson(Map<String, Object?> json) =>
+      _$SettingsModelFromJson(json);
+
+  factory SettingsModel.mock() {
+    return SettingsModel(
+        isDirectMessagingOn: true,
+        isTripChangeOn: true,
+        isPushNotificationsOn: true,
+        isTripChatOn: true,
+        lastUpdated: DateTime.now());
+  }
 }

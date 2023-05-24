@@ -49,7 +49,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   void initState() {
     endDateTimestamp.value = widget.trip.endDateTimeStamp!;
     startDateTimestamp.value = widget.trip.startDateTimeStamp!;
-    displayName = currentUserProfile.displayName;
+    displayName = 'currentUserProfile.displayName';
     documentID = widget.trip.documentId;
     uid = userService.currentUserID;
     ispublic = widget.trip.ispublic;
@@ -226,10 +226,10 @@ class _AddNewLodgingState extends State<AddNewLodging> {
             if (form.validate()) {
               final String message =
                   'A new lodging has been added to ${widget.trip.tripName}';
-              startDateTimestamp.value = DateTimeRetrieval().createNewTimestamp(
-                  startDateTimestamp.value, startTime.value);
-              endDateTimestamp.value = DateTimeRetrieval()
-                  .createNewTimestamp(startDateTimestamp.value, endTime.value);
+              // startDateTimestamp.value = DateTimeRetrieval().createNewTimestamp(
+              //     startDateTimestamp.value, startTime.value);
+              // endDateTimestamp.value = DateTimeRetrieval()
+              //     .createNewTimestamp(startDateTimestamp.value, endTime.value);
 
               try {
                 final String action = 'Saving new lodging for $documentID';
@@ -264,7 +264,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                       documentID: documentID,
                       type: 'Lodging',
                       uidToUse: f,
-                      ownerID: currentUserProfile.uid,
+                      ownerID: 'currentUserProfile.uid',
                       ispublic: ispublic,
                     );
                   }

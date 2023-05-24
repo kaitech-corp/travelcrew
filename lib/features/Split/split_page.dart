@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
-import '../../../models/split_model.dart';
-import '../../../models/trip_model.dart';
 import '../../../repositories/split_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
@@ -14,6 +12,8 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/split_model/split_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import 'components/prepaid_details_card.dart';
 import 'logic/split_functions.dart';
 import 'split_package.dart';
@@ -82,12 +82,12 @@ class _SplitPageState extends State<SplitPage> {
                             '\$$total',
                             style: headlineLarge(context),
                           ),
-                          Expanded(
-                            child: PrepaidDetailsCard(
-                              items: items,
-                              uids: uids,
-                            ),
-                          )
+                          // Expanded(
+                          //   child: PrepaidDetailsCard(
+                          //     items: items,
+                          //     uids: uids,
+                          //   ),
+                          // )
                         ],
                       ),
                     ),

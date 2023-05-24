@@ -2,15 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../../../models/custom_objects.dart';
-import '../../../../models/trip_model.dart';
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/locator.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
+import '../../../models/public_profile_model/public_profile_model.dart';
+import '../../../models/trip_model/trip_model.dart';
 import '../../Alerts/alert_dialogs.dart';
+import '../../Profile/logic/logic.dart';
+import '../../Trip_Management/logic/logic.dart';
 
 
 /// Following list
@@ -37,7 +39,7 @@ class _FollowingListState extends State<FollowingList> {
         title: Text('Followers',style: headlineMedium(context),),
       ),
       body: StreamBuilder<List<UserPublicProfile>>(
-        stream: DatabaseService().retrieveFollowingList(),
+        stream: retrieveFollowingList(),
         builder: (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
           if(users.hasError){
            CloudFunction().logError('Error streaming Following list for invites: ${users.error}');
@@ -118,7 +120,7 @@ class _FollowingListState extends State<FollowingList> {
           trailing: !widget.trip.accessUsers.contains(user.uid) ? IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async{
-              final UserPublicProfile profile = await DatabaseService().getUserProfile(userService.currentUserID);
+              final UserPublicProfile profile = await getUserProfile(userService.currentUserID);
               final String message = '${profile.displayName} invited you to ${widget.trip.tripName}.';
               const String type = 'Invite';
               CloudFunction().addNewNotification(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-import '../../models/custom_objects.dart';
-import '../../models/trip_model.dart';
-import '../../screens/trip_details/explore/members/members_layout.dart';
+import '../../features/Trip_Details/members/members_layout.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../../services/database.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../services/locator.dart';
@@ -237,43 +237,43 @@ class CrewModalBottomSheet extends StatelessWidget {
   }
 }
 
-class DateGauge extends StatelessWidget {
-  const DateGauge({
-    Key? key,
-    required this.tripDetails,
-  }) : super(key: key);
+// class DateGauge extends StatelessWidget {
+//   const DateGauge({
+//     Key? key,
+//     required this.tripDetails,
+//   }) : super(key: key);
 
-  final Trip tripDetails;
-
-
-  @override
-  Widget build(BuildContext context) {
+//   final Trip tripDetails;
 
 
-    final CountDownDate countDownDate = TCFunctions().dateGauge(
-        tripDetails.dateCreatedTimeStamp.millisecondsSinceEpoch,
-        tripDetails.startDateTimeStamp.millisecondsSinceEpoch);
-    final CountDownDate countDownDateReturn = TCFunctions().dateGauge(
-        tripDetails.startDateTimeStamp.millisecondsSinceEpoch,
-        tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
-    final String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp.millisecondsSinceEpoch, tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
+//   @override
+//   Widget build(BuildContext context) {
 
-    switch (result){
-      case 'before':
-        return Gauge(countDownDate: countDownDate, color: ReusableThemeColor().bottomNavColor(context),);
-      case 'during':
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Trip has started.'),
-            Gauge(countDownDate: countDownDateReturn, color: Colors.blue,),
-          ],
-        );
-        default:
-        return Gauge(countDownDate: CountDownDate(daysLeft: 0,initialDayCount: 1,gaugeCount: 1),color: Colors.blue,);
-    }
-  }
-}
+
+    // final CountDownDate countDownDate = TCFunctions().dateGauge(
+    //     tripDetails.dateCreatedTimeStamp!,
+    //     tripDetails.startDateTimeStamp!);
+    // final CountDownDate countDownDateReturn = TCFunctions().dateGauge(
+    //     tripDetails.startDateTimeStamp.millisecondsSinceEpoch,
+    //     tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
+    // final String result = TCFunctions().checkDate(tripDetails.startDateTimeStamp.millisecondsSinceEpoch, tripDetails.endDateTimeStamp.millisecondsSinceEpoch);
+
+  //   switch (result){
+  //     case 'before':
+  //       return Gauge(countDownDate: countDownDate, color: ReusableThemeColor().bottomNavColor(context),);
+  //     case 'during':
+  //       return Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: <Widget>[
+  //           const Text('Trip has started.'),
+  //           Gauge(countDownDate: countDownDateReturn, color: Colors.blue,),
+  //         ],
+  //       );
+  //       default:
+  //       return Gauge(countDownDate: CountDownDate(daysLeft: 0,initialDayCount: 1,gaugeCount: 1),color: Colors.blue,);
+  //   }
+  // }
+// }
 
 class Gauge extends StatelessWidget {
   const Gauge({

@@ -22,7 +22,6 @@ import '../../features/Menu/settings/settings.dart';
 import '../../features/Notifications/notification_page.dart';
 import '../../features/Profile/edit_profile_page.dart';
 import '../../features/Profile/profile_page.dart';
-import '../../features/Split/split_details_page.dart';
 import '../../features/Split/split_page.dart';
 import '../../features/Transportation/add_new_transportation.dart';
 import '../../features/Transportation/edit_transportation.dart';
@@ -47,7 +46,6 @@ import '../../models/trip_model/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/navigation/route_names.dart';
-import '../../services/widgets/launch_icon_badger.dart';
 import '../../size_config/size_config.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -208,11 +206,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: settings.name!,
         viewToShow: const HelpPage(),
       );
-    case LaunchIconBadgerRoute:
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: const LaunchIconBadger(),
-      );
 
     case LodgingRoute:
       return _getPageRoute(
@@ -268,16 +261,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               const Settings()
           // ),
           );
-    case SplitDetailsPageRoute:
-      final SplitDetailsArguments arguments =
-          settings.arguments as SplitDetailsArguments;
-      return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: SplitDetailsPage(
-          trip: arguments.trip,
-          splitObject: arguments.splitObject,
-        ),
-      );
+    // case SplitDetailsPageRoute:
+    //   final SplitDetailsArguments arguments =
+    //       settings.arguments as SplitDetailsArguments;
+    //   return _getPageRoute(
+    //     routeName: settings.name!,
+    //     viewToShow: SplitDetailsPage(
+    //       trip: arguments.trip,
+    //       splitObject: arguments.splitObject,
+    //     ),
+    //   );
     case UsersRoute:
       return _getPageRoute(
         routeName: settings.name!,

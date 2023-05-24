@@ -26,6 +26,8 @@ final Query<Object?> tripCollection = FirebaseFirestore.instance
     .orderBy('endDateTimeStamp')
     .where('ispublic', isEqualTo: true);
 
+const String uid = '';
+
 ///Updates user info after signup
 Future<void> updateUserData(
     String? firstName, String? lastName, String? email, String uid) async {
@@ -247,7 +249,7 @@ UserPublicProfile _userPublicProfileSnapshot(
         .logError('Error retrieving specific user public profile:  $e');
     // return UserPublicProfile();
   }
-  return defaultProfile;
+  return UserPublicProfile.mock();
 }
 
 /// get current use public profile

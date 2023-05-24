@@ -52,7 +52,7 @@ class _NotificationPageState extends State<NotificationPage> {
               onDismissed: (DismissDirection direction) {
                 setState(() {
                   widget.notifications.removeAt(index);
-                  CloudFunction().removeNotificationModel(item.fieldID);
+                  // CloudFunction().removeNotificationModel(item.fieldID);
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Notification removed.')));

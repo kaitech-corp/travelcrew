@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:get_it/get_it.dart';
 
-import '../../models/custom_objects.dart';
 import '../../services/functions/cloud_functions.dart';
+import '../features/Trip_Management/logic/logic.dart';
 import '../models/public_profile_model/public_profile_model.dart';
 import 'database.dart';
 import 'navigation/navigation_service.dart';
@@ -37,16 +37,16 @@ class UserService {
 class UserProfileService {
 
   UserService userService = locator<UserService>();
-  UserPublicProfile profile = defaultProfile;
+  UserPublicProfile profile = UserPublicProfile.mock();
 
   Future<UserPublicProfile> currentUserProfile() async {
     try {
-      profile = await DatabaseService().getUserProfile(userService.currentUserID);
+      profile = await getUserProfile(userService.currentUserID);
       urlToImage.value = profile.urlToImage;
     } catch (e) {
       CloudFunction().logError('Error in User Public Profile service:  $e');
     }
-    return defaultProfile;
+    return UserPublicProfile.mock();
   }
 
   UserPublicProfile currentUserProfileDirect(){

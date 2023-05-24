@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/custom_objects.dart';
-import '../../../models/trip_model.dart';
+
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/locator.dart';
 import '../../../services/theme/text_styles.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../alerts/alert_dialogs.dart';
 
 

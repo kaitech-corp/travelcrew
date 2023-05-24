@@ -28,9 +28,9 @@ class UserSettingsRepository {
           return SettingsModel.fromJson(snapshot.data() as Map<String, Object>);
         } catch(e){
           CloudFunction().logError('Error retrieving settings for user:  $e');
-          return SettingsModel().fakerData();
+          return SettingsModel.mock();
         }} else {
-        return SettingsModel().fakerData();
+        return SettingsModel.mock();
       }
     }
 

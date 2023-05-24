@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/transportation_model.dart';
+
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
+import '../../models/transportation_model/transportation_model.dart';
 
 /// Edit transportation data
 class EditTransportation extends StatefulWidget {
   const EditTransportation({Key? key, required this.transportationData}) : super(key: key);
-  final TransportationData transportationData;
+  final TransportationModel transportationData;
 
   @override
   State<EditTransportation> createState() => _EditTransportationState();

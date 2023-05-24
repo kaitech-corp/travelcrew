@@ -4,10 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/cost_model.dart';
-import '../../../models/custom_objects.dart';
-import '../../../models/split_model.dart';
-import '../../../models/trip_model.dart';
+
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
@@ -16,6 +13,12 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/cost_model/cost_object_model.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
+import '../../models/split_model/split_model.dart';
+import '../../models/trip_model/trip_model.dart';
+import '../DM/logic/logic.dart';
+import 'logic/split_functions.dart';
 
 late ValueNotifier<List<String>> selectedList;
 
@@ -35,9 +38,9 @@ class SplitPackage {
   }
 
   /// Sum up outstanding balance
-  double sumRemainingBalance(List<CostObject> coList) {
+  double sumRemainingBalance(List<CostObjectModel> coList) {
     double total = 0;
-    for (final CostObject element in coList) {
+    for (final CostObjectModel element in coList) {
       total = total + ((element.paid == false) ? element.amountOwe : 0);
     }
     return total;
@@ -84,8 +87,7 @@ class SplitPackage {
               );
             }
           },
-          future: DatabaseService(tripDocID: trip.documentId)
-              .checkSplitItemExist(splitObject.itemDocID),
+          future: checkSplitItemExist(splitObject.itemDocID),
         );
       },
     );
@@ -115,8 +117,7 @@ class SplitPackage {
               onPressed: () {});
         }
       },
-      future: DatabaseService(tripDocID: trip.documentId)
-          .checkSplitItemExist(splitObject.itemDocID),
+      future: checkSplitItemExist(splitObject.itemDocID),
     );
   }
 
@@ -174,7 +175,7 @@ class SplitPackage {
                                       }
                                     },
                                     onChanged: (String val) {
-                                      splitObject.itemTotal = double.parse(val);
+                                      // splitObject.itemTotal = double.parse(val);
                                     }))),
                       ),
                       Padding(
@@ -191,24 +192,24 @@ class SplitPackage {
                             form.save();
                             if (form.validate()) {
                               try {
-                                splitObject.dateCreated = Timestamp.now();
-                                splitObject.lastUpdated = Timestamp.now();
-                                splitObject.purchasedByUID =
-                                    userService.currentUserID;
-                                splitObject.userSelectedList = trip.accessUsers
-                                    .where((String user) =>
-                                        !selectedList.value.contains(user))
-                                    .toList();
-                                splitObject.amountRemaining =
-                                    splitObject.itemTotal -
-                                        standardSplit(
-                                            splitObject.userSelectedList.length,
-                                            splitObject.itemTotal);
+                                // splitObject.dateCreated = DateTime.now();
+                                // splitObject.lastUpdated = DateTime.now();
+                                // splitObject.purchasedByUID =
+                                //     userService.currentUserID;
+                                // splitObject.userSelectedList = trip.accessUsers
+                                //     .where((String user) =>
+                                //         !selectedList.value.contains(user))
+                                //     .toList();
+                                // splitObject.amountRemaining =
+                                //     splitObject.itemTotal -
+                                //         standardSplit(
+                                //             splitObject.userSelectedList.length,
+                                //             splitObject.itemTotal);
                               } catch (e) {
                                 CloudFunction().logError(
                                     'Tried saving splitObject data: $e');
                               }
-                              DatabaseService().createSplitItem(splitObject);
+                              createSplitItem(splitObject);
                               navigationService.pop();
                             }
                           },
@@ -286,7 +287,7 @@ class SplitPackage {
                                       return null;
                                     },
                                     onChanged: (String val) {
-                                      splitObject.itemTotal = double.parse(val);
+                                      // splitObject.itemTotal = double.parse(val);
                                     }))),
                       ),
                       Row(
@@ -308,9 +309,8 @@ class SplitPackage {
                                       _formKey2.currentState!;
                                   form.save();
                                   if (form.validate()) {
-                                    splitObject.lastUpdated = Timestamp.now();
-                                    DatabaseService()
-                                        .createSplitItem(splitObject);
+                                    // splitObject.lastUpdated = Timestamp.now();
+                                    createSplitItem(splitObject);
                                     navigationService.pop();
                                   }
                                 } catch (e) {
@@ -336,8 +336,7 @@ class SplitPackage {
                                 )),
                               ),
                               onPressed: () {
-                                DatabaseService()
-                                    .deleteSplitObject(splitObject);
+                                deleteSplitObject(splitObject);
                                 navigationService.pop();
                               },
                               child: Text(
@@ -413,7 +412,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
               return const Loading();
             }
           },
-          stream: DatabaseService().getcrewList(widget.trip.accessUsers),
+          stream: getcrewList(widget.trip.accessUsers),
         ),
         if (_showImage) ...<Widget>[
           BackdropFilter(

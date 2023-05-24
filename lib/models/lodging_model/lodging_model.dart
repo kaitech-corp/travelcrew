@@ -19,7 +19,8 @@ class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
   Timestamp toJson(DateTime object) => Timestamp.fromDate(object);
 }
 
-class TimestampNullableConverter implements JsonConverter<DateTime?, Timestamp?> {
+class TimestampNullableConverter
+    implements JsonConverter<DateTime?, Timestamp?> {
   const TimestampNullableConverter();
 
   @override
@@ -46,6 +47,23 @@ class LodgingModel with _$LodgingModel {
       required String uid,
       required List<String> voters}) = _LodgingModel;
 
-        factory LodgingModel.fromJson(Map<String, Object?> json)
-      => _$LodgingModelFromJson(json);
+  factory LodgingModel.fromJson(Map<String, Object?> json) =>
+      _$LodgingModelFromJson(json);
+
+  factory LodgingModel.mock() {
+    return LodgingModel(
+      endTime: '10:00 PM',
+      startTime: '3:00 PM',
+      startDateTimestamp: DateTime(2023, 5, 1),
+      endDateTimestamp: DateTime(2023, 5, 5),
+      location: 'City X',
+      comment: 'Beautiful and luxurious hotel.',
+      displayName: 'Hotel X',
+      fieldID: 'lodging123',
+      link: 'https://example.com/hotel-x',
+      lodgingType: 'Hotel',
+      uid: 'user123',
+      voters: ['userA', 'userB', 'userC'],
+    );
+  }
 }

@@ -7,6 +7,8 @@ import '../../../services/functions/cloud_functions.dart';
 
 final CollectionReference<Object?> lodgingCollection =
       FirebaseFirestore.instance.collection('lodging');
+            const String tripDocID = '';
+      const String fieldID = '';
   //// Add new lodging
   Future<void> addNewLodging(String documentID, LodgingModel lodging) async {
     final String key = lodgingCollection.doc().id;
@@ -33,8 +35,8 @@ final CollectionReference<Object?> lodgingCollection =
       String? lodgingType,
       required String fieldID,
       String? location,
-      Timestamp? endDateTimestamp,
-      Timestamp? startDateTimestamp,
+      DateTime? endDateTimestamp,
+      DateTime? startDateTimestamp,
       String? startTime,
       String? endTime}) async {
     final DocumentReference<Map<String, dynamic>> editLodgingRef =
@@ -67,10 +69,10 @@ final CollectionReference<Object?> lodgingCollection =
         return LodgingModel.fromJson(snapshot as Map<String, Object>);
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  $e');
-        return defaultLodgingModel;
+        return LodgingModel.mock();
       }
     } else {
-      return defaultLodgingDataModel;
+      return LodgingModel.mock();
     }
   }
 

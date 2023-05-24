@@ -5,8 +5,6 @@ import 'package:nil/nil.dart';
 import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/generics/generic_state.dart';
 import '../../../blocs/generics/generics_event.dart';
-import '../../../models/transportation_model.dart';
-import '../../../models/trip_model.dart';
 import '../../../repositories/transportation_repository.dart';
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
@@ -14,6 +12,8 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/transportation_model/transportation_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import 'transportation_card.dart';
 
 /// Transportation page
@@ -28,12 +28,12 @@ class TransportationPage extends StatefulWidget {
 }
 
 class _TransportationPageState extends State<TransportationPage> {
-  late GenericBloc<TransportationData, TransportationRepository> bloc;
+  late GenericBloc<TransportationModel, TransportationRepository> bloc;
 
   @override
   void initState() {
     bloc = BlocProvider.of<
-        GenericBloc<TransportationData, TransportationRepository>>(context);
+        GenericBloc<TransportationModel, TransportationRepository>>(context);
     bloc.add(LoadingGenericData());
     super.initState();
   }
@@ -52,13 +52,13 @@ class _TransportationPageState extends State<TransportationPage> {
       },
       child: Scaffold(
         body: BlocBuilder<
-            GenericBloc<TransportationData, TransportationRepository>,
+            GenericBloc<TransportationModel, TransportationRepository>,
             GenericState>(builder: (BuildContext context, GenericState state) {
           if (state is LoadingState) {
             return const Loading();
           } else if (state is HasDataState) {
-            final List<TransportationData> modeList =
-                state.data as List<TransportationData>;
+            final List<TransportationModel> modeList =
+                state.data as List<TransportationModel>;
             return Column(
               children: <Widget>[
                 const SizedBox(height: 8),

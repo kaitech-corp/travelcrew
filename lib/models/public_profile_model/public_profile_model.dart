@@ -28,6 +28,25 @@ class UserPublicProfile with _$UserPublicProfile {
       required String uid,
       required String urlToImage}) = _UserPublicProfile;
 
-        factory UserPublicProfile.fromJson(Map<String, Object?> json)
-      => _$UserPublicProfileFromJson(json);
+  factory UserPublicProfile.fromJson(Map<String, Object?> json) =>
+      _$UserPublicProfileFromJson(json);
+
+  factory UserPublicProfile.mock() {
+    return const UserPublicProfile(
+        tripsJoined: 0,
+        tripsCreated: 0,
+        hometown: 'hometown',
+        instagramLink: 'instagramLink',
+        facebookLink: 'facebookLink',
+        topDestinations: [],
+        blockedList: [],
+        displayName: 'displayName',
+        email: 'email',
+        following: [],
+        followers: [],
+        firstName: 'firstName',
+        lastName: 'lastName',
+        uid: 'uid',
+        urlToImage: 'urlToImage');
+  }
 }

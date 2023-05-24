@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-import '../../models/chat_model.dart';
-import '../../screens/trip_details/chat/chat_card.dart';
+
+import '../../features/Chat/chat_card.dart';
+import '../../models/chat_model/chat_model.dart';
+
 import '../../services/widgets/chat_date_display.dart';
 
 class StickyGroupedChatListView extends StatelessWidget {
@@ -12,32 +14,32 @@ class StickyGroupedChatListView extends StatelessWidget {
     required this.documentId
   }) : super(key: key);
 
-  final List<ChatData> data;
+  final List<ChatModel> data;
   final String documentId;
 
   @override
   Widget build(BuildContext context) {
-    return StickyGroupedListView<ChatData, String>(
+    return StickyGroupedListView<ChatModel, String>(
       key: Key(data.length.toString()),
       elements: data,
       reverse: true,
-      groupBy: (ChatData chat)
+      groupBy: (ChatModel chat)
       {
         return DateTime(
-            chat.timestamp.toDate().year,
-            chat.timestamp.toDate().month,
-            chat.timestamp.toDate().day,
-            chat.timestamp.toDate().hour)
+            chat.timestamp!.year,
+            chat.timestamp!.month,
+            chat.timestamp!.day,
+            chat.timestamp!.hour)
             .toString();
       },
       order: StickyGroupedListOrder.DESC,
-      itemComparator:(ChatData a,ChatData b) => a.timestamp.compareTo(b.timestamp),
-      groupSeparatorBuilder: (ChatData chat) =>
+      itemComparator:(ChatModel a,ChatModel b) => a.timestamp!.compareTo(b.timestamp!),
+      groupSeparatorBuilder: (ChatModel chat) =>
           Padding(
               padding: const EdgeInsets.all(4.0),
               child:ChatDateDisplay(
-                dateString: chat.timestamp.toDate().toString(),)),
-      itemBuilder: (BuildContext context, ChatData chat){
+                dateString: chat.timestamp!.toString(),)),
+      itemBuilder: (BuildContext context, ChatModel chat){
         return ChatCard(message: chat, tripDocID: documentId,);
       },
     );

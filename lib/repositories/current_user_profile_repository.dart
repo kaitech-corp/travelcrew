@@ -31,9 +31,9 @@ class CurrentUserProfileRepository {
           return UserPublicProfile.fromJson(snapshot as Map<String, Object>);
         } catch(e){
           CloudFunction().logError('Error retrieving single user profile:  $e');
-          return defaultProfile;
+          return UserPublicProfile.mock();
         }} else {
-        return defaultProfile;
+        return UserPublicProfile.mock();
       }
     }
 

@@ -2,7 +2,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/trip_model.dart';
+
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
@@ -12,6 +12,7 @@ import '../../../services/widgets/map_launcher.dart';
 import '../../../services/widgets/reusable_widgets.dart';
 import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../Alerts/alert_dialogs.dart';
 
 import 'Image_animation.dart';
@@ -75,8 +76,8 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
       title: widget.trip.tripName,
       description: widget.trip.comment,
       location: widget.trip.location,
-      startDate: widget.trip.startDateTimeStamp.toDate(),
-      endDate: widget.trip.endDateTimeStamp.toDate(),
+      startDate: widget.trip.startDateTimeStamp!,
+      endDate: widget.trip.endDateTimeStamp!,
     );
 
     return GestureDetector(

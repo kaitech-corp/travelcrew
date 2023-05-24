@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/custom_objects.dart';
-import '../../../models/split_model.dart';
-import '../../../models/transportation_model.dart';
-import '../../../models/trip_model.dart';
+
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/locator.dart';
@@ -13,6 +10,10 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../size_config/size_config.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
+import '../../models/split_model/split_model.dart';
+import '../../models/transportation_model/transportation_model.dart';
+import '../../models/trip_model/trip_model.dart';
 import '../Split/split_package.dart';
 
 
@@ -21,7 +22,7 @@ class TransportationCard extends StatelessWidget {
   TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
   final UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
-  final TransportationData transportationData;
+  final TransportationModel transportationData;
   final Trip trip;
 
   @override
@@ -106,7 +107,7 @@ class TransportationCard extends StatelessWidget {
                             itemName: transportationData.mode,
                             itemDescription: 'Transportation',
                             details: transportationData.comment,
-                            itemType: 'Transportation', dateCreated: Timestamp.now(), userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: Timestamp.now(), purchasedByUID: '',),
+                            itemType: 'Transportation', dateCreated: DateTime.now(), userSelectedList: <String>[], amountRemaining: 0, itemTotal: 0, lastUpdated: DateTime.now(), purchasedByUID: '',),
                         trip: trip);
                   }
                   break;

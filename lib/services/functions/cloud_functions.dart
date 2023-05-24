@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-import '../../models/custom_objects.dart';
-import '../../models/location_model.dart';
 
+import '../../models/location_model/location_model.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/locator.dart';
 
 class CloudFunction {
@@ -494,8 +494,8 @@ class CloudFunction {
       'city': locationModel.city,
       'country': locationModel.country,
       'documentID': locationModel.documentID,
-      'latitude': locationModel.geoPoint?.latitude,
-      'longitude': locationModel.geoPoint?.longitude,
+      // 'latitude': locationModel.geoPoint?.latitude,
+      // 'longitude': locationModel.geoPoint?.longitude,
       'zipcode': locationModel.zipcode,
     });
   }

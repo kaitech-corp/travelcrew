@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:nil/nil.dart';
 
-import '../../models/custom_objects.dart';
+
+import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
@@ -13,7 +14,10 @@ import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/loading.dart';
 import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
+import '../Trip_Management/logic/logic.dart';
 import '../alerts/alert_dialogs.dart';
+import 'components/recent_trip_widget.dart';
+import 'logic/logic.dart';
 
 class ProfileWidget extends StatelessWidget {
   ProfileWidget({
@@ -319,7 +323,7 @@ class _FollowListState extends State<FollowList> {
 
   Widget getMember(BuildContext context, String image, bool showImage) {
     return StreamBuilder<List<UserPublicProfile>>(
-      stream: DatabaseService().retrieveFollowList(widget.user),
+      stream: retrieveFollowList(widget.user),
       builder:
           (BuildContext context, AsyncSnapshot<List<UserPublicProfile>> users) {
         if (users.hasError) {
@@ -427,7 +431,7 @@ class _FollowListState extends State<FollowList> {
 
   Widget trailingButton(UserPublicProfile member) {
     return FutureBuilder<UserPublicProfile>(
-        future: DatabaseService().getUserProfile(userService.currentUserID),
+        future: getUserProfile(userService.currentUserID),
         builder:
             (BuildContext context, AsyncSnapshot<UserPublicProfile> result) {
           final UserPublicProfile? user = result.data;

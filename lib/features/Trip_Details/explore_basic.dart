@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/public_profile_bloc/public_profile_bloc.dart';
-import '../../../models/trip_model.dart';
 import '../../../repositories/user_profile_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 
+import '../../models/trip_model/trip_model.dart';
 import '../Menu/main_menu.dart';
 import 'explore_basic_layout.dart';
 

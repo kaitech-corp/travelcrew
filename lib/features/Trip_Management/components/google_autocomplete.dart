@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-import '../../../models/custom_objects.dart';
 import '../../../services/database.dart';
 import '../add_trip_form.dart';
 
@@ -62,7 +61,7 @@ Future<void> _handlePressButton(BuildContext context) {
               getPlaceDetailWithLatLng: (Prediction prediction) {
                 final double lat = double.parse(prediction.lat!);
                 final double lng = double.parse(prediction.lng!);
-                googleData.value = GoogleData(geoLocation: GeoPoint(lat, lng));
+                // googleData.value = GoogleData(geoLocation: GeoPoint(lat, lng));
               }, // this callback is called when isLatLngRequired is true
               itmClick: (Prediction prediction) {
                 if (prediction != null) {

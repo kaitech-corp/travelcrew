@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nil/nil.dart';
 
 import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/generics/generic_state.dart';
@@ -88,15 +89,15 @@ class _ChatPageState extends State<ChatPage> {
                         if (message.isNotEmpty) {
                           final Map<String, bool> status = createStatus();
                           _chatController.clear();
-                          final String displayName =
-                              currentUserProfile.displayName;
+                          // final String displayName =
+                          //     currentUserProfile.displayName;
                           final String uid = userService.currentUserID;
                           try {
                             final String action =
                                 'Saving message for ${widget.trip.documentId}';
                             CloudFunction().logEvent(action);
-                            await addNewChatMessage(
-                                displayName, message, uid, status);
+                            // await addNewChatMessage(
+                            //     displayName, message, uid, status);
                           } on Exception catch (e) {
                             CloudFunction().logError(
                                 'Error saving chat message (Chat.dart):  $e');
@@ -130,8 +131,9 @@ class _ChatPageState extends State<ChatPage> {
               if (state is LoadingState) {
                 return const Align(child: Loading());
               } else if (state is HasDataState) {
-                final List<ChatModel> ChatModel = state.data as List<ChatModel>;
-                return _buildChatListView(ChatModel);
+                // final List<ChatModel> ChatModel = state.data as List<ChatModel>;
+                // return _buildChatListView(ChatModel);
+                return nil;
               } else {
                 return Container();
               }

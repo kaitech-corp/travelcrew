@@ -33,7 +33,7 @@ class _DMChatState extends State<DMChat> {
     clearChat(widget.user.uid);
 
     return StreamProvider<List<ChatModel>>.value(
-      initialData:  <ChatModel>[defaultChatModel],
+      initialData:  <ChatModel>[],
       value: dmChatList,
       child: GestureDetector(
         onTap: () {

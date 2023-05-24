@@ -2,8 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../../../models/custom_objects.dart';
-import '../../../../models/trip_model.dart';
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
@@ -13,7 +11,10 @@ import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
+import '../../../models/public_profile_model/public_profile_model.dart';
+import '../../../models/trip_model/trip_model.dart';
 import '../../Alerts/alert_dialogs.dart';
+import '../../DM/logic/logic.dart';
 
 
 /// Layout list for members of trip
@@ -65,7 +66,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               return const Loading();
             }
           },
-        stream: DatabaseService().getcrewList(widget.trip.accessUsers),),
+        stream: getcrewList(widget.trip.accessUsers),),
         if (_showImage) ...<Widget>[
           BackdropFilter(
             filter: ImageFilter.blur(

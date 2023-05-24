@@ -8,14 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import '../../models/activity_model.dart';
-import '../../models/chat_model.dart';
-import '../../models/cost_model.dart';
-import '../../models/custom_objects.dart';
-import '../../models/lodging_model.dart';
-import '../../models/settings_model.dart';
-import '../../models/split_model.dart';
-import '../../models/trip_model.dart';
+
 
 import '../../services/constants/constants.dart';
 import '../../services/functions/cloud_functions.dart';
@@ -23,8 +16,10 @@ import '../../services/functions/tc_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/navigation_service.dart';
 import '../../services/notifications/notifications.dart';
-import '../models/feed_model.dart';
-import '../models/recommended_model.dart';
+import '../features/Main_Page/logic/logic.dart';
+import '../models/member_model/member_model.dart';
+import '../models/public_profile_model/public_profile_model.dart';
+
 
 UserService userService = locator<UserService>();
 NavigationService navigationService = locator<NavigationService>();
@@ -114,7 +109,7 @@ class DatabaseService {
   }
 
   ////Get all members from Trip
-  Future<List<Members>> retrieveMembers(String docID, bool ispubic) async {
+  Future<List<MemberModel>> retrieveMembers(String docID, bool ispubic) async {
     if (ispubic) {
       try {
         const String action = 'Get all members from Trip';
@@ -123,17 +118,17 @@ class DatabaseService {
             .doc(docID)
             .collection('Members')
             .get();
-        final List<Members> memberList =
+        final List<MemberModel> memberList =
             ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return Members.fromDocument(doc);
+          return MemberModel.fromJson(doc as Map<String, Object>);
         }).toList();
         memberList
-            .sort((Members a, Members b) => a.lastName.compareTo(b.lastName));
+            .sort((MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         CloudFunction().logError('Error retrieving all members from trip:  '
             '$e');
-        return <Members>[];
+        return <MemberModel>[];
       }
     } else {
       try {
@@ -144,17 +139,17 @@ class DatabaseService {
             .collection('Members')
             .get();
 
-        final List<Members> memberList =
+        final List<MemberModel> memberList =
             ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return Members.fromDocument(doc);
+          return MemberModel.fromJson(doc as Map<String, Object>);
         }).toList();
         memberList
-            .sort((Members a, Members b) => a.lastName.compareTo(b.lastName));
+            .sort((MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         CloudFunction().logError('Error retrieving members from private trip:  '
             '$e');
-        return <Members>[];
+        return <MemberModel>[];
       }
     }
   }

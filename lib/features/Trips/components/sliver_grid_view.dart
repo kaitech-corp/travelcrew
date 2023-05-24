@@ -130,7 +130,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                     children: <Widget>[
                       favoriteIcon(),
                       chatNotificationBadges(trip),
-                      needListBadges(trip),
+                     
                       BadgeIcon(
                         icon: (trip.accessUsers.length > 1) ? const Icon(
                           Icons.people,
@@ -179,8 +179,8 @@ class TappableCrewTripGrid extends StatelessWidget {
   }
 
   Widget chatNotificationBadges(Trip trip) {
-    return StreamBuilder<List<ChatData>>(
-      builder: (BuildContext context, AsyncSnapshot<List<ChatData>> chats) {
+    return StreamBuilder<List<ChatModel>>(
+      builder: (BuildContext context, AsyncSnapshot<List<ChatModel>> chats) {
         if (chats.hasError) {
           CloudFunction()
               .logError('Error streaming chats for '

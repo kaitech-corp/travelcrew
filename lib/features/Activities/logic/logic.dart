@@ -36,9 +36,9 @@ Future<void> editActivityModel(
     String? activityType,
     required String fieldID,
     String? location,
-    Timestamp? dateTimestamp,
-    Timestamp? endDateTimestamp,
-    Timestamp? startDateTimestamp,
+    DateTime? dateTimestamp,
+    DateTime? endDateTimestamp,
+    DateTime? startDateTimestamp,
     String? startTime,
     String? endTime}) async {
   final DocumentReference<Map<String, dynamic>> addNewActivityRef =

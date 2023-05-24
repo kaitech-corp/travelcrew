@@ -7,12 +7,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/custom_objects.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/loading.dart';
 import '../../size_config/size_config.dart';
+import 'logic/logic.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final UserPublicProfile _user = defaultProfile;
+  final UserPublicProfile _user = UserPublicProfile.mock();
   late File _image;
   final ImagePicker _picker = ImagePicker();
   String error = '';
@@ -89,7 +90,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             title: Text(Intl.message('Edit Profile'),
                 style: headlineMedium(context),)),
         body: StreamBuilder<UserPublicProfile>(
-            stream: DatabaseService().currentUserPublicProfile,
+            stream: currentUserPublicProfile,
             builder: (BuildContext context, AsyncSnapshot<UserPublicProfile> snapshot) {
               if (snapshot.hasData) {
                 final UserPublicProfile user = snapshot.data!;
@@ -135,8 +136,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             return null;
                                           }
                                         },
-                                        onSaved: (String? val) => setState(
-                                            () => _user.firstName = val!)),
+                                        // onSaved: (String? val) => setState(
+                                        //     () => _user.firstName = val!)
+                                            ),
                                     TextFormField(
                                       decoration: const InputDecoration(
                                           labelText: 'Last Name'),
@@ -156,8 +158,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           return null;
                                         }
                                       },
-                                      onSaved: (String? val) =>
-                                          setState(() => _user.lastName = val!),
+                                      // onSaved: (String? val) =>
+                                      //     setState(() => _user.lastName = val!),
                                     ),
                                     TextFormField(
                                         initialValue: user.displayName,
@@ -174,14 +176,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             return null;
                                           }
                                         },
-                                        onSaved: (String? val) => setState(
-                                            () => _user.displayName = val!)),
+                                        // onSaved: (String? val) => setState(
+                                        //     () => _user.displayName = val!)
+                                            ),
                                     TextFormField(
                                         initialValue: user.hometown,
                                         decoration: const InputDecoration(
                                             labelText: 'Hometown'),
-                                        onSaved: (String? val) => setState(
-                                            () => _user.hometown = val!.trim())),
+                                        // onSaved: (String? val) => setState(
+                                        //     () => _user.hometown = val!.trim())
+                                            ),
                                     const SizedBox(
                                       height: 20,
                                     ),
@@ -214,8 +218,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                   }
                                                   return null;
                                                 },
-                                                onSaved: (String? val) => setState(() =>
-                                                    _user.instagramLink = val!)),
+                                                // onSaved: (String? val) => setState(() =>
+                                                //     _user.instagramLink = val!)
+                                                    ),
                                             TextFormField(
                                                 initialValue: user
                                                         .facebookLink,
@@ -233,8 +238,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                   }
                                                   return null;
                                                 },
-                                                onSaved: (String? val) => setState(() =>
-                                                    _user.facebookLink = val!)),
+                                                // onSaved: (String? val) => setState(() =>
+                                                //     _user.facebookLink = val!)
+                                                    ),
                                           ],
                                         ),
                                       ),
@@ -323,18 +329,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         onPressed: () async {
                                           final FormState form = _formKey.currentState!;
                                           form.save();
-                                          _user.topDestinations = <String>[
-                                            destination1,
-                                            destination2,
-                                            destination3
-                                          ];
+                                          // _user.topDestinations = <String>[
+                                          //   destination1,
+                                          //   destination2,
+                                          //   destination3
+                                          // ];
                                           if (form.validate()) {
                                             try {
                                               const String action =
                                                   'Editing Public Profile page from page';
                                               CloudFunction().logEvent(action);
-                                              DatabaseService(uid: user.uid)
-                                                  .editPublicProfileData(
+                                              editPublicProfileData(
                                                       _user, _image);
                                             } on Exception catch (e) {
                                               CloudFunction().logError(

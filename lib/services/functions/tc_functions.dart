@@ -5,8 +5,6 @@ import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../models/custom_objects.dart';
-import '../../models/trip_model.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../locator.dart';
 
@@ -65,7 +63,8 @@ class TCFunctions {
       gaugeCount: gaugeCount.toDouble(),
     );
   }
-// This function returns a string that indicates whether today is before, after, 
+
+// This function returns a string that indicates whether today is before, after,
 // or during a given time frame specified by start and end times.
   String checkDate(int startDateTimeStamp, int endDateTimeStamp) {
     final int today = DateTime.now().millisecondsSinceEpoch;
@@ -79,19 +78,20 @@ class TCFunctions {
   }
 
   String readTimestamp(int timestamp) {
-  final DateTime currentTime = DateTime.now();
-  final DateTime timestampTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-  
-  final Duration difference = currentTime.difference(timestampTime);
-  final int days = difference.inDays;
-  final int hours = difference.inHours;
-  
-  if (days > 0) {
-    return '$days days ago';
-  } else {
-    return '$hours hours ago';
+    final DateTime currentTime = DateTime.now();
+    final DateTime timestampTime =
+        DateTime.fromMillisecondsSinceEpoch(timestamp);
+
+    final Duration difference = currentTime.difference(timestampTime);
+    final int days = difference.inDays;
+    final int hours = difference.inHours;
+
+    if (days > 0) {
+      return '$days days ago';
+    } else {
+      return '$hours hours ago';
+    }
   }
-}
 
   Future<void> launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
@@ -176,9 +176,17 @@ class TCFunctions {
     return x;
   }
 
+  int getRandomIndex(List<dynamic> list) {
+    final Random random = Random();
+    return random.nextInt(list.length);
+  }
+}
 
+///Model for count down date to show on trip page
+class CountDownDate {
+  CountDownDate({this.daysLeft, this.initialDayCount, this.gaugeCount});
 
-int getRandomIndex(List<dynamic> list) {
-  final Random random = Random();
-  return random.nextInt(list.length);
+  double? initialDayCount;
+  double? daysLeft;
+  double? gaugeCount;
 }

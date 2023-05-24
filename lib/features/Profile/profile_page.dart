@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../models/custom_objects.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
+import 'logic/logic.dart';
 import 'profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -40,10 +41,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ProfileWidget(user: user)
                 ]);
               } else {
-                return ProfileWidget(user: defaultProfile);
+                return ProfileWidget(user: UserPublicProfile.mock());
               }
             },
-            stream: DatabaseService().currentUserPublicProfile,
+            stream: currentUserPublicProfile,
           ),
         ],
       ),

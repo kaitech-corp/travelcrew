@@ -27,7 +27,7 @@ Future<SettingsModel> getUserNotificationSettings() async {
           isTripChangeOn: true,
           isTripChatOn: true,
         ).toJson());
-    return null;
+    return SettingsModel.mock();
   }
 }
 

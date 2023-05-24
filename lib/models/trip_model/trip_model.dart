@@ -33,12 +33,10 @@ class GeoPointConverter implements JsonConverter<GeoPoint, List<double>> {
   const GeoPointConverter();
 
   @override
-  GeoPoint fromJson(List<double> json) =>
-      GeoPoint(json[0], json[1]);
+  GeoPoint fromJson(List<double> json) => GeoPoint(json[0], json[1]);
 
   @override
-  List<double> toJson(GeoPoint object) =>
-      [object.latitude, object.longitude];
+  List<double> toJson(GeoPoint object) => [object.latitude, object.longitude];
 }
 
 @freezed
@@ -62,6 +60,24 @@ class Trip with _$Trip {
       required String travelType,
       required String urlToImage}) = _Trip;
 
-  factory Trip.fromJson(Map<String, Object?> json) =>
-      _$TripFromJson(json);
+  factory Trip.fromJson(Map<String, Object?> json) => _$TripFromJson(json);
+
+  factory Trip.mock() {
+    return Trip(
+      startDateTimeStamp: DateTime.now(),
+      endDateTimeStamp: DateTime.now(),
+        comment: 'comment',
+        displayName: 'displayName',
+        favorite: [],
+        accessUsers: [],
+        documentId: 'documentId',
+        endDate: 'endDate',
+        ispublic: true,
+        tripName: 'tripName',
+        location: 'location',
+        ownerID: 'ownerID',
+        startDate: 'startDate',
+        travelType: 'travelType',
+        urlToImage: 'urlToImage');
+  }
 }
