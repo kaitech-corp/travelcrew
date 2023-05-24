@@ -30,13 +30,11 @@ const String uid = '';
 
 ///Updates user info after signup
 Future<void> updateUserData(
-    String? firstName, String? lastName, String? email, String uid) async {
+    String email, String uid) async {
   try {
     const String action = 'Updating User data.';
     CloudFunction().logEvent(action);
     return await userCollection.doc(uid).set(<String, dynamic>{
-      'firstName': firstName,
-      'lastName': lastName,
       'email': email,
       'uid': uid
     });
@@ -104,8 +102,8 @@ Future<void> retrieveProfileImage() async {
 }
 
 ////Updates public profile after sign up
-Future<void> updateUserPublicProfileData(String? displayName, String? firstName,
-    String? lastName, String? email, String? uid, File? urlToImage) async {
+Future<void> updateUserPublicProfileData({String? displayName, String? firstName,
+    String? lastName, String? email, String? uid, File? urlToImage}) async {
   final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
   try {
     const String action = 'Updating public profile after sign up';

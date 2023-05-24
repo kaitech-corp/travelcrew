@@ -8,6 +8,7 @@ import '../../blocs/generics/generic_bloc.dart';
 import '../../features/Activities/activity_page.dart';
 import '../../features/Activities/add_new_activity.dart';
 import '../../features/Activities/edit_activity.dart';
+import '../../features/Auth/signup_screen.dart';
 import '../../features/Chat/chat_page.dart';
 import '../../features/DM/dm_chat.dart';
 import '../../features/DM/dm_chats_page.dart';
@@ -261,6 +262,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               const Settings()
           // ),
           );
+    case SignUpScreenRoute:
+      return _getPageRoute(
+          routeName: settings.name!, viewToShow: const SignupScreen());
     // case SplitDetailsPageRoute:
     //   final SplitDetailsArguments arguments =
     //       settings.arguments as SplitDetailsArguments;

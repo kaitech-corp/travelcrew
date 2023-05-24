@@ -29,9 +29,9 @@ class UserRepository {
     final UserCredential result = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     final User? user = result.user;
-    await updateUserData(firstname, lastName, email, user!.uid);
+    await updateUserData( email, user!.uid);
     await updateUserPublicProfileData(
-        displayName, firstname, lastName, email, user.uid, urlToImage);
+         email:email, uid:user.uid,);
   }
 
   Future<List<dynamic>> signOut() async {

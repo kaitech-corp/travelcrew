@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../utils/validators.dart';
 
+
+import '../../../../repositories/user_repository.dart';
+import '../../../../utils/validators.dart';
 import 'login_event.dart';
 import 'login_state.dart';
-import 'user_repository.dart';
+
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({UserRepository? userRepository})

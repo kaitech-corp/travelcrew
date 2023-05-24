@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
@@ -201,6 +202,7 @@ class _LoginFormState extends State<LoginForm> {
             bloc: _loginBloc,
             builder: (BuildContext context, LoginState state) {
               return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   buildEmailFormField(context, state),
                   buildPasswordFormField(context, state),
@@ -219,6 +221,30 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
+  Widget buildSignInButtons(BuildContext context, LoginState state) {
+    return IntrinsicWidth(
+      child: Column(
+        children: <Widget>[
+          buildGoogleLoginButton(context, state),
+          const SizedBox(height:30),
+          buildAppleLoginButton(context, state),
+        ],
+      ),
+    );
+  }
+
+  Widget buildAppleLoginButton(BuildContext context, LoginState state) {
+    if (UserRepository().appleSignInAvailable) {
+      return SignInWithAppleButton(onPressed: () {
+        if (isAppleLoginButtonEnabled(state)) {
+          _onPressedAppleSignIn();
+        }
+      });
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget buildGoogleLoginButton(BuildContext context, LoginState state) {
     return ElevatedButton(
       onPressed: () {
@@ -230,14 +256,14 @@ class _LoginFormState extends State<LoginForm> {
             backgroundColor: MaterialStateProperty.all(canvasColor),
           ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             const Image(
               image: AssetImage(google_logo),
-              height: 25.0,
+              height: 20.0,
             ),
             Text(
               signInWithGoogle,
@@ -245,17 +271,6 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildSignInButtons(BuildContext context, LoginState state) {
-    return IntrinsicWidth(
-      child: Column(
-        children: <Widget>[
-          buildGoogleLoginButton(context, state),
-          buildAppleLoginButton(context, state),
-        ],
       ),
     );
   }
@@ -293,16 +308,6 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
     );
-  }
-
-  Widget buildAppleLoginButton(BuildContext context, LoginState state) {
-    if (UserRepository().appleSignInAvailable) {
-      return const SizedBox(
-        height: 16,
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
   }
 
   Widget buildSignUpLink(BuildContext context) {

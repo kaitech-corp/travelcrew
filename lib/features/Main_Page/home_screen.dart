@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
+import '../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../models/recommended_model/recommended_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/functions/tc_functions.dart';
@@ -95,7 +98,8 @@ class HomeScreen extends StatelessWidget {
                     style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold),
                   )),
               OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {BlocProvider.of<AuthenticationBloc>(context)
+                    .add(AuthenticationLoggedOut());},
                   child: Text('Custom Trip', style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold),)),
             ],
           ),

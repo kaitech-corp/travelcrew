@@ -81,45 +81,45 @@ class CustomAppBar extends StatelessWidget {
                   navigationService.navigateTo(DMChatListPageRoute);
                 },
               ),
-              BlocBuilder<NotificationBloc, NotificationState>(
-                bloc: bloc,
-                builder: (BuildContext context, NotificationState state) {
-                  if (state is NotificationLoadingState) {
-                    return IconButton(
-                      icon: const BadgeIcon(
-                        icon: IconThemeWidget(icon: Icons.notifications_none),
-                      ),
-                      onPressed: () {
-                        navigationService.navigateTo(NotificationsRoute);
-                      },
-                    );
-                  } else if (state is NotificationHasDataState) {
-                    final List<NotificationModel> notifications =
-                        state.data;
-                    return IconButton(
-                      icon: const BadgeIcon(
-                        icon: IconThemeWidget(icon: Icons.notifications_active),
-                      ),
-                      onPressed: () {
-                        navigationService.navigateTo(
-                          NotificationsRoute,
-                          arguments: notifications,
-                        );
-                      },
-                      // badgeCount: this.notifications?.length ?? 0,
-                    );
-                  } else {
-                    return IconButton(
-                      icon: const BadgeIcon(
-                        icon: IconThemeWidget(icon: Icons.notifications_none),
-                      ),
-                      onPressed: () {
-                        navigationService.navigateTo(NotificationsRoute);
-                      },
-                    );
-                  }
-                },
-              ),
+              // BlocBuilder<NotificationBloc, NotificationState>(
+              //   bloc: bloc,
+              //   builder: (BuildContext context, NotificationState state) {
+              //     if (state is NotificationLoadingState) {
+              //       return IconButton(
+              //         icon: const BadgeIcon(
+              //           icon: IconThemeWidget(icon: Icons.notifications_none),
+              //         ),
+              //         onPressed: () {
+              //           navigationService.navigateTo(NotificationsRoute);
+              //         },
+              //       );
+              //     } else if (state is NotificationHasDataState) {
+              //       final List<NotificationModel> notifications =
+              //           state.data;
+              //       return IconButton(
+              //         icon: const BadgeIcon(
+              //           icon: IconThemeWidget(icon: Icons.notifications_active),
+              //         ),
+              //         onPressed: () {
+              //           navigationService.navigateTo(
+              //             NotificationsRoute,
+              //             arguments: notifications,
+              //           );
+              //         },
+              //         // badgeCount: this.notifications?.length ?? 0,
+              //       );
+              //     } else {
+              //       return IconButton(
+              //         icon: const BadgeIcon(
+              //           icon: IconThemeWidget(icon: Icons.notifications_none),
+              //         ),
+              //         onPressed: () {
+              //           navigationService.navigateTo(NotificationsRoute);
+              //         },
+              //       );
+              //     }
+              //   },
+              // ),
             ],
           ),
         ),
