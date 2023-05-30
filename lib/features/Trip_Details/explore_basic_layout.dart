@@ -29,14 +29,14 @@ class ExploreBasicLayout extends StatelessWidget {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              if (tripDetails.urlToImage.isNotEmpty)
+              if (tripDetails.urlToImage?.isNotEmpty ?? false)
                 Hero(
                   tag: tripDetails.documentId,
                   transitionOnUserGestures: true,
                   child: FadeInImage.assetNetwork(
                     fit: BoxFit.fitWidth,
                     placeholder: travelImage,
-                    image: tripDetails.urlToImage,
+                    image: tripDetails.urlToImage!,
                   ),
                 )
               else
@@ -73,7 +73,7 @@ class ExploreBasicLayout extends StatelessWidget {
             ],
           ),
           ListTile(
-            title: Text(tripDetails.location,
+            title: Text(tripDetails.location ?? '',
                 style: const TextStyle(fontSize: 20.0)),
             subtitle: Text(
               'Owner: ${tripDetails.displayName}',
@@ -97,23 +97,23 @@ class ExploreBasicLayout extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    tripDetails.travelType.toUpperCase(),
+                    tripDetails.travelType?.toUpperCase() ?? '',
                     style: titleSmall(context),
                   ),
                   Text(
-                    '${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',
+                    '${TCFunctions().dateToMonthDay(tripDetails.startDate ?? '')} - ${tripDetails.endDate}',
                     style: titleMedium(context),
                   )
                 ],
               ),
             ),
           ),
-          if (tripDetails.comment.isNotEmpty)
+          if (tripDetails.comment?.isNotEmpty ?? false)
             Container(
               padding: const EdgeInsets.all(18.0),
               decoration: const BoxDecoration(),
               child: Text(
-                tripDetails.comment,
+                tripDetails.comment!,
                 style: titleMedium(context),
                 textAlign: TextAlign.center,
               ),

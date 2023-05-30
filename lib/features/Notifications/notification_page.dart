@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../blocs/notification_bloc/notification_bloc.dart';
+
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/theme/text_styles.dart';
 
@@ -22,7 +22,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  late NotificationBloc bloc;
+
 
   @override
   Widget build(BuildContext context) {

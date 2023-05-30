@@ -21,7 +21,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
       try {
         return snapshot.docs
             .map((QueryDocumentSnapshot<Object> doc) {
-          return Trip.fromJson(doc as Map<String, Object>);
+          return Trip.fromJson(doc.data() as Map<String, dynamic>);
         })
             .toList()
             .reversed

@@ -40,7 +40,7 @@ class SliverGridView extends StatelessWidget {
             );
           },
           staggeredTileBuilder: (int index) {
-            if (trips[index].urlToImage.isNotEmpty) {
+            if (trips[index].urlToImage?.isNotEmpty ?? false) {
               return const StaggeredTile.count(2, 2);
             } else {
               return const StaggeredTile.count(2, 1);
@@ -84,13 +84,13 @@ class TappableCrewTripGrid extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  if(trip.urlToImage.isNotEmpty)
+                  if(trip.urlToImage?.isNotEmpty ?? false)
                       Flexible(
                           flex: 4,
                           child: Hero(
-                              tag: trip.urlToImage,
+                              tag: trip.urlToImage!,
                               transitionOnUserGestures: true,
-                              child: ImageLayout(trip.urlToImage))),
+                              child: ImageLayout(trip.urlToImage!))),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Tooltip(
@@ -108,7 +108,7 @@ class TappableCrewTripGrid extends StatelessWidget {
                     child: Text(
                       trip.startDate != null
                           ? '${TCFunctions()
-                          .dateToMonthDay(trip.startDate)} - ${trip.endDate}'
+                          .dateToMonthDay(trip.startDate ?? '')} - ${trip.endDate}'
                           : 'Dates',
                       style: titleSmall(context),
                       textScaleFactor: 1.2,
@@ -157,7 +157,7 @@ class TappableCrewTripGrid extends StatelessWidget {
     return Tooltip(
       message: 'Likes',
       child: BadgeIcon(
-        icon: (trip.favorite.isNotEmpty) ? const Icon(
+        icon: (trip.favorite?.isNotEmpty ?? false) ? const Icon(
           Icons.favorite,
           color: Colors.redAccent,
         ):
@@ -165,7 +165,7 @@ class TappableCrewTripGrid extends StatelessWidget {
           Icons.favorite_border,
           color: Colors.redAccent,
         ),
-        badgeCount: trip.favorite.length,
+        badgeCount: trip.favorite!.length,
       ),
     );
   }
@@ -174,7 +174,7 @@ class TappableCrewTripGrid extends StatelessWidget {
     if (trip.ownerID == currentUserID) {
       return 'You';
     } else {
-      return trip.displayName;
+      return trip.displayName!;
     }
   }
 

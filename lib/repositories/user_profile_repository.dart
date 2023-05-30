@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
-import '../../../services/functions/cloud_functions.dart';
 import '../models/public_profile_model/public_profile_model.dart';
 
 /// Interface to our 'userPublicProfile' Firebase collection.
@@ -24,10 +24,12 @@ class PublicProfileRepository {
     UserPublicProfile userProfileFromSnapshot(DocumentSnapshot<Object> snapshot){
       if(snapshot.exists) {
         try {
-          // final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-          return UserPublicProfile.fromJson(snapshot as Map<String, Object>);
+
+          return UserPublicProfile.fromJson(snapshot as Map<String, dynamic>);
         } catch(e){
-          CloudFunction().logError('Error retrieving single user profile:  $e');
+          if (kDebugMode) {
+            print('Error retrieving single user profile:  $e');
+          }
           return UserPublicProfile.mock();
         }} else {
         return UserPublicProfile.mock();

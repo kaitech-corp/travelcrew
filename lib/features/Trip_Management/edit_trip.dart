@@ -54,19 +54,19 @@ class EditTripDataState extends State<EditTripData> {
   @override
   void initState() {
     super.initState();
-    controllerLocation.text = widget.trip.location;
+    controllerLocation.text = widget.trip.location ?? '';
     controllerTripName.text = widget.trip.tripName;
-    controllerType.text = widget.trip.travelType;
-    controllerComment.text = widget.trip.comment;
-    startDate.value = widget.trip.startDate;
-    endDate.value = widget.trip.endDate;
+    controllerType.text = widget.trip.travelType ?? '';
+    controllerComment.text = widget.trip.comment ?? '';
+    startDate.value = widget.trip.startDate ?? '';
+    endDate.value = widget.trip.endDate ?? '';
     endDateTimestamp.value = widget.trip.endDateTimeStamp!;
     startDateTimestamp.value = widget.trip.startDateTimeStamp!;
     ispublic = widget.trip.ispublic;
     documentID = widget.trip.documentId;
     tripGeoPoint = widget.trip.tripGeoPoint;
-    if (widget.trip.urlToImage.isNotEmpty) {
-      urlToImage.value = File(widget.trip.urlToImage);
+    if (widget.trip.urlToImage?.isNotEmpty ?? false) {
+      urlToImage.value = File(widget.trip.urlToImage!);
     }
   }
 

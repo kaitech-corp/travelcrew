@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
-import '../../../../services/functions/tc_functions.dart';
 import '../../../../services/locator.dart';
 import '../../../../services/navigation/route_names.dart';
 import '../../../../services/theme/text_styles.dart';
@@ -14,6 +13,7 @@ import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../models/notification_model/notification_model.dart';
 import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
+import '../../../services/functions/tc_functions.dart';
 import '../../Alerts/alert_dialogs.dart';
 import '../../Trip_Management/logic/logic.dart';
 
@@ -49,17 +49,17 @@ class NotificationsCard extends StatelessWidget {
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text(notification.message),
-        subtitle: Text(notification.timestamp!.toString(),
+        subtitle: Text(readTimestamp(notification.timestamp!),
           style: titleSmall(context),
         ),
         onTap: () async {
-          if (notification.ispublic) {
+          if (notification.ispublic!) {
             final Trip trip =
-                await getTrip(notification.documentID);
+                await getTrip(notification.documentID!);
             navigationService.navigateTo(ExploreRoute, arguments: trip);
           } else {
             final Trip trip =
-                await getPrivateTrip(notification.documentID);
+                await getPrivateTrip(notification.documentID!);
             navigationService.navigateTo(ExploreRoute, arguments: trip);
           }
         },
@@ -79,14 +79,14 @@ class NotificationsCard extends StatelessWidget {
             child: GestureDetector(
               onTap: () async {
                 final Trip trip =
-                    await getTrip(notification.documentID);
+                    await getTrip(notification.documentID!);
                 navigationService.navigateTo(ExploreBasicRoute,
                     arguments: trip);
               },
               child: ListTile(
                 title: Text(notification.message),
                 subtitle: Text(
-                      notification.timestamp!.toString(),
+                      readTimestamp(notification.timestamp!),
                   style: titleSmall(context),
                 ),
               ),
@@ -97,8 +97,8 @@ class NotificationsCard extends StatelessWidget {
               icon: const IconThemeWidget(icon: Icons.add_circle),
               onPressed: () async {
                 final String fieldID = notification.fieldID;
-                CloudFunction().joinTrip(notification.documentID,
-                    notification.ispublic, notification.uid);
+                CloudFunction().joinTrip(notification.documentID!,
+                    notification.ispublic!, notification.uid);
                 CloudFunction().removeNotificationData(fieldID);
                 _showDialog(context);
               },
@@ -116,7 +116,7 @@ class NotificationsCard extends StatelessWidget {
       key: Key(notification.fieldID),
       child: ListTile(
         title: Text(notification.message),
-        subtitle: Text(notification.timestamp!.toString(),
+        subtitle: Text(readTimestamp(notification.timestamp!),
           style: titleSmall(context),
         ),
         trailing: IconButton(
@@ -175,16 +175,16 @@ class NotificationsCard extends StatelessWidget {
             flex: 3,
             child: GestureDetector(
               onTap: () async {
-                if (notification.ispublic) {
+                if (notification.ispublic!) {
                   final Trip trip =
-                      await getTrip(notification.documentID);
+                      await getTrip(notification.documentID!);
                   navigationService.navigateTo(ExploreBasicRoute,
                       arguments: trip);
                 }
               },
               child: ListTile(
                 title: Text(notification.message),
-                subtitle: Text(notification.timestamp!.toString(),
+                subtitle: Text(readTimestamp(notification.timestamp!),
                   style: titleSmall(context),
                 ),
               ),
@@ -195,8 +195,8 @@ class NotificationsCard extends StatelessWidget {
               icon: const IconThemeWidget(icon: Icons.add_circle),
               onPressed: () async {
                 final String fieldID = notification.fieldID;
-                CloudFunction().joinTripInvite(notification.documentID,
-                    notification.uid, notification.ispublic);
+                CloudFunction().joinTripInvite(notification.documentID!,
+                    notification.uid, notification.ispublic!);
                 CloudFunction().removeNotificationData(fieldID);
                 _showDialog(context);
               },
@@ -212,7 +212,7 @@ class NotificationsCard extends StatelessWidget {
     return InkWell(
       onTap: () async {
         final Trip trip =
-            await getTrip(notification.documentID);
+            await getTrip(notification.documentID!);
         navigationService.navigateTo(ExploreRoute, arguments: trip);
       },
       child: Card(
@@ -220,7 +220,7 @@ class NotificationsCard extends StatelessWidget {
         key: Key(notification.fieldID),
         child: ListTile(
           title: Text(notification.message),
-          subtitle: Text(notification.timestamp!.toString(),
+          subtitle: Text(readTimestamp(notification.timestamp!),
             style: titleSmall(context),
           ),
         ),

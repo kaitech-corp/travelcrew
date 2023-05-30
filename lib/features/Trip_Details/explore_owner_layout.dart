@@ -94,14 +94,14 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (widget.trip.urlToImage.isNotEmpty)
+              if (widget.trip.urlToImage?.isNotEmpty ?? false)
                 Column(
                   children: <Widget>[
                     GestureDetector(
                       onLongPress: () {
                         setState(() {
                           showImage = true;
-                          image = widget.trip.urlToImage;
+                          image = widget.trip.urlToImage!;
                         });
                       },
                       onLongPressEnd: (LongPressEndDetails details) {
@@ -182,7 +182,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
-            trip.displayName,
+            trip.displayName ?? '',
             style: titleMedium(context),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -198,7 +198,7 @@ class OwnerPopupMenuButton extends StatelessWidget {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                MapSearch().searchAddress(trip.location, context);
+                MapSearch().searchAddress(trip.location ?? '', context);
               },
               icon: const TripDetailsIconThemeWidget(
                 icon: Icons.map,

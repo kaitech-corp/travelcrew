@@ -1,20 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../models/recommended_model/recommended_model.dart';
 
-final CollectionReference<Object?> recActivityCollection =
-    FirebaseFirestore.instance.collection('recommended_activities');
-final CollectionReference<Object?> recTripCollection =
-    FirebaseFirestore.instance.collection('recommended_trips');
+final Query<Object> recActivityCollection =
+    FirebaseFirestore.instance.collection('recommended_activities').orderBy('clicks');
+final Query<Object> recTripCollection =
+    FirebaseFirestore.instance.collection('recommended_trips').orderBy('clicks');
 
 Future<List<RecommendedContentModel>> getRecommendedContentModel(
     String content) async {
-  final CollectionReference<Object?> collection =
+  final Query<Object> collection =
       content == 'trip' ? recTripCollection : recActivityCollection;
-  final QuerySnapshot<Object?> docs = await collection.get();
-  final List<RecommendedContentModel> recommendedContents = docs.docs
+  final QuerySnapshot<Object?> snapshot = await collection.get();
+  final List<RecommendedContentModel> recommendedContents = snapshot.docs
       .map((QueryDocumentSnapshot<Object?> doc) =>
-          RecommendedContentModel.fromJson(doc as Map<String, Object>))
+          RecommendedContentModel.fromJson(doc.data() as Map<String, dynamic>))
       .toList();
   return recommendedContents;
 }

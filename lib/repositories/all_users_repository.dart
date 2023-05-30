@@ -19,7 +19,7 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
     List<UserPublicProfile> userListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         List<UserPublicProfile> userList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return UserPublicProfile.fromJson(doc as Map<String, Object>);
+          return UserPublicProfile.fromJson(doc.data() as Map<String, dynamic>);
         }).toList();
         userList.sort((UserPublicProfile a, UserPublicProfile b) => a.displayName.compareTo(b.displayName));
         userList =

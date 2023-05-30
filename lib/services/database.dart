@@ -1,29 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
-
-
-import '../../services/constants/constants.dart';
 import '../../services/functions/cloud_functions.dart';
-import '../../services/functions/tc_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/navigation_service.dart';
-import '../../services/notifications/notifications.dart';
-import '../features/Main_Page/logic/logic.dart';
 import '../models/member_model/member_model.dart';
 import '../models/public_profile_model/public_profile_model.dart';
 
-
 UserService userService = locator<UserService>();
 NavigationService navigationService = locator<NavigationService>();
-ValueNotifier<String> urlToImage = ValueNotifier<String>('');
 UserPublicProfile currentUserProfile =
     locator<UserProfileService>().currentUserProfileDirect();
 
@@ -85,10 +69,6 @@ class DatabaseService {
   final CollectionReference<Object?> versionCollection =
       FirebaseFirestore.instance.collection('version');
 
-
-
-
-
   //// Shows latest app version to display in main menu.
   Future<String> getVersion() async {
     try {
@@ -122,8 +102,8 @@ class DatabaseService {
             ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return MemberModel.fromJson(doc as Map<String, Object>);
         }).toList();
-        memberList
-            .sort((MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
+        memberList.sort(
+            (MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         CloudFunction().logError('Error retrieving all members from trip:  '
@@ -143,8 +123,8 @@ class DatabaseService {
             ref.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return MemberModel.fromJson(doc as Map<String, Object>);
         }).toList();
-        memberList
-            .sort((MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
+        memberList.sort(
+            (MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
         CloudFunction().logError('Error retrieving members from private trip:  '
@@ -153,7 +133,6 @@ class DatabaseService {
       }
     }
   }
-
 
   /// check uniqueness to avoid duplicate function calls or writes
   void addToUniqueDocs(String key2) {
@@ -166,10 +145,6 @@ class DatabaseService {
     }
   }
 
-
-
-
-
   ///Check if user already submitted or view app Review this month
   Future<bool> appReviewExists(String docID) async {
     final QuerySnapshot<Object?> ref = await addReviewCollection
@@ -179,37 +154,4 @@ class DatabaseService {
     final bool reviewExists = ref.docs.contains(docID);
     return reviewExists;
   }
-
-  Future<void> writeData(List<String> data) async {
-    try {
-      await Future.forEach(data, (String item) async {
-        final DocumentReference<Object?> doc = recTripCollection.doc();
-        doc.set(<String, dynamic>{
-          'name': item,
-          'clicks': 0,
-          'dateCreated': FieldValue.serverTimestamp(),
-          'docID': doc.id,
-          'urlToImage': ''
-        });
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> updateUrlToImage() async {
-    final collection = recActivityCollection;
-    final documents = await collection.get();
-
-    for (final document in documents.docs) {
-      await collection.doc(document.id).update({
-        'urlToImage': <String>['']
-      });
-    }
-  }
-
-
-
 }

@@ -55,19 +55,19 @@ class TripDetailsWidget extends StatelessWidget {
                       children: <Widget>[
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.location_pin,),
-                          title: Text(tripDetails.location,
+                          title: Text(tripDetails.location ?? '',
                             style: titleMedium(context),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           onTap: (){
                             FlutterClipboard.copy(
-                                tripDetails.location).whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
+                                tripDetails.location ?? '').whenComplete(() => TravelCrewAlertDialogs().copiedToClipboardDialog(context));
                           },
                         ),
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.calendar_today,),
-                          title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate)} - ${tripDetails.endDate}',
+                          title: Text('${TCFunctions().dateToMonthDay(tripDetails.startDate ?? '')} - ${tripDetails.endDate}',
                             style: titleMedium(context),
                           ),
                           onTap: (){
@@ -76,7 +76,7 @@ class TripDetailsWidget extends StatelessWidget {
                         ),
                         ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.label,),
-                          title: Text(tripDetails.travelType,
+                          title: Text(tripDetails.travelType ?? '',
                             style: titleMedium(context),
                           ),
                         ),
@@ -96,9 +96,9 @@ class TripDetailsWidget extends StatelessWidget {
                           Text('Private Trip',
                             style: titleMedium(context),),
                         ),
-                        if(tripDetails.comment.isNotEmpty) ListTile(
+                        if(tripDetails.comment?.isNotEmpty ?? false) ListTile(
                           leading: const TripDetailsIconThemeWidget(icon: Icons.comment,),
-                          title: Text(tripDetails.comment,
+                          title: Text(tripDetails.comment!,
                             style: titleMedium(context),
                           ),
                         ),

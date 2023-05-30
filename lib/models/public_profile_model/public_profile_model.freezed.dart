@@ -20,19 +20,19 @@ UserPublicProfile _$UserPublicProfileFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserPublicProfile {
-  int get tripsJoined => throw _privateConstructorUsedError;
-  int get tripsCreated => throw _privateConstructorUsedError;
-  String get hometown => throw _privateConstructorUsedError;
-  String get instagramLink => throw _privateConstructorUsedError;
-  String get facebookLink => throw _privateConstructorUsedError;
-  List<String> get topDestinations => throw _privateConstructorUsedError;
+  int? get tripsJoined => throw _privateConstructorUsedError;
+  int? get tripsCreated => throw _privateConstructorUsedError;
+  String? get hometown => throw _privateConstructorUsedError;
+  String? get instagramLink => throw _privateConstructorUsedError;
+  String? get facebookLink => throw _privateConstructorUsedError;
+  List<String>? get topDestinations => throw _privateConstructorUsedError;
   List<String> get blockedList => throw _privateConstructorUsedError;
   String get displayName => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
   List<String> get following => throw _privateConstructorUsedError;
   List<String> get followers => throw _privateConstructorUsedError;
-  String get firstName => throw _privateConstructorUsedError;
-  String get lastName => throw _privateConstructorUsedError;
+  String? get firstName => throw _privateConstructorUsedError;
+  String? get lastName => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
   String get urlToImage => throw _privateConstructorUsedError;
 
@@ -49,19 +49,19 @@ abstract class $UserPublicProfileCopyWith<$Res> {
       _$UserPublicProfileCopyWithImpl<$Res, UserPublicProfile>;
   @useResult
   $Res call(
-      {int tripsJoined,
-      int tripsCreated,
-      String hometown,
-      String instagramLink,
-      String facebookLink,
-      List<String> topDestinations,
+      {int? tripsJoined,
+      int? tripsCreated,
+      String? hometown,
+      String? instagramLink,
+      String? facebookLink,
+      List<String>? topDestinations,
       List<String> blockedList,
       String displayName,
-      String email,
+      String? email,
       List<String> following,
       List<String> followers,
-      String firstName,
-      String lastName,
+      String? firstName,
+      String? lastName,
       String uid,
       String urlToImage});
 }
@@ -79,47 +79,47 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tripsJoined = null,
-    Object? tripsCreated = null,
-    Object? hometown = null,
-    Object? instagramLink = null,
-    Object? facebookLink = null,
-    Object? topDestinations = null,
+    Object? tripsJoined = freezed,
+    Object? tripsCreated = freezed,
+    Object? hometown = freezed,
+    Object? instagramLink = freezed,
+    Object? facebookLink = freezed,
+    Object? topDestinations = freezed,
     Object? blockedList = null,
     Object? displayName = null,
-    Object? email = null,
+    Object? email = freezed,
     Object? following = null,
     Object? followers = null,
-    Object? firstName = null,
-    Object? lastName = null,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
     Object? uid = null,
     Object? urlToImage = null,
   }) {
     return _then(_value.copyWith(
-      tripsJoined: null == tripsJoined
+      tripsJoined: freezed == tripsJoined
           ? _value.tripsJoined
           : tripsJoined // ignore: cast_nullable_to_non_nullable
-              as int,
-      tripsCreated: null == tripsCreated
+              as int?,
+      tripsCreated: freezed == tripsCreated
           ? _value.tripsCreated
           : tripsCreated // ignore: cast_nullable_to_non_nullable
-              as int,
-      hometown: null == hometown
+              as int?,
+      hometown: freezed == hometown
           ? _value.hometown
           : hometown // ignore: cast_nullable_to_non_nullable
-              as String,
-      instagramLink: null == instagramLink
+              as String?,
+      instagramLink: freezed == instagramLink
           ? _value.instagramLink
           : instagramLink // ignore: cast_nullable_to_non_nullable
-              as String,
-      facebookLink: null == facebookLink
+              as String?,
+      facebookLink: freezed == facebookLink
           ? _value.facebookLink
           : facebookLink // ignore: cast_nullable_to_non_nullable
-              as String,
-      topDestinations: null == topDestinations
+              as String?,
+      topDestinations: freezed == topDestinations
           ? _value.topDestinations
           : topDestinations // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       blockedList: null == blockedList
           ? _value.blockedList
           : blockedList // ignore: cast_nullable_to_non_nullable
@@ -128,10 +128,10 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
-      email: null == email
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       following: null == following
           ? _value.following
           : following // ignore: cast_nullable_to_non_nullable
@@ -140,14 +140,14 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
           ? _value.followers
           : followers // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      firstName: null == firstName
+      firstName: freezed == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
+              as String?,
+      lastName: freezed == lastName
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -169,19 +169,19 @@ abstract class _$$_UserPublicProfileCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int tripsJoined,
-      int tripsCreated,
-      String hometown,
-      String instagramLink,
-      String facebookLink,
-      List<String> topDestinations,
+      {int? tripsJoined,
+      int? tripsCreated,
+      String? hometown,
+      String? instagramLink,
+      String? facebookLink,
+      List<String>? topDestinations,
       List<String> blockedList,
       String displayName,
-      String email,
+      String? email,
       List<String> following,
       List<String> followers,
-      String firstName,
-      String lastName,
+      String? firstName,
+      String? lastName,
       String uid,
       String urlToImage});
 }
@@ -197,47 +197,47 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tripsJoined = null,
-    Object? tripsCreated = null,
-    Object? hometown = null,
-    Object? instagramLink = null,
-    Object? facebookLink = null,
-    Object? topDestinations = null,
+    Object? tripsJoined = freezed,
+    Object? tripsCreated = freezed,
+    Object? hometown = freezed,
+    Object? instagramLink = freezed,
+    Object? facebookLink = freezed,
+    Object? topDestinations = freezed,
     Object? blockedList = null,
     Object? displayName = null,
-    Object? email = null,
+    Object? email = freezed,
     Object? following = null,
     Object? followers = null,
-    Object? firstName = null,
-    Object? lastName = null,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
     Object? uid = null,
     Object? urlToImage = null,
   }) {
     return _then(_$_UserPublicProfile(
-      tripsJoined: null == tripsJoined
+      tripsJoined: freezed == tripsJoined
           ? _value.tripsJoined
           : tripsJoined // ignore: cast_nullable_to_non_nullable
-              as int,
-      tripsCreated: null == tripsCreated
+              as int?,
+      tripsCreated: freezed == tripsCreated
           ? _value.tripsCreated
           : tripsCreated // ignore: cast_nullable_to_non_nullable
-              as int,
-      hometown: null == hometown
+              as int?,
+      hometown: freezed == hometown
           ? _value.hometown
           : hometown // ignore: cast_nullable_to_non_nullable
-              as String,
-      instagramLink: null == instagramLink
+              as String?,
+      instagramLink: freezed == instagramLink
           ? _value.instagramLink
           : instagramLink // ignore: cast_nullable_to_non_nullable
-              as String,
-      facebookLink: null == facebookLink
+              as String?,
+      facebookLink: freezed == facebookLink
           ? _value.facebookLink
           : facebookLink // ignore: cast_nullable_to_non_nullable
-              as String,
-      topDestinations: null == topDestinations
+              as String?,
+      topDestinations: freezed == topDestinations
           ? _value._topDestinations
           : topDestinations // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       blockedList: null == blockedList
           ? _value._blockedList
           : blockedList // ignore: cast_nullable_to_non_nullable
@@ -246,10 +246,10 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
-      email: null == email
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       following: null == following
           ? _value._following
           : following // ignore: cast_nullable_to_non_nullable
@@ -258,14 +258,14 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
           ? _value._followers
           : followers // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      firstName: null == firstName
+      firstName: freezed == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
+              as String?,
+      lastName: freezed == lastName
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -282,19 +282,19 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_UserPublicProfile implements _UserPublicProfile {
   const _$_UserPublicProfile(
-      {required this.tripsJoined,
-      required this.tripsCreated,
-      required this.hometown,
-      required this.instagramLink,
-      required this.facebookLink,
-      required final List<String> topDestinations,
+      {this.tripsJoined,
+      this.tripsCreated,
+      this.hometown,
+      this.instagramLink,
+      this.facebookLink,
+      final List<String>? topDestinations,
       required final List<String> blockedList,
       required this.displayName,
-      required this.email,
+      this.email,
       required final List<String> following,
       required final List<String> followers,
-      required this.firstName,
-      required this.lastName,
+      this.firstName,
+      this.lastName,
       required this.uid,
       required this.urlToImage})
       : _topDestinations = topDestinations,
@@ -306,21 +306,23 @@ class _$_UserPublicProfile implements _UserPublicProfile {
       _$$_UserPublicProfileFromJson(json);
 
   @override
-  final int tripsJoined;
+  final int? tripsJoined;
   @override
-  final int tripsCreated;
+  final int? tripsCreated;
   @override
-  final String hometown;
+  final String? hometown;
   @override
-  final String instagramLink;
+  final String? instagramLink;
   @override
-  final String facebookLink;
-  final List<String> _topDestinations;
+  final String? facebookLink;
+  final List<String>? _topDestinations;
   @override
-  List<String> get topDestinations {
+  List<String>? get topDestinations {
+    final value = _topDestinations;
+    if (value == null) return null;
     if (_topDestinations is EqualUnmodifiableListView) return _topDestinations;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_topDestinations);
+    return EqualUnmodifiableListView(value);
   }
 
   final List<String> _blockedList;
@@ -334,7 +336,7 @@ class _$_UserPublicProfile implements _UserPublicProfile {
   @override
   final String displayName;
   @override
-  final String email;
+  final String? email;
   final List<String> _following;
   @override
   List<String> get following {
@@ -352,9 +354,9 @@ class _$_UserPublicProfile implements _UserPublicProfile {
   }
 
   @override
-  final String firstName;
+  final String? firstName;
   @override
-  final String lastName;
+  final String? lastName;
   @override
   final String uid;
   @override
@@ -437,19 +439,19 @@ class _$_UserPublicProfile implements _UserPublicProfile {
 
 abstract class _UserPublicProfile implements UserPublicProfile {
   const factory _UserPublicProfile(
-      {required final int tripsJoined,
-      required final int tripsCreated,
-      required final String hometown,
-      required final String instagramLink,
-      required final String facebookLink,
-      required final List<String> topDestinations,
+      {final int? tripsJoined,
+      final int? tripsCreated,
+      final String? hometown,
+      final String? instagramLink,
+      final String? facebookLink,
+      final List<String>? topDestinations,
       required final List<String> blockedList,
       required final String displayName,
-      required final String email,
+      final String? email,
       required final List<String> following,
       required final List<String> followers,
-      required final String firstName,
-      required final String lastName,
+      final String? firstName,
+      final String? lastName,
       required final String uid,
       required final String urlToImage}) = _$_UserPublicProfile;
 
@@ -457,31 +459,31 @@ abstract class _UserPublicProfile implements UserPublicProfile {
       _$_UserPublicProfile.fromJson;
 
   @override
-  int get tripsJoined;
+  int? get tripsJoined;
   @override
-  int get tripsCreated;
+  int? get tripsCreated;
   @override
-  String get hometown;
+  String? get hometown;
   @override
-  String get instagramLink;
+  String? get instagramLink;
   @override
-  String get facebookLink;
+  String? get facebookLink;
   @override
-  List<String> get topDestinations;
+  List<String>? get topDestinations;
   @override
   List<String> get blockedList;
   @override
   String get displayName;
   @override
-  String get email;
+  String? get email;
   @override
   List<String> get following;
   @override
   List<String> get followers;
   @override
-  String get firstName;
+  String? get firstName;
   @override
-  String get lastName;
+  String? get lastName;
   @override
   String get uid;
   @override

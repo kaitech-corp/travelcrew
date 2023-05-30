@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../models/cost_model/cost_object_model.dart';
+import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/split_model/split_model.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../Profile/logic/logic.dart';
 import '../split_package.dart';
 
 final CollectionReference<Object?> splitItemCollection =
@@ -33,22 +35,16 @@ List<String> listOfUserID(List<SplitObject> items) {
   return uids;
 }
 
-// List<UserPurchaseDetails> calculateTotalPerUser(
-//     List<String> uids, List<SplitObject> items) {
-//   final List<UserPurchaseDetails> calculatedList = <UserPurchaseDetails>[];
-//   for (final String element in uids) {
-//     calculatedList.add(UserPurchaseDetails(uid: element, total: 0.00));
-//   }
-
-//   for (final SplitObject item in items) {
-//     for (final UserPurchaseDetails object in calculatedList) {
-//       if (object.uid == item.purchasedByUID) {
-//         object.total += item.itemTotal;
-//       }
-//     }
-//   }
-//   return calculatedList;
-// }
+Stream<List<UserPublicProfile>> getcrewList(List<String> accessUsers) async* {
+  try {
+    final List<UserPublicProfile> users = await usersList();
+    yield users
+        .where((UserPublicProfile user) => accessUsers.contains(user.uid))
+        .toList();
+  } catch (e) {
+    CloudFunction().logError('Error in getcrewList for members layout: $e');
+  }
+}
 
 //// delete SplitObject
 void deleteSplitObject(SplitObject splitObject) {

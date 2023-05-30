@@ -31,11 +31,11 @@ class RecentTripTile extends StatelessWidget{
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: (trip.urlToImage.isNotEmpty) ?
+                    child: (trip.urlToImage?.isNotEmpty ?? false) ?
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
                         child: Image.network(
-                          trip.urlToImage,
+                          trip.urlToImage!,
                           fit: BoxFit.cover,
                           height: 125,
                           width: 125,
@@ -58,7 +58,7 @@ class RecentTripTile extends StatelessWidget{
                         title: Text(trip.tripName,style: titleMedium(context),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,),
-                        subtitle: Text(trip.location,style: titleSmall(context),
+                        subtitle: Text(trip.location ?? '',style: titleSmall(context),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,),
                       ),

@@ -8,25 +8,25 @@ part of 'public_profile_model.dart';
 
 _$_UserPublicProfile _$$_UserPublicProfileFromJson(Map<String, dynamic> json) =>
     _$_UserPublicProfile(
-      tripsJoined: json['tripsJoined'] as int,
-      tripsCreated: json['tripsCreated'] as int,
-      hometown: json['hometown'] as String,
-      instagramLink: json['instagramLink'] as String,
-      facebookLink: json['facebookLink'] as String,
-      topDestinations: (json['topDestinations'] as List<dynamic>)
-          .map((e) => e as String)
+      tripsJoined: json['tripsJoined'] as int?,
+      tripsCreated: json['tripsCreated'] as int?,
+      hometown: json['hometown'] as String?,
+      instagramLink: json['instagramLink'] as String?,
+      facebookLink: json['facebookLink'] as String?,
+      topDestinations: (json['topDestinations'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
       blockedList: (json['blockedList'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
       displayName: json['displayName'] as String,
-      email: json['email'] as String,
+      email: json['email'] as String?,
       following:
           (json['following'] as List<dynamic>).map((e) => e as String).toList(),
       followers:
           (json['followers'] as List<dynamic>).map((e) => e as String).toList(),
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
       uid: json['uid'] as String,
       urlToImage: json['urlToImage'] as String,
     );

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../models/recommended_model/recommended_model.dart';
 import '../../services/constants/constants.dart';
-import '../../services/functions/tc_functions.dart';
+import '../../services/database.dart';
+import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
 import '../../size_config/size_config.dart';
 import '../Main_Page/logic/logic.dart';
@@ -17,7 +17,8 @@ class HomeScreen extends StatelessWidget {
   Widget _buildRowWithTitle(String title, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text(title, style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold)),
+      child: Text(title,
+          style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold)),
     );
   }
 
@@ -40,29 +41,62 @@ class HomeScreen extends StatelessWidget {
                   margin: const EdgeInsets.all(8),
                   child: Column(
                     children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: recommendedContent.urlToImage == null ||
-                                (recommendedContent.urlToImage.isEmpty)
-                            ? Image.asset(
-                                travelImage,
-                                fit: BoxFit.cover,
-                                height: SizeConfig.screenWidth * .45,
-                                width: SizeConfig.screenWidth * .45,
-                              )
-                            : Image.network(
-                                recommendedContent.urlToImage[getRandomIndex(
-                                    recommendedContent.urlToImage)],
-                                fit: BoxFit.cover,
-                                height: SizeConfig.screenWidth * .45,
-                                width: SizeConfig.screenWidth * .45,
-                              ),
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: recommendedContent.urlToImage == null ||
+                                  (recommendedContent.urlToImage.isEmpty)
+                              ? Image.asset(
+                                  travelImage,
+                                  fit: BoxFit.cover,
+                                  height: SizeConfig.screenWidth * .45,
+                                  width: SizeConfig.screenWidth * .45,
+                                )
+                              : Image.network(
+                                  recommendedContent.urlToImage[getRandomIndex(
+                                      recommendedContent.urlToImage)],
+                                  fit: BoxFit.cover,
+                                  height: SizeConfig.screenWidth * .45,
+                                  width: SizeConfig.screenWidth * .45,
+                                ),
+                        ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          recommendedContent.name,
+                          style: titleMedium(context),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else {
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  width: SizeConfig.screenWidth * .5,
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    children: <Widget>[
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image.asset(
+                            travelImage,
+                            fit: BoxFit.cover,
+                            height: SizeConfig.screenWidth * .45,
+                            width: SizeConfig.screenWidth * .45,
+                          )),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            recommendedContent.name,
+                            'Travel',
                             style: titleMedium(context),
                             textAlign: TextAlign.center,
                           ),
@@ -73,8 +107,6 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -95,12 +127,18 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () {},
                   child: Text(
                     'Custom Activity',
-                    style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold),
+                    style: titleMedium(context)
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   )),
               OutlinedButton(
-                  onPressed: () {BlocProvider.of<AuthenticationBloc>(context)
-                    .add(AuthenticationLoggedOut());},
-                  child: Text('Custom Trip', style: titleMedium(context)?.copyWith(fontWeight: FontWeight.bold),)),
+                  onPressed: () {
+                    navigationService.navigateTo(AddNewTripRoute);
+                  },
+                  child: Text(
+                    'Custom Trip',
+                    style: titleMedium(context)
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  )),
             ],
           ),
           Padding(
@@ -111,9 +149,9 @@ class HomeScreen extends StatelessWidget {
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 _buildRowWithTitle('Plan an Activity', context),
-                _buildRecommendedContentModel('activity'),
+                Expanded(child: _buildRecommendedContentModel('activity')),
               ],
             ),
           ),
@@ -121,9 +159,9 @@ class HomeScreen extends StatelessWidget {
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 _buildRowWithTitle('Plan a Trip', context),
-                _buildRecommendedContentModel('trip'),
+                Expanded(child: _buildRecommendedContentModel('trip')),
               ],
             ),
           ),

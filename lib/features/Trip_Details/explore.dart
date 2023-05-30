@@ -5,35 +5,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/generics/generic_bloc.dart';
 import '../../../blocs/public_profile_bloc/public_profile_bloc.dart';
-
 import '../../../repositories/chat_repository.dart';
 import '../../../repositories/lodging_repository.dart';
 import '../../../repositories/split_repository.dart';
-import '../../../repositories/transportation_repository.dart';
 import '../../../repositories/user_profile_repository.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
 import '../../../services/theme/text_styles.dart';
-import '../../../services/widgets/badge_icon.dart';
 import '../../../size_config/size_config.dart';
-
 import '../../models/activity_model/activity_model.dart';
 import '../../models/chat_model/chat_model.dart';
 import '../../models/lodging_model/lodging_model.dart';
 import '../../models/split_model/split_model.dart';
-import '../../models/transportation_model/transportation_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../Activities/activity_page.dart';
 import '../Activities/logic/activity_repository.dart';
-import '../Chat/logic/logic.dart';
 import '../Lodging/lodging_page.dart';
 import '../Menu/main_menu.dart';
 import '../Split/split_page.dart';
-import '../Transportation/transportation_page.dart';
-import '../Trips/logic/logic.dart';
 import '../chat/chat_page.dart';
-
 import 'explore_member_layout.dart';
 import 'explore_owner_layout.dart';
 
@@ -57,7 +47,7 @@ class _ExploreState extends State<Explore> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 5,
       child: Scaffold(
           key: scaffoldKey,
           drawer: BlocProvider<PublicProfileBloc>(
@@ -88,39 +78,43 @@ class _ExploreState extends State<Explore> {
                   ? headlineSmall(context)
                   : titleSmall(context),
               isScrollable: true,
-              tabs: <Tab>[
-                const Tab(
+              tabs: const <Tab>[
+                Tab(
                   icon: Icon(
                     Icons.home,
                   ),
                 ),
-                const Tab(
+                Tab(
                   icon: Icon(
                     Icons.monetization_on,
                   ),
                 ),
-                const Tab(
-                  icon: Icon(
-                    Icons.flight_takeoff,
-                  ),
-                ),
-                const Tab(
+                // Tab(
+                //   icon: Icon(
+                //     Icons.flight_takeoff,
+                //   ),
+                // ),
+                Tab(
                   icon: Icon(
                     Icons.hotel,
                   ),
                 ),
-                const Tab(
+                Tab(
                   icon: Icon(
                     Icons.directions_bike,
                   ),
                 ),
-                Tab(icon: getChatNotificationBadge()),
+                Tab(
+                  icon: Icon(
+                    Icons.chat,
+                  ),
+                ),
               ],
             ),
           ),
           body: TabBarView(
             children: <Widget>[
-              checkOwner(userService.currentUserID),
+              checkOwner(),
               BlocProvider(
                 create: (BuildContext context) =>
                     GenericBloc<SplitObject, SplitRepository>(
@@ -130,15 +124,15 @@ class _ExploreState extends State<Explore> {
                   trip: widget.trip,
                 ),
               ),
-              BlocProvider(
-                create: (BuildContext context) =>
-                    GenericBloc<TransportationModel, TransportationRepository>(
-                        repository: TransportationRepository(
-                            tripDocID: widget.trip.documentId)),
-                child: TransportationPage(
-                  trip: widget.trip,
-                ),
-              ),
+              // BlocProvider(
+              //   create: (BuildContext context) =>
+              //       GenericBloc<TransportationModel, TransportationRepository>(
+              //           repository: TransportationRepository(
+              //               tripDocID: widget.trip.documentId)),
+              //   child: TransportationPage(
+              //     trip: widget.trip,
+              //   ),
+              // ),
               BlocProvider(
                 create: (BuildContext context) =>
                     GenericBloc<LodgingModel, LodgingRepository>(
@@ -171,69 +165,18 @@ class _ExploreState extends State<Explore> {
     );
   }
 
-  Widget checkOwner(String uid) {
+  Widget checkOwner() {
+    final String uid = userService.currentUserID;
     if (widget.trip.ownerID == uid) {
-      return StreamBuilder<Trip?>(
-          stream:
-              singleTripData,
-          builder: (BuildContext context, AsyncSnapshot<Trip?> document) {
-            if (document.hasData) {
-              final Trip tripDetails = document.data!;
-              return ExploreOwnerLayout(
-                trip: tripDetails,
-                scaffoldKey: scaffoldKey,
-              );
-            } else {
-              return ExploreOwnerLayout(
-                trip: widget.trip,
-                scaffoldKey: scaffoldKey,
-              );
-            }
-          });
+      return ExploreOwnerLayout(
+        trip: widget.trip,
+        scaffoldKey: scaffoldKey,
+      );
     } else {
       return ExploreMemberLayout(
         tripDetails: widget.trip,
         scaffoldKey: scaffoldKey,
       );
     }
-  }
-
-  Widget getChatNotificationBadge() {
-    return StreamBuilder<List<ChatModel>>(
-      builder: (BuildContext context, AsyncSnapshot<List<ChatModel>> chats) {
-        if (chats.hasError) {
-          CloudFunction().logError('Error streaming chats for explore'
-              ' chat notification: ${chats.error}');
-        }
-        if (chats.hasData) {
-          final List<ChatModel> chatList = chats.data!;
-          if (chatList.isNotEmpty) {
-            final int chatNotifications = chatList.length;
-            return Tooltip(
-              message: 'Messages',
-              child: BadgeIcon(
-                icon: const Icon(
-                  Icons.chat,
-                ),
-                badgeCount: chatNotifications,
-              ),
-            );
-          } else {
-            return const BadgeIcon(
-              icon: Icon(
-                Icons.chat,
-              ),
-            );
-          }
-        } else {
-          return const BadgeIcon(
-            icon: Icon(
-              Icons.chat,
-            ),
-          );
-        }
-      },
-      stream: chatListNotification,
-    );
   }
 }

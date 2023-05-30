@@ -41,19 +41,10 @@ class _AddTripFormState extends State<AddTripForm> {
   UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
-  final ValueNotifier<String> startDate = ValueNotifier<String>('');
-  final ValueNotifier<String> endDate = ValueNotifier<String>('');
-  final ValueNotifier<DateTime> startDateTimestamp =
-      ValueNotifier<DateTime>(DateTime.now());
-  final ValueNotifier<DateTime> endDateTimestamp =
-      ValueNotifier<DateTime>(DateTime.now());
-  final ValueNotifier<File> _urlToImage = ValueNotifier<File>(File(''));
-  final TextEditingController commentController = TextEditingController();
   final TextEditingController tripNameController = TextEditingController();
   final TextEditingController travelTypeController = TextEditingController();
 
   bool ispublic = true;
-  bool imagePicked = false;
   late AddTripBloc _addTripBloc;
 
   bool get isPopulated =>
@@ -70,20 +61,15 @@ class _AddTripFormState extends State<AddTripForm> {
     _addTripBloc = BlocProvider.of<AddTripBloc>(context);
     tripNameController.addListener(_onTripNameChange);
     travelTypeController.addListener(_onTripTypeChange);
-    _urlToImage.addListener(_onTripImageChange);
   }
 
   @override
   void dispose() {
-    startDate.dispose();
-    startDateTimestamp.dispose();
-    endDate.dispose();
-    endDateTimestamp.dispose();
     travelTypeController.dispose();
     tripNameController.dispose();
-    _urlToImage.dispose();
+
     locationController.clear();
-    commentController.dispose();
+
     super.dispose();
   }
 
@@ -157,14 +143,6 @@ class _AddTripFormState extends State<AddTripForm> {
                     controller: locationController,
                   ),
                 ),
-                CalendarWidget(
-                  startDate: startDate,
-                  startDateTimeStamp: startDateTimestamp,
-                  endDate: endDate,
-                  endDateTimeStamp: endDateTimestamp,
-                  context: context,
-                  showBoth: true,
-                ),
                 SwitchListTile(
                     title: Text(AppLocalizations.of(context)!.addTripPublic),
                     value: ispublic,
@@ -173,61 +151,12 @@ class _AddTripFormState extends State<AddTripForm> {
                             ispublic = val;
                           }),
                         }),
-                if (imagePicked)
-                  Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                          icon: const Icon(
-                            Icons.clear,
-                            color: Colors.black,
-                          ),
-                          iconSize: 30,
-                          onPressed: () {
-                            setState(() {
-                              imagePicked = false;
-                            });
-                          })),
-                Container(
-                    child: imagePicked
-                        ? Image.file(_urlToImage.value)
-                        : Text(
-                            AppLocalizations.of(context)!.addTripImageMessage,
-                            style: headlineSmall(context),
-                          )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      _urlToImage.value = await ImagePickerAndCropper()
-                          .uploadImage(_urlToImage);
-                    },
-//                              tooltip: 'Pick Image',
-                    child: const Icon(Icons.add_a_photo),
-                  ),
-                ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Text(
                     AppLocalizations.of(context)!.addTripDescriptionMessage,
                     style: titleMedium(context),
                   ),
-                ),
-                TextFormField(
-                  controller: commentController,
-                  enableInteractiveSelection: true,
-                  textCapitalization: TextCapitalization.sentences,
-                  cursorColor: Colors.grey,
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ReusableThemeColor().colorOpposite(context)),
-                      ),
-                      border: const OutlineInputBorder(),
-                      hintText: AppLocalizations.of(context)!
-                          .addTripAddDescriptionMessage,
-                      hintStyle: titleMedium(context)),
-                  style: titleMedium(context),
                 ),
                 Container(
                     padding: const EdgeInsets.symmetric(
@@ -257,26 +186,11 @@ class _AddTripFormState extends State<AddTripForm> {
     _addTripBloc.add(AddTripTypeChanged(travelType: travelTypeController.text));
   }
 
-  void _onTripImageChange() {
-    _addTripBloc.add(AddTripImageAdded(urlToImage: _urlToImage.value));
-    if (_urlToImage.value.path.isNotEmpty) {
-      setState(() {
-        imagePicked = true;
-      });
-    }
-  }
-
   void _onFormSubmitted() {
     _addTripBloc.add(AddTripButtonPressed(
-        comment: commentController.text,
-        endDate: endDate.value,
-        endDateTimestamp: endDateTimestamp.value,
-        startDateTimestamp: startDateTimestamp.value,
         ispublic: ispublic,
         location: locationController.text,
-        startDate: startDate.value,
         tripGeoPoint: const GeoPoint(10, 10),
-        urlToImage: _urlToImage.value,
         tripName: tripNameController.text,
         travelType: travelTypeController.text));
   }

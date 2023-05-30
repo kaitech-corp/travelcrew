@@ -14,7 +14,8 @@ import '../../../../size_config/size_config.dart';
 import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
 import '../../Alerts/alert_dialogs.dart';
-import '../../DM/logic/logic.dart';
+import '../../Split/logic/split_functions.dart';
+
 
 
 /// Layout list for members of trip

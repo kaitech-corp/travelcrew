@@ -21,18 +21,18 @@ NotificationModel _$NotificationModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$NotificationModel {
   String get type => throw _privateConstructorUsedError;
-  String get ownerID => throw _privateConstructorUsedError;
-  bool get ispublic => throw _privateConstructorUsedError;
+  String get message => throw _privateConstructorUsedError;
+  String get fieldID => throw _privateConstructorUsedError;
+  String get uid => throw _privateConstructorUsedError;
+  String? get documentID => throw _privateConstructorUsedError;
+  String? get ownerID => throw _privateConstructorUsedError;
+  bool? get ispublic => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime? get timestamp => throw _privateConstructorUsedError;
-  String get message => throw _privateConstructorUsedError;
-  String get documentID => throw _privateConstructorUsedError;
-  String get displayName => throw _privateConstructorUsedError;
-  String get fieldID => throw _privateConstructorUsedError;
-  String get firstname => throw _privateConstructorUsedError;
-  String get lastname => throw _privateConstructorUsedError;
-  String get uid => throw _privateConstructorUsedError;
-  String get ownerDisplayName => throw _privateConstructorUsedError;
+  String? get displayName => throw _privateConstructorUsedError;
+  String? get firstname => throw _privateConstructorUsedError;
+  String? get lastname => throw _privateConstructorUsedError;
+  String? get ownerDisplayName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -48,17 +48,17 @@ abstract class $NotificationModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String type,
-      String ownerID,
-      bool ispublic,
-      @TimestampConverter() DateTime? timestamp,
       String message,
-      String documentID,
-      String displayName,
       String fieldID,
-      String firstname,
-      String lastname,
       String uid,
-      String ownerDisplayName});
+      String? documentID,
+      String? ownerID,
+      bool? ispublic,
+      @TimestampConverter() DateTime? timestamp,
+      String? displayName,
+      String? firstname,
+      String? lastname,
+      String? ownerDisplayName});
 }
 
 /// @nodoc
@@ -75,67 +75,67 @@ class _$NotificationModelCopyWithImpl<$Res, $Val extends NotificationModel>
   @override
   $Res call({
     Object? type = null,
-    Object? ownerID = null,
-    Object? ispublic = null,
-    Object? timestamp = freezed,
     Object? message = null,
-    Object? documentID = null,
-    Object? displayName = null,
     Object? fieldID = null,
-    Object? firstname = null,
-    Object? lastname = null,
     Object? uid = null,
-    Object? ownerDisplayName = null,
+    Object? documentID = freezed,
+    Object? ownerID = freezed,
+    Object? ispublic = freezed,
+    Object? timestamp = freezed,
+    Object? displayName = freezed,
+    Object? firstname = freezed,
+    Object? lastname = freezed,
+    Object? ownerDisplayName = freezed,
   }) {
     return _then(_value.copyWith(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
-      ownerID: null == ownerID
-          ? _value.ownerID
-          : ownerID // ignore: cast_nullable_to_non_nullable
-              as String,
-      ispublic: null == ispublic
-          ? _value.ispublic
-          : ispublic // ignore: cast_nullable_to_non_nullable
-              as bool,
-      timestamp: freezed == timestamp
-          ? _value.timestamp
-          : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      documentID: null == documentID
-          ? _value.documentID
-          : documentID // ignore: cast_nullable_to_non_nullable
-              as String,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
               as String,
       fieldID: null == fieldID
           ? _value.fieldID
           : fieldID // ignore: cast_nullable_to_non_nullable
               as String,
-      firstname: null == firstname
-          ? _value.firstname
-          : firstname // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastname: null == lastname
-          ? _value.lastname
-          : lastname // ignore: cast_nullable_to_non_nullable
-              as String,
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
               as String,
-      ownerDisplayName: null == ownerDisplayName
+      documentID: freezed == documentID
+          ? _value.documentID
+          : documentID // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ownerID: freezed == ownerID
+          ? _value.ownerID
+          : ownerID // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ispublic: freezed == ispublic
+          ? _value.ispublic
+          : ispublic // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      displayName: freezed == displayName
+          ? _value.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstname: freezed == firstname
+          ? _value.firstname
+          : firstname // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastname: freezed == lastname
+          ? _value.lastname
+          : lastname // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ownerDisplayName: freezed == ownerDisplayName
           ? _value.ownerDisplayName
           : ownerDisplayName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -150,17 +150,17 @@ abstract class _$$_NotificationModelCopyWith<$Res>
   @useResult
   $Res call(
       {String type,
-      String ownerID,
-      bool ispublic,
-      @TimestampConverter() DateTime? timestamp,
       String message,
-      String documentID,
-      String displayName,
       String fieldID,
-      String firstname,
-      String lastname,
       String uid,
-      String ownerDisplayName});
+      String? documentID,
+      String? ownerID,
+      bool? ispublic,
+      @TimestampConverter() DateTime? timestamp,
+      String? displayName,
+      String? firstname,
+      String? lastname,
+      String? ownerDisplayName});
 }
 
 /// @nodoc
@@ -175,67 +175,67 @@ class __$$_NotificationModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = null,
-    Object? ownerID = null,
-    Object? ispublic = null,
-    Object? timestamp = freezed,
     Object? message = null,
-    Object? documentID = null,
-    Object? displayName = null,
     Object? fieldID = null,
-    Object? firstname = null,
-    Object? lastname = null,
     Object? uid = null,
-    Object? ownerDisplayName = null,
+    Object? documentID = freezed,
+    Object? ownerID = freezed,
+    Object? ispublic = freezed,
+    Object? timestamp = freezed,
+    Object? displayName = freezed,
+    Object? firstname = freezed,
+    Object? lastname = freezed,
+    Object? ownerDisplayName = freezed,
   }) {
     return _then(_$_NotificationModel(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
-      ownerID: null == ownerID
-          ? _value.ownerID
-          : ownerID // ignore: cast_nullable_to_non_nullable
-              as String,
-      ispublic: null == ispublic
-          ? _value.ispublic
-          : ispublic // ignore: cast_nullable_to_non_nullable
-              as bool,
-      timestamp: freezed == timestamp
-          ? _value.timestamp
-          : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      documentID: null == documentID
-          ? _value.documentID
-          : documentID // ignore: cast_nullable_to_non_nullable
-              as String,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
               as String,
       fieldID: null == fieldID
           ? _value.fieldID
           : fieldID // ignore: cast_nullable_to_non_nullable
               as String,
-      firstname: null == firstname
-          ? _value.firstname
-          : firstname // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastname: null == lastname
-          ? _value.lastname
-          : lastname // ignore: cast_nullable_to_non_nullable
-              as String,
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
               as String,
-      ownerDisplayName: null == ownerDisplayName
+      documentID: freezed == documentID
+          ? _value.documentID
+          : documentID // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ownerID: freezed == ownerID
+          ? _value.ownerID
+          : ownerID // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ispublic: freezed == ispublic
+          ? _value.ispublic
+          : ispublic // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      displayName: freezed == displayName
+          ? _value.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstname: freezed == firstname
+          ? _value.firstname
+          : firstname // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastname: freezed == lastname
+          ? _value.lastname
+          : lastname // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ownerDisplayName: freezed == ownerDisplayName
           ? _value.ownerDisplayName
           : ownerDisplayName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -245,17 +245,17 @@ class __$$_NotificationModelCopyWithImpl<$Res>
 class _$_NotificationModel implements _NotificationModel {
   const _$_NotificationModel(
       {required this.type,
-      required this.ownerID,
-      required this.ispublic,
-      @TimestampConverter() this.timestamp,
       required this.message,
-      required this.documentID,
-      required this.displayName,
       required this.fieldID,
-      required this.firstname,
-      required this.lastname,
       required this.uid,
-      required this.ownerDisplayName});
+      this.documentID,
+      this.ownerID,
+      this.ispublic,
+      @TimestampConverter() this.timestamp,
+      this.displayName,
+      this.firstname,
+      this.lastname,
+      this.ownerDisplayName});
 
   factory _$_NotificationModel.fromJson(Map<String, dynamic> json) =>
       _$$_NotificationModelFromJson(json);
@@ -263,32 +263,32 @@ class _$_NotificationModel implements _NotificationModel {
   @override
   final String type;
   @override
-  final String ownerID;
+  final String message;
   @override
-  final bool ispublic;
+  final String fieldID;
+  @override
+  final String uid;
+  @override
+  final String? documentID;
+  @override
+  final String? ownerID;
+  @override
+  final bool? ispublic;
   @override
   @TimestampConverter()
   final DateTime? timestamp;
   @override
-  final String message;
+  final String? displayName;
   @override
-  final String documentID;
+  final String? firstname;
   @override
-  final String displayName;
+  final String? lastname;
   @override
-  final String fieldID;
-  @override
-  final String firstname;
-  @override
-  final String lastname;
-  @override
-  final String uid;
-  @override
-  final String ownerDisplayName;
+  final String? ownerDisplayName;
 
   @override
   String toString() {
-    return 'NotificationModel(type: $type, ownerID: $ownerID, ispublic: $ispublic, timestamp: $timestamp, message: $message, documentID: $documentID, displayName: $displayName, fieldID: $fieldID, firstname: $firstname, lastname: $lastname, uid: $uid, ownerDisplayName: $ownerDisplayName)';
+    return 'NotificationModel(type: $type, message: $message, fieldID: $fieldID, uid: $uid, documentID: $documentID, ownerID: $ownerID, ispublic: $ispublic, timestamp: $timestamp, displayName: $displayName, firstname: $firstname, lastname: $lastname, ownerDisplayName: $ownerDisplayName)';
   }
 
   @override
@@ -297,22 +297,22 @@ class _$_NotificationModel implements _NotificationModel {
         (other.runtimeType == runtimeType &&
             other is _$_NotificationModel &&
             (identical(other.type, type) || other.type == type) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.fieldID, fieldID) || other.fieldID == fieldID) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.documentID, documentID) ||
+                other.documentID == documentID) &&
             (identical(other.ownerID, ownerID) || other.ownerID == ownerID) &&
             (identical(other.ispublic, ispublic) ||
                 other.ispublic == ispublic) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.message, message) || other.message == message) &&
-            (identical(other.documentID, documentID) ||
-                other.documentID == documentID) &&
             (identical(other.displayName, displayName) ||
                 other.displayName == displayName) &&
-            (identical(other.fieldID, fieldID) || other.fieldID == fieldID) &&
             (identical(other.firstname, firstname) ||
                 other.firstname == firstname) &&
             (identical(other.lastname, lastname) ||
                 other.lastname == lastname) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.ownerDisplayName, ownerDisplayName) ||
                 other.ownerDisplayName == ownerDisplayName));
   }
@@ -322,16 +322,16 @@ class _$_NotificationModel implements _NotificationModel {
   int get hashCode => Object.hash(
       runtimeType,
       type,
+      message,
+      fieldID,
+      uid,
+      documentID,
       ownerID,
       ispublic,
       timestamp,
-      message,
-      documentID,
       displayName,
-      fieldID,
       firstname,
       lastname,
-      uid,
       ownerDisplayName);
 
   @JsonKey(ignore: true)
@@ -352,17 +352,17 @@ class _$_NotificationModel implements _NotificationModel {
 abstract class _NotificationModel implements NotificationModel {
   const factory _NotificationModel(
       {required final String type,
-      required final String ownerID,
-      required final bool ispublic,
-      @TimestampConverter() final DateTime? timestamp,
       required final String message,
-      required final String documentID,
-      required final String displayName,
       required final String fieldID,
-      required final String firstname,
-      required final String lastname,
       required final String uid,
-      required final String ownerDisplayName}) = _$_NotificationModel;
+      final String? documentID,
+      final String? ownerID,
+      final bool? ispublic,
+      @TimestampConverter() final DateTime? timestamp,
+      final String? displayName,
+      final String? firstname,
+      final String? lastname,
+      final String? ownerDisplayName}) = _$_NotificationModel;
 
   factory _NotificationModel.fromJson(Map<String, dynamic> json) =
       _$_NotificationModel.fromJson;
@@ -370,28 +370,28 @@ abstract class _NotificationModel implements NotificationModel {
   @override
   String get type;
   @override
-  String get ownerID;
+  String get message;
   @override
-  bool get ispublic;
+  String get fieldID;
+  @override
+  String get uid;
+  @override
+  String? get documentID;
+  @override
+  String? get ownerID;
+  @override
+  bool? get ispublic;
   @override
   @TimestampConverter()
   DateTime? get timestamp;
   @override
-  String get message;
+  String? get displayName;
   @override
-  String get documentID;
+  String? get firstname;
   @override
-  String get displayName;
+  String? get lastname;
   @override
-  String get fieldID;
-  @override
-  String get firstname;
-  @override
-  String get lastname;
-  @override
-  String get uid;
-  @override
-  String get ownerDisplayName;
+  String? get ownerDisplayName;
   @override
   @JsonKey(ignore: true)
   _$$_NotificationModelCopyWith<_$_NotificationModel> get copyWith =>

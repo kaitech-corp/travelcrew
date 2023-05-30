@@ -75,7 +75,7 @@ class _ReportContentState extends State<ReportContent> {
             }
             docID = widget.trip!.documentId;
             offenderID = widget.trip!.ownerID;
-            urlToImage = widget.trip!.urlToImage;
+            urlToImage = widget.trip!.urlToImage ?? '';
           });
         }
         break;

@@ -9,6 +9,7 @@ import '../../../../../services/theme/text_styles.dart';
 import '../../../../../services/widgets/appearance_widgets.dart';
 import '../../../../../size_config/size_config.dart';
 import '../../../models/public_profile_model/public_profile_model.dart';
+import '../../../services/navigation/router.dart';
 import '../../Alerts/alert_dialogs.dart';
 
 class TCUserCard extends StatefulWidget {
@@ -155,11 +156,6 @@ class UnblockedPopupMenu extends StatelessWidget {
       ),
       onSelected: (String value) {
         switch (value) {
-          case 'chat':
-            {
-              navigationService.navigateTo(DMChatRoute, arguments: user);
-            }
-            break;
           case 'block':
             {
               TravelCrewAlertDialogs().blockAlert(context, user.uid);

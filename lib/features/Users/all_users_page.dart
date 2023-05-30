@@ -51,9 +51,6 @@ class _AllUserPageState extends State<AllUserPage> {
 
       final List<UserPublicProfile> results = allUsersSearchList
           .where((UserPublicProfile user) =>
-              user.displayName.toLowerCase().contains(val) ||
-              user.firstName.toLowerCase().contains(val) ||
-              user.lastName.toLowerCase().contains(val) ||
               user.displayName.toLowerCase().contains(val))
           .toList();
       return results;

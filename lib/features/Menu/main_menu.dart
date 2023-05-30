@@ -50,7 +50,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             child: ListView(
           children: <Widget>[
             DrawerHeader(
-                child: urlToImage.value.isNotEmpty
+                child: false
                     ? Stack(
                         children: <Widget>[
                           Align(
@@ -61,7 +61,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                           Align(
                             child: CircleAvatar(
                               radius: imageSize,
-                              backgroundImage: NetworkImage(urlToImage.value),
+                              backgroundImage: NetworkImage(''),
                             ),
                           )
                         ],
@@ -93,16 +93,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
               },
             ),
             ListTile(
-              leading: const IconThemeWidget(
-                icon: Icons.message,
-              ),
-              title:
-                  Text('Chats', style: titleMedium(context)),
-              onTap: () {
-                navigationService.navigateTo(DMChatListPageRoute);
-              },
-            ),
-            ListTile(
               leading: const IconThemeWidget(icon: Icons.info),
               title: Text('Help & Feedback',
                   style: titleMedium(context)),
@@ -130,15 +120,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   }
                 },
               ),
-            // if (Platform.isIOS)
-            //   ListTile(
-            //     leading: const IconThemeWidget(icon: Icons.send),
-            //     title: Text('Invite Friends',
-            //         style: titleMedium(context)),
-            //     onTap: () {
-            //       AppInvite().sendInvite();
-            //     },
-            //   ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.exit_to_app),
               title:

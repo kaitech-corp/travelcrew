@@ -17,7 +17,7 @@ import '../../models/cost_model/cost_object_model.dart';
 import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/split_model/split_model.dart';
 import '../../models/trip_model/trip_model.dart';
-import '../DM/logic/logic.dart';
+
 import 'logic/split_functions.dart';
 
 late ValueNotifier<List<String>> selectedList;

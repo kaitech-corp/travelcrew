@@ -24,7 +24,7 @@ class PastTripRepository extends GenericBlocRepository<Trip> {
         final DateTime now = DateTime.now().toUtc();
         final DateTime past = DateTime(now.year, now.month, now.day - 1);
         final List<Trip> trips = snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
-          return Trip.fromJson(doc as Map<String, Object>);
+          return Trip.fromJson(doc.data() as Map<String, dynamic>);
         }).toList();
         final List<Trip> crewTrips = trips
             .where(

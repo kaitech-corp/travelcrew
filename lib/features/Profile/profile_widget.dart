@@ -98,9 +98,9 @@ class ProfileWidget extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    if (user.hometown.isNotEmpty)
+                                    if (user.hometown?.isNotEmpty ?? false)
                                       Text(
-                                        user.hometown,
+                                        user.hometown!,
                                         style: titleMedium(context),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -190,11 +190,11 @@ class ProfileWidget extends StatelessWidget {
                                 'IG: ',
                                 style: titleMedium(context),
                               ),
-                              if (user.instagramLink.isNotEmpty)
+                              if (user.instagramLink?.isNotEmpty ?? false) 
                                 GestureDetector(
                                     onTap: () {
                                       TCFunctions()
-                                          .launchURL(user.instagramLink);
+                                          .launchURL(user.instagramLink!);
                                     },
                                     child: const Text('Instagram Link',
                                         style: TextStyle(color: Colors.blue)))
@@ -218,11 +218,11 @@ class ProfileWidget extends StatelessWidget {
                                 'Facebook: ',
                                 style: titleMedium(context),
                               ),
-                              if (user.facebookLink.isNotEmpty)
+                              if (user.facebookLink?.isNotEmpty ?? false)
                                 GestureDetector(
                                     onTap: () {
                                       TCFunctions()
-                                          .launchURL(user.facebookLink);
+                                          .launchURL(user.facebookLink!);
                                     },
                                     child: const Text('Facebook Link',
                                         style: TextStyle(color: Colors.blue)))

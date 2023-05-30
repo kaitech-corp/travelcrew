@@ -37,16 +37,16 @@ class AddTripImageAdded extends AddTripEvent {
 
 class AddTripButtonPressed extends AddTripEvent {
 
-  AddTripButtonPressed(this.comment, this.endDate, this.endDateTimestamp, this.startDateTimestamp, this.ispublic, this.location, this.startDate, this.tripGeoPoint, this.urlToImage, {required this.tripName, required this.travelType});
+  AddTripButtonPressed({this.comment, this.endDate, this.endDateTimestamp, this.startDateTimestamp, required this.ispublic, this.location, this.startDate, this.tripGeoPoint, this.urlToImage, required this.tripName, required this.travelType});
   final String tripName;
   final String travelType;
-  final String comment;
-  final String endDate;
-  final DateTime endDateTimestamp;
-  final DateTime startDateTimestamp;
+  final String? comment;
+  final String? endDate;
+  final DateTime? endDateTimestamp;
+  final DateTime? startDateTimestamp;
   final bool ispublic;
-  final String location;
-  final String startDate;
+  final String? location;
+  final String? startDate;
   final GeoPoint? tripGeoPoint;
   final File? urlToImage;
   

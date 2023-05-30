@@ -4,42 +4,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../blocs/generics/generic_bloc.dart';
 import '../models/notification_model/notification_model.dart';
 
-class NotificationRepository {
-  final CollectionReference<Object> notificationCollection = FirebaseFirestore.instance.collection('notifications');
+class NotificationRepository extends GenericBlocRepository<NotificationModel> {
+  @override
+  Stream<List<NotificationModel>> data() {
+    final Query<Object> notificationCollection = FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(userService.currentUserID)
+        .collection('notifications')
+        .orderBy('timestamp', descending: true);
 
-  final StreamController<List<NotificationModel>> _loadedData = StreamController<List<NotificationModel>>.broadcast();
-
-
-  void dispose() {
-    _loadedData.close();
-  }
-
-  void refresh() {
-    // Get all Notifications
-    List<NotificationModel> notificationListFromSnapshot(QuerySnapshot<Object> snapshot){
-
+    List<NotificationModel> notificationListFromSnapshot(
+        QuerySnapshot<Object> snapshot) {
       try {
-        return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc){
-          return NotificationModel.fromJson(doc as Map<String, Object>);
+        return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          return NotificationModel.fromJson(doc.data() as Map<String, dynamic>);
         }).toList();
       } catch (e) {
-        CloudFunction().logError('Error retrieving notification list: $e');
+        print('Error retrieving notification list: $e');
         return <NotificationModel>[];
       }
     }
 
-    final Stream<List<NotificationModel>> notificationList =
-    notificationCollection.doc(userService.currentUserID)
-        .collection('notifications').orderBy('timestamp', descending: true)
-        .snapshots().map(notificationListFromSnapshot);
-
-    _loadedData.addStream(notificationList);
-
-
+    return notificationCollection.snapshots().map(notificationListFromSnapshot);
   }
-
-  Stream<List<NotificationModel>> notifications() => _loadedData.stream;
-
 }

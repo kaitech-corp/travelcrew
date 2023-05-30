@@ -42,7 +42,7 @@ class UserProfileService {
   Future<UserPublicProfile> currentUserProfile() async {
     try {
       profile = await getUserProfile(userService.currentUserID);
-      urlToImage.value = profile.urlToImage;
+      
     } catch (e) {
       CloudFunction().logError('Error in User Public Profile service:  $e');
     }

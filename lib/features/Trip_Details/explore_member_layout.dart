@@ -82,7 +82,7 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
       child: Scaffold(
           body: SingleChildScrollView(
         child: Column(children: <Widget>[
-          if (widget.tripDetails.urlToImage.isNotEmpty)
+          if (widget.tripDetails.urlToImage?.isNotEmpty ?? false)
             Stack(
               children: <Widget>[
                 ImageAnimation(
@@ -166,7 +166,7 @@ class MemberPopupMenuButton extends StatelessWidget {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                MapSearch().searchAddress(tripDetails.location, context);
+                MapSearch().searchAddress(tripDetails.location ?? '', context);
               },
               icon: const TripDetailsIconThemeWidget(
                 icon: Icons.map,

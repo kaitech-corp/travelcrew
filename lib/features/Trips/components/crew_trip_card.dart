@@ -50,11 +50,11 @@ class CrewTripCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: (trip.urlToImage.isNotEmpty)?
+                  child: (trip.urlToImage?.isNotEmpty ?? false)?
                     Hero(
                         tag: heroTag,
                         transitionOnUserGestures: true,
-                        child: ImageLayout(trip.urlToImage))
+                        child: ImageLayout(trip.urlToImage!))
                   :
                     Hero(
                         tag: trip.documentId,
@@ -74,7 +74,7 @@ class CrewTripCard extends StatelessWidget {
     if (trip.ownerID == currentUserID) {
       return 'You';
     } else {
-      return trip.displayName;
+      return trip.displayName!;
     }
   }
 

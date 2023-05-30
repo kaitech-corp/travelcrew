@@ -8,7 +8,6 @@ import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../DM/logic/logic.dart';
 
 final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 final CollectionReference<Object?> userCollection =
@@ -29,15 +28,13 @@ final Query<Object?> tripCollection = FirebaseFirestore.instance
 const String uid = '';
 
 ///Updates user info after signup
-Future<void> updateUserData(
-    String email, String uid) async {
+Future<void> updateUserData(String email, String uid) async {
   try {
     const String action = 'Updating User data.';
     CloudFunction().logEvent(action);
-    return await userCollection.doc(uid).set(<String, dynamic>{
-      'email': email,
-      'uid': uid
-    });
+    return await userCollection
+        .doc(uid)
+        .set(<String, dynamic>{'email': email, 'uid': uid});
   } catch (e) {
     CloudFunction().logError('Error updating user data:  $e');
   }
@@ -84,26 +81,30 @@ Future<bool> checkUserHasProfile() async {
   if (refSnapshot.exists) {
     saveDeviceToken();
   }
-  retrieveProfileImage();
 
   return refSnapshot.exists;
 }
 
 ////Retrieve profile image
-Future<void> retrieveProfileImage() async {
-  final DocumentReference<Object?> ref2 = userPublicProfileCollection.doc(uid);
-  final DocumentSnapshot<Object?> refSnapshot2 = await ref2.get();
+Future<String> currentUserImage() async {
+  final DocumentSnapshot<Object?> ref =
+      await userPublicProfileCollection.doc(uid).get();
 
-  if (refSnapshot2.exists) {
-    urlToImage.value =
-        UserPublicProfile.fromJson(refSnapshot2 as Map<String, Object>)
-            .urlToImage;
+  if (ref.exists) {
+    return UserPublicProfile.fromJson(ref as Map<String, Object>)
+        .urlToImage;
   }
+  return '';
 }
 
 ////Updates public profile after sign up
-Future<void> updateUserPublicProfileData({String? displayName, String? firstName,
-    String? lastName, String? email, String? uid, File? urlToImage}) async {
+Future<void> updateUserPublicProfileData(
+    {String? displayName,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? uid,
+    File? urlToImage}) async {
   final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
   try {
     const String action = 'Updating public profile after sign up';
@@ -241,7 +242,7 @@ Stream<List<UserPublicProfile>> retrieveFollowList(
 UserPublicProfile _userPublicProfileSnapshot(
     DocumentSnapshot<Object?> snapshot) {
   try {
-    return UserPublicProfile.fromJson(snapshot as Map<String, Object>);
+    return UserPublicProfile.fromJson(snapshot.data() as Map<String, dynamic>);
   } catch (e) {
     CloudFunction()
         .logError('Error retrieving specific user public profile:  $e');
@@ -258,12 +259,6 @@ Stream<UserPublicProfile> get currentUserPublicProfile {
       .map(_userPublicProfileSnapshot);
 }
 
-Stream<UserPublicProfile> get specificUserPublicProfile {
-  return userPublicProfileCollection
-      .doc(userID)
-      .snapshots()
-      .map(_userPublicProfileSnapshot);
-}
 
 ///Query for past My Crew Trips
 List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot<Object?> snapshot) {
@@ -291,4 +286,30 @@ Stream<List<Trip>> pastCrewTripsCustom(String uid) {
       .where('accessUsers', arrayContainsAny: <String>[uid])
       .snapshots()
       .map(_pastCrewTripListFromSnapshot);
+}
+
+///Get all users Future Builder
+Future<List<UserPublicProfile>> usersList() async {
+  try {
+    final QuerySnapshot<Object?> ref = await userPublicProfileCollection.get();
+    final List<UserPublicProfile> userList = ref.docs
+        .map((QueryDocumentSnapshot<Object?> doc) {
+          final Object? data = doc.data();
+          if (data != null) {
+            return UserPublicProfile.fromJson(data as Map<String, dynamic>);
+          } else {
+            // Handle the case when data is null
+            return null;
+          }
+        })
+        .whereType<UserPublicProfile>()
+        .toList();
+    userList.sort((UserPublicProfile a, UserPublicProfile b) =>
+        a.displayName.compareTo(b.displayName));
+    return userList;
+  } catch (e) {
+    print('Error retrieving all users: $e');
+    CloudFunction().logError('Error retrieving all users: $e');
+    return <UserPublicProfile>[];
+  }
 }

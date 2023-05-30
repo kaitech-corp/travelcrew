@@ -19,7 +19,8 @@ class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
   Timestamp toJson(DateTime object) => Timestamp.fromDate(object);
 }
 
-class TimestampNullableConverter implements JsonConverter<DateTime?, Timestamp?> {
+class TimestampNullableConverter
+    implements JsonConverter<DateTime?, Timestamp?> {
   const TimestampNullableConverter();
 
   @override
@@ -34,18 +35,18 @@ class TimestampNullableConverter implements JsonConverter<DateTime?, Timestamp?>
 class NotificationModel with _$NotificationModel {
   const factory NotificationModel(
       {required String type,
-      required String ownerID,
-      required bool ispublic,
-      @TimestampConverter() DateTime? timestamp,
       required String message,
-      required String documentID,
-      required String displayName,
       required String fieldID,
-      required String firstname,
-      required String lastname,
       required String uid,
-      required String ownerDisplayName}) = _NotificationModel;
+      String? documentID,
+      String? ownerID,
+      bool? ispublic,
+      @TimestampConverter() DateTime? timestamp,
+      String? displayName,
+      String? firstname,
+      String? lastname,
+      String? ownerDisplayName}) = _NotificationModel;
 
-        factory NotificationModel.fromJson(Map<String, Object?> json)
-      => _$NotificationModelFromJson(json);
+  factory NotificationModel.fromJson(Map<String, Object?> json) =>
+      _$NotificationModelFromJson(json);
 }

@@ -261,63 +261,63 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         collapsed: Container(),
                                         expanded: Column(
                                           children: <Widget>[
-                                            TextFormField(
-                                                initialValue: (user
-                                                        .topDestinations[0]
-                                                .toString()
-                                                        .isNotEmpty)
-                                                    ? user.topDestinations[0].toString()
-                                                    : '',
-                                                inputFormatters: <LengthLimitingTextInputFormatter>[
-                                                  LengthLimitingTextInputFormatter(
-                                                      30),
-                                                ],
-                                                textCapitalization:
-                                                    TextCapitalization.words,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        labelText:
-                                                            'Destination 1'),
-                                                onSaved: (String? val) => setState(() =>
-                                                    destination1 = val!.trim())),
-                                            TextFormField(
-                                                initialValue: (user
-                                                        .topDestinations[1]
-                                                .toString()
-                                                        .isNotEmpty)
-                                                    ? user.topDestinations[1].toString()
-                                                    : '',
-                                                inputFormatters: <LengthLimitingTextInputFormatter>[
-                                                  LengthLimitingTextInputFormatter(
-                                                      30),
-                                                ],
-                                                textCapitalization:
-                                                    TextCapitalization.words,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        labelText:
-                                                            'Destination 2'),
-                                                onSaved: (String? val) => setState(() =>
-                                                    destination2 = val!.trim())),
-                                            TextFormField(
-                                                initialValue: (user
-                                                        .topDestinations[2]
-                                                .toString()
-                                                        .isNotEmpty)
-                                                    ? user.topDestinations[2].toString()
-                                                    : '',
-                                                inputFormatters: <LengthLimitingTextInputFormatter>[
-                                                  LengthLimitingTextInputFormatter(
-                                                      30),
-                                                ],
-                                                textCapitalization:
-                                                    TextCapitalization.words,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        labelText:
-                                                            'Destination 3'),
-                                                onSaved: (String? val) => setState(() =>
-                                                    destination3 = val!.trim())),
+                                            // TextFormField(
+                                            //     initialValue: (user
+                                            //             .topDestinations[0]
+                                            //     .toString()
+                                            //             .isNotEmpty)
+                                            //         ? user.topDestinations[0].toString()
+                                            //         : '',
+                                            //     inputFormatters: <LengthLimitingTextInputFormatter>[
+                                            //       LengthLimitingTextInputFormatter(
+                                            //           30),
+                                            //     ],
+                                            //     textCapitalization:
+                                            //         TextCapitalization.words,
+                                            //     decoration:
+                                            //         const InputDecoration(
+                                            //             labelText:
+                                            //                 'Destination 1'),
+                                            //     onSaved: (String? val) => setState(() =>
+                                            //         destination1 = val!.trim())),
+                                            // TextFormField(
+                                            //     initialValue: (user
+                                            //             .topDestinations[1]
+                                            //     .toString()
+                                            //             .isNotEmpty)
+                                            //         ? user.topDestinations[1].toString()
+                                            //         : '',
+                                            //     inputFormatters: <LengthLimitingTextInputFormatter>[
+                                            //       LengthLimitingTextInputFormatter(
+                                            //           30),
+                                            //     ],
+                                            //     textCapitalization:
+                                            //         TextCapitalization.words,
+                                            //     decoration:
+                                            //         const InputDecoration(
+                                            //             labelText:
+                                            //                 'Destination 2'),
+                                            //     onSaved: (String? val) => setState(() =>
+                                            //         destination2 = val!.trim())),
+                                            // TextFormField(
+                                            //     initialValue: (user
+                                            //             .topDestinations[2]
+                                            //     .toString()
+                                            //             .isNotEmpty)
+                                            //         ? user.topDestinations[2].toString()
+                                            //         : '',
+                                            //     inputFormatters: <LengthLimitingTextInputFormatter>[
+                                            //       LengthLimitingTextInputFormatter(
+                                            //           30),
+                                            //     ],
+                                            //     textCapitalization:
+                                            //         TextCapitalization.words,
+                                            //     decoration:
+                                            //         const InputDecoration(
+                                            //             labelText:
+                                            //                 'Destination 3'),
+                                            //     onSaved: (String? val) => setState(() =>
+                                            //         destination3 = val!.trim())),
                                           ],
                                         ),
                                       ),

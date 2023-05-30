@@ -77,22 +77,6 @@ class TCFunctions {
     }
   }
 
-  String readTimestamp(int timestamp) {
-    final DateTime currentTime = DateTime.now();
-    final DateTime timestampTime =
-        DateTime.fromMillisecondsSinceEpoch(timestamp);
-
-    final Duration difference = currentTime.difference(timestampTime);
-    final int days = difference.inDays;
-    final int hours = difference.inHours;
-
-    if (days > 0) {
-      return '$days days ago';
-    } else {
-      return '$hours hours ago';
-    }
-  }
-
   Future<void> launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
@@ -189,4 +173,22 @@ class CountDownDate {
   double? initialDayCount;
   double? daysLeft;
   double? gaugeCount;
+}
+
+String readTimestamp(DateTime timestamp) {
+  final DateTime currentTime = DateTime.now();
+
+  final Duration difference = currentTime.difference(timestamp);
+  final int days = difference.inDays;
+  final int hours = difference.inHours;
+
+  if (days > 1) {
+    return '$days days ago';
+  } else if (days == 1) {
+    return '$days day ago';
+  } else if (days < 1 && hours == 1) {
+    return '$hours hour ago';
+  } else {
+    return '$hours hours ago';
+  }
 }

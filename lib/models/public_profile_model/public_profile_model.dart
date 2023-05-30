@@ -12,19 +12,19 @@ part 'public_profile_model.g.dart';
 @freezed
 class UserPublicProfile with _$UserPublicProfile {
   const factory UserPublicProfile(
-      {required int tripsJoined,
-      required int tripsCreated,
-      required String hometown,
-      required String instagramLink,
-      required String facebookLink,
-      required List<String> topDestinations,
+      { int? tripsJoined,
+       int? tripsCreated,
+       String? hometown,
+       String? instagramLink,
+       String? facebookLink,
+       List<String>? topDestinations,
       required List<String> blockedList,
       required String displayName,
-      required String email,
+       String? email,
       required List<String> following,
       required List<String> followers,
-      required String firstName,
-      required String lastName,
+       String? firstName,
+       String? lastName,
       required String uid,
       required String urlToImage}) = _UserPublicProfile;
 

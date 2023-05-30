@@ -7,35 +7,35 @@ part of 'trip_model.dart';
 // **************************************************************************
 
 _$_Trip _$$_TripFromJson(Map<String, dynamic> json) => _$_Trip(
-      tripGeoPoint: _$JsonConverterFromJson<List<double>, GeoPoint>(
-          json['tripGeoPoint'], const GeoPointConverter().fromJson),
-      comment: json['comment'] as String,
+      tripGeoPoint:
+          GeoPointConverter.fromJson(json['tripGeoPoint'] as GeoPoint?),
+      comment: json['comment'] as String?,
       dateCreatedTimeStamp: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['dateCreatedTimeStamp'], const TimestampConverter().fromJson),
-      displayName: json['displayName'] as String,
-      favorite:
-          (json['favorite'] as List<dynamic>).map((e) => e as String).toList(),
+      displayName: json['displayName'] as String?,
+      favorite: (json['favorite'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       accessUsers: (json['accessUsers'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
       documentId: json['documentId'] as String,
-      endDate: json['endDate'] as String,
+      endDate: json['endDate'] as String?,
       endDateTimeStamp: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['endDateTimeStamp'], const TimestampConverter().fromJson),
       ispublic: json['ispublic'] as bool,
       tripName: json['tripName'] as String,
-      location: json['location'] as String,
+      location: json['location'] as String?,
       ownerID: json['ownerID'] as String,
-      startDate: json['startDate'] as String,
+      startDate: json['startDate'] as String?,
       startDateTimeStamp: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['startDateTimeStamp'], const TimestampConverter().fromJson),
-      travelType: json['travelType'] as String,
-      urlToImage: json['urlToImage'] as String,
+      travelType: json['travelType'] as String?,
+      urlToImage: json['urlToImage'] as String?,
     );
 
 Map<String, dynamic> _$$_TripToJson(_$_Trip instance) => <String, dynamic>{
-      'tripGeoPoint': _$JsonConverterToJson<List<double>, GeoPoint>(
-          instance.tripGeoPoint, const GeoPointConverter().toJson),
+      'tripGeoPoint': GeoPointConverter.toJson(instance.tripGeoPoint),
       'comment': instance.comment,
       'dateCreatedTimeStamp': _$JsonConverterToJson<Timestamp, DateTime>(
           instance.dateCreatedTimeStamp, const TimestampConverter().toJson),

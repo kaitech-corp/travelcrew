@@ -27,7 +27,7 @@ class _GroupedListTripViewState extends State<GroupedListTripView> {
             final Trip trip = widget.data[index];
             return CrewTripCard(
               trip: trip,
-              heroTag: trip.urlToImage,
+              heroTag: trip.urlToImage ?? '',
             );
           }),
     );

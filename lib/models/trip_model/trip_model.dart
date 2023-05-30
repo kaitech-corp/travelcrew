@@ -29,43 +29,39 @@ class TimestampNullableConverter
       object == null ? null : Timestamp.fromDate(object);
 }
 
-class GeoPointConverter implements JsonConverter<GeoPoint, List<double>> {
-  const GeoPointConverter();
+class GeoPointConverter {
+  static GeoPoint? fromJson(GeoPoint? value) => value == null ? null : value;
 
-  @override
-  GeoPoint fromJson(List<double> json) => GeoPoint(json[0], json[1]);
-
-  @override
-  List<double> toJson(GeoPoint object) => [object.latitude, object.longitude];
+  static GeoPoint? toJson(GeoPoint? value) => throw UnsupportedError('');
 }
 
 @freezed
 class Trip with _$Trip {
   const factory Trip(
-      {@GeoPointConverter() GeoPoint? tripGeoPoint,
-      required String comment,
+      {@JsonKey(name: 'tripGeoPoint', fromJson: GeoPointConverter.fromJson, toJson: GeoPointConverter.toJson) GeoPoint? tripGeoPoint,
+      String? comment,
       @TimestampConverter() DateTime? dateCreatedTimeStamp,
-      required String displayName,
-      required List<String> favorite,
+      String? displayName,
+      List<String>? favorite,
       required List<String> accessUsers,
       required String documentId,
-      required String endDate,
+      String? endDate,
       @TimestampConverter() DateTime? endDateTimeStamp,
       required bool ispublic,
       required String tripName,
-      required String location,
+      String? location,
       required String ownerID,
-      required String startDate,
+      String? startDate,
       @TimestampConverter() DateTime? startDateTimeStamp,
-      required String travelType,
-      required String urlToImage}) = _Trip;
+      String? travelType,
+      String? urlToImage}) = _Trip;
 
   factory Trip.fromJson(Map<String, Object?> json) => _$TripFromJson(json);
 
   factory Trip.mock() {
     return Trip(
-      startDateTimeStamp: DateTime.now(),
-      endDateTimeStamp: DateTime.now(),
+        startDateTimeStamp: DateTime.now(),
+        endDateTimeStamp: DateTime.now(),
         comment: 'comment',
         displayName: 'displayName',
         favorite: [],
