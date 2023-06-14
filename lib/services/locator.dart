@@ -4,7 +4,6 @@ import 'package:get_it/get_it.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../features/Trip_Management/logic/logic.dart';
 import '../models/public_profile_model/public_profile_model.dart';
-import 'database.dart';
 import 'navigation/navigation_service.dart';
 
 

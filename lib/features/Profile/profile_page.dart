@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../models/public_profile_model/public_profile_model.dart';
-import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';

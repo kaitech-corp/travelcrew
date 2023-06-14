@@ -10,7 +10,6 @@ import '../../services/functions/tc_functions.dart';
 import '../../size_config/size_config.dart';
 import '../theme/text_styles.dart';
 import 'appearance_widgets.dart';
-import 'reusable_widgets.dart';
 
 class TripDetailsWidget extends StatelessWidget {
   const TripDetailsWidget({
@@ -31,8 +30,8 @@ class TripDetailsWidget extends StatelessWidget {
       children: <Widget>[
         Visibility(
           visible: !expandController.expanded,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15.0),
+          child: const Padding(
+            padding: EdgeInsets.only(top: 15.0),
             // child: DateGauge(tripDetails: tripDetails),
           ),
         ),

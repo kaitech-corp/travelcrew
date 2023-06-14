@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class SearchBarStyle {
+class FlappySearchBarStyle {
 
-  const SearchBarStyle({
+  const FlappySearchBarStyle({
     this.backgroundColor = const Color.fromRGBO(142, 142, 147, .15),
     this.padding = const EdgeInsets.all(5.0),
     this.borderRadius = const BorderRadius.all(Radius.circular(5.0)),

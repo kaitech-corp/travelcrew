@@ -6,7 +6,6 @@ import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../repositories/trip_repositories/private_trip_repository.dart';
-import '../../../../services/functions/tc_functions.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../../models/trip_model/trip_model.dart';

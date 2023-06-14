@@ -30,7 +30,7 @@ class TimestampNullableConverter
 }
 
 class GeoPointConverter {
-  static GeoPoint? fromJson(GeoPoint? value) => value == null ? null : value;
+  static GeoPoint? fromJson(GeoPoint? value) => value;
 
   static GeoPoint? toJson(GeoPoint? value) => throw UnsupportedError('');
 }

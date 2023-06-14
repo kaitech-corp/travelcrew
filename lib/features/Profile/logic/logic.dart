@@ -86,7 +86,7 @@ Future<bool> checkUserHasProfile() async {
 }
 
 ////Retrieve profile image
-Future<String> currentUserImage() async {
+Future<String?> currentUserImage() async {
   final DocumentSnapshot<Object?> ref =
       await userPublicProfileCollection.doc(uid).get();
 
@@ -215,7 +215,7 @@ Stream<List<UserPublicProfile>> retrieveFollowingList() async* {
   if (followingRef != null) {
     final List<UserPublicProfile> ref = user
         .where((UserPublicProfile user) =>
-            followingRef.following.contains(user.uid))
+            followingRef.following!.contains(user.uid))
         .toList();
 
     yield ref;
@@ -227,8 +227,8 @@ Stream<List<UserPublicProfile>> retrieveFollowList(
     UserPublicProfile currentUser) async* {
   try {
     final List<UserPublicProfile> user = await usersList();
-    final List<dynamic> followList = List<dynamic>.from(currentUser.following)
-      ..addAll(currentUser.followers);
+    final List<dynamic> followList = List<dynamic>.from(currentUser.following!)
+      ..addAll(currentUser.followers!);
     final List<UserPublicProfile> newList = user
         .where((UserPublicProfile user) => followList.contains(user.uid))
         .toList();

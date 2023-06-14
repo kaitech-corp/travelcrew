@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nil/nil.dart';
 
+
 import '../../../../blocs/generics/generic_bloc.dart';
 import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
@@ -83,7 +84,7 @@ class _AllUserPageState extends State<AllUserPage> {
               state.data as List<UserPublicProfile>;
           allUsersSearchList = allUsersList;
           return _isSearching
-              ? SearchBar<UserPublicProfile>(
+              ? FlappySearchBar<UserPublicProfile>(
                   onSearch: userSearchList,
                   textStyle: titleMedium(context)!,
                   placeHolder: DraggableScrollbar.semicircle(

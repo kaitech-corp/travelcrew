@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -457,7 +456,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
         onLongPress: () {
           setState(() {
             _showImage = true;
-            _image = member.urlToImage;
+            _image = member?.urlToImage ?? profileImagePlaceholder;
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {
@@ -488,14 +487,12 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: (member.urlToImage.isNotEmpty)
-                  ? Image.network(
-                      member.urlToImage,
+              child:  Image.network(
+                      member?.urlToImage ?? profileImagePlaceholder,
                       height: 75,
                       width: 75,
                       fit: BoxFit.fill,
-                    )
-                  : null,
+                    ),
             ),
           ),
           title: Text(

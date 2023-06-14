@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
 import '../blocs/generics/generic_bloc.dart';
 import '../models/notification_model/notification_model.dart';
 

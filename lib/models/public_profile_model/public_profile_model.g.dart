@@ -16,19 +16,21 @@ _$_UserPublicProfile _$$_UserPublicProfileFromJson(Map<String, dynamic> json) =>
       topDestinations: (json['topDestinations'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      blockedList: (json['blockedList'] as List<dynamic>)
-          .map((e) => e as String)
+      blockedList: (json['blockedList'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
       displayName: json['displayName'] as String,
       email: json['email'] as String?,
-      following:
-          (json['following'] as List<dynamic>).map((e) => e as String).toList(),
-      followers:
-          (json['followers'] as List<dynamic>).map((e) => e as String).toList(),
+      following: (json['following'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      followers: (json['followers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       firstName: json['firstName'] as String?,
       lastName: json['lastName'] as String?,
       uid: json['uid'] as String,
-      urlToImage: json['urlToImage'] as String,
+      urlToImage: json['urlToImage'] as String?,
     );
 
 Map<String, dynamic> _$$_UserPublicProfileToJson(

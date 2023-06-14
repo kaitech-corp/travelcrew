@@ -125,7 +125,7 @@ class NotificationsCard extends StatelessWidget {
             final String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
             CloudFunction().removeNotificationData(fieldID);
-            if (!currentUserProfile.following.contains(notification.uid)) {
+            if (!currentUserProfile.following!.contains(notification.uid)) {
               TravelCrewAlertDialogs()
                   .followBackAlert(context, notification.uid);
             }

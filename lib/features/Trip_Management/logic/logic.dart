@@ -41,12 +41,10 @@ Future<void> addNewTripData(Trip trip, File? urlToImage) async {
       'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
       'displayName': currentUserProfile.displayName,
       'documentId': key,
-      'endDate': trip.endDate,
       'endDateTimeStamp': trip.endDateTimeStamp,
       'ispublic': trip.ispublic,
       'location': trip.location,
       'ownerID': userService.currentUserID,
-      'startDate': trip.startDate,
       'startDateTimeStamp': trip.startDateTimeStamp,
       'tripName': trip.tripName,
       'tripGeoPoint': trip.tripGeoPoint,
@@ -274,11 +272,11 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
         await userPublicProfileCollection.doc(uid).get();
     if (userData.exists) {
       // final Map<String, dynamic> data = userData.data()! as Map<String, dynamic>;
-      return UserPublicProfile.fromJson(userData as Map<String, Object>);
+      return UserPublicProfile.fromJson(userData.data() as Map<String, dynamic>);
     }
   } catch (e) {
     CloudFunction().logError('Error retrieving single user profile:  $e');
-    // print('Error retrieving single user profile:  $e');
+    print('Error retrieving single user profile:  $e');
     // return ;
   }
 

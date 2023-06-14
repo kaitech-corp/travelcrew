@@ -18,7 +18,7 @@ Event createEvent(
       description: activity.comment,
       location: activity.location,
       startDate: startDate,
-      endDate: endDate!,
+      endDate: endDate,
     );
     return event;
   } else{

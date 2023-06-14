@@ -12,7 +12,6 @@ import '../../services/functions/tc_functions.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/loading.dart';
-import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
 import '../Trip_Management/logic/logic.dart';
 import '../alerts/alert_dialogs.dart';
@@ -51,9 +50,7 @@ class ProfileWidget extends StatelessWidget {
                         width: profileSize,
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth / 1.8,
-                          backgroundImage: (user.urlToImage.isEmpty)
-                              ? const NetworkImage(profileImagePlaceholder)
-                              : NetworkImage(user.urlToImage),
+                          backgroundImage: NetworkImage(user?.urlToImage ?? profileImagePlaceholder),
                         ),
                       ),
                     ),
@@ -122,7 +119,6 @@ class ProfileWidget extends StatelessWidget {
               ),
             ),
           ),
-          Flexible(flex: 2, child: FollowerBar(user: user)),
           Flexible(
             flex: 3,
             child: Card(
@@ -146,8 +142,8 @@ class ProfileWidget extends StatelessWidget {
                         const SizedBox(
                           height: 10.0,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                           ),
@@ -264,44 +260,6 @@ class ProfileWidget extends StatelessWidget {
   }
 }
 
-class FollowerBar extends StatelessWidget {
-  const FollowerBar({
-    Key? key,
-    required this.user,
-  }) : super(key: key);
-
-  final UserPublicProfile user;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Followers', style: titleMedium(context)),
-              Text(
-                '${user.followers.length}',
-                style: ReusableThemeColor().greenOrBlueTextColor(context),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Following', style: titleMedium(context)),
-              Text('${user.following.length}',
-                  style: ReusableThemeColor().greenOrBlueTextColor(context)),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
 
 class FollowList extends StatefulWidget {
   const FollowList({Key? key, required this.isFollowers, required this.user})
@@ -388,7 +346,7 @@ class _FollowListState extends State<FollowList> {
         onLongPress: () {
           setState(() {
             showImage = true;
-            image = member.urlToImage;
+            image = member?.urlToImage ?? profileImagePlaceholder;
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {
@@ -406,14 +364,12 @@ class _FollowListState extends State<FollowList> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: member.urlToImage != null
-                  ? Image.network(
-                      member.urlToImage,
+              child:Image.network(
+                      member?.urlToImage ?? profileImagePlaceholder,
                       height: 75,
                       width: 75,
                       fit: BoxFit.fill,
-                    )
-                  : null,
+                    ),
             ),
           ),
           title: Text(
@@ -436,10 +392,10 @@ class _FollowListState extends State<FollowList> {
             (BuildContext context, AsyncSnapshot<UserPublicProfile> result) {
           final UserPublicProfile? user = result.data;
           if (result.hasData) {
-            return (user?.following.contains(member.uid) ?? false)
+            return (user?.following!.contains(member.uid) ?? false)
                 ? ElevatedButton(
                     onPressed: () {
-                      if (user?.blockedList.contains(member.uid) ?? false) {
+                      if (user?.blockedList!.contains(member.uid) ?? false) {
                       } else {
                         TravelCrewAlertDialogs()
                             .unFollowAlert(context, member.uid);
@@ -455,7 +411,7 @@ class _FollowListState extends State<FollowList> {
                           'Follow request from ${user?.displayName}';
                       const String type = 'Follow';
                       if (userService.currentUserID != member.uid) {
-                        if (user?.blockedList.contains(member.uid) ?? false) {
+                        if (user?.blockedList!.contains(member.uid) ?? false) {
                         } else {
                           CloudFunction().addNewNotification(
                               message: message,

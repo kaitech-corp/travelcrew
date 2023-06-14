@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/database.dart';
@@ -234,7 +233,7 @@ class _EditActivityState extends State<EditActivity> {
     );
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     final FormState form = _formKey.currentState!;
     if (form.validate()) {
       final String message =

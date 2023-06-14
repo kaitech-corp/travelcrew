@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,39 +13,46 @@ import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
+import '../../services/widgets/calendar_widget.dart';
+
 import '../alerts/alert_dialogs.dart';
 import 'components/google_autocomplete.dart';
 
 // GoogleData? googleData;
 
 /// Add trip page
-class AddTripForm extends StatefulWidget {
-  const AddTripForm({
+class ActivityForm extends StatefulWidget {
+  const ActivityForm({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<AddTripForm> createState() => _AddTripFormState();
+  State<ActivityForm> createState() => _ActivityFormState();
 }
-
-final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
-final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
-// late ValueNotifier<GoogleData> googleData;
 final TextEditingController locationController = TextEditingController();
 
-class _AddTripFormState extends State<AddTripForm> {
+class _ActivityFormState extends State<ActivityForm> {
+  final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
+// late ValueNotifier<GoogleData> googleData;
+
+final ValueNotifier<String> startDate = ValueNotifier<String>('');
+final ValueNotifier<String> endDate = ValueNotifier<String>('');
+final ValueNotifier<DateTime> startDateTimestamp =
+    ValueNotifier<DateTime>(DateTime.now());
+final ValueNotifier<DateTime> endDateTimestamp =
+    ValueNotifier<DateTime>(DateTime.now());
+final TextEditingController commentController = TextEditingController();
+
   UserPublicProfile currentUserProfile =
       locator<UserProfileService>().currentUserProfileDirect();
 
   final TextEditingController tripNameController = TextEditingController();
-  final TextEditingController travelTypeController = TextEditingController();
 
   bool ispublic = true;
   late AddTripBloc _addTripBloc;
 
-  bool get isPopulated =>
-      tripNameController.text.isNotEmpty &&
-      travelTypeController.text.isNotEmpty;
+  bool get isPopulated => tripNameController.text.isNotEmpty;
 
   bool isAddTripButtonEnabled(AddTripState state) {
     return state.isFormValid && isPopulated && !state.isSubmitting;
@@ -57,16 +63,17 @@ class _AddTripFormState extends State<AddTripForm> {
     super.initState();
     _addTripBloc = BlocProvider.of<AddTripBloc>(context);
     tripNameController.addListener(_onTripNameChange);
-    travelTypeController.addListener(_onTripTypeChange);
   }
 
   @override
   void dispose() {
-    travelTypeController.dispose();
     tripNameController.dispose();
-
+    startDate.dispose();
+    startDateTimestamp.dispose();
+    endDate.dispose();
+    endDateTimestamp.dispose();
     locationController.clear();
-
+    commentController.dispose();
     super.dispose();
   }
 
@@ -102,23 +109,14 @@ class _AddTripFormState extends State<AddTripForm> {
                   autovalidateMode: AutovalidateMode.always,
                 ),
                 TextFormField(
-                  controller: travelTypeController,
+                  controller: commentController,
                   enableInteractiveSelection: true,
-                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.addTripTypeLabel,
+                      labelText: 'Link',
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: ReusableThemeColor().colorOpposite(context)),
                       )),
-                  validator: (String? value) {
-                    if (!state.isTripTypeValid) {
-                      return AppLocalizations.of(context)!.addTripTypeValidator;
-                      // ignore: missing_return
-                    }
-                    return null;
-                  },
-                  autovalidateMode: AutovalidateMode.always,
                 ),
                 TextFormField(
                   controller: locationController,
@@ -140,6 +138,14 @@ class _AddTripFormState extends State<AddTripForm> {
                     controller: locationController,
                   ),
                 ),
+                CalendarWidget(
+                  startDate: startDate,
+                  startDateTimeStamp: startDateTimestamp,
+                  endDate: endDate,
+                  endDateTimeStamp: endDateTimestamp,
+                  context: context,
+                  showBoth: false,
+                ),
                 SwitchListTile(
                     title: Text(AppLocalizations.of(context)!.addTripPublic),
                     value: ispublic,
@@ -148,13 +154,6 @@ class _AddTripFormState extends State<AddTripForm> {
                             ispublic = val;
                           }),
                         }),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                  child: Text(
-                    AppLocalizations.of(context)!.addTripDescriptionMessage,
-                    style: titleMedium(context),
-                  ),
-                ),
                 Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 16.0),
@@ -166,10 +165,9 @@ class _AddTripFormState extends State<AddTripForm> {
                               .pushNamedAndRemoveUntil(MainPageRoute);
                         } else {
                           _onTripNameChange();
-                          _onTripTypeChange();
                         }
                       },
-                      child: Text(addTripAddTripButton()),
+                      child: Text(addActivityButton()),
                     )),
               ])));
     }));
@@ -179,16 +177,15 @@ class _AddTripFormState extends State<AddTripForm> {
     _addTripBloc.add(AddTripNameChange(tripName: tripNameController.text));
   }
 
-  void _onTripTypeChange() {
-    _addTripBloc.add(AddTripTypeChanged(travelType: travelTypeController.text));
-  }
-
   void _onFormSubmitted() {
     _addTripBloc.add(AddTripButtonPressed(
         ispublic: ispublic,
         location: locationController.text,
+        startDateTimestamp: startDateTimestamp.value,
+        endDateTimestamp: startDateTimestamp.value,
         tripGeoPoint: const GeoPoint(10, 10),
         tripName: tripNameController.text,
-        travelType: travelTypeController.text));
+        comment: commentController.text,
+        travelType: 'Activity'));
   }
 }

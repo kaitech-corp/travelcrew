@@ -202,7 +202,7 @@ class TravelCrewAlertDialogs {
               child: Text(AppLocalizations.of(context)!.yesMessage,),
               onPressed: () {
                 CloudFunction().leaveAndRemoveMemberFromTrip(tripDocID: tripDetails.documentId, userUID: uid, ispublic: tripDetails.ispublic);
-                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+                navigationService.pushNamedAndRemoveUntil(MainPageRoute);
               },
             ),
             TextButton(
@@ -230,7 +230,7 @@ class TravelCrewAlertDialogs {
               child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 CloudFunction().deleteTrip(tripDetails.documentId, tripDetails.ispublic);
-                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+                navigationService.pushNamedAndRemoveUntil(MainPageRoute);
               },
             ),
             TextButton(
@@ -263,7 +263,7 @@ class TravelCrewAlertDialogs {
               child: Text(AppLocalizations.of(context)!.yesMessage),
               onPressed: () {
                 convertTrip(tripDetails);
-                navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+                navigationService.pushNamedAndRemoveUntil(MainPageRoute);
               },
             ),
             TextButton(

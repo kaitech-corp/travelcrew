@@ -61,7 +61,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                           Align(
                             child: CircleAvatar(
                               radius: imageSize,
-                              backgroundImage: NetworkImage(''),
+                              backgroundImage: const NetworkImage(''),
                             ),
                           )
                         ],

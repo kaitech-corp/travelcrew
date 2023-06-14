@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/public_profile_model/public_profile_model.dart';
-import '../../services/database.dart';
 import '../../services/functions/cloud_functions.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/loading.dart';
@@ -72,7 +71,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (croppedImage != null) {
       _image = croppedImage as File;
     } else {
-      _image = File(_user.urlToImage);
+      _image = File(_user.urlToImage!);
     }
   }
 
@@ -109,7 +108,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           ) else CircleAvatar(
                                             radius:
                                                 SizeConfig.screenWidth / 2.25,
-                                            backgroundImage: NetworkImage(user.urlToImage),
+                                            backgroundImage: NetworkImage(user.urlToImage!),
                                           ),
                                     ElevatedButton(
                                       onPressed: () {
@@ -259,66 +258,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           style: headlineSmall(context),
                                         ),
                                         collapsed: Container(),
-                                        expanded: Column(
-                                          children: <Widget>[
-                                            // TextFormField(
-                                            //     initialValue: (user
-                                            //             .topDestinations[0]
-                                            //     .toString()
-                                            //             .isNotEmpty)
-                                            //         ? user.topDestinations[0].toString()
-                                            //         : '',
-                                            //     inputFormatters: <LengthLimitingTextInputFormatter>[
-                                            //       LengthLimitingTextInputFormatter(
-                                            //           30),
-                                            //     ],
-                                            //     textCapitalization:
-                                            //         TextCapitalization.words,
-                                            //     decoration:
-                                            //         const InputDecoration(
-                                            //             labelText:
-                                            //                 'Destination 1'),
-                                            //     onSaved: (String? val) => setState(() =>
-                                            //         destination1 = val!.trim())),
-                                            // TextFormField(
-                                            //     initialValue: (user
-                                            //             .topDestinations[1]
-                                            //     .toString()
-                                            //             .isNotEmpty)
-                                            //         ? user.topDestinations[1].toString()
-                                            //         : '',
-                                            //     inputFormatters: <LengthLimitingTextInputFormatter>[
-                                            //       LengthLimitingTextInputFormatter(
-                                            //           30),
-                                            //     ],
-                                            //     textCapitalization:
-                                            //         TextCapitalization.words,
-                                            //     decoration:
-                                            //         const InputDecoration(
-                                            //             labelText:
-                                            //                 'Destination 2'),
-                                            //     onSaved: (String? val) => setState(() =>
-                                            //         destination2 = val!.trim())),
-                                            // TextFormField(
-                                            //     initialValue: (user
-                                            //             .topDestinations[2]
-                                            //     .toString()
-                                            //             .isNotEmpty)
-                                            //         ? user.topDestinations[2].toString()
-                                            //         : '',
-                                            //     inputFormatters: <LengthLimitingTextInputFormatter>[
-                                            //       LengthLimitingTextInputFormatter(
-                                            //           30),
-                                            //     ],
-                                            //     textCapitalization:
-                                            //         TextCapitalization.words,
-                                            //     decoration:
-                                            //         const InputDecoration(
-                                            //             labelText:
-                                            //                 'Destination 3'),
-                                            //     onSaved: (String? val) => setState(() =>
-                                            //         destination3 = val!.trim())),
-                                          ],
+                                        expanded: const Column(
+                                          
                                         ),
                                       ),
                                     ),

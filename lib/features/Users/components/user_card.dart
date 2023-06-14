@@ -9,7 +9,6 @@ import '../../../../../services/theme/text_styles.dart';
 import '../../../../../services/widgets/appearance_widgets.dart';
 import '../../../../../size_config/size_config.dart';
 import '../../../models/public_profile_model/public_profile_model.dart';
-import '../../../services/navigation/router.dart';
 import '../../Alerts/alert_dialogs.dart';
 
 class TCUserCard extends StatefulWidget {
@@ -52,11 +51,11 @@ class _TCUserCardState extends State<TCUserCard> {
                     radius: SizeConfig.tablet
                         ? SizeConfig.blockSizeHorizontal * 8
                         : SizeConfig.blockSizeHorizontal * 11,
-                    backgroundImage: widget.user.urlToImage.isNotEmpty
-                        ? NetworkImage(
-                            widget.user.urlToImage,
+                    backgroundImage: 
+                        NetworkImage(
+                            widget.user?.urlToImage ?? profileImagePlaceholder,
                           )
-                        : const NetworkImage(profileImagePlaceholder),
+                       
                   ),
                 ),
               ),
@@ -74,7 +73,7 @@ class _TCUserCardState extends State<TCUserCard> {
                 child: Align(
                     alignment: Alignment.topRight,
                     child: checkBlockList(widget.user.uid,
-                        currentUserProfile.blockedList, widget.user)),
+                        currentUserProfile?.blockedList ?? [], widget.user)),
               )
             ],
           ),

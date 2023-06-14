@@ -14,7 +14,6 @@ import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/split_model/split_model.dart';
 import '../../models/trip_model/trip_model.dart';
-import 'components/prepaid_details_card.dart';
 import 'logic/split_functions.dart';
 import 'split_package.dart';
 

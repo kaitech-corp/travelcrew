@@ -57,7 +57,7 @@ String addTripDescriptionMessage() => Intl.message('Description',name: 'tripDesc
 String addTripAddDescriptionMessage() => Intl.message('Add a short description.',name: 'tripAddDescriptionMessage', desc: 'Add trip page.');
 String addTripSavingDataMessage() => Intl.message('Saving new Trip data.',name: 'tripSavingDataMessage', desc: 'Add trip page.');
 String addTripAddTripButton() => Intl.message('Add Trip',name: 'tripLocation', desc: 'Add trip page.');
-
+String addActivityButton() => Intl.message('Add Activity',name: 'activity', desc: 'Add activity page.');
 // Edit Trip Page
 String editTripPageTitle() => Intl.message('Edit Trip',name: 'editTripPageTitle', desc: 'Add trip page.');
 String editTripPageEditLocation() => Intl.message('Edit Location',name: 'editTripPageEditLocation', desc: 'Add trip page.');

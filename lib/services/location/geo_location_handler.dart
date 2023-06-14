@@ -39,7 +39,7 @@ class GeoLocationHandler {
           geoPoint: geoPoint.toString(),
           zipcode: zipcode);
     } catch (e) {
-      return LocationModel();
+      return const LocationModel();
     }
   }
 }

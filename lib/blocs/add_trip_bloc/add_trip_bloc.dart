@@ -28,12 +28,10 @@ class AddTripBloc extends Bloc<AddTripEvent, AddTripState> {
                 Trip(
                   accessUsers: <String>[userService.currentUserID],
                   comment: event.comment,
-                  endDate: event.endDate,
                   endDateTimeStamp: event.endDateTimestamp,
                   startDateTimeStamp: event.startDateTimestamp,
                   ispublic: event.ispublic,
                   location: event.location,
-                  startDate: event.startDate,
                   travelType: event.travelType,
                   tripGeoPoint: event.tripGeoPoint ?? const GeoPoint(0, 0),
                   tripName: event.tripName,

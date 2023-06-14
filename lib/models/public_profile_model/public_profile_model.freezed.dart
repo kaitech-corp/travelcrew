@@ -26,15 +26,15 @@ mixin _$UserPublicProfile {
   String? get instagramLink => throw _privateConstructorUsedError;
   String? get facebookLink => throw _privateConstructorUsedError;
   List<String>? get topDestinations => throw _privateConstructorUsedError;
-  List<String> get blockedList => throw _privateConstructorUsedError;
+  List<String>? get blockedList => throw _privateConstructorUsedError;
   String get displayName => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
-  List<String> get following => throw _privateConstructorUsedError;
-  List<String> get followers => throw _privateConstructorUsedError;
+  List<String>? get following => throw _privateConstructorUsedError;
+  List<String>? get followers => throw _privateConstructorUsedError;
   String? get firstName => throw _privateConstructorUsedError;
   String? get lastName => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
-  String get urlToImage => throw _privateConstructorUsedError;
+  String? get urlToImage => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -55,15 +55,15 @@ abstract class $UserPublicProfileCopyWith<$Res> {
       String? instagramLink,
       String? facebookLink,
       List<String>? topDestinations,
-      List<String> blockedList,
+      List<String>? blockedList,
       String displayName,
       String? email,
-      List<String> following,
-      List<String> followers,
+      List<String>? following,
+      List<String>? followers,
       String? firstName,
       String? lastName,
       String uid,
-      String urlToImage});
+      String? urlToImage});
 }
 
 /// @nodoc
@@ -85,15 +85,15 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
     Object? instagramLink = freezed,
     Object? facebookLink = freezed,
     Object? topDestinations = freezed,
-    Object? blockedList = null,
+    Object? blockedList = freezed,
     Object? displayName = null,
     Object? email = freezed,
-    Object? following = null,
-    Object? followers = null,
+    Object? following = freezed,
+    Object? followers = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
     Object? uid = null,
-    Object? urlToImage = null,
+    Object? urlToImage = freezed,
   }) {
     return _then(_value.copyWith(
       tripsJoined: freezed == tripsJoined
@@ -120,10 +120,10 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
           ? _value.topDestinations
           : topDestinations // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      blockedList: null == blockedList
+      blockedList: freezed == blockedList
           ? _value.blockedList
           : blockedList // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
@@ -132,14 +132,14 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      following: null == following
+      following: freezed == following
           ? _value.following
           : following // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      followers: null == followers
+              as List<String>?,
+      followers: freezed == followers
           ? _value.followers
           : followers // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       firstName: freezed == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -152,10 +152,10 @@ class _$UserPublicProfileCopyWithImpl<$Res, $Val extends UserPublicProfile>
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
               as String,
-      urlToImage: null == urlToImage
+      urlToImage: freezed == urlToImage
           ? _value.urlToImage
           : urlToImage // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -175,15 +175,15 @@ abstract class _$$_UserPublicProfileCopyWith<$Res>
       String? instagramLink,
       String? facebookLink,
       List<String>? topDestinations,
-      List<String> blockedList,
+      List<String>? blockedList,
       String displayName,
       String? email,
-      List<String> following,
-      List<String> followers,
+      List<String>? following,
+      List<String>? followers,
       String? firstName,
       String? lastName,
       String uid,
-      String urlToImage});
+      String? urlToImage});
 }
 
 /// @nodoc
@@ -203,15 +203,15 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
     Object? instagramLink = freezed,
     Object? facebookLink = freezed,
     Object? topDestinations = freezed,
-    Object? blockedList = null,
+    Object? blockedList = freezed,
     Object? displayName = null,
     Object? email = freezed,
-    Object? following = null,
-    Object? followers = null,
+    Object? following = freezed,
+    Object? followers = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
     Object? uid = null,
-    Object? urlToImage = null,
+    Object? urlToImage = freezed,
   }) {
     return _then(_$_UserPublicProfile(
       tripsJoined: freezed == tripsJoined
@@ -238,10 +238,10 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
           ? _value._topDestinations
           : topDestinations // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      blockedList: null == blockedList
+      blockedList: freezed == blockedList
           ? _value._blockedList
           : blockedList // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
@@ -250,14 +250,14 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      following: null == following
+      following: freezed == following
           ? _value._following
           : following // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      followers: null == followers
+              as List<String>?,
+      followers: freezed == followers
           ? _value._followers
           : followers // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       firstName: freezed == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -270,10 +270,10 @@ class __$$_UserPublicProfileCopyWithImpl<$Res>
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
               as String,
-      urlToImage: null == urlToImage
+      urlToImage: freezed == urlToImage
           ? _value.urlToImage
           : urlToImage // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -288,15 +288,15 @@ class _$_UserPublicProfile implements _UserPublicProfile {
       this.instagramLink,
       this.facebookLink,
       final List<String>? topDestinations,
-      required final List<String> blockedList,
+      final List<String>? blockedList,
       required this.displayName,
       this.email,
-      required final List<String> following,
-      required final List<String> followers,
+      final List<String>? following,
+      final List<String>? followers,
       this.firstName,
       this.lastName,
       required this.uid,
-      required this.urlToImage})
+      this.urlToImage})
       : _topDestinations = topDestinations,
         _blockedList = blockedList,
         _following = following,
@@ -325,32 +325,38 @@ class _$_UserPublicProfile implements _UserPublicProfile {
     return EqualUnmodifiableListView(value);
   }
 
-  final List<String> _blockedList;
+  final List<String>? _blockedList;
   @override
-  List<String> get blockedList {
+  List<String>? get blockedList {
+    final value = _blockedList;
+    if (value == null) return null;
     if (_blockedList is EqualUnmodifiableListView) return _blockedList;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_blockedList);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
   final String displayName;
   @override
   final String? email;
-  final List<String> _following;
+  final List<String>? _following;
   @override
-  List<String> get following {
+  List<String>? get following {
+    final value = _following;
+    if (value == null) return null;
     if (_following is EqualUnmodifiableListView) return _following;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_following);
+    return EqualUnmodifiableListView(value);
   }
 
-  final List<String> _followers;
+  final List<String>? _followers;
   @override
-  List<String> get followers {
+  List<String>? get followers {
+    final value = _followers;
+    if (value == null) return null;
     if (_followers is EqualUnmodifiableListView) return _followers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_followers);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -360,7 +366,7 @@ class _$_UserPublicProfile implements _UserPublicProfile {
   @override
   final String uid;
   @override
-  final String urlToImage;
+  final String? urlToImage;
 
   @override
   String toString() {
@@ -445,15 +451,15 @@ abstract class _UserPublicProfile implements UserPublicProfile {
       final String? instagramLink,
       final String? facebookLink,
       final List<String>? topDestinations,
-      required final List<String> blockedList,
+      final List<String>? blockedList,
       required final String displayName,
       final String? email,
-      required final List<String> following,
-      required final List<String> followers,
+      final List<String>? following,
+      final List<String>? followers,
       final String? firstName,
       final String? lastName,
       required final String uid,
-      required final String urlToImage}) = _$_UserPublicProfile;
+      final String? urlToImage}) = _$_UserPublicProfile;
 
   factory _UserPublicProfile.fromJson(Map<String, dynamic> json) =
       _$_UserPublicProfile.fromJson;
@@ -471,15 +477,15 @@ abstract class _UserPublicProfile implements UserPublicProfile {
   @override
   List<String>? get topDestinations;
   @override
-  List<String> get blockedList;
+  List<String>? get blockedList;
   @override
   String get displayName;
   @override
   String? get email;
   @override
-  List<String> get following;
+  List<String>? get following;
   @override
-  List<String> get followers;
+  List<String>? get followers;
   @override
   String? get firstName;
   @override
@@ -487,7 +493,7 @@ abstract class _UserPublicProfile implements UserPublicProfile {
   @override
   String get uid;
   @override
-  String get urlToImage;
+  String? get urlToImage;
   @override
   @JsonKey(ignore: true)
   _$$_UserPublicProfileCopyWith<_$_UserPublicProfile> get copyWith =>

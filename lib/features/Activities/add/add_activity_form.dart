@@ -5,12 +5,14 @@ import '../../../models/activity_model/activity_model.dart';
 import 'add_activity_bloc.dart';
 
 class AddActivityForm extends StatefulWidget {
+  const AddActivityForm({Key? key}) : super(key: key);
+
   @override
   _AddActivityFormState createState() => _AddActivityFormState();
 }
 
 class _AddActivityFormState extends State<AddActivityForm> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late ActivityModel _activity;
 
   @override
@@ -22,11 +24,11 @@ class _AddActivityFormState extends State<AddActivityForm> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ActivityBloc, ActivityState>(
-      listener: (context, state) {
+      listener: (BuildContext context, ActivityState state) {
         if (state is ActivitySuccess) {
           // Handle success state, e.g., show a success message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Activity added successfully')),
+            const SnackBar(content: Text('Activity added successfully')),
           );
           // Clear the form
           _formKey.currentState?.reset();
@@ -37,10 +39,10 @@ class _AddActivityFormState extends State<AddActivityForm> {
           );
         }
       },
-      builder: (context, state) {
+      builder: (BuildContext context, ActivityState state) {
         if (state is ActivityLoading) {
           // Handle loading state, e.g., show a loading indicator
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         // Build the form
         return Form(
@@ -48,20 +50,20 @@ class _AddActivityFormState extends State<AddActivityForm> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Start Time'),
-                validator: (value) {
+                decoration: const InputDecoration(labelText: 'Start Time'),
+                validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the start time';
                   }
                   return null;
                 },
-                onSaved: (value) {
+                onSaved: (String? value) {
                   // _activity.startTime = value ?? '';
                 },
               ),
               // Add more form fields for other activity properties
               // such as end time, comment, location, etc.
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() == true) {
@@ -72,7 +74,7 @@ class _AddActivityFormState extends State<AddActivityForm> {
                         );
                   }
                 },
-                child: Text('Add Activity'),
+                child: const Text('Add Activity'),
               ),
             ],
           ),

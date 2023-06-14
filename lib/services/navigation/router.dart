@@ -8,11 +8,13 @@ import '../../blocs/generics/generic_bloc.dart';
 import '../../features/Activities/activity_page.dart';
 import '../../features/Activities/add_new_activity.dart';
 import '../../features/Activities/edit_activity.dart';
+import '../../features/Activity_Management/add_activity_page.dart';
 import '../../features/Auth/signup_screen.dart';
 import '../../features/Chat/chat_page.dart';
 import '../../features/Lodging/add_new_lodging.dart';
 import '../../features/Lodging/edit_lodging.dart';
 import '../../features/Lodging/lodging_page.dart';
+import '../../features/Main_Page/main_page.dart';
 import '../../features/Menu/help/feedback_page.dart';
 import '../../features/Menu/help/help.dart';
 import '../../features/Menu/help/report.dart';
@@ -32,7 +34,6 @@ import '../../features/Trip_Details/members/members_layout.dart';
 import '../../features/Trip_Management/add_trip_page.dart';
 import '../../features/Trip_Management/edit_trip.dart';
 import '../../features/Trips/current_trips_page.dart';
-import '../../features/Trips/past_trip_page.dart';
 import '../../features/Users/all_users_page.dart';
 import '../../features/Users/user_profile_page.dart';
 import '../../models/activity_model/activity_model.dart';
@@ -44,7 +45,6 @@ import '../../models/split_model/split_model.dart';
 import '../../models/transportation_model/transportation_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
-import '../../repositories/trip_repositories/past_trip_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/navigation/route_names.dart';
 import '../../size_config/size_config.dart';
@@ -65,6 +65,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: AddNewActivity(
           trip: args as Trip,
         ),
+      );
+    case AddActivityRoute:
+      return _getPageRoute(
+        routeName: settings.name!,
+        viewToShow: const AddActivityPage(),
       );
     case AddNewLodgingRoute:
       return _getPageRoute(
@@ -200,6 +205,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         viewToShow: LodgingPage(
           trip: args as Trip,
         ),
+      );
+    case MainPageRoute:
+      return _getPageRoute(
+        routeName: settings.name!,
+        viewToShow: const MainPage(),
       );
     case MembersLayoutRoute:
       final MembersLayoutArguments arguments =

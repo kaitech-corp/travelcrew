@@ -92,7 +92,7 @@ class _FollowingListState extends State<FollowingList> {
         onLongPress: (){
           setState(() {
             _showImage = true;
-            _image = user.urlToImage;
+            _image = user?.urlToImage ?? profileImagePlaceholder;
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {
@@ -110,8 +110,7 @@ class _FollowingListState extends State<FollowingList> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: user.urlToImage.isNotEmpty  ? Image.network(user.urlToImage,fit: BoxFit.fill,):
-              Image.network(profileImagePlaceholder,fit: BoxFit.fill,),
+              child: Image.network(user?.urlToImage ?? profileImagePlaceholder,fit: BoxFit.fill,)
             ),
           ),
           subtitle: Text('${user.firstName} ${user.lastName}', textAlign: TextAlign.start,style: titleSmall(context),),

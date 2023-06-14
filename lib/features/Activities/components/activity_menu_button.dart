@@ -1,5 +1,4 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
@@ -12,7 +11,6 @@ import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/navigation/router.dart';
 import '../../../services/widgets/appearance_widgets.dart';
-import '../../Alerts/alert_dialogs.dart';
 import '../../Split/split_package.dart';
 
 

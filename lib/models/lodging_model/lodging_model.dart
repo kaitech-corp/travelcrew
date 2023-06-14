@@ -54,7 +54,7 @@ class LodgingModel with _$LodgingModel {
     return LodgingModel(
       endTime: '10:00 PM',
       startTime: '3:00 PM',
-      startDateTimestamp: DateTime(2023, 5, 1),
+      startDateTimestamp: DateTime(2023, 5),
       endDateTimestamp: DateTime(2023, 5, 5),
       location: 'City X',
       comment: 'Beautiful and luxurious hotel.',

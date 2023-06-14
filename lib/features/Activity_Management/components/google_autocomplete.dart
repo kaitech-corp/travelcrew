@@ -4,7 +4,8 @@ import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import '../../../services/database.dart';
-import '../add_trip_form.dart';
+import '../activity_form.dart';
+
 
 /// Google places API
 class GooglePlaces extends StatefulWidget {

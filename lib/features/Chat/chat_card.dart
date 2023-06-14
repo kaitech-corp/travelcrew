@@ -3,12 +3,10 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/functions/tc_functions.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/chat_model/chat_model.dart';

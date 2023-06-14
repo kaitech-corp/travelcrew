@@ -9,7 +9,6 @@ import '../../blocs/generics/generics_event.dart';
 import '../../models/notification_model/notification_model.dart';
 import '../../models/public_profile_model/public_profile_model.dart';
 import '../../repositories/notification_repository.dart';
-import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
@@ -18,7 +17,6 @@ import '../../services/widgets/badge_icon.dart';
 import '../../services/widgets/reusable_widgets.dart';
 import '../../size_config/size_config.dart';
 import '../Profile/logic/logic.dart';
-import '../Trip_Management/logic/logic.dart';
 
 /// Custom app bar
 class CustomAppBar extends StatefulWidget {
@@ -84,10 +82,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
             actions: <Widget>[
               StreamBuilder(
                   stream: currentUserPublicProfile,
-                  builder: (context, snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
                     
                     if (snapshot.hasData) {
-                      UserPublicProfile profile = snapshot.data as UserPublicProfile;
+                      final UserPublicProfile profile = snapshot.data as UserPublicProfile;
                       return Center(
                         child: InkWell(
                           onTap: () {
@@ -98,9 +96,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             transitionOnUserGestures: true,
                             child: CircleAvatar(
                               radius: SizeConfig.screenWidth / 8.0,
-                              backgroundImage: (profile.urlToImage?.isNotEmpty ?? false)
-                                  ? NetworkImage(profile.urlToImage)
-                                  : const NetworkImage(profileImagePlaceholder),
+                              backgroundImage:NetworkImage(profile?.urlToImage ?? profileImagePlaceholder)
+                                  ,
                             ),
                           ),
                         ),

@@ -3,7 +3,6 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/constants/constants.dart';
-import '../../../services/database.dart';
 import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/theme/text_styles.dart';

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/authentication_bloc/authentication_bloc.dart';
-import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../models/recommended_model/recommended_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
@@ -124,9 +121,9 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {navigationService.navigateTo(AddActivityRoute);},
                   child: Text(
-                    'Custom Activity',
+                    'Create Activity',
                     style: titleMedium(context)
                         ?.copyWith(fontWeight: FontWeight.bold),
                   )),
@@ -135,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                     navigationService.navigateTo(AddNewTripRoute);
                   },
                   child: Text(
-                    'Custom Trip',
+                    'Create Trip',
                     style: titleMedium(context)
                         ?.copyWith(fontWeight: FontWeight.bold),
                   )),

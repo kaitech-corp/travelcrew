@@ -8,11 +8,9 @@ import '../../services/database.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
-import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
 import '../constants/constants.dart';
 import '../theme/text_styles.dart';
-import 'loading.dart';
 
 final double defaultSize = SizeConfig.defaultSize;
 

@@ -4,7 +4,6 @@ import '../../../../services/database.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../models/cost_model/cost_object_model.dart';
 import '../../../models/split_model/split_model.dart';
-import '../logic/split_functions.dart';
 
 /// Payment details menu button
 class PaymentDetailsMenuButton extends StatelessWidget {

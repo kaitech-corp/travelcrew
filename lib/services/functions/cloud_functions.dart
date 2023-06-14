@@ -472,11 +472,11 @@ class CloudFunction {
 
 // Log Error
   Future<void> logError(String error) async {
-    // final HttpsCallable functionData =
-    //     FirebaseFunctions.instance.httpsCallable('logError');
-    // functionData(<String, dynamic>{
-    //   'error': error,
-    // });
+    final HttpsCallable functionData =
+        FirebaseFunctions.instance.httpsCallable('logEvent');
+    functionData(<String, dynamic>{
+      'error': error,
+    });
   }
 
   //Disable account

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../services/database.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../../size_config/size_config.dart';
 import '../../models/feed_model/feed_model.dart';
-import '../../services/functions/tc_functions.dart';
 import 'logic/logic.dart';
 
 class FeedScreen extends StatelessWidget {

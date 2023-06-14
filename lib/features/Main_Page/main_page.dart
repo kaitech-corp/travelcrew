@@ -7,7 +7,6 @@ import '../../models/notification_model/notification_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../../repositories/notification_repository.dart';
 import '../../repositories/trip_repositories/current_trip_repository.dart';
-import '../../services/database.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
 import '../Feed/feed_screen.dart';

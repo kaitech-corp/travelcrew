@@ -19,7 +19,7 @@ Trip? _tripFromSnapshot(DocumentSnapshot<Object?> snapshot) {
   return null;
 }
 
-const tripDocID = '';
+const String tripDocID = '';
 Stream<Trip?> get singleTripData {
   return tripsCollectionUnordered
       .doc(tripDocID)

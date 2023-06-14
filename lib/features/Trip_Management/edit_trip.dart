@@ -296,6 +296,6 @@ class EditTripDataState extends State<EditTripData> {
   void _showDialog(BuildContext context) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(addTripSavingDataMessage())));
-    navigationService.pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+    navigationService.pushNamedAndRemoveUntil(MainPageRoute);
   }
 }

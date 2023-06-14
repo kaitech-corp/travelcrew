@@ -237,7 +237,7 @@ class _AddTripFormState extends State<AddTripForm> {
                         if (isAddTripButtonEnabled(state)) {
                           _onFormSubmitted();
                           navigationService
-                              .pushNamedAndRemoveUntil(LaunchIconBadgerRoute);
+                              .pushNamedAndRemoveUntil(MainPageRoute);
                         } else {
                           _onTripNameChange();
                           _onTripTypeChange();

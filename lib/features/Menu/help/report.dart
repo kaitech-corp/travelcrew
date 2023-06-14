@@ -43,7 +43,7 @@ class _ReportContentState extends State<ReportContent> {
             collection = 'users';
             docID = widget.userAccount!.uid;
             offenderID = docID;
-            urlToImage = widget.userAccount!.urlToImage;
+            urlToImage = widget.userAccount?.urlToImage ?? '';
           });
         }
         break;

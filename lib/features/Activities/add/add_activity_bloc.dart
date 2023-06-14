@@ -8,9 +8,9 @@ import '../../../models/activity_model/activity_model.dart';
 abstract class ActivityEvent {}
 
 class AddActivityEvent extends ActivityEvent {
-  final ActivityModel activity;
 
   AddActivityEvent(this.activity);
+  final ActivityModel activity;
 }
 
 // Define the state
@@ -23,9 +23,9 @@ class ActivityLoading extends ActivityState {}
 class ActivitySuccess extends ActivityState {}
 
 class ActivityError extends ActivityState {
-  final String errorMessage;
 
   ActivityError(this.errorMessage);
+  final String errorMessage;
 }
 
 // Define the BLoC class

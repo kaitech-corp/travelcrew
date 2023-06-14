@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 
-import '../../../services/functions/cloud_functions.dart';
 import '../../../services/theme/text_styles.dart';
 
 import '../../models/notification_model/notification_model.dart';

@@ -8,6 +8,7 @@ import '../../../size_config/size_config.dart';
 import '../../models/cost_model/cost_object_model.dart';
 import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/split_model/split_model.dart';
+import '../../services/constants/constants.dart';
 import 'components/payment_details_menu_button.dart';
 
 /// Bottom sheet for split cost details
@@ -40,7 +41,7 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
         children: <Widget>[
           CircleAvatar(
             radius: SizeConfig.screenWidth / 6,
-            backgroundImage: NetworkImage(user.urlToImage),
+            backgroundImage: NetworkImage(user?.urlToImage ?? profileImagePlaceholder),
           ),
           Text(user.displayName, style: headlineMedium(context)),
           Container(

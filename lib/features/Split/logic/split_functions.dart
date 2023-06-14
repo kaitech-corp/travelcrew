@@ -5,7 +5,6 @@ import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/split_model/split_model.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../Profile/logic/logic.dart';
-import '../split_package.dart';
 
 final CollectionReference<Object?> splitItemCollection =
     FirebaseFirestore.instance.collection('splitItem');
