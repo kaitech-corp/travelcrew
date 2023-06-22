@@ -14,6 +14,7 @@ import '../../../services/widgets/map_launcher.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/lodging_model/lodging_model.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/functions/date_time_retrieval.dart';
 import '../Alerts/alert_dialogs.dart';
 import 'components/lodging_menu_button.dart';
 import 'logic/logic.dart';
@@ -30,7 +31,7 @@ class LodgingDetails extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             'Lodging',
-            style: headlineMedium(context),
+            style: headlineSmall(context),
           ),
           backgroundColor: canvasColor,
         ),
@@ -83,12 +84,12 @@ class LodgingModelLayout extends StatelessWidget {
                     ListTile(
                       title: Text(
                         lodging.lodgingType,
-                        style: headlineMedium(context),
+                        style: headlineSmall(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        'Creator: ${lodging.displayName}',
+                        lodging.displayName,
                         style: titleMedium(context),
                       ),
                       trailing: LodgingMenuButton(
@@ -107,8 +108,8 @@ class LodgingModelLayout extends StatelessWidget {
                           icon: Icons.calendar_today,
                         ),
                         title: Text(
-                          '${lodging.startDateTimestamp} - '
-                          '${lodging.endDateTimestamp}',
+                          DateTimeRetrieval().dateFormatter(lodging.startDateTimestamp ?? DateTime(0), lodging.endDateTimestamp ?? DateTime(0)),
+                      
                           style: titleMedium(context),
                         ),
                         onTap: () {
@@ -219,8 +220,6 @@ class LodgingModelLayout extends StatelessWidget {
                     },
                   ),
                 )
-              else
-                nil,
             ],
           );
         } else {

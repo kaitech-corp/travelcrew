@@ -23,6 +23,7 @@ import '../../features/Menu/settings/settings.dart';
 import '../../features/Notifications/notification_page.dart';
 import '../../features/Profile/edit_profile_page.dart';
 import '../../features/Profile/profile_page.dart';
+import '../../features/Split/split_details_page.dart';
 import '../../features/Split/split_page.dart';
 import '../../features/Transportation/add_new_transportation.dart';
 import '../../features/Transportation/edit_transportation.dart';
@@ -262,16 +263,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SignUpScreenRoute:
       return _getPageRoute(
           routeName: settings.name!, viewToShow: const SignupScreen());
-    // case SplitDetailsPageRoute:
-    //   final SplitDetailsArguments arguments =
-    //       settings.arguments as SplitDetailsArguments;
-    //   return _getPageRoute(
-    //     routeName: settings.name!,
-    //     viewToShow: SplitDetailsPage(
-    //       trip: arguments.trip,
-    //       splitObject: arguments.splitObject,
-    //     ),
-    //   );
+    case SplitDetailsPageRoute:
+      final SplitDetailsArguments arguments =
+          settings.arguments as SplitDetailsArguments;
+      return _getPageRoute(
+        routeName: settings.name!,
+        viewToShow: SplitDetailsPage(
+          trip: arguments.trip,
+          splitObject: arguments.splitObject,
+        ),
+      );
     case UsersRoute:
       return _getPageRoute(
         routeName: settings.name!,

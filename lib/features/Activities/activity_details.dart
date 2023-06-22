@@ -31,7 +31,7 @@ class ActivityDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Activity',
-          style: headlineMedium(context),
+          style: headlineSmall(context),
         ),
         backgroundColor: canvasColor,
       ),

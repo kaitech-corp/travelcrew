@@ -86,7 +86,7 @@ class _EditLodgingState extends State<EditLodging> {
         appBar: AppBar(
           title: Text(
             'Edit Lodging',
-            style: headlineMedium(context),
+            style: headlineSmall(context),
           ),
         ),
         body: SingleChildScrollView(

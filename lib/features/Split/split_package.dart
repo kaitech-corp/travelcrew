@@ -86,7 +86,7 @@ class SplitPackage {
               );
             }
           },
-          future: SplitFunctions(trip.documentId).checkSplitItemExist(splitObject.itemDocID),
+          future: SplitFunctions(tripDocID: trip.documentId).checkSplitItemExist(splitObject.itemDocID),
         );
       },
     );
@@ -116,7 +116,7 @@ class SplitPackage {
               onPressed: () {});
         }
       },
-      future: SplitFunctions(trip.documentId).checkSplitItemExist(splitObject.itemDocID),
+      future: SplitFunctions(tripDocID: trip.documentId).checkSplitItemExist(splitObject.itemDocID),
     );
   }
 

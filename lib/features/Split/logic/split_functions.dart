@@ -70,9 +70,10 @@ void deleteSplitObject(SplitObject splitObject) {
 }
 
 class SplitFunctions {
-  SplitFunctions(this.tripDocID);
+  SplitFunctions({this.tripDocID, this.itemDocID});
 
-  final String tripDocID;
+  final String? tripDocID;
+  final String? itemDocID;
   //// Check Split Item exists
   Future<bool> checkSplitItemExist(String itemDocID) async {
     final DocumentSnapshot<Map<String, dynamic>> ref = await splitItemCollection
@@ -110,6 +111,31 @@ class SplitFunctions {
         .collection('Item')
         .snapshots()
         .map(_splitItemDataFromSnapshot);
+  }
+
+  //// Stream in Cost Details
+  List<CostObjectModel> _costObjectDataFromSnapshot(
+      QuerySnapshot<Object?> snapshot) {
+    try {
+      final List<CostObjectModel> costObjectData =
+          snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        return CostObjectModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return costObjectData;
+    } catch (e) {
+      CloudFunction().logError('Error in streaming cost details: $e');
+      return <CostObjectModel>[];
+    }
+  }
+
+////Stream cost data
+  Stream<List<CostObjectModel>> get costDataList {
+    return costDetailsCollection
+        .doc(itemDocID)
+        .collection('Users')
+        .snapshots()
+        .map(_costObjectDataFromSnapshot);
   }
 }
 
@@ -214,32 +240,6 @@ void deleteCostObjectModel(
   }
 
   /// }
-}
-
-//// Stream in Cost Details
-List<CostObjectModel> _costObjectDataFromSnapshot(
-    QuerySnapshot<Object?> snapshot) {
-  try {
-    final List<CostObjectModel> costObjectData =
-        snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-      return CostObjectModel.fromJson(doc as Map<String, Object>);
-    }).toList();
-
-    return costObjectData;
-  } catch (e) {
-    CloudFunction().logError('Error in streaming cost details: $e');
-    return <CostObjectModel>[];
-  }
-}
-
-const String itemDocID = '';
-////Stream cost data
-Stream<List<CostObjectModel>> get costDataList {
-  return costDetailsCollection
-      .doc(itemDocID)
-      .collection('Users')
-      .snapshots()
-      .map(_costObjectDataFromSnapshot);
 }
 
 ///Creates Firestore document files for newly created split item.
