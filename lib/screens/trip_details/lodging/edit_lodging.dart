@@ -278,13 +278,13 @@ class _EditLodgingState extends State<EditLodging> {
                     'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
                 for (final String f in widget.trip.accessUsers) {
-                  if (f != currentUserProfile.uid) {
+                  if (f != userService.currentUserID) {
                     CloudFunction().addNewNotification(
                       message: message,
                       documentID: documentID,
                       type: 'Lodging',
                       uidToUse: f,
-                      ownerID: currentUserProfile.uid,
+                      ownerID: userService.currentUserID,
                     );
                   }
                 }

@@ -136,7 +136,6 @@ class HangingImageTheme3 extends StatelessWidget {
     Key? key, required this.user,
   }) : super(key: key);
 
-  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final double hgt = SizeConfig.screenHeight*.06;
   final UserPublicProfile user;
 
@@ -163,7 +162,7 @@ class HangingImageTheme3 extends StatelessWidget {
                       shadowColor: const Color(0x00000000),
                       backgroundColor: const Color(0x00000000),
                       actions: <Widget>[
-                        if (currentUserProfile.uid == user.uid) IconButton(
+                        if (userService.currentUserID == user.uid) IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: (){
                             navigationService.navigateTo(EditProfilePageRoute);

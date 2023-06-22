@@ -21,8 +21,6 @@ class DMChat extends StatefulWidget {
 
 class _DMChatState extends State<DMChat> {
   final TextEditingController _chatController = TextEditingController();
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
   Future<void> clearChat(String uid) async {
     await DatabaseService(userID: widget.user.uid).clearDMChatNotifications();
   }
@@ -87,7 +85,7 @@ class _DMChatState extends State<DMChat> {
                                 final Map<String, bool> status = createStatus();
                                 _chatController.clear();
                                 final String displayName =
-                                    currentUserProfile.displayName;
+                                    currentUserProfile.userPublicProfile!.displayName;
                                 final String uid = userService.currentUserID;
                                 await DatabaseService(userID: widget.user.uid)
                                     .addNewDMChatMessage(

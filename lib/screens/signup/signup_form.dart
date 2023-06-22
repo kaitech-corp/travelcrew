@@ -1,20 +1,21 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
 import '../../blocs/signup_bloc/signup_bloc.dart';
 import '../../blocs/signup_bloc/signup_event.dart';
 import '../../blocs/signup_bloc/signup_state.dart';
+import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/functions/tc_functions.dart';
-import '../../services/image_picker_cropper/image_picker_cropper.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/gradient_button.dart';
 import '../../size_config/size_config.dart';
+
 
 class SignupForm extends StatefulWidget {
   const SignupForm({Key? key}) : super(key: key);
@@ -26,20 +27,13 @@ class SignupForm extends StatefulWidget {
 class _SignupFormState extends State<SignupForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _displayNameController = TextEditingController();
-  final ValueNotifier<File> _urlToImage = ValueNotifier<File>(File(''));
+  late SignupBloc _signupBloc;
 
-  bool imagePicked = false;
+  bool isButtonEnabled(SignupState state) =>
+      state.isFormValid! && isPopulated && !state.isSubmitting;
+
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
-
-  bool isButtonEnabled(SignupState state) {
-    return state.isFormValid! && isPopulated && !state.isSubmitting;
-  }
-
-  late SignupBloc _signupBloc;
 
   @override
   void initState() {
@@ -47,20 +41,13 @@ class _SignupFormState extends State<SignupForm> {
     _signupBloc = BlocProvider.of<SignupBloc>(context);
     _emailController.addListener(_onEmailChange);
     _passwordController.addListener(_onPasswordChange);
-    _displayNameController.addListener(_onDisplayNameChange);
-    _firstNameController.addListener(_onFirstNameChange);
-    _lastNameController.addListener(_onLastNameChange);
-    _urlToImage.addListener(_onImageChange);
   }
 
   @override
   void dispose() {
-    _urlToImage.dispose();
-    _lastNameController.dispose();
-    _firstNameController.dispose();
-    _passwordController.dispose();
-    _displayNameController.dispose();
     _emailController.dispose();
+    _passwordController.dispose();
+    _signupBloc.close();
     super.dispose();
   }
 
@@ -69,35 +56,11 @@ class _SignupFormState extends State<SignupForm> {
     return BlocListener<SignupBloc, SignupState>(
       listener: (BuildContext context, SignupState state) {
         if (state.isFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const <Widget>[
-                  Text('Signup Failure'),
-                  Icon(Icons.error),
-                ],
-              ),
-              backgroundColor: const Color(0xffffae88),
-            ),
-          );
+          showSnack(context, 'Signup Failure', Icons.error);
         }
 
         if (state.isSubmitting) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const <Widget>[
-                  Text('Registering...'),
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-                ],
-              ),
-              backgroundColor: const Color(0xffffae88),
-            ),
-          );
+          showSnack(context, 'Registering...', null, progressIndicator: true);
         }
 
         if (state.isSuccess) {
@@ -114,143 +77,28 @@ class _SignupFormState extends State<SignupForm> {
             child: Form(
               child: Column(
                 children: <Widget>[
-                  TextFormField(
+                  buildTextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.email),
-                      labelText: AppLocalizations.of(context)!.email,
-                    ),
+                    icon: Icons.email,
+                    labelText: AppLocalizations.of(context)!.email,
                     keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (_) {
-                      return !state.isEmailValid
-                          ? AppLocalizations.of(context)!.invalid_email
-                          : null;
-                    },
+                    state: state,
+                    isValidated: state.isEmailValid,
                   ),
-                  TextFormField(
+                  buildTextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.lock),
-                      labelText: AppLocalizations.of(context)!.password,
-                    ),
+                    icon: Icons.lock,
+                    labelText: AppLocalizations.of(context)!.password,
                     obscureText: true,
-                    autocorrect: false,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (_) {
-                      return !state.isPasswordValid
-                          ? AppLocalizations.of(context)!.invalid_password
-                          : null;
-                    },
+                    state: state,
+                    isValidated: state.isEmailValid,
                   ),
-                  TextFormField(
-                    controller: _displayNameController,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.person),
-                      labelText: AppLocalizations.of(context)!.display_name,
-                    ),
-                    keyboardType: TextInputType.name,
+                  SizedBox(
+                    height: SizeConfig.screenHeight * .05,
                   ),
-                  TextFormField(
-                    controller: _firstNameController,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.person),
-                      labelText: AppLocalizations.of(context)!.first_name,
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  TextFormField(
-                    controller: _lastNameController,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.person),
-                      labelText: AppLocalizations.of(context)!.last_name,
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  if (imagePicked)
-                    Column(
-                      children: <Widget>[
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                imagePicked = false;
-                              });
-                            },
-                            child: const Icon(Icons.close),
-                          ),
-                        ),
-                        Container(
-                          height: (SizeConfig.screenWidth / 3) * 2.5,
-                          // width: (SizeConfig.screenWidth/3)*1.9,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // color: Colors.orange,
-                              image: DecorationImage(
-                                  image: FileImage(_urlToImage.value),
-                                  fit: BoxFit.cover)),
-                        ),
-                      ],
-                    )
-                  else
-                    Text(AppLocalizations.of(context)!.select_photo,
-                        style: const TextStyle(
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.bold)),
-                  ElevatedButton(
-                    onPressed: () async {
-                      _urlToImage.value = await ImagePickerAndCropper()
-                          .uploadImage(_urlToImage);
-                    },
-                    child: const Icon(Icons.add_a_photo),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          agreementMessage(),
-                          style: titleMedium(context),
-                          textAlign: TextAlign.center,
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            TCFunctions().launchURL(urlToTerms);
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.terms_of_service,
-                              style: const TextStyle(
-                                fontFamily: 'Cantata One',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              )),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            TCFunctions().launchURL(urlToPrivacyPolicy);
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.privacy_policy,
-                              style: const TextStyle(
-                                  fontFamily: 'Cantata One',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18)),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  // buildSignInButtons(context, state),
+                  buildAgreementSection(context),
+                  const SizedBox(height: 30),
                   GradientButton(
                     width: 150,
                     height: 45,
@@ -260,24 +108,104 @@ class _SignupFormState extends State<SignupForm> {
                       }
                     },
                     text: Text(
-                      AppLocalizations.of(context)!.login,
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
+                      AppLocalizations.of(context)!.sign_up,
+                      style: titleMedium(context),
                     ),
-                    icon: const Icon(
-                      Icons.check,
-                      color: Colors.black,
-                    ),
+                    icon: const Icon(Icons.check, color: Colors.black),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  TextFormField buildTextFormField({
+    required TextEditingController controller,
+    required IconData icon,
+    required String labelText,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    required SignupState state,
+    required bool isValidated,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        icon: Icon(icon),
+        labelText: labelText,
+      ),
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      autocorrect: false,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (_) {
+        if (labelText == AppLocalizations.of(context)!.password) {
+          return !state.isPasswordValid
+              ? AppLocalizations.of(context)!.invalid_password
+              : null;
+        } else {
+          return !state.isEmailValid
+              ? AppLocalizations.of(context)!.invalid_email
+              : null;
+        }
+      },
+    );
+  }
+
+  Widget buildSignInButtons(BuildContext context, SignupState state) {
+    return IntrinsicWidth(
+      child: Column(
+        children: <Widget>[
+          buildGoogleSignupButton(context, state),
+          const SizedBox(height: 30),
+          buildAppleSignupButton(context, state),
+        ],
+      ),
+    );
+  }
+
+  Widget buildAppleSignupButton(BuildContext context, SignupState state) {
+    if (UserRepository().appleSignInAvailable) {
+      return SignInWithAppleButton(onPressed: () {
+        if (isAppleSignupButtonEnabled(state)) {
+          _onPressedAppleSignIn();
+        }
+      });
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget buildGoogleSignupButton(BuildContext context, SignupState state) {
+    return ElevatedButton(
+      onPressed: () {
+        if (isGoogleSignupButtonEnabled(state)) {
+          _onPressedGoogleSignIn();
+        }
+      },
+      style: ElevatedButtonTheme.of(context).style!.copyWith(
+            backgroundColor: MaterialStateProperty.all(canvasColor),
+          ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            const Image(
+              image: AssetImage(google_logo),
+              height: 20.0,
+            ),
+            Text(
+              signInWithGoogle,
+              style: titleMedium(context),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -290,36 +218,78 @@ class _SignupFormState extends State<SignupForm> {
     _signupBloc.add(SignupPasswordChanged(password: _passwordController.text));
   }
 
-  void _onFirstNameChange() {
-    _signupBloc
-        .add(SignupFirstNameChanged(firstName: _firstNameController.text));
+  void _onPressedAppleSignIn() {
+    _signupBloc.add(SignupWithApplePressed());
   }
 
-  void _onLastNameChange() {
-    _signupBloc.add(SignupLastNameChanged(lastName: _lastNameController.text));
-  }
-
-  void _onDisplayNameChange() {
-    _signupBloc.add(
-        SignupDisplayNameChanged(displayName: _displayNameController.text));
-  }
-
-  void _onImageChange() {
-    _signupBloc.add(SignupImageChanged(urlToImage: _urlToImage.value));
-    if (_urlToImage.value.path.isNotEmpty) {
-      setState(() {
-        imagePicked = true;
-      });
-    }
+  void _onPressedGoogleSignIn() {
+    _signupBloc.add(SignupWithGooglePressed());
   }
 
   void _onFormSubmitted() {
     _signupBloc.add(SignupSubmitted(
-        email: _emailController.text,
-        password: _passwordController.text,
-        displayName: _displayNameController.text,
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        urlToImage: _urlToImage.value));
+      email: _emailController.text,
+      password: _passwordController.text,
+    ));
   }
+
+  void showSnack(BuildContext context, String content, IconData? icon,
+      {bool progressIndicator = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(content),
+            if (progressIndicator) const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)) else Icon(icon),
+          ],
+        ),
+        backgroundColor: const Color(0xffffae88),
+      ),
+    );
+  }
+
+  Widget buildAgreementSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            agreementMessage(),
+            style: titleMedium(context),
+            textAlign: TextAlign.center,
+          ),
+          TextButton(
+            onPressed: () {
+              TCFunctions().launchURL(urlToTerms);
+            },
+            child: Text(AppLocalizations.of(context)!.terms_of_service,
+                style: const TextStyle(
+                    fontFamily: 'Cantata One',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18)),
+          ),
+          TextButton(
+            onPressed: () {
+              TCFunctions().launchURL(urlToPrivacyPolicy);
+            },
+            child: Text(AppLocalizations.of(context)!.privacy_policy,
+                style: const TextStyle(
+                    fontFamily: 'Cantata One',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18)),
+          )
+        ],
+      ),
+    );
+  }
+
+  bool isAppleSignupButtonEnabled(SignupState state) =>
+      !_signupBloc.state.isSubmitting;
+
+  bool isGoogleSignupButtonEnabled(SignupState state) =>
+      !_signupBloc.state.isSubmitting;
 }

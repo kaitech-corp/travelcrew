@@ -20,8 +20,6 @@ import '../../alerts/alert_dialogs.dart';
 class NotificationsCard extends StatelessWidget {
   NotificationsCard({Key? key, required this.notification}) : super(key: key);
   final NotificationData notification;
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +126,7 @@ class NotificationsCard extends StatelessWidget {
             final String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
             CloudFunction().removeNotificationData(fieldID);
-            if (!currentUserProfile.following.contains(notification.uid)) {
+            if (!currentUserProfile.userPublicProfile!.following.contains(notification.uid)) {
               TravelCrewAlertDialogs()
                   .followBackAlert(context, notification.uid);
             }

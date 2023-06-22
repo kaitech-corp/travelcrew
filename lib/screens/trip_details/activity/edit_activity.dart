@@ -26,9 +26,6 @@ class EditActivity extends StatefulWidget {
 
 class _EditActivityState extends State<EditActivity> {
 
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
-
   final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -272,13 +269,13 @@ class _EditActivityState extends State<EditActivity> {
                 const String action = 'Send notifications for edited activity';
                 CloudFunction().logEvent(action);
                 for (final String f in widget.trip.accessUsers) {
-                  if (f != currentUserProfile.uid) {
+                  if (f != userService.currentUserID) {
                     CloudFunction().addNewNotification(
                       message: message,
                       documentID: documentID,
                       type: 'Activity',
                       uidToUse: f,
-                      ownerID: currentUserProfile.uid,
+                      ownerID: userService.currentUserID,
                     );
                   }
                 }

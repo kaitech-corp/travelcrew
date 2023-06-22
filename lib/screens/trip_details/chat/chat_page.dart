@@ -29,9 +29,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late GenericBloc<ChatData, ChatRepository> bloc;
 
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
-
   final TextEditingController _chatController = TextEditingController();
 
   Future<void> clearChat(String uid) async {
@@ -112,7 +109,7 @@ class _ChatPageState extends State<ChatPage> {
                                         createStatus();
                                     _chatController.clear();
                                     final String displayName =
-                                        currentUserProfile.displayName;
+                                        currentUserProfile.userPublicProfile!.displayName;
                                     final String uid =
                                         userService.currentUserID;
                                     try {

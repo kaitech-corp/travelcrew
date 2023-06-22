@@ -49,7 +49,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   void initState() {
     endDateTimestamp.value = widget.trip.endDateTimeStamp;
     startDateTimestamp.value = widget.trip.startDateTimeStamp;
-    displayName = currentUserProfile.displayName;
+    displayName = currentUserProfile.userPublicProfile!.displayName;
     documentID = widget.trip.documentId;
     uid = userService.currentUserID;
     ispublic = widget.trip.ispublic;
@@ -258,13 +258,13 @@ class _AddNewLodgingState extends State<AddNewLodging> {
                     'Sending notifications for $documentID lodging';
                 CloudFunction().logEvent(action);
                 for (final String f in widget.trip.accessUsers) {
-                  if (f != currentUserProfile.uid) {
+                  if (f != userService.currentUserID) {
                     CloudFunction().addNewNotification(
                       message: message,
                       documentID: documentID,
                       type: 'Lodging',
                       uidToUse: f,
-                      ownerID: currentUserProfile.uid,
+                      ownerID: userService.currentUserID,
                       ispublic: ispublic,
                     );
                   }

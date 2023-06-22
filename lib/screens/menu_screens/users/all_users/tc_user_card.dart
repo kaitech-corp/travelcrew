@@ -24,8 +24,6 @@ class TCUserCard extends StatefulWidget {
 }
 
 class _TCUserCardState extends State<TCUserCard> {
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +71,7 @@ class _TCUserCardState extends State<TCUserCard> {
                 child: Align(
                     alignment: Alignment.topRight,
                     child: checkBlockList(widget.user.uid,
-                        currentUserProfile.blockedList, widget.user)),
+                        currentUserProfile.userPublicProfile!.blockedList, widget.user)),
               )
             ],
           ),

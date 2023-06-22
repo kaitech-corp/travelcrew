@@ -18,8 +18,6 @@ import '../split/split_package.dart';
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
   TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
   final TransportationData transportationData;
   final Trip trip;
 
@@ -81,7 +79,7 @@ class TransportationCard extends StatelessWidget {
   }
 
   Widget menuButton(BuildContext context) {
-    return transportationData.uid == currentUserProfile.uid
+    return transportationData.uid == userService.currentUserID
         ? PopupMenuButton<String>(
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,

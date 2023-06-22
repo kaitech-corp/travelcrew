@@ -137,19 +137,19 @@ class TripDetailsIconThemeWidget extends StatelessWidget{
 
 }
 // Icon Theme for bottom navigation
-class BottomNavIconThemeWidget extends StatelessWidget{
+// class BottomNavIconThemeWidget extends StatelessWidget{
 
-  const BottomNavIconThemeWidget({Key? key, required this.icon}) : super(key: key);
+//   const BottomNavIconThemeWidget({Key? key, required this.icon}) : super(key: key);
 
-  final IconData icon;
+//   final IconData icon;
 
-  @override
-  Widget build(BuildContext context) {
+//   @override
+//   Widget build(BuildContext context) {
 
-    return Icon(icon ,color: Theme.of(context).accentIconTheme.color);
-  }
+//     return Icon(icon ,color: Theme.of(context).accentIconTheme.color);
+//   }
 
-}
+// }
 
 
 class ChatTextStyle {

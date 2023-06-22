@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
@@ -10,23 +8,22 @@ abstract class SignupEvent extends Equatable {
 }
 
 class SignupFirstNameChanged extends SignupEvent {
-
   SignupFirstNameChanged({required this.firstName});
   final String? firstName;
 
   @override
   List<Object?> get props => <Object?>[firstName];
 }
-class SignupLastNameChanged extends SignupEvent {
 
+class SignupLastNameChanged extends SignupEvent {
   SignupLastNameChanged({required this.lastName});
   final String? lastName;
 
   @override
   List<Object?> get props => <Object?>[lastName];
 }
-class SignupDisplayNameChanged extends SignupEvent {
 
+class SignupDisplayNameChanged extends SignupEvent {
   SignupDisplayNameChanged({required this.displayName});
   final String? displayName;
 
@@ -35,15 +32,14 @@ class SignupDisplayNameChanged extends SignupEvent {
 }
 
 class SignupImageChanged extends SignupEvent {
-
-  SignupImageChanged({ required this.urlToImage});
+  SignupImageChanged({required this.urlToImage});
   final File? urlToImage;
 
   @override
   List<Object?> get props => <Object?>[urlToImage];
 }
-class SignupEmailChanged extends SignupEvent {
 
+class SignupEmailChanged extends SignupEvent {
   SignupEmailChanged({required this.email});
   final String email;
 
@@ -52,7 +48,6 @@ class SignupEmailChanged extends SignupEvent {
 }
 
 class SignupPasswordChanged extends SignupEvent {
-
   SignupPasswordChanged({required this.password});
   final String password;
 
@@ -60,9 +55,26 @@ class SignupPasswordChanged extends SignupEvent {
   List<Object> get props => <Object>[password];
 }
 
-class SignupSubmitted extends SignupEvent {
+class SignupWithApplePressed extends SignupEvent {
+  SignupWithApplePressed();
+  @override
+  List<Object> get props => <Object>[];
+}
 
-  SignupSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage, required this.email, required this.password});
+class SignupWithGooglePressed extends SignupEvent {
+  SignupWithGooglePressed();
+    @override
+  List<Object> get props => <Object>[];
+}
+
+class SignupSubmitted extends SignupEvent {
+  SignupSubmitted(
+      {this.firstName,
+      this.lastName,
+      this.displayName,
+      this.urlToImage,
+      required this.email,
+      required this.password});
   final String email;
   final String password;
   final String? firstName;
@@ -71,5 +83,6 @@ class SignupSubmitted extends SignupEvent {
   final File? urlToImage;
 
   @override
-  List<Object?> get props => <Object?>[email, password, displayName, firstName, lastName, urlToImage];
+  List<Object?> get props =>
+      <Object?>[email, password, displayName, firstName, lastName, urlToImage];
 }

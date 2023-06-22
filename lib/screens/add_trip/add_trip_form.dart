@@ -39,9 +39,6 @@ late ValueNotifier<GoogleData> googleData;
 final TextEditingController locationController = TextEditingController();
 
 class _AddTripFormState extends State<AddTripForm> {
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
-
   final ValueNotifier<String> startDate = ValueNotifier<String>('');
   final ValueNotifier<String> endDate = ValueNotifier<String>('');
   final ValueNotifier<Timestamp> startDateTimestamp =

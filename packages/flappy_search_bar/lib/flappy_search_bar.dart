@@ -11,7 +11,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'scaled_tile.dart';
 import 'search_bar_style.dart';
 
-mixin _ControllerListener<T> on State<SearchBar<T>> {
+mixin _ControllerListener<T> on State<FlappySearchBar<T>> {
   void onListChanged(List<T> items) {}
 
   void onLoading() {}
@@ -21,7 +21,7 @@ mixin _ControllerListener<T> on State<SearchBar<T>> {
   void onError(Error error) {}
 }
 
-class SearchBarController<T> {
+class FlappySearchBarController<T> {
   final List<T> _list = [];
   final List<T> _filteredList = [];
   final List<T> _sortedList = [];
@@ -128,9 +128,9 @@ class SearchBarController<T> {
 /// Signature for a function that creates [ScaledTile] for a given index.
 typedef ScaledTile IndexedScaledTileBuilder(int index);
 
-class SearchBar<T> extends StatefulWidget {
+class FlappySearchBar<T> extends StatefulWidget {
 
-  const SearchBar({
+  const FlappySearchBar({
     Key? key,
     required this.onSearch,
     required this.onItemFound,
@@ -217,7 +217,7 @@ class SearchBar<T> extends StatefulWidget {
   final VoidCallback? onCancelled;
 
   /// Controller used to be able to sort, filter or replay the search
-  final SearchBarController? searchBarController;
+  final FlappySearchBarController? searchBarController;
 
   /// Enable to edit the style of the search bar
   final SearchBarStyle searchBarStyle;
@@ -251,10 +251,10 @@ class SearchBar<T> extends StatefulWidget {
   final EdgeInsetsGeometry listPadding;
 
   @override
-  _SearchBarState createState() => _SearchBarState<T>();
+  _FlappySearchBarState createState() => _FlappySearchBarState<T>();
 }
 
-class _SearchBarState<T> extends State<SearchBar<T>>
+class _FlappySearchBarState<T> extends State<FlappySearchBar<T>>
     with TickerProviderStateMixin, _ControllerListener<T> {
   bool _loading = false;
   Widget? _error;
@@ -262,13 +262,13 @@ class _SearchBarState<T> extends State<SearchBar<T>>
   Timer? _debounce;
   bool _animate = false;
   List<T> _list = [];
-  SearchBarController? searchBarController;
+  FlappySearchBarController? searchBarController;
 
   @override
   void initState() {
     super.initState();
     searchBarController =
-        widget.searchBarController ?? SearchBarController<T>();
+        widget.searchBarController ?? FlappySearchBarController<T>();
     searchBarController?.setListener(this);
     searchBarController?.setTextController(_searchQueryController, widget.minimumChars);
   }

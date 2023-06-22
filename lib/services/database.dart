@@ -26,8 +26,7 @@ import '../../services/notifications/notifications.dart';
 UserService userService = locator<UserService>();
 NavigationService navigationService = locator<NavigationService>();
 ValueNotifier<String> urlToImage = ValueNotifier<String>('');
-UserPublicProfile currentUserProfile =
-    locator<UserProfileService>().currentUserProfileDirect();
+ProfileData currentUserProfile = locator<ProfileData>();
 
 ////Database class for all firebase api functions
 class DatabaseService {

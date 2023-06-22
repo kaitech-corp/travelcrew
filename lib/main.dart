@@ -92,6 +92,7 @@ class _TravelCrewState extends State<TravelCrew> {
               return FutureBuilder<bool>(
                 builder: (BuildContext context, AsyncSnapshot<Object?> data) {
                   if (data.data == true) {
+                    getCurrentUserProfile();
                     return const LaunchIconBadger();
                   } else if (data.data == false) {
                     return CompleteProfile(

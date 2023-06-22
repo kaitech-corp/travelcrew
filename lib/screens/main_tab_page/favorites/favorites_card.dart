@@ -16,8 +16,7 @@ import '../../alerts/alert_dialogs.dart';
 class FavoritesCard extends StatelessWidget {
   FavoritesCard({Key? key, required this.trip}) : super(key: key);
 
-  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  final Trip trip;
+final Trip trip;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,7 @@ class FavoritesCard extends StatelessWidget {
                 trailing: IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: (){
-                    final String message = Intl.message('${currentUserProfile.displayName} has requested to join your trip ${trip.tripName}.');
+                    final String message = Intl.message('${currentUserProfile.userPublicProfile!.displayName} has requested to join your trip ${trip.tripName}.');
                     const String type = 'joinRequest';
 
                     CloudFunction().addNewNotification(message: message,

@@ -24,7 +24,6 @@ import 'all_trips/all_trips_page.dart';
 import 'my_trips_tab/current_trips/current_trips_page.dart';
 import 'my_trips_tab/past_trips/past_trip_page.dart';
 
-
 /// Main screen
 class MainTabPage extends StatefulWidget {
   const MainTabPage({Key? key}) : super(key: key);
@@ -70,8 +69,6 @@ class _MainTabPageState extends State<MainTabPage> {
     });
     super.initState();
   }
-
-  
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[

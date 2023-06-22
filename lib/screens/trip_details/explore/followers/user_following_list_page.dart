@@ -24,8 +24,7 @@ class FollowingList extends StatefulWidget{
 
 class _FollowingListState extends State<FollowingList> {
 
-  UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
-  bool _showImage = false;
+bool _showImage = false;
   late String _image;
 
   @override

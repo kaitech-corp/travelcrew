@@ -29,9 +29,7 @@ class AddNewActivity extends StatefulWidget {
 }
 
 class AddNewActivityState extends State<AddNewActivity> {
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
@@ -266,7 +264,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                               comment: comment.trim(),
                               startDateTimestamp: startDateTimestamp.value,
                               endDateTimestamp: endDateTimestamp.value,
-                              displayName: currentUserProfile.displayName,
+                              displayName: currentUserProfile.userPublicProfile!.displayName,
                               endTime: endTime.value.format(context),
                               fieldID: '',
                               link: link,
@@ -284,13 +282,13 @@ class AddNewActivityState extends State<AddNewActivity> {
                           'Send notifications for edited activity';
                       CloudFunction().logEvent(action);
                       for (final String f in widget.trip.accessUsers) {
-                        if (f != currentUserProfile.uid) {
+                        if (f != userService.currentUserID) {
                           CloudFunction().addNewNotification(
                             message: message,
                             documentID: documentID,
                             type: 'Activity',
                             uidToUse: f,
-                            ownerID: currentUserProfile.uid,
+                            ownerID: userService.currentUserID,
                             ispublic: ispublic,
                           );
                         }

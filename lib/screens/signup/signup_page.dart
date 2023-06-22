@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,6 +6,7 @@ import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/widgets/curved_widget.dart';
 import '../../size_config/size_config.dart';
+
 import 'signup_form.dart';
 
 class SignupScreen extends StatelessWidget {

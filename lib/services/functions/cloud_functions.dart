@@ -5,11 +5,11 @@ import '../../models/custom_objects.dart';
 import '../../models/location_model.dart';
 
 import '../../services/locator.dart';
+import '../database.dart';
 
 class CloudFunction {
   UserService userService = locator<UserService>();
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
+
 
   Future<void> getDestinations() async {
     final HttpsCallable callable =
@@ -249,17 +249,7 @@ class CloudFunction {
     });
   }
 
-  Future<void> addItemToBringingList(
-      String tripDocID, String? item, String? type) async {
-    final HttpsCallable functionData =
-        FirebaseFunctions.instance.httpsCallable('addItemToBringingList');
-    functionData(<String, dynamic>{
-      'displayName': currentUserProfile.displayName,
-      'item': item,
-      'tripDocID': tripDocID,
-      'type': type
-    });
-  }
+
 
   Future<void> removeItemFromBringingList(
       String tripDocID, String documentID) async {
@@ -308,7 +298,7 @@ class CloudFunction {
       'documentID': documentID,
       'ispublic': ispublic,
       'ownerID': ownerID,
-      'ownerDisplayName': currentUserProfile.displayName,
+      'ownerDisplayName': currentUserProfile.userPublicProfile!.displayName,
       'type': type,
     });
   }
@@ -379,7 +369,7 @@ class CloudFunction {
         FirebaseFunctions.instance.httpsCallable('updateClicks');
     functionData(<String, dynamic>{
       'docID': docID,
-      'uid': currentUserProfile.uid,
+      'uid': userService.currentUserID,
     });
   }
 
@@ -422,7 +412,7 @@ class CloudFunction {
     functionData(<String, dynamic>{
       'mode': mode,
       'tripDocID': tripDocID,
-      'displayName': currentUserProfile.displayName,
+      'displayName': currentUserProfile.userPublicProfile!.displayName,
       'canCarpool': canCarpool,
       'carpoolingWith': carpoolingWith,
       'airline': airline,
@@ -472,11 +462,11 @@ class CloudFunction {
 
 // Log Error
   Future<void> logError(String error) async {
-    final HttpsCallable functionData =
-        FirebaseFunctions.instance.httpsCallable('logError');
-    functionData(<String, dynamic>{
-      'error': error,
-    });
+    // final HttpsCallable functionData =
+    //     FirebaseFunctions.instance.httpsCallable('logError');
+    // functionData(<String, dynamic>{
+    //   'error': error,
+    // });
   }
 
   //Disable account
