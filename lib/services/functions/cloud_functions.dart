@@ -3,13 +3,12 @@ import 'package:cloud_functions/cloud_functions.dart';
 
 
 import '../../models/location_model/location_model.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/locator.dart';
+import '../database.dart';
 
 class CloudFunction {
   UserService userService = locator<UserService>();
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
+
 
   Future<void> getDestinations() async {
     final HttpsCallable callable =
@@ -254,7 +253,7 @@ class CloudFunction {
     final HttpsCallable functionData =
         FirebaseFunctions.instance.httpsCallable('addItemToBringingList');
     functionData(<String, dynamic>{
-      'displayName': currentUserProfile.displayName,
+      'displayName': currentUserProfile.userPublicProfile!.displayName,
       'item': item,
       'tripDocID': tripDocID,
       'type': type
@@ -308,7 +307,7 @@ class CloudFunction {
       'documentID': documentID,
       'ispublic': ispublic,
       'ownerID': ownerID,
-      'ownerDisplayName': currentUserProfile.displayName,
+      'ownerDisplayName': currentUserProfile.userPublicProfile!.displayName,
       'type': type,
     });
   }
@@ -379,7 +378,7 @@ class CloudFunction {
         FirebaseFunctions.instance.httpsCallable('updateClicks');
     functionData(<String, dynamic>{
       'docID': docID,
-      'uid': currentUserProfile.uid,
+      'uid': userService.currentUserID,
     });
   }
 
@@ -422,7 +421,7 @@ class CloudFunction {
     functionData(<String, dynamic>{
       'mode': mode,
       'tripDocID': tripDocID,
-      'displayName': currentUserProfile.displayName,
+      'displayName': currentUserProfile.userPublicProfile!.displayName,
       'canCarpool': canCarpool,
       'carpoolingWith': carpoolingWith,
       'airline': airline,

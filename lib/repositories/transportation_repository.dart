@@ -23,7 +23,7 @@ class TransportationRepository extends GenericBlocRepository<TransportationModel
         QuerySnapshot<Object> snapshot) {
       try {
         final List<TransportationModel> transportList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return TransportationModel.fromJson(doc as Map<String, Object>);
+          return TransportationModel.fromJson(doc.data() as Map<String, dynamic>);
         }).toList();
 
         return transportList;

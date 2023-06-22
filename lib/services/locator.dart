@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../services/functions/cloud_functions.dart';
@@ -6,15 +8,12 @@ import '../features/Trip_Management/logic/logic.dart';
 import '../models/public_profile_model/public_profile_model.dart';
 import 'navigation/navigation_service.dart';
 
-
 GetIt locator = GetIt.instance;
 final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 
-
-
 void setupLocator() {
   locator.registerSingleton(UserService());
-  locator.registerSingleton(UserProfileService());
+  locator.registerLazySingleton(() => ProfileData());
   locator.registerLazySingleton(() => NavigationService());
 }
 
@@ -33,23 +32,31 @@ class UserService {
 }
 
 /// Provides the user profile of the current user.
-class UserProfileService {
 
-  UserService userService = locator<UserService>();
-  UserPublicProfile profile = UserPublicProfile.mock();
-
-  Future<UserPublicProfile> currentUserProfile() async {
-    try {
-      profile = await getUserProfile(userService.currentUserID);
-      
-    } catch (e) {
-      CloudFunction().logError('Error in User Public Profile service:  $e');
+Future<void> getCurrentUserProfile() async {
+  final UserService userService = locator<UserService>();
+  final ProfileData profileData = locator<ProfileData>();
+  try {
+    final DocumentSnapshot<Object?> userData =
+        await userPublicProfileCollection.doc(userService.currentUserID).get();
+    if (userData.exists) {
+      profileData.userPublicProfile =
+          UserPublicProfile.fromJson(userData.data() as Map<String, dynamic>);
     }
-    return UserPublicProfile.mock();
+  } catch (e) {
+    CloudFunction().logError('Error retrieving single user profile:  $e');
+    print('Error retrieving single user profile:  $e');
+    // return ;
   }
+}
 
-  UserPublicProfile currentUserProfileDirect(){
-    currentUserProfile().then((UserPublicProfile value) => profile = value);
-    return profile;
+class ProfileData extends ChangeNotifier {
+  UserPublicProfile? _userPublicProfile;
+
+  UserPublicProfile? get userPublicProfile => _userPublicProfile;
+
+  set userPublicProfile(UserPublicProfile? value) {
+    _userPublicProfile = value;
+    notifyListeners(); // Notify listeners when the data changes
   }
 }

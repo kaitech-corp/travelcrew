@@ -11,7 +11,6 @@ final CollectionReference<Object?> splitItemCollection =
 final CollectionReference<Object?> costDetailsCollection =
     FirebaseFirestore.instance.collection('costDetails');
 
-const String tripDocID = '';
 double calculateTotal(List<SplitObject> items) {
   double total = 0.00;
 
@@ -70,42 +69,48 @@ void deleteSplitObject(SplitObject splitObject) {
   }
 }
 
-//// Check Split Item exists
-Future<bool> checkSplitItemExist(String itemDocID) async {
-  final DocumentSnapshot<Map<String, dynamic>> ref = await splitItemCollection
-      .doc(tripDocID)
-      .collection('Item')
-      .doc(itemDocID)
-      .get();
-  if (ref.exists) {
-    return true;
-  } else {
-    return false;
+class SplitFunctions {
+  SplitFunctions(this.tripDocID);
+
+  final String tripDocID;
+  //// Check Split Item exists
+  Future<bool> checkSplitItemExist(String itemDocID) async {
+    final DocumentSnapshot<Map<String, dynamic>> ref = await splitItemCollection
+        .doc(tripDocID)
+        .collection('Item')
+        .doc(itemDocID)
+        .get();
+    if (ref.exists) {
+      return true;
+    } else {
+      return false;
+    }
   }
-}
 
 //// Stream in split item
-List<SplitObject> _splitItemDataFromSnapshot(QuerySnapshot<Object?> snapshot) {
-  try {
-    final List<SplitObject> splitItemData =
-        snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-      return SplitObject.fromJson(doc as Map<String, Object>);
-    }).toList();
+  List<SplitObject> _splitItemDataFromSnapshot(
+      QuerySnapshot<Object?> snapshot) {
+    try {
+      final List<SplitObject> splitItemData =
+          snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+        return SplitObject.fromJson(doc as Map<String, Object>);
+      }).toList();
 
-    return splitItemData;
-  } catch (e) {
-    CloudFunction().logError('Error retrieving split list:  $e');
-    return <SplitObject>[];
+      return splitItemData;
+    } catch (e) {
+      CloudFunction().logError('Error retrieving split list:  $e');
+      return <SplitObject>[];
+    }
   }
-}
 
 //// Stream in split item
-Stream<List<SplitObject>> get splitItemData {
-  return splitItemCollection
-      .doc(tripDocID)
-      .collection('Item')
-      .snapshots()
-      .map(_splitItemDataFromSnapshot);
+  Stream<List<SplitObject>> get splitItemData {
+    return splitItemCollection
+        .doc(tripDocID)
+        .collection('Item')
+        .snapshots()
+        .map(_splitItemDataFromSnapshot);
+  }
 }
 
 //// Create split item cost details

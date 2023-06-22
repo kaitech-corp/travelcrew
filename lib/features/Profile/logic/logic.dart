@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
@@ -25,7 +26,7 @@ final Query<Object?> tripCollection = FirebaseFirestore.instance
     .orderBy('endDateTimeStamp')
     .where('ispublic', isEqualTo: true);
 
-const String uid = '';
+
 
 ///Updates user info after signup
 Future<void> updateUserData(String email, String uid) async {
@@ -46,7 +47,7 @@ Future<void> saveDeviceToken() async {
     /// Get the token for this device
     final String? fcmToken = await _fcm.getToken();
     final DocumentSnapshot<Map<String, dynamic>> ref = await tokensCollection
-        .doc(uid)
+        .doc(userService.currentUserID)
         .collection('tokens')
         .doc(fcmToken)
         .get();
@@ -55,7 +56,7 @@ Future<void> saveDeviceToken() async {
     if (!ref.exists || ref.id != fcmToken) {
       if (fcmToken != null) {
         final DocumentReference<Map<String, dynamic>> tokens =
-            tokensCollection.doc(uid).collection('tokens').doc(fcmToken);
+            tokensCollection.doc(userService.currentUserID).collection('tokens').doc(fcmToken);
 
         await tokens.set(<String, dynamic>{
           'token': fcmToken,
@@ -76,7 +77,7 @@ Future<void> saveDeviceToken() async {
 ////Checks whether user has a Public Profile on Firestore to know whether to
 //// send user to complete profile page or not.
 Future<bool> checkUserHasProfile() async {
-  final DocumentReference<Object?> ref = userCollection.doc(uid);
+  final DocumentReference<Object?> ref = userCollection.doc(userService.currentUserID);
   final DocumentSnapshot<Object?> refSnapshot = await ref.get();
   if (refSnapshot.exists) {
     saveDeviceToken();
@@ -88,11 +89,10 @@ Future<bool> checkUserHasProfile() async {
 ////Retrieve profile image
 Future<String?> currentUserImage() async {
   final DocumentSnapshot<Object?> ref =
-      await userPublicProfileCollection.doc(uid).get();
+      await userPublicProfileCollection.doc(userService.currentUserID).get();
 
   if (ref.exists) {
-    return UserPublicProfile.fromJson(ref as Map<String, Object>)
-        .urlToImage;
+    return UserPublicProfile.fromJson(ref as Map<String, Object>).urlToImage;
   }
   return '';
 }
@@ -154,7 +154,8 @@ Future<void> updateUserPublicProfileData(
 //// Edit Public Profile page
 Future<void> editPublicProfileData(
     UserPublicProfile userProfile, File urlToImage) async {
-  final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
+  final DocumentReference<Object?> ref =
+      userPublicProfileCollection.doc(userProfile.uid);
   try {
     const String action = 'Editing Public Profile page';
     CloudFunction().logEvent(action);
@@ -169,6 +170,9 @@ Future<void> editPublicProfileData(
     });
   } catch (e) {
     CloudFunction().logError('Error editing public profile:  $e');
+    if (kDebugMode) {
+      print('Error Editing Profile: $e');
+    }
   }
   if (urlToImage != null) {
     String urlForImage;
@@ -178,7 +182,7 @@ Future<void> editPublicProfileData(
           'Public Profile page';
       CloudFunction().logEvent(action);
       final Reference storageReference =
-          FirebaseStorage.instance.ref().child('users/$uid');
+          FirebaseStorage.instance.ref().child('users/${userService.currentUserID}');
       final UploadTask uploadTask = storageReference.putFile(urlToImage);
 
       return await ref.update(<String, dynamic>{
@@ -259,7 +263,6 @@ Stream<UserPublicProfile> get currentUserPublicProfile {
       .map(_userPublicProfileSnapshot);
 }
 
-
 ///Query for past My Crew Trips
 List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot<Object?> snapshot) {
   try {
@@ -267,7 +270,7 @@ List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot<Object?> snapshot) {
     final DateTime past = DateTime(now.year, now.month, now.day - 1);
     final List<Trip> trips =
         snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-      return Trip.fromJson(doc as Map<String, Object>);
+      return Trip.fromJson(doc.data() as Map<String, dynamic>);
     }).toList();
     final List<Trip> crewTrips = trips
         .where((Trip trip) => trip.endDateTimeStamp!.compareTo(past) == -1)

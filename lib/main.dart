@@ -82,6 +82,7 @@ class _TravelCrewState extends State<TravelCrew> {
               builder: (BuildContext context, AuthenticationState state) {
             SizeConfig().init(context);
             if (state is AuthenticationSuccess) {
+              getCurrentUserProfile();
               return const MainPage();
             } else {
               return LoginScreen();

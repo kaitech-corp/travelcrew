@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
@@ -13,9 +12,8 @@ import '../../../services/widgets/in_app_review.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../services/widgets/time_picker.dart';
 import '../../models/activity_model/activity_model.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/trip_model/trip_model.dart';
-import '../Trip_Management/components/google_autocomplete.dart';
+import 'components/google_autocomplete.dart';
 import 'logic/logic.dart';
 
 class AddNewActivity extends StatefulWidget {
@@ -26,10 +24,9 @@ class AddNewActivity extends StatefulWidget {
   @override
   AddNewActivityState createState() => AddNewActivityState();
 }
-
+ final TextEditingController activityLocationController = TextEditingController();
 class AddNewActivityState extends State<AddNewActivity> {
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -43,7 +40,7 @@ class AddNewActivityState extends State<AddNewActivity> {
       ValueNotifier<TimeOfDay>(TimeOfDay.now());
   final ValueNotifier<TimeOfDay> endTime =
       ValueNotifier<TimeOfDay>(TimeOfDay.now());
-  final TextEditingController controller = TextEditingController();
+ 
 
   String activityType = '';
   String comment = '';
@@ -58,7 +55,7 @@ class AddNewActivityState extends State<AddNewActivity> {
   void initState() {
     startDateTimestamp.value = widget.trip.startDateTimeStamp!;
     endDateTimestamp.value = widget.trip.endDateTimeStamp!;
-    controller.clear();
+    activityLocationController.clear();
     super.initState();
   }
 
@@ -66,7 +63,7 @@ class AddNewActivityState extends State<AddNewActivity> {
   void dispose() {
     startTime.dispose();
     endTime.dispose();
-    controller.dispose();
+    activityLocationController.clear();
     super.dispose();
   }
 
@@ -91,6 +88,7 @@ class AddNewActivityState extends State<AddNewActivity> {
       decoration: formInputDecoration(labelText),
       onChanged: onChanged,
       validator: validator,
+      textCapitalization: TextCapitalization.words,
     );
   }
 
@@ -155,7 +153,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                           ),
                           const SizedBox(height: 5),
                           TextFormField(
-                            controller: controller,
+                            controller: activityLocationController,
                             decoration:
                                 formInputDecoration('Location (i.e. Address )'),
                           ),
@@ -167,7 +165,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                               child: GooglePlaces(
                                 homeScaffoldKey: homeScaffoldKey,
                                 searchScaffoldKey: searchScaffoldKey,
-                                controller: controller,
+                                controller: activityLocationController,
                               ),
                             ),
                           ),
@@ -235,10 +233,6 @@ class AddNewActivityState extends State<AddNewActivity> {
     final String message =
         'A new activity has been added to ${widget.trip.tripName}';
     final bool ispublic = widget.trip.ispublic;
-    // startDateTimestamp.value = DateTimeRetrieval()
-    //     .createNewTimestamp(startDateTimestamp.value, startTime.value);
-    // endDateTimestamp.value = DateTimeRetrieval()
-    //     .createNewTimestamp(startDateTimestamp.value, endTime.value);
     final FormState form = _formKey.currentState!;
     if (form.validate()) {
       try {
@@ -250,11 +244,11 @@ class AddNewActivityState extends State<AddNewActivity> {
                 comment: comment.trim(),
                 startDateTimestamp: startDateTimestamp.value,
                 endDateTimestamp: endDateTimestamp.value,
-                displayName: currentUserProfile.displayName,
+                displayName: currentUserProfile.userPublicProfile!.displayName,
                 endTime: endTime.value.format(context),
                 fieldID: '',
                 link: link,
-                location: controller.text,
+                location: activityLocationController.text,
                 startTime: startTime.value.format(context),
                 uid: userService.currentUserID,
                 voters: <String>[],
@@ -267,13 +261,13 @@ class AddNewActivityState extends State<AddNewActivity> {
         const String action = 'Send notifications for edited activity';
         CloudFunction().logEvent(action);
         for (final String f in widget.trip.accessUsers) {
-          if (f != currentUserProfile.uid) {
+          if (f != userService.currentUserID) {
             CloudFunction().addNewNotification(
               message: message,
               documentID: documentID,
               type: 'Activity',
               uidToUse: f,
-              ownerID: currentUserProfile.uid,
+              ownerID: userService.currentUserID,
               ispublic: ispublic,
             );
           }

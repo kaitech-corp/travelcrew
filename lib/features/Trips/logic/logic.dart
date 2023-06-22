@@ -27,19 +27,9 @@ Stream<Trip?> get singleTripData {
       .map(_tripFromSnapshot);
 }
 
-List<Trip> getCurrentPrivateTrips(List<Trip> trips, bool past) {
-  final DateTime today = DateTime.now();
-  final List<Trip> output = <Trip>[];
-  for (int i = 0; i < trips.length; i++) {
-    if (past) {
-      if (trips[i].endDateTimeStamp!.isBefore(today)) {
-        output.add(trips[i]);
-      }
-    } else {
-      if (trips[i].endDateTimeStamp!.isAfter(today)) {
-        output.add(trips[i]);
-      }
-    }
-  }
-  return output;
+List<Trip> getFilteredTrips(List<Trip> trips) {
+  final DateTime yesterday = DateTime.now().add(const Duration(days: -1));
+  return trips
+      .where((Trip trip) => trip.endDateTimeStamp!.isAfter(yesterday))
+      .toList();
 }

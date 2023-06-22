@@ -8,12 +8,11 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/map_launcher.dart';
 import '../../../services/widgets/reusable_widgets.dart';
-import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
-
 import '../../models/trip_model/trip_model.dart';
 import '../Alerts/alert_dialogs.dart';
 import 'Image_animation.dart';
+import 'components/trip_details_widget.dart';
 import 'members/members_layout.dart';
 
 /// Layout for members of trip.

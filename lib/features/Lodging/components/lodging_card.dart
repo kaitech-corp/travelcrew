@@ -14,11 +14,10 @@ import '../../../models/trip_model/trip_model.dart';
 import '../../Split/split_package.dart';
 import 'lodging_menu_button.dart';
 
-/// Lodging card
 class LodgingCard extends StatelessWidget {
+
   const LodgingCard({Key? key, required this.lodging, required this.trip})
       : super(key: key);
-
   final LodgingModel lodging;
   final Trip trip;
 
@@ -26,26 +25,19 @@ class LodgingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
-      onTap: () {
-        navigationService.navigateTo(DetailsPageRoute,
-            arguments: DetailsPageArguments(
-                type: 'Lodging', lodging: lodging, trip: trip));
-      },
+      onTap: _openDetailsPage,
       child: Container(
         margin: const EdgeInsets.only(top: 4.0, left: 16.0, right: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-             LodgingMenuButton(
-                  trip: trip,
-                  lodging: lodging,
-                ),
+            
             if (lodging.link.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: ViewAnyLink(
                   link: lodging.link,
-                  function: () => <void>{},
+                  function: () => {},
                 ),
               ),
             ListTile(
@@ -64,7 +56,7 @@ class LodgingCard extends StatelessWidget {
                   : null,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 SplitPackage().splitItemExist(
                     context,
@@ -89,27 +81,41 @@ class LodgingCard extends StatelessWidget {
                       uid: userService.currentUserID,
                       voters: lodging.voters,
                     ),
-                    onPressed: () {
-                      final String fieldID = lodging.fieldID;
-                      final String uid = userService.currentUserID;
-                      if (!lodging.voters.contains(userService.currentUserID)) {
-                        CloudFunction()
-                            .addVoterToLodging(trip.documentId, fieldID, uid);
-                      } else {
-                        CloudFunction().removeVoterFromLodging(
-                            trip.documentId, fieldID, uid);
-                      }
-                    }),
-              
+                    onPressed: _toggleFavorite),
+                    LodgingMenuButton(
+              trip: trip,
+              lodging: lodging,
+            ),
               ],
             ),
-                        Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(height: 2,color:Colors.grey[200]),
-            )
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Divider(color: Colors.grey),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _openDetailsPage() {
+    navigationService.navigateTo(
+      DetailsPageRoute,
+      arguments: DetailsPageArguments(
+        type: 'Lodging',
+        lodging: lodging,
+        trip: trip,
+      ),
+    );
+  }
+
+  void _toggleFavorite() {
+    final String fieldID = lodging.fieldID;
+    final String uid = userService.currentUserID;
+    if (!lodging.voters.contains(userService.currentUserID)) {
+      CloudFunction().addVoterToLodging(trip.documentId, fieldID, uid);
+    } else {
+      CloudFunction().removeVoterFromLodging(trip.documentId, fieldID, uid);
+    }
   }
 }

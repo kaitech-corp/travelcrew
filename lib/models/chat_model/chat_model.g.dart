@@ -14,7 +14,7 @@ _$_ChatModel _$$_ChatModelFromJson(Map<String, dynamic> json) => _$_ChatModel(
       message: json['message'] as String,
       uid: json['uid'] as String,
       tripDocID: json['tripDocID'] as String,
-      chatID: json['chatID'] as String,
+      status: Map<String, bool>.from(json['status'] as Map),
     );
 
 Map<String, dynamic> _$$_ChatModelToJson(_$_ChatModel instance) =>
@@ -26,7 +26,7 @@ Map<String, dynamic> _$$_ChatModelToJson(_$_ChatModel instance) =>
       'message': instance.message,
       'uid': instance.uid,
       'tripDocID': instance.tripDocID,
-      'chatID': instance.chatID,
+      'status': instance.status,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

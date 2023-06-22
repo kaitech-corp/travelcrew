@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/global_card.dart';
 import '../../../size_config/size_config.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/split_model/split_model.dart';
 import '../../models/transportation_model/transportation_model.dart';
 import '../../models/trip_model/trip_model.dart';
@@ -18,9 +16,8 @@ import '../Split/split_package.dart';
 
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
-  TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
+  const TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
+
   final TransportationModel transportationData;
   final Trip trip;
 
@@ -82,7 +79,7 @@ class TransportationCard extends StatelessWidget {
   }
 
   Widget menuButton(BuildContext context) {
-    return transportationData.uid == currentUserProfile.uid
+    return transportationData.uid == userService.currentUserID
         ? PopupMenuButton<String>(
             icon: const IconThemeWidget(
               icon: Icons.more_horiz,

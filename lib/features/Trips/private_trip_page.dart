@@ -48,8 +48,8 @@ class _PrivateTripsState extends State<PrivateTrips> {
         return const Loading();
       } else if (state is HasDataState) {
         final List<Trip> tripsData = state.data as List<Trip>;
-        final List<Trip> trips =
-           getCurrentPrivateTrips(tripsData, widget.past);
+        final List<Trip> trips = widget.past ? tripsData:
+           getFilteredTrips(tripsData);
         return SizeConfig.tablet
             ? SliverGridView(trips: trips, length: trips.length)
             : GroupedListTripView(

@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:nil/nil.dart';
 
 
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
-import '../../../../services/functions/cloud_functions.dart';
 import '../../../../services/navigation/route_names.dart';
 import '../../../../services/theme/text_styles.dart';
-import '../../../../services/widgets/appearance_widgets.dart';
-import '../../../../services/widgets/badge_icon.dart';
 import '../../../../size_config/size_config.dart';
-import '../../../models/chat_model/chat_model.dart';
 import '../../../models/trip_model/trip_model.dart';
-import '../../Chat/logic/logic.dart';
 import 'image_layout_trips.dart';
 
 
@@ -78,28 +72,28 @@ class CrewTripCard extends StatelessWidget {
     }
   }
 
-  Widget chatNotificationBadges(Trip trip) {
-    return StreamBuilder<List<ChatModel>>(
-      builder: (BuildContext context, AsyncSnapshot<List<ChatModel>> chats) {
-        if (chats.hasError) {
-          CloudFunction().logError('Error streaming chats for '
-              'notifications on Crew cards: ${chats.error}');
-        }
-        if (chats.hasData && chats.data!.isNotEmpty) {
-          return Tooltip(
-            message: 'New Messages',
-            child: BadgeIcon(
-              icon: const IconThemeWidget(
-                icon: Icons.chat,
-              ),
-              badgeCount: chats.data!.length,
-            ),
-          );
-        } else {
-          return nil;
-        }
-      },
-      stream: chatListNotification,
-    );
-  }
+  // Widget chatNotificationBadges(Trip trip) {
+  //   return StreamBuilder<List<ChatModel>>(
+  //     builder: (BuildContext context, AsyncSnapshot<List<ChatModel>> chats) {
+  //       if (chats.hasError) {
+  //         CloudFunction().logError('Error streaming chats for '
+  //             'notifications on Crew cards: ${chats.error}');
+  //       }
+  //       if (chats.hasData && chats.data!.isNotEmpty) {
+  //         return Tooltip(
+  //           message: 'New Messages',
+  //           child: BadgeIcon(
+  //             icon: const IconThemeWidget(
+  //               icon: Icons.chat,
+  //             ),
+  //             badgeCount: chats.data!.length,
+  //           ),
+  //         );
+  //       } else {
+  //         return nil;
+  //       }
+  //     },
+  //     stream: chatListNotification,
+  //   );
+  // }
 }

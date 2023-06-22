@@ -6,7 +6,6 @@ import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../../services/database.dart';
 import '../../services/functions/tc_functions.dart';
-import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
 import '../../size_config/size_config.dart';
 import '../constants/constants.dart';
@@ -134,7 +133,6 @@ class HangingImageTheme3 extends StatelessWidget {
     Key? key, required this.user,
   }) : super(key: key);
 
-  final UserPublicProfile currentUserProfile = locator<UserProfileService>().currentUserProfileDirect();
   final double hgt = SizeConfig.screenHeight*.06;
   final UserPublicProfile user;
 
@@ -161,11 +159,11 @@ class HangingImageTheme3 extends StatelessWidget {
                       shadowColor: const Color(0x00000000),
                       backgroundColor: const Color(0x00000000),
                       actions: <Widget>[
-                        if (currentUserProfile.uid == user.uid) IconButton(
+                        if (userService.currentUserID == user.uid) IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: (){
                             navigationService.navigateTo(EditProfilePageRoute);
-                            // Navigator.pushNamed(context, '/cropperTest');
+                           
                           },
                         ) else Container(),
                       ],

@@ -6,12 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
-import '../../../../services/locator.dart';
 import '../../../../services/navigation/route_names.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import '../../../models/notification_model/notification_model.dart';
-import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../Alerts/alert_dialogs.dart';
@@ -20,10 +18,9 @@ import '../../Trip_Management/logic/logic.dart';
 
 /// Layout for notifications
 class NotificationsCard extends StatelessWidget {
-  NotificationsCard({Key? key, required this.notification}) : super(key: key);
+  const NotificationsCard({Key? key, required this.notification}) : super(key: key);
   final NotificationModel notification;
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
+
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +122,7 @@ class NotificationsCard extends StatelessWidget {
             final String fieldID = notification.fieldID;
             CloudFunction().followUser(notification.uid);
             CloudFunction().removeNotificationData(fieldID);
-            if (!currentUserProfile.following!.contains(notification.uid)) {
+            if (!currentUserProfile.userPublicProfile!.following!.contains(notification.uid)) {
               TravelCrewAlertDialogs()
                   .followBackAlert(context, notification.uid);
             }

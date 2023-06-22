@@ -80,7 +80,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             shadowColor: const Color(0x00000000),
             backgroundColor: const Color(0x00000000),
             actions: <Widget>[
-              StreamBuilder(
+              StreamBuilder<UserPublicProfile>(
                   stream: currentUserPublicProfile,
                   builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
                     
@@ -96,7 +96,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             transitionOnUserGestures: true,
                             child: CircleAvatar(
                               radius: SizeConfig.screenWidth / 8.0,
-                              backgroundImage:NetworkImage(profile?.urlToImage ?? profileImagePlaceholder)
+                              backgroundImage:NetworkImage(profile.urlToImage ?? profileImagePlaceholder)
                                   ,
                             ),
                           ),

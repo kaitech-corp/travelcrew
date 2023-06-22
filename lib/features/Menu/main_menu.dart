@@ -6,12 +6,14 @@ import 'package:sizer/sizer.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
+import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
+import '../Profile/logic/logic.dart';
 
 final ValueNotifier<int> chatNotifier = ValueNotifier<int>(0);
 
@@ -50,28 +52,39 @@ class _MenuDrawerState extends State<MenuDrawer> {
             child: ListView(
           children: <Widget>[
             DrawerHeader(
-                child: false
-                    ? Stack(
+              child: StreamBuilder<UserPublicProfile>(
+                  stream: currentUserPublicProfile,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Object?> snapshot) {
+                    if (snapshot.hasData) {
+                      final UserPublicProfile profile =
+                          snapshot.data as UserPublicProfile;
+                      return Stack(
                         children: <Widget>[
                           Align(
                               alignment: Alignment.topLeft,
-                              child: Text('TC',
-                                  style:
-                                      headlineMedium(context),)),
+                              child: Text(
+                                'TC',
+                                style: headlineMedium(context),
+                              )),
                           Align(
                             child: CircleAvatar(
                               radius: imageSize,
-                              backgroundImage: const NetworkImage(''),
+                              backgroundImage:
+                                  NetworkImage(profile.urlToImage!),
                             ),
                           )
                         ],
-                      )
-                    : Stack(
+                      );
+                    } else {
+                      return Stack(
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Text('TC',
-                                style: headlineMedium(context),),
+                            child: Text(
+                              'TC',
+                              style: headlineMedium(context),
+                            ),
                           ),
                           Align(
                             child: CircleAvatar(
@@ -83,27 +96,27 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             ),
                           ),
                         ],
-                      )),
+                      );
+                    }
+                  }),
+            ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.people),
-              title: Text('TC Members',
-                  style: titleMedium(context)),
+              title: Text('TC Members', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(UsersRoute);
               },
             ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.info),
-              title: Text('Help & Feedback',
-                  style: titleMedium(context)),
+              title: Text('Help & Feedback', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(HelpPageRoute);
               },
             ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.settings),
-              title: Text('Settings',
-                  style: titleMedium(context)),
+              title: Text('Settings', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(SettingsRoute);
               },
@@ -112,8 +125,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ListTile(
                 leading:
                     const IconThemeWidget(icon: Icons.admin_panel_settings),
-                title:
-                    Text('Admin', style: titleMedium(context)),
+                title: Text('Admin', style: titleMedium(context)),
                 onTap: () {
                   if (userService.currentUserID.contains('XCVzgl7xIG3')) {
                     navigationService.navigateTo(AdminPageRoute);
@@ -122,8 +134,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.exit_to_app),
-              title:
-                  Text('Logout', style: titleMedium(context)),
+              title: Text('Logout', style: titleMedium(context)),
               onTap: () {
                 // locator.reset();
                 BlocProvider.of<AuthenticationBloc>(context)

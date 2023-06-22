@@ -271,7 +271,6 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
     final DocumentSnapshot<Object?> userData =
         await userPublicProfileCollection.doc(uid).get();
     if (userData.exists) {
-      // final Map<String, dynamic> data = userData.data()! as Map<String, dynamic>;
       return UserPublicProfile.fromJson(userData.data() as Map<String, dynamic>);
     }
   } catch (e) {

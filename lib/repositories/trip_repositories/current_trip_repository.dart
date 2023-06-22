@@ -18,16 +18,11 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
 
     List<Trip> currentCrewTripListFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
-        final DateTime now = DateTime.now().toUtc();
-        final DateTime past = DateTime(now.year, now.month, now.day - 2);
         final List<Trip> trips =
             snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
           return Trip.fromJson(doc.data() as Map<String, dynamic>);
         }).toList();
-        final List<Trip> crewTrips = trips
-            .where((Trip trip) => trip.endDateTimeStamp!.compareTo(past) == 1)
-            .toList();
-        return crewTrips;
+        return trips;
       } catch (e) {
         if (kDebugMode) {
           print(e);

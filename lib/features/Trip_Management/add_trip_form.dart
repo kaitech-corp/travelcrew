@@ -8,11 +8,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../blocs/add_trip_bloc/add_trip_bloc.dart';
 import '../../blocs/add_trip_bloc/add_trip_event.dart';
 import '../../blocs/add_trip_bloc/add_trip_state.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/image_picker_cropper/image_picker_cropper.dart';
-import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
@@ -36,10 +34,8 @@ final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
 final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 // late ValueNotifier<GoogleData> googleData;
 final TextEditingController locationController = TextEditingController();
-
+late ValueNotifier<GeoPoint> geopoint2;
 class _AddTripFormState extends State<AddTripForm> {
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   final ValueNotifier<String> startDate = ValueNotifier<String>('');
   final ValueNotifier<String> endDate = ValueNotifier<String>('');
@@ -71,6 +67,7 @@ class _AddTripFormState extends State<AddTripForm> {
     tripNameController.addListener(_onTripNameChange);
     travelTypeController.addListener(_onTripTypeChange);
     _urlToImage.addListener(_onTripImageChange);
+    geopoint2 = ValueNotifier<GeoPoint>(const GeoPoint(10, 10));
   }
 
   @override
@@ -275,7 +272,7 @@ class _AddTripFormState extends State<AddTripForm> {
         ispublic: ispublic,
         location: locationController.text,
         startDate: startDate.value,
-        tripGeoPoint: const GeoPoint(10, 10),
+        tripGeoPoint: geopoint2.value,
         urlToImage: _urlToImage.value,
         tripName: tripNameController.text,
         travelType: travelTypeController.text));

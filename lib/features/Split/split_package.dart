@@ -86,7 +86,7 @@ class SplitPackage {
               );
             }
           },
-          future: checkSplitItemExist(splitObject.itemDocID),
+          future: SplitFunctions(trip.documentId).checkSplitItemExist(splitObject.itemDocID),
         );
       },
     );
@@ -116,7 +116,7 @@ class SplitPackage {
               onPressed: () {});
         }
       },
-      future: checkSplitItemExist(splitObject.itemDocID),
+      future: SplitFunctions(trip.documentId).checkSplitItemExist(splitObject.itemDocID),
     );
   }
 
@@ -456,7 +456,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
         onLongPress: () {
           setState(() {
             _showImage = true;
-            _image = member?.urlToImage ?? profileImagePlaceholder;
+            _image = member.urlToImage ?? profileImagePlaceholder;
           });
         },
         onLongPressEnd: (LongPressEndDetails details) {
@@ -488,7 +488,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
               child:  Image.network(
-                      member?.urlToImage ?? profileImagePlaceholder,
+                      member.urlToImage ?? profileImagePlaceholder,
                       height: 75,
                       width: 75,
                       fit: BoxFit.fill,

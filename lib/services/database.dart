@@ -4,12 +4,10 @@ import '../../services/functions/cloud_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/navigation_service.dart';
 import '../models/member_model/member_model.dart';
-import '../models/public_profile_model/public_profile_model.dart';
 
 UserService userService = locator<UserService>();
 NavigationService navigationService = locator<NavigationService>();
-UserPublicProfile currentUserProfile =
-    locator<UserProfileService>().currentUserProfileDirect();
+final ProfileData currentUserProfile = locator<ProfileData>();
 
 ////Database class for all firebase api functions
 class DatabaseService {

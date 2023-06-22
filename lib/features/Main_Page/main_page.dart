@@ -9,7 +9,6 @@ import '../../repositories/notification_repository.dart';
 import '../../repositories/trip_repositories/current_trip_repository.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';
-import '../Feed/feed_screen.dart';
 import '../Main_Page/app_bar.dart';
 import '../Menu/main_menu.dart';
 import '../Trips/current_trips_page.dart';
@@ -25,7 +24,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
-    const FeedScreen(),
+    // const FeedScreen(),
     const HomeScreen(),
     BlocProvider<GenericBloc<Trip, CurrentTripRepository>>(
       create: (BuildContext context) =>
@@ -68,7 +67,7 @@ class _MainPageState extends State<MainPage> {
         color: ReusableThemeColor().color(context),
         items: const <Widget>[
           IconThemeWidget(icon: Icons.home),
-          IconThemeWidget(icon: Icons.add),
+          // IconThemeWidget(icon: Icons.add),
           IconThemeWidget(icon: Icons.people),
         ],
         onTap: _onItemTapped,

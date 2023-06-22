@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
 import '../../../services/widgets/time_picker.dart';
 import '../../models/activity_model/activity_model.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../Trip_Management/components/google_autocomplete.dart';
 import 'logic/logic.dart';
@@ -25,8 +23,7 @@ class EditActivity extends StatefulWidget {
 }
 
 class _EditActivityState extends State<EditActivity> {
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
+
 
   final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
@@ -243,7 +240,7 @@ class _EditActivityState extends State<EditActivity> {
         CloudFunction().logEvent(action);
         editActivityModel(
           comment: controllerComment.text,
-          displayName: displayName,
+          displayName: currentUserProfile.userPublicProfile!.displayName,
           documentID: documentID,
           link: controllerLink.text,
           activityType: controllerType.text,
@@ -262,13 +259,13 @@ class _EditActivityState extends State<EditActivity> {
         const String action = 'Send notifications for edited activity';
         CloudFunction().logEvent(action);
         for (final String f in widget.trip.accessUsers) {
-          if (f != currentUserProfile.uid) {
+          if (f != userService.currentUserID) {
             CloudFunction().addNewNotification(
               message: message,
               documentID: documentID,
               type: 'Activity',
               uidToUse: f,
-              ownerID: currentUserProfile.uid,
+              ownerID: userService.currentUserID,
             );
           }
         }

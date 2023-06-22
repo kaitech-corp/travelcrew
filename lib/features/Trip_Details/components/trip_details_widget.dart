@@ -3,13 +3,12 @@ import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 
-
-import '../../features/Alerts/alert_dialogs.dart';
-import '../../models/trip_model/trip_model.dart';
-import '../../services/functions/tc_functions.dart';
-import '../../size_config/size_config.dart';
-import '../theme/text_styles.dart';
-import 'appearance_widgets.dart';
+import '../../../models/trip_model/trip_model.dart';
+import '../../../services/functions/tc_functions.dart';
+import '../../../services/theme/text_styles.dart';
+import '../../../services/widgets/appearance_widgets.dart';
+import '../../../size_config/size_config.dart';
+import '../../Alerts/alert_dialogs.dart';
 
 class TripDetailsWidget extends StatelessWidget {
   const TripDetailsWidget({

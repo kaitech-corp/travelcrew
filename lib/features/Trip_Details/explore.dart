@@ -46,6 +46,7 @@ class _ExploreState extends State<Explore> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.trip.documentId);
     return DefaultTabController(
       length: 5,
       child: Scaffold(
@@ -89,11 +90,6 @@ class _ExploreState extends State<Explore> {
                     Icons.monetization_on,
                   ),
                 ),
-                // Tab(
-                //   icon: Icon(
-                //     Icons.flight_takeoff,
-                //   ),
-                // ),
                 Tab(
                   icon: Icon(
                     Icons.hotel,
@@ -124,15 +120,6 @@ class _ExploreState extends State<Explore> {
                   trip: widget.trip,
                 ),
               ),
-              // BlocProvider(
-              //   create: (BuildContext context) =>
-              //       GenericBloc<TransportationModel, TransportationRepository>(
-              //           repository: TransportationRepository(
-              //               tripDocID: widget.trip.documentId)),
-              //   child: TransportationPage(
-              //     trip: widget.trip,
-              //   ),
-              // ),
               BlocProvider(
                 create: (BuildContext context) =>
                     GenericBloc<LodgingModel, LodgingRepository>(

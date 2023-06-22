@@ -41,7 +41,7 @@ class UserSplitCostDetailsBottomSheet extends StatelessWidget {
         children: <Widget>[
           CircleAvatar(
             radius: SizeConfig.screenWidth / 6,
-            backgroundImage: NetworkImage(user?.urlToImage ?? profileImagePlaceholder),
+            backgroundImage: NetworkImage(user.urlToImage ?? profileImagePlaceholder),
           ),
           Text(user.displayName, style: headlineMedium(context)),
           Container(

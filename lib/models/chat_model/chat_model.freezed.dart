@@ -27,7 +27,7 @@ mixin _$ChatModel {
   String get message => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
   String get tripDocID => throw _privateConstructorUsedError;
-  String get chatID => throw _privateConstructorUsedError;
+  Map<String, bool> get status => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -47,7 +47,7 @@ abstract class $ChatModelCopyWith<$Res> {
       String message,
       String uid,
       String tripDocID,
-      String chatID});
+      Map<String, bool> status});
 }
 
 /// @nodoc
@@ -69,7 +69,7 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
     Object? message = null,
     Object? uid = null,
     Object? tripDocID = null,
-    Object? chatID = null,
+    Object? status = null,
   }) {
     return _then(_value.copyWith(
       timestamp: freezed == timestamp
@@ -96,10 +96,10 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
           ? _value.tripDocID
           : tripDocID // ignore: cast_nullable_to_non_nullable
               as String,
-      chatID: null == chatID
-          ? _value.chatID
-          : chatID // ignore: cast_nullable_to_non_nullable
-              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as Map<String, bool>,
     ) as $Val);
   }
 }
@@ -118,7 +118,7 @@ abstract class _$$_ChatModelCopyWith<$Res> implements $ChatModelCopyWith<$Res> {
       String message,
       String uid,
       String tripDocID,
-      String chatID});
+      Map<String, bool> status});
 }
 
 /// @nodoc
@@ -138,7 +138,7 @@ class __$$_ChatModelCopyWithImpl<$Res>
     Object? message = null,
     Object? uid = null,
     Object? tripDocID = null,
-    Object? chatID = null,
+    Object? status = null,
   }) {
     return _then(_$_ChatModel(
       timestamp: freezed == timestamp
@@ -165,10 +165,10 @@ class __$$_ChatModelCopyWithImpl<$Res>
           ? _value.tripDocID
           : tripDocID // ignore: cast_nullable_to_non_nullable
               as String,
-      chatID: null == chatID
-          ? _value.chatID
-          : chatID // ignore: cast_nullable_to_non_nullable
-              as String,
+      status: null == status
+          ? _value._status
+          : status // ignore: cast_nullable_to_non_nullable
+              as Map<String, bool>,
     ));
   }
 }
@@ -183,7 +183,8 @@ class _$_ChatModel implements _ChatModel {
       required this.message,
       required this.uid,
       required this.tripDocID,
-      required this.chatID});
+      required final Map<String, bool> status})
+      : _status = status;
 
   factory _$_ChatModel.fromJson(Map<String, dynamic> json) =>
       _$$_ChatModelFromJson(json);
@@ -201,12 +202,17 @@ class _$_ChatModel implements _ChatModel {
   final String uid;
   @override
   final String tripDocID;
+  final Map<String, bool> _status;
   @override
-  final String chatID;
+  Map<String, bool> get status {
+    if (_status is EqualUnmodifiableMapView) return _status;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_status);
+  }
 
   @override
   String toString() {
-    return 'ChatModel(timestamp: $timestamp, fieldID: $fieldID, displayName: $displayName, message: $message, uid: $uid, tripDocID: $tripDocID, chatID: $chatID)';
+    return 'ChatModel(timestamp: $timestamp, fieldID: $fieldID, displayName: $displayName, message: $message, uid: $uid, tripDocID: $tripDocID, status: $status)';
   }
 
   @override
@@ -223,13 +229,13 @@ class _$_ChatModel implements _ChatModel {
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.tripDocID, tripDocID) ||
                 other.tripDocID == tripDocID) &&
-            (identical(other.chatID, chatID) || other.chatID == chatID));
+            const DeepCollectionEquality().equals(other._status, _status));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, timestamp, fieldID, displayName,
-      message, uid, tripDocID, chatID);
+      message, uid, tripDocID, const DeepCollectionEquality().hash(_status));
 
   @JsonKey(ignore: true)
   @override
@@ -253,7 +259,7 @@ abstract class _ChatModel implements ChatModel {
       required final String message,
       required final String uid,
       required final String tripDocID,
-      required final String chatID}) = _$_ChatModel;
+      required final Map<String, bool> status}) = _$_ChatModel;
 
   factory _ChatModel.fromJson(Map<String, dynamic> json) =
       _$_ChatModel.fromJson;
@@ -272,7 +278,7 @@ abstract class _ChatModel implements ChatModel {
   @override
   String get tripDocID;
   @override
-  String get chatID;
+  Map<String, bool> get status;
   @override
   @JsonKey(ignore: true)
   _$$_ChatModelCopyWith<_$_ChatModel> get copyWith =>

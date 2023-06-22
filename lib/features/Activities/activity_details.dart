@@ -13,6 +13,7 @@ import '../../../services/widgets/map_launcher.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/activity_model/activity_model.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/functions/date_time_retrieval.dart';
 import '../Alerts/alert_dialogs.dart';
 import 'components/activity_menu_button.dart';
 import 'logic/logic.dart';
@@ -82,7 +83,7 @@ class ActivityModelLayout extends StatelessWidget {
                     ListTile(
                       title: Text(
                         activity.activityType,
-                        style: headlineMedium(context),
+                        style: headlineSmall(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -102,8 +103,8 @@ class ActivityModelLayout extends StatelessWidget {
                         leading: const TripDetailsIconThemeWidget(
                             icon: Icons.calendar_today),
                         title: Text(
-                          '${activity.startDateTimestamp} - '
-                          '${activity.endDateTimestamp}',
+                          DateTimeRetrieval().dateFormatter(activity.startDateTimestamp ?? DateTime(0), activity.endDateTimestamp ?? DateTime(0)),
+                      
                           style: titleMedium(context),
                         ),
                         onTap: () {

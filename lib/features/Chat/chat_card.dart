@@ -10,6 +10,7 @@ import '../../../services/functions/cloud_functions.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/chat_model/chat_model.dart';
+import '../../services/functions/date_time_retrieval.dart';
 import '../Alerts/alert_dialogs.dart';
 
 class ChatCard extends StatelessWidget {
@@ -109,7 +110,7 @@ class ChatCard extends StatelessWidget {
           Container(
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: Text(
-              message.timestamp!.hour.toString(),
+              DateTimeRetrieval().dateTimeToTimeOfDay(message.timestamp ?? DateTime(0)),
               textScaleFactor: 0.75,
               style: const TextStyle(
                 color: Colors.black,

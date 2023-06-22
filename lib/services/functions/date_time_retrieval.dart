@@ -18,4 +18,33 @@ class DateTimeRetrieval {
 
     return TimeOfDay.fromDateTime(format.parse(time));
   }
+
+    String dateTimeToTimeOfDay(DateTime date) {
+        final DateFormat timeFormat = DateFormat('h:mm a');
+    return timeFormat.format(date);
+
+  }
+String formatDateTime(DateTime date) {
+  if (date.year == DateTime.now().year &&
+      date.month == DateTime.now().month &&
+      date.day == DateTime.now().day) {
+    return 'Today';
+  } else if (date.year == DateTime.now().year &&
+      date.month == DateTime.now().month &&
+      date.day == DateTime.now().day + 1) {
+    return 'Tomorrow';
+  } else {
+    return DateFormat('MM/dd/yyyy').format(date);
+  }
+}
+
+String dateFormatter(DateTime startDate, DateTime endDate) {
+  if (startDate.year == endDate.year &&
+      startDate.month == endDate.month &&
+      startDate.day == endDate.day) {
+    return formatDateTime(startDate);
+  } else {
+    return '${formatDateTime(startDate)} - ${formatDateTime(endDate)}';
+  }
+}
 }

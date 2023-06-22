@@ -39,7 +39,7 @@ class ChatModel with _$ChatModel {
       required String message,
       required String uid,
       required String tripDocID,
-      required String chatID}) = _ChatModel;
+      required Map<String,bool> status}) = _ChatModel;
 
               factory ChatModel.fromJson(Map<String, Object?> json)
       => _$ChatModelFromJson(json);

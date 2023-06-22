@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 
 import '../../../../services/functions/cloud_functions.dart';
@@ -26,12 +27,15 @@ class LodgingRepository extends GenericBlocRepository<LodgingModel> {
     List<LodgingModel> lodgingListFromSnapshot(QuerySnapshot<Object> snapshot){
       try {
         final List<LodgingModel> lodgingList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return LodgingModel.fromJson(doc as Map<String, Object>);
+          return LodgingModel.fromJson(doc.data() as Map<String, dynamic>);
         }).toList();
         lodgingList.sort((LodgingModel a, LodgingModel b) => b.voters.length.compareTo(a.voters.length));
         return lodgingList;
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  $e');
+        if (kDebugMode) {
+          print('Error Stream lodging items: $e');
+        }
         return <LodgingModel>[];
       }
     }

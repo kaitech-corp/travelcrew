@@ -120,13 +120,13 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              OutlinedButton(
-                  onPressed: () {navigationService.navigateTo(AddActivityRoute);},
-                  child: Text(
-                    'Create Activity',
-                    style: titleMedium(context)
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  )),
+              // OutlinedButton(
+              //     onPressed: () {navigationService.navigateTo(AddActivityRoute);},
+              //     child: Text(
+              //       'Create Activity',
+              //       style: titleMedium(context)
+              //           ?.copyWith(fontWeight: FontWeight.bold),
+              //     )),
               OutlinedButton(
                   onPressed: () {
                     navigationService.navigateTo(AddNewTripRoute);
@@ -147,7 +147,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildRowWithTitle('Plan an Activity', context),
+                _buildRowWithTitle('Activity Suggestions', context),
                 Expanded(child: _buildRecommendedContentModel('activity')),
               ],
             ),
@@ -157,7 +157,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildRowWithTitle('Plan a Trip', context),
+                _buildRowWithTitle('Trip Suggestions', context),
                 Expanded(child: _buildRecommendedContentModel('trip')),
               ],
             ),

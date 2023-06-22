@@ -36,10 +36,15 @@ class ActivityCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            _buildActivityMenuButton(),
             _buildViewAnyLink(),
             _buildListTile(context),
-            _buildRow(context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                _buildRow(context),
+                _buildActivityMenuButton(),
+              ],
+            ),
             _buildDivider(),
           ],
         ),

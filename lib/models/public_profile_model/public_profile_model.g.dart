@@ -8,27 +8,27 @@ part of 'public_profile_model.dart';
 
 _$_UserPublicProfile _$$_UserPublicProfileFromJson(Map<String, dynamic> json) =>
     _$_UserPublicProfile(
-      tripsJoined: json['tripsJoined'] as int?,
-      tripsCreated: json['tripsCreated'] as int?,
-      hometown: json['hometown'] as String?,
-      instagramLink: json['instagramLink'] as String?,
-      facebookLink: json['facebookLink'] as String?,
-      topDestinations: (json['topDestinations'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      blockedList: (json['blockedList'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
       displayName: json['displayName'] as String,
       email: json['email'] as String?,
-      following: (json['following'] as List<dynamic>?)
+      facebookLink: json['facebookLink'] as String?,
+      firstName: json['firstName'] as String?,
+      hometown: json['hometown'] as String?,
+      instagramLink: json['instagramLink'] as String?,
+      lastName: json['lastName'] as String?,
+      blockedList: (json['blockedList'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
       followers: (json['followers'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      firstName: json['firstName'] as String?,
-      lastName: json['lastName'] as String?,
+      following: (json['following'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      topDestinations: (json['topDestinations'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      tripsCreated: json['tripsCreated'] as int?,
+      tripsJoined: json['tripsJoined'] as int?,
       uid: json['uid'] as String,
       urlToImage: json['urlToImage'] as String?,
     );
@@ -36,19 +36,19 @@ _$_UserPublicProfile _$$_UserPublicProfileFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$_UserPublicProfileToJson(
         _$_UserPublicProfile instance) =>
     <String, dynamic>{
-      'tripsJoined': instance.tripsJoined,
-      'tripsCreated': instance.tripsCreated,
-      'hometown': instance.hometown,
-      'instagramLink': instance.instagramLink,
-      'facebookLink': instance.facebookLink,
-      'topDestinations': instance.topDestinations,
-      'blockedList': instance.blockedList,
       'displayName': instance.displayName,
       'email': instance.email,
-      'following': instance.following,
-      'followers': instance.followers,
+      'facebookLink': instance.facebookLink,
       'firstName': instance.firstName,
+      'hometown': instance.hometown,
+      'instagramLink': instance.instagramLink,
       'lastName': instance.lastName,
+      'blockedList': instance.blockedList,
+      'followers': instance.followers,
+      'following': instance.following,
+      'topDestinations': instance.topDestinations,
+      'tripsCreated': instance.tripsCreated,
+      'tripsJoined': instance.tripsJoined,
       'uid': instance.uid,
       'urlToImage': instance.urlToImage,
     };

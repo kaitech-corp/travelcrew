@@ -6,21 +6,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../blocs/add_trip_bloc/add_trip_bloc.dart';
 import '../../blocs/add_trip_bloc/add_trip_event.dart';
 import '../../blocs/add_trip_bloc/add_trip_state.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
-import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
-import '../../services/theme/text_styles.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../services/widgets/calendar_widget.dart';
 
 import '../alerts/alert_dialogs.dart';
 import 'components/google_autocomplete.dart';
 
-// GoogleData? googleData;
-
-/// Add trip page
+/// Add new activity page
 class ActivityForm extends StatefulWidget {
   const ActivityForm({
     Key? key,
@@ -29,23 +24,23 @@ class ActivityForm extends StatefulWidget {
   @override
   State<ActivityForm> createState() => _ActivityFormState();
 }
+
 final TextEditingController locationController = TextEditingController();
+late ValueNotifier<GeoPoint> geopoint1;
 
 class _ActivityFormState extends State<ActivityForm> {
   final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
-final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 // late ValueNotifier<GoogleData> googleData;
 
-final ValueNotifier<String> startDate = ValueNotifier<String>('');
-final ValueNotifier<String> endDate = ValueNotifier<String>('');
-final ValueNotifier<DateTime> startDateTimestamp =
-    ValueNotifier<DateTime>(DateTime.now());
-final ValueNotifier<DateTime> endDateTimestamp =
-    ValueNotifier<DateTime>(DateTime.now());
-final TextEditingController commentController = TextEditingController();
+  final ValueNotifier<String> startDate = ValueNotifier<String>('');
+  final ValueNotifier<String> endDate = ValueNotifier<String>('');
+  final ValueNotifier<DateTime> startDateTimestamp =
+      ValueNotifier<DateTime>(DateTime.now());
+  final ValueNotifier<DateTime> endDateTimestamp =
+      ValueNotifier<DateTime>(DateTime.now());
+  final TextEditingController commentController = TextEditingController();
 
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   final TextEditingController tripNameController = TextEditingController();
 
@@ -63,6 +58,7 @@ final TextEditingController commentController = TextEditingController();
     super.initState();
     _addTripBloc = BlocProvider.of<AddTripBloc>(context);
     tripNameController.addListener(_onTripNameChange);
+    geopoint1 = ValueNotifier<GeoPoint>(const GeoPoint(10, 10));
   }
 
   @override
@@ -95,7 +91,7 @@ final TextEditingController commentController = TextEditingController();
                   enableInteractiveSelection: true,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.addTripNameLabel,
+                      labelText: 'Name',
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: ReusableThemeColor().colorOpposite(context)),
@@ -183,7 +179,7 @@ final TextEditingController commentController = TextEditingController();
         location: locationController.text,
         startDateTimestamp: startDateTimestamp.value,
         endDateTimestamp: startDateTimestamp.value,
-        tripGeoPoint: const GeoPoint(10, 10),
+        tripGeoPoint: geopoint1.value,
         tripName: tripNameController.text,
         comment: commentController.text,
         travelType: 'Activity'));

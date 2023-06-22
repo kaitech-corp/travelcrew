@@ -20,7 +20,7 @@ class ActivityRepository extends GenericBlocRepository<ActivityModel> {
       try {
         final List<ActivityModel> activityList =
             snapshot.docs.map((QueryDocumentSnapshot<Object> doc) {
-          return ActivityModel.fromJson(doc as Map<String,Object>);
+          return ActivityModel.fromJson(doc.data() as Map<String,dynamic>);
         }).toList();
         return activityList;
       } catch (e) {

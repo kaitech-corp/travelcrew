@@ -2,7 +2,6 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
@@ -10,12 +9,11 @@ import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/image_popup.dart';
 import '../../../services/widgets/map_launcher.dart';
 import '../../../services/widgets/reusable_widgets.dart';
-import '../../../services/widgets/trip_details_widget.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../Alerts/alert_dialogs.dart';
-
 import 'Image_animation.dart';
+import 'components/trip_details_widget.dart';
 import 'members/members_layout.dart';
 
 /// Layout for owner of trip.

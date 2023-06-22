@@ -6,7 +6,9 @@ import '../../../models/chat_model/chat_model.dart';
 import '../chat_card.dart';
 
 class GroupedListChatView extends StatelessWidget {
-  const GroupedListChatView({Key? key, required this.data, required this.documentId}) : super(key: key);
+  const GroupedListChatView(
+      {Key? key, required this.data, required this.documentId})
+      : super(key: key);
   final List<ChatModel> data;
   final String documentId;
 
@@ -15,19 +17,23 @@ class GroupedListChatView extends StatelessWidget {
     return GroupedListView<ChatModel, String>(
       elements: data,
       reverse: true,
-      groupBy: (ChatModel chat) => DateTime(
+      groupBy: (ChatModel chat) => chat.timestamp != null
+          ? DateTime(
               chat.timestamp!.year,
               chat.timestamp!.day,
               chat.timestamp!.month,
-              chat.timestamp!.hour)
-          .toString(),
+              chat.timestamp!.hour,
+            ).toString()
+          : '',
       order: GroupedListOrder.DESC,
-      itemComparator: (ChatModel a, ChatModel b) => a.timestamp!.compareTo(b.timestamp!),
+      itemComparator: (ChatModel a, ChatModel b) =>
+          (a.timestamp ?? DateTime(0)).compareTo(b.timestamp ?? DateTime(0)),
       groupSeparatorBuilder: (String chat) => Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: ChatDateDisplay(
-            dateString: chat,
-          )),
+        padding: const EdgeInsets.all(4.0),
+        child: ChatDateDisplay(
+          dateString: chat,
+        ),
+      ),
       itemBuilder: (BuildContext context, ChatModel chat) {
         return ChatCard(
           message: chat,

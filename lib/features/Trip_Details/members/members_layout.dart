@@ -114,7 +114,7 @@ class _MembersLayoutState extends State<MembersLayout> {
           onLongPress: (){
             setState(() {
               _showImage = true;
-              _image = member?.urlToImage ?? profileImagePlaceholder;
+              _image = member.urlToImage ?? profileImagePlaceholder;
             });
           },
           onLongPressEnd: (LongPressEndDetails details) {
@@ -130,7 +130,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               Center(
                 child: CircleAvatar(
                   radius: SizeConfig.blockSizeHorizontal*7,
-                  backgroundImage: NetworkImage(member?.urlToImage ?? profileImagePlaceholder),
+                  backgroundImage: NetworkImage(member.urlToImage ?? profileImagePlaceholder),
                 ),
               ),
               Expanded(

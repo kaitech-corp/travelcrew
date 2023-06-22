@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/theme/text_styles.dart';
-import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/database.dart';
 import '../alerts/alert_dialogs.dart';
 
 
 /// Basic Layout for Explore page
 class ExploreBasicLayout extends StatelessWidget {
-  ExploreBasicLayout({Key? key,
+  const ExploreBasicLayout({Key? key,
     required this.tripDetails,
   }) : super(key: key);
 
   final Trip tripDetails;
-  final UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +50,7 @@ class ExploreBasicLayout extends StatelessWidget {
                     ),
                     onPressed: () {
                       final String message =
-                          '${currentUserProfile.displayName} has requested to join your trip ${tripDetails.tripName}.';
+                          '${currentUserProfile.userPublicProfile!.displayName} has requested to join your trip ${tripDetails.tripName}.';
                       final String trip = tripDetails.documentId;
                       const String type = 'joinRequest';
                       final String ownerID = tripDetails.ownerID;

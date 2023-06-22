@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../../services/constants/constants.dart';
 import '../../../../../services/database.dart';
 import '../../../../../services/functions/cloud_functions.dart';
-import '../../../../../services/locator.dart';
 import '../../../../../services/navigation/route_names.dart';
 import '../../../../../services/theme/text_styles.dart';
 import '../../../../../services/widgets/appearance_widgets.dart';
@@ -24,8 +23,6 @@ class TCUserCard extends StatefulWidget {
 }
 
 class _TCUserCardState extends State<TCUserCard> {
-  UserPublicProfile currentUserProfile =
-      locator<UserProfileService>().currentUserProfileDirect();
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +50,11 @@ class _TCUserCardState extends State<TCUserCard> {
                         : SizeConfig.blockSizeHorizontal * 11,
                     backgroundImage: 
                         NetworkImage(
-                            widget.user?.urlToImage ?? profileImagePlaceholder,
-                          )
+  (widget.user.urlToImage != null && widget.user.urlToImage!.isNotEmpty)
+      ? widget.user.urlToImage!
+      : profileImagePlaceholder,
+)
+
                        
                   ),
                 ),
@@ -73,7 +73,7 @@ class _TCUserCardState extends State<TCUserCard> {
                 child: Align(
                     alignment: Alignment.topRight,
                     child: checkBlockList(widget.user.uid,
-                        currentUserProfile?.blockedList ?? [], widget.user)),
+                        currentUserProfile.userPublicProfile?.blockedList ?? <String>[], widget.user)),
               )
             ],
           ),

@@ -60,14 +60,11 @@ class LodgingModelLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<LodgingModel>(
-      stream:
+      stream: StreamLodging(tripDocID: trip.documentId,fieldID: fieldID).
           lodging,
       builder: (BuildContext context, AsyncSnapshot<LodgingModel?> document) {
         if (document.hasData) {
           final LodgingModel lodging = document.data!;
-          // final DateTimeModel timeModel = DateTimeModel(
-          //     startDate: lodging.startDateTimestamp.toDate(),
-          //     endDate: lodging.endDateTimestamp.toDate());
 
           final Event event = createEvent(
               lodging: lodging, startDate: lodging.startDateTimestamp!, endDate:lodging.endDateTimestamp!, type: 'Lodging');
