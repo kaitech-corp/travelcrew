@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-import '../../models/custom_objects.dart';
 import '../../models/location_model.dart';
 
 import '../../services/locator.dart';

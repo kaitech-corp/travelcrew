@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../models/custom_objects.dart';
 import '../../../models/notification_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
@@ -18,7 +16,7 @@ import '../../alerts/alert_dialogs.dart';
 
 /// Layout for notifications
 class NotificationsCard extends StatelessWidget {
-  NotificationsCard({Key? key, required this.notification}) : super(key: key);
+  const NotificationsCard({Key? key, required this.notification}) : super(key: key);
   final NotificationData notification;
 
   @override

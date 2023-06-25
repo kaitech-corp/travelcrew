@@ -40,7 +40,7 @@ class ProfileWidget extends StatelessWidget {
                         child: CircleAvatar(
                           radius: SizeConfig.screenWidth / 1.8,
                           backgroundImage: NetworkImage(
-                              user.urlToImage ?? profileImagePlaceholder),
+                              user.urlToImage.isNotEmpty ? user.urlToImage : profileImagePlaceholder),
                         ),
                       ),
                     ),
@@ -78,9 +78,9 @@ class ProfileWidget extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    if (user.hometown?.isNotEmpty ?? false)
+                                    if (user.hometown.isNotEmpty ?? false)
                                       Text(
-                                        user.hometown!,
+                                        user.hometown,
                                         style: titleMedium(context),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -139,7 +139,7 @@ class ProfileWidget extends StatelessWidget {
                                   // if (user.topDestinations?[i].isNotEmpty ?? false)
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text('${user.topDestinations?[i]}',style: titleMedium(context),),
+                                      child: Text('${user.topDestinations[i]}',style: titleMedium(context),),
                                     ),
                                 const SizedBox(height: 16),
                               ],

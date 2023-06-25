@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/activity_model.dart';
@@ -133,7 +134,7 @@ class DatabaseService {
     try {
       // TODO(Randy): change version doc for new releases
       final DocumentSnapshot<Object?> ref =
-          await versionCollection.doc('version3_1_1').get();
+          await versionCollection.doc('version3_1_2').get();
       final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
       final String version = data['version'] as String;
       if (version.isNotEmpty) {
@@ -553,6 +554,7 @@ class DatabaseService {
   //// Edit Public Profile page
   Future<void> editPublicProfileData(
       UserPublicProfile userProfile, File urlToImage) async {
+    final String key = userPublicProfileCollection.doc().id;
     final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
     try {
       const String action = 'Editing Public Profile page';
@@ -567,30 +569,31 @@ class DatabaseService {
         'topDestinations': userProfile.topDestinations,
       });
     } catch (e) {
-      CloudFunction().logError('Error editing public profile:  $e');
+      CloudFunction().logEvent('Error editing public profile:  $e');
+      if (kDebugMode) {
+        print('Error editing public profile:  $e');
+      }
     }
-    if (urlToImage != null) {
+    if (urlToImage.path != null) {
       String urlForImage;
 
       try {
         const String action = 'Saving user profile picture after editing '
             'Public Profile page';
         CloudFunction().logEvent(action);
-        final Reference storageReference =
-            FirebaseStorage.instance.ref().child('users/$uid');
-        final UploadTask uploadTask = storageReference.putFile(urlToImage);
+        final Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('users/${userService.currentUserID}/$key');
+        final TaskSnapshot uploadTask = await storageReference.putFile(urlToImage);
+        final String url = await storageReference.getDownloadURL();
 
-        return await ref.update(<String, dynamic>{
-          'urlToImage':
-              await storageReference.getDownloadURL().then((String fileURL) {
-            urlForImage = fileURL;
-            return urlForImage;
-          })
-        });
+        return await userPublicProfileCollection.doc(userService.currentUserID).update(<String, dynamic>{'urlToImage': url});
       } catch (e) {
         CloudFunction()
             .logError('Error editing Public Profile with image url:  '
                 '$e');
+        print('Error editing Public Profile with image url:  '
+            '$e');
       }
     }
   }

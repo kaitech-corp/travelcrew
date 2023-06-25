@@ -44,7 +44,7 @@ class _ViewAnyLinkState extends State<ViewAnyLink> {
 
   Future<void> loadLinkPreview() async {
     try {
-      await AnyLinkPreview.isValidLink(widget.link);
+      AnyLinkPreview.isValidLink(widget.link);
     } catch (error) {
       setState(() {
         showErrorText = true;

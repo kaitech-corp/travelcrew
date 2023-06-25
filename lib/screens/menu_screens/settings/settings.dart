@@ -282,12 +282,12 @@ class _SettingsState extends State<Settings> {
       onPressed: () {
         TCFunctions().launchURL(TC_InstagramPage);
       },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             Image(image: AssetImage(instagram_logo), height: 25.0),
             // Text(' Instagram',style: Theme.of(context).textTheme.subtitle2,)
           ],
@@ -301,12 +301,12 @@ class _SettingsState extends State<Settings> {
       onPressed: () {
         TCFunctions().launchURL(TC_FacebookPage);
       },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             Image(image: AssetImage(facebook_logo), height: 25.0),
             // Text(' Facebook',style: Theme.of(context).textTheme.subtitle2,)
           ],
@@ -320,12 +320,12 @@ class _SettingsState extends State<Settings> {
       onPressed: () {
         TCFunctions().launchURL(TC_TwitterPage);
       },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             Image(image: AssetImage(twitter_logo), height: 25.0),
             // Text(' Twitter',style: Theme.of(context).textTheme.subtitle2,)
           ],

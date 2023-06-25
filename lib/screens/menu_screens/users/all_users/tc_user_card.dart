@@ -4,7 +4,6 @@ import '../../../../models/custom_objects.dart';
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
-import '../../../../services/locator.dart';
 import '../../../../services/navigation/route_names.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';

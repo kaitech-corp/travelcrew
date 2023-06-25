@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 import '../../blocs/notification_bloc/notification_bloc.dart';
 import '../../blocs/notification_bloc/notification_event.dart';
 import '../../blocs/notification_bloc/notification_state.dart';
+import '../../models/custom_objects.dart';
 import '../../models/notification_model.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
@@ -69,25 +70,46 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 shadowColor: const Color(0x00000000),
                 backgroundColor: const Color(0x00000000),
                 actions: <Widget>[
-                  Center(
-                    child: InkWell(
-                      onTap: () {
-                        navigationService.navigateTo(ProfilePageRoute);
-                      },
-                      child: Hero(
-                        tag: userService.currentUserID,
-                        transitionOnUserGestures: true,
-                        child: CircleAvatar(
-                          radius: SizeConfig.screenWidth / 8.0,
-                          backgroundImage: urlToImage.value.isNotEmpty
-                              ? NetworkImage(
-                                  urlToImage.value,
-                                )
-                              : const NetworkImage(profileImagePlaceholder),
+                  StreamBuilder<UserPublicProfile>(
+                  stream:DatabaseService().currentUserPublicProfile,
+                  builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
+                    
+                    if (snapshot.hasData) {
+                      final UserPublicProfile profile = snapshot.data as UserPublicProfile;
+                      return Center(
+                        child: InkWell(
+                          onTap: () {
+                            navigationService.navigateTo(ProfilePageRoute);
+                          },
+                          child: Hero(
+                            tag: profile.uid,
+                            transitionOnUserGestures: true,
+                            child: CircleAvatar(
+                              radius: SizeConfig.screenWidth / 8.0,
+                              backgroundImage:NetworkImage(profile.urlToImage.isNotEmpty ? profile.urlToImage : profileImagePlaceholder)
+                                  ,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
+                      );
+                    } else{
+                      return Center(
+                        child: InkWell(
+                          onTap: () {
+                            navigationService.navigateTo(ProfilePageRoute);
+                          },
+                          child: Hero(
+                            tag: userService.currentUserID,
+                            transitionOnUserGestures: true,
+                            child: CircleAvatar(
+                              radius: SizeConfig.screenWidth / 8.0,
+                              backgroundImage: const NetworkImage(profileImagePlaceholder),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  }),
                   IconButton(
                     icon: const AppBarIconThemeWidget(icon: Icons.chat),
                     onPressed: () {

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
 import '../../../services/functions/tc_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../alerts/alert_dialogs.dart';
 
 /// Basic Layout for Explore page
 class ExploreBasicLayout extends StatelessWidget {
-  ExploreBasicLayout({Key? key,
+  const ExploreBasicLayout({Key? key,
     required this.tripDetails,
   }) : super(key: key);
 

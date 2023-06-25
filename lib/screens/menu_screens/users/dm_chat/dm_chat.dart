@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../../models/chat_model.dart';
 import '../../../../models/custom_objects.dart';
 import '../../../../services/database.dart';
-import '../../../../services/locator.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
 import 'dm_chat_list.dart';

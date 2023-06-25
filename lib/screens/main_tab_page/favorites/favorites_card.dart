@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../size_config/size_config.dart';
@@ -14,7 +12,7 @@ import '../../alerts/alert_dialogs.dart';
 
 /// Favorites card layout
 class FavoritesCard extends StatelessWidget {
-  FavoritesCard({Key? key, required this.trip}) : super(key: key);
+  const FavoritesCard({Key? key, required this.trip}) : super(key: key);
 
 final Trip trip;
 

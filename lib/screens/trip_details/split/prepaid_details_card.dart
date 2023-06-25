@@ -75,8 +75,8 @@ class PrepaidDetailsCard extends StatelessWidget {
                       padding: EdgeInsets.all(SizeConfig.defaultPadding),
                       height: SizeConfig.screenWidth * .35,
                       width: SizeConfig.screenWidth * .4,
-                      child: Column(
-                        children: const <Widget>[
+                      child: const Column(
+                        children: <Widget>[
                           Text('Name: N/A'),
                           Text(r'Paid: $0.00'),
                         ],

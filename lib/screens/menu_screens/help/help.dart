@@ -29,9 +29,9 @@ class HelpPage extends StatelessWidget{
                 children: <Widget>[
                   Text(Intl.message('About'),style: titleMedium(context),),
                   ElevatedButton(
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const <Widget>[
+                      children: <Widget>[
                         Text('Terms of Service'),
                         Icon(Icons.navigate_next),
                       ],
@@ -41,9 +41,9 @@ class HelpPage extends StatelessWidget{
                     },
                   ),
                   ElevatedButton(
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const <Widget>[
+                      children: <Widget>[
                         Text('Privacy Policy'),
                         Icon(Icons.navigate_next),
                       ],

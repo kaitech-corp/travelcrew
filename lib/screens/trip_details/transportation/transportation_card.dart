@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/custom_objects.dart';
 import '../../../models/split_model.dart';
 import '../../../models/transportation_model.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
@@ -17,7 +15,7 @@ import '../split/split_package.dart';
 
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
-  TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
+  const TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
   final TransportationData transportationData;
   final Trip trip;
 

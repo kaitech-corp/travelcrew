@@ -6,7 +6,6 @@ import '../../models/trip_model.dart';
 import '../../screens/trip_details/explore/members/members_layout.dart';
 import '../../services/database.dart';
 import '../../services/functions/tc_functions.dart';
-import '../../services/locator.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/widgets/appearance_widgets.dart';
 import '../../size_config/size_config.dart';

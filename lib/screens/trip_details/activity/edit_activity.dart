@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/activity_model.dart';
-import '../../../models/custom_objects.dart';
 import '../../../models/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
-import '../../../services/locator.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';

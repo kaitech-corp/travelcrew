@@ -30,6 +30,24 @@ class UserSignUp {
 
 ///Model for user public profile
 class UserPublicProfile {
+  factory UserPublicProfile.mock() {
+    return  UserPublicProfile(
+        tripsJoined: 0,
+        tripsCreated: 0,
+        hometown: 'hometown',
+        instagramLink: 'instagramLink',
+        facebookLink: 'facebookLink',
+        topDestinations: [],
+        blockedList: [],
+        displayName: 'displayName',
+        email: 'email',
+        following: [],
+        followers: [],
+        firstName: 'firstName',
+        lastName: 'lastName',
+        uid: 'uid',
+        urlToImage: profileImagePlaceholder);
+  }
   UserPublicProfile(
       {required this.tripsJoined,
       required this.tripsCreated,
@@ -46,6 +64,42 @@ class UserPublicProfile {
       required this.lastName,
       required this.uid,
       required this.urlToImage});
+
+  UserPublicProfile copyWith({
+    int? tripsJoined,
+    int? tripsCreated,
+    String? hometown,
+    String? instagramLink,
+    String? facebookLink,
+    List<dynamic>? topDestinations,
+    List<dynamic>? blockedList,
+    String? displayName,
+    String? email,
+    List<dynamic>? following,
+    List<dynamic>? followers,
+    String? firstName,
+    String? lastName,
+    String? uid,
+    String? urlToImage,
+  }) {
+    return UserPublicProfile(
+      tripsJoined: tripsJoined ?? this.tripsJoined,
+      tripsCreated: tripsCreated ?? this.tripsCreated,
+      hometown: hometown ?? this.hometown,
+      instagramLink: instagramLink ?? this.instagramLink,
+      facebookLink: facebookLink ?? this.facebookLink,
+      topDestinations: topDestinations ?? this.topDestinations,
+      blockedList: blockedList ?? this.blockedList,
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      following: following ?? this.following,
+      followers: followers ?? this.followers,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      uid: uid ?? this.uid,
+      urlToImage: urlToImage ?? this.urlToImage,
+    );
+  }
 
   factory UserPublicProfile.fromDocument(DocumentSnapshot<Object?> doc) {
     List<dynamic> blockedList = <String>[];

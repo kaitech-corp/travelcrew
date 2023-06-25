@@ -6,6 +6,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_event.dart';
+import '../../models/custom_objects.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
@@ -50,28 +51,39 @@ class _MenuDrawerState extends State<MenuDrawer> {
             child: ListView(
           children: <Widget>[
             DrawerHeader(
-                child: urlToImage.value.isNotEmpty
-                    ? Stack(
+              child: StreamBuilder<UserPublicProfile>(
+                  stream: DatabaseService().currentUserPublicProfile,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Object?> snapshot) {
+                    if (snapshot.hasData) {
+                      final UserPublicProfile profile =
+                          snapshot.data as UserPublicProfile;
+                      return Stack(
                         children: <Widget>[
                           Align(
                               alignment: Alignment.topLeft,
-                              child: Text('TC',
-                                  style:
-                                      headlineMedium(context),)),
+                              child: Text(
+                                'TC',
+                                style: headlineMedium(context),
+                              )),
                           Align(
                             child: CircleAvatar(
                               radius: imageSize,
-                              backgroundImage: NetworkImage(urlToImage.value),
+                              backgroundImage:
+                                  NetworkImage(profile.urlToImage!),
                             ),
                           )
                         ],
-                      )
-                    : Stack(
+                      );
+                    } else {
+                      return Stack(
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topLeft,
-                            child: Text('TC',
-                                style: headlineMedium(context),),
+                            child: Text(
+                              'TC',
+                              style: headlineMedium(context),
+                            ),
                           ),
                           Align(
                             child: CircleAvatar(
@@ -83,37 +95,27 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             ),
                           ),
                         ],
-                      )),
+                      );
+                    }
+                  }),
+            ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.people),
-              title: Text('TC Members',
-                  style: titleMedium(context)),
+              title: Text('TC Members', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(UsersRoute);
               },
             ),
             ListTile(
-              leading: const IconThemeWidget(
-                icon: Icons.message,
-              ),
-              title:
-                  Text('Chats', style: titleMedium(context)),
-              onTap: () {
-                navigationService.navigateTo(DMChatListPageRoute);
-              },
-            ),
-            ListTile(
               leading: const IconThemeWidget(icon: Icons.info),
-              title: Text('Help & Feedback',
-                  style: titleMedium(context)),
+              title: Text('Help & Feedback', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(HelpPageRoute);
               },
             ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.settings),
-              title: Text('Settings',
-                  style: titleMedium(context)),
+              title: Text('Settings', style: titleMedium(context)),
               onTap: () {
                 navigationService.navigateTo(SettingsRoute);
               },
@@ -122,27 +124,16 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ListTile(
                 leading:
                     const IconThemeWidget(icon: Icons.admin_panel_settings),
-                title:
-                    Text('Admin', style: titleMedium(context)),
+                title: Text('Admin', style: titleMedium(context)),
                 onTap: () {
                   if (userService.currentUserID.contains('XCVzgl7xIG3')) {
                     navigationService.navigateTo(AdminPageRoute);
                   }
                 },
               ),
-            // if (Platform.isIOS)
-            //   ListTile(
-            //     leading: const IconThemeWidget(icon: Icons.send),
-            //     title: Text('Invite Friends',
-            //         style: titleMedium(context)),
-            //     onTap: () {
-            //       AppInvite().sendInvite();
-            //     },
-            //   ),
             ListTile(
               leading: const IconThemeWidget(icon: Icons.exit_to_app),
-              title:
-                  Text('Logout', style: titleMedium(context)),
+              title: Text('Logout', style: titleMedium(context)),
               onTap: () {
                 // locator.reset();
                 BlocProvider.of<AuthenticationBloc>(context)

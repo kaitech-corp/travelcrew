@@ -7,7 +7,6 @@ import '../../../../models/trip_model.dart';
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
 import '../../../../services/functions/cloud_functions.dart';
-import '../../../../services/locator.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../alerts/alert_dialogs.dart';
