@@ -106,10 +106,12 @@ class _SplitPageState extends State<SplitPage> {
                               }
                             },
                             onTap: () {
-                              navigationService.navigateTo(
-                                  SplitDetailsPageRoute,
-                                  arguments: SplitDetailsArguments(
-                                      splitObject: item, trip: widget.trip));
+                              if (item.userSelectedList.length > 1) {
+                                navigationService.navigateTo(
+                                    SplitDetailsPageRoute,
+                                    arguments: SplitDetailsArguments(
+                                        splitObject: item, trip: widget.trip));
+                              }
                             },
                             child: Container(
                               height: SizeConfig.screenHeight * .1,

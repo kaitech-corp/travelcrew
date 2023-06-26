@@ -70,7 +70,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             child: CircleAvatar(
                               radius: imageSize,
                               backgroundImage:
-                                  NetworkImage(profile.urlToImage!),
+                                  NetworkImage(profile.urlToImage),
                             ),
                           )
                         ],

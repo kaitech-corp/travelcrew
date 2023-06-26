@@ -134,7 +134,7 @@ class DatabaseService {
     try {
       // TODO(Randy): change version doc for new releases
       final DocumentSnapshot<Object?> ref =
-          await versionCollection.doc('version3_1_2').get();
+          await versionCollection.doc('version3_1_3').get();
       final Map<String, dynamic> data = ref.data()! as Map<String, dynamic>;
       final String version = data['version'] as String;
       if (version.isNotEmpty) {
@@ -394,7 +394,7 @@ class DatabaseService {
 
     try {
       ref.update(<String, dynamic>{
-        'paid': costObject.paid,
+        'paid': !costObject.paid,
         'datePaid': FieldValue.serverTimestamp(),
       });
       ref2.update(<String, dynamic>{
@@ -1245,20 +1245,31 @@ class DatabaseService {
     return defaultProfile;
   }
 
-  /// get current use public profile
-  Stream<UserPublicProfile> get currentUserPublicProfile {
+  /// get current user public profile
+Stream<UserPublicProfile> get currentUserPublicProfile {
+  if (userService.currentUserID != null) {
     return userPublicProfileCollection
         .doc(userService.currentUserID)
         .snapshots()
         .map(_userPublicProfileSnapshot);
+  } else {
+    // Return an empty stream or handle the null case as per your requirement
+    return const Stream<UserPublicProfile>.empty();
   }
-
-  Stream<UserPublicProfile> get specificUserPublicProfile {
+}
+/// get specific user public profile
+Stream<UserPublicProfile> get specificUserPublicProfile {
+  if (userID != null) {
     return userPublicProfileCollection
         .doc(userID)
         .snapshots()
         .map(_userPublicProfileSnapshot);
+  } else {
+    // Return an empty stream or handle the null case as per your requirement
+    return const Stream<UserPublicProfile>.empty();
   }
+}
+
 
   ///Query for past My Crew Trips
   List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot<Object?> snapshot) {

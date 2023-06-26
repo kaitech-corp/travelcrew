@@ -31,7 +31,7 @@ class SplitDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           splitObject.itemName,
-          style: headlineMedium(context),
+          style: headlineSmall(context),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

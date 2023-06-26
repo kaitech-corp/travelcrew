@@ -102,7 +102,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           else
                             CircleAvatar(
                               radius: SizeConfig.screenWidth / 2.25,
-                              backgroundImage: NetworkImage(_user.urlToImage!),
+                              backgroundImage: NetworkImage(_user.urlToImage),
                             ),
                           ElevatedButton(
                             onPressed: () async {
@@ -181,13 +181,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               expanded: Column(
                                 children: <Widget>[
                                   _buildDestinationTextFormField(
-                                      user.topDestinations?.isNotEmpty ?? false,
+                                      user.topDestinations.isNotEmpty ?? false,
                                       0),
                                   _buildDestinationTextFormField(
-                                      (user.topDestinations?.length ?? 0) > 1,
+                                      (user.topDestinations.length ?? 0) > 1,
                                       1),
                                   _buildDestinationTextFormField(
-                                      (user.topDestinations?.length ?? 0) > 2,
+                                      (user.topDestinations.length ?? 0) > 2,
                                       2),
                                 ],
                               ),

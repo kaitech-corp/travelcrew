@@ -22,104 +22,35 @@ class SplitObject {
       required this.userSelectedList});
 
   factory SplitObject.fromDocument(DocumentSnapshot<Object?> doc) {
-    double amountRemaining = 0;
-    Timestamp dateCreated = Timestamp.now();
-    String details = '';
-    String itemDescription = '';
-    String itemDocID = '';
-    String itemName = '';
-    double itemTotal = 0;
-    String itemType = '';
-    Timestamp lastUpdated = Timestamp.now();
-    String purchasedByUID = '';
-    String tripDocID = '';
-    List<String> users = <String>[''];
-    List<String> userSelectedList = <String>[''];
-
+  dynamic getFieldValue(String fieldName, dynamic defaultValue) {
     try {
-      amountRemaining = doc.get('amountRemaining') as double;
+      return doc.get(fieldName);
     } catch (e) {
-      CloudFunction().logError('amountRemaining error: $e');
+      CloudFunction().logError('$fieldName error: $e');
+      return defaultValue;
     }
-    try {
-      dateCreated = doc.get('dateCreated') as Timestamp;
-    } catch (e) {
-      CloudFunction().logError('dateCreated error: $e');
-    }
-    try {
-      details = doc.get('details') as String;
-    } catch (e) {
-      CloudFunction().logError('details error: $e');
-    }
-    try {
-      itemName = doc.get('itemName') as String;
-    } catch (e) {
-      CloudFunction().logError('itemName error: $e');
-    }
-    try {
-      itemDescription = doc.get('itemDescription') as String;
-    } catch (e) {
-      CloudFunction().logError('itemDescription error: $e');
-    }
-    try {
-      itemDocID = doc.get('itemDocID') as String;
-    } catch (e) {
-      CloudFunction().logError('itemDocID error: $e');
-    }
-    try {
-      itemTotal = doc.get('itemTotal') as double;
-    } catch (e) {
-      CloudFunction().logError('itemTotal error: $e');
-    }
-    try {
-      itemType = doc.get('itemType') as String;
-    } catch (e) {
-      CloudFunction().logError('itemType error: $e');
-    }
-    try {
-      lastUpdated = doc.get('lastUpdated') as Timestamp;
-    } catch (e) {
-      CloudFunction().logError('lastUpdated error: $e');
-    }
-    try {
-      purchasedByUID = doc.get('purchasedByUID') as String;
-    } catch (e) {
-      CloudFunction().logError('purchasedByUID error: $e');
-    }
-    try {
-      tripDocID = doc.get('tripDocID') as String;
-    } catch (e) {
-      CloudFunction().logError('tripDocID error: $e');
-    }
-    try {
-      var x = doc.get('users') as List<dynamic>;
-      for (final element in x) 
-      {users.add(element.toString());}
-    } catch (e) {
-      CloudFunction().logError('users error: $e');
-    }
-    try {
-      var x = doc.get('userSelectedList') as List<dynamic>;
-      for (final element in x) 
-      {userSelectedList.add(element.toString());}
-    } catch (e) {
-      CloudFunction().logError('userSelectedList error: $e');
-    }
-    return SplitObject(
-        amountRemaining: amountRemaining,
-        dateCreated: dateCreated,
-        details: details,
-        itemDescription: itemDescription,
-        itemDocID: itemDocID,
-        itemName: itemName,
-        itemTotal: itemTotal,
-        itemType: itemType,
-        lastUpdated: lastUpdated,
-        purchasedByUID: purchasedByUID,
-        tripDocID: tripDocID,
-        users: users,
-        userSelectedList: userSelectedList);
   }
+
+  return SplitObject(
+    amountRemaining: getFieldValue('amountRemaining', 0.0) as double,
+    dateCreated: getFieldValue('dateCreated', Timestamp.now()) as Timestamp,
+    details: getFieldValue('details', '') as String,
+    itemDescription: getFieldValue('itemDescription', '') as String,
+    itemDocID: getFieldValue('itemDocID', '') as String,
+    itemName: getFieldValue('itemName', '') as String,
+    itemTotal: getFieldValue('itemTotal', 0.0) as double,
+    itemType: getFieldValue('itemType', '') as String,
+    lastUpdated: getFieldValue('lastUpdated', Timestamp.now()) as Timestamp,
+    purchasedByUID: getFieldValue('purchasedByUID', '') as String,
+    tripDocID: getFieldValue('tripDocID', '') as String,
+    users: (getFieldValue('users', <dynamic>[]) as List<dynamic>)
+        .map((element) => element.toString())
+        .toList(),
+    userSelectedList: (getFieldValue('userSelectedList', <dynamic>[]) as List<dynamic>)
+        .map((element) => element.toString())
+        .toList(),
+  );
+}
 
   double amountRemaining;
   Timestamp dateCreated;
