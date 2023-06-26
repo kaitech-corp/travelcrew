@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:split_costs/ui/split_item_list_screen.dart';
 
 import '../../blocs/generics/generic_bloc.dart';
 import '../../models/notification_model/notification_model.dart';
@@ -26,6 +27,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     // const FeedScreen(),
     const HomeScreen(),
+    const SplitItemListScreen(),
     BlocProvider<GenericBloc<Trip, CurrentTripRepository>>(
       create: (BuildContext context) =>
           GenericBloc<Trip, CurrentTripRepository>(
@@ -67,7 +69,7 @@ class _MainPageState extends State<MainPage> {
         color: ReusableThemeColor().color(context),
         items: const <Widget>[
           IconThemeWidget(icon: Icons.home),
-          // IconThemeWidget(icon: Icons.add),
+          IconThemeWidget(icon: Icons.monetization_on),
           IconThemeWidget(icon: Icons.people),
         ],
         onTap: _onItemTapped,

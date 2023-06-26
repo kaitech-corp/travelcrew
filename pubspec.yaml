@@ -69,7 +69,8 @@ dependencies:
   # Self Packaged
   flappy_search_bar:
     path: packages/flappy_search_bar
-
+  split_costs:
+    path: packages/split_project
   # Web
   any_link_preview: ^3.0.0
   flutter_linkify: ^6.0.0
