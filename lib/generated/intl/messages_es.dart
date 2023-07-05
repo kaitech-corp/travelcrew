@@ -13,14 +13,14 @@
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
-final MessageLookup messages = new MessageLookup();
+final messages = new MessageLookup();
 
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  final Map<String, Function> messages = _notInlinedMessages(_notInlinedMessages);
+  final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "actionCompleted":
             MessageLookupByLibrary.simpleMessage("Acción completada"),
@@ -114,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noMessage": MessageLookupByLibrary.simpleMessage("No"),
         "notificationMessage": MessageLookupByLibrary.simpleMessage(
             "Vaya a la configuración de su dispositivo para deshabilitar las notificaciones."),
+        "notifications": MessageLookupByLibrary.simpleMessage("Notificaciones"),
         "password": MessageLookupByLibrary.simpleMessage("La Contraseña"),
         "privacy_policy":
             MessageLookupByLibrary.simpleMessage("Política de privacidad"),
