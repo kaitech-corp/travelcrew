@@ -1,19 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../blocs/authentication_bloc/authentication_bloc.dart';
-import '../../blocs/authentication_bloc/authentication_event.dart';
-import '../../blocs/signup_bloc/signup_bloc.dart';
-import '../../blocs/signup_bloc/signup_event.dart';
-import '../../blocs/signup_bloc/signup_state.dart';
 import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/functions/tc_functions.dart';
 import '../../services/theme/text_styles.dart';
 import '../../size_config/size_config.dart';
+import 'bloc/Authentification/authentication_bloc.dart';
+import 'bloc/Authentification/authentication_event.dart';
+import 'bloc/Signup/signup_bloc.dart';
+import 'bloc/Signup/signup_event.dart';
+import 'bloc/Signup/signup_state.dart';
 import 'components/gradient_button.dart';
 
 class SignupForm extends StatefulWidget {
@@ -26,6 +25,7 @@ class SignupForm extends StatefulWidget {
 class _SignupFormState extends State<SignupForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _displayNameController = TextEditingController();
   late SignupBloc _signupBloc;
 
   bool isButtonEnabled(SignupState state) =>
@@ -40,12 +40,14 @@ class _SignupFormState extends State<SignupForm> {
     _signupBloc = BlocProvider.of<SignupBloc>(context);
     _emailController.addListener(_onEmailChange);
     _passwordController.addListener(_onPasswordChange);
+    _displayNameController.addListener(_onDisplayNameChange);
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _displayNameController.dispose();
     _signupBloc.close();
     super.dispose();
   }
@@ -91,6 +93,14 @@ class _SignupFormState extends State<SignupForm> {
                     obscureText: true,
                     state: state,
                     isValidated: state.isEmailValid,
+                  ),
+                   buildTextFormField(
+                    controller: _displayNameController,
+                    icon: Icons.person,
+                    labelText: AppLocalizations.of(context)!.display_name,
+                    obscureText: true,
+                    state: state,
+                    isValidated: true,
                   ),
                   SizedBox(
                     height: SizeConfig.screenHeight * .05,
@@ -217,6 +227,10 @@ class _SignupFormState extends State<SignupForm> {
     _signupBloc.add(SignupPasswordChanged(password: _passwordController.text));
   }
 
+  void _onDisplayNameChange() {
+    _signupBloc.add(SignupDisplayNameChanged(displayName: _displayNameController.text));
+  }
+
   void _onPressedAppleSignIn() {
     _signupBloc.add(SignupWithApplePressed());
   }
@@ -229,6 +243,7 @@ class _SignupFormState extends State<SignupForm> {
     _signupBloc.add(SignupSubmitted(
       email: _emailController.text,
       password: _passwordController.text,
+      displayName: _displayNameController.text
     ));
   }
 
@@ -240,11 +255,14 @@ class _SignupFormState extends State<SignupForm> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(content),
-            if (progressIndicator) const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)) else Icon(icon),
+            if (progressIndicator)
+              const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+            else
+              Icon(icon),
           ],
         ),
-        backgroundColor: const Color(0xffffae88),
+        backgroundColor: Colors.blueGrey[200],
       ),
     );
   }

@@ -100,12 +100,14 @@ Future<String?> currentUserImage() async {
 ////Updates public profile after sign up
 Future<void> updateUserPublicProfileData(
     {String? displayName,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? uid,
-    File? urlToImage}) async {
+   required String email,
+   required String uid,
+}) async {
   final DocumentReference<Object?> ref = userPublicProfileCollection.doc(uid);
+  if (displayName?.isEmpty ?? true) {
+      displayName =
+          'User${uid.substring(uid.length - 5)}';
+    }
   try {
     const String action = 'Updating public profile after sign up';
     CloudFunction().logEvent(action);
@@ -115,39 +117,15 @@ Future<void> updateUserPublicProfileData(
       'email': email,
       'followers': <String>[],
       'following': <String>[],
-      'firstName': firstName,
-      'lastName': lastName,
+      'firstName': '',
+      'lastName': '',
       'uid': uid,
       'urlToImage': '',
       'hometown': '',
-      'instagramLink': '',
-      'facebookLink': '',
       'topDestinations': <String>['', '', ''],
     });
   } catch (e) {
     CloudFunction().logError('Error creating public profile:  $e');
-  }
-  if (urlToImage != null && urlToImage.path.isNotEmpty) {
-    String urlForImage;
-
-    try {
-      const String action = 'Saving and updating User profile picture';
-      CloudFunction().logEvent(action);
-      final Reference storageReference =
-          FirebaseStorage.instance.ref().child('users/$uid');
-      final UploadTask uploadTask = storageReference.putFile(urlToImage);
-
-      return await ref.update(<String, dynamic>{
-        'urlToImage':
-            await storageReference.getDownloadURL().then((String fileURL) {
-          urlForImage = fileURL;
-          return urlForImage;
-        })
-      });
-    } catch (e) {
-      CloudFunction().logError('Error saving image for public profile:  '
-          '$e');
-    }
   }
 }
 

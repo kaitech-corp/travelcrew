@@ -23,13 +23,13 @@ class UserRepository {
         email: email, password: password);
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String email, String password, String? displayName) async {
     final UserCredential result = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     final User? user = result.user;
     await updateUserData( email, user!.uid);
     await updateUserPublicProfileData(
-         email:email, uid:user.uid);
+         email:email, uid:user.uid, displayName: displayName);
   }
 
   Future<List<dynamic>> signOut() async {
@@ -102,23 +102,5 @@ class UserRepository {
     } catch (e) {
       return null;
     }
-  }
-
-  Future<void> updateUserPublicProfile(String? firstname, String? lastName,
-      String? displayName, File? urlToImage) async {
-    final User? currentUser = _firebaseAuth.currentUser;
-    if (displayName?.isEmpty ?? true) {
-      displayName =
-          'User${currentUser?.uid.substring(currentUser.uid.length - 5)}';
-    }
-    // await updateUserData(
-    //     firstname, lastName, currentUser.email, currentUser.uid);
-  //   return updateUserPublicProfileData(
-  //       displayName,
-  //       firstname,
-  //       lastName,
-  //       currentUser.email,
-  //       currentUser.uid,
-  //       urlToImage);
   }
 }

@@ -7,6 +7,7 @@ import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
 import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions.dart';
+import '../../../services/functions/date_time_retrieval.dart';
 
 final Query<Object?> tripCollection = FirebaseFirestore.instance
     .collection('trips')
@@ -31,6 +32,10 @@ Future<void> addNewTripData(Trip trip, File? urlToImage) async {
   final DocumentReference<Object?> addTripRef = (trip.ispublic)
       ? tripsCollectionUnordered.doc(key)
       : privateTripsCollectionUnordered.doc(key);
+  final String endDate =
+      DateTimeRetrieval().formatDateTime(trip.endDateTimeStamp!);
+  final String startDate =
+      DateTimeRetrieval().formatDateTime(trip.startDateTimeStamp!);
   try {
     const String action = 'Adding new trip';
     CloudFunction().logEvent(action);
@@ -41,10 +46,12 @@ Future<void> addNewTripData(Trip trip, File? urlToImage) async {
       'dateCreatedTimeStamp': FieldValue.serverTimestamp(),
       'displayName': currentUserProfile.displayName,
       'documentId': key,
+      'endDate': endDate,
       'endDateTimeStamp': trip.endDateTimeStamp,
       'ispublic': trip.ispublic,
       'location': trip.location,
       'ownerID': userService.currentUserID,
+      'startDate': startDate,
       'startDateTimeStamp': trip.startDateTimeStamp,
       'tripName': trip.tripName,
       'tripGeoPoint': trip.tripGeoPoint,
@@ -271,7 +278,8 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
     final DocumentSnapshot<Object?> userData =
         await userPublicProfileCollection.doc(uid).get();
     if (userData.exists) {
-      return UserPublicProfile.fromJson(userData.data() as Map<String, dynamic>);
+      return UserPublicProfile.fromJson(
+          userData.data() as Map<String, dynamic>);
     }
   } catch (e) {
     CloudFunction().logError('Error retrieving single user profile:  $e');
@@ -283,37 +291,37 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
 }
 
 /// Get Trip
-  Future<Trip> getTrip(String documentID) async {
-    final DocumentSnapshot<Object?> ref =
-        await tripsCollectionUnordered.doc(documentID).get();
-    try {
-      const String action = 'Get single trip by document ID';
-      CloudFunction().logEvent(action);
-      if (ref.exists) {
-        return Trip.fromJson(ref as Map<String, Object>);
-      } else {
-        return Trip.mock();
-      }
-    } catch (e) {
-      CloudFunction().logError('Error retrieving single trip by docID:  $e');
+Future<Trip> getTrip(String documentID) async {
+  final DocumentSnapshot<Object?> ref =
+      await tripsCollectionUnordered.doc(documentID).get();
+  try {
+    const String action = 'Get single trip by document ID';
+    CloudFunction().logEvent(action);
+    if (ref.exists) {
+      return Trip.fromJson(ref as Map<String, Object>);
+    } else {
       return Trip.mock();
     }
+  } catch (e) {
+    CloudFunction().logError('Error retrieving single trip by docID:  $e');
+    return Trip.mock();
   }
+}
 
-  /// Get Private Trip
-  Future<Trip> getPrivateTrip(String documentID) async {
-    final DocumentSnapshot<Object?> ref =
-        await privateTripsCollectionUnordered.doc(documentID).get();
-    try {
-      const String action = 'Get single private trip by document ID';
-      CloudFunction().logEvent(action);
-      if (ref.exists) {
-        return Trip.fromJson(ref as Map<String, Object>);
-      } else {
-        return Trip.mock();
-      }
-    } catch (e) {
-      CloudFunction().logError('Error retrieving single private trip:  $e');
+/// Get Private Trip
+Future<Trip> getPrivateTrip(String documentID) async {
+  final DocumentSnapshot<Object?> ref =
+      await privateTripsCollectionUnordered.doc(documentID).get();
+  try {
+    const String action = 'Get single private trip by document ID';
+    CloudFunction().logEvent(action);
+    if (ref.exists) {
+      return Trip.fromJson(ref as Map<String, Object>);
+    } else {
       return Trip.mock();
     }
+  } catch (e) {
+    CloudFunction().logError('Error retrieving single private trip:  $e');
+    return Trip.mock();
   }
+}

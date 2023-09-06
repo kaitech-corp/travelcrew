@@ -63,14 +63,12 @@ class SignupWithApplePressed extends SignupEvent {}
 class SignupWithGooglePressed extends SignupEvent {}
 class SignupSubmitted extends SignupEvent {
 
-  SignupSubmitted({this.firstName, this.lastName, this.displayName, this.urlToImage, required this.email, required this.password});
+  SignupSubmitted({this.displayName, required this.email, required this.password});
   final String email;
   final String password;
-  final String? firstName;
-  final String? lastName;
   final String? displayName;
-  final File? urlToImage;
+
 
   @override
-  List<Object?> get props => <Object?>[email, password, displayName, firstName, lastName, urlToImage];
+  List<Object?> get props => <Object?>[email, password, displayName];
 }

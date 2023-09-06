@@ -59,8 +59,6 @@ class SignupState {
     bool? isPasswordValid,
     bool? imageAdded,
     bool? isDisplayNameValid,
-    bool? isFirstNameValid,
-    bool? isLastNameValid,
   }) {
     return copyWith(
       isEmailValid: isEmailValid,

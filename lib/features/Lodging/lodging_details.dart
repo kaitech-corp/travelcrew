@@ -1,7 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:nil/nil.dart';
 
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/calendar_events.dart';

@@ -11,6 +11,8 @@ class Database {
   }
 
   Future<SplitItem?> getSplitItem(String docID) async {
+    return null;
+  
     // Implementation
   }
 
@@ -24,6 +26,8 @@ class Database {
   }
 
   Future<User?> getUser(String uid) async {
+    return null;
+  
     // Implementation
   }
 
@@ -33,6 +37,8 @@ class Database {
   }
 
   Future<Payment?> getPayment(String docID) async {
+    return null;
+  
     // Implementation
   }
 }

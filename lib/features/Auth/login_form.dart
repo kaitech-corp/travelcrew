@@ -3,18 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../blocs/authentication_bloc/authentication_bloc.dart';
-import '../../blocs/authentication_bloc/authentication_event.dart';
-import '../../blocs/login_bloc/login_bloc.dart';
-import '../../blocs/login_bloc/login_event.dart';
-import '../../blocs/login_bloc/login_state.dart';
+import '../../repositories/user_repository.dart';
 import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
 
 import '../Alerts/alert_dialogs.dart';
-import 'bloc/user_repository.dart';
+
+import 'bloc/Authentification/authentication_bloc.dart';
+import 'bloc/Authentification/authentication_event.dart';
+import 'bloc/Login/login_bloc.dart';
+import 'bloc/Login/login_event.dart';
+import 'bloc/Login/login_state.dart';
 import 'components/gradient_button.dart';
 
 /// Form for login screen
@@ -101,7 +102,7 @@ class _LoginFormState extends State<LoginForm> {
             const Icon(Icons.error),
           ],
         ),
-        backgroundColor: const Color(0xffffae88),
+        backgroundColor: Colors.blueGrey[200],
       ),
     );
   }
@@ -118,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
             )
           ],
         ),
-        backgroundColor: const Color(0xffffae88),
+        backgroundColor: Colors.blueGrey[200],
       ),
     );
   }

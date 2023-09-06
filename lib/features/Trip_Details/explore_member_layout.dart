@@ -1,6 +1,7 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../services/database.dart';
 import '../../../services/navigation/route_names.dart';
@@ -236,6 +237,12 @@ class PopupMenuButtonWidget extends StatelessWidget {
                   arguments: tripDetails);
             }
             break;
+          case 'Share':
+            {
+              Share.share(
+                  'View my trip! https://travelcrew.app/tripdetails/${tripDetails.documentId}');
+            }
+            break;
           case 'Leave':
             {
               TravelCrewAlertDialogs().leaveTripAlert(
@@ -268,6 +275,13 @@ class PopupMenuButtonWidget extends StatelessWidget {
           child: ListTile(
             leading: IconThemeWidget(icon: Icons.person_add),
             title: Text('Invite'),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'Share',
+          child: ListTile(
+            leading: IconThemeWidget(icon: Icons.share),
+            title: Text('Share'),
           ),
         ),
         const PopupMenuItem<String>(
