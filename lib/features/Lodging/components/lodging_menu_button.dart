@@ -15,8 +15,7 @@ import '../../Split/split_package.dart';
 /// Lodging menu button
 class LodgingMenuButton extends StatelessWidget {
   const LodgingMenuButton(
-      {Key? key, required this.trip, required this.lodging, this.event})
-      : super(key: key);
+      {super.key, required this.trip, required this.lodging, this.event});
 
   final Trip trip;
   final LodgingModel lodging;

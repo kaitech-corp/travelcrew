@@ -16,7 +16,7 @@ import 'components/lodging_card.dart';
 
 /// Lodging page
 class LodgingPage extends StatefulWidget {
-  const LodgingPage({Key? key, required this.trip}) : super(key: key);
+  const LodgingPage({super.key, required this.trip});
 
   final Trip trip;
 

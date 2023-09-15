@@ -68,7 +68,7 @@ class StreamLodging {
   LodgingModel _lodgingFromSnapshot(DocumentSnapshot<Object?> snapshot) {
     if (snapshot.exists) {
       try {
-        return LodgingModel.fromJson(snapshot.data() as Map<String, dynamic>);
+        return LodgingModel.fromJson(snapshot.data()! as Map<String, dynamic>);
       } catch (e) {
         CloudFunction().logError('Error retrieving lodging list:  $e');
         if (kDebugMode) {

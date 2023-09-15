@@ -13,7 +13,7 @@ import 'logic/logic.dart';
 
 /// Add new lodging item
 class AddNewLodging extends StatefulWidget {
-  const AddNewLodging({Key? key, required this.trip}) : super(key: key);
+  const AddNewLodging({super.key, required this.trip});
   final Trip trip;
 
   @override

@@ -15,8 +15,7 @@ import 'logic/logic.dart';
 
 /// Edit lodging data
 class EditLodging extends StatefulWidget {
-  const EditLodging({Key? key, required this.lodging, required this.trip})
-      : super(key: key);
+  const EditLodging({super.key, required this.lodging, required this.trip});
 
   final LodgingModel lodging;
   final Trip trip;

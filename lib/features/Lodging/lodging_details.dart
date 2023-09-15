@@ -20,8 +20,7 @@ import 'logic/logic.dart';
 
 
 class LodgingDetails extends StatelessWidget {
-  const LodgingDetails({Key? key, required this.lodging, required this.trip})
-      : super(key: key);
+  const LodgingDetails({super.key, required this.lodging, required this.trip});
   final LodgingModel lodging;
   final Trip trip;
   @override
@@ -49,10 +48,10 @@ class LodgingDetails extends StatelessWidget {
 
 class LodgingModelLayout extends StatelessWidget {
   const LodgingModelLayout({
-    Key? key,
+    super.key,
     required this.fieldID,
     required this.trip,
-  }) : super(key: key);
+  });
 
   final String fieldID;
   final Trip trip;

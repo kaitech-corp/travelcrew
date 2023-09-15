@@ -16,8 +16,7 @@ import 'lodging_menu_button.dart';
 
 class LodgingCard extends StatelessWidget {
 
-  const LodgingCard({Key? key, required this.lodging, required this.trip})
-      : super(key: key);
+  const LodgingCard({super.key, required this.lodging, required this.trip});
   final LodgingModel lodging;
   final Trip trip;
 
