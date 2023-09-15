@@ -9,7 +9,7 @@ import '../../models/transportation_model/transportation_model.dart';
 
 /// Edit transportation data
 class EditTransportation extends StatefulWidget {
-  const EditTransportation({Key? key, required this.transportationData}) : super(key: key);
+  const EditTransportation({super.key, required this.transportationData});
   final TransportationModel transportationData;
 
   @override

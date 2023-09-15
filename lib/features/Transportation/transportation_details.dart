@@ -5,7 +5,7 @@ import '../../models/transportation_model/transportation_model.dart';
 
 class TransportationDetails extends StatelessWidget{
 
-  const TransportationDetails({Key? key, required this.transport}) : super(key: key);
+  const TransportationDetails({super.key, required this.transport});
   final TransportationModel transport;
 
 

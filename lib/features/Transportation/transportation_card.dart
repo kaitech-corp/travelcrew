@@ -16,7 +16,7 @@ import '../Split/split_package.dart';
 
 ///Transportation card to display details
 class TransportationCard extends StatelessWidget {
-  const TransportationCard({Key? key, required this.transportationData, required this.trip}) : super(key: key);
+  const TransportationCard({super.key, required this.transportationData, required this.trip});
 
   final TransportationModel transportationData;
   final Trip trip;

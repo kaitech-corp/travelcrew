@@ -11,7 +11,7 @@ import '../../models/trip_model/trip_model.dart';
 
 /// Add new mode of Transportation
 class AddNewModeOfTransport extends StatefulWidget {
-  const AddNewModeOfTransport({Key? key, required this.trip}) : super(key: key);
+  const AddNewModeOfTransport({super.key, required this.trip});
   final Trip trip;
 
   @override

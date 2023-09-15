@@ -18,7 +18,7 @@ import 'transportation_card.dart';
 
 /// Transportation page
 class TransportationPage extends StatefulWidget {
-  const TransportationPage({Key? key, required this.trip}) : super(key: key);
+  const TransportationPage({super.key, required this.trip});
   final Trip trip;
 
   @override
