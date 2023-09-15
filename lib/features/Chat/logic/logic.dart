@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../models/chat_model/chat_model.dart';
 import '../../../services/database.dart';
@@ -7,15 +8,12 @@ import '../../../services/functions/cloud_functions.dart';
 final CollectionReference<Object?> chatCollection =
     FirebaseFirestore.instance.collection('chat');
 
-
-
 /// Add new chat message
 Future<void> addNewChatMessage(String tripDocID, String displayName,
     String message, String uid, Map<String, bool> status) async {
   final String key = chatCollection.doc().id;
 
   try {
-    print(tripDocID);
     return await chatCollection
         .doc(tripDocID)
         .collection('messages')
@@ -31,7 +29,9 @@ Future<void> addNewChatMessage(String tripDocID, String displayName,
     });
   } catch (e) {
     CloudFunction().logError('Error writing new chat:  $e');
-    print('Error saving message: $e');
+    if (kDebugMode) {
+      print('Error saving message: $e');
+    }
   }
 }
 
@@ -48,7 +48,8 @@ Future<void> clearChatNotifications(String tripDocID) async {
           .doc(tripDocID)
           .collection('messages')
           .doc(snapshot.docs[i].id)
-          .update(<String, dynamic>{'status.${userService.currentUserID}': true});
+          .update(
+              <String, dynamic>{'status.${userService.currentUserID}': true});
     }
   } catch (e) {
     CloudFunction().logError('Error clearing chat notifications:  $e');
@@ -67,16 +68,17 @@ List<ChatModel> _chatListFromSnapshot(QuerySnapshot<Object?> snapshot) {
   }
 }
 
-  // Stream<List<ChatModel>>? get chatListNotification {
-  //   try {
-  //     return chatCollection
-  //         .doc(tripDocID)
-  //         .collection('messages')
-  //         .where('status.${userService.currentUserID}', isEqualTo: false)
-  //         .snapshots()
-  //         .map(_chatListFromSnapshot);
-  //   } catch (e) {
-  //     CloudFunction().logError('Error retrieving chat list notifications:  $e');
-  //     return null;
-  //   }
-  // }
+Stream<List<ChatModel>>? get chatListNotification {
+  const String tripDocID = '';
+  try {
+    return chatCollection
+        .doc(tripDocID)
+        .collection('messages')
+        .where('status.${userService.currentUserID}', isEqualTo: false)
+        .snapshots()
+        .map(_chatListFromSnapshot);
+  } catch (e) {
+    CloudFunction().logError('Error retrieving chat list notifications:  $e');
+    return null;
+  }
+}

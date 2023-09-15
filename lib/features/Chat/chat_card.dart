@@ -15,10 +15,10 @@ import '../Alerts/alert_dialogs.dart';
 
 class ChatCard extends StatelessWidget {
   const ChatCard({
-    Key? key,
+    super.key,
     required this.message,
     required this.tripDocID,
-  }) : super(key: key);
+  });
 
   final ChatModel message;
   final String tripDocID;

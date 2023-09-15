@@ -7,8 +7,7 @@ import '../chat_card.dart';
 
 class GroupedListChatView extends StatelessWidget {
   const GroupedListChatView(
-      {Key? key, required this.data, required this.documentId})
-      : super(key: key);
+      {super.key, required this.data, required this.documentId});
   final List<ChatModel> data;
   final String documentId;
 

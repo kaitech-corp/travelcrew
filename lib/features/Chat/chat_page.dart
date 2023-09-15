@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +17,7 @@ import '../Chat/components/grouped_list_chat_builder.dart';
 import '../Chat/logic/logic.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key, required this.trip}) : super(key: key);
+  const ChatPage({super.key, required this.trip});
 
   final Trip trip;
 
@@ -100,7 +101,9 @@ class _ChatPageState extends State<ChatPage> {
                           } catch (e) {
                             CloudFunction().logError(
                                 'Error saving chat message (Chat.dart):  $e');
-                            print('Error saving message: $e');
+                            if (kDebugMode) {
+                              print('Error saving message: $e');
+                            }
                           }
                         }
                       },
