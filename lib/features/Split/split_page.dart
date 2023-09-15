@@ -20,9 +20,9 @@ import 'split_package.dart';
 /// Split Page
 class SplitPage extends StatefulWidget {
   const SplitPage({
-    Key? key,
+    super.key,
     required this.trip,
-  }) : super(key: key);
+  });
   final Trip trip;
 
   @override

@@ -8,11 +8,11 @@ import '../../../models/split_model/split_model.dart';
 /// Payment details menu button
 class PaymentDetailsMenuButton extends StatelessWidget {
   const PaymentDetailsMenuButton({
-    Key? key,
+    super.key,
     required this.costObject,
     required this.splitObject,
 
-  }) : super(key: key);
+  });
 
   final CostObjectModel costObject;
   final SplitObject splitObject;

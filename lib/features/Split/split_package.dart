@@ -356,8 +356,7 @@ class SplitPackage {
 }
 
 class SplitMembersLayout extends StatefulWidget {
-  const SplitMembersLayout({Key? key, required this.trip, this.ownerID})
-      : super(key: key);
+  const SplitMembersLayout({super.key, required this.trip, this.ownerID});
   final Trip trip;
   final String? ownerID;
 

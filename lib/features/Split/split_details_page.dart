@@ -19,8 +19,7 @@ import 'split_package.dart';
 /// Details page for split items
 class SplitDetailsPage extends StatelessWidget {
   const SplitDetailsPage(
-      {Key? key, required this.splitObject, required this.trip})
-      : super(key: key);
+      {super.key, required this.splitObject, required this.trip});
   final SplitObject splitObject;
   final Trip trip;
 
@@ -43,7 +42,7 @@ class SplitDetailsPage extends StatelessWidget {
               builder: (BuildContext context, snapshot2) {
                 if (snapshot1.hasData && snapshot2.hasData) {
                   final List<CostObjectModel> userCostData =
-                      snapshot1.data! as List<CostObjectModel>;
+                      snapshot1.data!;
                   final List<String> uidList = <String>[];
                   for (final CostObjectModel element in userCostData) {
                     if (!uidList.contains(element.uid)) {
@@ -60,7 +59,7 @@ class SplitDetailsPage extends StatelessWidget {
                         splitObject, amountRemaining, uidList);
                   }
                   final List<UserPublicProfile> userPublicData =
-                      snapshot2.data! as List<UserPublicProfile>;
+                      snapshot2.data!;
                   return ListView.builder(
                       itemCount: userCostData.length,
                       itemBuilder: (BuildContext context, int index) {

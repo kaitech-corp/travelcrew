@@ -119,7 +119,7 @@ class SplitFunctions {
     try {
       final List<CostObjectModel> costObjectData =
           snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-        return CostObjectModel.fromJson(doc.data() as Map<String, dynamic>);
+        return CostObjectModel.fromJson(doc.data()! as Map<String, dynamic>);
       }).toList();
 
       return costObjectData;
