@@ -10,11 +10,10 @@ import '../add_new_activity.dart';
 /// Google places API
 class GooglePlaces extends StatefulWidget {
   const GooglePlaces(
-      {Key? key,
+      {super.key,
       required this.homeScaffoldKey,
       required this.searchScaffoldKey,
-      required this.controller})
-      : super(key: key);
+      required this.controller});
 
   final GlobalKey<ScaffoldState> homeScaffoldKey;
   final GlobalKey<ScaffoldState> searchScaffoldKey;
