@@ -17,7 +17,7 @@ import 'image_layout_trips.dart';
 /// Sliver Grid View for all trips
 class SliverGridView extends StatelessWidget {
 
-  const SliverGridView({Key? key, required this.trips, required this.length}) : super(key: key);
+  const SliverGridView({super.key, required this.trips, required this.length});
   final List<Trip> trips;
   final int length;
 
@@ -51,7 +51,7 @@ class SliverGridView extends StatelessWidget {
 
 class TappableCrewTripGrid extends StatelessWidget {
 
-  const TappableCrewTripGrid({Key? key, required this.trip,}) : super(key: key);
+  const TappableCrewTripGrid({super.key, required this.trip,});
   final Trip trip;
 
   @override

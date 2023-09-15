@@ -16,7 +16,7 @@ import 'logic/logic.dart';
 
 /// Private trips
 class PrivateTrips extends StatefulWidget {
-  const PrivateTrips({Key? key, required this.past}) : super(key: key);
+  const PrivateTrips({super.key, required this.past});
 
   final bool past;
 

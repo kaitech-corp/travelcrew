@@ -21,7 +21,7 @@ import '../../Split/logic/split_functions.dart';
 /// Layout list for members of trip
 class MembersLayout extends StatefulWidget{
 
-  const MembersLayout({Key? key, required this.trip, required this.ownerID}) : super(key: key);
+  const MembersLayout({super.key, required this.trip, required this.ownerID});
 
   final Trip trip;
   final String ownerID;

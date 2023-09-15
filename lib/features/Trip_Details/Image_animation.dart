@@ -28,8 +28,7 @@ class CustomShape2 extends CustomClipper<Path> {
 
 class CustomHangingImage extends StatelessWidget {
   const CustomHangingImage(
-      {Key? key, required this.urlToImage, required this.height})
-      : super(key: key);
+      {super.key, required this.urlToImage, required this.height});
 
   final String urlToImage;
   final double height;
@@ -51,10 +50,10 @@ class CustomHangingImage extends StatelessWidget {
 
 class ImageAnimation extends StatefulWidget {
   const ImageAnimation({
-    Key? key,
+    super.key,
     required this.trip,
     required this.expandController,
-  }) : super(key: key);
+  });
   final Trip trip;
   final ExpandableController expandController;
 

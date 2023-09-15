@@ -17,7 +17,7 @@ import 'private_trip_page.dart';
 
 /// Past Trips
 class PastTrips extends StatefulWidget {
-  const PastTrips({Key? key}) : super(key: key);
+  const PastTrips({super.key});
 
   @override
   State<PastTrips> createState() => _PastTripsState();

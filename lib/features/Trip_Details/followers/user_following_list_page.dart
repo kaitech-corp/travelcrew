@@ -15,7 +15,7 @@ import '../../Trip_Management/logic/logic.dart';
 
 /// Following list
 class FollowingList extends StatefulWidget {
-  const FollowingList({Key? key, required this.trip}) : super(key: key);
+  const FollowingList({super.key, required this.trip});
 
   final Trip trip;
 

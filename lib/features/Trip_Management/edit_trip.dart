@@ -19,7 +19,7 @@ import 'logic/logic.dart';
 
 /// Edit trip page
 class EditTripData extends StatefulWidget {
-  const EditTripData({Key? key, required this.trip}) : super(key: key);
+  const EditTripData({super.key, required this.trip});
   final Trip trip;
   @override
   EditTripDataState createState() => EditTripDataState();

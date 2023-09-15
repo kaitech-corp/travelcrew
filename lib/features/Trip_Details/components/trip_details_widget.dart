@@ -12,10 +12,10 @@ import '../../Alerts/alert_dialogs.dart';
 
 class TripDetailsWidget extends StatelessWidget {
   const TripDetailsWidget({
-    Key? key,
+    super.key,
     required this.expandController,
     required this.tripDetails, required this.detailsPadding, required this.event,
-  }) : super(key: key);
+  });
 
   final ExpandableController expandController;
   final Trip tripDetails;

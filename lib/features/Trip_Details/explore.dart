@@ -30,9 +30,9 @@ import 'explore_owner_layout.dart';
 /// Explore page for trip
 class Explore extends StatefulWidget {
   const Explore({
-    Key? key,
+    super.key,
     required this.trip,
-  }) : super(key: key);
+  });
 
   final Trip trip;
 
@@ -46,7 +46,6 @@ class _ExploreState extends State<Explore> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.trip.documentId);
     return DefaultTabController(
       length: 5,
       child: Scaffold(

@@ -17,7 +17,7 @@ import 'logic/logic.dart';
 import 'private_trip_page.dart';
 
 class CurrentTrips extends StatefulWidget {
-  const CurrentTrips({Key? key}) : super(key: key);
+  const CurrentTrips({super.key});
 
   @override
   State<CurrentTrips> createState() => _CurrentTripsState();
@@ -61,7 +61,7 @@ class _CurrentTripsState extends State<CurrentTrips> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Row(
-                    children: [
+                    children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                         child: Text(
@@ -102,7 +102,7 @@ class _CurrentTripsState extends State<CurrentTrips> {
                   ),
                   Expanded(
                     flex: 2,
-                    child: BlocProvider(
+                    child: BlocProvider<GenericBloc<Trip, PrivateTripRepository>>(
                       create: (BuildContext context) =>
                           GenericBloc<Trip, PrivateTripRepository>(
                               repository: PrivateTripRepository()),

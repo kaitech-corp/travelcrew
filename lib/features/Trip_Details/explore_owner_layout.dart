@@ -20,10 +20,10 @@ import 'members/members_layout.dart';
 /// Layout for owner of trip.
 class ExploreOwnerLayout extends StatefulWidget {
   const ExploreOwnerLayout({
-    Key? key,
+    super.key,
     required this.trip,
     required this.scaffoldKey,
-  }) : super(key: key);
+  });
 
   final Trip trip;
 
@@ -157,11 +157,11 @@ class _ExploreOwnerLayoutState extends State<ExploreOwnerLayout> {
 
 class OwnerPopupMenuButton extends StatelessWidget {
   const OwnerPopupMenuButton({
-    Key? key,
+    super.key,
     required this.trip,
     required this.event,
     required this.scaffoldKey,
-  }) : super(key: key);
+  });
 
   final Trip trip;
   final Event event;
@@ -233,10 +233,10 @@ class OwnerPopupMenuButton extends StatelessWidget {
 
 class PopupMenuButtonWidget extends StatelessWidget {
   const PopupMenuButtonWidget({
-    Key? key,
+    super.key,
     required this.trip,
     required this.event,
-  }) : super(key: key);
+  });
 
   final Trip trip;
   final Event event;

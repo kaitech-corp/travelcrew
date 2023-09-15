@@ -14,7 +14,7 @@ import 'explore_basic_layout.dart';
 
 /// Basic layout for Explore page.
 class ExploreBasic extends StatelessWidget {
-  const ExploreBasic({Key? key, required this.trip}) : super(key: key);
+  const ExploreBasic({super.key, required this.trip});
 
   final Trip trip;
 

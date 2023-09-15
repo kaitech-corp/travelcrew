@@ -6,8 +6,7 @@ import 'crew_trip_card.dart';
 /// Grouped list view for current past and private trips
 class GroupedListTripView extends StatefulWidget {
   const GroupedListTripView(
-      {Key? key, required this.data, required this.isPast})
-      : super(key: key);
+      {super.key, required this.data, required this.isPast});
   final List<Trip> data;
   final bool isPast;
 

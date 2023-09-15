@@ -6,7 +6,7 @@ import '../../../services/constants/constants.dart';
 /// Widget for trip image layout
 class ImageLayout extends StatelessWidget{
 
-  const ImageLayout(this._assetPath, {Key? key}) : super(key: key);
+  const ImageLayout(this._assetPath, {super.key});
   final String _assetPath;
 
   @override

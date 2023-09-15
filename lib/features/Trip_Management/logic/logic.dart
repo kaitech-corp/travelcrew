@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
@@ -279,11 +280,13 @@ Future<UserPublicProfile> getUserProfile(String uid) async {
         await userPublicProfileCollection.doc(uid).get();
     if (userData.exists) {
       return UserPublicProfile.fromJson(
-          userData.data() as Map<String, dynamic>);
+          userData.data()! as Map<String, dynamic>);
     }
   } catch (e) {
     CloudFunction().logError('Error retrieving single user profile:  $e');
-    print('Error retrieving single user profile:  $e');
+    if (kDebugMode) {
+      print('Error retrieving single user profile:  $e');
+    }
     // return ;
   }
 

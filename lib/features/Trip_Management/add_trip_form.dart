@@ -23,8 +23,8 @@ import 'components/google_autocomplete.dart';
 /// Add trip page
 class AddTripForm extends StatefulWidget {
   const AddTripForm({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<AddTripForm> createState() => _AddTripFormState();

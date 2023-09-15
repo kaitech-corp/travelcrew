@@ -19,10 +19,10 @@ import 'members/members_layout.dart';
 /// Layout for members of trip.
 class ExploreMemberLayout extends StatefulWidget {
   const ExploreMemberLayout({
-    Key? key,
+    super.key,
     required this.tripDetails,
     required this.scaffoldKey,
-  }) : super(key: key);
+  });
 
   final Trip tripDetails;
 
@@ -131,11 +131,11 @@ class _ExploreMemberLayoutState extends State<ExploreMemberLayout> {
 
 class MemberPopupMenuButton extends StatelessWidget {
   const MemberPopupMenuButton({
-    Key? key,
+    super.key,
     required this.tripDetails,
     required this.event,
     required this.scaffoldKey,
-  }) : super(key: key);
+  });
 
   final Trip tripDetails;
   final Event event;
@@ -202,10 +202,10 @@ class MemberPopupMenuButton extends StatelessWidget {
 
 class PopupMenuButtonWidget extends StatelessWidget {
   const PopupMenuButtonWidget({
-    Key? key,
+    super.key,
     required this.tripDetails,
     required this.event,
-  }) : super(key: key);
+  });
 
   final Trip tripDetails;
   final Event event;

@@ -12,7 +12,7 @@ import '../Transportation/transportation_details.dart';
 
 class DetailsPage extends StatelessWidget{
 
-  const DetailsPage({Key? key, required this.activity,this.lodging,required this.transport,required this.type, required this.trip}) : super(key: key);
+  const DetailsPage({super.key, required this.activity,this.lodging,required this.transport,required this.type, required this.trip});
 
   final ActivityModel? activity;
   final LodgingModel? lodging;

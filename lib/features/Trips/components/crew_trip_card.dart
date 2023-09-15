@@ -11,8 +11,7 @@ import 'image_layout_trips.dart';
 
 
 class CrewTripCard extends StatelessWidget {
-  const CrewTripCard({Key? key, required this.trip, required this.heroTag})
-      : super(key: key);
+  const CrewTripCard({super.key, required this.trip, required this.heroTag});
   final Trip trip;
   final String heroTag;
 
