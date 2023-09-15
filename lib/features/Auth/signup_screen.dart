@@ -11,9 +11,8 @@ import 'signup_form.dart';
 
 class SignupScreen extends StatelessWidget {
 
-  const SignupScreen({Key? key, UserRepository? userRepository})
-      : _userRepository = userRepository,
-        super(key: key);
+  const SignupScreen({super.key, UserRepository? userRepository})
+      : _userRepository = userRepository;
   final UserRepository? _userRepository;
 
   @override

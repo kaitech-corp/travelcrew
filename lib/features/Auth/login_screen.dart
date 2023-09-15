@@ -12,7 +12,7 @@ import 'login_form.dart';
 
 /// Login screen
 class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({super.key});
 
   final UserRepository _userRepository = UserRepository();
 

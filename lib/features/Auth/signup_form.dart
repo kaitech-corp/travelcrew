@@ -16,7 +16,7 @@ import 'bloc/Signup/signup_state.dart';
 import 'components/gradient_button.dart';
 
 class SignupForm extends StatefulWidget {
-  const SignupForm({Key? key}) : super(key: key);
+  const SignupForm({super.key});
 
   @override
   State<SignupForm> createState() => _SignupFormState();

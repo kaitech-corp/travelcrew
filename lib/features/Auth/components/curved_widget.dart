@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class CurvedWidget extends StatelessWidget {
 
   const CurvedWidget(
-      {Key? key, this.curvedDistance = 80, this.curvedHeight = 80, this.child})
-      : super(key: key);
+      {super.key, this.curvedDistance = 80, this.curvedHeight = 80, this.child});
   final Widget? child;
   final double curvedDistance;
   final double curvedHeight;

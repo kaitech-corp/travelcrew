@@ -4,8 +4,7 @@ import '../../../services/constants/constants.dart';
 
 class GradientButton extends StatelessWidget {
   const GradientButton(
-      {Key? key, this.width, this.height, this.onPressed, this.text, this.icon})
-      : super(key: key);
+      {super.key, this.width, this.height, this.onPressed, this.text, this.icon});
   final double? width;
   final double? height;
   final Function()? onPressed;
