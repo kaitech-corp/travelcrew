@@ -17,7 +17,7 @@ import 'components/google_autocomplete.dart';
 import 'logic/logic.dart';
 
 class AddNewActivity extends StatefulWidget {
-  const AddNewActivity({Key? key, required this.trip}) : super(key: key);
+  const AddNewActivity({super.key, required this.trip});
 
   final Trip trip;
 

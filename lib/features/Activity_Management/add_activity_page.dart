@@ -10,7 +10,7 @@ import 'activity_form.dart';
 
 /// Add trip page
 class AddActivityPage extends StatelessWidget {
-  const AddActivityPage({Key? key,}) : super(key: key);
+  const AddActivityPage({super.key,});
 
   @override
   Widget build(BuildContext context) {

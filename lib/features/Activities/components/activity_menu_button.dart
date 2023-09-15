@@ -16,7 +16,7 @@ import '../../Split/split_package.dart';
 
 
 class ActivityMenuButton extends StatelessWidget {
-  const ActivityMenuButton({Key? key, required this.activity, required this.trip, this.event}) : super(key: key);
+  const ActivityMenuButton({super.key, required this.activity, required this.trip, this.event});
 
   final ActivityModel activity;
   final Trip trip;

@@ -12,8 +12,7 @@ import '../Trip_Management/components/google_autocomplete.dart';
 import 'logic/logic.dart';
 
 class EditActivity extends StatefulWidget {
-  const EditActivity({Key? key, required this.activity, required this.trip})
-      : super(key: key);
+  const EditActivity({super.key, required this.activity, required this.trip});
 
   final ActivityModel activity;
   final Trip trip;

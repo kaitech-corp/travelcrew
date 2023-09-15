@@ -5,7 +5,7 @@ import '../../../models/activity_model/activity_model.dart';
 import 'add_activity_bloc.dart';
 
 class AddActivityForm extends StatefulWidget {
-  const AddActivityForm({Key? key}) : super(key: key);
+  const AddActivityForm({super.key});
 
   @override
   _AddActivityFormState createState() => _AddActivityFormState();
@@ -48,7 +48,7 @@ class _AddActivityFormState extends State<AddActivityForm> {
         return Form(
           key: _formKey,
           child: Column(
-            children: [
+            children: <Widget>[
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Start Time'),
                 validator: (String? value) {

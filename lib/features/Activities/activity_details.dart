@@ -19,8 +19,7 @@ import 'components/activity_menu_button.dart';
 import 'logic/logic.dart';
 
 class ActivityDetails extends StatelessWidget {
-  const ActivityDetails({Key? key, required this.activity, required this.trip})
-      : super(key: key);
+  const ActivityDetails({super.key, required this.activity, required this.trip});
 
   final ActivityModel activity;
   final Trip trip;
@@ -48,10 +47,10 @@ class ActivityDetails extends StatelessWidget {
 
 class ActivityModelLayout extends StatelessWidget {
   const ActivityModelLayout({
-    Key? key,
+    super.key,
     required this.fieldID,
     required this.trip,
-  }) : super(key: key);
+  });
 
   final String fieldID;
   final Trip trip;

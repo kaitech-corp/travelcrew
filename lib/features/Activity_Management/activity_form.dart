@@ -18,8 +18,8 @@ import 'components/google_autocomplete.dart';
 /// Add new activity page
 class ActivityForm extends StatefulWidget {
   const ActivityForm({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ActivityForm> createState() => _ActivityFormState();

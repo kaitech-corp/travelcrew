@@ -32,7 +32,6 @@ class ActivityError extends ActivityState {
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
   ActivityBloc() : super(ActivityInitial());
 
-  @override
   Stream<ActivityState> mapEventToState(ActivityEvent event) async* {
     if (event is AddActivityEvent) {
       yield ActivityLoading();

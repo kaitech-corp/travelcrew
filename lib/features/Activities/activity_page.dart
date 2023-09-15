@@ -18,7 +18,7 @@ import 'logic/activity_repository.dart';
 
 
 class ActivityPage extends StatefulWidget {
-  const ActivityPage({Key? key, required this.trip}) : super(key: key);
+  const ActivityPage({super.key, required this.trip});
 
   final Trip trip;
 
