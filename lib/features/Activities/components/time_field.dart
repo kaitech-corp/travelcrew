@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TimeField extends StatelessWidget {
-  TimeField({Key? key}) : super(key: key);
+  TimeField({super.key});
 
   final DateFormat format = DateFormat('HH:mm');
   @override

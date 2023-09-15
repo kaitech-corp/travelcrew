@@ -68,7 +68,7 @@ Future<void> editActivityModel(
 ActivityModel _activityFromSnapshot(DocumentSnapshot<Object?> snapshot) {
   if (snapshot.exists) {
     try {
-      return ActivityModel.fromJson(snapshot.data() as Map<String, dynamic>);
+      return ActivityModel.fromJson(snapshot.data()! as Map<String, dynamic>);
     } catch (e) {
       CloudFunction().logError('Error retrieving single activity:  $e');
       return ActivityModel.mock();
