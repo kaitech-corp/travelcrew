@@ -9,10 +9,10 @@ import '../../services/widgets/chat_date_display.dart';
 
 class StickyGroupedChatListView extends StatelessWidget {
   const StickyGroupedChatListView({
-    Key? key,
+    super.key,
     required this.data,
     required this.documentId
-  }) : super(key: key);
+  });
 
   final List<ChatModel> data;
   final String documentId;

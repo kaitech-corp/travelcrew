@@ -11,7 +11,7 @@ final CollectionReference<Object?> feedCollection =
     final QuerySnapshot<Object?> ref =
         await feedCollection.orderBy('dateCreated', descending: true).get();
 
-    final List<FeedModel> feedModels = [];
+    final List<FeedModel> feedModels = <FeedModel>[];
     for (final QueryDocumentSnapshot<Object?> doc in ref.docs) {
       // feedModels.add(FeedModel.fromMap(doc.data() as Map<String, Object>));
     }

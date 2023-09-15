@@ -40,7 +40,7 @@ void main() async {
 }
 
 class TravelCrew extends StatefulWidget {
-  const TravelCrew({Key? key, this.userRepository}) : super(key: key);
+  const TravelCrew({super.key, this.userRepository});
   final UserRepository? userRepository;
 
   @override

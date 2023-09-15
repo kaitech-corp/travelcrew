@@ -21,9 +21,9 @@ import '../Profile/logic/logic.dart';
 /// Custom app bar
 class CustomAppBar extends StatefulWidget {
   const CustomAppBar({
-    Key? key,
+    super.key,
     required this.bottomNav,
-  }) : super(key: key);
+  });
 
   final bool bottomNav;
 
@@ -85,7 +85,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
                     
                     if (snapshot.hasData) {
-                      final UserPublicProfile profile = snapshot.data as UserPublicProfile;
+                      final UserPublicProfile profile = snapshot.data! as UserPublicProfile;
                       return Center(
                         child: InkWell(
                           onTap: () {

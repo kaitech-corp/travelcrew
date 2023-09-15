@@ -7,11 +7,11 @@ import 'appearance_widgets.dart';
 class CalendarWidget  extends StatefulWidget{
 
   const CalendarWidget(
-      {Key? key,  this.startDate,
+      {super.key,  this.startDate,
         this.endDate,
         required this.startDateTimeStamp,
         required this.endDateTimeStamp,
-        this.context, required this.showBoth}) : super(key: key);
+        this.context, required this.showBoth});
 
   final ValueNotifier<String>? startDate;
   final ValueNotifier<String>? endDate;

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../services/functions/cloud_functions.dart';
@@ -41,11 +41,13 @@ Future<void> getCurrentUserProfile() async {
         await userPublicProfileCollection.doc(userService.currentUserID).get();
     if (userData.exists) {
       profileData.userPublicProfile =
-          UserPublicProfile.fromJson(userData.data() as Map<String, dynamic>);
+          UserPublicProfile.fromJson(userData.data()! as Map<String, dynamic>);
     }
   } catch (e) {
     CloudFunction().logError('Error retrieving single user profile:  $e');
-    print('Error retrieving single user profile:  $e');
+    if (kDebugMode) {
+      print('Error retrieving single user profile:  $e');
+    }
     // return ;
   }
 }

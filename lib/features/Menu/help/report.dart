@@ -12,13 +12,12 @@ import '../../alerts/alert_dialogs.dart';
 
 class ReportContent extends StatefulWidget {
   const ReportContent(
-      {Key? key,
+      {super.key,
       required this.type,
       this.userAccount,
       this.activity,
       this.lodging,
-      this.trip})
-      : super(key: key);
+      this.trip});
   final String type;
   final UserPublicProfile? userAccount;
   final ActivityModel? activity;

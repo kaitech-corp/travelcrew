@@ -18,7 +18,7 @@ import '../../Trip_Management/logic/logic.dart';
 
 /// Layout for notifications
 class NotificationsCard extends StatelessWidget {
-  const NotificationsCard({Key? key, required this.notification}) : super(key: key);
+  const NotificationsCard({super.key, required this.notification});
   final NotificationModel notification;
 
 

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class NetworkImageWithAssetFallback extends StatelessWidget {
 
-  const NetworkImageWithAssetFallback({Key? key,
+  const NetworkImageWithAssetFallback({super.key,
     required this.imageUrl,
     required this.assetImage
-  }) : super(key: key);
+  });
 
   final String imageUrl;
   final String assetImage;

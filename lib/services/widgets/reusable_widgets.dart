@@ -53,7 +53,7 @@ class CustomShape2 extends CustomClipper<Path> {
 
 class ImageBanner extends StatelessWidget{
 
-  const ImageBanner(this._assetPath, {Key? key}) : super(key: key);
+  const ImageBanner(this._assetPath, {super.key});
   final String _assetPath;
 
   @override
@@ -72,7 +72,7 @@ class ImageBanner extends StatelessWidget{
 
 
 class AnimatedClipRRect extends StatelessWidget {
-  const AnimatedClipRRect({Key? key,
+  const AnimatedClipRRect({super.key,
     required this.duration,
     this.curve = Curves.linear,
     required this.borderRadius,
@@ -80,7 +80,7 @@ class AnimatedClipRRect extends StatelessWidget {
   })  : assert(duration != null),
         assert(curve != null),
         assert(borderRadius != null),
-        assert(child != null), super(key: key);
+        assert(child != null);
 
   final Duration duration;
   final Curve curve;
@@ -107,8 +107,8 @@ class AnimatedClipRRect extends StatelessWidget {
 
 class HangingImageTheme extends StatelessWidget {
   const HangingImageTheme({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -130,8 +130,8 @@ class HangingImageTheme extends StatelessWidget {
 class HangingImageTheme3 extends StatelessWidget {
 
   HangingImageTheme3({
-    Key? key, required this.user,
-  }) : super(key: key);
+    super.key, required this.user,
+  });
 
   final double hgt = SizeConfig.screenHeight*.06;
   final UserPublicProfile user;
@@ -182,9 +182,9 @@ class HangingImageTheme3 extends StatelessWidget {
 
 class CustomHangingImage extends StatelessWidget {
   const CustomHangingImage({
-    Key? key,
+    super.key,
     required this.urlToImage
-  }) : super(key: key);
+  });
 
   final String urlToImage;
 
@@ -206,9 +206,9 @@ class CustomHangingImage extends StatelessWidget {
 
 class CrewModalBottomSheet extends StatelessWidget {
   const CrewModalBottomSheet({
-    Key? key,
+    super.key,
     required this.tripDetails,
-  }) : super(key: key);
+  });
 
   final Trip tripDetails;
 
@@ -273,9 +273,9 @@ class CrewModalBottomSheet extends StatelessWidget {
 
 class Gauge extends StatelessWidget {
   const Gauge({
-    Key? key,
+    super.key,
     required this.countDownDate,required this.color
-  }) : super(key: key);
+  });
 
   final CountDownDate countDownDate;
   final Color color;

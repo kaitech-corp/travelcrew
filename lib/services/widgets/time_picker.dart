@@ -5,21 +5,21 @@ import 'appearance_widgets.dart';
 
 class TimePickers extends StatefulWidget {
   const TimePickers({
-    Key? key,
+    super.key,
     required this.lodging,
     required this.startTime,
     required this.endTime,
-  }) : super(key: key);
+  });
 
   final bool lodging;
   final ValueNotifier<TimeOfDay> startTime;
   final ValueNotifier<TimeOfDay> endTime;
 
   @override
-  _TimePickersState createState() => _TimePickersState();
+  TimePickersState createState() => TimePickersState();
 }
 
-class _TimePickersState extends State<TimePickers> {
+class TimePickersState extends State<TimePickers> {
   late TimeOfDay timeStart;
   late TimeOfDay timeEnd;
 

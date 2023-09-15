@@ -8,7 +8,7 @@ import '../../../services/theme/text_styles.dart';
 
 class HelpPage extends StatelessWidget{
 
-  const HelpPage({Key? key}) : super(key: key);
+  const HelpPage({super.key});
 
  @override
   Widget build(BuildContext context) {

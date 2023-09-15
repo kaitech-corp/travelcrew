@@ -15,7 +15,7 @@ Future<List<RecommendedContentModel>> getRecommendedContentModel(
   final QuerySnapshot<Object?> snapshot = await collection.get();
   final List<RecommendedContentModel> recommendedContents = snapshot.docs
       .map((QueryDocumentSnapshot<Object?> doc) =>
-          RecommendedContentModel.fromJson(doc.data() as Map<String, dynamic>))
+          RecommendedContentModel.fromJson(doc.data()! as Map<String, dynamic>))
       .toList();
   return recommendedContents;
 }

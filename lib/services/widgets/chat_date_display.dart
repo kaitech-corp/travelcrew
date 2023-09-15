@@ -5,7 +5,7 @@ import '../theme/text_styles.dart';
 
 class ChatDateDisplay extends StatelessWidget{
 
-  const ChatDateDisplay({Key? key, required this.dateString}) : super(key: key);
+  const ChatDateDisplay({super.key, required this.dateString});
 
   final String dateString;
 

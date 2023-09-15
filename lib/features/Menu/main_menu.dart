@@ -18,7 +18,7 @@ import '../Profile/logic/logic.dart';
 final ValueNotifier<int> chatNotifier = ValueNotifier<int>(0);
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({Key? key}) : super(key: key);
+  const MenuDrawer({super.key});
 
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
@@ -58,7 +58,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                       (BuildContext context, AsyncSnapshot<Object?> snapshot) {
                     if (snapshot.hasData) {
                       final UserPublicProfile profile =
-                          snapshot.data as UserPublicProfile;
+                          snapshot.data! as UserPublicProfile;
                       return Stack(
                         children: <Widget>[
                           Align(

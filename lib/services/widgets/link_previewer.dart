@@ -5,10 +5,10 @@ import '../constants/constants.dart';
 
 class ViewAnyLink extends StatefulWidget {
   const ViewAnyLink({
-    Key? key,
+    super.key,
     required this.link,
     required this.function,
-  }) : super(key: key);
+  });
 
   final String link;
   final Function() function;
@@ -23,7 +23,7 @@ class _ViewAnyLinkState extends State<ViewAnyLink> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<void>(
       future: loadLinkPreview(),
       builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -56,7 +56,7 @@ class _ViewAnyLinkState extends State<ViewAnyLink> {
   Widget showErrorWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: <Widget>[
         const Icon(Icons.error, color: Colors.red),
         const SizedBox(height: 8),
         Text(errorMessage ?? 'Error loading link'),

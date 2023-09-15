@@ -224,7 +224,7 @@ Stream<List<UserPublicProfile>> retrieveFollowList(
 UserPublicProfile _userPublicProfileSnapshot(
     DocumentSnapshot<Object?> snapshot) {
   try {
-    return UserPublicProfile.fromJson(snapshot.data() as Map<String, dynamic>);
+    return UserPublicProfile.fromJson(snapshot.data()! as Map<String, dynamic>);
   } catch (e) {
     CloudFunction()
         .logError('Error retrieving specific user public profile:  $e');
@@ -248,7 +248,7 @@ List<Trip> _pastCrewTripListFromSnapshot(QuerySnapshot<Object?> snapshot) {
     final DateTime past = DateTime(now.year, now.month, now.day - 1);
     final List<Trip> trips =
         snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-      return Trip.fromJson(doc.data() as Map<String, dynamic>);
+      return Trip.fromJson(doc.data()! as Map<String, dynamic>);
     }).toList();
     final List<Trip> crewTrips = trips
         .where((Trip trip) => trip.endDateTimeStamp!.compareTo(past) == -1)
@@ -289,7 +289,9 @@ Future<List<UserPublicProfile>> usersList() async {
         a.displayName.compareTo(b.displayName));
     return userList;
   } catch (e) {
-    print('Error retrieving all users: $e');
+    if (kDebugMode) {
+      print('Error retrieving all users: $e');
+    }
     CloudFunction().logError('Error retrieving all users: $e');
     return <UserPublicProfile>[];
   }

@@ -11,8 +11,7 @@ import 'components/notification_card.dart';
 
 /// Notification page
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({Key? key, required this.notifications})
-      : super(key: key);
+  const NotificationPage({super.key, required this.notifications});
 
   final List<NotificationModel> notifications;
 
@@ -77,7 +76,7 @@ class _NotificationPageState extends State<NotificationPage> {
 }
 
 class NotificationCount extends StatefulWidget {
-  NotificationCount({Key? key}) : super(key: key);
+  NotificationCount({super.key});
   final ValueNotifier<int> notificationCount = ValueNotifier<int>(0);
   @override
   State<NotificationCount> createState() => _NotificationCountState();

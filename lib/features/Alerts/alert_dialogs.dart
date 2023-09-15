@@ -622,7 +622,7 @@ class TravelCrewAlertDialogs {
 
 class _SystemPadding extends StatelessWidget {
 
-  const _SystemPadding({Key? key, this.child}) : super(key: key);
+  const _SystemPadding({this.child});
   final Widget? child;
 
   @override

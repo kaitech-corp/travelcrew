@@ -12,7 +12,7 @@ import 'logic/logic.dart';
 
 /// Admin page
 class AdminPage extends StatefulWidget {
-  const AdminPage({Key? key}) : super(key: key);
+  const AdminPage({super.key});
 
   @override
   State<AdminPage> createState() => _AdminPageState();
@@ -56,7 +56,7 @@ Widget adminDashboard(BuildContext context) {
 }
 
 class CustomNotifications extends StatefulWidget {
-  const CustomNotifications({Key? key}) : super(key: key);
+  const CustomNotifications({super.key});
 
   @override
   State<CustomNotifications> createState() => _CustomNotificationsState();
@@ -133,7 +133,7 @@ class _CustomNotificationsState extends State<CustomNotifications> {
 }
 
 class Feedback extends StatelessWidget {
-  const Feedback({Key? key}) : super(key: key);
+  const Feedback({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +188,7 @@ class Feedback extends StatelessWidget {
 }
 
 class TripData extends StatelessWidget {
-  const TripData({Key? key}) : super(key: key);
+  const TripData({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +197,7 @@ class TripData extends StatelessWidget {
 }
 
 class UserActivity extends StatelessWidget {
-  const UserActivity({Key? key}) : super(key: key);
+  const UserActivity({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +206,7 @@ class UserActivity extends StatelessWidget {
 }
 
 class UserData extends StatelessWidget {
-  const UserData({Key? key}) : super(key: key);
+  const UserData({super.key});
 
   @override
   Widget build(BuildContext context) {

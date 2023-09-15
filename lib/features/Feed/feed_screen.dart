@@ -8,7 +8,7 @@ import '../../models/feed_model/feed_model.dart';
 import 'logic/logic.dart';
 
 class FeedScreen extends StatelessWidget {
-  const FeedScreen({Key? key}) : super(key: key);
+  const FeedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ import 'badge_icon.dart';
 
 class FavoriteWidget extends StatelessWidget {
 
-  const FavoriteWidget({Key? key, required this.voters, required this.uid}) : super(key: key);
+  const FavoriteWidget({super.key, required this.voters, required this.uid});
   final List<dynamic> voters;
   final String uid;
 

@@ -27,7 +27,7 @@ class ReusableThemeColor {
 
 class IconThemeWidget extends StatelessWidget{
 
-  const IconThemeWidget({Key? key, required this.icon}) : super(key: key);
+  const IconThemeWidget({super.key, required this.icon});
 
   final IconData icon;
 
@@ -41,7 +41,7 @@ class IconThemeWidget extends StatelessWidget{
 
 class AppBarIconThemeWidget extends StatelessWidget{
 
-  const AppBarIconThemeWidget({Key? key, required this.icon}) : super(key: key);
+  const AppBarIconThemeWidget({super.key, required this.icon});
 
   final IconData icon;
 
@@ -55,7 +55,7 @@ class AppBarIconThemeWidget extends StatelessWidget{
 
 class SplitIconWidget extends StatelessWidget{
 
-  const SplitIconWidget({Key? key, required this.type}) : super(key: key);
+  const SplitIconWidget({super.key, required this.type});
 
   final String type;
 
@@ -125,7 +125,7 @@ class SplitIconWidget extends StatelessWidget{
 // Icon color for Trip Details
 class TripDetailsIconThemeWidget extends StatelessWidget{
 
-  const TripDetailsIconThemeWidget({Key? key, required this.icon}) : super(key: key);
+  const TripDetailsIconThemeWidget({super.key, required this.icon});
 
   final IconData icon;
 
@@ -151,7 +151,7 @@ class ChatTextStyle {
 
 class TransportationIcon extends StatelessWidget{
 
-  const TransportationIcon(this.mode, {Key? key}) : super(key: key);
+  const TransportationIcon(this.mode, {super.key});
   final String mode;
 
   @override

@@ -9,7 +9,7 @@ import '../../size_config/size_config.dart';
 import '../Main_Page/logic/logic.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   Widget _buildRowWithTitle(String title, BuildContext context) {
     return Padding(
