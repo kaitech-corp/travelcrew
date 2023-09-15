@@ -12,9 +12,9 @@ import '../../Alerts/alert_dialogs.dart';
 
 class TCUserCard extends StatefulWidget {
   const TCUserCard({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
 
   final UserPublicProfile user;
 
@@ -96,9 +96,9 @@ Widget checkBlockList(String uid, List<dynamic> blockedList,
 
 class BlockedPopupMenu extends StatelessWidget {
   const BlockedPopupMenu({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
 
   final UserPublicProfile user;
 
@@ -140,9 +140,9 @@ class BlockedPopupMenu extends StatelessWidget {
 
 class UnblockedPopupMenu extends StatelessWidget {
   const UnblockedPopupMenu({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
 
   final UserPublicProfile user;
 

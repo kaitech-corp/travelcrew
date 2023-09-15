@@ -9,9 +9,9 @@ import 'components/recent_trip_widget.dart';
 
 class ProfileWidget extends StatelessWidget {
   ProfileWidget({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
   final UserPublicProfile user;
   final double profileSize = SizeConfig.screenWidth * .45;
 

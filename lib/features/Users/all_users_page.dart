@@ -17,7 +17,7 @@ import '../../models/public_profile_model/public_profile_model.dart';
 import 'components/user_card.dart';
 
 class AllUserPage extends StatefulWidget {
-  const AllUserPage({Key? key}) : super(key: key);
+  const AllUserPage({super.key});
 
   @override
   State<AllUserPage> createState() => _AllUserPageState();

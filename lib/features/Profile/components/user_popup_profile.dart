@@ -6,7 +6,7 @@ import '../../../services/constants/constants.dart';
 
 class UserPopupProfile extends StatelessWidget{
 
-  const UserPopupProfile({Key? key, required this.member}) : super(key: key);
+  const UserPopupProfile({super.key, required this.member});
 
   final MemberModel member;
 

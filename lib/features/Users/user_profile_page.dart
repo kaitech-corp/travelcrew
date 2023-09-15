@@ -7,7 +7,7 @@ import '../Profile/profile_widget.dart';
 
 class UserProfilePage extends StatelessWidget{
 
-  const UserProfilePage({Key? key,  required this.user}) : super(key: key);
+  const UserProfilePage({super.key,  required this.user});
   final UserPublicProfile user;
 
   @override

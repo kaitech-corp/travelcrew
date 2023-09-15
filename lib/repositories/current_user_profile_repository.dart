@@ -26,7 +26,7 @@ class CurrentUserProfileRepository {
     UserPublicProfile userProfileFromSnapshot(DocumentSnapshot<Object> snapshot){
       if(snapshot.exists) {
         try {
-          return UserPublicProfile.fromJson(snapshot.data() as Map<String, dynamic>);
+          return UserPublicProfile.fromJson(snapshot.data()! as Map<String, dynamic>);
         } catch(e){
           CloudFunction().logError('Error retrieving single user profile:  $e');
           return UserPublicProfile.mock();

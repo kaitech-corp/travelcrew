@@ -15,7 +15,7 @@ import '../../size_config/size_config.dart';
 import 'logic/logic.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  const EditProfilePage({super.key});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -133,7 +133,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   return null;
                                 }
                               },
-                              onSaved: (String? val) => {
+                              onSaved: (String? val) => <UserPublicProfile>{
                                     _user =
                                         _user = _user.copyWith(firstName: val),
                                   }),
@@ -271,9 +271,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(labelText: 'Destination ${index + 1}'),
         onSaved: (String? val) => setState(() {
-              if (index == 0) destination1 = val!.trim();
-              if (index == 1) destination2 = val!.trim();
-              if (index == 2) destination3 = val!.trim();
+              if (index == 0) {
+                destination1 = val!.trim();
+              }
+              if (index == 1) {
+                destination2 = val!.trim();
+              }
+              if (index == 2) {
+                destination3 = val!.trim();
+              }
             }));
   }
 }

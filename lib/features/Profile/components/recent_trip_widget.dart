@@ -10,7 +10,7 @@ import '../logic/logic.dart';
 
 class RecentTripTile extends StatelessWidget{
 
-  const RecentTripTile({Key? key, required this.uid}) : super(key: key);
+  const RecentTripTile({super.key, required this.uid});
   final String uid;
   @override
   Widget build(BuildContext context) {
