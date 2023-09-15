@@ -25,7 +25,7 @@ class PublicProfileRepository {
       if(snapshot.exists) {
         try {
 
-          return UserPublicProfile.fromJson(snapshot.data() as Map<String, dynamic>);
+          return UserPublicProfile.fromJson(snapshot.data()! as Map<String, dynamic>);
         } catch(e){
           if (kDebugMode) {
             print('Error retrieving single user profile:  $e');

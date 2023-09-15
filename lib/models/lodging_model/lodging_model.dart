@@ -63,7 +63,7 @@ class LodgingModel with _$LodgingModel {
       link: 'https://example.com/hotel-x',
       lodgingType: 'Hotel',
       uid: 'user123',
-      voters: ['userA', 'userB', 'userC'],
+      voters: <String>['userA', 'userB', 'userC'],
     );
   }
 }

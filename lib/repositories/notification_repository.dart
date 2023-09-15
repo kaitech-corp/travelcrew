@@ -19,7 +19,7 @@ class NotificationRepository extends GenericBlocRepository<NotificationModel> {
         QuerySnapshot<Object> snapshot) {
       try {
         return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return NotificationModel.fromJson(doc.data() as Map<String, dynamic>);
+          return NotificationModel.fromJson(doc.data()! as Map<String, dynamic>);
         }).toList();
       } catch (e) {
         print('Error retrieving notification list: $e');

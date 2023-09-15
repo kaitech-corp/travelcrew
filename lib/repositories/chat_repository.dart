@@ -23,7 +23,7 @@ class ChatRepository extends GenericBlocRepository<ChatModel> {
   List<ChatModel> _chatListFromSnapshot(QuerySnapshot<Object> snapshot) {
     try {
       return snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-        return ChatModel.fromJson(doc.data() as Map<String, dynamic>);
+        return ChatModel.fromJson(doc.data()! as Map<String, dynamic>);
       }).toList();
     } catch (e) {
       CloudFunction().logError('Error retrieving chat list:  $e');

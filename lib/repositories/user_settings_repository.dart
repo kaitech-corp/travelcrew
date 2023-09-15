@@ -25,7 +25,7 @@ class UserSettingsRepository {
     SettingsModel settingsFromSnapshot(DocumentSnapshot<Object?> snapshot){
       if(snapshot.exists) {
         try {
-          return SettingsModel.fromJson(snapshot.data() as Map<String, Object>);
+          return SettingsModel.fromJson(snapshot.data()! as Map<String, Object>);
         } catch(e){
           CloudFunction().logError('Error retrieving settings for user:  $e');
           return SettingsModel.mock();

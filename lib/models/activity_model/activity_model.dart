@@ -66,7 +66,7 @@ class ActivityModel with _$ActivityModel {
       location: 'Mock Location',
       activityType: 'Mock Activity',
       uid: 'mock_user_id',
-      voters: ['user1', 'user2'],
+      voters: <String>['user1', 'user2'],
     );
   }
 }

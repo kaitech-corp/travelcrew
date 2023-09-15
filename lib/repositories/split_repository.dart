@@ -22,7 +22,7 @@ class SplitRepository extends GenericBlocRepository<SplitObject> {
     List<SplitObject> splitItemDataFromSnapshot(QuerySnapshot<Object> snapshot) {
       try {
         final List<SplitObject> splitItemData =  snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return SplitObject.fromJson(doc.data() as Map<String, dynamic>);
+          return SplitObject.fromJson(doc.data()! as Map<String, dynamic>);
         }).toList();
 
         return splitItemData;
