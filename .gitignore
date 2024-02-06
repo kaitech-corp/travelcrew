@@ -49,3 +49,4 @@ ios/Flutter/Generated.xcconfig
 ios/Pods
 ios/Pods/Target Support Files
 lib/models/trip_model/trip_model.freezed.dart
+microservices/notification_system/.readmes
