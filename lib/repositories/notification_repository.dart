@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../services/database.dart';
 import '../blocs/generics/generic_bloc.dart';
@@ -22,7 +23,9 @@ class NotificationRepository extends GenericBlocRepository<NotificationModel> {
           return NotificationModel.fromJson(doc.data()! as Map<String, dynamic>);
         }).toList();
       } catch (e) {
-        print('Error retrieving notification list: $e');
+        if (kDebugMode) {
+          print('Error retrieving notification list: $e');
+        }
         return <NotificationModel>[];
       }
     }
