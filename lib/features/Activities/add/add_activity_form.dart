@@ -8,10 +8,10 @@ class AddActivityForm extends StatefulWidget {
   const AddActivityForm({super.key});
 
   @override
-  _AddActivityFormState createState() => _AddActivityFormState();
+  AddActivityFormState createState() => AddActivityFormState();
 }
 
-class _AddActivityFormState extends State<AddActivityForm> {
+class AddActivityFormState extends State<AddActivityForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late ActivityModel _activity;
 

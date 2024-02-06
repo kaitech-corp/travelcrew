@@ -23,10 +23,10 @@ class ActivityPage extends StatefulWidget {
   final Trip trip;
 
   @override
-  _ActivityPageState createState() => _ActivityPageState();
+  ActivityPageState createState() => ActivityPageState();
 }
 
-class _ActivityPageState extends State<ActivityPage> {
+class ActivityPageState extends State<ActivityPage> {
   late GenericBloc<ActivityModel, ActivityRepository> bloc;
 
   @override
