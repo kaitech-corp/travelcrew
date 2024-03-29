@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants/constants.dart';
+
 ThemeData themeDataBuilder() {
   return ThemeData(
     fontFamily: 'Cantata One',
@@ -21,6 +23,7 @@ ThemeData themeDataBuilder() {
       titleLarge: TextStyle(fontWeight: FontWeight.bold),
       titleSmall: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 14),
     ),
+    scaffoldBackgroundColor: canvasColor,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
           shape: MaterialStateProperty.all<

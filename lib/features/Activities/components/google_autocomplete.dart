@@ -54,7 +54,7 @@ Future<void> _handlePressButton(BuildContext context) {
                 final double lat = double.parse(prediction.lat!);
                 final double lng = double.parse(prediction.lng!);
               }, // this callback is called when isLatLngRequired is true
-              itmClick: (Prediction prediction) {
+              itemClick: (Prediction prediction) {
                 if (prediction != null) {
                   activityLocationController.text = prediction.description!;
                   activityLocationController.selection =

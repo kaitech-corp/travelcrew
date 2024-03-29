@@ -46,7 +46,7 @@ Future<void> _handlePressButton(BuildContext context) {
               borderRadius: BorderRadius.all(Radius.circular(5))),
           title: const Text(
             'Google Search',
-            textScaleFactor: 1.5,
+            textScaler: TextScaler.linear(1.5),
           ),
           content: GooglePlaceAutoCompleteTextField(
               textEditingController: locationController,
@@ -64,7 +64,7 @@ Future<void> _handlePressButton(BuildContext context) {
                 final double lng = double.parse(prediction.lng!);
                 geopoint2.value = GeoPoint(lat, lng);
               }, // this callback is called when isLatLngRequired is true
-              itmClick: (Prediction prediction) {
+              itemClick: (Prediction prediction) {
                 if (prediction != null) {
                   locationController.text = prediction.description!;
                   locationController.selection = TextSelection.fromPosition(
