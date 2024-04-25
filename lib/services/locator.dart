@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../services/functions/cloud_functions.dart';
-import '../features/Trip_Management/logic/logic.dart';
+import '../screens/Trip_Management/logic/logic.dart';
 import '../models/public_profile_model/public_profile_model.dart';
+import 'functions/cloud_functions/admin_functions.dart';
 import 'navigation/navigation_service.dart';
 
 GetIt locator = GetIt.instance;
@@ -25,7 +25,7 @@ class UserService {
     try {
       return _auth.currentUser?.uid ?? '';
     } catch (e) {
-      CloudFunction().logError('Error retrieving uid for locator: $e');
+      AdminCloudFunction().logError('Error retrieving uid for locator: $e');
       return '';
     }
   }
@@ -44,7 +44,7 @@ Future<void> getCurrentUserProfile() async {
           UserPublicProfile.fromJson(userData.data()! as Map<String, dynamic>);
     }
   } catch (e) {
-    CloudFunction().logError('Error retrieving single user profile:  $e');
+    AdminCloudFunction().logError('Error retrieving single user profile:  $e');
     if (kDebugMode) {
       print('Error retrieving single user profile:  $e');
     }

@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'location_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_LocationModel _$$_LocationModelFromJson(Map<String, dynamic> json) =>
-    _$_LocationModel(
+_$LocationModelImpl _$$LocationModelImplFromJson(Map<String, dynamic> json) =>
+    _$LocationModelImpl(
       city: json['city'] as String?,
       country: json['country'] as String?,
       documentID: json['documentID'] as String?,
@@ -20,7 +18,7 @@ _$_LocationModel _$$_LocationModelFromJson(Map<String, dynamic> json) =>
       zipcode: json['zipcode'] as String?,
     );
 
-Map<String, dynamic> _$$_LocationModelToJson(_$_LocationModel instance) =>
+Map<String, dynamic> _$$LocationModelImplToJson(_$LocationModelImpl instance) =>
     <String, dynamic>{
       'city': instance.city,
       'country': instance.country,

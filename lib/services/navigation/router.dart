@@ -5,38 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../admin/admin_page.dart';
 import '../../blocs/generics/generic_bloc.dart';
-import '../../features/Activities/activity_page.dart';
-import '../../features/Activities/add_new_activity.dart';
-import '../../features/Activities/edit_activity.dart';
-import '../../features/Activity_Management/add_activity_page.dart';
-import '../../features/Auth/signup_screen.dart';
-import '../../features/Chat/chat_page.dart';
-import '../../features/Lodging/add_new_lodging.dart';
-import '../../features/Lodging/edit_lodging.dart';
-import '../../features/Lodging/lodging_page.dart';
-import '../../features/Main_Page/main_page.dart';
-import '../../features/Menu/help/feedback_page.dart';
-import '../../features/Menu/help/help.dart';
-import '../../features/Menu/help/report.dart';
-import '../../features/Menu/main_menu.dart';
-import '../../features/Menu/settings/settings.dart';
-import '../../features/Notifications/notification_page.dart';
-import '../../features/Profile/edit_profile_page.dart';
-import '../../features/Profile/profile_page.dart';
-import '../../features/Split/split_details_page.dart';
-import '../../features/Split/split_page.dart';
-import '../../features/Transportation/add_new_transportation.dart';
-import '../../features/Transportation/edit_transportation.dart';
-import '../../features/Trip_Details/detail_page.dart';
-import '../../features/Trip_Details/explore.dart';
-import '../../features/Trip_Details/explore_basic.dart';
-import '../../features/Trip_Details/followers/user_following_list_page.dart';
-import '../../features/Trip_Details/members/members_layout.dart';
-import '../../features/Trip_Management/add_trip_page.dart';
-import '../../features/Trip_Management/edit_trip.dart';
-import '../../features/Trips/current_trips_page.dart';
-import '../../features/Users/all_users_page.dart';
-import '../../features/Users/user_profile_page.dart';
 import '../../models/activity_model/activity_model.dart';
 import '../../models/lodging_model/lodging_model.dart';
 import '../../models/member_model/member_model.dart';
@@ -46,6 +14,38 @@ import '../../models/split_model/split_model.dart';
 import '../../models/transportation_model/transportation_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../../repositories/all_users_repository.dart';
+import '../../screens/Activities/activity_page.dart';
+import '../../screens/Activities/add_new_activity.dart';
+import '../../screens/Activities/edit_activity.dart';
+import '../../screens/Activity_Management/add_activity_page.dart';
+import '../../screens/Auth/signup_screen.dart';
+import '../../screens/Chat/chat_page.dart';
+import '../../screens/Lodging/add_new_lodging.dart';
+import '../../screens/Lodging/edit_lodging.dart';
+import '../../screens/Lodging/lodging_page.dart';
+import '../../screens/Main_Page/main_page.dart';
+import '../../screens/Menu/help/feedback_page.dart';
+import '../../screens/Menu/help/help.dart';
+import '../../screens/Menu/help/report.dart';
+import '../../screens/Menu/main_menu.dart';
+import '../../screens/Menu/settings/settings.dart';
+import '../../screens/Notifications/notification_page.dart';
+import '../../screens/Profile/edit_profile_page.dart';
+import '../../screens/Profile/profile_page.dart';
+import '../../screens/Split/split_details_page.dart';
+import '../../screens/Split/split_page.dart';
+import '../../screens/Transportation/add_new_transportation.dart';
+import '../../screens/Transportation/edit_transportation.dart';
+import '../../screens/Trip_Details/detail_page.dart';
+import '../../screens/Trip_Details/explore.dart';
+import '../../screens/Trip_Details/explore_basic.dart';
+import '../../screens/Trip_Details/followers/user_following_list_page.dart';
+import '../../screens/Trip_Details/members/members_layout.dart';
+import '../../screens/Trip_Management/add_trip_page.dart';
+import '../../screens/Trip_Management/edit_trip.dart';
+import '../../screens/Trips/current_trips_page.dart';
+import '../../screens/Users/all_users_page.dart';
+import '../../screens/Users/user_profile_page.dart';
 import '../../services/constants/constants.dart';
 import '../../services/navigation/route_names.dart';
 import '../../size_config/size_config.dart';
@@ -316,7 +316,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
                     ),
                     const Text(
                       'Something went wrong. Sorry about that.',
-                      textScaleFactor: 1.5,
+                      textScaler: TextScaler.linear(1.5),
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.redAccent),
                     ),
@@ -325,7 +325,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
                     ),
                     const Text(
                       'Be sure to check your network connection just in case.',
-                      textScaleFactor: 1.5,
+                      textScaler: TextScaler.linear(1.5),
                       textAlign: TextAlign.center,
                     ),
                   ],

@@ -1,5 +1,6 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../constants/constants.dart';
 
@@ -36,11 +37,14 @@ class _ViewAnyLinkState extends State<ViewAnyLink> {
             bodyStyle: const TextStyle(color: Colors.blueGrey),
             onTap: widget.function,
             errorImage: travelImage,
+            displayDirection: UIDirection.uiDirectionHorizontal,
+            bodyMaxLines: 2,
           );
         }
       },
     );
   }
+
 
   Future<void> loadLinkPreview() async {
     try {

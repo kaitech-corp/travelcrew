@@ -1,15 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'cost_object_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_CostObjectModel _$$_CostObjectModelFromJson(Map<String, dynamic> json) =>
-    _$_CostObjectModel(
+_$CostObjectModelImpl _$$CostObjectModelImplFromJson(
+        Map<String, dynamic> json) =>
+    _$CostObjectModelImpl(
       amountOwe: json['amountOwe'] as int,
       datePaid: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['datePaid'], const TimestampConverter().fromJson),
@@ -21,7 +20,8 @@ _$_CostObjectModel _$$_CostObjectModelFromJson(Map<String, dynamic> json) =>
       tripDocID: json['tripDocID'] as String,
     );
 
-Map<String, dynamic> _$$_CostObjectModelToJson(_$_CostObjectModel instance) =>
+Map<String, dynamic> _$$CostObjectModelImplToJson(
+        _$CostObjectModelImpl instance) =>
     <String, dynamic>{
       'amountOwe': instance.amountOwe,
       'datePaid': _$JsonConverterToJson<Timestamp, DateTime>(

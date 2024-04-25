@@ -1,16 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'recommended_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_RecommendedContentModel _$$_RecommendedContentModelFromJson(
+_$RecommendedContentModelImpl _$$RecommendedContentModelImplFromJson(
         Map<String, dynamic> json) =>
-    _$_RecommendedContentModel(
+    _$RecommendedContentModelImpl(
       name: json['name'] as String,
       clicks: json['clicks'] as int,
       dateCreated: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -21,8 +19,8 @@ _$_RecommendedContentModel _$$_RecommendedContentModelFromJson(
           .toList(),
     );
 
-Map<String, dynamic> _$$_RecommendedContentModelToJson(
-        _$_RecommendedContentModel instance) =>
+Map<String, dynamic> _$$RecommendedContentModelImplToJson(
+        _$RecommendedContentModelImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'clicks': instance.clicks,

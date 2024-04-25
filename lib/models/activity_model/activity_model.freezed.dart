@@ -12,7 +12,7 @@ part of 'activity_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
   return _ActivityModel.fromJson(json);
@@ -150,11 +150,11 @@ class _$ActivityModelCopyWithImpl<$Res, $Val extends ActivityModel>
 }
 
 /// @nodoc
-abstract class _$$_ActivityModelCopyWith<$Res>
+abstract class _$$ActivityModelImplCopyWith<$Res>
     implements $ActivityModelCopyWith<$Res> {
-  factory _$$_ActivityModelCopyWith(
-          _$_ActivityModel value, $Res Function(_$_ActivityModel) then) =
-      __$$_ActivityModelCopyWithImpl<$Res>;
+  factory _$$ActivityModelImplCopyWith(
+          _$ActivityModelImpl value, $Res Function(_$ActivityModelImpl) then) =
+      __$$ActivityModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -174,11 +174,11 @@ abstract class _$$_ActivityModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_ActivityModelCopyWithImpl<$Res>
-    extends _$ActivityModelCopyWithImpl<$Res, _$_ActivityModel>
-    implements _$$_ActivityModelCopyWith<$Res> {
-  __$$_ActivityModelCopyWithImpl(
-      _$_ActivityModel _value, $Res Function(_$_ActivityModel) _then)
+class __$$ActivityModelImplCopyWithImpl<$Res>
+    extends _$ActivityModelCopyWithImpl<$Res, _$ActivityModelImpl>
+    implements _$$ActivityModelImplCopyWith<$Res> {
+  __$$ActivityModelImplCopyWithImpl(
+      _$ActivityModelImpl _value, $Res Function(_$ActivityModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -198,7 +198,7 @@ class __$$_ActivityModelCopyWithImpl<$Res>
     Object? uid = null,
     Object? voters = null,
   }) {
-    return _then(_$_ActivityModel(
+    return _then(_$ActivityModelImpl(
       endTime: null == endTime
           ? _value.endTime
           : endTime // ignore: cast_nullable_to_non_nullable
@@ -257,8 +257,8 @@ class __$$_ActivityModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ActivityModel implements _ActivityModel {
-  const _$_ActivityModel(
+class _$ActivityModelImpl implements _ActivityModel {
+  const _$ActivityModelImpl(
       {required this.endTime,
       @TimestampConverter() this.endDateTimestamp,
       @TimestampConverter() this.startDateTimestamp,
@@ -274,8 +274,8 @@ class _$_ActivityModel implements _ActivityModel {
       required final List<String> voters})
       : _voters = voters;
 
-  factory _$_ActivityModel.fromJson(Map<String, dynamic> json) =>
-      _$$_ActivityModelFromJson(json);
+  factory _$ActivityModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ActivityModelImplFromJson(json);
 
   @override
   final String endTime;
@@ -318,10 +318,10 @@ class _$_ActivityModel implements _ActivityModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ActivityModel &&
+            other is _$ActivityModelImpl &&
             (identical(other.endTime, endTime) || other.endTime == endTime) &&
             (identical(other.endDateTimestamp, endDateTimestamp) ||
                 other.endDateTimestamp == endDateTimestamp) &&
@@ -365,12 +365,12 @@ class _$_ActivityModel implements _ActivityModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ActivityModelCopyWith<_$_ActivityModel> get copyWith =>
-      __$$_ActivityModelCopyWithImpl<_$_ActivityModel>(this, _$identity);
+  _$$ActivityModelImplCopyWith<_$ActivityModelImpl> get copyWith =>
+      __$$ActivityModelImplCopyWithImpl<_$ActivityModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ActivityModelToJson(
+    return _$$ActivityModelImplToJson(
       this,
     );
   }
@@ -390,10 +390,10 @@ abstract class _ActivityModel implements ActivityModel {
       required final String location,
       required final String activityType,
       required final String uid,
-      required final List<String> voters}) = _$_ActivityModel;
+      required final List<String> voters}) = _$ActivityModelImpl;
 
   factory _ActivityModel.fromJson(Map<String, dynamic> json) =
-      _$_ActivityModel.fromJson;
+      _$ActivityModelImpl.fromJson;
 
   @override
   String get endTime;
@@ -426,6 +426,6 @@ abstract class _ActivityModel implements ActivityModel {
   List<String> get voters;
   @override
   @JsonKey(ignore: true)
-  _$$_ActivityModelCopyWith<_$_ActivityModel> get copyWith =>
+  _$$ActivityModelImplCopyWith<_$ActivityModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

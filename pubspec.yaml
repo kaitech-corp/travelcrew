@@ -74,7 +74,8 @@ dependencies:
   split_costs:
     path: packages/split_project
   # Web
-  any_link_preview: ^3.0.0
+  any_link_preview: 
+    path: packages/any_link_preview
   flutter_linkify: ^6.0.0
   url_launcher: ^6.1.2
   webview_flutter: ^4.2.0

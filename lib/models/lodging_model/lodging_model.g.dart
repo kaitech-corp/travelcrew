@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'lodging_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_LodgingModel _$$_LodgingModelFromJson(Map<String, dynamic> json) =>
-    _$_LodgingModel(
+_$LodgingModelImpl _$$LodgingModelImplFromJson(Map<String, dynamic> json) =>
+    _$LodgingModelImpl(
       endTime: json['endTime'] as String,
       startTime: json['startTime'] as String,
       startDateTimestamp: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -27,7 +25,7 @@ _$_LodgingModel _$$_LodgingModelFromJson(Map<String, dynamic> json) =>
           (json['voters'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$_LodgingModelToJson(_$_LodgingModel instance) =>
+Map<String, dynamic> _$$LodgingModelImplToJson(_$LodgingModelImpl instance) =>
     <String, dynamic>{
       'endTime': instance.endTime,
       'startTime': instance.startTime,

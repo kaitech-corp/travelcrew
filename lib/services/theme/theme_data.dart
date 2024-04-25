@@ -5,97 +5,108 @@ import '../constants/constants.dart';
 
 ThemeData themeDataBuilder() {
   return ThemeData(
+    useMaterial3: true,
     fontFamily: 'Cantata One',
-    textTheme:  const TextTheme(
-      displayLarge: TextStyle(fontWeight: FontWeight.bold,
-          color: Colors.black),
-      displayMedium: TextStyle(fontWeight: FontWeight.bold,
-          color: Colors.black),
-      displaySmall: TextStyle(fontWeight: FontWeight.bold,
+    textTheme: const TextTheme(
+      displayLarge: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      displayMedium:
+          TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      displaySmall: TextStyle(
+          fontWeight: FontWeight.bold,
           color: Colors.black,
           fontStyle: FontStyle.italic),
-      headlineLarge: TextStyle(fontWeight: FontWeight.bold,
-          color: Colors.black),
-      headlineMedium: TextStyle(fontWeight: FontWeight.bold,
-        color: Colors.black,),
-      headlineSmall: TextStyle(fontWeight: FontWeight.bold,
+      headlineLarge:
+          TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      headlineMedium: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+      headlineSmall: TextStyle(
+        fontWeight: FontWeight.bold,
       ),
       titleLarge: TextStyle(fontWeight: FontWeight.bold),
-      titleSmall: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic,fontSize: 14),
+      titleSmall: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontStyle: FontStyle.italic,
+          fontSize: 14),
     ),
     scaffoldBackgroundColor: canvasColor,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-          shape: MaterialStateProperty.all<
-              RoundedRectangleBorder>(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              )
-          ),
+            borderRadius: BorderRadius.circular(20),
+          )),
           textStyle: MaterialStateProperty.all<TextStyle>(
-            const TextStyle(fontFamily: 'Cantata One',
-              fontWeight: FontWeight.bold,),
+            const TextStyle(
+              fontFamily: 'Cantata One',
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          foregroundColor: MaterialStateProperty.all<Color>(
-              Colors.black
-          )
-      ),
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.black)),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: Colors.grey),
-          ),
-        ),
         textStyle: MaterialStateProperty.all<TextStyle>(
-          const TextStyle(fontFamily: 'Cantata One',
-            fontWeight: FontWeight.bold,),
+          const TextStyle(
+            fontFamily: 'Cantata One',
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         textStyle: MaterialStateProperty.all<TextStyle>(
-          const TextStyle(fontFamily: 'Cantata One',
+          const TextStyle(
+              fontFamily: 'Cantata One',
               fontWeight: FontWeight.bold,
               color: Colors.lightBlue),
         ),
       ),
     ),
     appBarTheme: const AppBarTheme(
-      iconTheme: IconThemeData(color: Colors.black),),
+      iconTheme: IconThemeData(color: Colors.black),
+    ),
+    dialogBackgroundColor: Colors.white,
+    dialogTheme: const DialogTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+    ),
     primaryIconTheme: IconThemeData(
         size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
-        color: Colors.black
-    ),
+        color: Colors.black),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blue
-    ),
+        foregroundColor: Colors.white, backgroundColor: Colors.blue),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF121212),
         selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Color(0xFF121212)
-    ),
+        unselectedItemColor: Color(0xFF121212)),
     canvasColor: const Color(0xFFFAFAFA),
     brightness: Brightness.light,
     primaryColor: Colors.white,
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: const TextStyle(color: Colors.black),
       fillColor: Colors.grey[300],
-      focusedBorder: const UnderlineInputBorder(
-        
-      ),
+      focusedBorder: const UnderlineInputBorder(),
     ),
     iconTheme: IconThemeData(
       color: Colors.white,
-      size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
-    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.blueAccent),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
-      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.iOS: ZoomPageTransitionsBuilder()
-    }),
+      size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 20,
+    ),
+    cardTheme:  CardTheme(
+      surfaceTintColor: Colors.white,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: const BorderSide(color: Colors.grey),
+      ),
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: ZoomPageTransitionsBuilder()
+        }),
   );
 }

@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../services/database.dart';
-import '../../../../services/functions/cloud_functions.dart';
 import '../blocs/generics/generic_bloc.dart';
 import '../models/chat_model/chat_model.dart';
+import '../services/functions/cloud_functions/admin_functions.dart';
 
 /// Interface to our 'chat' Firebase collection.
 /// It contains the chat messages.
@@ -26,7 +26,7 @@ class ChatRepository extends GenericBlocRepository<ChatModel> {
         return ChatModel.fromJson(doc.data()! as Map<String, dynamic>);
       }).toList();
     } catch (e) {
-      CloudFunction().logError('Error retrieving chat list:  $e');
+      AdminCloudFunction().logError('Error retrieving chat list:  $e');
       if (kDebugMode) {
         print('Error displaying chat messages: $e');
       }
@@ -60,7 +60,7 @@ class ChatNotificationRepository extends GenericBlocRepository<ChatModel> {
         return ChatModel.fromJson(doc as Map<String, Object>);
       }).toList();
     } catch (e) {
-      CloudFunction().logError('Error retrieving chat list:  $e');
+      AdminCloudFunction().logError('Error retrieving chat list:  $e');
       return <ChatModel>[];
     }
   }

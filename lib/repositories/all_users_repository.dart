@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
 import '../blocs/generics/generic_bloc.dart';
 import '../models/public_profile_model/public_profile_model.dart';
+import '../services/functions/cloud_functions/admin_functions.dart';
 
 /// Interface to our 'userPublicProfile' Firebase collection.
 ///
@@ -27,7 +27,7 @@ class AllUserRepository extends GenericBlocRepository<UserPublicProfile>{
                 .toList();
         return userList;
       } catch (e) {
-        CloudFunction().logError(
+        AdminCloudFunction().logError(
             'Error retrieving stream of all users: $e');
         return <UserPublicProfile>[];
       }

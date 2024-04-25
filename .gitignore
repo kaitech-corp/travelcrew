@@ -52,3 +52,7 @@ lib/models/trip_model/trip_model.freezed.dart
 microservices/notification_system/.readmes
 ios/Flutter/AppFrameworkInfo.plist
 ios/Flutter/Generated.xcconfig
+
+
+# Packages
+/packages/any_link_preview/

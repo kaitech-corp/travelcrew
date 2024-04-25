@@ -17,12 +17,15 @@ import '../services/navigation/router.dart';
 import '../services/responsive/responsive_wrapper.dart';
 import '../services/theme/theme_data.dart';
 import '../size_config/size_config.dart';
-import 'features/Auth/bloc/Authentification/authentication_bloc.dart';
-import 'features/Auth/bloc/Authentification/authentication_event.dart';
-import 'features/Auth/bloc/Authentification/authentication_state.dart';
-import 'features/Auth/login_screen.dart';
-import 'features/main_page/main_page.dart';
+
 import 'repositories/user_repository.dart';
+import 'screens/Auth/bloc/Authentification/authentication_bloc.dart';
+import 'screens/Auth/bloc/Authentification/authentication_event.dart';
+import 'screens/Auth/bloc/Authentification/authentication_state.dart';
+import 'screens/Auth/login_screen.dart';
+
+
+import 'screens/Main_Page/main_page.dart';
 import 'services/l10n.dart';
 
 void main() async {

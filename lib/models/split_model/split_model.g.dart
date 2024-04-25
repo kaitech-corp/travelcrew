@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'split_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_SplitObject _$$_SplitObjectFromJson(Map<String, dynamic> json) =>
-    _$_SplitObject(
+_$SplitObjectImpl _$$SplitObjectImplFromJson(Map<String, dynamic> json) =>
+    _$SplitObjectImpl(
       amountRemaining: json['amountRemaining'] as int,
       dateCreated: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['dateCreated'], const TimestampConverter().fromJson),
@@ -29,7 +27,7 @@ _$_SplitObject _$$_SplitObjectFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$_SplitObjectToJson(_$_SplitObject instance) =>
+Map<String, dynamic> _$$SplitObjectImplToJson(_$SplitObjectImpl instance) =>
     <String, dynamic>{
       'amountRemaining': instance.amountRemaining,
       'dateCreated': _$JsonConverterToJson<Timestamp, DateTime>(

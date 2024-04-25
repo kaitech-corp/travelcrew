@@ -12,7 +12,7 @@ part of 'transportation_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 TransportationModel _$TransportationModelFromJson(Map<String, dynamic> json) {
   return _TransportationModel.fromJson(json);
@@ -184,11 +184,11 @@ class _$TransportationModelCopyWithImpl<$Res, $Val extends TransportationModel>
 }
 
 /// @nodoc
-abstract class _$$_TransportationModelCopyWith<$Res>
+abstract class _$$TransportationModelImplCopyWith<$Res>
     implements $TransportationModelCopyWith<$Res> {
-  factory _$$_TransportationModelCopyWith(_$_TransportationModel value,
-          $Res Function(_$_TransportationModel) then) =
-      __$$_TransportationModelCopyWithImpl<$Res>;
+  factory _$$TransportationModelImplCopyWith(_$TransportationModelImpl value,
+          $Res Function(_$TransportationModelImpl) then) =
+      __$$TransportationModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -213,11 +213,11 @@ abstract class _$$_TransportationModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TransportationModelCopyWithImpl<$Res>
-    extends _$TransportationModelCopyWithImpl<$Res, _$_TransportationModel>
-    implements _$$_TransportationModelCopyWith<$Res> {
-  __$$_TransportationModelCopyWithImpl(_$_TransportationModel _value,
-      $Res Function(_$_TransportationModel) _then)
+class __$$TransportationModelImplCopyWithImpl<$Res>
+    extends _$TransportationModelCopyWithImpl<$Res, _$TransportationModelImpl>
+    implements _$$TransportationModelImplCopyWith<$Res> {
+  __$$TransportationModelImplCopyWithImpl(_$TransportationModelImpl _value,
+      $Res Function(_$TransportationModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -242,7 +242,7 @@ class __$$_TransportationModelCopyWithImpl<$Res>
     Object? uid = null,
     Object? tripDocID = null,
   }) {
-    return _then(_$_TransportationModel(
+    return _then(_$TransportationModelImpl(
       mode: null == mode
           ? _value.mode
           : mode // ignore: cast_nullable_to_non_nullable
@@ -321,8 +321,8 @@ class __$$_TransportationModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TransportationModel implements _TransportationModel {
-  const _$_TransportationModel(
+class _$TransportationModelImpl implements _TransportationModel {
+  const _$TransportationModelImpl(
       {required this.mode,
       required this.airline,
       required this.airportCode,
@@ -343,8 +343,8 @@ class _$_TransportationModel implements _TransportationModel {
       required this.tripDocID})
       : _carpoolingWith = carpoolingWith;
 
-  factory _$_TransportationModel.fromJson(Map<String, dynamic> json) =>
-      _$$_TransportationModelFromJson(json);
+  factory _$TransportationModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TransportationModelImplFromJson(json);
 
   @override
   final String mode;
@@ -397,10 +397,10 @@ class _$_TransportationModel implements _TransportationModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TransportationModel &&
+            other is _$TransportationModelImpl &&
             (identical(other.mode, mode) || other.mode == mode) &&
             (identical(other.airline, airline) || other.airline == airline) &&
             (identical(other.airportCode, airportCode) ||
@@ -462,13 +462,13 @@ class _$_TransportationModel implements _TransportationModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TransportationModelCopyWith<_$_TransportationModel> get copyWith =>
-      __$$_TransportationModelCopyWithImpl<_$_TransportationModel>(
+  _$$TransportationModelImplCopyWith<_$TransportationModelImpl> get copyWith =>
+      __$$TransportationModelImplCopyWithImpl<_$TransportationModelImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_TransportationModelToJson(
+    return _$$TransportationModelImplToJson(
       this,
     );
   }
@@ -493,10 +493,10 @@ abstract class _TransportationModel implements TransportationModel {
       required final String returnDateDepartTime,
       @TimestampConverter() final DateTime? returnDate,
       required final String uid,
-      required final String tripDocID}) = _$_TransportationModel;
+      required final String tripDocID}) = _$TransportationModelImpl;
 
   factory _TransportationModel.fromJson(Map<String, dynamic> json) =
-      _$_TransportationModel.fromJson;
+      _$TransportationModelImpl.fromJson;
 
   @override
   String get mode;
@@ -538,6 +538,6 @@ abstract class _TransportationModel implements TransportationModel {
   String get tripDocID;
   @override
   @JsonKey(ignore: true)
-  _$$_TransportationModelCopyWith<_$_TransportationModel> get copyWith =>
+  _$$TransportationModelImplCopyWith<_$TransportationModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

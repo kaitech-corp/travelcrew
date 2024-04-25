@@ -12,7 +12,7 @@ part of 'feedback_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 FeedbackModel _$FeedbackModelFromJson(Map<String, dynamic> json) {
   return _FeedbackModel.fromJson(json);
@@ -85,11 +85,11 @@ class _$FeedbackModelCopyWithImpl<$Res, $Val extends FeedbackModel>
 }
 
 /// @nodoc
-abstract class _$$_FeedbackModelCopyWith<$Res>
+abstract class _$$FeedbackModelImplCopyWith<$Res>
     implements $FeedbackModelCopyWith<$Res> {
-  factory _$$_FeedbackModelCopyWith(
-          _$_FeedbackModel value, $Res Function(_$_FeedbackModel) then) =
-      __$$_FeedbackModelCopyWithImpl<$Res>;
+  factory _$$FeedbackModelImplCopyWith(
+          _$FeedbackModelImpl value, $Res Function(_$FeedbackModelImpl) then) =
+      __$$FeedbackModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -100,11 +100,11 @@ abstract class _$$_FeedbackModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_FeedbackModelCopyWithImpl<$Res>
-    extends _$FeedbackModelCopyWithImpl<$Res, _$_FeedbackModel>
-    implements _$$_FeedbackModelCopyWith<$Res> {
-  __$$_FeedbackModelCopyWithImpl(
-      _$_FeedbackModel _value, $Res Function(_$_FeedbackModel) _then)
+class __$$FeedbackModelImplCopyWithImpl<$Res>
+    extends _$FeedbackModelCopyWithImpl<$Res, _$FeedbackModelImpl>
+    implements _$$FeedbackModelImplCopyWith<$Res> {
+  __$$FeedbackModelImplCopyWithImpl(
+      _$FeedbackModelImpl _value, $Res Function(_$FeedbackModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -115,7 +115,7 @@ class __$$_FeedbackModelCopyWithImpl<$Res>
     Object? timestamp = freezed,
     Object? uid = null,
   }) {
-    return _then(_$_FeedbackModel(
+    return _then(_$FeedbackModelImpl(
       fieldID: null == fieldID
           ? _value.fieldID
           : fieldID // ignore: cast_nullable_to_non_nullable
@@ -138,15 +138,15 @@ class __$$_FeedbackModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FeedbackModel implements _FeedbackModel {
-  const _$_FeedbackModel(
+class _$FeedbackModelImpl implements _FeedbackModel {
+  const _$FeedbackModelImpl(
       {required this.fieldID,
       required this.message,
       @TimestampConverter() this.timestamp,
       required this.uid});
 
-  factory _$_FeedbackModel.fromJson(Map<String, dynamic> json) =>
-      _$$_FeedbackModelFromJson(json);
+  factory _$FeedbackModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FeedbackModelImplFromJson(json);
 
   @override
   final String fieldID;
@@ -164,10 +164,10 @@ class _$_FeedbackModel implements _FeedbackModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_FeedbackModel &&
+            other is _$FeedbackModelImpl &&
             (identical(other.fieldID, fieldID) || other.fieldID == fieldID) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.timestamp, timestamp) ||
@@ -183,12 +183,12 @@ class _$_FeedbackModel implements _FeedbackModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_FeedbackModelCopyWith<_$_FeedbackModel> get copyWith =>
-      __$$_FeedbackModelCopyWithImpl<_$_FeedbackModel>(this, _$identity);
+  _$$FeedbackModelImplCopyWith<_$FeedbackModelImpl> get copyWith =>
+      __$$FeedbackModelImplCopyWithImpl<_$FeedbackModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_FeedbackModelToJson(
+    return _$$FeedbackModelImplToJson(
       this,
     );
   }
@@ -199,10 +199,10 @@ abstract class _FeedbackModel implements FeedbackModel {
       {required final String fieldID,
       required final String message,
       @TimestampConverter() final DateTime? timestamp,
-      required final String uid}) = _$_FeedbackModel;
+      required final String uid}) = _$FeedbackModelImpl;
 
   factory _FeedbackModel.fromJson(Map<String, dynamic> json) =
-      _$_FeedbackModel.fromJson;
+      _$FeedbackModelImpl.fromJson;
 
   @override
   String get fieldID;
@@ -215,6 +215,6 @@ abstract class _FeedbackModel implements FeedbackModel {
   String get uid;
   @override
   @JsonKey(ignore: true)
-  _$$_FeedbackModelCopyWith<_$_FeedbackModel> get copyWith =>
+  _$$FeedbackModelImplCopyWith<_$FeedbackModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

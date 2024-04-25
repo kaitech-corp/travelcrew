@@ -12,7 +12,7 @@ part of 'lodging_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 LodgingModel _$LodgingModelFromJson(Map<String, dynamic> json) {
   return _LodgingModel.fromJson(json);
@@ -142,11 +142,11 @@ class _$LodgingModelCopyWithImpl<$Res, $Val extends LodgingModel>
 }
 
 /// @nodoc
-abstract class _$$_LodgingModelCopyWith<$Res>
+abstract class _$$LodgingModelImplCopyWith<$Res>
     implements $LodgingModelCopyWith<$Res> {
-  factory _$$_LodgingModelCopyWith(
-          _$_LodgingModel value, $Res Function(_$_LodgingModel) then) =
-      __$$_LodgingModelCopyWithImpl<$Res>;
+  factory _$$LodgingModelImplCopyWith(
+          _$LodgingModelImpl value, $Res Function(_$LodgingModelImpl) then) =
+      __$$LodgingModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -165,11 +165,11 @@ abstract class _$$_LodgingModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_LodgingModelCopyWithImpl<$Res>
-    extends _$LodgingModelCopyWithImpl<$Res, _$_LodgingModel>
-    implements _$$_LodgingModelCopyWith<$Res> {
-  __$$_LodgingModelCopyWithImpl(
-      _$_LodgingModel _value, $Res Function(_$_LodgingModel) _then)
+class __$$LodgingModelImplCopyWithImpl<$Res>
+    extends _$LodgingModelCopyWithImpl<$Res, _$LodgingModelImpl>
+    implements _$$LodgingModelImplCopyWith<$Res> {
+  __$$LodgingModelImplCopyWithImpl(
+      _$LodgingModelImpl _value, $Res Function(_$LodgingModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -188,7 +188,7 @@ class __$$_LodgingModelCopyWithImpl<$Res>
     Object? uid = null,
     Object? voters = null,
   }) {
-    return _then(_$_LodgingModel(
+    return _then(_$LodgingModelImpl(
       endTime: null == endTime
           ? _value.endTime
           : endTime // ignore: cast_nullable_to_non_nullable
@@ -243,8 +243,8 @@ class __$$_LodgingModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_LodgingModel implements _LodgingModel {
-  const _$_LodgingModel(
+class _$LodgingModelImpl implements _LodgingModel {
+  const _$LodgingModelImpl(
       {required this.endTime,
       required this.startTime,
       @TimestampConverter() this.startDateTimestamp,
@@ -259,8 +259,8 @@ class _$_LodgingModel implements _LodgingModel {
       required final List<String> voters})
       : _voters = voters;
 
-  factory _$_LodgingModel.fromJson(Map<String, dynamic> json) =>
-      _$$_LodgingModelFromJson(json);
+  factory _$LodgingModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LodgingModelImplFromJson(json);
 
   @override
   final String endTime;
@@ -300,10 +300,10 @@ class _$_LodgingModel implements _LodgingModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LodgingModel &&
+            other is _$LodgingModelImpl &&
             (identical(other.endTime, endTime) || other.endTime == endTime) &&
             (identical(other.startTime, startTime) ||
                 other.startTime == startTime) &&
@@ -344,12 +344,12 @@ class _$_LodgingModel implements _LodgingModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_LodgingModelCopyWith<_$_LodgingModel> get copyWith =>
-      __$$_LodgingModelCopyWithImpl<_$_LodgingModel>(this, _$identity);
+  _$$LodgingModelImplCopyWith<_$LodgingModelImpl> get copyWith =>
+      __$$LodgingModelImplCopyWithImpl<_$LodgingModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_LodgingModelToJson(
+    return _$$LodgingModelImplToJson(
       this,
     );
   }
@@ -368,10 +368,10 @@ abstract class _LodgingModel implements LodgingModel {
       required final String link,
       required final String lodgingType,
       required final String uid,
-      required final List<String> voters}) = _$_LodgingModel;
+      required final List<String> voters}) = _$LodgingModelImpl;
 
   factory _LodgingModel.fromJson(Map<String, dynamic> json) =
-      _$_LodgingModel.fromJson;
+      _$LodgingModelImpl.fromJson;
 
   @override
   String get endTime;
@@ -401,6 +401,6 @@ abstract class _LodgingModel implements LodgingModel {
   List<String> get voters;
   @override
   @JsonKey(ignore: true)
-  _$$_LodgingModelCopyWith<_$_LodgingModel> get copyWith =>
+  _$$LodgingModelImplCopyWith<_$LodgingModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

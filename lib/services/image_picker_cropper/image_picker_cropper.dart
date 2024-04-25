@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../functions/cloud_functions.dart';
+import '../functions/cloud_functions/admin_functions.dart';
 
 class ImagePickerAndCropper {
   Future<File> uploadImage(ValueNotifier<File> urlToImage) async {
@@ -15,7 +15,7 @@ class ImagePickerAndCropper {
         return croppedFile ?? File(pickedFile.path);
       }
     } catch (e) {
-      CloudFunction().logError('Error Picking signup image: $e');
+      AdminCloudFunction().logError('Error Picking signup image: $e');
     }
     return urlToImage.value;
   }

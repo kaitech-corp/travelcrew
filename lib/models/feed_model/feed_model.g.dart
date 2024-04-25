@@ -1,14 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'feed_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_FeedModel _$$_FeedModelFromJson(Map<String, dynamic> json) => _$_FeedModel(
+_$FeedModelImpl _$$FeedModelImplFromJson(Map<String, dynamic> json) =>
+    _$FeedModelImpl(
       dateCreated: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['dateCreated'], const TimestampConverter().fromJson),
       docID: json['docID'] as String,
@@ -16,7 +15,7 @@ _$_FeedModel _$$_FeedModelFromJson(Map<String, dynamic> json) => _$_FeedModel(
       tripID: json['tripID'] as String,
     );
 
-Map<String, dynamic> _$$_FeedModelToJson(_$_FeedModel instance) =>
+Map<String, dynamic> _$$FeedModelImplToJson(_$FeedModelImpl instance) =>
     <String, dynamic>{
       'dateCreated': _$JsonConverterToJson<Timestamp, DateTime>(
           instance.dateCreated, const TimestampConverter().toJson),

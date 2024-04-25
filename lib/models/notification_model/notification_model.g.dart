@@ -1,15 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'notification_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_NotificationModel _$$_NotificationModelFromJson(Map<String, dynamic> json) =>
-    _$_NotificationModel(
+_$NotificationModelImpl _$$NotificationModelImplFromJson(
+        Map<String, dynamic> json) =>
+    _$NotificationModelImpl(
       type: json['type'] as String,
       message: json['message'] as String,
       fieldID: json['fieldID'] as String,
@@ -25,8 +24,8 @@ _$_NotificationModel _$$_NotificationModelFromJson(Map<String, dynamic> json) =>
       ownerDisplayName: json['ownerDisplayName'] as String?,
     );
 
-Map<String, dynamic> _$$_NotificationModelToJson(
-        _$_NotificationModel instance) =>
+Map<String, dynamic> _$$NotificationModelImplToJson(
+        _$NotificationModelImpl instance) =>
     <String, dynamic>{
       'type': instance.type,
       'message': instance.message,

@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'member_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_MemberModel _$$_MemberModelFromJson(Map<String, dynamic> json) =>
-    _$_MemberModel(
+_$MemberModelImpl _$$MemberModelImplFromJson(Map<String, dynamic> json) =>
+    _$MemberModelImpl(
       displayName: json['displayName'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
@@ -17,7 +15,7 @@ _$_MemberModel _$$_MemberModelFromJson(Map<String, dynamic> json) =>
       urlToImage: json['urlToImage'] as String,
     );
 
-Map<String, dynamic> _$$_MemberModelToJson(_$_MemberModel instance) =>
+Map<String, dynamic> _$$MemberModelImplToJson(_$MemberModelImpl instance) =>
     <String, dynamic>{
       'displayName': instance.displayName,
       'firstName': instance.firstName,

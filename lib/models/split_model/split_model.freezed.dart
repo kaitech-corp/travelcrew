@@ -12,7 +12,7 @@ part of 'split_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 SplitObject _$SplitObjectFromJson(Map<String, dynamic> json) {
   return _SplitObject.fromJson(json);
@@ -149,11 +149,11 @@ class _$SplitObjectCopyWithImpl<$Res, $Val extends SplitObject>
 }
 
 /// @nodoc
-abstract class _$$_SplitObjectCopyWith<$Res>
+abstract class _$$SplitObjectImplCopyWith<$Res>
     implements $SplitObjectCopyWith<$Res> {
-  factory _$$_SplitObjectCopyWith(
-          _$_SplitObject value, $Res Function(_$_SplitObject) then) =
-      __$$_SplitObjectCopyWithImpl<$Res>;
+  factory _$$SplitObjectImplCopyWith(
+          _$SplitObjectImpl value, $Res Function(_$SplitObjectImpl) then) =
+      __$$SplitObjectImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -173,11 +173,11 @@ abstract class _$$_SplitObjectCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_SplitObjectCopyWithImpl<$Res>
-    extends _$SplitObjectCopyWithImpl<$Res, _$_SplitObject>
-    implements _$$_SplitObjectCopyWith<$Res> {
-  __$$_SplitObjectCopyWithImpl(
-      _$_SplitObject _value, $Res Function(_$_SplitObject) _then)
+class __$$SplitObjectImplCopyWithImpl<$Res>
+    extends _$SplitObjectCopyWithImpl<$Res, _$SplitObjectImpl>
+    implements _$$SplitObjectImplCopyWith<$Res> {
+  __$$SplitObjectImplCopyWithImpl(
+      _$SplitObjectImpl _value, $Res Function(_$SplitObjectImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -197,7 +197,7 @@ class __$$_SplitObjectCopyWithImpl<$Res>
     Object? users = null,
     Object? userSelectedList = null,
   }) {
-    return _then(_$_SplitObject(
+    return _then(_$SplitObjectImpl(
       amountRemaining: null == amountRemaining
           ? _value.amountRemaining
           : amountRemaining // ignore: cast_nullable_to_non_nullable
@@ -256,8 +256,8 @@ class __$$_SplitObjectCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SplitObject implements _SplitObject {
-  const _$_SplitObject(
+class _$SplitObjectImpl implements _SplitObject {
+  const _$SplitObjectImpl(
       {required this.amountRemaining,
       @TimestampConverter() this.dateCreated,
       required this.details,
@@ -274,8 +274,8 @@ class _$_SplitObject implements _SplitObject {
       : _users = users,
         _userSelectedList = userSelectedList;
 
-  factory _$_SplitObject.fromJson(Map<String, dynamic> json) =>
-      _$$_SplitObjectFromJson(json);
+  factory _$SplitObjectImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SplitObjectImplFromJson(json);
 
   @override
   final int amountRemaining;
@@ -324,10 +324,10 @@ class _$_SplitObject implements _SplitObject {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SplitObject &&
+            other is _$SplitObjectImpl &&
             (identical(other.amountRemaining, amountRemaining) ||
                 other.amountRemaining == amountRemaining) &&
             (identical(other.dateCreated, dateCreated) ||
@@ -375,12 +375,12 @@ class _$_SplitObject implements _SplitObject {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SplitObjectCopyWith<_$_SplitObject> get copyWith =>
-      __$$_SplitObjectCopyWithImpl<_$_SplitObject>(this, _$identity);
+  _$$SplitObjectImplCopyWith<_$SplitObjectImpl> get copyWith =>
+      __$$SplitObjectImplCopyWithImpl<_$SplitObjectImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_SplitObjectToJson(
+    return _$$SplitObjectImplToJson(
       this,
     );
   }
@@ -400,10 +400,10 @@ abstract class _SplitObject implements SplitObject {
       required final String purchasedByUID,
       required final String tripDocID,
       required final List<String> users,
-      required final List<String> userSelectedList}) = _$_SplitObject;
+      required final List<String> userSelectedList}) = _$SplitObjectImpl;
 
   factory _SplitObject.fromJson(Map<String, dynamic> json) =
-      _$_SplitObject.fromJson;
+      _$SplitObjectImpl.fromJson;
 
   @override
   int get amountRemaining;
@@ -435,6 +435,6 @@ abstract class _SplitObject implements SplitObject {
   List<String> get userSelectedList;
   @override
   @JsonKey(ignore: true)
-  _$$_SplitObjectCopyWith<_$_SplitObject> get copyWith =>
+  _$$SplitObjectImplCopyWith<_$SplitObjectImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

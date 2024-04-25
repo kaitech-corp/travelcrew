@@ -12,7 +12,7 @@ part of 'feed_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 FeedModel _$FeedModelFromJson(Map<String, dynamic> json) {
   return _FeedModel.fromJson(json);
@@ -84,10 +84,11 @@ class _$FeedModelCopyWithImpl<$Res, $Val extends FeedModel>
 }
 
 /// @nodoc
-abstract class _$$_FeedModelCopyWith<$Res> implements $FeedModelCopyWith<$Res> {
-  factory _$$_FeedModelCopyWith(
-          _$_FeedModel value, $Res Function(_$_FeedModel) then) =
-      __$$_FeedModelCopyWithImpl<$Res>;
+abstract class _$$FeedModelImplCopyWith<$Res>
+    implements $FeedModelCopyWith<$Res> {
+  factory _$$FeedModelImplCopyWith(
+          _$FeedModelImpl value, $Res Function(_$FeedModelImpl) then) =
+      __$$FeedModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -98,11 +99,11 @@ abstract class _$$_FeedModelCopyWith<$Res> implements $FeedModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_FeedModelCopyWithImpl<$Res>
-    extends _$FeedModelCopyWithImpl<$Res, _$_FeedModel>
-    implements _$$_FeedModelCopyWith<$Res> {
-  __$$_FeedModelCopyWithImpl(
-      _$_FeedModel _value, $Res Function(_$_FeedModel) _then)
+class __$$FeedModelImplCopyWithImpl<$Res>
+    extends _$FeedModelCopyWithImpl<$Res, _$FeedModelImpl>
+    implements _$$FeedModelImplCopyWith<$Res> {
+  __$$FeedModelImplCopyWithImpl(
+      _$FeedModelImpl _value, $Res Function(_$FeedModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -113,7 +114,7 @@ class __$$_FeedModelCopyWithImpl<$Res>
     Object? message = null,
     Object? tripID = null,
   }) {
-    return _then(_$_FeedModel(
+    return _then(_$FeedModelImpl(
       dateCreated: freezed == dateCreated
           ? _value.dateCreated
           : dateCreated // ignore: cast_nullable_to_non_nullable
@@ -136,15 +137,15 @@ class __$$_FeedModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FeedModel implements _FeedModel {
-  const _$_FeedModel(
+class _$FeedModelImpl implements _FeedModel {
+  const _$FeedModelImpl(
       {@TimestampConverter() this.dateCreated,
       required this.docID,
       required this.message,
       required this.tripID});
 
-  factory _$_FeedModel.fromJson(Map<String, dynamic> json) =>
-      _$$_FeedModelFromJson(json);
+  factory _$FeedModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FeedModelImplFromJson(json);
 
   @override
   @TimestampConverter()
@@ -162,10 +163,10 @@ class _$_FeedModel implements _FeedModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_FeedModel &&
+            other is _$FeedModelImpl &&
             (identical(other.dateCreated, dateCreated) ||
                 other.dateCreated == dateCreated) &&
             (identical(other.docID, docID) || other.docID == docID) &&
@@ -181,12 +182,12 @@ class _$_FeedModel implements _FeedModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_FeedModelCopyWith<_$_FeedModel> get copyWith =>
-      __$$_FeedModelCopyWithImpl<_$_FeedModel>(this, _$identity);
+  _$$FeedModelImplCopyWith<_$FeedModelImpl> get copyWith =>
+      __$$FeedModelImplCopyWithImpl<_$FeedModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_FeedModelToJson(
+    return _$$FeedModelImplToJson(
       this,
     );
   }
@@ -197,10 +198,10 @@ abstract class _FeedModel implements FeedModel {
       {@TimestampConverter() final DateTime? dateCreated,
       required final String docID,
       required final String message,
-      required final String tripID}) = _$_FeedModel;
+      required final String tripID}) = _$FeedModelImpl;
 
   factory _FeedModel.fromJson(Map<String, dynamic> json) =
-      _$_FeedModel.fromJson;
+      _$FeedModelImpl.fromJson;
 
   @override
   @TimestampConverter()
@@ -213,6 +214,6 @@ abstract class _FeedModel implements FeedModel {
   String get tripID;
   @override
   @JsonKey(ignore: true)
-  _$$_FeedModelCopyWith<_$_FeedModel> get copyWith =>
+  _$$FeedModelImplCopyWith<_$FeedModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

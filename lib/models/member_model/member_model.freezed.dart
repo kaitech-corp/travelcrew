@@ -12,7 +12,7 @@ part of 'member_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 MemberModel _$MemberModelFromJson(Map<String, dynamic> json) {
   return _MemberModel.fromJson(json);
@@ -91,11 +91,11 @@ class _$MemberModelCopyWithImpl<$Res, $Val extends MemberModel>
 }
 
 /// @nodoc
-abstract class _$$_MemberModelCopyWith<$Res>
+abstract class _$$MemberModelImplCopyWith<$Res>
     implements $MemberModelCopyWith<$Res> {
-  factory _$$_MemberModelCopyWith(
-          _$_MemberModel value, $Res Function(_$_MemberModel) then) =
-      __$$_MemberModelCopyWithImpl<$Res>;
+  factory _$$MemberModelImplCopyWith(
+          _$MemberModelImpl value, $Res Function(_$MemberModelImpl) then) =
+      __$$MemberModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -107,11 +107,11 @@ abstract class _$$_MemberModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_MemberModelCopyWithImpl<$Res>
-    extends _$MemberModelCopyWithImpl<$Res, _$_MemberModel>
-    implements _$$_MemberModelCopyWith<$Res> {
-  __$$_MemberModelCopyWithImpl(
-      _$_MemberModel _value, $Res Function(_$_MemberModel) _then)
+class __$$MemberModelImplCopyWithImpl<$Res>
+    extends _$MemberModelCopyWithImpl<$Res, _$MemberModelImpl>
+    implements _$$MemberModelImplCopyWith<$Res> {
+  __$$MemberModelImplCopyWithImpl(
+      _$MemberModelImpl _value, $Res Function(_$MemberModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -123,7 +123,7 @@ class __$$_MemberModelCopyWithImpl<$Res>
     Object? uid = null,
     Object? urlToImage = null,
   }) {
-    return _then(_$_MemberModel(
+    return _then(_$MemberModelImpl(
       displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
@@ -150,16 +150,16 @@ class __$$_MemberModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_MemberModel implements _MemberModel {
-  const _$_MemberModel(
+class _$MemberModelImpl implements _MemberModel {
+  const _$MemberModelImpl(
       {required this.displayName,
       required this.firstName,
       required this.lastName,
       required this.uid,
       required this.urlToImage});
 
-  factory _$_MemberModel.fromJson(Map<String, dynamic> json) =>
-      _$$_MemberModelFromJson(json);
+  factory _$MemberModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MemberModelImplFromJson(json);
 
   @override
   final String displayName;
@@ -178,10 +178,10 @@ class _$_MemberModel implements _MemberModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MemberModel &&
+            other is _$MemberModelImpl &&
             (identical(other.displayName, displayName) ||
                 other.displayName == displayName) &&
             (identical(other.firstName, firstName) ||
@@ -201,12 +201,12 @@ class _$_MemberModel implements _MemberModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MemberModelCopyWith<_$_MemberModel> get copyWith =>
-      __$$_MemberModelCopyWithImpl<_$_MemberModel>(this, _$identity);
+  _$$MemberModelImplCopyWith<_$MemberModelImpl> get copyWith =>
+      __$$MemberModelImplCopyWithImpl<_$MemberModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_MemberModelToJson(
+    return _$$MemberModelImplToJson(
       this,
     );
   }
@@ -218,10 +218,10 @@ abstract class _MemberModel implements MemberModel {
       required final String firstName,
       required final String lastName,
       required final String uid,
-      required final String urlToImage}) = _$_MemberModel;
+      required final String urlToImage}) = _$MemberModelImpl;
 
   factory _MemberModel.fromJson(Map<String, dynamic> json) =
-      _$_MemberModel.fromJson;
+      _$MemberModelImpl.fromJson;
 
   @override
   String get displayName;
@@ -235,6 +235,6 @@ abstract class _MemberModel implements MemberModel {
   String get urlToImage;
   @override
   @JsonKey(ignore: true)
-  _$$_MemberModelCopyWith<_$_MemberModel> get copyWith =>
+  _$$MemberModelImplCopyWith<_$MemberModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

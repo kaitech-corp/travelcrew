@@ -12,7 +12,7 @@ part of 'settings_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 SettingsModel _$SettingsModelFromJson(Map<String, dynamic> json) {
   return _SettingsModel.fromJson(json);
@@ -92,11 +92,11 @@ class _$SettingsModelCopyWithImpl<$Res, $Val extends SettingsModel>
 }
 
 /// @nodoc
-abstract class _$$_SettingsModelCopyWith<$Res>
+abstract class _$$SettingsModelImplCopyWith<$Res>
     implements $SettingsModelCopyWith<$Res> {
-  factory _$$_SettingsModelCopyWith(
-          _$_SettingsModel value, $Res Function(_$_SettingsModel) then) =
-      __$$_SettingsModelCopyWithImpl<$Res>;
+  factory _$$SettingsModelImplCopyWith(
+          _$SettingsModelImpl value, $Res Function(_$SettingsModelImpl) then) =
+      __$$SettingsModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -108,11 +108,11 @@ abstract class _$$_SettingsModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_SettingsModelCopyWithImpl<$Res>
-    extends _$SettingsModelCopyWithImpl<$Res, _$_SettingsModel>
-    implements _$$_SettingsModelCopyWith<$Res> {
-  __$$_SettingsModelCopyWithImpl(
-      _$_SettingsModel _value, $Res Function(_$_SettingsModel) _then)
+class __$$SettingsModelImplCopyWithImpl<$Res>
+    extends _$SettingsModelCopyWithImpl<$Res, _$SettingsModelImpl>
+    implements _$$SettingsModelImplCopyWith<$Res> {
+  __$$SettingsModelImplCopyWithImpl(
+      _$SettingsModelImpl _value, $Res Function(_$SettingsModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -124,7 +124,7 @@ class __$$_SettingsModelCopyWithImpl<$Res>
     Object? isDirectMessagingOn = freezed,
     Object? lastUpdated = freezed,
   }) {
-    return _then(_$_SettingsModel(
+    return _then(_$SettingsModelImpl(
       isTripChatOn: freezed == isTripChatOn
           ? _value.isTripChatOn
           : isTripChatOn // ignore: cast_nullable_to_non_nullable
@@ -151,16 +151,16 @@ class __$$_SettingsModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SettingsModel implements _SettingsModel {
-  const _$_SettingsModel(
+class _$SettingsModelImpl implements _SettingsModel {
+  const _$SettingsModelImpl(
       {this.isTripChatOn,
       this.isPushNotificationsOn,
       this.isTripChangeOn,
       this.isDirectMessagingOn,
       @TimestampConverter() this.lastUpdated});
 
-  factory _$_SettingsModel.fromJson(Map<String, dynamic> json) =>
-      _$$_SettingsModelFromJson(json);
+  factory _$SettingsModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SettingsModelImplFromJson(json);
 
   @override
   final bool? isTripChatOn;
@@ -180,10 +180,10 @@ class _$_SettingsModel implements _SettingsModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SettingsModel &&
+            other is _$SettingsModelImpl &&
             (identical(other.isTripChatOn, isTripChatOn) ||
                 other.isTripChatOn == isTripChatOn) &&
             (identical(other.isPushNotificationsOn, isPushNotificationsOn) ||
@@ -204,12 +204,12 @@ class _$_SettingsModel implements _SettingsModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SettingsModelCopyWith<_$_SettingsModel> get copyWith =>
-      __$$_SettingsModelCopyWithImpl<_$_SettingsModel>(this, _$identity);
+  _$$SettingsModelImplCopyWith<_$SettingsModelImpl> get copyWith =>
+      __$$SettingsModelImplCopyWithImpl<_$SettingsModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_SettingsModelToJson(
+    return _$$SettingsModelImplToJson(
       this,
     );
   }
@@ -221,10 +221,10 @@ abstract class _SettingsModel implements SettingsModel {
       final bool? isPushNotificationsOn,
       final bool? isTripChangeOn,
       final bool? isDirectMessagingOn,
-      @TimestampConverter() final DateTime? lastUpdated}) = _$_SettingsModel;
+      @TimestampConverter() final DateTime? lastUpdated}) = _$SettingsModelImpl;
 
   factory _SettingsModel.fromJson(Map<String, dynamic> json) =
-      _$_SettingsModel.fromJson;
+      _$SettingsModelImpl.fromJson;
 
   @override
   bool? get isTripChatOn;
@@ -239,6 +239,6 @@ abstract class _SettingsModel implements SettingsModel {
   DateTime? get lastUpdated;
   @override
   @JsonKey(ignore: true)
-  _$$_SettingsModelCopyWith<_$_SettingsModel> get copyWith =>
+  _$$SettingsModelImplCopyWith<_$SettingsModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

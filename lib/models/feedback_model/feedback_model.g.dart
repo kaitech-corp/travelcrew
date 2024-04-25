@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'feedback_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_FeedbackModel _$$_FeedbackModelFromJson(Map<String, dynamic> json) =>
-    _$_FeedbackModel(
+_$FeedbackModelImpl _$$FeedbackModelImplFromJson(Map<String, dynamic> json) =>
+    _$FeedbackModelImpl(
       fieldID: json['fieldID'] as String,
       message: json['message'] as String,
       timestamp: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -17,7 +15,7 @@ _$_FeedbackModel _$$_FeedbackModelFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String,
     );
 
-Map<String, dynamic> _$$_FeedbackModelToJson(_$_FeedbackModel instance) =>
+Map<String, dynamic> _$$FeedbackModelImplToJson(_$FeedbackModelImpl instance) =>
     <String, dynamic>{
       'fieldID': instance.fieldID,
       'message': instance.message,

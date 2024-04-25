@@ -1,16 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'transportation_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_TransportationModel _$$_TransportationModelFromJson(
+_$TransportationModelImpl _$$TransportationModelImplFromJson(
         Map<String, dynamic> json) =>
-    _$_TransportationModel(
+    _$TransportationModelImpl(
       mode: json['mode'] as String,
       airline: json['airline'] as String,
       airportCode: json['airportCode'] as String,
@@ -35,8 +33,8 @@ _$_TransportationModel _$$_TransportationModelFromJson(
       tripDocID: json['tripDocID'] as String,
     );
 
-Map<String, dynamic> _$$_TransportationModelToJson(
-        _$_TransportationModel instance) =>
+Map<String, dynamic> _$$TransportationModelImplToJson(
+        _$TransportationModelImpl instance) =>
     <String, dynamic>{
       'mode': instance.mode,
       'airline': instance.airline,

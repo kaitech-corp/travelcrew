@@ -12,7 +12,7 @@ part of 'dm_chat_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 DMChatModel _$DMChatModelFromJson(Map<String, dynamic> json) {
   return _DMChatModel.fromJson(json);
@@ -99,11 +99,11 @@ class _$DMChatModelCopyWithImpl<$Res, $Val extends DMChatModel>
 }
 
 /// @nodoc
-abstract class _$$_DMChatModelCopyWith<$Res>
+abstract class _$$DMChatModelImplCopyWith<$Res>
     implements $DMChatModelCopyWith<$Res> {
-  factory _$$_DMChatModelCopyWith(
-          _$_DMChatModel value, $Res Function(_$_DMChatModel) then) =
-      __$$_DMChatModelCopyWithImpl<$Res>;
+  factory _$$DMChatModelImplCopyWith(
+          _$DMChatModelImpl value, $Res Function(_$DMChatModelImpl) then) =
+      __$$DMChatModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -116,11 +116,11 @@ abstract class _$$_DMChatModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_DMChatModelCopyWithImpl<$Res>
-    extends _$DMChatModelCopyWithImpl<$Res, _$_DMChatModel>
-    implements _$$_DMChatModelCopyWith<$Res> {
-  __$$_DMChatModelCopyWithImpl(
-      _$_DMChatModel _value, $Res Function(_$_DMChatModel) _then)
+class __$$DMChatModelImplCopyWithImpl<$Res>
+    extends _$DMChatModelCopyWithImpl<$Res, _$DMChatModelImpl>
+    implements _$$DMChatModelImplCopyWith<$Res> {
+  __$$DMChatModelImplCopyWithImpl(
+      _$DMChatModelImpl _value, $Res Function(_$DMChatModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -133,7 +133,7 @@ class __$$_DMChatModelCopyWithImpl<$Res>
     Object? receiverID = null,
     Object? readBy = null,
   }) {
-    return _then(_$_DMChatModel(
+    return _then(_$DMChatModelImpl(
       timestamp: freezed == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
@@ -164,8 +164,8 @@ class __$$_DMChatModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_DMChatModel implements _DMChatModel {
-  const _$_DMChatModel(
+class _$DMChatModelImpl implements _DMChatModel {
+  const _$DMChatModelImpl(
       {@TimestampConverter() this.timestamp,
       required this.fieldID,
       required this.message,
@@ -174,8 +174,8 @@ class _$_DMChatModel implements _DMChatModel {
       required final List<String> readBy})
       : _readBy = readBy;
 
-  factory _$_DMChatModel.fromJson(Map<String, dynamic> json) =>
-      _$$_DMChatModelFromJson(json);
+  factory _$DMChatModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DMChatModelImplFromJson(json);
 
   @override
   @TimestampConverter()
@@ -202,10 +202,10 @@ class _$_DMChatModel implements _DMChatModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_DMChatModel &&
+            other is _$DMChatModelImpl &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.fieldID, fieldID) || other.fieldID == fieldID) &&
@@ -225,12 +225,12 @@ class _$_DMChatModel implements _DMChatModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_DMChatModelCopyWith<_$_DMChatModel> get copyWith =>
-      __$$_DMChatModelCopyWithImpl<_$_DMChatModel>(this, _$identity);
+  _$$DMChatModelImplCopyWith<_$DMChatModelImpl> get copyWith =>
+      __$$DMChatModelImplCopyWithImpl<_$DMChatModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_DMChatModelToJson(
+    return _$$DMChatModelImplToJson(
       this,
     );
   }
@@ -243,10 +243,10 @@ abstract class _DMChatModel implements DMChatModel {
       required final String message,
       required final String senderID,
       required final String receiverID,
-      required final List<String> readBy}) = _$_DMChatModel;
+      required final List<String> readBy}) = _$DMChatModelImpl;
 
   factory _DMChatModel.fromJson(Map<String, dynamic> json) =
-      _$_DMChatModel.fromJson;
+      _$DMChatModelImpl.fromJson;
 
   @override
   @TimestampConverter()
@@ -263,6 +263,6 @@ abstract class _DMChatModel implements DMChatModel {
   List<String> get readBy;
   @override
   @JsonKey(ignore: true)
-  _$$_DMChatModelCopyWith<_$_DMChatModel> get copyWith =>
+  _$$DMChatModelImplCopyWith<_$DMChatModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

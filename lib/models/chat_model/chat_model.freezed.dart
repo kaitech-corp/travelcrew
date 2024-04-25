@@ -12,7 +12,7 @@ part of 'chat_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 ChatModel _$ChatModelFromJson(Map<String, dynamic> json) {
   return _ChatModel.fromJson(json);
@@ -105,10 +105,11 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
 }
 
 /// @nodoc
-abstract class _$$_ChatModelCopyWith<$Res> implements $ChatModelCopyWith<$Res> {
-  factory _$$_ChatModelCopyWith(
-          _$_ChatModel value, $Res Function(_$_ChatModel) then) =
-      __$$_ChatModelCopyWithImpl<$Res>;
+abstract class _$$ChatModelImplCopyWith<$Res>
+    implements $ChatModelCopyWith<$Res> {
+  factory _$$ChatModelImplCopyWith(
+          _$ChatModelImpl value, $Res Function(_$ChatModelImpl) then) =
+      __$$ChatModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -122,11 +123,11 @@ abstract class _$$_ChatModelCopyWith<$Res> implements $ChatModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_ChatModelCopyWithImpl<$Res>
-    extends _$ChatModelCopyWithImpl<$Res, _$_ChatModel>
-    implements _$$_ChatModelCopyWith<$Res> {
-  __$$_ChatModelCopyWithImpl(
-      _$_ChatModel _value, $Res Function(_$_ChatModel) _then)
+class __$$ChatModelImplCopyWithImpl<$Res>
+    extends _$ChatModelCopyWithImpl<$Res, _$ChatModelImpl>
+    implements _$$ChatModelImplCopyWith<$Res> {
+  __$$ChatModelImplCopyWithImpl(
+      _$ChatModelImpl _value, $Res Function(_$ChatModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -140,7 +141,7 @@ class __$$_ChatModelCopyWithImpl<$Res>
     Object? tripDocID = null,
     Object? status = null,
   }) {
-    return _then(_$_ChatModel(
+    return _then(_$ChatModelImpl(
       timestamp: freezed == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
@@ -175,8 +176,8 @@ class __$$_ChatModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ChatModel implements _ChatModel {
-  const _$_ChatModel(
+class _$ChatModelImpl implements _ChatModel {
+  const _$ChatModelImpl(
       {@TimestampConverter() this.timestamp,
       required this.fieldID,
       required this.displayName,
@@ -186,8 +187,8 @@ class _$_ChatModel implements _ChatModel {
       required final Map<String, bool> status})
       : _status = status;
 
-  factory _$_ChatModel.fromJson(Map<String, dynamic> json) =>
-      _$$_ChatModelFromJson(json);
+  factory _$ChatModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ChatModelImplFromJson(json);
 
   @override
   @TimestampConverter()
@@ -216,10 +217,10 @@ class _$_ChatModel implements _ChatModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ChatModel &&
+            other is _$ChatModelImpl &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.fieldID, fieldID) || other.fieldID == fieldID) &&
@@ -240,12 +241,12 @@ class _$_ChatModel implements _ChatModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ChatModelCopyWith<_$_ChatModel> get copyWith =>
-      __$$_ChatModelCopyWithImpl<_$_ChatModel>(this, _$identity);
+  _$$ChatModelImplCopyWith<_$ChatModelImpl> get copyWith =>
+      __$$ChatModelImplCopyWithImpl<_$ChatModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ChatModelToJson(
+    return _$$ChatModelImplToJson(
       this,
     );
   }
@@ -259,10 +260,10 @@ abstract class _ChatModel implements ChatModel {
       required final String message,
       required final String uid,
       required final String tripDocID,
-      required final Map<String, bool> status}) = _$_ChatModel;
+      required final Map<String, bool> status}) = _$ChatModelImpl;
 
   factory _ChatModel.fromJson(Map<String, dynamic> json) =
-      _$_ChatModel.fromJson;
+      _$ChatModelImpl.fromJson;
 
   @override
   @TimestampConverter()
@@ -281,6 +282,6 @@ abstract class _ChatModel implements ChatModel {
   Map<String, bool> get status;
   @override
   @JsonKey(ignore: true)
-  _$$_ChatModelCopyWith<_$_ChatModel> get copyWith =>
+  _$$ChatModelImplCopyWith<_$ChatModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

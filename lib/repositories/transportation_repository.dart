@@ -2,40 +2,42 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-import '../../../../services/functions/cloud_functions.dart';
 import '../blocs/generics/generic_bloc.dart';
 import '../models/transportation_model/transportation_model.dart';
+import '../services/functions/cloud_functions/admin_functions.dart';
 
-class TransportationRepository extends GenericBlocRepository<TransportationModel> {
-
+class TransportationRepository
+    extends GenericBlocRepository<TransportationModel> {
   TransportationRepository({required this.tripDocID});
 
   final String tripDocID;
 
   @override
   Stream<List<TransportationModel>> data() {
-    final CollectionReference<Object> transportCollection = FirebaseFirestore.instance
-        .collection('transport');
+    final CollectionReference<Object> transportCollection =
+        FirebaseFirestore.instance.collection('transport');
 
     // Get all transportation items
     List<TransportationModel> transportListFromSnapshot(
         QuerySnapshot<Object> snapshot) {
       try {
-        final List<TransportationModel> transportList = snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
-          return TransportationModel.fromJson(doc.data()! as Map<String, dynamic>);
+        final List<TransportationModel> transportList =
+            snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
+          return TransportationModel.fromJson(
+              doc.data()! as Map<String, dynamic>);
         }).toList();
 
         return transportList;
       } catch (e) {
-        CloudFunction().logError(
-            'Error retrieving transportation list:  $e');
+        AdminCloudFunction()
+            .logError('Error retrieving transportation list:  $e');
         return <TransportationModel>[];
       }
     }
 
     return transportCollection
-        .doc(tripDocID).collection('mode')
+        .doc(tripDocID)
+        .collection('mode')
         .snapshots()
         .map(transportListFromSnapshot);
   }

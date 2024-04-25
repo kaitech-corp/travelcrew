@@ -5,8 +5,9 @@ import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../services/functions/cloud_functions.dart';
+
 import '../locator.dart';
+import 'cloud_functions/admin_functions.dart';
 
 class TCFunctions {
   UserService userService = locator<UserService>();
@@ -122,7 +123,7 @@ class TCFunctions {
           DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return wTime ? format2.format(date) : format.format(date);
     } catch (e) {
-      CloudFunction().logError('Error formatting timestamp: $e');
+      AdminCloudFunction().logError('Error formatting timestamp: $e');
       return '';
     }
   }
@@ -135,7 +136,7 @@ class TCFunctions {
           DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return format.format(date);
     } catch (e) {
-      CloudFunction().logError('Error formatting timestamp: $e');
+      AdminCloudFunction().logError('Error formatting timestamp: $e');
       return '';
     }
   }
@@ -148,7 +149,7 @@ class TCFunctions {
           DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
       return wTime ? format2.format(date) : format.format(date);
     } catch (e) {
-      CloudFunction().logError('Error formatting timestamp: $e');
+      AdminCloudFunction().logError('Error formatting timestamp: $e');
       return '';
     }
   }

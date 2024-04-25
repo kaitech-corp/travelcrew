@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
+
 import '../../blocs/generics/generic_bloc.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/functions/cloud_functions/admin_functions.dart';
 
 class AllTripsRepository extends GenericBlocRepository<Trip> {
   @override
@@ -32,8 +32,7 @@ class AllTripsRepository extends GenericBlocRepository<Trip> {
             .toList();
         return trips;
       } catch (e) {
-        CloudFunction()
-            .logError('Error retrieving all trip list:  $e');
+        AdminCloudFunction().logError('Error retrieving all trip list:  $e');
         return <Trip>[];
       }
     }

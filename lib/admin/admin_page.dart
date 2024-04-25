@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../features/Alerts/alert_dialogs.dart';
-
+import '../screens/Alerts/alert_dialogs.dart';
 
 import '../models/feedback_model/feedback_model.dart';
 import '../services/constants/constants.dart';
-import '../services/functions/cloud_functions.dart';
+
+import '../services/functions/cloud_functions/notification_functions.dart';
 import '../services/theme/text_styles.dart';
 import '../services/widgets/loading.dart';
 import 'logic/logic.dart';
@@ -32,7 +32,7 @@ Widget adminDashboard(BuildContext context) {
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
         titleTextStyle: headlineSmall(context),
-        bottom:  TabBar(
+        bottom: TabBar(
           isScrollable: true,
           tabs: const <Tab>[
             Tab(text: 'User Data'),
@@ -118,8 +118,7 @@ class _CustomNotificationsState extends State<CustomNotifications> {
           child: ElevatedButton(
             onPressed: () {
               if (_message?.isNotEmpty ?? false) {
-                
-                CloudFunction().addCustomNotification(_message!);
+                NotificationCloudFunction().addCustomNotification(_message!);
                 TravelCrewAlertDialogs().pushCustomNotification(context);
               }
             },

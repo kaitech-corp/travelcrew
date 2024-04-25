@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names
-
 part of 'settings_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_SettingsModel _$$_SettingsModelFromJson(Map<String, dynamic> json) =>
-    _$_SettingsModel(
+_$SettingsModelImpl _$$SettingsModelImplFromJson(Map<String, dynamic> json) =>
+    _$SettingsModelImpl(
       isTripChatOn: json['isTripChatOn'] as bool?,
       isPushNotificationsOn: json['isPushNotificationsOn'] as bool?,
       isTripChangeOn: json['isTripChangeOn'] as bool?,
@@ -18,7 +16,7 @@ _$_SettingsModel _$$_SettingsModelFromJson(Map<String, dynamic> json) =>
           json['lastUpdated'], const TimestampConverter().fromJson),
     );
 
-Map<String, dynamic> _$$_SettingsModelToJson(_$_SettingsModel instance) =>
+Map<String, dynamic> _$$SettingsModelImplToJson(_$SettingsModelImpl instance) =>
     <String, dynamic>{
       'isTripChatOn': instance.isTripChatOn,
       'isPushNotificationsOn': instance.isPushNotificationsOn,

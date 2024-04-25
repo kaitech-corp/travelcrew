@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 
-import '../../features/Chat/chat_card.dart';
+import '../../screens/Chat/chat_card.dart';
 import '../../models/chat_model/chat_model.dart';
 
 import '../../services/widgets/chat_date_display.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
 import '../theme/text_styles.dart';
 import 'appearance_widgets.dart';
 
@@ -34,7 +35,8 @@ class TimePickersState extends State<TimePickers> {
     super.initState();
   }
 
-  Future<void> showTimePickerDialog(BuildContext context, bool isStartTime) async {
+  Future<void> showTimePickerDialog(
+      BuildContext context, bool isStartTime) async {
     final TimeOfDay initialTime = isStartTime ? timeStart : timeEnd;
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -54,46 +56,40 @@ class TimePickersState extends State<TimePickers> {
     }
   }
 
-  Widget _timePickerRow(String labelText, IconData icon, VoidCallback onPressed) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: <Widget>[
-              TripDetailsIconThemeWidget(icon: icon),
-              const SizedBox(width: 8),
-              Text(labelText, style: titleMedium(context)),
-            ],
-          ),
-        ),
-        ButtonTheme(
-          minWidth: 150,
-          child: ElevatedButton(
-            onPressed: onPressed,
-            child: Text(labelText),
-          ),
-        ),
-      ],
+  Widget _timePickerRow(
+      String labelText, IconData icon, VoidCallback onPressed) {
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        children: <Widget>[
+          TripDetailsIconThemeWidget(icon: icon),
+          const SizedBox(width: 8),
+          Text(labelText, style: titleMedium(context)),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        _timePickerRow(
-          timeStart.format(context),
-          Icons.access_time,
-          () => showTimePickerDialog(context, true),
-        ),
-        _timePickerRow(
-          timeEnd.format(context),
-          Icons.access_time,
-          () => showTimePickerDialog(context, false),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: defaultPadding, right: defaultPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          _timePickerRow(
+            timeStart.format(context),
+            Icons.access_time,
+            () => showTimePickerDialog(context, true),
+          ),
+          const Text('-'),
+          _timePickerRow(
+            timeEnd.format(context),
+            Icons.access_time,
+            () => showTimePickerDialog(context, false),
+          ),
+        ],
+      ),
     );
   }
 }

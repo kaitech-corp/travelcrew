@@ -12,7 +12,7 @@ part of 'recommended_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 RecommendedContentModel _$RecommendedContentModelFromJson(
     Map<String, dynamic> json) {
@@ -94,11 +94,12 @@ class _$RecommendedContentModelCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_RecommendedContentModelCopyWith<$Res>
+abstract class _$$RecommendedContentModelImplCopyWith<$Res>
     implements $RecommendedContentModelCopyWith<$Res> {
-  factory _$$_RecommendedContentModelCopyWith(_$_RecommendedContentModel value,
-          $Res Function(_$_RecommendedContentModel) then) =
-      __$$_RecommendedContentModelCopyWithImpl<$Res>;
+  factory _$$RecommendedContentModelImplCopyWith(
+          _$RecommendedContentModelImpl value,
+          $Res Function(_$RecommendedContentModelImpl) then) =
+      __$$RecommendedContentModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -110,12 +111,13 @@ abstract class _$$_RecommendedContentModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_RecommendedContentModelCopyWithImpl<$Res>
+class __$$RecommendedContentModelImplCopyWithImpl<$Res>
     extends _$RecommendedContentModelCopyWithImpl<$Res,
-        _$_RecommendedContentModel>
-    implements _$$_RecommendedContentModelCopyWith<$Res> {
-  __$$_RecommendedContentModelCopyWithImpl(_$_RecommendedContentModel _value,
-      $Res Function(_$_RecommendedContentModel) _then)
+        _$RecommendedContentModelImpl>
+    implements _$$RecommendedContentModelImplCopyWith<$Res> {
+  __$$RecommendedContentModelImplCopyWithImpl(
+      _$RecommendedContentModelImpl _value,
+      $Res Function(_$RecommendedContentModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -127,7 +129,7 @@ class __$$_RecommendedContentModelCopyWithImpl<$Res>
     Object? docID = null,
     Object? urlToImage = null,
   }) {
-    return _then(_$_RecommendedContentModel(
+    return _then(_$RecommendedContentModelImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -154,8 +156,8 @@ class __$$_RecommendedContentModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_RecommendedContentModel implements _RecommendedContentModel {
-  const _$_RecommendedContentModel(
+class _$RecommendedContentModelImpl implements _RecommendedContentModel {
+  const _$RecommendedContentModelImpl(
       {required this.name,
       required this.clicks,
       @TimestampConverter() this.dateCreated,
@@ -163,8 +165,8 @@ class _$_RecommendedContentModel implements _RecommendedContentModel {
       required final List<String> urlToImage})
       : _urlToImage = urlToImage;
 
-  factory _$_RecommendedContentModel.fromJson(Map<String, dynamic> json) =>
-      _$$_RecommendedContentModelFromJson(json);
+  factory _$RecommendedContentModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RecommendedContentModelImplFromJson(json);
 
   @override
   final String name;
@@ -189,10 +191,10 @@ class _$_RecommendedContentModel implements _RecommendedContentModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_RecommendedContentModel &&
+            other is _$RecommendedContentModelImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.clicks, clicks) || other.clicks == clicks) &&
             (identical(other.dateCreated, dateCreated) ||
@@ -210,14 +212,13 @@ class _$_RecommendedContentModel implements _RecommendedContentModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_RecommendedContentModelCopyWith<_$_RecommendedContentModel>
-      get copyWith =>
-          __$$_RecommendedContentModelCopyWithImpl<_$_RecommendedContentModel>(
-              this, _$identity);
+  _$$RecommendedContentModelImplCopyWith<_$RecommendedContentModelImpl>
+      get copyWith => __$$RecommendedContentModelImplCopyWithImpl<
+          _$RecommendedContentModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_RecommendedContentModelToJson(
+    return _$$RecommendedContentModelImplToJson(
       this,
     );
   }
@@ -229,10 +230,10 @@ abstract class _RecommendedContentModel implements RecommendedContentModel {
       required final int clicks,
       @TimestampConverter() final DateTime? dateCreated,
       required final String docID,
-      required final List<String> urlToImage}) = _$_RecommendedContentModel;
+      required final List<String> urlToImage}) = _$RecommendedContentModelImpl;
 
   factory _RecommendedContentModel.fromJson(Map<String, dynamic> json) =
-      _$_RecommendedContentModel.fromJson;
+      _$RecommendedContentModelImpl.fromJson;
 
   @override
   String get name;
@@ -247,6 +248,6 @@ abstract class _RecommendedContentModel implements RecommendedContentModel {
   List<String> get urlToImage;
   @override
   @JsonKey(ignore: true)
-  _$$_RecommendedContentModelCopyWith<_$_RecommendedContentModel>
+  _$$RecommendedContentModelImplCopyWith<_$RecommendedContentModelImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

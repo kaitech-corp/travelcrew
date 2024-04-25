@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
 import '../../blocs/generics/generic_bloc.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/functions/cloud_functions/admin_functions.dart';
 
 class PrivateTripRepository extends GenericBlocRepository<Trip> {
 
@@ -27,7 +27,7 @@ class PrivateTripRepository extends GenericBlocRepository<Trip> {
             .reversed
             .toList();
       } catch (e) {
-        CloudFunction()
+        AdminCloudFunction()
             .logError('Error retrieving private trip list:  $e');
         return <Trip>[];
       }

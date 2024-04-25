@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'activity_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_ActivityModel _$$_ActivityModelFromJson(Map<String, dynamic> json) =>
-    _$_ActivityModel(
+_$ActivityModelImpl _$$ActivityModelImplFromJson(Map<String, dynamic> json) =>
+    _$ActivityModelImpl(
       endTime: json['endTime'] as String,
       endDateTimestamp: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['endDateTimestamp'], const TimestampConverter().fromJson),
@@ -29,7 +27,7 @@ _$_ActivityModel _$$_ActivityModelFromJson(Map<String, dynamic> json) =>
           (json['voters'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$_ActivityModelToJson(_$_ActivityModel instance) =>
+Map<String, dynamic> _$$ActivityModelImplToJson(_$ActivityModelImpl instance) =>
     <String, dynamic>{
       'endTime': instance.endTime,
       'endDateTimestamp': _$JsonConverterToJson<Timestamp, DateTime>(

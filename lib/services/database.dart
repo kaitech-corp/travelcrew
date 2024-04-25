@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../services/functions/cloud_functions.dart';
 import '../../services/locator.dart';
 import '../../services/navigation/navigation_service.dart';
 import '../models/member_model/member_model.dart';
+import 'functions/cloud_functions/admin_functions.dart';
 
 UserService userService = locator<UserService>();
 NavigationService navigationService = locator<NavigationService>();
@@ -81,7 +81,7 @@ class DatabaseService {
         return '';
       }
     } catch (e) {
-      CloudFunction().logError('Error retrieving version:  $e');
+      AdminCloudFunction().logError('Error retrieving version:  $e');
       return '';
     }
   }
@@ -91,7 +91,7 @@ class DatabaseService {
     if (ispubic) {
       try {
         const String action = 'Get all members from Trip';
-        CloudFunction().logEvent(action);
+        AdminCloudFunction().logEvent(action);
         final QuerySnapshot<Object?> ref = await tripsCollectionUnordered
             .doc(docID)
             .collection('Members')
@@ -104,14 +104,14 @@ class DatabaseService {
             (MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
-        CloudFunction().logError('Error retrieving all members from trip:  '
+        AdminCloudFunction().logError('Error retrieving all members from trip:  '
             '$e');
         return <MemberModel>[];
       }
     } else {
       try {
         const String action = 'Get all members from private trip';
-        CloudFunction().logEvent(action);
+        AdminCloudFunction().logEvent(action);
         final QuerySnapshot<Object?> ref = await privateTripsCollectionUnordered
             .doc(docID)
             .collection('Members')
@@ -125,7 +125,7 @@ class DatabaseService {
             (MemberModel a, MemberModel b) => a.lastName.compareTo(b.lastName));
         return memberList;
       } catch (e) {
-        CloudFunction().logError('Error retrieving members from private trip:  '
+        AdminCloudFunction().logError('Error retrieving members from private trip:  '
             '$e');
         return <MemberModel>[];
       }
@@ -136,10 +136,10 @@ class DatabaseService {
   void addToUniqueDocs(String key2) {
     try {
       const String action = 'creating unique key';
-      CloudFunction().logEvent(action);
+      AdminCloudFunction().logEvent(action);
       uniqueCollection.doc(key2).set(<String, dynamic>{});
     } catch (e) {
-      CloudFunction().logError('Error creating unique ID: $e');
+      AdminCloudFunction().logError('Error creating unique ID: $e');
     }
   }
 

@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
 import '../models/public_profile_model/public_profile_model.dart';
+import '../services/functions/cloud_functions/admin_functions.dart';
 
 /// Interface to our 'userPublicProfile' Firebase collection.
 /// It contains the public profile infos for all users.
@@ -28,7 +28,7 @@ class CurrentUserProfileRepository {
         try {
           return UserPublicProfile.fromJson(snapshot.data()! as Map<String, dynamic>);
         } catch(e){
-          CloudFunction().logError('Error retrieving single user profile:  $e');
+          AdminCloudFunction().logError('Error retrieving single user profile:  $e');
           return UserPublicProfile.mock();
         }} else {
         return UserPublicProfile.mock();

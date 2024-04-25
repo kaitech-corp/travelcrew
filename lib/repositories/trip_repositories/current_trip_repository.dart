@@ -4,9 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../services/database.dart';
-import '../../../services/functions/cloud_functions.dart';
+
 import '../../blocs/generics/generic_bloc.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/functions/cloud_functions/admin_functions.dart';
 
 class CurrentTripRepository extends GenericBlocRepository<Trip> {
   @override
@@ -27,7 +28,8 @@ class CurrentTripRepository extends GenericBlocRepository<Trip> {
         if (kDebugMode) {
           print(e);
         }
-        CloudFunction().logError('Error retrieving current trip list:  $e');
+        AdminCloudFunction()
+            .logError('Error retrieving current trip list:  $e');
         return <Trip>[];
       }
     }

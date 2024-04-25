@@ -1,15 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'public_profile_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_UserPublicProfile _$$_UserPublicProfileFromJson(Map<String, dynamic> json) =>
-    _$_UserPublicProfile(
+_$UserPublicProfileImpl _$$UserPublicProfileImplFromJson(
+        Map<String, dynamic> json) =>
+    _$UserPublicProfileImpl(
       displayName: json['displayName'] as String,
       email: json['email'] as String?,
       facebookLink: json['facebookLink'] as String?,
@@ -35,8 +34,8 @@ _$_UserPublicProfile _$$_UserPublicProfileFromJson(Map<String, dynamic> json) =>
       urlToImage: json['urlToImage'] as String?,
     );
 
-Map<String, dynamic> _$$_UserPublicProfileToJson(
-        _$_UserPublicProfile instance) =>
+Map<String, dynamic> _$$UserPublicProfileImplToJson(
+        _$UserPublicProfileImpl instance) =>
     <String, dynamic>{
       'displayName': instance.displayName,
       'email': instance.email,

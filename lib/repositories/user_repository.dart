@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../../../services/functions/cloud_functions.dart';
-import '../features/Profile/logic/logic.dart';
+import '../screens/Profile/logic/logic.dart';
+import '../services/functions/cloud_functions/admin_functions.dart';
 
 /// Interface to the info about the current user.
 /// Relies on Firebase authentication.
@@ -23,13 +23,14 @@ class UserRepository {
         email: email, password: password);
   }
 
-  Future<void> signUp(String email, String password, String? displayName) async {
+  Future<void> signUp(
+      String email, String password, String? displayName) async {
     final UserCredential result = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     final User? user = result.user;
-    await updateUserData( email, user!.uid);
+    await updateUserData(email, user!.uid);
     await updateUserPublicProfileData(
-         email:email, uid:user.uid, displayName: displayName);
+        email: email, uid: user.uid, displayName: displayName);
   }
 
   Future<List<dynamic>> signOut() async {
@@ -71,7 +72,7 @@ class UserRepository {
 
       return await _firebaseAuth.signInWithCredential(credential);
     } catch (e) {
-      CloudFunction().logError('Error in Apple sign in: $e');
+      AdminCloudFunction().logError('Error in Apple sign in: $e');
       return null;
     }
   }

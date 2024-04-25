@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'dm_chat_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_DMChatModel _$$_DMChatModelFromJson(Map<String, dynamic> json) =>
-    _$_DMChatModel(
+_$DMChatModelImpl _$$DMChatModelImplFromJson(Map<String, dynamic> json) =>
+    _$DMChatModelImpl(
       timestamp: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['timestamp'], const TimestampConverter().fromJson),
       fieldID: json['fieldID'] as String,
@@ -20,7 +18,7 @@ _$_DMChatModel _$$_DMChatModelFromJson(Map<String, dynamic> json) =>
           (json['readBy'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$_DMChatModelToJson(_$_DMChatModel instance) =>
+Map<String, dynamic> _$$DMChatModelImplToJson(_$DMChatModelImpl instance) =>
     <String, dynamic>{
       'timestamp': _$JsonConverterToJson<Timestamp, DateTime>(
           instance.timestamp, const TimestampConverter().toJson),

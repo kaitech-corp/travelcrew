@@ -12,7 +12,7 @@ part of 'cost_object_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 CostObjectModel _$CostObjectModelFromJson(Map<String, dynamic> json) {
   return _CostObjectModel.fromJson(json);
@@ -107,11 +107,11 @@ class _$CostObjectModelCopyWithImpl<$Res, $Val extends CostObjectModel>
 }
 
 /// @nodoc
-abstract class _$$_CostObjectModelCopyWith<$Res>
+abstract class _$$CostObjectModelImplCopyWith<$Res>
     implements $CostObjectModelCopyWith<$Res> {
-  factory _$$_CostObjectModelCopyWith(
-          _$_CostObjectModel value, $Res Function(_$_CostObjectModel) then) =
-      __$$_CostObjectModelCopyWithImpl<$Res>;
+  factory _$$CostObjectModelImplCopyWith(_$CostObjectModelImpl value,
+          $Res Function(_$CostObjectModelImpl) then) =
+      __$$CostObjectModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -125,11 +125,11 @@ abstract class _$$_CostObjectModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_CostObjectModelCopyWithImpl<$Res>
-    extends _$CostObjectModelCopyWithImpl<$Res, _$_CostObjectModel>
-    implements _$$_CostObjectModelCopyWith<$Res> {
-  __$$_CostObjectModelCopyWithImpl(
-      _$_CostObjectModel _value, $Res Function(_$_CostObjectModel) _then)
+class __$$CostObjectModelImplCopyWithImpl<$Res>
+    extends _$CostObjectModelCopyWithImpl<$Res, _$CostObjectModelImpl>
+    implements _$$CostObjectModelImplCopyWith<$Res> {
+  __$$CostObjectModelImplCopyWithImpl(
+      _$CostObjectModelImpl _value, $Res Function(_$CostObjectModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -143,7 +143,7 @@ class __$$_CostObjectModelCopyWithImpl<$Res>
     Object? uid = null,
     Object? tripDocID = null,
   }) {
-    return _then(_$_CostObjectModel(
+    return _then(_$CostObjectModelImpl(
       amountOwe: null == amountOwe
           ? _value.amountOwe
           : amountOwe // ignore: cast_nullable_to_non_nullable
@@ -178,8 +178,8 @@ class __$$_CostObjectModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CostObjectModel implements _CostObjectModel {
-  const _$_CostObjectModel(
+class _$CostObjectModelImpl implements _CostObjectModel {
+  const _$CostObjectModelImpl(
       {required this.amountOwe,
       @TimestampConverter() this.datePaid,
       required this.itemDocID,
@@ -188,8 +188,8 @@ class _$_CostObjectModel implements _CostObjectModel {
       required this.uid,
       required this.tripDocID});
 
-  factory _$_CostObjectModel.fromJson(Map<String, dynamic> json) =>
-      _$$_CostObjectModelFromJson(json);
+  factory _$CostObjectModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CostObjectModelImplFromJson(json);
 
   @override
   final int amountOwe;
@@ -214,10 +214,10 @@ class _$_CostObjectModel implements _CostObjectModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_CostObjectModel &&
+            other is _$CostObjectModelImpl &&
             (identical(other.amountOwe, amountOwe) ||
                 other.amountOwe == amountOwe) &&
             (identical(other.datePaid, datePaid) ||
@@ -240,12 +240,13 @@ class _$_CostObjectModel implements _CostObjectModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CostObjectModelCopyWith<_$_CostObjectModel> get copyWith =>
-      __$$_CostObjectModelCopyWithImpl<_$_CostObjectModel>(this, _$identity);
+  _$$CostObjectModelImplCopyWith<_$CostObjectModelImpl> get copyWith =>
+      __$$CostObjectModelImplCopyWithImpl<_$CostObjectModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CostObjectModelToJson(
+    return _$$CostObjectModelImplToJson(
       this,
     );
   }
@@ -259,10 +260,10 @@ abstract class _CostObjectModel implements CostObjectModel {
       @TimestampConverter() final DateTime? lastUpdated,
       required final bool paid,
       required final String uid,
-      required final String tripDocID}) = _$_CostObjectModel;
+      required final String tripDocID}) = _$CostObjectModelImpl;
 
   factory _CostObjectModel.fromJson(Map<String, dynamic> json) =
-      _$_CostObjectModel.fromJson;
+      _$CostObjectModelImpl.fromJson;
 
   @override
   int get amountOwe;
@@ -282,6 +283,6 @@ abstract class _CostObjectModel implements CostObjectModel {
   String get tripDocID;
   @override
   @JsonKey(ignore: true)
-  _$$_CostObjectModelCopyWith<_$_CostObjectModel> get copyWith =>
+  _$$CostObjectModelImplCopyWith<_$CostObjectModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

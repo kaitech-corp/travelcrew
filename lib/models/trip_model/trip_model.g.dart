@@ -1,14 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: non_constant_identifier_names, always_specify_types
-
 part of 'trip_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Trip _$$_TripFromJson(Map<String, dynamic> json) => _$_Trip(
+_$TripImpl _$$TripImplFromJson(Map<String, dynamic> json) => _$TripImpl(
       tripGeoPoint:
           GeoPointConverter.fromJson(json['tripGeoPoint'] as GeoPoint?),
       comment: json['comment'] as String?,
@@ -37,7 +35,8 @@ _$_Trip _$$_TripFromJson(Map<String, dynamic> json) => _$_Trip(
       urlToImage: json['urlToImage'] as String?,
     );
 
-Map<String, dynamic> _$$_TripToJson(_$_Trip instance) => <String, dynamic>{
+Map<String, dynamic> _$$TripImplToJson(_$TripImpl instance) =>
+    <String, dynamic>{
       'tripGeoPoint': GeoPointConverter.toJson(instance.tripGeoPoint),
       'comment': instance.comment,
       'dateCreatedTimeStamp': _$JsonConverterToJson<Timestamp, DateTime>(
