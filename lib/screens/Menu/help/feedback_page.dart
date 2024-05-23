@@ -44,9 +44,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
             centerTitle: true,
             title: Text(
               Intl.message('Feedback'),
-              style: headlineSmall(context),
+              style: titleLarge(context),
             ),
-            flexibleSpace: const AppBarGradient(),
+            // flexibleSpace: const AppBarGradient(),
           ),
           body: Container(
             padding: const EdgeInsets.all(8.0),
