@@ -243,10 +243,6 @@ class _EditLodgingState extends State<EditLodging> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final FormState form = _formKey.currentState!;
-            // startDateTimestamp.value = DateTimeRetrieval()
-            //     .createNewTimestamp(startDateTimestamp.value, startTime.value);
-            // endDateTimestamp.value = DateTimeRetrieval()
-            //     .createNewTimestamp(startDateTimestamp.value, endTime.value);
             if (form.validate()) {
               form.save();
               final String message =
@@ -257,13 +253,17 @@ class _EditLodgingState extends State<EditLodging> {
                   comment: comment,
                   documentID: documentID,
                   endDateTimestamp: endDateTimestamp.value,
-                  endTime: endTime.value.format(context),
                   fieldID: fieldID,
                   link: link,
                   location: controller.text,
                   lodgingType: lodgingType,
                   startDateTimestamp: startDateTimestamp.value,
-                  startTime: startTime.value.format(context),
+                  startTime: timePickerVisible
+                      ? startTime.value.format(context)
+                      : widget.lodging.startTime,
+                  endTime: timePickerVisible
+                      ? endTime.value.format(context)
+                      : widget.lodging.endTime,
                 );
               } on Exception catch (e) {
                 AdminCloudFunction().logError('Error adding new Trip:  $e');
@@ -280,6 +280,7 @@ class _EditLodgingState extends State<EditLodging> {
                       type: 'Lodging',
                       uidToUse: f,
                       ownerID: 'currentUserProfile.uid',
+                      ispublic: widget.trip.ispublic,
                     );
                   }
                 }

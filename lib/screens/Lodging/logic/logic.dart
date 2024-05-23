@@ -2,13 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../models/lodging_model/lodging_model.dart';
+import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions/admin_functions.dart';
 
 final CollectionReference<Object?> lodgingCollection =
     FirebaseFirestore.instance.collection('lodging');
-//       const String tripDocID = '';
-// const String fieldID = '';
-//// Add new lodging
 Future<void> addNewLodging(String documentID, LodgingModel lodging) async {
   final String key = lodgingCollection.doc().id;
 
@@ -23,6 +21,20 @@ Future<void> addNewLodging(String documentID, LodgingModel lodging) async {
     });
   } catch (e) {
     AdminCloudFunction().logError('Error adding new lodging data:  $e');
+  }
+}
+
+void updateLodgingVote(String documentID, String fieldID, bool addVote) {
+  final DocumentReference<Map<String, dynamic>> addVoteToLodgingRef =
+      lodgingCollection.doc(documentID).collection('lodging').doc(fieldID);
+  final String uid = userService.currentUserID;
+  final FieldValue fieldValue = addVote
+      ? FieldValue.arrayUnion(<String>[uid])
+      : FieldValue.arrayRemove(<String>[uid]);
+  try {
+    addVoteToLodgingRef.update(<String, dynamic>{'voters': fieldValue});
+  } catch (e) {
+    AdminCloudFunction().logError('Error adding vote to lodging:  $e');
   }
 }
 

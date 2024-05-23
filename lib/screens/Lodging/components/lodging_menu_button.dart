@@ -7,6 +7,7 @@ import '../../../models/lodging_model/lodging_model.dart';
 import '../../../models/split_model/split_model.dart';
 import '../../../models/trip_model/trip_model.dart';
 
+import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/cloud_functions/detail_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
@@ -16,11 +17,10 @@ import '../../Split/split_package.dart';
 /// Lodging menu button
 class LodgingMenuButton extends StatelessWidget {
   const LodgingMenuButton(
-      {super.key, required this.trip, required this.lodging, this.event});
+      {super.key, required this.trip, required this.lodging});
 
   final Trip trip;
   final LodgingModel lodging;
-  final Event? event;
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +66,19 @@ class LodgingMenuButton extends StatelessWidget {
             break;
           case 'Calendar':
             {
-              Add2Calendar.addEvent2Cal(event!);
+              final Event event = createEvent(
+                lodging: lodging,
+                type: 'Lodging',
+                startDate: lodging.startDateTimestamp!,
+                endDate: lodging.endDateTimestamp!,
+              );
+              Add2Calendar.addEvent2Cal(event);
             }
             break;
           default:
             {
-              DetailCloudFunction().removeLodging(trip.documentId, lodging.fieldID);
+              DetailCloudFunction()
+                  .removeLodging(trip.documentId, lodging.fieldID);
             }
             break;
         }

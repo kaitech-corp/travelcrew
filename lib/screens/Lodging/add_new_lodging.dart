@@ -53,7 +53,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
   void initState() {
     endDateTimestamp.value = widget.trip.endDateTimeStamp!;
     startDateTimestamp.value = widget.trip.startDateTimeStamp!;
-    displayName = 'currentUserProfile.displayName';
+    displayName = currentUserProfile.userPublicProfile?.displayName ?? '';
     documentID = widget.trip.documentId;
     uid = userService.currentUserID;
     ispublic = widget.trip.ispublic;
@@ -90,7 +90,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
       onChanged: onChanged,
       validator: validator,
       textCapitalization:
-          textCap ? TextCapitalization.none : TextCapitalization.words,
+          textCap ? TextCapitalization.words : TextCapitalization.none,
     );
   }
 
@@ -272,7 +272,7 @@ class _AddNewLodgingState extends State<AddNewLodging> {
       ),
       if (timePickerVisible)
         TimePickers(
-          lodging: false,
+          lodging: true,
           startTime: startTime,
           endTime: endTime,
         ),
