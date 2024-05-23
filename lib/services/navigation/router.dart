@@ -36,11 +36,11 @@ import '../../screens/Split/split_details_page.dart';
 import '../../screens/Split/split_page.dart';
 import '../../screens/Transportation/add_new_transportation.dart';
 import '../../screens/Transportation/edit_transportation.dart';
-import '../../screens/Trip_Details/detail_page.dart';
-import '../../screens/Trip_Details/explore.dart';
-import '../../screens/Trip_Details/explore_basic.dart';
-import '../../screens/Trip_Details/followers/user_following_list_page.dart';
-import '../../screens/Trip_Details/members/members_layout.dart';
+import '../../screens/Explore/detail_page.dart';
+import '../../screens/Explore/explore.dart';
+import '../../screens/Explore/explore_basic.dart';
+import '../../screens/Explore/followers/user_following_list_page.dart';
+import '../../screens/Explore/members/members_layout.dart';
 import '../../screens/Trip_Management/add_trip_page.dart';
 import '../../screens/Trip_Management/edit_trip.dart';
 import '../../screens/Trips/current_trips_page.dart';
@@ -89,7 +89,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AddNewTripRoute:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: const AddTripPage(),
+        viewToShow:  AddTripPage(
+          type: args as String?,
+        ),
       );
     case AdminPageRoute:
       return _getPageRoute(
@@ -189,11 +191,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
     case FollowingListRoute:
       return _getPageRoute(
-        routeName: settings.name!,
-        viewToShow: FollowingList(
-          trip: args as Trip,
-        ),
-      );
+          routeName: settings.name!,
+          viewToShow: BlocProvider(
+            create: (BuildContext context) =>
+                GenericBloc<UserPublicProfile, AllUserRepository>(
+              repository: AllUserRepository(),
+            ),
+            child: FollowingList(
+              trip: args as Trip,
+            ),
+          ));
     case HelpPageRoute:
       return _getPageRoute(
         routeName: settings.name!,
@@ -376,7 +383,7 @@ class AddToListPageArguments {
       required this.controller});
   final Trip trip;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final PersistentBottomSheetController<dynamic> controller;
+  final PersistentBottomSheetController controller;
 }
 
 class MembersLayoutArguments {
