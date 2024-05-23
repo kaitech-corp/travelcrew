@@ -24,8 +24,10 @@ import 'components/google_autocomplete.dart';
 class AddTripForm extends StatefulWidget {
   const AddTripForm({
     super.key,
+    this.type,
   });
 
+  final String? type;
   @override
   State<AddTripForm> createState() => _AddTripFormState();
 }
@@ -35,8 +37,8 @@ final GlobalKey<ScaffoldState> searchScaffoldKey = GlobalKey<ScaffoldState>();
 // late ValueNotifier<GoogleData> googleData;
 final TextEditingController locationController = TextEditingController();
 late ValueNotifier<GeoPoint> geopoint2;
-class _AddTripFormState extends State<AddTripForm> {
 
+class _AddTripFormState extends State<AddTripForm> {
   final ValueNotifier<String> startDate = ValueNotifier<String>('');
   final ValueNotifier<String> endDate = ValueNotifier<String>('');
   final ValueNotifier<DateTime> startDateTimestamp =
@@ -60,9 +62,16 @@ class _AddTripFormState extends State<AddTripForm> {
     return state.isFormValid && isPopulated && !state.isSubmitting;
   }
 
+  void hasTripType() {
+    if (widget.type != null) {
+      travelTypeController.text = widget.type!;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    hasTripType();
     _addTripBloc = BlocProvider.of<AddTripBloc>(context);
     tripNameController.addListener(_onTripNameChange);
     travelTypeController.addListener(_onTripTypeChange);
@@ -189,7 +198,7 @@ class _AddTripFormState extends State<AddTripForm> {
                         ? Image.file(_urlToImage.value)
                         : Text(
                             AppLocalizations.of(context)!.addTripImageMessage,
-                            style: headlineSmall(context),
+                            style: titleMedium(context),
                           )),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -230,6 +239,9 @@ class _AddTripFormState extends State<AddTripForm> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 16.0),
                     child: ElevatedButton(
+                      style: const ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll<Color>(
+                              Color.fromARGB(255, 94, 26, 220))),
                       onPressed: () {
                         if (isAddTripButtonEnabled(state)) {
                           _onFormSubmitted();
@@ -240,7 +252,11 @@ class _AddTripFormState extends State<AddTripForm> {
                           _onTripTypeChange();
                         }
                       },
-                      child: Text(addTripAddTripButton()),
+                      child: Text(
+                        addTripAddTripButton(),
+                        style:
+                            titleMedium(context)?.copyWith(color: Colors.white),
+                      ),
                     )),
               ])));
     }));

@@ -5,23 +5,26 @@ import '../../blocs/add_trip_bloc/add_trip_bloc.dart';
 import '../../services/theme/text_styles.dart';
 import 'add_trip_form.dart';
 
-
-
 /// Add trip page
 class AddTripPage extends StatelessWidget {
-  const AddTripPage({super.key,});
-
+  const AddTripPage({
+    super.key,
+    this.type,
+  });
+  final String? type;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text('New Trip',style: headlineSmall(context),)
-      ),
+          title: Text(
+        'New Trip',
+        style: titleLarge(context),
+      )),
       body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: BlocProvider<AddTripBloc>(
               create: (BuildContext context) => AddTripBloc(),
-              child: const AddTripForm())),
+              child:  AddTripForm(type: type,))),
     );
   }
 }
