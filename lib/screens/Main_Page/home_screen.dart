@@ -5,6 +5,7 @@ import '../../services/constants/constants.dart';
 import '../../services/database.dart';
 import '../../services/navigation/route_names.dart';
 import '../../services/theme/text_styles.dart';
+import '../../services/widgets/loading.dart';
 import '../../size_config/size_config.dart';
 import '../Main_Page/logic/logic.dart';
 
@@ -26,83 +27,86 @@ class HomeScreen extends StatelessWidget {
         future: getRecommendedContentModel(content),
         builder: (BuildContext context,
             AsyncSnapshot<List<RecommendedContentModel>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                final RecommendedContentModel recommendedContent =
-                    snapshot.data![index];
-                return Container(
-                  width: SizeConfig.screenWidth * .5,
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: recommendedContent.urlToImage == null ||
-                                  (recommendedContent.urlToImage.isEmpty)
-                              ? Image.asset(
-                                  travelImage,
-                                  fit: BoxFit.cover,
-                                  height: SizeConfig.screenWidth * .45,
-                                  width: SizeConfig.screenWidth * .45,
-                                )
-                              : Image.network(
-                                  recommendedContent.urlToImage[getRandomIndex(
-                                      recommendedContent.urlToImage)],
-                                  fit: BoxFit.cover,
-                                  height: SizeConfig.screenWidth * .45,
-                                  width: SizeConfig.screenWidth * .45,
-                                ),
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: Loading());
+            } else if (snapshot.hasData) {
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final RecommendedContentModel recommendedContent =
+                      snapshot.data![index];
+                  return Container(
+                    width: SizeConfig.screenWidth * .5,
+                    margin: const EdgeInsets.all(8),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              navigationService.navigateTo(AddNewTripRoute,arguments: recommendedContent.name);
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: recommendedContent.urlToImage == null ||
+                                      (recommendedContent.urlToImage.isEmpty)
+                                  ? Image.asset(
+                                      travelImage,
+                                      fit: BoxFit.cover,
+                                      height: SizeConfig.screenWidth * .45,
+                                      width: SizeConfig.screenWidth * .45,
+                                    )
+                                  : Image.network(
+                                      recommendedContent.urlToImage[getRandomIndex(
+                                          recommendedContent.urlToImage)],
+                                      fit: BoxFit.cover,
+                                      height: SizeConfig.screenWidth * .45,
+                                      width: SizeConfig.screenWidth * .45,
+                                    ),
+                            ),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          recommendedContent.name,
-                          style: titleMedium(context),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          } else {
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: SizeConfig.screenWidth * .5,
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    children: <Widget>[
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Image.asset(
-                            travelImage,
-                            fit: BoxFit.cover,
-                            height: SizeConfig.screenWidth * .45,
-                            width: SizeConfig.screenWidth * .45,
-                          )),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'Travel',
+                            recommendedContent.name,
                             style: titleMedium(context),
                             textAlign: TextAlign.center,
                           ),
                         ),
+                      ],
+                    ),
+                  );
+                },
+              );
+          } else {
+            return Center(
+              child: Container(
+                width: SizeConfig.screenWidth * .5,
+                margin: const EdgeInsets.all(8),
+                child: Column(
+                  children: <Widget>[
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image.asset(
+                          travelImage,
+                          fit: BoxFit.cover,
+                          height: SizeConfig.screenWidth * .45,
+                          width: SizeConfig.screenWidth * .45,
+                        )),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          'Check Connection',
+                          style: titleMedium(context),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                  ],
+                ),
+              ),
             );
           }
         },

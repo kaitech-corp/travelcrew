@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../blocs/generics/generic_bloc.dart';
-
 import '../../blocs/generics/generic_state.dart';
 import '../../blocs/generics/generics_event.dart';
 import '../../models/notification_model/notification_model.dart';
