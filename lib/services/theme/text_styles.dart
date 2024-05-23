@@ -18,6 +18,8 @@ TextStyle? titleMedium(BuildContext context) =>
     Theme.of(context).textTheme.titleMedium;
 TextStyle? titleSmall(BuildContext context) =>
     Theme.of(context).textTheme.titleSmall;
+TextStyle? labelLarge(BuildContext context) =>
+    Theme.of(context).textTheme.labelLarge;
 TextStyle? labelMedium(BuildContext context) =>
     Theme.of(context).textTheme.labelMedium;
 TextStyle? labelSmall(BuildContext context) =>
