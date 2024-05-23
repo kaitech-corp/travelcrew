@@ -8,14 +8,14 @@ part of 'split_model.dart';
 
 _$SplitObjectImpl _$$SplitObjectImplFromJson(Map<String, dynamic> json) =>
     _$SplitObjectImpl(
-      amountRemaining: json['amountRemaining'] as int,
+      amountRemaining: (json['amountRemaining'] as num).toDouble(),
       dateCreated: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['dateCreated'], const TimestampConverter().fromJson),
       details: json['details'] as String,
       itemDescription: json['itemDescription'] as String,
       itemDocID: json['itemDocID'] as String,
       itemName: json['itemName'] as String,
-      itemTotal: json['itemTotal'] as int,
+      itemTotal: (json['itemTotal'] as num).toDouble(),
       itemType: json['itemType'] as String,
       lastUpdated: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['lastUpdated'], const TimestampConverter().fromJson),

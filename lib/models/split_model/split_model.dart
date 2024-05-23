@@ -35,13 +35,13 @@ class TimestampNullableConverter
 @freezed
 class SplitObject with _$SplitObject {
   const factory SplitObject(
-      {required int amountRemaining,
+      {required double amountRemaining,
       @TimestampConverter() DateTime? dateCreated,
       required String details,
       required String itemDescription,
       required String itemDocID,
       required String itemName,
-      required int itemTotal,
+      required double itemTotal,
       required String itemType,
       @TimestampConverter() DateTime? lastUpdated,
       required String purchasedByUID,

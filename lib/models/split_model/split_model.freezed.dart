@@ -20,14 +20,14 @@ SplitObject _$SplitObjectFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SplitObject {
-  int get amountRemaining => throw _privateConstructorUsedError;
+  double get amountRemaining => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime? get dateCreated => throw _privateConstructorUsedError;
   String get details => throw _privateConstructorUsedError;
   String get itemDescription => throw _privateConstructorUsedError;
   String get itemDocID => throw _privateConstructorUsedError;
   String get itemName => throw _privateConstructorUsedError;
-  int get itemTotal => throw _privateConstructorUsedError;
+  double get itemTotal => throw _privateConstructorUsedError;
   String get itemType => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime? get lastUpdated => throw _privateConstructorUsedError;
@@ -49,13 +49,13 @@ abstract class $SplitObjectCopyWith<$Res> {
       _$SplitObjectCopyWithImpl<$Res, SplitObject>;
   @useResult
   $Res call(
-      {int amountRemaining,
+      {double amountRemaining,
       @TimestampConverter() DateTime? dateCreated,
       String details,
       String itemDescription,
       String itemDocID,
       String itemName,
-      int itemTotal,
+      double itemTotal,
       String itemType,
       @TimestampConverter() DateTime? lastUpdated,
       String purchasedByUID,
@@ -95,7 +95,7 @@ class _$SplitObjectCopyWithImpl<$Res, $Val extends SplitObject>
       amountRemaining: null == amountRemaining
           ? _value.amountRemaining
           : amountRemaining // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       dateCreated: freezed == dateCreated
           ? _value.dateCreated
           : dateCreated // ignore: cast_nullable_to_non_nullable
@@ -119,7 +119,7 @@ class _$SplitObjectCopyWithImpl<$Res, $Val extends SplitObject>
       itemTotal: null == itemTotal
           ? _value.itemTotal
           : itemTotal // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       itemType: null == itemType
           ? _value.itemType
           : itemType // ignore: cast_nullable_to_non_nullable
@@ -157,13 +157,13 @@ abstract class _$$SplitObjectImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int amountRemaining,
+      {double amountRemaining,
       @TimestampConverter() DateTime? dateCreated,
       String details,
       String itemDescription,
       String itemDocID,
       String itemName,
-      int itemTotal,
+      double itemTotal,
       String itemType,
       @TimestampConverter() DateTime? lastUpdated,
       String purchasedByUID,
@@ -201,7 +201,7 @@ class __$$SplitObjectImplCopyWithImpl<$Res>
       amountRemaining: null == amountRemaining
           ? _value.amountRemaining
           : amountRemaining // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       dateCreated: freezed == dateCreated
           ? _value.dateCreated
           : dateCreated // ignore: cast_nullable_to_non_nullable
@@ -225,7 +225,7 @@ class __$$SplitObjectImplCopyWithImpl<$Res>
       itemTotal: null == itemTotal
           ? _value.itemTotal
           : itemTotal // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       itemType: null == itemType
           ? _value.itemType
           : itemType // ignore: cast_nullable_to_non_nullable
@@ -278,7 +278,7 @@ class _$SplitObjectImpl implements _SplitObject {
       _$$SplitObjectImplFromJson(json);
 
   @override
-  final int amountRemaining;
+  final double amountRemaining;
   @override
   @TimestampConverter()
   final DateTime? dateCreated;
@@ -291,7 +291,7 @@ class _$SplitObjectImpl implements _SplitObject {
   @override
   final String itemName;
   @override
-  final int itemTotal;
+  final double itemTotal;
   @override
   final String itemType;
   @override
@@ -388,13 +388,13 @@ class _$SplitObjectImpl implements _SplitObject {
 
 abstract class _SplitObject implements SplitObject {
   const factory _SplitObject(
-      {required final int amountRemaining,
+      {required final double amountRemaining,
       @TimestampConverter() final DateTime? dateCreated,
       required final String details,
       required final String itemDescription,
       required final String itemDocID,
       required final String itemName,
-      required final int itemTotal,
+      required final double itemTotal,
       required final String itemType,
       @TimestampConverter() final DateTime? lastUpdated,
       required final String purchasedByUID,
@@ -406,7 +406,7 @@ abstract class _SplitObject implements SplitObject {
       _$SplitObjectImpl.fromJson;
 
   @override
-  int get amountRemaining;
+  double get amountRemaining;
   @override
   @TimestampConverter()
   DateTime? get dateCreated;
@@ -419,7 +419,7 @@ abstract class _SplitObject implements SplitObject {
   @override
   String get itemName;
   @override
-  int get itemTotal;
+  double get itemTotal;
   @override
   String get itemType;
   @override

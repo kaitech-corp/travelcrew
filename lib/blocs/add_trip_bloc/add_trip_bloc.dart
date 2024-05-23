@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/validators.dart';
-import '../../screens/Trip_Management/logic/logic.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../screens/Trip_Management/logic/logic.dart';
 import '../../services/database.dart';
 import 'add_trip_event.dart';
 import 'add_trip_state.dart';

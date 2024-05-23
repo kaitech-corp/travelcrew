@@ -23,7 +23,7 @@ _$TransportationModelImpl _$$TransportationModelImplFromJson(
       departureDateDepartTime: json['departureDateDepartTime'] as String,
       displayName: json['displayName'] as String,
       fieldID: json['fieldID'] as String,
-      flightNumber: json['flightNumber'] as int,
+      flightNumber: (json['flightNumber'] as num).toInt(),
       location: json['location'] as String,
       returnDateArrivalTime: json['returnDateArrivalTime'] as String,
       returnDateDepartTime: json['returnDateDepartTime'] as String,

@@ -34,7 +34,7 @@ class TimestampNullableConverter implements JsonConverter<DateTime?, Timestamp?>
 @freezed
 class CostObjectModel with _$CostObjectModel {
   const factory CostObjectModel(
-      {required int amountOwe,
+      {required double amountOwe,
       @TimestampConverter() DateTime? datePaid,
       required String itemDocID,
       @TimestampConverter() DateTime? lastUpdated,

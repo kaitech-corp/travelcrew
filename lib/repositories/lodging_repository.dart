@@ -28,8 +28,7 @@ class LodgingRepository extends GenericBlocRepository<LodgingModel> {
             snapshot.docs.map((QueryDocumentSnapshot<Object?> doc) {
           return LodgingModel.fromJson(doc.data()! as Map<String, dynamic>);
         }).toList();
-        lodgingList.sort((LodgingModel a, LodgingModel b) =>
-            b.voters.length.compareTo(a.voters.length));
+        
         return lodgingList;
       } catch (e) {
         AdminCloudFunction().logError('Error retrieving lodging list:  $e');

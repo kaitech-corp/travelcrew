@@ -20,7 +20,7 @@ CostObjectModel _$CostObjectModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CostObjectModel {
-  int get amountOwe => throw _privateConstructorUsedError;
+  double get amountOwe => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime? get datePaid => throw _privateConstructorUsedError;
   String get itemDocID => throw _privateConstructorUsedError;
@@ -43,7 +43,7 @@ abstract class $CostObjectModelCopyWith<$Res> {
       _$CostObjectModelCopyWithImpl<$Res, CostObjectModel>;
   @useResult
   $Res call(
-      {int amountOwe,
+      {double amountOwe,
       @TimestampConverter() DateTime? datePaid,
       String itemDocID,
       @TimestampConverter() DateTime? lastUpdated,
@@ -77,7 +77,7 @@ class _$CostObjectModelCopyWithImpl<$Res, $Val extends CostObjectModel>
       amountOwe: null == amountOwe
           ? _value.amountOwe
           : amountOwe // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       datePaid: freezed == datePaid
           ? _value.datePaid
           : datePaid // ignore: cast_nullable_to_non_nullable
@@ -115,7 +115,7 @@ abstract class _$$CostObjectModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int amountOwe,
+      {double amountOwe,
       @TimestampConverter() DateTime? datePaid,
       String itemDocID,
       @TimestampConverter() DateTime? lastUpdated,
@@ -147,7 +147,7 @@ class __$$CostObjectModelImplCopyWithImpl<$Res>
       amountOwe: null == amountOwe
           ? _value.amountOwe
           : amountOwe // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       datePaid: freezed == datePaid
           ? _value.datePaid
           : datePaid // ignore: cast_nullable_to_non_nullable
@@ -192,7 +192,7 @@ class _$CostObjectModelImpl implements _CostObjectModel {
       _$$CostObjectModelImplFromJson(json);
 
   @override
-  final int amountOwe;
+  final double amountOwe;
   @override
   @TimestampConverter()
   final DateTime? datePaid;
@@ -254,7 +254,7 @@ class _$CostObjectModelImpl implements _CostObjectModel {
 
 abstract class _CostObjectModel implements CostObjectModel {
   const factory _CostObjectModel(
-      {required final int amountOwe,
+      {required final double amountOwe,
       @TimestampConverter() final DateTime? datePaid,
       required final String itemDocID,
       @TimestampConverter() final DateTime? lastUpdated,
@@ -266,7 +266,7 @@ abstract class _CostObjectModel implements CostObjectModel {
       _$CostObjectModelImpl.fromJson;
 
   @override
-  int get amountOwe;
+  double get amountOwe;
   @override
   @TimestampConverter()
   DateTime? get datePaid;

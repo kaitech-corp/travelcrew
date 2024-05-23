@@ -9,7 +9,7 @@ part of 'cost_object_model.dart';
 _$CostObjectModelImpl _$$CostObjectModelImplFromJson(
         Map<String, dynamic> json) =>
     _$CostObjectModelImpl(
-      amountOwe: json['amountOwe'] as int,
+      amountOwe: (json['amountOwe'] as num).toDouble(),
       datePaid: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['datePaid'], const TimestampConverter().fromJson),
       itemDocID: json['itemDocID'] as String,

@@ -63,19 +63,19 @@ class Trip with _$Trip {
     return Trip(
         startDateTimeStamp: DateTime.now(),
         endDateTimeStamp: DateTime.now(),
-        comment: 'comment',
-        displayName: 'displayName',
+        comment: "Sorry about that! We're having trouble finding your trip.",
+        displayName: 'Display Name',
         favorite: <String>[],
         accessUsers: <String>[],
         documentId: 'documentId',
-        endDate: 'endDate',
+        endDate: 'End Date',
         ispublic: true,
-        tripName: 'tripName',
+        tripName: 'Trip Name',
         link: 'link',
-        location: 'location',
+        location: 'Location',
         ownerID: 'ownerID',
-        startDate: 'startDate',
-        travelType: 'travelType',
-        urlToImage: 'urlToImage');
+        startDate: 'Start Date',
+        travelType: 'Travel Type',
+        urlToImage: 'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/activityImages%2Fimage_7.png?alt=media&token=da71490e-bb19-4897-af5e-e6b1bc70a006');
   }
 }

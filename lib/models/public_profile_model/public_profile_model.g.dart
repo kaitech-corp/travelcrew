@@ -28,8 +28,8 @@ _$UserPublicProfileImpl _$$UserPublicProfileImplFromJson(
       topDestinations: (json['topDestinations'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      tripsCreated: json['tripsCreated'] as int?,
-      tripsJoined: json['tripsJoined'] as int?,
+      tripsCreated: (json['tripsCreated'] as num?)?.toInt(),
+      tripsJoined: (json['tripsJoined'] as num?)?.toInt(),
       uid: json['uid'] as String,
       urlToImage: json['urlToImage'] as String?,
     );

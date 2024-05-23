@@ -10,7 +10,7 @@ _$RecommendedContentModelImpl _$$RecommendedContentModelImplFromJson(
         Map<String, dynamic> json) =>
     _$RecommendedContentModelImpl(
       name: json['name'] as String,
-      clicks: json['clicks'] as int,
+      clicks: (json['clicks'] as num).toInt(),
       dateCreated: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['dateCreated'], const TimestampConverter().fromJson),
       docID: json['docID'] as String,
