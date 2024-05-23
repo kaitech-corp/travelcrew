@@ -92,21 +92,6 @@ class LoginFormState extends State<LoginForm> {
     _loginBloc.add(LoginWithGooglePressed());
   }
 
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(message),
-            const Icon(Icons.error),
-          ],
-        ),
-        backgroundColor: Colors.blueGrey[200],
-      ),
-    );
-  }
-
   void _showLoggingInSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -210,9 +195,10 @@ class LoginFormState extends State<LoginForm> {
                   const SizedBox(height: 25),
                   buildLoginButton(context, state),
                   buildForgotPasswordButton(context),
+                  buildSignUpLink(context),
                   const SizedBox(height: 15),
                   buildSignInButtons(context, state),
-                  buildSignUpLink(context),
+                  
                 ],
               );
             },
@@ -300,7 +286,7 @@ class LoginFormState extends State<LoginForm> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8.0, 16),
+        padding: const EdgeInsets.only(top:  8.0),
         child: TextButton(
           child: Text(AppLocalizations.of(context)!.forgot_password),
           onPressed: () {
@@ -312,22 +298,17 @@ class LoginFormState extends State<LoginForm> {
   }
 
   Widget buildSignUpLink(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Text(AppLocalizations.of(context)!.dont_have_an_account),
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.sign_up),
-              onPressed: () {
-                navigationService.navigateTo(SignUpScreenRoute);
-              },
-            ),
-          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(AppLocalizations.of(context)!.dont_have_an_account),
+        TextButton(
+          child: Text(AppLocalizations.of(context)!.sign_up),
+          onPressed: () {
+            navigationService.navigateTo(SignUpScreenRoute);
+          },
         ),
-      ),
+      ],
     );
   }
 }
