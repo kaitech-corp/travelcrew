@@ -13,9 +13,9 @@ import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/loading.dart';
 import '../../models/activity_model/activity_model.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../repositories/activity_repository.dart';
 import '../../services/constants/constants.dart';
 import 'components/activity_card.dart';
-import 'logic/activity_repository.dart';
 
 
 class ActivityPage extends StatefulWidget {
@@ -29,6 +29,7 @@ class ActivityPage extends StatefulWidget {
 
 class ActivityPageState extends State<ActivityPage> {
   late GenericBloc<ActivityModel, ActivityRepository> bloc;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class ActivityPageState extends State<ActivityPage> {
             } else if (state is HasDataState) {
               final List<ActivityModel> activityList = state.data as List<ActivityModel>;
               return GroupedListView<ActivityModel, String>(
+                controller: scrollController,
                 elements: activityList,
                 groupBy: (ActivityModel activity) => DateTime(
                   activity.startDateTimestamp!.year,

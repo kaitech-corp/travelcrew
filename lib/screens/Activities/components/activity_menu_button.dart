@@ -6,6 +6,7 @@ import '../../../models/split_model/split_model.dart';
 import '../../../models/trip_model/trip_model.dart';
 import '../../../services/database.dart';
 
+import '../../../services/functions/calendar_events.dart';
 import '../../../services/functions/cloud_functions/detail_functions.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
@@ -15,11 +16,10 @@ import '../../Split/split_package.dart';
 
 class ActivityMenuButton extends StatelessWidget {
   const ActivityMenuButton(
-      {super.key, required this.activity, required this.trip, this.event});
+      {super.key, required this.activity, required this.trip});
 
   final ActivityModel activity;
   final Trip trip;
-  final Event? event;
 
   void handleMenuItemSelection(String value, BuildContext context) {
     switch (value) {
@@ -54,7 +54,13 @@ class ActivityMenuButton extends StatelessWidget {
         );
         break;
       case 'Calendar':
-        Add2Calendar.addEvent2Cal(event!);
+        final Event event = createEvent(
+          activity: activity,
+          type: 'Activity',
+          startDate: activity.startDateTimestamp!,
+          endDate: activity.endDateTimestamp!,
+        );
+        Add2Calendar.addEvent2Cal(event);
         break;
       case 'Delete':
         DetailCloudFunction().removeActivity(trip.documentId, activity.fieldID);

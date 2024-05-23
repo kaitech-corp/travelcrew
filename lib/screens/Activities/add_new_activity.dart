@@ -4,19 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/database.dart';
-
-import '../../../services/functions/tc_functions.dart';
 import '../../../services/theme/text_styles.dart';
 import '../../../services/widgets/appearance_widgets.dart';
 import '../../../services/widgets/calendar_widget.dart';
-import '../../../services/widgets/in_app_review.dart';
 import '../../../services/widgets/loading.dart';
 import '../../../services/widgets/time_picker.dart';
 import '../../models/activity_model/activity_model.dart';
 import '../../models/trip_model/trip_model.dart';
-import '../../services/constants/constants.dart';
 import '../../services/functions/cloud_functions/admin_functions.dart';
-import '../../services/functions/cloud_functions/feedback_functions.dart';
 import '../../services/functions/cloud_functions/notification_functions.dart';
 import '../../size_config/size_config.dart';
 import 'components/form_card.dart';
@@ -62,7 +57,7 @@ class AddNewActivityState extends State<AddNewActivity> {
   @override
   void initState() {
     startDateTimestamp.value = widget.trip.startDateTimeStamp!;
-    endDateTimestamp.value = widget.trip.endDateTimeStamp!;
+    endDateTimestamp.value = widget.trip.startDateTimeStamp!;
     activityLocationController.clear();
     super.initState();
   }
@@ -267,6 +262,9 @@ class AddNewActivityState extends State<AddNewActivity> {
 
   Future<void> _submit() async {
     final String documentID = widget.trip.documentId;
+    if (kDebugMode) {
+      print(widget.trip.documentId);
+    }
     final String message =
         'A new activity has been added to ${widget.trip.tripName}';
     final bool ispublic = widget.trip.ispublic;
@@ -282,8 +280,7 @@ class AddNewActivityState extends State<AddNewActivity> {
                 startDateTimestamp: startDateTimestamp.value,
                 endDateTimestamp: endDateTimestamp.value,
                 displayName: currentUserProfile.userPublicProfile!.displayName,
-                endTime:
-                    timePickerVisible ? startTime.value.format(context) : '',
+                endTime: timePickerVisible ? endTime.value.format(context) : '',
                 fieldID: '',
                 link: link,
                 location: activityLocationController.text,

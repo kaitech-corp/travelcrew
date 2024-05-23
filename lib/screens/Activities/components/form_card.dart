@@ -20,11 +20,11 @@ class FormCard extends StatelessWidget {
         width: SizeConfig.screenWidth,
         child: Row(children: <Widget>[
           Container(
-            decoration: const BoxDecoration(
+            decoration:  const BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
                     bottomLeft: Radius.circular(15)),
-                color: Colors.blue),
+                color: Colors.blueAccent),
             height: SizeConfig.screenHeight * .3,
             width: SizeConfig.blockSizeHorizontal * 4,
           ),

@@ -37,10 +37,8 @@ class _EditActivityState extends State<EditActivity> {
       ValueNotifier<TimeOfDay>(TimeOfDay.now());
   final ValueNotifier<TimeOfDay> endTime =
       ValueNotifier<TimeOfDay>(TimeOfDay.now());
-  final ValueNotifier<DateTime> startDateTimestamp =
-      ValueNotifier<DateTime>(DateTime.now());
-  final ValueNotifier<DateTime> endDateTimestamp =
-      ValueNotifier<DateTime>(DateTime.now());
+  late ValueNotifier<DateTime> startDateTimestamp;
+  late ValueNotifier<DateTime> endDateTimestamp;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -56,8 +54,8 @@ class _EditActivityState extends State<EditActivity> {
     super.initState();
     documentID = widget.trip.documentId;
     fieldID = widget.activity.fieldID;
-    startDateTimestamp.value = widget.activity.startDateTimestamp!;
-    endDateTimestamp.value = widget.activity.endDateTimestamp!;
+    startDateTimestamp = ValueNotifier<DateTime>(widget.activity.startDateTimestamp!);
+    endDateTimestamp = ValueNotifier<DateTime>(widget.activity.endDateTimestamp!);
     controllerComment.text = widget.activity.comment;
     controllerLink.text = widget.activity.link;
     controllerLocation.text = widget.activity.location;
@@ -283,8 +281,8 @@ class _EditActivityState extends State<EditActivity> {
           location: controllerLocation.text,
           startDateTimestamp: startDateTimestamp.value,
           endDateTimestamp: endDateTimestamp.value,
-          startTime: startTime.value.format(context),
-          endTime: endTime.value.format(context),
+          startTime: timePickerVisible ? startTime.value.format(context) : widget.activity.startTime,
+          endTime: timePickerVisible ? endTime.value.format(context) : widget.activity.endTime,
         );
       } on Exception catch (e) {
         AdminCloudFunction().logError('Error saving edited activity data: $e');
@@ -301,6 +299,7 @@ class _EditActivityState extends State<EditActivity> {
               type: 'Activity',
               uidToUse: f,
               ownerID: userService.currentUserID,
+              ispublic: widget.trip.ispublic,
             );
           }
         }

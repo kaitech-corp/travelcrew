@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../blocs/generics/generic_bloc.dart';
-import '../../../models/activity_model/activity_model.dart';
-import '../../../services/functions/cloud_functions/admin_functions.dart';
+import '../blocs/generics/generic_bloc.dart';
+import '../models/activity_model/activity_model.dart';
+import '../services/functions/cloud_functions/admin_functions.dart';
 
 class ActivityRepository extends GenericBlocRepository<ActivityModel> {
   ActivityRepository({required this.tripDocID});

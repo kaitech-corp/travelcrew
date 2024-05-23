@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../models/activity_model/activity_model.dart';
+import '../../../services/database.dart';
 import '../../../services/functions/cloud_functions/admin_functions.dart';
 
 final CollectionReference<Object?> activitiesCollection =
@@ -23,6 +24,20 @@ Future<void> addNewActivity(ActivityModel model, String documentID) async {
     });
   } catch (e) {
     AdminCloudFunction().logError('Error adding new activity:  $e');
+  }
+}
+
+void updateActivityVote(String documentID, String fieldID, bool addVote) {
+  final DocumentReference<Map<String, dynamic>> addVoteToActivityRef =
+      activitiesCollection.doc(documentID).collection('activity').doc(fieldID);
+  final String uid = userService.currentUserID;
+  final FieldValue fieldValue = addVote
+      ? FieldValue.arrayUnion(<String>[uid])
+      : FieldValue.arrayRemove(<String>[uid]);
+  try {
+    addVoteToActivityRef.update(<String, dynamic>{'voters': fieldValue});
+  } catch (e) {
+    AdminCloudFunction().logError('Error adding vote to activity:  $e');
   }
 }
 
@@ -86,3 +101,4 @@ Stream<ActivityModel> getActivity(String tripDocID, String fieldID) {
       .map((DocumentSnapshot<Map<String, dynamic>> snapshot) =>
           _activityFromSnapshot(snapshot));
 }
+
