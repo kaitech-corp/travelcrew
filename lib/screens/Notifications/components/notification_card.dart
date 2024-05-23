@@ -5,7 +5,6 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../services/database.dart';
-
 import '../../../../services/navigation/route_names.dart';
 import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/appearance_widgets.dart';
@@ -42,16 +41,15 @@ class NotificationsCard extends StatelessWidget {
 
 // Activity or Lodging Notifications
   Widget notificationType1(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return ListTile(
       key: Key(notification.fieldID),
-      child: ListTile(
-        title: Text(notification.message),
-        subtitle: Text(
-          readTimestamp(notification.timestamp!),
-          style: titleSmall(context),
-        ),
-        onTap: () async {
+      title: Text(notification.message),
+      subtitle: Text(
+        readTimestamp(notification.timestamp!),
+        style: titleSmall(context),
+      ),
+      onTap: () async {
+        if (notification.ispublic != null) {
           if (notification.ispublic!) {
             final Trip trip = await getTrip(notification.documentID!);
             navigationService.navigateTo(ExploreRoute, arguments: trip);
@@ -59,150 +57,136 @@ class NotificationsCard extends StatelessWidget {
             final Trip trip = await getPrivateTrip(notification.documentID!);
             navigationService.navigateTo(ExploreRoute, arguments: trip);
           }
-        },
-      ),
+        }
+      },
     );
   }
 
 // Join Request
   Widget notificationType2(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return Row(
       key: Key(notification.fieldID),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 3,
-            child: GestureDetector(
-              onTap: () async {
-                final Trip trip = await getTrip(notification.documentID!);
-                navigationService.navigateTo(ExploreBasicRoute,
-                    arguments: trip);
-              },
-              child: ListTile(
-                title: Text(notification.message),
-                subtitle: Text(
-                  readTimestamp(notification.timestamp!),
-                  style: titleSmall(context),
-                ),
+      children: <Widget>[
+        Expanded(
+          flex: 3,
+          child: GestureDetector(
+            onTap: () async {
+              final Trip trip = await getTrip(notification.documentID!);
+              navigationService.navigateTo(ExploreBasicRoute, arguments: trip);
+            },
+            child: ListTile(
+              title: Text(notification.message),
+              subtitle: Text(
+                readTimestamp(notification.timestamp!),
+                style: titleSmall(context),
               ),
             ),
           ),
-          Expanded(
-            child: IconButton(
-              icon: const IconThemeWidget(icon: Icons.add_circle),
-              onPressed: () async {
-                final String fieldID = notification.fieldID;
-                TripCloudFunctions().joinTrip(notification.documentID!,
-                    notification.ispublic!, notification.uid);
-                NotificationCloudFunction().removeNotificationData(fieldID);
-                _showDialog(context);
-              },
-            ),
+        ),
+        Expanded(
+          child: IconButton(
+            icon: const IconThemeWidget(icon: Icons.add_circle),
+            onPressed: () async {
+              TripCloudFunctions().joinTrip(notification.documentID!,
+                  notification.ispublic!, notification.uid);
+              final String fieldID = notification.fieldID;
+              NotificationCloudFunction().removeNotificationData(fieldID);
+              _showDialog(context);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
 // Follow Request Notification
   Widget notificationType3(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return ListTile(
       key: Key(notification.fieldID),
-      child: ListTile(
-        title: Text(notification.message),
-        subtitle: Text(
-          readTimestamp(notification.timestamp!),
-          style: titleSmall(context),
-        ),
-        trailing: IconButton(
-          icon: const IconThemeWidget(icon: Icons.person_add),
-          onPressed: () async {
-            final String fieldID = notification.fieldID;
-            UserCloudFunction().followUser(notification.uid);
-            NotificationCloudFunction().removeNotificationData(fieldID);
-            if (!currentUserProfile.userPublicProfile!.following!
-                .contains(notification.uid)) {
-              TravelCrewAlertDialogs()
-                  .followBackAlert(context, notification.uid);
-            }
-          },
-        ),
+      title: Text(notification.message),
+      subtitle: Text(
+        readTimestamp(notification.timestamp!),
+        style: titleSmall(context),
+      ),
+      trailing: IconButton(
+        icon: const IconThemeWidget(icon: Icons.person_add),
+        onPressed: () async {
+          final String fieldID = notification.fieldID;
+          UserCloudFunction().followUser(notification.uid);
+          NotificationCloudFunction().removeNotificationData(fieldID);
+          if (!currentUserProfile.userPublicProfile!.following!
+              .contains(notification.uid)) {
+            TravelCrewAlertDialogs().followBackAlert(context, notification.uid);
+          }
+        },
       ),
     );
   }
 
 // Welcome or Follow back Notification
   Widget notificationType4(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return ListTile(
       key: Key(notification.fieldID),
-      child: ListTile(
-        title: Linkify(
-          onOpen: (LinkableElement link) async {
-            if (await canLaunchUrl(Uri(path: link.url))) {
-              await launchUrl(Uri(path: link.url));
-            } else {
-              throw 'Could not launch $link';
-            }
-          },
-          text: notification.message,
-          style: titleMedium(context),
-          // textScaleFactor: 1.2,
-          maxLines: 50,
-          overflow: TextOverflow.ellipsis,
-          linkStyle: const TextStyle(color: Colors.blue),
-          textAlign: TextAlign.left,
-        ),
-        subtitle: Text(
-          notification.timestamp!.toString(),
-          style: titleSmall(context),
-        ),
+      title: Linkify(
+        onOpen: (LinkableElement link) async {
+          if (await canLaunchUrl(Uri(path: link.url))) {
+            await launchUrl(Uri(path: link.url));
+          } else {
+            throw 'Could not launch $link';
+          }
+        },
+        text: notification.message,
+        style: titleMedium(context),
+        // textScaleFactor: 1.2,
+        maxLines: 50,
+        overflow: TextOverflow.ellipsis,
+        linkStyle: const TextStyle(color: Colors.blue),
+        textAlign: TextAlign.left,
+      ),
+      subtitle: Text(
+        readTimestamp(notification.timestamp!),
+        style: titleSmall(context),
       ),
     );
   }
 
 // Invitation Notification
   Widget notificationType5(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return Row(
       key: Key(notification.fieldID),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 3,
-            child: GestureDetector(
-              onTap: () async {
-                if (notification.ispublic!) {
-                  final Trip trip = await getTrip(notification.documentID!);
-                  navigationService.navigateTo(ExploreBasicRoute,
-                      arguments: trip);
-                }
-              },
-              child: ListTile(
-                title: Text(notification.message),
-                subtitle: Text(
-                  readTimestamp(notification.timestamp!),
-                  style: titleSmall(context),
-                ),
+      children: <Widget>[
+        Expanded(
+          flex: 3,
+          child: GestureDetector(
+            onTap: () async {
+              if (notification.ispublic!) {
+                final Trip trip = await getTrip(notification.documentID!);
+                navigationService.navigateTo(ExploreBasicRoute,
+                    arguments: trip);
+              }
+            },
+            child: ListTile(
+              title: Text(notification.message),
+              subtitle: Text(
+                readTimestamp(notification.timestamp!),
+                style: titleSmall(context),
               ),
             ),
           ),
-          Expanded(
-            child: IconButton(
-              icon: const IconThemeWidget(icon: Icons.add_circle),
-              onPressed: () async {
-                final String fieldID = notification.fieldID;
-                TripCloudFunctions().joinTripInvite(notification.documentID!,
-                    notification.uid, notification.ispublic!);
-                NotificationCloudFunction().removeNotificationData(fieldID);
-                _showDialog(context);
-              },
-            ),
+        ),
+        Expanded(
+          child: IconButton(
+            icon: const IconThemeWidget(icon: Icons.add_circle),
+            onPressed: () async {
+              final String fieldID = notification.fieldID;
+               TripCloudFunctions().joinTrip(notification.documentID!,
+                  notification.ispublic!, notification.ownerID!);
+              NotificationCloudFunction().removeNotificationData(fieldID);
+              _showDialog(context);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -213,15 +197,12 @@ class NotificationsCard extends StatelessWidget {
         final Trip trip = await getTrip(notification.documentID!);
         navigationService.navigateTo(ExploreRoute, arguments: trip);
       },
-      child: Card(
-        color: Colors.white,
+      child: ListTile(
         key: Key(notification.fieldID),
-        child: ListTile(
-          title: Text(notification.message),
-          subtitle: Text(
-            readTimestamp(notification.timestamp!),
-            style: titleSmall(context),
-          ),
+        title: Text(notification.message),
+        subtitle: Text(
+          readTimestamp(notification.timestamp!),
+          style: titleSmall(context),
         ),
       ),
     );

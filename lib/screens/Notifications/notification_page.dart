@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 import '../../../services/theme/text_styles.dart';
 
 import '../../models/notification_model/notification_model.dart';
+import '../../services/functions/cloud_functions/notification_functions.dart';
 import '../Alerts/alert_dialogs.dart';
 import 'components/notification_card.dart';
+import 'logic/logic.dart';
 
 /// Notification page
 class NotificationPage extends StatefulWidget {
@@ -26,7 +28,7 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Intl.message('Notifications'),style: headlineSmall(context),),
+        title: Text(Intl.message('Notifications'),style: titleLarge(context),),
       ),
       body: ListView.builder(
           padding: EdgeInsets.zero,
@@ -50,10 +52,10 @@ class _NotificationPageState extends State<NotificationPage> {
               onDismissed: (DismissDirection direction) {
                 setState(() {
                   widget.notifications.removeAt(index);
-                  // CloudFunction().removeNotificationModel(item.fieldID);
+                  removeNotificationData(item.fieldID);
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Notification removed.')));
+                    const SnackBar(content: Text('Notification removed.'),duration: Duration(seconds: 1),));
               },
 
               child: NotificationsCard(
