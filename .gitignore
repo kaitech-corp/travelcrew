@@ -47,6 +47,8 @@ lib/generated_plugin_registrant.dart
 /pubspec.yaml
 ios/Flutter/Generated.xcconfig
 ios/Pods
+ios/Podfile
+ios/Podfile.lock
 ios/Pods/Target Support Files
 lib/models/trip_model/trip_model.freezed.dart
 microservices/notification_system/.readmes
@@ -56,3 +58,4 @@ ios/Flutter/Generated.xcconfig
 
 # Packages
 /packages/any_link_preview/
+
