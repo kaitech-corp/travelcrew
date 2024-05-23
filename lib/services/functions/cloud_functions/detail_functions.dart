@@ -45,24 +45,24 @@ class DetailCloudFunction {
   }
 
   Future<void> addVoterToLodging(
-      String docID, String fieldID, String uid) async {
+      String docID, String fieldID) async {
     final HttpsCallable functionData =
         FirebaseFunctions.instance.httpsCallable('addVoterToLodging');
     functionData(<String, dynamic>{
       'docID': docID,
       'fieldID': fieldID,
-      'uid': uid,
+      'uid': userService.currentUserID,
     });
   }
 
   Future<void> removeVoterFromLodging(
-      String docID, String fieldID, String uid) async {
+      String docID, String fieldID) async {
     final HttpsCallable functionData =
         FirebaseFunctions.instance.httpsCallable('removeVoterFromLodging');
     functionData(<String, dynamic>{
       'docID': docID,
       'fieldID': fieldID,
-      'uid': uid,
+      'uid': userService.currentUserID,
     });
   }
 

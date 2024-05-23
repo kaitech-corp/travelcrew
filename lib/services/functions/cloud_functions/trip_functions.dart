@@ -1,9 +1,9 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
-import '../../locator.dart';
+import '../../database.dart';
 
 class TripCloudFunctions {
-  UserService userService = locator<UserService>();
+
   Future<void> joinTrip(String docID, bool ispublic, String ownerID) async {
     final HttpsCallable joinTrip =
         FirebaseFunctions.instance.httpsCallable('joinTrip');

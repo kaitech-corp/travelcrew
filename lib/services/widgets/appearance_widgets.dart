@@ -132,7 +132,7 @@ class TripDetailsIconThemeWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Icon(icon ,color: Colors.blue);
+    return Icon(icon ,color: const Color.fromARGB(255, 94, 26, 220));
   }
 
 }

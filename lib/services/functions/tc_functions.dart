@@ -5,7 +5,6 @@ import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 import '../locator.dart';
 import 'cloud_functions/admin_functions.dart';
 
@@ -15,6 +14,15 @@ class TCFunctions {
   int calculateTimeDifference(DateTime date) {
     final DateTime now = DateTime.now();
     return date.difference(now).inDays;
+  }
+
+  String calculateTimeDifferenceInDays(DateTime? date1, DateTime? date2) {
+    if (date1 == null || date2 == null) {
+      return '';
+    }
+    final int differenceInDays = date2.difference(date1).inDays;
+
+    return '${differenceInDays.abs() + 1} ${(differenceInDays.abs() + 1) == 1 ? 'Day' : 'Days'}';
   }
 
   String appReviewDocID() {
@@ -28,6 +36,14 @@ class TCFunctions {
 
   String dateToMonthDay(String dateTime) {
     return dateTime.split(',')[0];
+  }
+
+  String tripCardDate(String startDateTime, String endDateTime) {
+    if (startDateTime == endDateTime) {
+      return dateToMonthDay(startDateTime);
+    } else {
+      return '${dateToMonthDay(startDateTime)} - $endDateTime';
+    }
   }
 
   String dateToMonthDayFromTimestamp(Timestamp timestamp) {
@@ -182,6 +198,7 @@ String readTimestamp(DateTime timestamp) {
   final Duration difference = currentTime.difference(timestamp);
   final int days = difference.inDays;
   final int hours = difference.inHours;
+  final int minutes = difference.inMinutes;
 
   if (days > 1) {
     return '$days days ago';
@@ -189,6 +206,12 @@ String readTimestamp(DateTime timestamp) {
     return '$days day ago';
   } else if (days < 1 && hours == 1) {
     return '$hours hour ago';
+  } else if (days < 1 && hours < 1 && minutes == 1) {
+    return '$minutes minute ago';
+  } else if (days < 1 && hours < 1 && minutes < 1) {
+    return 'Just now';
+  } else if (days < 1 && hours < 1) {
+    return '$minutes minutes ago';
   } else {
     return '$hours hours ago';
   }

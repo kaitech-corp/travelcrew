@@ -9,7 +9,7 @@ class NotificationCloudFunction {
       String? uidToUse,
       String? documentID,
       required String type,
-      String? ownerID,
+      String? ownerID, // ownerID is the owner of the notification received.
       bool? ispublic}) async {
     final HttpsCallable functionData =
         FirebaseFunctions.instance.httpsCallable('addNewNotification');

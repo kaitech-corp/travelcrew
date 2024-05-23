@@ -26,10 +26,10 @@ class TimePickersState extends State<TimePickers> {
 
   @override
   void initState() {
-    timeStart = widget.lodging
+    widget.startTime.value = timeStart = widget.lodging
         ? const TimeOfDay(hour: 15, minute: 0)
         : const TimeOfDay(hour: 9, minute: 0);
-    timeEnd = widget.lodging
+    widget.endTime.value = timeEnd = widget.lodging
         ? const TimeOfDay(hour: 11, minute: 0)
         : const TimeOfDay(hour: 15, minute: 0);
     super.initState();

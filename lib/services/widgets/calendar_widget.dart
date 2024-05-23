@@ -27,8 +27,15 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  DateTime _fromDateDepart = DateTime.now();
-  DateTime _fromDateReturn = DateTime.now();
+  late DateTime _fromDateDepart;
+  late DateTime _fromDateReturn;
+
+  @override
+  void initState() {
+    _fromDateDepart = widget.startDateTimeStamp.value;
+    _fromDateReturn = widget.endDateTimeStamp.value;
+    super.initState();
+  }
 
   String get labelTextDepart {
     widget.startDate?.value = DateFormat.yMMMd().format(_fromDateDepart);
@@ -75,8 +82,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   Widget build(BuildContext context) {
     return widget.showBoth
         ? Padding(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Column(
+            padding: const EdgeInsets.all(defaultPadding),
+            child: Column(
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,7 +131,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
               ],
             ),
-        )
+          )
         : InkWell(
             onTap: () {
               showDatePickerDepart();

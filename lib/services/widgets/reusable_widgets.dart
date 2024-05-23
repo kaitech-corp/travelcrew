@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-import '../../screens/Trip_Details/members/members_layout.dart';
+import '../../screens/Explore/members/members_layout.dart';
 import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/trip_model/trip_model.dart';
 import '../../services/database.dart';
