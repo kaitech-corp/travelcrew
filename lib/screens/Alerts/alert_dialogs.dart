@@ -394,6 +394,10 @@ class TravelCrewAlertDialogs {
         SnackBar(content: Text(Intl.message('Copied to Clipboard.'))));
   }
 
+  void shareTripDialog(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(Intl.message('A private trip cannot be shared.'))));
+  }
   void unblockDialog(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(Intl.message('User has been unblocked.'))));
