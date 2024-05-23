@@ -99,8 +99,9 @@ Future<void> addNewTripData(Trip trip, File? urlToImage) async {
       'urlToImage': '',
     });
   } catch (e) {
-    AdminCloudFunction().logError('Error saving member data to new private trip:  '
-        '$e');
+    AdminCloudFunction()
+        .logError('Error saving member data to new private trip:  '
+            '$e');
   }
   try {
     const String action = 'adding user uid to trip access members field';
@@ -272,7 +273,8 @@ Future<void> editTripData(
       });
     }
   } catch (e) {
-    AdminCloudFunction().logError('Error updating image after editing trip:  $e');
+    AdminCloudFunction()
+        .logError('Error updating image after editing trip:  $e');
   }
 }
 
@@ -300,11 +302,10 @@ Future<Trip> getTrip(String documentID) async {
   final DocumentSnapshot<Object?> ref =
       await tripsCollectionUnordered.doc(documentID).get();
   try {
-    const String action = 'Get single trip by document ID';
-    AdminCloudFunction().logEvent(action);
-    if (ref.exists) {
-      return Trip.fromJson(ref as Map<String, Object>);
+    if (ref.exists && ref.data() != null){
+      return Trip.fromJson(ref.data()! as Map<String, dynamic>);
     } else {
+      AdminCloudFunction().logError('Did not find trip with document ID: $documentID');
       return Trip.mock();
     }
   } catch (e) {
@@ -318,11 +319,11 @@ Future<Trip> getPrivateTrip(String documentID) async {
   final DocumentSnapshot<Object?> ref =
       await privateTripsCollectionUnordered.doc(documentID).get();
   try {
-    const String action = 'Get single private trip by document ID';
-    AdminCloudFunction().logEvent(action);
-    if (ref.exists) {
-      return Trip.fromJson(ref as Map<String, Object>);
+
+    if (ref.exists && ref.data() != null) {
+      return Trip.fromJson(ref.data()! as Map<String, dynamic>);
     } else {
+      AdminCloudFunction().logError('Did not find private trip with document ID: $documentID');
       return Trip.mock();
     }
   } catch (e) {
