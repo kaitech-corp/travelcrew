@@ -5,9 +5,8 @@ import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import '../../../services/database.dart';
+import '../../../services/theme/text_styles.dart';
 import '../add_trip_form.dart';
-
-
 
 /// Google places API
 class GooglePlaces extends StatefulWidget {
@@ -29,10 +28,12 @@ class _GooglePlacesState extends State<GooglePlaces> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+    
       onPressed: () {
         _handlePressButton(context);
       },
-      child: const Text('Search'),
+      child: Text('Search',
+          style: titleMedium(context)),
     );
   }
 }
@@ -42,12 +43,7 @@ Future<void> _handlePressButton(BuildContext context) {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          
-          title: const Text(
-            'Google Search',
-           
-          ),
-          content: GooglePlaceAutoCompleteTextField(
+          title: GooglePlaceAutoCompleteTextField(
               textEditingController: locationController,
               googleAPIKey: dotenv.env['kGoogleApiKey']!,
               debounceTime: 800,
