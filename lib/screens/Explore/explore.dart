@@ -18,8 +18,8 @@ import '../../models/chat_model/chat_model.dart';
 import '../../models/lodging_model/lodging_model.dart';
 import '../../models/split_model/split_model.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../repositories/activity_repository.dart';
 import '../Activities/activity_page.dart';
-import '../Activities/logic/activity_repository.dart';
 import '../Lodging/lodging_page.dart';
 import '../Menu/main_menu.dart';
 import '../Split/split_page.dart';
@@ -59,12 +59,7 @@ class _ExploreState extends State<Explore> {
           appBar: AppBar(
             centerTitle: true,
             backgroundColor: canvasColor,
-            title: Text(
-              widget.trip.tripName,
-              style: headlineSmall(context),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+           
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.close),
@@ -74,33 +69,32 @@ class _ExploreState extends State<Explore> {
               ),
             ],
             bottom: TabBar(
+              indicatorColor: Colors.blueGrey,
               labelStyle: SizeConfig.tablet
                   ? headlineSmall(context)
                   : titleSmall(context),
-              isScrollable: true,
-              tabs: const <Tab>[
+              // isScrollable: true,
+              tabs: <Tab>[
                 Tab(
-                  icon: Icon(
-                    Icons.home,
-                  ),
+                  icon: tabIcon(Icons.home)
                 ),
                 Tab(
-                  icon: Icon(
+                  icon: tabIcon(
                     Icons.monetization_on,
                   ),
                 ),
                 Tab(
-                  icon: Icon(
+                  icon: tabIcon(
                     Icons.hotel,
                   ),
                 ),
                 Tab(
-                  icon: Icon(
+                  icon: tabIcon(
                     Icons.directions_bike,
                   ),
                 ),
                 Tab(
-                  icon: Icon(
+                  icon: tabIcon(
                     Icons.chat,
                   ),
                 ),
@@ -151,6 +145,14 @@ class _ExploreState extends State<Explore> {
     );
   }
 
+  Widget tabIcon(IconData icon) {
+    return CircleAvatar(
+        backgroundColor: Colors.grey[300],
+        child: Icon(
+          icon, color: Colors.black87,
+        ));
+  }
+
   Widget checkOwner() {
     final String uid = userService.currentUserID;
     if (widget.trip.ownerID == uid) {
@@ -160,7 +162,7 @@ class _ExploreState extends State<Explore> {
       );
     } else {
       return ExploreMemberLayout(
-        tripDetails: widget.trip,
+        trip: widget.trip,
         scaffoldKey: scaffoldKey,
       );
     }

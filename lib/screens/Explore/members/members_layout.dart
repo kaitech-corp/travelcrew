@@ -101,62 +101,64 @@ class _MembersLayoutState extends State<MembersLayout> {
   }
 
   Widget userCard(BuildContext context, UserPublicProfile member, Trip trip) {
-    return Card(
-      key: Key(member.uid),
-      color: Colors.white,
-      child: Container(
-        width: SizeConfig.screenWidth,
-        height: SizeConfig.screenHeight * .09,
-        padding: const EdgeInsets.all(2),
-        child: GestureDetector(
-          onLongPress: () {
-            setState(() {
-              _showImage = true;
-              _image = member.urlToImage ?? profileImagePlaceholder;
-            });
-          },
-          onLongPressEnd: (LongPressEndDetails details) {
-            setState(() {
-              _showImage = false;
-            });
-          },
-          onTap: () {
-            navigationService.navigateTo(UserProfilePageRoute,
-                arguments: member);
-          },
-          child: Row(
-            children: <Widget>[
-              Center(
-                child: CircleAvatar(
-                  radius: SizeConfig.blockSizeHorizontal * 7,
-                  backgroundImage: NetworkImage(
-                      member.urlToImage ?? profileImagePlaceholder),
-                ),
+    return Container(
+      width: SizeConfig.screenWidth,
+      height: SizeConfig.screenHeight * .09,
+      padding: const EdgeInsets.all(2),
+      child: GestureDetector(
+        onLongPress: () {
+          setState(() {
+            _showImage = true;
+            _image = member.urlToImage ?? profileImagePlaceholder;
+          });
+        },
+        onLongPressEnd: (LongPressEndDetails details) {
+          setState(() {
+            _showImage = false;
+          });
+        },
+        onTap: () {
+          navigationService.navigateTo(UserProfilePageRoute,
+              arguments: member);
+        },
+        child: Row(
+          children: <Widget>[
+            Center(
+              child: CircleAvatar(
+                radius: SizeConfig.blockSizeHorizontal * 7,
+                backgroundImage: NetworkImage(
+                    member.urlToImage ?? profileImagePlaceholder),
               ),
-              Expanded(
-                child: ListTile(
-                  title: Text(
-                    member.displayName,
-                    style: titleMedium(context),
-                    textAlign: TextAlign.start,
-                  ),
-                  trailing: (member.uid == userService.currentUserID ||
-                          member.uid == trip.ownerID)
-                      ? const IconThemeWidget(icon: Icons.check)
-                      : IconButton(
-                          icon: const IconThemeWidget(icon: Icons.close),
-                          onPressed: () {
-                            TravelCrewAlertDialogs().removeMemberAlert(
-                              context,
-                              trip,
-                              member,
-                            );
-                          },
-                        ),
+            ),
+            Expanded(
+              child: ListTile(
+                title: Text(
+                  member.displayName,
+                  style: titleMedium(context),
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                trailing: (member.uid == userService.currentUserID ||
+                        member.uid == trip.ownerID)
+                    ? const IconThemeWidget(icon: Icons.check)
+                    : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                       backgroundColor: Colors.deepPurpleAccent[100]
+                      ),
+                      child: Text('Remove',style: labelLarge(context),),
+                        // icon: const IconThemeWidget(icon: Icons.close),
+                        onPressed: () {
+                          TravelCrewAlertDialogs().removeMemberAlert(
+                            context,
+                            trip,
+                            member,
+                          );
+                        },
+                      ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

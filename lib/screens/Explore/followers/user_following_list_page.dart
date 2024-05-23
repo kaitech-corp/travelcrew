@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
-
-import '../../../../services/theme/text_styles.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../../models/public_profile_model/public_profile_model.dart';
 import '../../../models/trip_model/trip_model.dart';
@@ -14,6 +12,7 @@ import '../../../services/functions/cloud_functions/notification_functions.dart'
 import '../../Alerts/alert_dialogs.dart';
 import '../../Profile/logic/logic.dart';
 import '../../Trip_Management/logic/logic.dart';
+import '../../Users/all_users_page.dart';
 
 /// Following list
 class FollowingList extends StatefulWidget {
@@ -32,12 +31,7 @@ class _FollowingListState extends State<FollowingList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Followers',
-          style: headlineMedium(context),
-        ),
-      ),
+      appBar: AppBar(),
       body: StreamBuilder<List<UserPublicProfile>>(
         stream: retrieveFollowingList(),
         builder: (BuildContext context,
@@ -49,12 +43,16 @@ class _FollowingListState extends State<FollowingList> {
           if (users.hasData) {
             final List<UserPublicProfile> followingList = users.data!;
             return Stack(children: <Widget>[
-              ListView.builder(
-                itemCount: followingList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final UserPublicProfile user = followingList[index];
-                  return userCard(context, user);
-                },
+              UserSearchBar(
+                placeholder: ListView.builder(
+                  itemCount: followingList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final UserPublicProfile user = followingList[index];
+                    return userCard(context, user);
+                  },
+                ),
+                displayChild: true,
+                trip: widget.trip,
               ),
               if (_showImage) ...<Widget>[
                 BackdropFilter(
@@ -97,20 +95,45 @@ class _FollowingListState extends State<FollowingList> {
   }
 
   Widget userCard(BuildContext context, UserPublicProfile user) {
-    return Card(
-      child: GestureDetector(
-        onLongPress: () {
-          setState(() {
-            _showImage = true;
-            _image = user.urlToImage ?? profileImagePlaceholder;
-          });
-        },
-        onLongPressEnd: (LongPressEndDetails details) {
-          setState(() {
-            _showImage = false;
-          });
-        },
-        child: ListTile(
+    return GestureDetector(
+      onLongPress: () {
+        setState(() {
+          _showImage = true;
+          _image = user.urlToImage ?? profileImagePlaceholder;
+        });
+      },
+      onLongPressEnd: (LongPressEndDetails details) {
+        setState(() {
+          _showImage = false;
+        });
+      },
+      child: UserCardLayout(
+        trip: widget.trip,
+        user: user,
+      ),
+    );
+  }
+}
+
+class UserCardLayout extends StatelessWidget {
+  const UserCardLayout({
+    super.key,
+    required this.user,
+    required this.trip,
+  });
+
+  final UserPublicProfile user;
+  final Trip trip;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: defaultPadding,
+          right: defaultPadding,
+          bottom: defaultPadding / 2,
+          top: defaultPadding / 2),
+      child: ListTile(
           leading: Container(
             width: 50,
             height: 50,
@@ -119,42 +142,41 @@ class _FollowingListState extends State<FollowingList> {
               color: Colors.blue,
             ),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  user.urlToImage ?? profileImagePlaceholder,
-                  fit: BoxFit.fill,
-                )),
-          ),
-          subtitle: Text(
-            '${user.firstName} ${user.lastName}',
-            textAlign: TextAlign.start,
-            style: titleSmall(context),
+              borderRadius: BorderRadius.circular(25),
+              child: (user.urlToImage != null && user.urlToImage!.isNotEmpty)
+                  ? Image.network(
+                      user.urlToImage!,
+                      fit: BoxFit.fill,
+                    )
+                  : Image.network(
+                      profileImagePlaceholder,
+                      fit: BoxFit.fill,
+                    ),
+            ),
           ),
           title: Text(
             user.displayName,
           ),
-          trailing: !widget.trip.accessUsers.contains(user.uid)
-              ? IconButton(
+          trailing: trip.accessUsers.contains(user.uid)
+              ? const Icon(Icons.check_box)
+              : IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () async {
                     final UserPublicProfile profile =
                         await getUserProfile(userService.currentUserID);
                     final String message =
-                        '${profile.displayName} invited you to ${widget.trip.tripName}.';
+                        '${profile.displayName} invited you to ${trip.tripName}.';
                     const String type = 'Invite';
                     NotificationCloudFunction().addNewNotification(
                         ownerID: user.uid,
                         message: message,
-                        documentID: widget.trip.documentId,
+                        documentID: trip.documentId,
                         type: type,
-                        ispublic: widget.trip.ispublic,
+                        ispublic: trip.ispublic,
                         uidToUse: user.uid);
                     TravelCrewAlertDialogs().invitationDialog(context);
                   },
-                )
-              : const Icon(Icons.check_box),
-        ),
-      ),
+                )),
     );
   }
 }

@@ -31,7 +31,6 @@ class TripDetailsWidget extends StatelessWidget {
           visible: !expandController.expanded,
           child: const Padding(
             padding: EdgeInsets.only(top: 15.0),
-            // child: DateGauge(tripDetails: tripDetails),
           ),
         ),
         Padding(
@@ -45,7 +44,7 @@ class TripDetailsWidget extends StatelessWidget {
                   iconColor: Colors.black,
                 ),
                 child: ExpandablePanel(
-                  header: Text('Trip Details', style: SizeConfig.tablet ? headlineLarge(context) : headlineSmall(context),),
+                  header: Text('Trip Details', style: SizeConfig.tablet ? headlineLarge(context) : titleLarge(context),),
                   collapsed: Container(),
                   expanded: Padding(
                     padding: EdgeInsets.all(detailsPadding),
