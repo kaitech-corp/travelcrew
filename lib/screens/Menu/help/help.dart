@@ -5,29 +5,47 @@ import '../../../services/database.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/navigation/route_names.dart';
 import '../../../services/theme/text_styles.dart';
+import '../../../size_config/size_config.dart';
 
-class HelpPage extends StatelessWidget{
-
+class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(Intl.message('Help & Feedback'),style: headlineSmall(context),),
+          title: Text(
+            Intl.message('Help & Feedback'),
+            style: titleLarge(context),
+          ),
         ),
         body: Container(
           margin: const EdgeInsets.all(16),
-          height: MediaQuery.of(context).size.height *.5,
+          height: MediaQuery.of(context).size.height * .5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Padding(padding: EdgeInsets.only(top: 5),),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(Intl.message('About'),style: titleMedium(context),),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        Intl.message('About'),
+                        style: headlineSmall(context),
+                      ),
+                      Container(
+                          height: 2,
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: SizeConfig.defaultPadding,
+                  ),
                   ElevatedButton(
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +54,7 @@ class HelpPage extends StatelessWidget{
                         Icon(Icons.navigate_next),
                       ],
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       TCFunctions().launchURL(urlToTerms);
                     },
                   ),
@@ -48,17 +66,35 @@ class HelpPage extends StatelessWidget{
                         Icon(Icons.navigate_next),
                       ],
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       TCFunctions().launchURL(urlToPrivacyPolicy);
-                      },
+                    },
                   ),
                 ],
               ),
-              const Padding(padding: EdgeInsets.only(top: 5, bottom: 5),),
+              SizedBox(
+                height: SizeConfig.defaultPadding * 2,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(Intl.message('Feedback'),style: titleMedium(context),),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        Intl.message('Feedback'),
+                        style: headlineSmall(context),
+                      ),
+                      Container(
+                          height: 2,
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: SizeConfig.defaultPadding,
+                  ),
                   ElevatedButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,7 +103,7 @@ class HelpPage extends StatelessWidget{
                         const Icon(Icons.navigate_next),
                       ],
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       navigationService.navigateTo(FeedbackPageRoute);
                     },
                   ),
@@ -75,7 +111,6 @@ class HelpPage extends StatelessWidget{
               )
             ],
           ),
-        )
-    );
+        ));
   }
 }

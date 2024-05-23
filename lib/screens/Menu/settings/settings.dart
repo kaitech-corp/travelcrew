@@ -49,9 +49,9 @@ class _SettingsState extends State<Settings> {
           centerTitle: true,
           title: Text(
             'Settings',
-            style: headlineSmall(context),
+            style: titleLarge(context),
           ),
-          flexibleSpace: const AppBarGradient(),
+          // flexibleSpace: const AppBarGradient(),
         ),
         body: Container(
           padding: const EdgeInsets.all(8),
@@ -59,7 +59,7 @@ class _SettingsState extends State<Settings> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Padding(padding: EdgeInsets.only(top: 25)),
+               SizedBox(height: SizeConfig.defaultPadding,),
               // Text('Notifications',style: Theme.of(context).textTheme.headline6,),
               // Container(
               //     height: 2,
@@ -222,7 +222,7 @@ class _SettingsState extends State<Settings> {
                     border: Border.all(),
                   )),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(defaultPadding),
                 child: Center(
                     child: Text(
                   "Follow us on social media for 'How to' videos and new feature updates!",
@@ -257,7 +257,7 @@ class _SettingsState extends State<Settings> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(defaultPadding),
                     child: Text(
                       'Delete this account:',
                       style: titleMedium(context),
