@@ -29,6 +29,7 @@ ThemeData themeDataBuilder() {
           fontWeight: FontWeight.w600,
           fontStyle: FontStyle.italic,
           fontSize: 14),
+      labelLarge: TextStyle()
     ),
     scaffoldBackgroundColor: canvasColor,
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -61,7 +62,8 @@ ThemeData themeDataBuilder() {
           const TextStyle(
               fontFamily: 'Cantata One',
               fontWeight: FontWeight.bold,
-              color: Colors.lightBlue),
+              color: Colors.lightBlue
+              ),
         ),
       ),
     ),
@@ -78,7 +80,7 @@ ThemeData themeDataBuilder() {
         size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
         color: Colors.black),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        foregroundColor: Colors.white, backgroundColor: Colors.blue),
+        foregroundColor: Colors.white, backgroundColor: Colors.blueAccent),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF121212),
         selectedItemColor: Colors.blueAccent,
@@ -92,8 +94,8 @@ ThemeData themeDataBuilder() {
       focusedBorder: const UnderlineInputBorder(),
     ),
     iconTheme: IconThemeData(
-      color: Colors.white,
-      size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 20,
+      // color: Colors.white,
+      size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 28,
     ),
     cardTheme:  CardTheme(
       surfaceTintColor: Colors.white,
