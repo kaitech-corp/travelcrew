@@ -15,6 +15,16 @@ class ProfileWidget extends StatelessWidget {
   final UserPublicProfile user;
   final double profileSize = SizeConfig.screenWidth * .45;
 
+  ImageProvider profileImage() {
+    if (user.urlToImage == null || user.urlToImage!.isEmpty) {
+      return const AssetImage(
+        localProfileImagePlaceholder,
+      );
+    } else {
+      return NetworkImage(user.urlToImage!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -38,10 +48,8 @@ class ProfileWidget extends StatelessWidget {
                         height: profileSize,
                         width: profileSize,
                         child: CircleAvatar(
-                          radius: SizeConfig.screenWidth / 1.8,
-                          backgroundImage: NetworkImage(
-                              user.urlToImage ?? profileImagePlaceholder),
-                        ),
+                            radius: SizeConfig.screenWidth / 1.8,
+                            backgroundImage: profileImage()),
                       ),
                     ),
                   ),
@@ -133,14 +141,17 @@ class ProfileWidget extends StatelessWidget {
                               children: <Widget>[
                                 if (user.topDestinations != null &&
                                     user.topDestinations!.isNotEmpty)
-                                for (int i = 0;
-                                    i < (user.topDestinations?.length ?? 0);
-                                    i++)
-                                  if (user.topDestinations![i].isNotEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('${user.topDestinations?[i]}',style: titleMedium(context),),
-                                    ),
+                                  for (int i = 0;
+                                      i < (user.topDestinations?.length ?? 0);
+                                      i++)
+                                    if (user.topDestinations![i].isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          '${user.topDestinations?[i]}',
+                                          style: titleMedium(context),
+                                        ),
+                                      ),
                                 const SizedBox(height: 16),
                               ],
                             ),
