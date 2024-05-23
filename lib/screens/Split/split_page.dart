@@ -14,6 +14,8 @@ import '../../../services/widgets/loading.dart';
 import '../../../size_config/size_config.dart';
 import '../../models/split_model/split_model.dart';
 import '../../models/trip_model/trip_model.dart';
+import '../../services/constants/constants.dart';
+import 'components/prepaid_details_card.dart';
 import 'logic/split_functions.dart';
 import 'split_package.dart';
 
@@ -57,37 +59,39 @@ class _SplitPageState extends State<SplitPage> {
             final List<SplitObject> items = state.data as List<SplitObject>;
             final List<String> uids = listOfUserID(items);
             if (items.isNotEmpty) {
-              final double total = calculateTotal(items);
               return Column(
                 children: <Widget>[
                   Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                    flex: 3,
+                    child: Card(
+                   
+                      shape: RoundedRectangleBorder(
                         borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(45),
                             bottomRight: Radius.circular(45)),
                       ),
-                      width: SizeConfig.screenWidth,
-                      padding: EdgeInsets.all(SizeConfig.defaultPadding),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            'Total expenses.',
-                            style: headlineSmall(context),
-                          ),
-                          Text(
-                            '\$$total',
-                            style: headlineLarge(context),
-                          ),
-                          // Expanded(
-                          //   child: PrepaidDetailsCard(
-                          //     items: items,
-                          //     uids: uids,
-                          //   ),
-                          // )
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(defaultPadding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                         
+                          children: <Widget>[
+                            Text(
+                              'Total Expenses.',
+                              style: titleMedium(context),
+                            ),
+                            Text(
+                              '\$${calculateTotal(items).toStringAsFixed(2)}',
+                              style: headlineLarge(context),
+                            ),
+                            Expanded(
+                              child: PrepaidDetailsCard(
+                                items: items,
+                                uids: uids,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),

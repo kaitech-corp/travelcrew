@@ -86,8 +86,9 @@ class SplitPackage {
               );
             }
           },
-          future: SplitFunctions(tripDocID: trip.documentId)
-              .checkSplitItemExist(splitObject.itemDocID),
+          future: SplitFunctions(
+                  tripDocID: trip.documentId, itemDocID: splitObject.itemDocID)
+              .checkSplitItemExist(),
         );
       },
     );
@@ -98,33 +99,37 @@ class SplitPackage {
   Widget splitItemExist(BuildContext context, SplitObject splitObject,
       {required Trip trip}) {
     return FutureBuilder<bool>(
+      future: SplitFunctions(
+              tripDocID: trip.documentId, itemDocID: splitObject.itemDocID)
+          .checkSplitItemExist(),
       builder: (BuildContext context, AsyncSnapshot<bool> response) {
-        if (response.hasData && response.data == false) {
+        if (response.hasData && response.data == true) {
           return IconButton(
               visualDensity: const VisualDensity(vertical: -4),
-              icon: const IconThemeWidget(
-                icon: Icons.monetization_on_outlined,
+              icon: Icon(
+                Icons.monetization_on_outlined,
+                color: Colors.green[600],
+              ),
+              onPressed: () {});
+        } else {
+          return IconButton(
+              visualDensity: const VisualDensity(vertical: -4),
+              icon: const Icon(
+                Icons.monetization_on_outlined,
+                color: Colors.black,
               ),
               onPressed: () {
                 splitDialog(context, splitObject, trip: trip);
               });
-        } else {
-          return IconButton(
-              visualDensity: const VisualDensity(vertical: -4),
-              icon: const IconThemeWidget(
-                icon: Icons.monetization_on,
-              ),
-              onPressed: () {});
         }
       },
-      future: SplitFunctions(tripDocID: trip.documentId)
-          .checkSplitItemExist(splitObject.itemDocID),
     );
   }
 
   /// Popup dialog to create split item.
   Future<Widget?> splitDialog(BuildContext context, SplitObject splitObject,
       {required Trip trip}) async {
+    double total = 0;
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -176,7 +181,7 @@ class SplitPackage {
                                       }
                                     },
                                     onChanged: (String val) {
-                                      // splitObject.itemTotal = double.parse(val);
+                                      total = double.parse(val);
                                     }))),
                       ),
                       Padding(
@@ -193,24 +198,30 @@ class SplitPackage {
                             form.save();
                             if (form.validate()) {
                               try {
-                                // splitObject.dateCreated = DateTime.now();
-                                // splitObject.lastUpdated = DateTime.now();
-                                // splitObject.purchasedByUID =
-                                //     userService.currentUserID;
-                                // splitObject.userSelectedList = trip.accessUsers
-                                //     .where((String user) =>
-                                //         !selectedList.value.contains(user))
-                                //     .toList();
-                                // splitObject.amountRemaining =
-                                //     splitObject.itemTotal -
-                                //         standardSplit(
-                                //             splitObject.userSelectedList.length,
-                                //             splitObject.itemTotal);
+                                final double amountPerPerson = standardSplit(
+                                    trip.accessUsers
+                                        .where((String user) =>
+                                            !selectedList.value.contains(user))
+                                        .toList()
+                                        .length,
+                                    total);
+                                final SplitObject newObject =
+                                    splitObject.copyWith(
+                                  dateCreated: DateTime.now(),
+                                  itemTotal: total,
+                                  lastUpdated: DateTime.now(),
+                                  purchasedByUID: userService.currentUserID,
+                                  userSelectedList: trip.accessUsers
+                                      .where((String user) =>
+                                          !selectedList.value.contains(user))
+                                      .toList(),
+                                  amountRemaining: total - amountPerPerson,
+                                );
+                                createSplitItem(newObject);
                               } catch (e) {
                                 AdminCloudFunction().logError(
                                     'Tried saving splitObject data: $e');
                               }
-                              createSplitItem(splitObject);
                               navigationService.pop();
                             }
                           },
@@ -237,6 +248,7 @@ class SplitPackage {
   /// Edit Split Dialog
   Future<Widget?> editSplitDialog(BuildContext context, SplitObject splitObject,
       {Trip? trip}) async {
+    double total = splitObject.itemTotal;
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -288,7 +300,7 @@ class SplitPackage {
                                       return null;
                                     },
                                     onChanged: (String val) {
-                                      // splitObject.itemTotal = double.parse(val);
+                                      total = double.parse(val);
                                     }))),
                       ),
                       Row(
@@ -310,8 +322,11 @@ class SplitPackage {
                                       _formKey2.currentState!;
                                   form.save();
                                   if (form.validate()) {
-                                    // splitObject.lastUpdated = Timestamp.now();
-                                    createSplitItem(splitObject);
+                                    final SplitObject newSplitObject =
+                                        splitObject.copyWith(itemTotal: total);
+                                   
+                                    createSplitItem(
+                                        newSplitObject);
                                     navigationService.pop();
                                   }
                                 } catch (e) {

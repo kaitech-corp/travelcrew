@@ -6,11 +6,19 @@ import '../../../models/split_model/split_model.dart';
 
 import '../../../services/functions/cloud_functions/admin_functions.dart';
 import '../../Profile/logic/logic.dart';
+import '../split_package.dart';
 
 final CollectionReference<Object?> splitItemCollection =
     FirebaseFirestore.instance.collection('splitItem');
 final CollectionReference<Object?> costDetailsCollection =
     FirebaseFirestore.instance.collection('costDetails');
+
+class UserPurchaseDetails {
+  UserPurchaseDetails({required this.total, this.uid});
+
+  String? uid;
+  double total;
+}
 
 double calculateTotal(List<SplitObject> items) {
   double total = 0.00;
@@ -19,7 +27,7 @@ double calculateTotal(List<SplitObject> items) {
     total += item.itemTotal;
   }
 
-  return total;
+  return double.parse(total.toStringAsFixed(2));
 }
 
 List<String> listOfUserID(List<SplitObject> items) {
@@ -41,7 +49,8 @@ Stream<List<UserPublicProfile>> getcrewList(List<String> accessUsers) async* {
         .where((UserPublicProfile user) => accessUsers.contains(user.uid))
         .toList();
   } catch (e) {
-    AdminCloudFunction().logError('Error in getcrewList for members layout: $e');
+    AdminCloudFunction()
+        .logError('Error in getcrewList for members layout: $e');
   }
 }
 
@@ -61,8 +70,9 @@ void deleteSplitObject(SplitObject splitObject) {
             .delete();
       }
     } catch (e) {
-      AdminCloudFunction().logError('Error deleting user cost details documents: '
-          '$e');
+      AdminCloudFunction()
+          .logError('Error deleting user cost details documents: '
+              '$e');
     }
     ref2.delete();
   } catch (e) {
@@ -76,17 +86,17 @@ class SplitFunctions {
   final String? tripDocID;
   final String? itemDocID;
   //// Check Split Item exists
-  Future<bool> checkSplitItemExist(String itemDocID) async {
-    final DocumentSnapshot<Map<String, dynamic>> ref = await splitItemCollection
-        .doc(tripDocID)
-        .collection('Item')
-        .doc(itemDocID)
-        .get();
-    if (ref.exists) {
-      return true;
-    } else {
-      return false;
+  Future<bool> checkSplitItemExist() async {
+    if (itemDocID != null) {
+      final DocumentSnapshot<Map<String, dynamic>> ref =
+          await splitItemCollection
+              .doc(tripDocID)
+              .collection('Item')
+              .doc(itemDocID)
+              .get();
+      return ref.exists;
     }
+    return false;
   }
 
 //// Stream in split item
@@ -155,9 +165,8 @@ Future<void> createSplitItemCostDetailsPerUser(
       lastUpdated: DateTime.now(),
       paid: paid,
       uid: userUID,
-      amountOwe: 0
-      // amountOwe: SplitPackage().standardSplit(
-      //     splitObject.userSelectedList.length, splitObject.itemTotal),
+      amountOwe: SplitPackage().standardSplit(
+          splitObject.userSelectedList.length, splitObject.itemTotal),
       );
 
   final DocumentReference<Map<String, dynamic>> ref = costDetailsCollection
@@ -257,7 +266,8 @@ Future<void> createSplitItem(SplitObject splitObject) async {
       }
       return await ref.set(splitObject.toJson());
     } catch (e) {
-      AdminCloudFunction().logError('Error from create split item function: $e');
+      AdminCloudFunction()
+          .logError('Error from create split item function: $e');
     }
   } else {
     try {
@@ -266,7 +276,24 @@ Future<void> createSplitItem(SplitObject splitObject) async {
       }
       return await ref.update(splitObject.toJson());
     } catch (e) {
-      AdminCloudFunction().logError('Error from create split item function: $e');
+      AdminCloudFunction()
+          .logError('Error from create split item function: $e');
     }
   }
+}
+
+List<UserPurchaseDetails> calculateTotalPerUser(List<String> uids, List<SplitObject> items) {
+  final List<UserPurchaseDetails> calculatedList = <UserPurchaseDetails>[];
+  for (final String element in uids) {
+    calculatedList.add(UserPurchaseDetails(uid: element, total: 0.00));
+  }
+
+  for (final SplitObject item in items) {
+    for (final UserPurchaseDetails object in calculatedList) {
+      if (object.uid == item.purchasedByUID) {
+        object.total += item.itemTotal;
+      }
+    }
+  }
+  return calculatedList;
 }
