@@ -172,8 +172,9 @@ Future<void> editPublicProfileData(
         })
       });
     } catch (e) {
-      AdminCloudFunction().logError('Error editing Public Profile with image url:  '
-          '$e');
+      AdminCloudFunction()
+          .logError('Error editing Public Profile with image url:  '
+              '$e');
     }
   }
 }
@@ -183,7 +184,7 @@ Future<UserPublicProfile?> followingList() async {
   final DocumentSnapshot<Object?> ref =
       await userPublicProfileCollection.doc(userService.currentUserID).get();
   if (ref.exists) {
-    return UserPublicProfile.fromJson(ref as Map<String, Object>);
+    return UserPublicProfile.fromJson(ref.data()! as Map<String, dynamic>);
   }
   // else {
   //   return UserPublicProfile();
@@ -240,6 +241,18 @@ Stream<UserPublicProfile> get currentUserPublicProfile {
       .doc(userService.currentUserID)
       .snapshots()
       .map(_userPublicProfileSnapshot);
+}
+
+/// get specific user public profile
+Future<UserPublicProfile> specificUserPublicProfile(String uid) async {
+  if (uid != null && uid.isNotEmpty) {
+    final DocumentSnapshot<Object?> ref =
+        await userPublicProfileCollection.doc(uid).get();
+    if (ref.exists) {
+      return UserPublicProfile.fromJson(ref.data()! as Map<String, dynamic>);
+    }
+  }
+  return Future<UserPublicProfile>.value(UserPublicProfile.mock());
 }
 
 ///Query for past My Crew Trips
