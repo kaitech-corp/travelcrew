@@ -86,9 +86,9 @@ class SplitPackage {
               );
             }
           },
-          future: SplitFunctions(
+          future: SplitService(
                   tripDocID: trip.documentId, itemDocID: splitObject.itemDocID)
-              .checkSplitItemExist(),
+              .doesSplitItemExist(),
         );
       },
     );
@@ -99,9 +99,9 @@ class SplitPackage {
   Widget splitItemExist(BuildContext context, SplitObject splitObject,
       {required Trip trip}) {
     return FutureBuilder<bool>(
-      future: SplitFunctions(
+      future: SplitService(
               tripDocID: trip.documentId, itemDocID: splitObject.itemDocID)
-          .checkSplitItemExist(),
+          .doesSplitItemExist(),
       builder: (BuildContext context, AsyncSnapshot<bool> response) {
         if (response.hasData && response.data == true) {
           return IconButton(
@@ -352,7 +352,7 @@ class SplitPackage {
                                 )),
                               ),
                               onPressed: () {
-                                deleteSplitObject(splitObject);
+                                removeSplitObject(splitObject);
                                 navigationService.pop();
                               },
                               child: Text(
@@ -427,7 +427,7 @@ class _SplitMembersLayoutState extends State<SplitMembersLayout> {
               return const Loading();
             }
           },
-          stream: getcrewList(widget.trip.accessUsers),
+          stream: fetchCrewList(widget.trip.accessUsers),
         ),
         if (_showImage) ...<Widget>[
           BackdropFilter(

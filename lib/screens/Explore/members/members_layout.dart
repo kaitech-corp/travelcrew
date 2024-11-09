@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../services/constants/constants.dart';
 import '../../../../services/database.dart';
-
 import '../../../../services/locator.dart';
 import '../../../../services/navigation/route_names.dart';
 import '../../../../services/theme/text_styles.dart';
@@ -63,7 +62,7 @@ class _MembersLayoutState extends State<MembersLayout> {
               return const Loading();
             }
           },
-          stream: getcrewList(widget.trip.accessUsers),
+          stream: fetchCrewList(widget.trip.accessUsers),
         ),
         if (_showImage) ...<Widget>[
           BackdropFilter(

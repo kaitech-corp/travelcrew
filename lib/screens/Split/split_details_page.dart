@@ -35,10 +35,10 @@ class SplitDetailsPage extends StatelessWidget {
         ),
       ),
       body: StreamBuilder(
-          stream: SplitFunctions(itemDocID: splitObject.itemDocID).costDataList,
+          stream: SplitService(itemDocID: splitObject.itemDocID).costDataList,
           builder: (context, snapshot1) {
             return StreamBuilder(
-              stream: getcrewList(trip.accessUsers),
+              stream: fetchCrewList(trip.accessUsers),
               builder: (BuildContext context, snapshot2) {
                 if (snapshot1.hasData && snapshot2.hasData) {
                   final List<CostObjectModel> userCostData =

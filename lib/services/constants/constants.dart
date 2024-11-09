@@ -6,7 +6,8 @@ import '../../size_config/size_config.dart';
 /// Assets
 const String error = 'assets/images/error.jpg';
 const String splashScreenLogo = 'assets/images/v1.gif';
-const String localProfileImagePlaceholder = 'assets/images/blank_profile_picture.png';
+const String localProfileImagePlaceholder =
+    'assets/images/blank_profile_picture.png';
 const String profileImagePlaceholder =
     'https://storage.googleapis.com/universal-code-135522.appspot.com/web_images/blank_profile_picture.png';
 const String spaceImage = 'assets/images/space3.jpg';
@@ -163,6 +164,8 @@ const List<String> placeTypes = <String>[
   'tourist',
   'zoo',
 ];
+
+const List<String> currencies = <String>['USD', 'EUR', 'JPY', 'XRP'];
 
 const String signInWithGoogle = ' Sign in with Google';
 const String signInWithApple = '  Apple';

@@ -1,7 +1,7 @@
 ---
 name: travelcrew
 description: Travel Crew is a mobile app for friends to share travel plans, organize travel and even create full itineraries together.
-version: 3.1.1+82
+version: 3.2.0+86
 publish_to: none
 
 environment:
@@ -73,6 +73,7 @@ dependencies:
     path: packages/flappy_search_bar
   split_costs:
     path: packages/split_project
+
   # Web
   any_link_preview: 
     path: packages/any_link_preview
