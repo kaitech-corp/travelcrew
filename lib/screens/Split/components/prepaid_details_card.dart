@@ -21,7 +21,7 @@ class PrepaidDetailsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserPurchase userDetails = calculateTotalForUser(uid, items);
     if (userDetails.total <= 0) {
-      return SizedBox.shrink(); // Returns an empty widget
+      return const SizedBox.shrink(); // Returns an empty widget
     }
     return Card(
       child: FutureBuilder<UserPublicProfile>(

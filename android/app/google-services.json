@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:101337609697:android:903ef7f516ff8cc2d5cea0",
+        "mobilesdk_app_id": "1:101337609697:android:b3ff711b7c484892d5cea0",
         "android_client_info": {
           "package_name": "com.kaitechcorp.travelcrew"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "101337609697-ebe00srrdhtalf9cvh4g6mbk4cuufl4q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kaitechcorp.travelcrew",
+            "certificate_hash": "e098586972ff3d78bdacee23d991af4311d6cf07"
+          }
+        },
         {
           "client_id": "101337609697-33k7vbptptve1eg810q1900n1abea2bn.apps.googleusercontent.com",
           "client_type": 3

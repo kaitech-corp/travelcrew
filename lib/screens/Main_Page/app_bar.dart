@@ -73,7 +73,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 0, 16.0, 0),
           child: AppBar(
-            toolbarHeight: SizerUtil.deviceType == DeviceType.tablet
+            toolbarHeight: Device.screenType == ScreenType.tablet
                 ? SizeConfig.screenHeight * .1
                 : SizeConfig.screenHeight * .075,
             shadowColor: const Color(0x00000000),

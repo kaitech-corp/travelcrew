@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
-import '../screens/Trip_Management/logic/logic.dart';
 import '../models/public_profile_model/public_profile_model.dart';
+import '../screens/Trip_Management/logic/logic.dart';
 import 'functions/cloud_functions/admin_functions.dart';
 import 'navigation/navigation_service.dart';
 

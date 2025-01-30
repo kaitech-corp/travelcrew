@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-
 import '../../../services/theme/text_styles.dart';
-
 import '../../models/notification_model/notification_model.dart';
-import '../../services/functions/cloud_functions/notification_functions.dart';
 import '../Alerts/alert_dialogs.dart';
 import 'components/notification_card.dart';
 import 'logic/logic.dart';

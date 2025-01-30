@@ -18,15 +18,15 @@ Future<SettingsModel> getUserNotificationSettings() async {
     final Map<String, dynamic> settings = ref.data()! as Map<String, dynamic>;
     return SettingsModel.fromJson(settings);
   } else {
-    final bool status = await SettingsNotifications().permissionStatus();
-    settingsCollection
-        .doc(userService.currentUserID)
-        .update(SettingsModel(
-          isPushNotificationsOn: status,
-          isDirectMessagingOn: true,
-          isTripChangeOn: true,
-          isTripChatOn: true,
-        ).toJson());
+    // final bool status = await SettingsNotifications().permissionStatus();
+    // settingsCollection
+    //     .doc(userService.currentUserID)
+    //     .update(SettingsModel(
+    //       isPushNotificationsOn: status,
+    //       isDirectMessagingOn: true,
+    //       isTripChangeOn: true,
+    //       isTripChatOn: true,
+    //     ).toJson());
     return SettingsModel.mock();
   }
 }

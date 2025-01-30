@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../services/constants/constants.dart';
 import '../../../size_config/size_config.dart';
@@ -41,7 +39,7 @@ class CardLayout extends StatelessWidget {
               Expanded(
                   child: SizedBox(
                       width: SizeConfig.screenWidth, child: viewAnyLink)),
-                      SizedBox(width: defaultPadding,),
+                      const SizedBox(width: defaultPadding,),
               Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only( top: 8,right: 4),

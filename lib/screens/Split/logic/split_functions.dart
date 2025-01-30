@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../models/cost_model/cost_object_model.dart';
 import '../../../models/public_profile_model/public_profile_model.dart';
@@ -124,7 +125,9 @@ class SplitService {
   }
 
   Stream<List<CostObjectModel>> get costDataCompleteList {
-    print('ItemDocIDs: $itemDocIDs');
+    if (kDebugMode) {
+      print('ItemDocIDs: $itemDocIDs');
+    }
     return Stream<String>.fromIterable(itemDocIDs!).asyncMap((String docID) {
       return costDetailsCollection
           .doc(docID)
@@ -244,7 +247,9 @@ Future<void> createSplitItem(SplitObject splitObject) async {
 
 UserPurchase calculateTotalForUser(String uid, List<CostObjectModel> items) {
   double total = 0.0;
-  print(items);
+  if (kDebugMode) {
+    print(items);
+  }
   for (final CostObjectModel item in items) {
     if (item.paid || item.uid != uid) {
       continue;

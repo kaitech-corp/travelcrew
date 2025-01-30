@@ -23,13 +23,13 @@ class ImagePickerAndCropper {
   Future<File?> _cropImage(String imagePath) async {
     final CroppedFile? croppedImage = await ImageCropper().cropImage(
       sourcePath: imagePath,
-      aspectRatioPresets: <CropAspectRatioPreset>[
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
+      // aspectRatioPresets: <CropAspectRatioPreset>[
+      //   CropAspectRatioPreset.square,
+      //   CropAspectRatioPreset.ratio3x2,
+      //   CropAspectRatioPreset.original,
+      //   CropAspectRatioPreset.ratio4x3,
+      //   CropAspectRatioPreset.ratio16x9
+      // ],
       uiSettings: <PlatformUiSettings>[
           AndroidUiSettings(
               toolbarTitle: 'Cropper',

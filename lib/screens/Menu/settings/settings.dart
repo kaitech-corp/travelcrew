@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../services/constants/constants.dart';
 import '../../../services/functions/tc_functions.dart';
 import '../../../services/theme/text_styles.dart';
-import '../../../services/widgets/appbar_gradient.dart';
 import '../../../size_config/size_config.dart';
 import '../../alerts/alert_dialogs.dart';
 

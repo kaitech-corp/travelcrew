@@ -59,3 +59,11 @@ ios/Flutter/Generated.xcconfig
 # Packages
 /packages/any_link_preview/
 
+firestore.rules
+firestore.indexes.json
+firebase.json
+android/app/google-services.json
+lib/firebase_options.dart
+.firebaserc
+android/key.properties
+android/settings_aar.gradle

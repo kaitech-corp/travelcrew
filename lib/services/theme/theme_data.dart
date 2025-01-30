@@ -77,7 +77,7 @@ ThemeData themeDataBuilder() {
       ),
     ),
     primaryIconTheme: IconThemeData(
-        size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 24,
+        size: Device.screenType == ScreenType.tablet ? 36 : 24,
         color: Colors.black),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
         foregroundColor: Colors.white, backgroundColor: Colors.blueAccent),
@@ -95,7 +95,7 @@ ThemeData themeDataBuilder() {
     ),
     iconTheme: IconThemeData(
       // color: Colors.white,
-      size: SizerUtil.deviceType == DeviceType.tablet ? 36 : 28,
+      size: Device.screenType == ScreenType.tablet ? 36 : 28,
     ),
     cardTheme:  CardTheme(
       surfaceTintColor: Colors.white,

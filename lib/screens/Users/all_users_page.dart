@@ -8,7 +8,6 @@ import '../../../../blocs/generics/generic_state.dart';
 import '../../../../blocs/generics/generics_event.dart';
 import '../../../../repositories/all_users_repository.dart';
 import '../../../../services/theme/text_styles.dart';
-import '../../../../services/widgets/appbar_gradient.dart';
 import '../../../../services/widgets/loading.dart';
 import '../../models/public_profile_model/public_profile_model.dart';
 import '../../models/trip_model/trip_model.dart';
@@ -87,6 +86,7 @@ class _UserSearchBarState extends State<UserSearchBar> {
         final List<UserPublicProfile> allUsersList =
             state.data as List<UserPublicProfile>;
         allUsersSearchList = allUsersList;
+        print(allUsersSearchList);
         return FlappySearchBar<UserPublicProfile>(
           onSearch: userSearchList,
           textStyle: titleMedium(context)!,

@@ -34,7 +34,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
 
   double get imageSize {
-    if (SizerUtil.deviceType == DeviceType.tablet) {
+    if (Device.screenType == ScreenType.tablet) {
       return SizeConfig.screenWidth / 8.0;
     } else {
       return SizeConfig.screenWidth / 4.0;
@@ -88,7 +88,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                           ),
                           Align(
                             child: CircleAvatar(
-                              radius: SizerUtil.deviceType == DeviceType.tablet
+                              radius: Device.screenType == ScreenType.tablet
                                   ? SizeConfig.screenWidth / 8.0
                                   : SizeConfig.screenWidth / 4.0,
                               backgroundImage:

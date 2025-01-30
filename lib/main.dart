@@ -72,7 +72,7 @@ class _TravelCrewState extends State<TravelCrew> {
   @override
   Widget build(BuildContext context) {
     return Sizer(builder:
-        (BuildContext context, Orientation orientation, DeviceType deviceType) {
+        (BuildContext context, Orientation orientation, ScreenType screenType) {
       return MaterialApp(
         builder: (BuildContext context, Widget? widget) {
           return responsiveWrapperBuilder(context, widget!);

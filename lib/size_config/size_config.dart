@@ -38,8 +38,8 @@ class SizeConfig {
         _mediaQueryData.padding.bottom;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal)/100;
     safeBlockVertical = (screenHeight - _safeAreaVertical)/100;
-    tablet = SizerUtil.deviceType == DeviceType.tablet;
-    mobile = SizerUtil.deviceType == DeviceType.mobile;
+    tablet = Device.screenType == ScreenType.tablet;
+    mobile = Device.screenType == ScreenType.mobile;
     defaultPadding = blockSizeHorizontal*4;
   }
 }

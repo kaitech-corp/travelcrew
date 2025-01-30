@@ -3,10 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../../../services/constants/constants.dart';
 import '../../../services/database.dart';
-
 import '../../../services/functions/cloud_functions/feedback_functions.dart';
 import '../../../services/theme/text_styles.dart';
-import '../../../services/widgets/appbar_gradient.dart';
 import '../../alerts/alert_dialogs.dart';
 
 class FeedbackPage extends StatefulWidget {
