@@ -1,0 +1,111 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "dmChat",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "ids",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "lastUpdatedTimestamp",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "dmConversations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "users",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "lastUpdated",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "privateTrips",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "accessUsers",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "endDateTimeStamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "trips",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "accessUsers",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "ispublic",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "endDateTimeStamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "trips",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "favorite",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "ispublic",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "endDateTimeStamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "trips",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "ispublic",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "endDateTimeStamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "userPublicProfile",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "lastname",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "firstname",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

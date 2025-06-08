@@ -1,0 +1,297 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /tripAds/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+    match /recommended_activities/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+    match /recommended_trips/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+    match /apiKeys/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+    match /version/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+    }
+    match /addReview/{documents}/review/{doc} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+    }
+    match /feed/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+    }
+    match /location/{documents}/locations/{doc} {
+    	//Read
+      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3' || resource.data.uid == request.auth.uid;
+      //Write
+      allow write: if request.auth != null;
+    }
+    match /suggestions/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+    match /dmConversations/{document}/messages/{docs} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+    match /dmConversations/{doc} {
+    	//Read
+      allow read: if request.auth.uid in resource.data.users;
+      //Write
+      allow write: if request.auth != null;
+    }
+    match /dmChat/{chatID}/messages/{doc} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+    match /tokens/{userID}/tokens/{doc} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+    }
+    match /dmChat/{chatID} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+    }
+    
+    match /unique/{documents} {
+    	//Read
+      // allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+    }
+
+    match /feedback/{documents} {
+    	//Read
+      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      //Write
+      allow write: if request.auth != null;
+      allow delete: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+        match /reports/{documents}/{collections}/{docs} {
+    	//Read
+      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      //Write
+      allow write: if request.auth != null;
+      allow delete: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+    match /trips/{documents} {
+    	//Read
+      allow read: if true;
+      //Write
+      allow write: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+    }
+    match /trips/{documents}/Members/{member} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+    match /privateTrips/{documents}/Members/{member} {
+    	//Read
+      allow read: if resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      //Write
+      allow write: if request.auth != null;
+      allow update: if resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow delete: if resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+    }
+    match /splitItem/{documents}/Item/{docs} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      }
+    match /costDetails/{documents}/Users/{docs} {
+    	//Read
+      allow read: if request.auth != null;
+      //Write
+      allow write: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+      }
+    match /costDetails/{documents} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      }
+    match /splitItem/{documents} {
+      //Read
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+      }
+    match /bringList/{documents}/Items/{docs} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      }
+    match /bringList/{documents} {
+      //Read
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+      }
+    
+    match /needList/{documents}/Items/{docs} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      }
+    match /needList/{documents} {
+      //Read
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+      }
+  
+    match /privateTrips/{documents} {
+    	//Read
+      allow read: if request.auth.uid in resource.data.accessUsers;
+      //Write
+      allow write: if request.auth != null;
+      allow update: if request.auth in resource.data.accessUsers;
+      allow delete: if request.auth.uid == resource.data.ownerID
+    }
+      match /userPublicProfile/{users} {
+      //Read
+      allow read: if request.auth != null;
+      
+      //Write
+      allow write: if request.auth != null;
+    }
+      match /lodging/{details} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      
+      //Write
+      allow create: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow delete: if details in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+    }
+      match /lodging/{details}/lodging/{document} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+      match /activities/{details} {
+      //Read
+			allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers;
+    
+      //Write
+      allow create: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow delete: if details in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+    }
+      match /activities/{details}/activity/{document} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+    	match /transport/{details} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers;
+    
+      //Write
+      allow create: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow delete: if details in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+    }
+      match /transport/{details}/mode/{document} {
+      //Read
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+    
+      match /users/{user} {
+      //Read
+      allow read: if belongsTo(user) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      
+      //Write
+      allow write: if belongsTo(user)|| request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+        match /settings/{user} {
+      //Read
+      allow read: if belongsTo(user) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      
+      //Write
+      allow write: if belongsTo(user)|| request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    }
+      
+      match /notifications/{document}/notifications/{documents} {
+    	//Read
+      allow read: if request.auth != null;
+      
+      //Write
+      allow write: if request.auth != null && !exists(/databases/$(database)/documents/unique/$(documents));
+      allow delete: if documents in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+      }
+      
+      match /chat/{documents}/messages/{document} {
+    	//Read
+      allow read: if request.auth != null;
+      
+      //Write
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
+      }
+      
+    // function resourceMatchesUID() {
+    //     return request.auth.uid == resource.data.ownerID;
+    // }
+    
+    function belongsTo(userId) {
+    return request.auth.uid == userId
+		}
+  }
+}
