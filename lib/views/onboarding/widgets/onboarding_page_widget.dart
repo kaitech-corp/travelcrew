@@ -1,0 +1,94 @@
+import 'package:blurrycontainer/blurrycontainer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/views/onboarding/widgets/page_indicator.dart';
+
+import '../../../../models/onboarding_page_model.dart';
+import '../../../utils/app_styles.dart';
+import '../../custom_widgets/custom_elevated_button.dart';
+import '../controller/onboarding_controller.dart';
+
+class OnboardingPageWidget extends StatelessWidget {
+  final OnboardingController controller = Get.find<OnboardingController>();
+  final OnboardingPage page;
+  final int index;
+  OnboardingPageWidget({super.key, required this.page, required this.index});
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(page.image),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          child: BlurryContainer(
+            blur: 7,
+            color: Colors.black.withValues(alpha: .2),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(42.01),
+              topRight: Radius.circular(42.01),
+            ),
+            width: Get.width,
+            padding: EdgeInsets.symmetric(
+              horizontal: 21.01.w,
+              vertical: 49.02.h,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    page.title,
+                    style: AppStyles.labelTextStyle().copyWith(
+                      color: Colors.white,
+                      fontSize: 28.01,
+
+                      fontWeight: FontWeight.w600,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  page.subtitle,
+                  textAlign: TextAlign.center,
+                  style: AppStyles.labelTextStyle().copyWith(
+                    color: Colors.white.withValues(alpha: 140),
+                    fontSize: 15.76,
+
+                    fontWeight: FontWeight.w500,
+                    height: 1.33,
+                  ),
+                ),
+                SizedBox(height: 21.h),
+                PageIndicator(
+                  currentIndex: index,
+                  totalIndexes: controller.pages.length,
+                ),
+                SizedBox(height: 28.h),
+                Center(
+                  child: CustomElevatedButton(
+                    width: Get.width * 0.6,
+                    title: 'Next',
+                    onPressed: controller.nextPage,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

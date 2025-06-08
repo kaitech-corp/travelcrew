@@ -50,3 +50,4 @@ ios/Pods
 ios/Pods/Target Support Files
 assets/travelcrew_auth.json
 lib/firebase_options.dart
+assets/

@@ -1,126 +1,127 @@
-import 'dart:io';
-
-import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:travel_crew/firebase_options.dart';
+import 'package:travel_crew/utils/app_colors.dart';
+import 'package:travel_crew/views/main_view/controller/main_view_controller.dart';
 
-import '../blocs/authentication_bloc/authentication_bloc.dart';
-import '../blocs/authentication_bloc/authentication_event.dart';
-import '../blocs/authentication_bloc/authentication_state.dart';
-import '../screens/complete_profile/complete_profile_page.dart';
-import '../screens/login/login_screen.dart';
-import '../services/constants/constants.dart';
-import '../services/database.dart';
-import '../services/firebase_messaging.dart';
-import '../services/initializer/project_initializer.dart';
-import '../services/locator.dart';
-import '../services/navigation/navigation_service.dart';
-import '../services/navigation/router.dart';
-import '../services/responsive/responsive_wrapper.dart';
-import '../services/theme/theme_data.dart';
-import '../services/widgets/launch_icon_badger.dart';
-import '../services/widgets/loading.dart';
-import '../size_config/size_config.dart';
-import 'repositories/user_repository.dart';
-import 'services/l10n.dart';
+import 'services/notifications/notfication_services.dart';
+import 'utils/app_strings.dart';
+import 'utils/localization.dart';
+import 'utils/route_generator.dart';
+import 'utils/screen_bindings.dart';
 
+
+late FirebaseFirestore firestore;
+MainViewController? mainViewController;
+String userDeviceToken = "";
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 void main() async {
-  await projectInitializer();
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase();
+  // initAppsflyer();
+  userDeviceToken = await FirebasePushNotificationApi().initNotifications();
+  await dotenv.load(fileName: ".env");
 
-  final UserRepository userRepository = UserRepository();
-
-  runApp(BlocProvider<AuthenticationBloc>(
-      create: (BuildContext context) =>
-          AuthenticationBloc(userRepository: userRepository)
-            ..add(AuthenticationLoggedIn()),
-      child: TravelCrew(
-        userRepository: userRepository,
-      )));
+  runApp(const MyApp());
 }
 
-class TravelCrew extends StatefulWidget {
-  const TravelCrew({Key? key, this.userRepository}) : super(key: key);
-  final UserRepository? userRepository;
-
-  @override
-  State<TravelCrew> createState() => _TravelCrewState();
-}
-
-class _TravelCrewState extends State<TravelCrew> {
-  // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  
-
-  @override
-  void initState() {
-    if (Platform.isIOS) {
-      requestPermissions();
-    } else {
-      try {
-        androidFCMSetting();
-      } on Exception catch (e) {
-        if (kDebugMode) {
-          print(e);
-        }
-      }
-    }
-    super.initState();
+Future<void> initializeFirebase() async {
+  FirebaseApp app;
+  if (Firebase.apps.isEmpty) {
+    app = await Firebase.initializeApp(
+      name: 'travelcrew_v2',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    app = Firebase.app(); // Get the default app if already initialized
   }
 
+  // Regarding databaseId:
+  // If 'ts-ffff-123' is a specific, valid Firestore database ID for your project, this is correct.
+  // If you intend to use the default Firestore database, you should typically use:
+  //   firestore = FirebaseFirestore.instance;
+  // Or, if you need to associate with the specific app instance (though often not necessary for the default app):
+  //   firestore = FirebaseFirestore.instanceFor(app: app);
+  // The current 'databaseId' ('ts-ffff-123') seems like a placeholder and might cause issues
+  // if it's not a real, provisioned Firestore database ID within your project.
+  firestore = FirebaseFirestore.instanceFor(
+    app: app,
+    databaseId: 'ts-ffff-123',
+  );
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return Sizer(builder:
-        (BuildContext context, Orientation orientation, DeviceType deviceType) {
-      return MaterialApp(
-        builder: (BuildContext context, Widget? widget) {
-          return responsiveWrapperBuilder(context, widget!);
-        },
-        home: AnimatedSplashScreen(
-          splash: splashScreenLogo,
-          animationDuration: const Duration(milliseconds: 1000),
-          splashIconSize: double.maxFinite,
-          nextScreen: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (BuildContext context, AuthenticationState state) {
-            SizeConfig().init(context);
-            if (state is AuthenticationFailure) {
-              return LoginScreen();
-            }
-            if (state is AuthenticationSuccess) {
-              return FutureBuilder<bool>(
-                builder: (BuildContext context, AsyncSnapshot<Object?> data) {
-                  if (data.data == true) {
-                    getCurrentUserProfile();
-                    return const LaunchIconBadger();
-                  } else if (data.data == false) {
-                    return CompleteProfile(
-                      userRepository: widget.userRepository,
-                    );
-                  }
-                  return const Loading();
-                },
-                future: DatabaseService(uid: state.firebaseUser!.uid)
-                    .checkUserHasProfile(),
-              );
-            } else {
-              return LoginScreen();
-            }
-          }),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return GetMaterialApp(
+          title: kAppName,
+          theme: _buildTheme(Brightness.light),
+          debugShowCheckedModeBanner: false,
+          initialBinding: ScreenBindings(),
+          initialRoute: kSplashScreenRoute,
+          supportedLocales: const <Locale>[
+            Locale('en', 'US'),
+            Locale('ar', 'SA'),
+          ],
+          locale: const Locale('en', 'US'),
+          fallbackLocale: const Locale('en', 'US'),
+          translations: AppTranslations(),
+          getPages: RouteGenerator.getPages(),
+          localizationsDelegates: const [
+            FlutterQuillLocalizations.delegate,
+            DefaultMaterialLocalizations.delegate,
+            DefaultWidgetsLocalizations.delegate,
+            DefaultCupertinoLocalizations.delegate,
+          ],
+        );
+      },
+    );
+  }
+
+  ThemeData _buildTheme(Brightness brightness) {
+    var baseTheme = ThemeData(brightness: brightness);
+    return baseTheme.copyWith(
+      textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme),
+      scaffoldBackgroundColor: AppColors.kScaffoldBgColor,
+      colorScheme: ThemeData().colorScheme.copyWith(
+        primary: AppColors.kPrimaryColor,
+      ),
+      // bottomSheetTheme: BottomSheetThemeData(
+      //   backgroundColor: AppColors.kSecondaryColor.withValues(alpha: 0.6),
+      // ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.kPrimaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.r),
+          ),
         ),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: L10n.all,
-        debugShowCheckedModeBanner: false,
-        theme: themeDataBuilder(),
-        navigatorKey: locator<NavigationService>().navigationKey,
-        onGenerateRoute: generateRoute,
-      );
-    });
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.all(AppColors.kWhiteColor),
+        trackOutlineColor: WidgetStateProperty.all(AppColors.transparent),
+      ),
+      cardTheme: CardTheme(
+        surfaceTintColor: AppColors.kWhiteColor,
+        color: AppColors.kWhiteColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+      ),
+    );
   }
 }

@@ -1,167 +1,123 @@
-// ignore_for_file: always_specify_types, prefer_final_locals
+import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+class ActivityModel {
+  String title;
+  String? id;
+  String tripId;
+  String description;
+  List<String> likedBy;
+  int likesCount = 0;
+  DateTime? startDateTime;
+  DateTime? endDateTime;
+  String? location;
+  ActivityModel({
+    required this.likesCount,
+    required this.title,
+    this.id,
+    this.likedBy = const [],
+    required this.tripId,
+    required this.description,
+    this.startDateTime,
+    this.endDateTime,
+    this.location,
+  });
 
-import '../services/functions/cloud_functions.dart';
-
-///Model for activity data
-class ActivityData {
-  ActivityData(
-      {required this.endTime,
-      required this.endDateTimestamp,
-      required this.startDateTimestamp,
-      required this.dateTimestamp,
-      required this.startTime,
-      required this.comment,
-      required this.displayName,
-      required this.fieldID,
-      required this.link,
-      required this.location,
-      required this.activityType,
-      required this.uid,
-      required this.voters});
-
-  factory ActivityData.fromDocument(DocumentSnapshot<Object?> doc) {
-    String activityType = '';
-    String comment = '';
-    String displayName = '';
-    String endTime = '';
-    Timestamp dateTimestamp = Timestamp.now();
-    Timestamp endDateTimestamp = Timestamp.now();
-    Timestamp startDateTimestamp = Timestamp.now();
-    String fieldID = '';
-    String link = '';
-    String location = '';
-    String startTime = '';
-    String uid = '';
-    List<String> voters = <String>[];
-    try {
-      activityType = doc.get('activityType') as String;
-    } catch (e) {
-      // CloudFunction().logError('activityType error: ${e.toString()}');
-    }
-    try {
-      comment = doc.get('comment') as String;
-    } catch (e) {
-      // CloudFunction().logError('comment error: ${e.toString()}');
-    }
-    try {
-      displayName = doc.get('displayName') as String;
-    } catch (e) {
-      // CloudFunction().logError('Display name error: ${e.toString()}');
-    }
-    try {
-      endTime = doc.get('endTime') as String;
-    } catch (e) {
-      // CloudFunction().logError('endTime error: ${e.toString()}');
-    }
-    try {
-      dateTimestamp = doc.get('dateTimestamp') as Timestamp;
-    } catch (e) {
-      // CloudFunction().logError('dateTimestamp error: ${e.toString()}');
-    }
-    try {
-      endDateTimestamp = doc.get('endDateTimestamp') as Timestamp;
-    } catch (e) {
-      // CloudFunction().logError('endDateTimestamp error: ${e.toString()}');
-    }
-    try {
-      startDateTimestamp = doc.get('startDateTimestamp') as Timestamp;
-    } catch (e) {
-      // CloudFunction().logError('startDateTimestamp error: ${e.toString()}');
-    }
-    try {
-      fieldID = doc.get('fieldID') as String;
-    } catch (e) {
-      // CloudFunction().logError('fieldID error: ${e.toString()}');
-    }
-    try {
-      link = doc.get('link') as String;
-    } catch (e) {
-      // CloudFunction().logError('link error: ${e.toString()}');
-    }
-    try {
-      location = doc.get('location') as String;
-    } catch (e) {
-      // CloudFunction().logError('location error: ${e.toString()}');
-    }
-    try {
-      startTime = doc.get('startTime') as String;
-    } catch (e) {
-      // CloudFunction().logError('startTime error: ${e.toString()}');
-    }
-    try {
-      List<dynamic> votes = doc.get('voters') as List<dynamic>;
-      for (final element in votes) 
-      {voters.add(element.toString());}
-    } catch (e) {
-      // CloudFunction().logError('voters error: ${e.toString()}');
-    }
-    try {
-      uid = doc.get('uid') as String;
-    } catch (e) {
-      CloudFunction().logError('UID error: $e.');
-    }
-    return ActivityData(
-        endTime: endTime,
-        endDateTimestamp: endDateTimestamp,
-        startDateTimestamp: startDateTimestamp,
-        dateTimestamp: dateTimestamp,
-        startTime: startTime,
-        comment: comment,
-        displayName: displayName,
-        fieldID: fieldID,
-        link: link,
-        location: location,
-        activityType: activityType,
-        uid: uid,
-        voters: voters);
+  ActivityModel copyWith({
+    String? title,
+    String? id,
+    String? tripId,
+    String? description,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
+    String? location,
+  }) {
+    return ActivityModel(
+      title: title ?? this.title,
+      id: id ?? this.id,
+      likedBy: likedBy,
+      likesCount: likesCount,
+      tripId: tripId ?? this.tripId,
+      description: description ?? this.description,
+      startDateTime: startDateTime ?? this.startDateTime,
+      endDateTime: endDateTime ?? this.endDateTime,
+      location: location ?? this.location,
+    );
   }
 
-  String activityType;
-  String comment;
-  String displayName;
-  String endTime;
-  Timestamp dateTimestamp;
-  Timestamp endDateTimestamp;
-  Timestamp startDateTimestamp;
-  String fieldID;
-  String link;
-  String location;
-  String startTime;
-  String uid;
-  List<String> voters;
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
 
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'activityType': activityType,
-      'comment': comment,
-      'displayName': displayName,
-      'endTime': endTime,
-      'dateTimestamp': dateTimestamp,
-      'endDateTimestamp': endDateTimestamp,
-      'startDateTimestamp': startDateTimestamp,
-      'fieldID': fieldID,
-      'link': link,
-      'location': location,
-      'startTime': startTime,
-      'uid': uid,
-      'voters': voters,
-    };
+    result.addAll({'title': title});
+    result.addAll({'id': id});
+    result.addAll({'likedBy': likedBy});
+    result.addAll({'likesCount': likesCount});
+    result.addAll({'tripId': tripId});
+    result.addAll({'description': description});
+    if (startDateTime != null) {
+      result.addAll({'startDateTime': startDateTime!.toIso8601String()});
+    }
+    if (endDateTime != null) {
+      result.addAll({'endDateTime': endDateTime!.toIso8601String()});
+    }
+    if (location != null) {
+      result.addAll({'location': location});
+    }
+
+    return result;
+  }
+
+  factory ActivityModel.fromMap(Map<String, dynamic> map) {
+    return ActivityModel(
+      likesCount: map['likesCount']?.toInt() ?? 0,
+      likedBy: List<String>.from(map['likedBy'] ?? []),
+      title: map['title'] ?? '',
+      id: map['id'] ?? '',
+      tripId: map['tripId'] ?? '',
+      description: map['description'] ?? '',
+      startDateTime:
+          map['startDateTime'] != null
+              ? DateTime.parse(map['startDateTime'])
+              : null,
+      endDateTime:
+          map['endDateTime'] != null
+              ? DateTime.parse(map['endDateTime'])
+              : null,
+      location: map['location'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ActivityModel.fromJson(String source) =>
+      ActivityModel.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'ActivityModel(title: $title, id: $id, tripId: $tripId, description: $description, startDateTime: $startDateTime, endDateTime: $endDateTime, location: $location)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ActivityModel &&
+        other.title == title &&
+        other.id == id &&
+        other.tripId == tripId &&
+        other.description == description &&
+        other.startDateTime == startDateTime &&
+        other.endDateTime == endDateTime &&
+        other.location == location;
+  }
+
+  @override
+  int get hashCode {
+    return title.hashCode ^
+        id.hashCode ^
+        tripId.hashCode ^
+        description.hashCode ^
+        startDateTime.hashCode ^
+        endDateTime.hashCode ^
+        location.hashCode;
   }
 }
-
-ActivityData defaultActivityData = ActivityData(
-    endTime: '',
-    endDateTimestamp: Timestamp.now(),
-    startDateTimestamp: Timestamp.now(),
-    dateTimestamp: Timestamp.now(),
-    startTime: '',
-    comment: '',
-    displayName: '',
-    fieldID: '',
-    link: '',
-    location: '',
-    activityType: '',
-    uid: '',
-    voters: <String>[]);
