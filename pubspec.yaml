@@ -20,8 +20,8 @@ dependencies:
   geolocator: ^13.0.2
 
   # Auth
-  google_sign_in: ^6.2.2
-  sign_in_with_apple: ^6.1.4
+  google_sign_in: ^6.3.0
+  sign_in_with_apple: ^7.0.1
 
   # Data
   faker: ^2.2.0
