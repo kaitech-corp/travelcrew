@@ -48,3 +48,5 @@ lib/generated_plugin_registrant.dart
 ios/Flutter/Generated.xcconfig
 ios/Pods
 ios/Pods/Target Support Files
+assets/travelcrew_auth.json
+lib/firebase_options.dart
