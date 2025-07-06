@@ -51,3 +51,4 @@ ios/Pods/Target Support Files
 assets/travelcrew_auth.json
 lib/firebase_options.dart
 assets/
+ios/GoogleService-Info.plist
