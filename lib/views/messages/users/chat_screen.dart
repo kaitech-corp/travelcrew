@@ -206,7 +206,7 @@ class MessagesScreen extends GetView<UsersController> {
                     controller.isLoadingChats.isTrue
                         ? SizedBox.shrink()
                         : controller.currentTrip.value!.createdBy !=
-                                GlobalVariables.loggedInUser.value!.id &&
+                                GlobalVariables.loggedInUser.value!.uid &&
                             (controller.chatRoom.value == null ||
                                 !(controller.currentTrip.value!.joinedUsers
                                         ?.any(
@@ -215,7 +215,7 @@ class MessagesScreen extends GetView<UsersController> {
                                               GlobalVariables
                                                   .loggedInUser
                                                   .value!
-                                                  .id,
+                                                  .uid,
                                         ) ??
                                     false))
                         ? CustomTextButton(
@@ -272,7 +272,7 @@ class MessagesScreen extends GetView<UsersController> {
                                                 GlobalVariables
                                                     .loggedInUser
                                                     .value!
-                                                    .id,
+                                                    .uid,
                                             sentTo:
                                                 controller
                                                     .currentTrip

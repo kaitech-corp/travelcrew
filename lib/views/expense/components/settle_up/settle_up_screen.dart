@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/custom_drop_down_widget.dart';
@@ -73,7 +74,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
               ),
             ),
             SizedBox(height: 12.h),
-            SimpleDropdown<UserModel>(
+            SimpleDropdown<PublicUserModel>(
               itemBuilder: (p0) {
                 return Container(
                   padding: EdgeInsets.symmetric(
@@ -81,7 +82,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
                     vertical: 12.0,
                   ),
                   child: Text(
-                    p0.userName.toString(),
+                    p0.displayName.toString(),
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black87,
                       fontSize: 14.0,
@@ -117,7 +118,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
                   (c) => AlertDialog(
                     title: Text('Settle Up'),
                     content: Text(
-                      'Are you sure you want to settle up with ${controller.selectedUser.value?.userName}?',
+                      'Are you sure you want to settle up with ${controller.selectedUser.value?.urlToImage}?',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: 16.sp,

@@ -109,15 +109,15 @@ class LocationWidget extends StatelessWidget {
               onTap: () async {
                 try {
                   GlobalVariables.addingToFavourites.value = tripModel.id;
-                  AuthService.addToFavourites(
-                    id: tripModel.id,
-                    isFavourites:
-                        GlobalVariables.loggedInUser.value?.favouriteTrips
-                            ?.contains(tripModel.id) ??
-                        false,
-                  ).then((v) {
-                    GlobalVariables.addingToFavourites.value = '';
-                  });
+                  // AuthService.addToFavourites(
+                  //   id: tripModel.id,
+                  //   isFavourites:
+                  //       GlobalVariables.loggedInUser.value?.favouriteTrips
+                  //           ?.contains(tripModel.id) ??
+                  //       false,
+                  // ).then((v) {
+                  //   GlobalVariables.addingToFavourites.value = '';
+                  // });
                 } catch (e) {
                   GlobalVariables.addingToFavourites.value = '';
                 }
@@ -134,21 +134,23 @@ class LocationWidget extends StatelessWidget {
                       GlobalVariables.addingToFavourites.value == tripModel.id
                           ? showLoaderWhenAddingToFavourites()
                           : Icon(
-                            GlobalVariables.loggedInUser.value?.favouriteTrips
-                                        ?.contains(tripModel.id) ??
-                                    false
-                                ? Icons.star_rounded
-                                : Icons.star_border,
+                            // GlobalVariables.loggedInUser.value?.favouriteTrips
+                            //             ?.contains(tripModel.id) ??
+                            //         false
+                            //     ? 
+                                Icons.star_rounded,
+                                // : Icons.star_border,
                             size: 25.sp,
                             color:
-                                GlobalVariables
-                                            .loggedInUser
-                                            .value
-                                            ?.favouriteTrips
-                                            ?.contains(tripModel.id) ??
-                                        false
-                                    ? AppColors.productBgColor
-                                    : Colors.white,
+                                // GlobalVariables
+                                //             .loggedInUser
+                                //             .value
+                                //             ?.favouriteTrips
+                                //             ?.contains(tripModel.id) ??
+                                //         false
+                                //     ? AppColors.productBgColor
+                                //     :
+                                     Colors.white,
                           ),
                 ),
               ),

@@ -31,7 +31,7 @@ class ActivitiesTab extends StatelessWidget {
                               ?.activities?[index]
                               .likedBy ??
                           [])
-                      .contains(GlobalVariables.loggedInUser.value?.id),
+                      .contains(GlobalVariables.loggedInUser.value?.uid),
                   onLiked: () {
                     controller.likeActivity(
                       isLiked: (controller
@@ -40,7 +40,7 @@ class ActivitiesTab extends StatelessWidget {
                                   ?.activities?[index]
                                   .likedBy ??
                               [])
-                          .contains(GlobalVariables.loggedInUser.value?.id),
+                          .contains(GlobalVariables.loggedInUser.value?.uid),
                       activityId:
                           controller.tripModel.value?.activities?[index].id ??
                           '',

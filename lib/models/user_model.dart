@@ -3,37 +3,31 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  String userName;
+  String? displayName;
   String email;
   bool isDeleted;
-  String id;
-  String password;
-  String phone;
-  String? profileImage;
-  List<String>? favouriteTrips;
-  bool email_confirmed;
-  Timestamp createdAt;
-  Timestamp updatedAt;
+  String uid;
+  String? phone;
+  bool? email_confirmed;
+  Timestamp? createdAt;
+  Timestamp? updatedAt;
 
   UserModel({
-    required this.userName,
+    this.displayName,
     this.isDeleted = false,
     required this.email,
-    this.profileImage,
-    required this.id,
-    required this.password,
-    this.favouriteTrips,
-    required this.phone,
-    required this.email_confirmed,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.uid,
+     this.phone,
+     this.email_confirmed,
+     this.createdAt,
+     this.updatedAt,
   });
 
   UserModel copyWith({
-    String? userName,
+    String? displayName,
     String? email,
     String? profileImage,
-    String? id,
+    String? uid,
     List<String>? favouriteTrips,
     String? password,
     String? phone,
@@ -43,13 +37,10 @@ class UserModel {
     Timestamp? updatedAt,
   }) {
     return UserModel(
-      userName: userName ?? this.userName,
+      displayName: displayName ?? this.displayName,
       isDeleted: isDeleted ?? this.isDeleted,
       email: email ?? this.email,
-      favouriteTrips: favouriteTrips ?? this.favouriteTrips,
-      id: id ?? this.id,
-      profileImage: profileImage ?? this.profileImage,
-      password: password ?? this.password,
+      uid: uid ?? this.uid,
       phone: phone ?? this.phone,
       email_confirmed: email_confirmed ?? this.email_confirmed,
       createdAt: createdAt ?? this.createdAt,
@@ -60,12 +51,10 @@ class UserModel {
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
-    result.addAll({'userName': userName});
+    result.addAll({'displayName': displayName});
     result.addAll({'email': email});
     result.addAll({'isDeleted': isDeleted});
-    result.addAll({'favouriteTrips': favouriteTrips});
-    result.addAll({'profileImage': profileImage});
-    result.addAll({'id': id});
+    result.addAll({'uid': uid});
     result.addAll({'phone': phone});
     result.addAll({'email_confirmed': email_confirmed});
     result.addAll({'createdAt': createdAt});
@@ -76,13 +65,10 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      userName: map['userName'] ?? '',
+      displayName: map['displayName'] ?? '',
       isDeleted: map['isDeleted'] ?? false,
-      profileImage: map['profileImage'],
       email: map['email'] ?? '',
-      id: map['id'] ?? '',
-      favouriteTrips: List<String>.from(map['favouriteTrips'] ?? []),
-      password: map['password'] ?? '',
+      uid: map['uid'] ?? '',
       phone: map['phone'] ?? '',
       email_confirmed: map['email_confirmed'] ?? false,
       createdAt: map['createdAt'] ?? Timestamp.now(),
@@ -97,7 +83,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(userName: $userName, profileImage: $profileImage, email: $email, id: $id, password: $password, phone: $phone, email_confirmed: $email_confirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, email_confirmed: $email_confirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -105,11 +91,9 @@ class UserModel {
     if (identical(this, other)) return true;
 
     return other is UserModel &&
-        other.userName == userName &&
+        other.displayName == displayName &&
         other.email == email &&
-        other.id == id &&
-        other.profileImage == profileImage &&
-        other.password == password &&
+        other.uid == uid &&
         other.phone == phone &&
         other.email_confirmed == email_confirmed &&
         other.createdAt == createdAt &&
@@ -118,11 +102,9 @@ class UserModel {
 
   @override
   int get hashCode {
-    return userName.hashCode ^
-        profileImage.hashCode ^
+    return displayName.hashCode ^
         email.hashCode ^
-        id.hashCode ^
-        password.hashCode ^
+        uid.hashCode ^
         phone.hashCode ^
         email_confirmed.hashCode ^
         createdAt.hashCode ^

@@ -96,6 +96,7 @@ class LoginScreen extends GetView<LoginController> {
                 SizedBox(height: 10.h),
                 Obx(
                   () => CustomTextField(
+                    
                     textInputAction: TextInputAction.done,
                     controller: controller.passwordController,
                     hintText: 'Enter Password',

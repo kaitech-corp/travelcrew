@@ -87,7 +87,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       height: widget.height,
       child: TextFormField(
         onFieldSubmitted: widget.onFieldSubmitted,
-        textCapitalization: TextCapitalization.sentences,
+        textCapitalization: TextCapitalization.none,
         focusNode: focusNode,
         textInputAction: widget.textInputAction,
         controller: widget.controller,

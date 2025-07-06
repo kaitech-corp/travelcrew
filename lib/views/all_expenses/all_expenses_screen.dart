@@ -134,7 +134,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                                 (user) => Padding(
                                   padding: EdgeInsets.only(right: 4.w),
                                   child: AnyImageView(
-                                    url: user.profileImage ?? '',
+                                    url:'', //user.profileImage ?? '',
                                     isCircle: true,
                                   ),
                                 ),

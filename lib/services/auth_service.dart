@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/otp_service.dart';
 import 'package:travel_crew/services/secure_storage_service.dart';
@@ -80,9 +81,11 @@ class AuthService {
     try {
       String? userid = userId ?? _auth.currentUser?.uid;
       if (userid != null) {
+        print('Fetching user with ID: $userid');
         DocumentSnapshot userDoc =
             await _firestore.collection(kUsersCollection).doc(userid).get();
         if (userDoc.exists) {
+          print('User document exists: ${userDoc.data()}');
           UserModel user = UserModel.fromMap(
             userDoc.data() as Map<String, dynamic>,
           );
@@ -95,9 +98,54 @@ class AuthService {
             return null;
           }
           return user;
+        } else {
+          // Create a new user if the document does not exist
+          UserModel newUser = UserModel(
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+            uid: userid,
+            email: _auth.currentUser?.email ?? '',
+            displayName:
+                _auth.currentUser?.displayName ??
+                'User' + userid.substring(0, 5),
+            phone: _auth.currentUser?.phoneNumber ?? '',
+            isDeleted: false, // Default to false
+            email_confirmed: false, // Default to false
+          );
+          await _firestore
+              .collection(kUsersCollection)
+              .doc(userid)
+              .update(newUser.toMap());
+          GlobalVariables.loggedInUser.value = newUser;
+          return newUser;
         }
       }
     } catch (e) {}
+    return null;
+  }
+
+  static Future<PublicUserModel?> getUserPublicProfile({String? userId}) async {
+    try {
+      String? userid = userId ?? _auth.currentUser?.uid;
+      if (userid != null) {
+        print('Fetching user with ID: $userid');
+        DocumentSnapshot userDoc =
+            await _firestore.collection(kUsersCollection).doc(userid).get();
+        if (userDoc.exists) {
+          print('User document exists: ${userDoc.data()}');
+          PublicUserModel user = PublicUserModel.fromMap(
+            userDoc.data() as Map<String, dynamic>,
+          );
+          return user;
+        }
+      } else {
+        print('No user ID provided, returning mock data');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching user public profile: $e');
+      return null;
+    }
     return null;
   }
 
@@ -107,15 +155,20 @@ class AuthService {
   }) async {
     try {
       GlobalVariables.showLoader.value = true;
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      GlobalVariables.loggedInUser.value = await AuthService.getUser();
+      final UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      GlobalVariables.loggedInUser.value = await AuthService.getUser(
+        userId: credential.user?.uid,
+      );
       if (GlobalVariables.loggedInUser.value == null) {
         showCustomSnackBar(content: 'Credentials not valid or account deleted');
         return false;
       }
       GlobalVariables.showLoader.value = false;
-      SecureStorageService.saveInStorage(key: kPasswordKey, data: password);
-      await FirebaseMessaging.instance.subscribeToTopic(_auth.currentUser!.uid);
+      // SecureStorageService.saveInStorage(key: kPasswordKey, data: password);
+      // await FirebaseMessaging.instance.subscribeToTopic(_auth.currentUser!.uid);
       return true;
     } on FirebaseAuthException catch (e) {
       GlobalVariables.showLoader.value = false;
@@ -147,15 +200,18 @@ class AuthService {
     }
   }
 
-  static Future<void> signUp({required UserModel user}) async {
+  static Future<void> signUp({
+    required UserModel user,
+    required String password,
+  }) async {
     try {
       GlobalVariables.showLoader.value = true;
 
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: user.email,
-        password: user.password,
+        password: password,
       );
-      user.id = userCredential.user!.uid;
+      user.uid = userCredential.user!.uid;
       await _firestore
           .collection(kUsersCollection)
           .doc(userCredential.user!.uid)
@@ -358,7 +414,7 @@ class AuthService {
     return false;
   }
 
-  static Future<List<UserModel>> getTripUsers({
+  static Future<List<PublicUserModel>> getTripUsers({
     required List<String> userIds,
   }) async {
     try {
@@ -370,62 +426,11 @@ class AuthService {
 
       if (tripUsers.docs.isNotEmpty) {
         return tripUsers.docs
-            .map((user) => UserModel.fromMap(user.data()))
+            .map((user) => PublicUserModel.fromMap(user.data()))
             .toList();
       }
     } catch (e) {}
     return [];
-  }
-
-  static Future<bool> addToFavourites({
-    required String id,
-    required bool isFavourites,
-  }) async {
-    try {
-      await updateUserAttributes(
-        attributes: {
-          'favouriteTrips':
-              isFavourites
-                  ? FieldValue.arrayRemove([id])
-                  : FieldValue.arrayUnion([id]),
-        },
-      ).then((value) {
-        if (value) {
-          if (isFavourites) {
-            GlobalVariables.loggedInUser.value?.favouriteTrips?.remove(id);
-          } else {
-            GlobalVariables.loggedInUser.value?.favouriteTrips?.add(id);
-          }
-          FirebaseTripService.updateTrip(
-            tripId: id,
-            data: {
-              'favouriteCount':
-                  isFavourites
-                      ? FieldValue.increment(-1)
-                      : FieldValue.increment(1),
-            },
-          ).then((value) {
-            if (value) {
-              // showCustomSnackBar(
-              //   contentType: ContentType.success,
-              //   title: 'Success',
-              //   content:
-              //       isFavourites
-              //           ? 'Removed from favourites'
-              //           : 'Added to favourites',
-              // );
-            }
-          });
-          GlobalVariables.loggedInUser.refresh();
-        } else {
-          showCustomSnackBar(
-            content: 'Failed to update favourites. Please try again later.',
-          );
-        }
-      });
-      return true;
-    } catch (e) {}
-    return false;
   }
 
   static deleteAccount() async {

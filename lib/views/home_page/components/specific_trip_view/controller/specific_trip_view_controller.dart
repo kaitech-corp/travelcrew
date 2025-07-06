@@ -67,14 +67,14 @@ class SpecificTripViewController extends GetxController
       await FirebaseTripService.likeActivity(
         activityId: activityId,
         isLiked: isLiked,
-        userId: GlobalVariables.loggedInUser.value?.id ?? '',
+        userId: GlobalVariables.loggedInUser.value?.uid ?? '',
       ).then((value) {
         if (value) {
           if (isLiked) {
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likedBy
-                .remove(GlobalVariables.loggedInUser.value!.id);
+                .remove(GlobalVariables.loggedInUser.value!.uid);
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likesCount--;
@@ -82,7 +82,7 @@ class SpecificTripViewController extends GetxController
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likedBy
-                .add(GlobalVariables.loggedInUser.value!.id);
+                .add(GlobalVariables.loggedInUser.value!.uid);
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likesCount++;
@@ -169,10 +169,10 @@ class SpecificTripViewController extends GetxController
   Future<bool> doitFavourite(String? id, {required bool isFavourites}) async {
     try {
       GlobalVariables.addingToFavourites.value = id ?? '';
-      await AuthService.addToFavourites(
-        id: id ?? '',
-        isFavourites: isFavourites,
-      ).then((value) {});
+      // await AuthService.addToFavourites(
+      //   id: id ?? '',
+      //   isFavourites: isFavourites,
+      // ).then((value) {});
     } catch (e) {}
     GlobalVariables.addingToFavourites.value = '';
     return isLiked.value;

@@ -127,7 +127,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       Image.asset(AppImages.kMemberIcon, scale: 4),
                       SizedBox(width: 10.w),
                       Text(
-                        '${dues[index].user.userName} owes you',
+                        '${dues[index].user.displayName} owes you',
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF1F1F1F),
                           fontSize: 13,

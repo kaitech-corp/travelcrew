@@ -29,7 +29,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 isNetworkImage: true,
                 title: 'Personal Information',
                 leadingImage:
-                    GlobalVariables.loggedInUser.value?.profileImage ?? '',
+                    GlobalVariables.userProfile.value?.urlToImage ?? '',
                 onTap:
                     () => Get.toNamed(
                       kProfileSetUpScreenRoute,

@@ -172,7 +172,7 @@ class TripsWidget extends StatelessWidget {
               buildMemberAvatars(
                 memberAvatars:
                     (tripModel?.joindUsersList
-                                ?.map((e) => e.profileImage ?? '')
+                                ?.map((e) => e.urlToImage ?? '')
                                 .toList() ??
                             [])
                         .take(4)

@@ -38,24 +38,15 @@ Future<void> initializeFirebase() async {
   FirebaseApp app;
   if (Firebase.apps.isEmpty) {
     app = await Firebase.initializeApp(
-      name: 'travelcrew_v2',
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } else {
     app = Firebase.app(); // Get the default app if already initialized
   }
 
-  // Regarding databaseId:
-  // If 'ts-ffff-123' is a specific, valid Firestore database ID for your project, this is correct.
-  // If you intend to use the default Firestore database, you should typically use:
-  //   firestore = FirebaseFirestore.instance;
-  // Or, if you need to associate with the specific app instance (though often not necessary for the default app):
-  //   firestore = FirebaseFirestore.instanceFor(app: app);
-  // The current 'databaseId' ('ts-ffff-123') seems like a placeholder and might cause issues
-  // if it's not a real, provisioned Firestore database ID within your project.
   firestore = FirebaseFirestore.instanceFor(
     app: app,
-    databaseId: 'ts-ffff-123',
+    // databaseId: 'ts-ffff-123',
   );
 }
 class MyApp extends StatelessWidget {

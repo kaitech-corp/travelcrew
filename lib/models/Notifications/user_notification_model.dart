@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-
-import '../user_model.dart';
 
 class UserNotificationModel {
   String notificationId;
@@ -12,7 +11,7 @@ class UserNotificationModel {
   String notificationType;
   DateTime createdAt;
   TripModel? trip;
-  UserModel? addedBy;
+  PublicUserModel? addedBy;
   String? releaseDate;
   String createdBy;
   String notificationForId;

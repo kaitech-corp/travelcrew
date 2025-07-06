@@ -122,14 +122,14 @@ class GroupDetailScreen extends GetView<UsersController> {
                               ? SizedBox.shrink()
                               : ListTile(
                                 leading: AnyImageView(
-                                  url: member.profileImage ?? '',
+                                  url: member.urlToImage ?? '',
                                   fileType: SourceType.network,
                                   height: 50.h,
                                   width: 50.w,
                                   isCircle: true,
                                 ),
                                 title: Text(
-                                  member.userName,
+                                  member.displayName,
                                   style: AppStyles.labelTextStyle().copyWith(
                                     color: Colors.black,
                                     fontSize: 15.95,
@@ -137,17 +137,17 @@ class GroupDetailScreen extends GetView<UsersController> {
                                     height: 1.33,
                                   ),
                                 ),
-                                subtitle: Text(
-                                  member.email,
-                                  style: AppStyles.labelTextStyle().copyWith(
-                                    color: Colors.grey,
-                                    fontSize: 10.63.sp,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.33,
-                                  ),
-                                ),
+                                // subtitle: Text(
+                                //   member.email,
+                                //   style: AppStyles.labelTextStyle().copyWith(
+                                //     color: Colors.grey,
+                                //     fontSize: 10.63.sp,
+                                //     fontWeight: FontWeight.w500,
+                                //     height: 1.33,
+                                //   ),
+                                // ),
                                 trailing:
-                                    member.id ==
+                                    member.uid ==
                                             controller
                                                 .currentTrip
                                                 .value
@@ -171,7 +171,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                         : GlobalVariables
                                                 .loggedInUser
                                                 .value!
-                                                .id ==
+                                                .uid ==
                                             controller
                                                 .currentTrip
                                                 .value!
@@ -202,7 +202,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                                       TextButton(
                                                         onPressed: () {
                                                           controller.leaveGroup(
-                                                            userId: member.id,
+                                                            userId: member.uid,
                                                           );
                                                           Get.back();
                                                         },
@@ -226,7 +226,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                 controller.currentTrip.value!.createdBy,
               ) &&
               controller.currentTrip.value!.joinedUsers!.contains(
-                GlobalVariables.loggedInUser.value!.id,
+                GlobalVariables.loggedInUser.value!.uid,
               ))
             Padding(
               padding: const EdgeInsets.all(20.0),

@@ -230,7 +230,7 @@ class CreateTripController extends GetxController {
         country: destinationController.text.split(',').lastOrNull ?? '',
         startDate: startDate.value!,
         daysToGo: 2,
-        createdBy: GlobalVariables.loggedInUser.value!.id,
+        createdBy: GlobalVariables.loggedInUser.value!.uid,
         title: tripNameController.text,
         destination: destinationController.text,
         tripStartDate: startDate.value!,
@@ -319,7 +319,7 @@ class CreateTripController extends GetxController {
         country: destinationController.text.split(',').lastOrNull ?? '',
         startDate: startDate.value!,
         daysToGo: 2,
-        createdBy: GlobalVariables.loggedInUser.value!.id,
+        createdBy: GlobalVariables.loggedInUser.value!.uid,
         title: tripNameController.text,
         destination: destinationController.text,
         tripStartDate: startDate.value!,
@@ -369,7 +369,7 @@ class CreateTripController extends GetxController {
         paidByUsers: [],
         date: expanseDate.value ?? DateTime.now(),
         id: Uuid().v6(),
-        createdBy: GlobalVariables.loggedInUser.value!.id,
+        createdBy: GlobalVariables.loggedInUser.value!.uid,
         tripId: tripModel.id,
         name: expenseNameController.text,
         amount: double.parse(
@@ -538,9 +538,9 @@ class CreateTripController extends GetxController {
         for (var e in users) {
           searchedFriends.add(
             SearchModel(
-              searchText: e.userName,
-              placeId: e.email,
-              imageUrl: e.profileImage,
+              searchText: e.displayName,
+              placeId: e.uid,
+              imageUrl: e.urlToImage,
             ),
           );
         }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/expense_model.dart';
-import 'package:travel_crew/models/user_model.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 
 class TripModel {
   double latitude;
@@ -11,10 +11,10 @@ class TripModel {
   String continent;
   final String id;
   final String destination;
-  List<UserModel>? joindUsersList;
+  List<PublicUserModel>? joindUsersList;
   final String? tripStatus;
   final String? title;
-  UserModel? createdByUser;
+  PublicUserModel? createdByUser;
   final String createdBy;
   final DateTime? tripStartDate;
   final DateTime? tripEndDate;

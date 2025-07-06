@@ -25,7 +25,7 @@ class AddExpenseController extends GetxController {
       date: expenceDate.value ?? DateTime.now(),
       id: Uuid().v6(),
       tripId: Get.arguments['tripId'],
-      createdBy: GlobalVariables.loggedInUser.value?.id ?? '',
+      createdBy: GlobalVariables.loggedInUser.value?.uid ?? '',
     );
 
     try {

@@ -23,7 +23,7 @@ class SignUpController extends GetxController {
   TextEditingController emailController = TextEditingController(),
       phoneController = TextEditingController(),
       userNameController = TextEditingController(
-        text: GlobalVariables.loggedInUser.value?.userName ?? '',
+        text: GlobalVariables.loggedInUser.value?.displayName ?? '',
       ),
       passwordController = TextEditingController();
   FocusNode emailFocus = FocusNode(),
@@ -38,10 +38,10 @@ class SignUpController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     GlobalVariables.loggedInUser.value?.phone =
-        GlobalVariables.loggedInUser.value?.phone.replaceAll('+', '') ?? '';
+        GlobalVariables.loggedInUser.value?.phone?.replaceAll('+', '') ?? '';
     if (GlobalVariables.loggedInUser.value?.phone != null &&
         GlobalVariables.loggedInUser.value?.phone != '') {
-      detectCountryFromNumber(GlobalVariables.loggedInUser.value!.phone);
+      // detectCountryFromNumber(GlobalVariables.loggedInUser.value.phone);
     }
   }
 
@@ -58,17 +58,19 @@ class SignUpController extends GetxController {
         GlobalVariables.showLoader.value = false;
         // if (!v) {
         GlobalVariables.loggedInUser.value = UserModel(
-          userName: userNameController.text,
+          displayName: userNameController.text,
           email: emailController.text,
-          id: Uuid().v4(),
+          uid: Uuid().v4(),
           email_confirmed: false,
-          profileImage: '',
+          // profileImage: '',
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
-          password: passwordController.text,
           phone: '',
         );
-        await AuthService.signUp(user: GlobalVariables.loggedInUser.value!);
+        await AuthService.signUp(
+          user: GlobalVariables.loggedInUser.value!,
+          password: passwordController.text,
+        );
         emailController.clear();
         passwordController.clear();
         phoneController.clear();
@@ -118,14 +120,14 @@ class SignUpController extends GetxController {
           title: 'Uploading profile image',
           subtitle: 'Uploading profile image',
           imageName:
-              '${GlobalVariables.loggedInUser.value?.id ?? Uuid().v4()}_profile_image',
+              '${GlobalVariables.loggedInUser.value?.uid ?? Uuid().v4()}_profile_image',
         );
       }
 
       await AuthService.updateUserAttributes(
         attributes: {
           'profileImage':
-              image ?? GlobalVariables.loggedInUser.value?.profileImage ?? '',
+              image ?? GlobalVariables.userProfile.value?.urlToImage ?? '',
           'phone':
               '${selectedCountry.value?.dialCode ?? '1'}${phoneController.text}',
           'userName': userNameController.text,
@@ -135,13 +137,13 @@ class SignUpController extends GetxController {
         if (v) {
           selectedImage.value = '';
           GlobalVariables
-              .loggedInUser
-              .value = GlobalVariables.loggedInUser.value!.copyWith(
-            profileImage:
-                image ?? GlobalVariables.loggedInUser.value?.profileImage,
-            phone:
-                '${selectedCountry.value?.dialCode ?? '1'}${phoneController.text}',
-            userName: userNameController.text,
+              .userProfile
+              .value = GlobalVariables.userProfile.value!.copyWith(
+            urlToImage:
+                image ?? GlobalVariables.userProfile.value?.urlToImage,
+            // phone:
+            //     '${selectedCountry.value?.dialCode ?? '1'}${phoneController.text}',
+            displayName: userNameController.text,
           );
           if (Get.arguments == 'fromProfile') {
             Get.back();

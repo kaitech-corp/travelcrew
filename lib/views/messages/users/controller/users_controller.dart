@@ -8,6 +8,7 @@ import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/Notifications/user_notification_model.dart';
 import 'package:travel_crew/models/chat_module/ChatMessage.dart';
 import 'package:travel_crew/models/chat_module/chatroom.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
@@ -35,7 +36,7 @@ class UsersController extends GetxController {
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? roomListner;
 
   RxBool isLoading = false.obs;
-  RxList<UserModel> tripUsers = <UserModel>[].obs;
+  RxList<PublicUserModel> tripUsers = <PublicUserModel>[].obs;
   RxBool isLoadingUsers = false.obs;
   getUsersDetail() async {
     try {
@@ -62,7 +63,7 @@ class UsersController extends GetxController {
     try {
       isLoading.value = true;
       var res = await ChatFirebaseService.getChatRoomsByUserId(
-        userId: GlobalVariables.loggedInUser.value!.id,
+        userId: GlobalVariables.loggedInUser.value!.uid,
       );
       chatRooms.value = res.where((element) => element.trip != null).toList();
     } catch (e) {}
@@ -97,24 +98,24 @@ class UsersController extends GetxController {
       GlobalVariables.showLoader.value = true;
       chatRoom.value!.users.add(
         ChatUser(
-          id: GlobalVariables.loggedInUser.value!.id,
+          id: GlobalVariables.loggedInUser.value!.uid,
           unreadedMessages: 0,
           lastActive: Timestamp.now(),
-          name: GlobalVariables.loggedInUser.value!.userName ?? '',
-          profileImage: GlobalVariables.loggedInUser.value!.profileImage ?? '',
+          name: GlobalVariables.loggedInUser.value!.displayName ?? '',
+          profileImage: GlobalVariables.userProfile.value!.urlToImage ?? '',
           isOnline: true,
           isTyping: false,
         ),
       );
-      chatRoom.value!.usersIds.add(GlobalVariables.loggedInUser.value!.id);
+      chatRoom.value!.usersIds.add(GlobalVariables.loggedInUser.value!.uid);
       currentTrip.value?.joinedUsers?.add(
-        GlobalVariables.loggedInUser.value!.id,
+        GlobalVariables.loggedInUser.value!.uid,
       );
       if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
       chatRoom.refresh();
       FirebaseNotificationsService.saveNotifications(
         message:
-            '${GlobalVariables.loggedInUser.value!.userName} joined your trip.',
+            '${GlobalVariables.loggedInUser.value!.displayName} joined your trip.',
         title: 'Trip Joined',
         sentTo: [currentTrip.value!.createdBy],
         notificationForId: currentTrip.value!.id,
@@ -123,7 +124,7 @@ class UsersController extends GetxController {
       sendPushMessageToTopic(
         title: 'Trip Joined',
         body:
-            '${GlobalVariables.loggedInUser.value!.userName} joined your trip.',
+            '${GlobalVariables.loggedInUser.value!.displayName} joined your trip.',
         topic: currentTrip.value!.createdBy,
       );
       await ChatFirebaseService.updateChatRoom(
@@ -158,17 +159,17 @@ class UsersController extends GetxController {
       // GlobalVariables.showLoader.value = true;
 
       chatRoom.value = ChatRoom(
-        usersIds: [GlobalVariables.loggedInUser.value!.id],
+        usersIds: [GlobalVariables.loggedInUser.value!.uid],
         updatedAt: Timestamp.now(),
         roomId: roomId!,
         users: [
           ChatUser(
-            id: GlobalVariables.loggedInUser.value!.id,
+            id: GlobalVariables.loggedInUser.value!.uid,
             unreadedMessages: 0,
             lastActive: Timestamp.now(),
-            name: GlobalVariables.loggedInUser.value!.userName ?? '',
+            name: GlobalVariables.loggedInUser.value!.displayName ?? '',
             profileImage:
-                GlobalVariables.loggedInUser.value!.profileImage ?? '',
+                GlobalVariables.userProfile.value!.urlToImage ?? '',
             isOnline: true,
             isTyping: false,
           ),
@@ -245,7 +246,7 @@ class UsersController extends GetxController {
       GlobalVariables.showLoader.value = true;
       await FirebaseTripService.leaveGroup(
         groupId: currentTrip.value!.id,
-        userId: userId ?? GlobalVariables.loggedInUser.value!.id,
+        userId: userId ?? GlobalVariables.loggedInUser.value!.uid,
       ).then((v) {
         GlobalVariables.showLoader.value = F;
         if (v) {
@@ -256,7 +257,7 @@ class UsersController extends GetxController {
                     : 'You have left the group',
           );
           currentTrip.value?.joinedUsers?.remove(
-            userId ?? GlobalVariables.loggedInUser.value!.id,
+            userId ?? GlobalVariables.loggedInUser.value!.uid,
           );
           if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
           if (userId == null) {

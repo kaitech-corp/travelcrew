@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:travel_crew/main.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -27,7 +28,7 @@ class FirebaseTripService {
                 .collection(kTripTable)
                 .where(
                   'createdBy',
-                  isEqualTo: GlobalVariables.loggedInUser.value?.id,
+                  isEqualTo: GlobalVariables.loggedInUser.value?.uid,
                 )
                 .where(
                   'tripStatus',
@@ -52,7 +53,7 @@ class FirebaseTripService {
                 .where('tripStatus', isEqualTo: tripStatus)
                 .where(
                   'createdBy',
-                  isEqualTo: GlobalVariables.loggedInUser.value?.id,
+                  isEqualTo: GlobalVariables.loggedInUser.value?.uid,
                 )
                 .get();
       }
@@ -72,7 +73,7 @@ class FirebaseTripService {
             } else {
               tripModel.joindUsersList = [];
             }
-            tripModel.createdByUser = await AuthService.getUser(
+            tripModel.createdByUser = await AuthService.getUserPublicProfile(
               userId: tripModel.createdBy,
             );
             return tripModel;
@@ -103,7 +104,7 @@ class FirebaseTripService {
         } else {
           trip.joindUsersList = [];
         }
-        trip.createdByUser = await AuthService.getUser(userId: trip.createdBy);
+        trip.createdByUser = await AuthService.getUserPublicProfile(userId: trip.createdBy);
         return trip;
       }
     } catch (e) {}
@@ -117,7 +118,7 @@ class FirebaseTripService {
               .collection(kTripTable)
               .where(
                 'createdBy',
-                isNotEqualTo: GlobalVariables.loggedInUser.value?.id,
+                isNotEqualTo: GlobalVariables.loggedInUser.value?.uid,
               )
               .get();
 
@@ -141,7 +142,7 @@ class FirebaseTripService {
             } else {
               tripModel.joindUsersList = [];
             }
-            tripModel.createdByUser = await AuthService.getUser(
+            tripModel.createdByUser = await AuthService.getUserPublicProfile(
               userId: tripModel.createdBy,
             );
             return tripModel;
@@ -351,7 +352,7 @@ class FirebaseTripService {
               } else {
                 e.joindUsersList = [];
               }
-              e.createdByUser = await AuthService.getUser(userId: e.createdBy);
+              e.createdByUser = await AuthService.getUserPublicProfile(userId: e.createdBy);
             }).toList();
         await Future.wait(futures);
         return trips;
@@ -385,7 +386,7 @@ class FirebaseTripService {
             } else {
               tripModel.joindUsersList = [];
             }
-            tripModel.createdByUser = await AuthService.getUser(
+            tripModel.createdByUser = await AuthService.getUserPublicProfile(
               userId: tripModel.createdBy,
             );
             return tripModel;
@@ -431,7 +432,7 @@ class FirebaseTripService {
               } else {
                 e.joindUsersList = [];
               }
-              e.createdByUser = await AuthService.getUser(userId: e.createdBy);
+              e.createdByUser = await AuthService.getUserPublicProfile(userId: e.createdBy);
             }).toList();
         await Future.wait(futures);
         return trips;
@@ -447,13 +448,13 @@ class FirebaseTripService {
   /// [email] is the email of the user
   /// [return] list of users
   /// [logs] logs if there is an error
-  static Future<List<UserModel>> searchUser({required query}) async {
+  static Future<List<PublicUserModel>> searchUser({required query}) async {
     try {
       final result = await functions.httpsCallable(kSearchUsersFunction).call({
         'query': query,
       });
       kLogging('result: ${result.data}');
-      List<UserModel> users = [];
+      List<PublicUserModel> users = [];
       if (result.data != null && result.data['success'] == true) {
         if (result.data['users'] == null) {
           return [];
@@ -463,7 +464,7 @@ class FirebaseTripService {
                 .map((trip) => Map<String, dynamic>.from(trip))
                 .toList();
         kLogging('filteredUsers: $filteredUsers');
-        users = filteredUsers.map((trip) => UserModel.fromMap(trip)).toList();
+        users = filteredUsers.map((trip) => PublicUserModel.fromMap(trip)).toList();
         return users;
       }
     } catch (e) {

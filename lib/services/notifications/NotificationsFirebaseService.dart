@@ -19,7 +19,7 @@ class FirebaseNotificationsService {
       );
       notification.removeWhere(
         (element) => element.createdAt.isBefore(
-          GlobalVariables.loggedInUser.value!.createdAt.toDate(),
+          GlobalVariables.loggedInUser.value!.createdAt!.toDate(),
         ),
       );
       var res = groupBy(
@@ -51,7 +51,7 @@ class FirebaseNotificationsService {
             .collection(kNotificationsCollection)
             .where(
               'sentTo',
-              arrayContainsAny: ['All', GlobalVariables.loggedInUser.value!.id],
+              arrayContainsAny: ['All', GlobalVariables.loggedInUser.value!.uid],
             )
             .get();
     var futures =
@@ -62,7 +62,7 @@ class FirebaseNotificationsService {
               tripId: us.notificationForId,
             );
           }
-          us.addedBy = await AuthService.getUser(userId: us.createdBy);
+          us.addedBy = await AuthService.getUserPublicProfile(userId: us.createdBy);
           return us;
         }).toList();
     var res = await Future.wait(futures);
@@ -89,9 +89,9 @@ class FirebaseNotificationsService {
         notificationType: notificationType,
         notificationForId: notificationForId,
         createdAt: DateTime.now(),
-        createdBy: GlobalVariables.loggedInUser.value!.id,
+        createdBy: GlobalVariables.loggedInUser.value!.uid,
         updateAt: DateTime.now(),
-        updateBy: GlobalVariables.loggedInUser.value!.id,
+        updateBy: GlobalVariables.loggedInUser.value!.uid,
         sentTo: sentTo,
         isTopic: isTopic,
         releaseDate: releaseDate,

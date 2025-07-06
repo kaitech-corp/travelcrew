@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_crew/models/expense_model.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/views/expense/controller/expense_conrtoller.dart';
 
 import '../../../utils/app_strings.dart';
@@ -14,7 +14,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
   final bool isPending;
   final ExpenseModel expenseModel;
   final TripModel tripModel;
-  final List<UserModel> usersWithHavingDues;
+  final List<PublicUserModel> usersWithHavingDues;
   final ExpenseController controller;
   const ExpenseDetailsWidget({
     super.key,
@@ -134,13 +134,13 @@ class ExpenseDetailsWidget extends StatelessWidget {
                             .tripModel
                             .value
                             ?.joindUsersList?[index]
-                            .profileImage ??
+                            .urlToImage ??
                         '',
                     scale: 4,
                   ),
                   SizedBox(width: 10.w),
                   Text(
-                    '${controller.tripModel.value?.joindUsersList?[index].userName} ${'owes you'}',
+                    '${controller.tripModel.value?.joindUsersList?[index].displayName} ${'owes you'}',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF1F1F1F),
                       fontSize: 13,

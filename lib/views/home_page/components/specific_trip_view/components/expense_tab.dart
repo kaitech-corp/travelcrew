@@ -95,13 +95,13 @@ class ExpenseTab extends StatelessWidget {
                             .tripModel
                             .value
                             ?.joindUsersList?[index]
-                            .profileImage ??
+                            .urlToImage ??
                         '',
                     scale: 4,
                   ),
                   SizedBox(width: 10.w),
                   Text(
-                    '${dues[index].user.userName} ${'owes you'}',
+                    '${dues[index].user.displayName} ${'owes you'}',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF1F1F1F),
                       fontSize: 13,

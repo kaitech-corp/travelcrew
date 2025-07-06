@@ -42,23 +42,23 @@ class LoginController extends GetxController {
         email: emailController.text,
         password: passwordController.text,
       );
-        if (loginSuccess) {
-          GlobalVariables.showLoader.value = false;
-          if (isRememberMe.isTrue) {
-            SecureStorageService.saveInStorage(
-              key: 'rememberMe',
-              data: jsonEncode({
-                'email': emailController.text,
-                'password': passwordController.text,
-              }),
-            );
-          } else {
-            SecureStorageService.deleteKey(key: 'rememberMe');
-          }
-          Get.offAllNamed(kMainViewScreenRoute);
-        } else {
-          GlobalVariables.showLoader.value = false;
-        }
+        // if (loginSuccess) {
+        //   GlobalVariables.showLoader.value = false;
+        //   if (isRememberMe.isTrue) {
+        //     SecureStorageService.saveInStorage(
+        //       key: 'rememberMe',
+        //       data: jsonEncode({
+        //         'email': emailController.text,
+        //         'password': passwordController.text,
+        //       }),
+        //     );
+        //   } else {
+        //     SecureStorageService.deleteKey(key: 'rememberMe');
+        //   }
+        //   Get.offAllNamed(kMainViewScreenRoute);
+        // } else {
+        //   GlobalVariables.showLoader.value = false;
+        // }
     } catch (e) {
       GlobalVariables.showLoader.value = false;
       String message;

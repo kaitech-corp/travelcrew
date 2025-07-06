@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/expense_model.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 
@@ -25,12 +25,12 @@ class ExpenseController extends GetxController {
 
   ExpenseModel? expenseToSettle;
 
-  Rxn<UserModel> selectedUser = Rxn<UserModel>(null);
+  Rxn<PublicUserModel> selectedUser = Rxn<PublicUserModel>(null);
 
   settleUp() async {
     try {
       if (selectedUser.value != null) {
-        expenseToSettle!.paidByUsers.add(selectedUser.value!.id);
+        expenseToSettle!.paidByUsers.add(selectedUser.value!.uid);
 
         await FirebaseTripService.updateExpense(expenseToSettle!).then((
           value,
@@ -38,7 +38,7 @@ class ExpenseController extends GetxController {
           tripModel.value!.expenses!
               .firstWhere((element) => element.id == expenseToSettle!.id)
               .paidByUsers
-              .add(selectedUser.value!.id);
+              .add(selectedUser.value!.uid);
           tripModel.refresh();
           Get.back();
           showCustomSnackBar(content: 'Expense settled successfully');
@@ -51,17 +51,17 @@ class ExpenseController extends GetxController {
 }
 
 class UserWithDues {
-  UserModel user;
+  PublicUserModel user;
   double dues;
   UserWithDues({required this.user, required this.dues});
 }
 
-List<UserModel> getUsersWithHavingDues(
+List<PublicUserModel> getUsersWithHavingDues(
   ExpenseModel expenseModel,
   TripModel tripModel,
 ) {
   return tripModel.joindUsersList
-          ?.where((e) => !expenseModel.paidByUsers.contains(e.id))
+          ?.where((e) => !expenseModel.paidByUsers.contains(e.uid))
           .toList() ??
       [];
 }

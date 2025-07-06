@@ -114,25 +114,25 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                               ),
                                               Spacer(),
                                               GestureDetector(
-                                                onTap:
-                                                    () => controller.doitFavourite(
-                                                      controller
-                                                          .tripModel
-                                                          .value
-                                                          ?.id,
-                                                      isFavourites:
-                                                          GlobalVariables
-                                                              .loggedInUser
-                                                              .value
-                                                              ?.favouriteTrips
-                                                              ?.contains(
-                                                                controller
-                                                                    .tripModel
-                                                                    .value
-                                                                    ?.id,
-                                                              ) ??
-                                                          false,
-                                                    ),
+                                                // onTap:
+                                                //     () => controller.doitFavourite(
+                                                //       controller
+                                                //           .tripModel
+                                                //           .value
+                                                //           ?.id,
+                                                //       isFavourites:
+                                                //           GlobalVariables
+                                                //               .userProfile
+                                                //               .value
+                                                //               ?.favouriteTrips
+                                                //               ?.contains(
+                                                //                 controller
+                                                //                     .tripModel
+                                                //                     .value
+                                                //                     ?.id,
+                                                //               ) ??
+                                                //           false,
+                                                //     ),
                                                 child: BlurryContainer(
                                                   padding: EdgeInsets.all(
                                                     10.sp,
@@ -157,20 +157,20 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                             : Icon(
                                                               Icons
                                                                   .star_rounded,
-                                                              color:
-                                                                  GlobalVariables
-                                                                              .loggedInUser
-                                                                              .value
-                                                                              ?.favouriteTrips
-                                                                              ?.contains(
-                                                                                controller.tripModel.value?.id,
-                                                                              ) ??
-                                                                          false
-                                                                      ? AppColors
-                                                                          .productBgColor
-                                                                      : const Color(
-                                                                        0xFF77818D,
-                                                                      ),
+                                                              // color:
+                                                              //     GlobalVariables
+                                                              //                 .loggedInUser
+                                                              //                 .value
+                                                              //                 ?.favouriteTrips
+                                                              //                 ?.contains(
+                                                              //                   controller.tripModel.value?.id,
+                                                              //                 ) ??
+                                                              //             false
+                                                              //         ? AppColors
+                                                              //             .productBgColor
+                                                              //         : const Color(
+                                                              //           0xFF77818D,
+                                                              //         ),
                                                               size: 25,
                                                             ),
                                                   ),
@@ -667,7 +667,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                             .tripModel
                                                             .value
                                                             ?.joindUsersList?[index]
-                                                            .profileImage ??
+                                                            .urlToImage ??
                                                         '',
                                                     scale: 4,
                                                   ),
@@ -678,7 +678,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                               .tripModel
                                                               .value
                                                               ?.joindUsersList?[index]
-                                                              .userName ??
+                                                              .displayName ??
                                                           '',
                                                       style:
                                                           AppStyles.labelTextStyle()
@@ -833,7 +833,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                           GlobalVariables
                                               .loggedInUser
                                               .value!
-                                              .id,
+                                              .uid,
                                     ) ??
                                     false
                                 ? "Open Chat"
