@@ -52,3 +52,4 @@ assets/travelcrew_auth.json
 lib/firebase_options.dart
 assets/
 ios/GoogleService-Info.plist
+android/app/google-services.json
