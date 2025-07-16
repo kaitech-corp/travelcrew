@@ -60,12 +60,12 @@ Future<String> uploadImageToFirebaseStorage({
   try {
     // Correctly construct the full path
     final baseRef = FirebaseStorage.instance.ref().child(
-      'travelcrew/$folderName',
+      '$folderName',
     );
 
     // Append user ID if folder is 'users_profile'
     final fullRef =
-        folderName == 'users_profile'
+        folderName == 'users'
             ? baseRef
                 .child(GlobalVariables.loggedInUser.value!.uid)
                 .child(imageName)

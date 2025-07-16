@@ -11,6 +11,7 @@ class UserModel {
   bool? email_confirmed;
   Timestamp? createdAt;
   Timestamp? updatedAt;
+  String? profileImage;
 
   UserModel({
     this.displayName,
@@ -21,6 +22,7 @@ class UserModel {
      this.email_confirmed,
      this.createdAt,
      this.updatedAt,
+    this.profileImage,
   });
 
   UserModel copyWith({
@@ -28,7 +30,6 @@ class UserModel {
     String? email,
     String? profileImage,
     String? uid,
-    List<String>? favouriteTrips,
     String? password,
     String? phone,
     bool? email_confirmed,
@@ -42,6 +43,7 @@ class UserModel {
       email: email ?? this.email,
       uid: uid ?? this.uid,
       phone: phone ?? this.phone,
+      profileImage: profileImage ?? this.profileImage,
       email_confirmed: email_confirmed ?? this.email_confirmed,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -56,6 +58,7 @@ class UserModel {
     result.addAll({'isDeleted': isDeleted});
     result.addAll({'uid': uid});
     result.addAll({'phone': phone});
+    result.addAll({'profileImage': profileImage});
     result.addAll({'email_confirmed': email_confirmed});
     result.addAll({'createdAt': createdAt});
     result.addAll({'updatedAt': updatedAt});
@@ -70,6 +73,7 @@ class UserModel {
       email: map['email'] ?? '',
       uid: map['uid'] ?? '',
       phone: map['phone'] ?? '',
+      profileImage: map['profileImage'],
       email_confirmed: map['email_confirmed'] ?? false,
       createdAt: map['createdAt'] ?? Timestamp.now(),
       updatedAt: map['updatedAt'] ?? Timestamp.now(),
@@ -83,7 +87,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, email_confirmed: $email_confirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, profileImage: $profileImage, email_confirmed: $email_confirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -95,6 +99,7 @@ class UserModel {
         other.email == email &&
         other.uid == uid &&
         other.phone == phone &&
+        other.profileImage == profileImage &&
         other.email_confirmed == email_confirmed &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
@@ -106,6 +111,7 @@ class UserModel {
         email.hashCode ^
         uid.hashCode ^
         phone.hashCode ^
+        profileImage.hashCode ^
         email_confirmed.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;

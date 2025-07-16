@@ -46,7 +46,7 @@ Future<void> initializeFirebase() async {
 
   firestore = FirebaseFirestore.instanceFor(
     app: app,
-    // databaseId: 'ts-ffff-123',
+    databaseId: 'travel-crew-db-2',
   );
 }
 class MyApp extends StatelessWidget {

@@ -1,11 +1,9 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/otp_service.dart';
 import 'package:travel_crew/services/secure_storage_service.dart';
 
@@ -30,35 +28,35 @@ class AuthService {
           GlobalVariables.loggedInUser.value?.email_confirmed == false) {
         GlobalVariables.fromLoginScreen = true;
         try {
-          String code = SendGridEmailService.generateOtp(); // Generate OTP code
-          await SendGridEmailService.sendEmailWithSendGrid(
-            toEmail: user.email ?? '',
-            subject: 'Email Verification',
-            message: 'Your verification code is: $code',
-          ).then((value) async {
-            if (value) {
-              SendGridEmailService.addOtp(email: user.email ?? '', otp: code);
-              showCustomSnackBar(
-                contentType: ContentType.warning,
-                content: 'Verify your email to continue',
-              );
-              GlobalVariables.fromLoginScreen = false;
-              Get.toNamed(kOtpScreenRoute, arguments: 'fromSignUp');
-            } else {
-              showCustomSnackBar(
-                contentType: ContentType.failure,
-                title: 'Error',
-                content: 'Failed to send verification email.',
-              );
-              if (fromSplash) {
-                // Get.offAllNamed(kOnboardingScreenRoute);
-                Get.offAllNamed(kMainViewScreenRoute);
-              } else {
-                Get.offAllNamed(kLoginScreenRoute);
-              }
-              return;
-            }
-          });
+          // String code = SendGridEmailService.generateOtp(); // Generate OTP code
+          // await SendGridEmailService.sendEmailWithSendGrid(
+          //   toEmail: user.email ?? '',
+          //   subject: 'Email Verification',
+          //   message: 'Your verification code is: $code',
+          // ).then((value) async {
+          //   if (value) {
+          //     SendGridEmailService.addOtp(email: user.email ?? '', otp: code);
+          //     showCustomSnackBar(
+          //       contentType: ContentType.warning,
+          //       content: 'Verify your email to continue',
+          //     );
+          //     GlobalVariables.fromLoginScreen = false;
+          //     Get.toNamed(kOtpScreenRoute, arguments: 'fromSignUp');
+          //   } else {
+          //     showCustomSnackBar(
+          //       contentType: ContentType.failure,
+          //       title: 'Error',
+          //       content: 'Failed to send verification email.',
+          //     );
+          //     if (fromSplash) {
+          //       // Get.offAllNamed(kOnboardingScreenRoute);
+          //       Get.offAllNamed(kMainViewScreenRoute);
+          //     } else {
+          //       Get.offAllNamed(kLoginScreenRoute);
+          //     }
+          //     return;
+            // }
+          // });
 
           return;
         } catch (e) {
@@ -99,6 +97,7 @@ class AuthService {
           }
           return user;
         } else {
+          print('User document does not exist, creating new user');
           // Create a new user if the document does not exist
           UserModel newUser = UserModel(
             createdAt: Timestamp.now(),
@@ -115,7 +114,7 @@ class AuthService {
           await _firestore
               .collection(kUsersCollection)
               .doc(userid)
-              .update(newUser.toMap());
+              .set(newUser.toMap());
           GlobalVariables.loggedInUser.value = newUser;
           return newUser;
         }

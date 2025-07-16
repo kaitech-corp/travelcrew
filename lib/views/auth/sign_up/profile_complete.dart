@@ -111,7 +111,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                     ),
                     SizedBox(width: 10.w),
                     Text(
-                      'Full name',
+                      'Name',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: 14.67,
@@ -126,7 +126,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                   controller: controller.userNameController,
                   textInputAction: TextInputAction.next,
                   focusNode: controller.userNameFocus,
-                  hintText: 'Fabi',
+                  hintText: 'User Name',
                   validator: (p0) {
                     if (p0 == null || p0.isEmpty) {
                       return 'Please enter name';
@@ -163,18 +163,20 @@ class ProfileSetupPage extends GetView<SignUpController> {
 
                 /// Phone Number with Country
                 IntlPhoneField(
-                  validator: (p0) {
-                    if (p0 == null || !p0.isValidNumber()) {
-                      return 'Please enter a valid phone number';
-                    }
-                    return null;
-                  },
+                  // autovalidateMode: AutovalidateMode.onUnfocus,
+                  // Validator function is not working properly. Validation is triggered on every keystroke.
+                  // validator: (p0) {
+                  //   if (p0 == null || !p0.isValidNumber()) {
+                  //     return 'Please enter a valid phone number';
+                  //   }
+                  //   return null;
+                  // },
 
                   controller: controller.phoneController,
                   focusNode: controller.phoneFocus,
                   initialCountryCode:
                       controller.selectedCountry.value?.code ?? 'US',
-                  disableLengthCheck: true,
+                  // disableLengthCheck: true,
                   dropdownIconPosition: IconPosition.trailing,
                   dropdownTextStyle: AppStyles.labelTextStyle().copyWith(
                     fontSize: 14.67,
@@ -190,7 +192,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                   ),
                   decoration: InputDecoration(
                     errorMaxLines: 2,
-                    hintText: '408 *** ****',
+                    hintText: '555 *** ****',
                     hintStyle: AppStyles.labelTextStyle().copyWith(
                       fontSize: 14.67,
                       fontWeight: FontWeight.w500,

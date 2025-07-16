@@ -127,22 +127,22 @@ class SignUpController extends GetxController {
       await AuthService.updateUserAttributes(
         attributes: {
           'profileImage':
-              image ?? GlobalVariables.userProfile.value?.urlToImage ?? '',
+              image ?? GlobalVariables.loggedInUser.value?.profileImage ?? '',
           'phone':
               '${selectedCountry.value?.dialCode ?? '1'}${phoneController.text}',
-          'userName': userNameController.text,
+          'displayName': userNameController.text,
         },
       ).then((v) {
         GlobalVariables.showLoader.value = F;
         if (v) {
           selectedImage.value = '';
           GlobalVariables
-              .userProfile
-              .value = GlobalVariables.userProfile.value!.copyWith(
-            urlToImage:
-                image ?? GlobalVariables.userProfile.value?.urlToImage,
-            // phone:
-            //     '${selectedCountry.value?.dialCode ?? '1'}${phoneController.text}',
+              .loggedInUser
+              .value = GlobalVariables.loggedInUser.value!.copyWith(
+            profileImage:
+                image ?? GlobalVariables.loggedInUser.value?.profileImage,
+            phone:
+                '${selectedCountry.value?.dialCode ?? '1'}${phoneController.text}',
             displayName: userNameController.text,
           );
           if (Get.arguments == 'fromProfile') {
