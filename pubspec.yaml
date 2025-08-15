@@ -13,6 +13,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
 
   # Firebase
   firebase_core: ^3.13.0
@@ -67,7 +70,6 @@ dependencies:
   get: ^4.7.2
 
   # Utilities & Helpers
-  intl: ^0.19.0 
   share_plus: ^10.1.4
   flutter_dotenv: ^5.2.1
   flutter_secure_storage: ^9.2.4
@@ -105,8 +107,6 @@ flutter:
   assets:
     - assets/images/
     - assets/
-    - assets/icons/
-    - assets/travelcrew_auth.json
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

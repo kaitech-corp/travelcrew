@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/utils/common_code.dart';
 import 'package:travel_crew/views/create_trip/controller/create_trip_controller.dart';
@@ -10,7 +9,6 @@ import 'package:travel_crew/views/custom_widgets/date_range_picker/range_picker_
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_images.dart';
 import '../../custom_widgets/custom_drop_down_widget.dart';
-import '../../custom_widgets/custom_text_field.dart';
 import '../../custom_widgets/location_dropdown.dart';
 import 'steps_one.dart';
 
@@ -53,22 +51,21 @@ class StepsFour extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12.h),
-
-            // Obx(
-            //   () => LocationDropdownWidget(
-            //     selectedText: controller.searchText.value,
-            //     hintText: 'Search Hotel',
-            //     validator:
-            //         (p0) =>
-            //             p0?.isBlank ?? true ? 'Please select a hotel' : null,
-            //     textEditingController: controller.hotelNameController,
-            //     focusNode: controller.hotelNameFocusNode,
-            //   ),
-            // ),
-            CustomTextField(
-              hintText: 'Please enter hotel name',
-              controller: controller.hotelNameController,
-              focusNode: controller.hotelNameFocusNode,
+            Obx(
+              () => LocationDropdownWidget(
+                selectedText: controller.searchText.value,
+                hintText: 'Search Hotel',
+                items: controller.hotelLocations,
+                onChanged: (value) {
+                  controller.fetchHotelLocation(value);
+                },
+                onTap: (placeId, searchText) =>
+                    controller.hotelNameController.text = searchText.searchText,
+                validator: (p0) =>
+                    p0?.isBlank ?? true ? 'Please select a hotel' : null,
+                textEditingController: controller.hotelNameController,
+                focusNode: controller.hotelNameFocusNode,
+              ),
             ),
             SizedBox(height: 27.h),
             Text(

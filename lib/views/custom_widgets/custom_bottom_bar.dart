@@ -42,7 +42,7 @@ class CustomBottomBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(26.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: Colors.black.withAlpha(38),
               blurRadius: 10.0,
               offset: Offset(0, 5),
             ),
@@ -79,7 +79,7 @@ class CustomBottomBar extends StatelessWidget {
                       color:
                           isSelected
                               ? Colors.white
-                              : Colors.white.withValues(alpha: 0.7),
+                              : Colors.white.withAlpha(179),
                       size: 24.sp,
                     ),
                     child: item.icon,
@@ -92,7 +92,7 @@ class CustomBottomBar extends StatelessWidget {
                         color:
                             isSelected
                                 ? Colors.white
-                                : Colors.white.withValues(alpha: 0.7),
+                                : Colors.white.withAlpha(179),
                         fontSize: 12.sp,
 
                         fontWeight:

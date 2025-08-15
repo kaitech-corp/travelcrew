@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/back_button_widget.dart';
@@ -18,6 +19,7 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
   const ForgotPasswordScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: '',
       isBackIcon: false,
@@ -29,11 +31,11 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
         padding: EdgeInsets.only(left: 18.w, right: 18.w, bottom: 18.w),
         child: CustomElevatedButton(
           width: Get.width,
-          title: 'Continue',
+          title: l10n.continueText,
           height: 52.02.h,
           onPressed: () {
             if (controller.emailController.text.isEmail) {
-              controller.sendOtp();
+              controller.sendPasswordResetEmail();
             } else {
               showCustomSnackBar(content: 'Please enter a valid email');
             }
@@ -60,7 +62,7 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                     children: [
                       Center(
                         child: Text(
-                          'Forgot password?',
+                          l10n.forgotPasswordTitle,
                           textAlign: TextAlign.center,
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.black,
@@ -71,10 +73,10 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                       ),
                       SizedBox(height: 20.h),
                       Text(
-                        'In order to help you select the contact information that we must use to reset your password',
+                        l10n.forgotPasswordSubtitle,
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
-                          color: Colors.black.withValues(alpha: 140),
+                          color: Colors.black.withAlpha(140),
                           fontSize: 14.sp,
 
                           fontWeight: FontWeight.w500,
@@ -85,8 +87,8 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                         () => Column(
                           children: [
                             ResetOptionTile(
-                              title: 'Send to your email',
-                              subtitle: 'Get a password reset link via email',
+                              title: l10n.sendToEmail,
+                              subtitle: l10n.resetLinkViaEmail,
                               icon: Icon(
                                 Icons.email_outlined,
                                 color:

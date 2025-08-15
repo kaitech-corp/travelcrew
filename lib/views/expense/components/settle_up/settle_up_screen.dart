@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/custom_drop_down_widget.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
@@ -16,8 +16,9 @@ class SettleUpScreen extends GetView<ExpenseController> {
   const SettleUpScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      screenName: 'Settle Up',
+      screenName: l10n.settleUp,
       isBackIcon: true,
       scaffoldKey: controller.expenseSettleScaffoldKey,
       className: runtimeType.toString(),
@@ -28,7 +29,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
           children: [
             SizedBox(height: 20.h),
             Text(
-              'Expense Name',
+              l10n.expenseName,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: 20.sp,
@@ -38,13 +39,13 @@ class SettleUpScreen extends GetView<ExpenseController> {
             ),
             SizedBox(height: 12.h),
             CustomTextField(
-              hintText: 'Enter Expense Name',
+              hintText: l10n.enterExpenseName,
               controller: controller.expenseNameController,
               readOnly: true,
             ),
             SizedBox(height: 27.h),
             Text(
-              'Amount Owed',
+              l10n.amountOwed,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: 20.sp,
@@ -57,7 +58,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
               controller: controller.amountOwedController,
               readOnly: true,
               prefixIconConstraints: BoxConstraints(maxWidth: 50.w),
-              hintText: 'Enter Cost Received',
+              hintText: l10n.enterCostReceived,
               prefixIcon: Padding(
                 padding: EdgeInsets.only(left: 8.w),
                 child: Image.asset(AppImages.kDollarIcon, scale: 4),
@@ -65,7 +66,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
             ),
             SizedBox(height: 27.h),
             Text(
-              'Paid By',
+              l10n.paidBy,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: 20.sp,
@@ -90,7 +91,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
                   ),
                 );
               },
-              hintText: 'Select',
+              hintText: l10n.select,
               items:
                   getUsersWithHavingDues(
                     controller.expenseToSettle!,
@@ -110,15 +111,15 @@ class SettleUpScreen extends GetView<ExpenseController> {
         child: CustomElevatedButton(
           width: Get.width,
           height: Get.height * 0.06,
-          title: 'Confirm & Settle',
+          title: l10n.confirmAndSettle,
           onPressed: () {
             showDialog(
               context: context,
               builder:
                   (c) => AlertDialog(
-                    title: Text('Settle Up'),
+                    title: Text(l10n.settleUp),
                     content: Text(
-                      'Are you sure you want to settle up with ${controller.selectedUser.value?.urlToImage}?',
+                      l10n.confirmSettleUp.toString().replaceFirst('{userName}', controller.selectedUser.value?.displayName ?? ''),
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: 16.sp,
@@ -130,14 +131,14 @@ class SettleUpScreen extends GetView<ExpenseController> {
                         onPressed: () {
                           Get.back();
                         },
-                        child: Text('Cancel'),
+                        child: Text(l10n.cancel),
                       ),
                       TextButton(
                         onPressed: () {
                           controller.settleUp();
                           Get.back();
                         },
-                        child: Text('Confirm'),
+                        child: Text(l10n.confirm),
                       ),
                     ],
                   ),

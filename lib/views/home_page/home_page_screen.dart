@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
@@ -10,7 +11,6 @@ import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/home_page/controller/home_page_controller.dart';
 import 'package:travel_crew/views/home_page/widgets/location_widget.dart';
 import 'package:travel_crew/views/home_page/widgets/trips_widget.dart';
-
 import '../../services/session_services.dart';
 import '../../utils/app_strings.dart';
 import '../../utils/app_styles.dart';
@@ -21,6 +21,7 @@ class HomePageScreen extends GetView<HomePageController> {
   const HomePageScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: '',
       isBackIcon: false,
@@ -90,7 +91,7 @@ class HomePageScreen extends GetView<HomePageController> {
                         controller.applyOtherTripsFilter(value);
                       },
                       decoration: InputDecoration(
-                        hintText: 'Search',
+                        hintText: l10n.search,
                         hintStyle: AppStyles.labelTextStyle().copyWith(
                           fontSize: 13.44,
                           fontWeight: FontWeight.w400,
@@ -165,7 +166,7 @@ class HomePageScreen extends GetView<HomePageController> {
               child: Row(
                 children: [
                   Text(
-                    'My Trips',
+                    l10n.myTrips,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF121212),
                       fontSize: 18,
@@ -179,7 +180,7 @@ class HomePageScreen extends GetView<HomePageController> {
                       // Get.toNamed(kMyTripsScreenRoute);
                     },
                     child: Text(
-                      'View All',
+                      l10n.viewAll,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFF121212),
                         fontSize: 12,
@@ -197,7 +198,7 @@ class HomePageScreen extends GetView<HomePageController> {
                     controller.isLoadingMyTrips.isTrue
                         ? Center(child: CircularProgressIndicator())
                         : controller.filteredMyTrips.isEmpty
-                        ? Center(child: Text('No trips found'))
+                        ? Center(child: Text(l10n.noTripsFound))
                         : ListView.separated(
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
@@ -361,19 +362,19 @@ class HomePageScreen extends GetView<HomePageController> {
                           controller: controller.tabController,
                           children: [
                             _buildTripsTab(
-                              'All',
+                              l10n.all,
                               controller.otherFilteredTrips,
                             ),
                             _buildTripsTab(
-                              'Popular',
+                              l10n.popular,
                               controller.otherFilteredTrips,
                             ),
                             _buildTripsTab(
-                              'Nearby',
+                              l10n.nearby,
                               controller.otherFilteredTrips,
                             ),
                             _buildTripsTab(
-                              'Recommended',
+                              l10n.recommended,
                               controller.otherFilteredTrips,
                             ),
                           ],

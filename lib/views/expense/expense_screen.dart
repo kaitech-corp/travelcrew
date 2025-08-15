@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -15,13 +16,14 @@ class ExpenseScreen extends GetView<ExpenseController> {
   const ExpenseScreen({super.key, this.fromMainView = false});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     Future.microtask(() {
       if (Get.arguments != null) {
         controller.tripModel.value = Get.arguments;
       }
     });
     return CustomScaffold(
-      screenName: 'Expense',
+      screenName: l10n.expenses,
       isBackIcon: false,
       isFullBody: false,
       centerTitle: true,
@@ -76,7 +78,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Total Cost',
+                        l10n.totalCost,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.white,
                           fontSize: 20.93.sp,
@@ -104,7 +106,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
             ),
             SizedBox(height: 10.h),
             Text(
-              'Who Owes What?',
+              l10n.whoOwesWhat,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: 18.sp,
@@ -127,7 +129,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       Image.asset(AppImages.kMemberIcon, scale: 4),
                       SizedBox(width: 10.w),
                       Text(
-                        '${dues[index].user.displayName} owes you',
+                        '${dues[index].user.displayName} ${l10n.owesYou}',
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF1F1F1F),
                           fontSize: 13,
@@ -137,7 +139,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       ),
                       Spacer(),
                       Text(
-                        '\$${dues[index].dues}',
+                        '\${dues[index].dues}',
                         textAlign: TextAlign.right,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF1D7FC2),
@@ -153,7 +155,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
             }),
             SizedBox(height: 20.h),
             Text(
-              'Expense Details',
+              l10n.expenseDetails,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: 20.93,
@@ -164,7 +166,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
             Obx(
               () =>
                   controller.tripModel.value?.expenses?.isEmpty ?? true
-                      ? Center(child: Text('No expenses added yet'))
+                      ? Center(child: Text(l10n.noExpenses))
                       : ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,

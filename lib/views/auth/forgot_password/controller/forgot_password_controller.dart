@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 
-import '../../../../services/otp_service.dart';
 import '../../../../utils/custom_snackbar.dart';
 
 class ForgotPasswordController extends GetxController {
@@ -21,7 +21,9 @@ class ForgotPasswordController extends GetxController {
   void onContinue() {
     if (selectedOption.value == 0) {
       String email = emailController.text.trim();
-      if (email.isNotEmpty && GetUtils.isEmail(email)) {}
+      if (email.isNotEmpty && GetUtils.isEmail(email)) {
+        sendPasswordResetEmail();
+      }
     } else {
       String phone = phoneController.text.trim();
       if (phone.isNotEmpty) {}
@@ -32,25 +34,14 @@ class ForgotPasswordController extends GetxController {
     Get.back();
   }
 
-  sendOtp() async {
+  sendPasswordResetEmail() async {
     try {
       GlobalVariables.showLoader.value = true;
-      String code = SendGridEmailService.generateOtp();
-      await SendGridEmailService.sendEmailWithSendGrid(
-        toEmail: emailController.text,
-        subject: 'Password Reset Code',
-        message: 'Your password reset code is: $code',
-      ).then((response) async {
-        GlobalVariables.toVerify = emailController.text;
-        GlobalVariables.isEmail = true;
-        if (response) {
-          showCustomSnackBar(content: 'OTP sent successfully');
-          SendGridEmailService.addOtp(email: emailController.text, otp: code);
-          Get.toNamed(kOtpScreenRoute, arguments: 'email');
-        } else {
-          showCustomSnackBar(content: 'Failed to send OTP');
-        }
-      });
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      showCustomSnackBar(content: 'Password reset email sent. Please check your inbox.');
+      Get.offAllNamed(kLoginScreenRoute);
+    } on FirebaseAuthException catch (e) {
+      showCustomSnackBar(content: e.message ?? 'An error occurred.');
     } finally {
       GlobalVariables.showLoader.value = false;
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
@@ -17,6 +18,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
   const MyTripsScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     Future.microtask(() {
       controller.getTrips();
     });
@@ -24,7 +26,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
       onWillPop: () {
         mainViewController?.selectedIndex.value = 0;
       },
-      screenName: 'My Trips',
+      screenName: l10n.myTrips,
       isBackIcon: true,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
@@ -64,7 +66,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Upcoming',
+                            l10n.upcoming,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: Colors.black,
                               fontSize: 12.sp,
@@ -106,7 +108,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                           Opacity(
                             opacity: 0.80,
                             child: Text(
-                              'Complete',
+                              l10n.complete,
                               style: AppStyles.labelTextStyle().copyWith(
                                 color: Colors.black,
                                 fontSize: 12.73,
@@ -188,7 +190,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                                   ),
                                 ),
                               ),
-                              hintText: 'City, Country, Zone...',
+                              hintText: l10n.cityCountryZone,
                             ),
                             controller: controller.searchController,
                           ),
@@ -207,7 +209,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                     controller.isLoading.isTrue
                         ? Center(child: CircularProgressIndicator())
                         : controller.filteredTrips.isEmpty
-                        ? Center(child: Text('No trips found.'))
+                        ? Center(child: Text(l10n.noTripsFound))
                         : ListView.builder(
                           shrinkWrap: true,
                           itemCount: controller.filteredTrips.length,

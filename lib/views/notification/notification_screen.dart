@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 
 import '../../models/Notifications/notification_model.dart';
@@ -17,10 +18,11 @@ class NotificationsScreen extends GetView<NotificationController> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       centerTitle: true,
       className: runtimeType.toString(),
-      screenName: 'Notifications',
+      screenName: l10n.notifications,
       scaffoldKey: controller.scaffoldKey,
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -47,7 +49,7 @@ class NotificationsScreen extends GetView<NotificationController> {
           );
         } else {
           return controller.notifications.isEmpty
-              ? const Center(child: Text('No notifications found.'))
+              ? Center(child: Text(l10n.noNotificationsFound))
               : ListView.builder(
                 padding: EdgeInsets.zero,
                 itemCount: controller.notifications.length,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
 import 'package:travel_crew/views/custom_widgets/custom_text_field.dart';
@@ -13,8 +14,9 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
   const ChangePasswordScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      screenName: 'Change\nPassword',
+      screenName: l10n.changePassword,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
       centerTitle: true,
@@ -29,7 +31,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                   Image.asset(AppImages.kLockIcon, scale: 4),
                   SizedBox(width: 10.w),
                   Text(
-                    'Old Password',
+                    l10n.oldPassword,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
                       fontSize: 14.sp,
@@ -40,7 +42,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
               ),
               SizedBox(height: 10.h),
               CustomTextField(
-                hintText: 'Enter old password',
+                hintText: l10n.enterOldPassword,
                 controller: controller.currentPasswordController,
                 focusNode: controller.currentPasswordFocus,
                 validator: (p0) {
@@ -56,7 +58,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                   Image.asset(AppImages.kLockIcon, scale: 4),
                   SizedBox(width: 10.w),
                   Text(
-                    'Password',
+                    l10n.password,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
                       fontSize: 14.sp,
@@ -67,7 +69,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
               ),
               SizedBox(height: 10.h),
               CustomTextField(
-                hintText: 'Enter new password',
+                hintText: l10n.enterNewPassword,
                 controller: controller.newPasswordController,
                 focusNode: controller.newPasswordFocus,
                 validator: (p0) {
@@ -85,7 +87,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                   Image.asset(AppImages.kLockIcon, scale: 4),
                   SizedBox(width: 10.w),
                   Text(
-                    'Confirm password',
+                    l10n.confirmPassword,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
                       fontSize: 14.sp,
@@ -96,7 +98,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
               ),
               SizedBox(height: 10.h),
               CustomTextField(
-                hintText: 'Enter password',
+                hintText: l10n.confirmPasswordHint,
                 validator: (p0) {
                   if (p0!.isEmpty) {
                     return 'Please enter password';
@@ -111,7 +113,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
               SizedBox(height: 43.h),
               CustomElevatedButton(
                 width: Get.width,
-                title: 'Continue',
+                title: l10n.continueText,
                 onPressed: () {
                   if (controller.formKey.currentState!.validate()) {
                     controller.updatePasssword();

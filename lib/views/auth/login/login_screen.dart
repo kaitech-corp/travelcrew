@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
@@ -17,6 +18,7 @@ class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: '',
       isBackIcon: false,
@@ -40,20 +42,20 @@ class LoginScreen extends GetView<LoginController> {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.r),
-                        color: AppColors.kGreyColor.withValues(alpha: 0.2),
+                        color: AppColors.kGreyColor.withAlpha(51),
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(5),
                         child: Icon(
                           Icons.email_outlined,
-                          color: Colors.black.withValues(alpha: 140),
+                          color: Colors.black.withAlpha(140),
                           size: 20.sp,
                         ),
                       ),
                     ),
                     SizedBox(width: 10.w),
                     Text(
-                      'Email',
+                      l10n.email,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: 14.67,
@@ -66,7 +68,7 @@ class LoginScreen extends GetView<LoginController> {
                 SizedBox(height: 10.h),
                 CustomTextField(
                   controller: controller.emailController,
-                  hintText: 'Email',
+                  hintText: l10n.email,
                   validator: (p0) {
                     if (p0 == null || p0.isEmpty) {
                       return 'Please enter your email';
@@ -83,7 +85,7 @@ class LoginScreen extends GetView<LoginController> {
                     Image.asset(AppImages.kPasswordIcon, scale: 4),
                     SizedBox(width: 10.w),
                     Text(
-                      'Password',
+                      l10n.password,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: 14.67,
@@ -99,7 +101,7 @@ class LoginScreen extends GetView<LoginController> {
                     
                     textInputAction: TextInputAction.done,
                     controller: controller.passwordController,
-                    hintText: 'Enter Password',
+                    hintText: l10n.password,
                     validator: (p0) {
                       if (p0 == null || p0.isEmpty) {
                         return 'Please enter your password';
@@ -148,7 +150,7 @@ class LoginScreen extends GetView<LoginController> {
                           ),
                           SizedBox(width: 5.w),
                           Text(
-                            'Remember Me',
+                            l10n.rememberMe,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: const Color(0xFF666666),
                               fontSize: 14.sp,
@@ -162,7 +164,7 @@ class LoginScreen extends GetView<LoginController> {
                     TextButton(
                       onPressed: controller.onForgotPassword,
                       child: Text(
-                        'Forgot password?',
+                        l10n.forgotPassword,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: AppColors.kPrimaryColor,
                           fontSize: 14.67,
@@ -176,7 +178,7 @@ class LoginScreen extends GetView<LoginController> {
                 SizedBox(height: 24.h),
                 CustomElevatedButton(
                   width: Get.width,
-                  title: 'Sign In',
+                  title: l10n.login,
                   onPressed: () {
                     if (controller.formKey.currentState!.validate()) {
                       controller.login();
@@ -201,7 +203,7 @@ class LoginScreen extends GetView<LoginController> {
                     ),
                     Spacer(),
                     Text(
-                      'Or Sign In with',
+                      l10n.orSignInWith,
                       style: AppStyles.labelTextStyle().copyWith(
                         fontSize: 14.sp,
                         color: Colors.grey[600],
@@ -245,7 +247,7 @@ class LoginScreen extends GetView<LoginController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Don’t have an account?',
+                      l10n.dontHaveAnAccount,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFF333333),
                         fontSize: 14,
@@ -260,7 +262,7 @@ class LoginScreen extends GetView<LoginController> {
                         Get.toNamed(kSignUpScreenRoute);
                       },
                       child: Text(
-                        'Sign Up',
+                        l10n.signup,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: AppColors.kPrimaryColor,
                           fontSize: 14.sp,

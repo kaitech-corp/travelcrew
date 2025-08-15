@@ -2,6 +2,7 @@ import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/views/onboarding/widgets/page_indicator.dart';
 
 import '../../../../models/onboarding_page_model.dart';
@@ -16,6 +17,7 @@ class OnboardingPageWidget extends StatelessWidget {
   OnboardingPageWidget({super.key, required this.page, required this.index});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Stack(
       children: [
         Container(
@@ -49,7 +51,7 @@ class OnboardingPageWidget extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Text(
                     textAlign: TextAlign.center,
-                    page.title,
+                    index == 0 ? l10n.onboardingTitle1 : index == 1 ? l10n.onboardingTitle2 : l10n.onboardingTitle3,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
                       fontSize: 28.01,
@@ -61,7 +63,7 @@ class OnboardingPageWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  page.subtitle,
+                  index == 0 ? l10n.onboardingSubtitle1 : index == 1 ? l10n.onboardingSubtitle2 : l10n.onboardingSubtitle3,
                   textAlign: TextAlign.center,
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.white.withValues(alpha: 140),

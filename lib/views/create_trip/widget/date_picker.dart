@@ -184,16 +184,16 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
 
                 cellMargin: EdgeInsets.all(1.5),
                 defaultDecoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: .2),
+                  color: Colors.grey.withAlpha(51),
                   shape: BoxShape.circle,
                 ),
                 outsideDecoration: BoxDecoration(
                   color: Colors.transparent,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.withValues(alpha: .2)),
+                  border: Border.all(color: Colors.grey.withAlpha(51)),
                 ),
                 weekendDecoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: .2),
+                  color: Colors.grey.withAlpha(51),
                   shape: BoxShape.circle,
                 ),
                 selectedDecoration: const BoxDecoration(
@@ -205,16 +205,16 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                   shape: BoxShape.circle,
                 ),
                 rangeStartDecoration: BoxDecoration(
-                  color: Colors.teal.withValues(alpha: 0.3),
+                  color: Colors.teal.withAlpha(77),
                   border: Border.all(color: Colors.blue, width: 1),
                   shape: BoxShape.circle,
                 ),
                 rangeEndDecoration: BoxDecoration(
-                  color: Colors.teal.withValues(alpha: 0.3),
+                  color: Colors.teal.withAlpha(77),
                   border: Border.all(color: Colors.blue, width: 1),
                   shape: BoxShape.circle,
                 ),
-                rangeHighlightColor: Colors.teal.withValues(alpha: 0.3),
+                rangeHighlightColor: Colors.teal.withAlpha(77),
                 withinRangeTextStyle: const TextStyle(color: Colors.white),
               ),
               onDaySelected: (selectedDay, focusedDay) {
@@ -249,7 +249,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Divider(
-              color: AppColors.kBlackColor.withValues(alpha: .5),
+              color: AppColors.kBlackColor.withAlpha(128),
               thickness: .61,
             ),
           ),

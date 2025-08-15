@@ -1,4 +1,5 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,7 +10,6 @@ import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/aviation_stack_service/aviation_stack_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
-import 'package:travel_crew/services/otp_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/services/trips_changes.dart';
 import 'package:travel_crew/utils/common_code.dart';
@@ -360,10 +360,16 @@ class CreateTripController extends GetxController {
         tripModel.images = uplaodedImages;
       }
       if (invitedUsersList.isNotEmpty) {
-        SendGridEmailService.inviteUsersViaEmail(
-          tripTitle: tripModel.title ?? '',
-          emails: invitedUsersList,
-        ); // Add trip to Firebase
+        // Trigger email invitations via Firebase Extension
+        for (String email in invitedUsersList) {
+          FirebaseFirestore.instance.collection('mail').add({
+            'to': [email],
+            'message': {
+              'subject': 'You have been invited to a trip!',
+              'text': 'You have been invited to join the trip: ${tripModel.title}. Open the Travel Crew app to accept.',
+            },
+          });
+        }
       }
       ExpenseModel exp = ExpenseModel(
         paidByUsers: [],
@@ -441,6 +447,7 @@ class CreateTripController extends GetxController {
   Rxn<DateTime?> expanseDate = Rxn<DateTime?>(null);
 
   RxList<SearchModel> locations = RxList();
+  RxList<SearchModel> hotelLocations = RxList();
   RxList<SearchModel> searchedFriends = RxList();
 
   void updateSearch(String value) {
@@ -450,13 +457,14 @@ class CreateTripController extends GetxController {
   RxInt isLoadingSuggestions = (-1).obs;
 
   RxList<AeroplanesModel> airlineList = RxList();
-  fetchLocation(String? value, {int id = -1}) async {
+  fetchLocation(String? value, {int id = -1, String? type}) async {
     if (value == null || value.isEmpty) {
       locations.clear();
       return;
     }
     isLoadingSuggestions.value = id;
-    await GeoServices.fetchSuggestions(value).then((suggestions) async {
+    await GeoServices.fetchPlaceSuggestions(value, type: type)
+        .then((suggestions) async {
       locations.clear();
       for (var e in suggestions) {
         locations.add(
@@ -468,6 +476,31 @@ class CreateTripController extends GetxController {
       }
     });
     if (locations.isNotEmpty) {
+      GlobalVariables.showDropdown.value = true;
+    } else {
+      GlobalVariables.showDropdown.value = false;
+    }
+  }
+
+  fetchHotelLocation(String? value, {int id = -1}) async {
+    if (value == null || value.isEmpty) {
+      hotelLocations.clear();
+      return;
+    }
+    isLoadingSuggestions.value = id;
+    await GeoServices.fetchPlaceSuggestions(value, type: 'lodging')
+        .then((suggestions) async {
+      hotelLocations.clear();
+      for (var e in suggestions) {
+        hotelLocations.add(
+          SearchModel(
+            searchText: e['description'] ?? '',
+            placeId: e['place_id'],
+          ),
+        );
+      }
+    });
+    if (hotelLocations.isNotEmpty) {
       GlobalVariables.showDropdown.value = true;
     } else {
       GlobalVariables.showDropdown.value = false;

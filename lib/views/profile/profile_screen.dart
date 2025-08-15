@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -15,8 +16,9 @@ class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      screenName: 'Profile',
+      screenName: l10n.profile,
       centerTitle: true,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
@@ -27,7 +29,7 @@ class ProfileScreen extends GetView<ProfileController> {
             Obx(
               () => ProfileWidget(
                 isNetworkImage: true,
-                title: 'Personal Information',
+                title: l10n.personalInformation,
                 leadingImage:
                     GlobalVariables.userProfile.value?.urlToImage ?? '',
                 onTap:
@@ -39,13 +41,13 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
             SizedBox(height: 50.h),
             ProfileWidget(
-              title: 'Change Password',
+              title: l10n.changePassword,
               leadingImage: AppImages.kChangePasswordImage,
               onTap: () => Get.toNamed(kChangePasswordScreenRoute),
             ),
             SizedBox(height: 20.h),
             ProfileWidget(
-              title: 'Notifications',
+              title: l10n.notifications,
               leadingImage: AppImages.kHelpAndSupportImage,
               trailingIcon: Obx(
                 () => Switch(
@@ -57,13 +59,13 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
             SizedBox(height: 20.h),
             ProfileWidget(
-              title: 'Help & Support',
+              title: l10n.helpAndSupport,
               leadingImage: AppImages.kProfileInfoIcon,
               onTap: () => Get.toNamed(kHelpNSupportScreenRoute),
             ),
             SizedBox(height: 20.h),
             ProfileWidget(
-              title: 'Privacy Policy & Terms',
+              title: l10n.privacyPolicyAndTerms,
               leadingImage: AppImages.kTermsIcon,
               onTap: () {
                 Get.toNamed(kPrivacyPolicyScreenRoute);
@@ -71,22 +73,22 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
             SizedBox(height: 20.h),
             ProfileWidget(
-              title: 'About',
+              title: l10n.about,
               leadingImage: AppImages.kAboutIcon,
               onTap: () => Get.toNamed(kAboutScreenRoute),
             ),
             SizedBox(height: 20.h),
             ProfileWidget(
-              title: 'Delete Account',
+              title: l10n.deleteAccount,
               leadingImage: AppImages.kIcDeleteAccount,
               onTap: () {
                 showDialog(
                   context: context,
                   builder:
                       (c) => AlertDialog(
-                        title: Text('Delete Account'),
+                        title: Text(l10n.deleteAccount),
                         content: Text(
-                          'Are you sure you want to delete your account?',
+                          l10n.confirmDeleteAccount,
                           style: AppStyles.labelTextStyle().copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
@@ -98,13 +100,13 @@ class ProfileScreen extends GetView<ProfileController> {
                               Get.back();
                               AuthService.deleteAccount();
                             },
-                            child: Text('Delete'),
+                            child: Text(l10n.delete),
                           ),
                           TextButton(
                             onPressed: () {
                               Get.back();
                             },
-                            child: Text('Cancel'),
+                            child: Text(l10n.cancel),
                           ),
                         ],
                       ),
@@ -141,7 +143,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   children: [
                     Image.asset(AppImages.kLogOutIcon, scale: 4),
                     Text(
-                      'Log Out',
+                      l10n.logout,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFFDA2828),
                         fontSize: 13.95.sp,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/views/profile/components/help_n_support/controller/help_n_support_controller.dart';
 import 'package:travel_crew/views/profile/components/help_n_support/widget/help_n_support_widget.dart';
 
@@ -10,8 +11,9 @@ class HelpNSupportScreen extends GetView<HelpNSupportController> {
   const HelpNSupportScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      screenName: 'Help & Support',
+      screenName: l10n.helpAndSupport,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
       centerTitle: true,
@@ -20,19 +22,16 @@ class HelpNSupportScreen extends GetView<HelpNSupportController> {
         children: [
           SizedBox(height: 20.h),
           HelpSupportExpansionTile(
-            title: 'Safety & Security',
-            description:
-                "We protect your data with SSL encryption, ensuring secure transactions at Afriva.com. You're covered for unauthorized credit card use.",
+            title: l10n.safetyAndSecurity,
+            description: l10n.safetyAndSecurityDescription,
           ),
           HelpSupportExpansionTile(
-            title: 'Returns & Refunds',
-            description:
-                'Follow our return policy for fast processing. Contact warranty providers...',
+            title: l10n.returnsAndRefunds,
+            description: l10n.returnsAndRefundsDescription1,
           ),
           HelpSupportExpansionTile(
-            title: 'Returns & Refunds',
-            description:
-                "Follow our return policy for fast processing. Contact warranty providers for defective products first. For other returns, a Return Merchandise Authorization (RMA#) is required.",
+            title: l10n.returnsAndRefunds,
+            description: l10n.returnsAndRefundsDescription2,
           ),
         ],
       ),

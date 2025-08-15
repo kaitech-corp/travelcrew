@@ -60,7 +60,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.kGreyColor.withValues(alpha: 0.1),
+        color: AppColors.kGreyColor.withAlpha(26),
         borderRadius: BorderRadius.circular(30.r),
       ),
       child: Column(
@@ -80,7 +80,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
               suffixIcon: widget.suffixIcon,
               fillColor:
                   GlobalVariables.showDropdown.isTrue
-                      ? AppColors.kPrimaryColor.withValues(alpha: .1)
+                      ? AppColors.kPrimaryColor.withAlpha(26)
                       : AppColors.kLightGreyColor,
               filled: true,
               hintStyle: AppStyles.labelTextStyle().copyWith(
@@ -162,7 +162,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                                 decoration: BoxDecoration(
                                   color:
                                       isSelected
-                                          ? Colors.blue.withValues(alpha: 0.1)
+                                          ? Colors.blue.withAlpha(26)
                                           : null,
                                 ),
                                 child: Row(

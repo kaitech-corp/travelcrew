@@ -44,7 +44,7 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.kGreyColor.withValues(alpha: 0.1),
+        color: AppColors.kGreyColor.withAlpha(26),
         borderRadius: BorderRadius.circular(30.r),
       ),
       child: Column(

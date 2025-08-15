@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:travel_crew/views/all_expenses/controller/all_expense_cont.dart';
 import 'package:travel_crew/views/auth/forgot_password/controller/forgot_password_controller.dart';
 import 'package:travel_crew/views/auth/new_password/controller/new_password_controller.dart';
-import 'package:travel_crew/views/auth/otp/controller/otp_controller.dart';
 import 'package:travel_crew/views/auth/sign_up/controller/sign_up_controller.dart';
 import 'package:travel_crew/views/create_trip/controller/create_trip_controller.dart';
 import 'package:travel_crew/views/expense/components/add_expense/controller/add_expense_controller.dart';
@@ -36,7 +35,7 @@ class ScreenBindings extends Bindings {
     Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => HelpNSupportController());
     Get.lazyPut(() => GroupController());
-    Get.lazyPut(() => OtpController());
+    // Get.lazyPut(() => OtpController());
     Get.lazyPut(() => NewPasswordController());
     Get.lazyPut(() => MainViewController());
     Get.lazyPut(() => HomePageController());

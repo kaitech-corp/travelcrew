@@ -12,7 +12,6 @@ import 'package:travel_crew/views/profile/profile_screen.dart';
 import '../views/auth/forgot_password/forgot_password_screen.dart';
 import '../views/auth/login/login_screen.dart';
 import '../views/auth/new_password/new_password_screen.dart';
-import '../views/auth/otp/otp_screen.dart';
 import '../views/auth/sign_up/sign_up_screen.dart';
 import '../views/create_trip/create_trip_screen.dart';
 import '../views/expense/components/add_expense/add_expense_screen.dart';
@@ -79,11 +78,7 @@ class RouteGenerator {
         page: () => const HelpNSupportScreen(),
         binding: ScreenBindings(),
       ),
-      GetPage(
-        name: kOtpScreenRoute,
-        page: () => OtpScreen(),
-        binding: ScreenBindings(),
-      ),
+      
       GetPage(
         name: kMainViewScreenRoute,
         page: () => MainViewScreen(),

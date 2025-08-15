@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_crew/firebase_options.dart';
+import 'package:travel_crew/services/firebase_options.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/views/main_view/controller/main_view_controller.dart';
 
+import 'l10n/app_localizations.dart';
 import 'services/notifications/notfication_services.dart';
 import 'utils/app_strings.dart';
-import 'utils/localization.dart';
 import 'utils/route_generator.dart';
 import 'utils/screen_bindings.dart';
 
@@ -66,17 +66,18 @@ class MyApp extends StatelessWidget {
           initialRoute: kSplashScreenRoute,
           supportedLocales: const <Locale>[
             Locale('en', 'US'),
-            Locale('ar', 'SA'),
+            Locale('es', ''),
+            Locale('zh', ''),
           ],
           locale: const Locale('en', 'US'),
           fallbackLocale: const Locale('en', 'US'),
-          translations: AppTranslations(),
           getPages: RouteGenerator.getPages(),
           localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
             FlutterQuillLocalizations.delegate,
-            DefaultMaterialLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
           ],
         );
       },
@@ -106,7 +107,7 @@ class MyApp extends StatelessWidget {
         thumbColor: WidgetStateProperty.all(AppColors.kWhiteColor),
         trackOutlineColor: WidgetStateProperty.all(AppColors.transparent),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         surfaceTintColor: AppColors.kWhiteColor,
         color: AppColors.kWhiteColor,
         shape: RoundedRectangleBorder(

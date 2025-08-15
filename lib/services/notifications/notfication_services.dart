@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as devtools show log;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
@@ -194,131 +190,8 @@ class FirebasePushNotificationApi {
 }
 
 backGroundResponse(response) {
-  final message = RemoteMessage.fromMap(jsonDecode(response.payload ?? ""));
+  // final message = 
+  RemoteMessage.fromMap(jsonDecode(response.payload ?? ""));
 }
 
-Future<bool> sendPushMessage({
-  required String title,
-  required String body,
-}) async {
-  String token = userDeviceToken;
-  if (token.isEmpty) {
-    print('Unable to send FCM message, no token exists.');
-    return false;
-  }
 
-  final jsonCredentials = await rootBundle.loadString(
-    'assets/travelcrew_auth.json',
-  );
-  final creds = auth.ServiceAccountCredentials.fromJson(jsonCredentials);
-
-  final client = await auth.clientViaServiceAccount(creds, [
-    'https://www.googleapis.com/auth/cloud-platform',
-  ]);
-
-  final notificationData = {
-    'message': {
-      'token': token,
-      'notification': {'title': title, 'body': body},
-    },
-  };
-
-  final response = await client.post(
-    Uri.parse('https://fcm.googleapis.com/v1/projects/$senderId/messages:send'),
-    headers: {'content-type': 'application/json'},
-    body: jsonEncode(notificationData),
-  );
-
-  client.close();
-  if (response.statusCode == 200) {
-    return true; // Success!
-  }
-
-  devtools.log(
-    'Notification Sending Error Response status: ${response.statusCode}',
-  );
-  debugPrint(
-    'Notification Sending Error Response status: ${response.statusCode}',
-  );
-  devtools.log('Notification Response body: ${response.body}');
-  debugPrint('Notification Response body: ${response.body}');
-  return false;
-}
-
-const String senderId = '101337609697';
-
-Future<bool> sendPushMessageToTopic({
-  required String title,
-  required String body,
-  required String topic,
-  String? roomId,
-}) async {
-  final jsonCredentials = await rootBundle.loadString(
-    'assets/travelcrew_auth.json',
-  );
-  final creds = auth.ServiceAccountCredentials.fromJson(jsonCredentials);
-
-  final client = await auth.clientViaServiceAccount(creds, [
-    'https://www.googleapis.com/auth/cloud-platform',
-  ]);
-
-  final notificationData = {
-    'message': {
-      // 'token': _token,
-      "topic": topic,
-      'notification': {'title': title, 'body': body},
-      // 'data': {
-      //   'roomId': roomId,
-      //   if (roomId != null) ...{
-      //     'profileImage': SessionServices.loggedInUser.value!.profileImage,
-      //     'fullName': SessionServices.loggedInUser.value!.userName,
-      //     'userId': SessionServices.loggedInUser.value!.userId,
-      //   }
-      // }
-    },
-  };
-
-  final response = await client.post(
-    Uri.parse('https://fcm.googleapis.com/v1/projects/$senderId/messages:send'),
-    headers: {'content-type': 'application/json'},
-    body: jsonEncode(notificationData),
-  );
-
-  client.close();
-  if (response.statusCode == 200) {
-    return true; // Success!
-  }
-
-  devtools.log(
-    'Notification Sending Error Response status: ${response.statusCode}',
-  );
-  debugPrint(
-    'Notification Sending Error Response status: ${response.statusCode}',
-  );
-  devtools.log('Notification Response body: ${response.body}');
-  debugPrint('Notification Response body: ${response.body}');
-  return false;
-}
-
-// Crude counter to make messages unique
-int _messageCount = 0;
-
-/// The API endpoint here accepts a raw FCM payload for demonstration purposes.
-String constructFCMPayload(String? token, String title, String body) {
-  print('=========inside payload');
-  _messageCount++;
-  return jsonEncode({
-    // 'token': token,
-    'priority': 'high',
-    'data': {
-      'via': 'FlutterFire Cloud Messaging!!!',
-      'count': _messageCount.toString(),
-    },
-    'notification': {
-      'title': title, //'Hello FlutterFire!',
-      'body':
-          body, //'This notification (#$_messageCount) was created via FCM!',
-    },
-    'to': token,
-  });
-}

@@ -5,7 +5,6 @@ import 'package:travel_crew/views/all_expenses/all_expenses_screen.dart';
 import 'package:travel_crew/views/create_trip/create_trip_screen.dart';
 import 'package:travel_crew/views/messages/users/user_screen.dart';
 
-import '../../expense/expense_screen.dart';
 import '../../home_page/home_page_screen.dart';
 import '../../my_trips/my_trips_screen.dart';
 

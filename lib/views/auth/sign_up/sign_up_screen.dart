@@ -3,6 +3,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
@@ -18,6 +19,7 @@ class SignUpScreen extends GetView<SignUpController> {
   const SignUpScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: '',
       isBackIcon: true,
@@ -34,7 +36,7 @@ class SignUpScreen extends GetView<SignUpController> {
             children: [
               SizedBox(height: 30.h),
               Text(
-                'Sign Up',
+                l10n.signup,
                 textAlign: TextAlign.center,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
@@ -49,22 +51,22 @@ class SignUpScreen extends GetView<SignUpController> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.r),
-                      color: AppColors.kGreyColor.withValues(alpha: 0.2),
+                      color: AppColors.kGreyColor.withAlpha(51),
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(5),
                       child: Icon(
                         Icons.email_outlined,
-                        color: Colors.black.withValues(alpha: 140),
+                        color: Colors.black.withAlpha(140),
                         size: 20.sp,
                       ),
                     ),
                   ),
                   SizedBox(width: 10.w),
                   Text(
-                    'Email',
+                    l10n.email,
                     style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black.withValues(alpha: 140),
+                      color: Colors.black.withAlpha(140),
                       fontSize: 14.67,
 
                       fontWeight: FontWeight.w500,
@@ -94,9 +96,9 @@ class SignUpScreen extends GetView<SignUpController> {
                   Image.asset(AppImages.kPasswordIcon, scale: 4),
                   SizedBox(width: 10.w),
                   Text(
-                    'Password',
+                    l10n.password,
                     style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black.withValues(alpha: 140),
+                      color: Colors.black.withAlpha(140),
                       fontSize: 14.67,
 
                       fontWeight: FontWeight.w500,
@@ -126,9 +128,9 @@ class SignUpScreen extends GetView<SignUpController> {
                   Image.asset(AppImages.kPasswordIcon, scale: 4),
                   SizedBox(width: 10.w),
                   Text(
-                    'Confirm Password',
+                    l10n.confirmPassword,
                     style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black.withValues(alpha: 140),
+                      color: Colors.black.withAlpha(140),
                       fontSize: 14.67,
 
                       fontWeight: FontWeight.w500,
@@ -174,7 +176,7 @@ class SignUpScreen extends GetView<SignUpController> {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      'I agree with the Terms of Service',
+                      l10n.agreeToTerms,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFF666666),
                         fontSize: 14.sp,
@@ -188,7 +190,7 @@ class SignUpScreen extends GetView<SignUpController> {
               SizedBox(height: 20.h),
               CustomElevatedButton(
                 width: Get.width,
-                title: 'Sign Up',
+                title: l10n.signup,
                 backgroundColor: AppColors.kPrimaryColor,
                 onPressed: () {
                   if (controller.isRememberMe.isTrue) {

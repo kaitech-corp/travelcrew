@@ -10,10 +10,8 @@ import 'package:travel_crew/models/chat_module/ChatMessage.dart';
 import 'package:travel_crew/models/chat_module/chatroom.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/models/user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
-import 'package:travel_crew/services/notifications/notfication_services.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/services/trips_changes.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -121,12 +119,7 @@ class UsersController extends GetxController {
         notificationForId: currentTrip.value!.id,
         notificationType: NotificationType.trip.status,
       );
-      sendPushMessageToTopic(
-        title: 'Trip Joined',
-        body:
-            '${GlobalVariables.loggedInUser.value!.displayName} joined your trip.',
-        topic: currentTrip.value!.createdBy,
-      );
+      
       await ChatFirebaseService.updateChatRoom(
         roomId: roomId!,
         chatToSave: chatRoom.value!,

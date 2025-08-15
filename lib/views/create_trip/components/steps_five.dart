@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/utils/app_utils.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
@@ -96,7 +95,7 @@ class StepsFive extends StatelessWidget {
             () => LocationDropdownWidget(
               hintText: 'Location',
               items: controller.locations,
-              onChanged: (value) => controller.fetchLocation(value ?? ''),
+              onChanged: (value) => controller.fetchLocation(value ?? '', type: 'tourist_attraction'),
               // validator:
               //     (p0) =>
               //         p0?.isBlank == true ? 'Please select a location' : null,

@@ -98,7 +98,7 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
                   _isDropdownOpen.value
                       ? [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
+                          color: Colors.black.withAlpha(26),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),

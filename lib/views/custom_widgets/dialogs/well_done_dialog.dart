@@ -42,7 +42,7 @@ class WellDoneDialog extends StatelessWidget {
               'You have sucessfully change \npassword.\nPlease use your new password \nwhen log in.',
               textAlign: TextAlign.center,
               style: AppStyles.labelTextStyle().copyWith(
-                color: Colors.white.withValues(alpha: 140),
+                color: Colors.white.withAlpha(140),
                 fontSize: 15.88.sp,
 
                 fontWeight: FontWeight.w500,

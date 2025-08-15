@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/views/messages/users/widget/users_widget.dart';
 
 import '../../../utils/app_styles.dart';
@@ -12,6 +13,7 @@ class UsersScreen extends GetView<UsersController> {
   const UsersScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (!Get.isRegistered<UsersController>()) {
       Get.put(UsersController());
     }
@@ -19,7 +21,7 @@ class UsersScreen extends GetView<UsersController> {
     //   controller.getChatRooms();
     // });
     return CustomScaffold(
-      screenName: 'Messages',
+      screenName: l10n.messages,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
       isBackIcon: true,
@@ -43,7 +45,7 @@ class UsersScreen extends GetView<UsersController> {
                 right: 17,
                 bottom: 12,
               ),
-              hintText: 'Search',
+              hintText: l10n.search,
               hintStyle: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFF9C9FA3),
                 fontSize: 13.44,
@@ -85,7 +87,7 @@ class UsersScreen extends GetView<UsersController> {
                   controller.isLoading.isTrue
                       ? Center(child: CircularProgressIndicator())
                       : controller.chatRooms.isEmpty
-                      ? Center(child: Text('No chats found.'))
+                      ? Center(child: Text(l10n.noChatsFound))
                       : ListView.separated(
                         itemCount: controller.chatRooms.length,
                         shrinkWrap: true,

@@ -85,7 +85,8 @@ Future<String> uploadImageToFirebaseStorage({
     });
 
     // Wait for completion
-    final snapshot = await uploadTask.whenComplete(() {
+    // final snapshot = 
+    await uploadTask.whenComplete(() {
       FirebasePushNotificationApi().showCompletionNotification(id: id);
     });
 

@@ -81,6 +81,35 @@ class GeoServices {
     return suggestions;
   }
 
+  static Future<List<Map<String, String>>> fetchPlaceSuggestions(
+    String input, {
+    String? type,
+  }) async {
+    List<Map<String, String>> suggestions = [];
+    try {
+      if (input.isEmpty) return [];
+      String request =
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$kGoogleMapKey';
+      if (type != null) {
+        request += '&types=$type';
+      }
+      final response = await http.get(Uri.parse(request));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        for (var element in json['predictions']) {
+          suggestions.add({
+            'place_id': element['place_id'],
+            'description': element['description'],
+          });
+        }
+        return suggestions;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return suggestions;
+  }
+
   static Future<String> getAddress(double lat, double long) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
     return "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}";

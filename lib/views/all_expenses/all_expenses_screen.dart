@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
-import 'package:travel_crew/utils/debugging.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
 import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
@@ -145,7 +144,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                               height: 24.h,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.black.withOpacity(0.7),
+                                color: Colors.black.withAlpha(179),
                               ),
                               alignment: Alignment.center,
                               child: Text(

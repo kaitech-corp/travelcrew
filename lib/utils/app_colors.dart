@@ -10,7 +10,7 @@ class AppColors {
   static const Color kAppBarHeadingColor = kBlackColor;
   static const Color kTextFieldColor = Color(0xFFF6F8FD);
   static const Color kBlackColor = Color(0xFF151515);
-  Color klabeltextcolor = kBlackColor.withValues(alpha: 0.6000000238418579);
+  Color klabeltextcolor = kBlackColor.withAlpha(153);
   static  Color kLightGreyColor = Colors.grey.shade200;
   static const Color kGreyColor = Color(0xFF999999);
   static const Color kGreenColor = Color(0xFFC2E812);

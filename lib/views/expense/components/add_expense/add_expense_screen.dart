@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
@@ -17,8 +18,9 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
   const AddExpenseScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      screenName: 'Add Expense',
+      screenName: l10n.addExpense,
       isBackIcon: true,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
@@ -31,7 +33,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
             children: [
               SizedBox(height: 15.h),
               Text(
-                'Expense Name',
+                l10n.expenseName,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
                   fontSize: 20.sp,
@@ -41,7 +43,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
               ),
               SizedBox(height: 12.h),
               CustomTextField(
-                hintText: 'Enter Expense Name',
+                hintText: l10n.enterExpenseName,
                 controller: controller.expenseNameController,
                 validator: (p0) {
                   if (p0 == null || p0.isEmpty) {
@@ -52,7 +54,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
               ),
               SizedBox(height: 27.h),
               Text(
-                'Amount Paid',
+                l10n.amountPaid,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
                   fontSize: 20.sp,
@@ -62,14 +64,14 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
               ),
               SizedBox(height: 12.h),
               CustomTextField(
-                hintText: 'Enter Total Cost',
+                hintText: l10n.enterTotalCost,
                 controller: controller.amountController,
                 prefixIconConstraints: BoxConstraints(maxWidth: 40.w),
                 prefixIcon: Image.asset(AppImages.kDollarIcon, scale: 4),
               ),
               SizedBox(height: 27.h),
               Text(
-                'Date',
+                l10n.date,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
                   fontSize: 20.sp,
@@ -115,7 +117,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                             ? DateFormat(
                               'EEE, dd MMM',
                             ).format(controller.expenceDate.value!)
-                            : 'Select Date',
+                            : l10n.selectDate,
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
@@ -144,7 +146,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
         child: CustomElevatedButton(
           width: Get.width,
           height: Get.height * 0.06,
-          title: 'Save Expense',
+          title: l10n.saveExpense,
           onPressed: () {
             if (controller.formKey.currentState!.validate()) {
               controller.addExpense();

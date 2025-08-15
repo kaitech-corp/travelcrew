@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 

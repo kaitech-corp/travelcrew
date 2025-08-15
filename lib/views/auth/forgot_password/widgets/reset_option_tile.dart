@@ -28,13 +28,13 @@ class ResetOptionTile extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? AppColors.kPrimaryColor.withValues(alpha: .2)
+                  ? AppColors.kPrimaryColor.withAlpha(51)
                   : Colors.grey[100],
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color:
                 isSelected
-                    ? AppColors.kPrimaryColor.withValues(alpha: .2)
+                    ? AppColors.kPrimaryColor.withAlpha(51)
                     : Colors.grey[100]!,
             width: 1.w,
           ),

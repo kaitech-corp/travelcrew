@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/services/otp_service.dart';
 import 'package:travel_crew/services/secure_storage_service.dart';
 
 import '../models/user_model.dart';
@@ -25,44 +24,15 @@ class AuthService {
         return;
       }
       if (GlobalVariables.loggedInUser.value != null &&
-          GlobalVariables.loggedInUser.value?.email_confirmed == false) {
-        GlobalVariables.fromLoginScreen = true;
-        try {
-          // String code = SendGridEmailService.generateOtp(); // Generate OTP code
-          // await SendGridEmailService.sendEmailWithSendGrid(
-          //   toEmail: user.email ?? '',
-          //   subject: 'Email Verification',
-          //   message: 'Your verification code is: $code',
-          // ).then((value) async {
-          //   if (value) {
-          //     SendGridEmailService.addOtp(email: user.email ?? '', otp: code);
-          //     showCustomSnackBar(
-          //       contentType: ContentType.warning,
-          //       content: 'Verify your email to continue',
-          //     );
-          //     GlobalVariables.fromLoginScreen = false;
-          //     Get.toNamed(kOtpScreenRoute, arguments: 'fromSignUp');
-          //   } else {
-          //     showCustomSnackBar(
-          //       contentType: ContentType.failure,
-          //       title: 'Error',
-          //       content: 'Failed to send verification email.',
-          //     );
-          //     if (fromSplash) {
-          //       // Get.offAllNamed(kOnboardingScreenRoute);
-          //       Get.offAllNamed(kMainViewScreenRoute);
-          //     } else {
-          //       Get.offAllNamed(kLoginScreenRoute);
-          //     }
-          //     return;
-            // }
-          // });
-
-          return;
-        } catch (e) {
-          GlobalVariables.fromLoginScreen = false;
-          return;
+          !user.emailVerified) {
+        showCustomSnackBar(
+          contentType: ContentType.warning,
+          content: 'Verify your email to continue. Check your inbox for a verification link.',
+        );
+        if (fromSplash) {
+          Get.offAllNamed(kLoginScreenRoute);
         }
+        return;
       }
       Get.offAllNamed(kMainViewScreenRoute);
       if (!fromSplash) {
@@ -72,6 +42,8 @@ class AuthService {
           content: 'Logged in successfully',
         );
       }
+    } else {
+      Get.offAllNamed(kOnboardingScreenRoute);
     }
   }
 
@@ -216,29 +188,13 @@ class AuthService {
           .doc(userCredential.user!.uid)
           .set(user.toMap());
 
-      // await userCredential.user!.sendEmailVerification();
-      String code = SendGridEmailService.generateOtp(); // Generate OTP code
-      await SendGridEmailService.sendEmailWithSendGrid(
-        toEmail: user.email,
-        subject: 'Email Verification',
-        message: 'Your verfication code is: $code',
-      ).then((value) async {
-        if (value) {
-          SendGridEmailService.addOtp(email: user.email, otp: code);
-          showCustomSnackBar(
-            contentType: ContentType.success,
-            title: 'Success',
-            content: 'Account created successfully',
-          );
-          Get.toNamed(kOtpScreenRoute, arguments: 'fromSignUp');
-        } else {
-          showCustomSnackBar(
-            contentType: ContentType.failure,
-            title: 'Error',
-            content: 'Failed to send verification email.',
-          );
-        }
-      });
+      await userCredential.user!.sendEmailVerification();
+      showCustomSnackBar(
+        contentType: ContentType.success,
+        title: 'Success',
+        content: 'Account created successfully. Please verify your email.',
+      );
+      Get.offAllNamed(kLoginScreenRoute);
     } catch (e) {
       GlobalVariables.showLoader.value = false;
       if (e is FirebaseAuthException) {

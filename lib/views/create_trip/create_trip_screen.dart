@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/create_trip/components/steps_five.dart';
@@ -21,6 +22,7 @@ class CreateTripScreen extends GetView<CreateTripController> {
   bool isFirstTime = true;
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (Get.arguments is TripModel && isFirstTime) {
       Future.microtask(() {
         controller.tripModel.value = Get.arguments as TripModel;
@@ -28,7 +30,7 @@ class CreateTripScreen extends GetView<CreateTripController> {
       });
     }
     return CustomScaffold(
-      screenName: '${Get.arguments is! TripModel ? 'Create' : 'Update'} Trip',
+      screenName: Get.arguments is! TripModel ? l10n.createTrip : l10n.updateTrip,
       isBackIcon: true,
       onWillPop: () {
         GlobalVariables.showLoader.value = false;
@@ -57,7 +59,7 @@ class CreateTripScreen extends GetView<CreateTripController> {
             CustomElevatedButton(
               width: Get.width * 0.43,
               title:
-                  '${Get.arguments is! TripModel ? 'Create' : 'Update'} Trip',
+                  Get.arguments is! TripModel ? l10n.createTrip : l10n.updateTrip,
               onPressed: () {
                 if (controller.formStep1.currentState!.validate()) {
                   if (controller.selectedPlaceId.isEmpty) {
@@ -87,7 +89,7 @@ class CreateTripScreen extends GetView<CreateTripController> {
             ),
             CustomElevatedButton(
               width: Get.width * 0.43,
-              title: 'Continue',
+              title: l10n.continueText,
               onPressed: controller.nextStep,
               height: 52.02.h,
             ),

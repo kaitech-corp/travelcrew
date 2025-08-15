@@ -113,8 +113,8 @@ class LoginController extends GetxController {
       GlobalVariables.showLoader.value = true;
       UserCredential? response = await _googleSignIn();
       if (response != null) {
+        await AuthService.getUser();
         showCustomSnackBar(content: 'Login Successful');
-
         Get.offAllNamed(kMainViewScreenRoute);
       }
     } on FirebaseAuthException catch (e) {
@@ -192,18 +192,35 @@ class LoginController extends GetxController {
 
   loginWithApple() async {
     try {
-      String? id, token, email, medium;
-      final credential = await SignInWithApple.getAppleIDCredential(
+      GlobalVariables.showLoader.value = true;
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
       );
-      id = credential.authorizationCode;
-      email = credential.email ?? '';
-      token = credential.authorizationCode;
-      medium = 'apple';
-    } catch (e) {}
+
+      final oAuthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+
+      if (userCredential.user != null) {
+        await AuthService.getUser();
+        showCustomSnackBar(content: 'Login Successful');
+        Get.offAllNamed(kMainViewScreenRoute);
+      }
+    } catch (e) {
+      showCustomSnackBar(
+        title: 'Error',
+        contentType: ContentType.failure,
+        content: 'An unexpected error occurred during Apple sign-in.',
+      );
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
   }
 
   void toggleRememberMe() {

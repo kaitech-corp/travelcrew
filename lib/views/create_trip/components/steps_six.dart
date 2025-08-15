@@ -126,9 +126,7 @@ class StepsSix extends StatelessWidget {
                             vertical: 5.h,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.kPrimaryColor.withValues(
-                              alpha: 0.1,
-                            ),
+                            color: AppColors.kPrimaryColor.withAlpha(26),
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Text(
