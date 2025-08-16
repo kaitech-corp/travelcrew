@@ -5,13 +5,13 @@ import 'package:travel_crew/utils/app_colors.dart';
 import '../../../../../utils/app_styles.dart';
 
 class HelpSupportExpansionTile extends StatelessWidget {
-  final String title;
-  final String description;
   const HelpSupportExpansionTile({
     super.key,
     required this.title,
     required this.description,
   });
+  final String title;
+  final String description;
   @override
   Widget build(BuildContext context) {
     return Card(

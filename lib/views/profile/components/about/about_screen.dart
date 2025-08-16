@@ -14,7 +14,6 @@ class AboutScreen extends GetView<AboutController> {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: l10n.about,
-      isBackIcon: true,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
       padding: EdgeInsets.only(left: 18.w, right: 18.w, top: 25.h),

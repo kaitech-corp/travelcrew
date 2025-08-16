@@ -128,9 +128,9 @@ class ProfileScreen extends GetView<ProfileController> {
                 decoration: ShapeDecoration(
                   color: const Color(0x19EC3535),
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(
+                    side: const BorderSide(
                       width: 1.31,
-                      color: const Color(0x7FEC3535),
+                      color: Color(0x7FEC3535),
                     ),
                     borderRadius: BorderRadius.circular(41.86.r),
                   ),
@@ -138,7 +138,6 @@ class ProfileScreen extends GetView<ProfileController> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 6.98.w,
                   children: [
                     Image.asset(AppImages.kLogOutIcon, scale: 4),

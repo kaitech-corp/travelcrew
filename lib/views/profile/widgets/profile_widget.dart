@@ -6,16 +6,6 @@ import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import '../../../utils/app_colors.dart';
 
 class ProfileWidget extends StatelessWidget {
-  final String title;
-  final String? leadingImage;
-  final bool isNetworkImage;
-  final Widget? trailingIcon;
-  final Color? backgroundColor;
-  final Color? borderColor;
-  final Color? iconBackgroundColor;
-  final VoidCallback? onTap;
-  final double? borderRadius;
-  final EdgeInsetsGeometry? padding;
   const ProfileWidget({
     super.key,
     required this.title,
@@ -29,6 +19,16 @@ class ProfileWidget extends StatelessWidget {
     this.borderRadius = 21,
     this.padding,
   });
+  final String title;
+  final String? leadingImage;
+  final bool isNetworkImage;
+  final Widget? trailingIcon;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final Color? iconBackgroundColor;
+  final VoidCallback? onTap;
+  final double? borderRadius;
+  final EdgeInsetsGeometry? padding;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -41,7 +41,7 @@ class ProfileWidget extends StatelessWidget {
         decoration: ShapeDecoration(
           color: backgroundColor,
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1, color: borderColor!),
+            side: BorderSide(color: borderColor!),
             borderRadius: BorderRadius.circular(borderRadius!),
           ),
         ),
