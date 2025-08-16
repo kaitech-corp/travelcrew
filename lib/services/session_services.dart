@@ -8,8 +8,8 @@ class GlobalVariables {
   static bool fromLoginScreen = false;
   static String? toVerify;
   static bool isEmail = false;
-  static Rxn<UserModel?> loggedInUser = Rxn(null);
-  static Rxn<PublicUserModel?> userProfile = Rxn(null);
+  static Rxn<UserModel?> loggedInUser = Rxn();
+  static Rxn<PublicUserModel?> userProfile = Rxn();
   static RxBool isBuyerMode = true.obs;
   static String userId = GlobalVariables.loggedInUser.value?.uid ?? '';
   static RxString addingToFavourites = ''.obs;
