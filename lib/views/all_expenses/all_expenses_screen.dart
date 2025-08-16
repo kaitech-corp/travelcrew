@@ -19,27 +19,25 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
     return CustomScaffold(
       screenName: 'Expenses',
       isBackIcon: false,
-      isFullBody: false,
       centerTitle: true,
-      leadingWidth: 70,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Obx(
               () =>
                   controller.isLoading.value
                       ? ListView.builder(
                         itemCount: 3,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (_, __) => const ExpenseTripCardShimmer(),
                       )
                       : controller.trips.isEmpty
-                      ? Center(child: Text('No expenses found'))
+                      ? const Center(child: Text('No expenses found'))
                       : tripList(),
             ),
           ],
@@ -52,7 +50,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
     return ListView.separated(
       separatorBuilder: (context, index) => SizedBox(height: 17.h),
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: controller.trips.length,
       itemBuilder: (context, index) {
         final trip = controller.trips[index];
@@ -69,7 +67,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
           decoration: ShapeDecoration(
             color: const Color(0xFFFAFAFA),
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
+              side: const BorderSide(color: Color(0xFFE7E7E7)),
               borderRadius: BorderRadius.circular(26),
             ),
           ),
@@ -132,7 +130,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                               .map(
                                 (user) => Padding(
                                   padding: EdgeInsets.only(right: 4.w),
-                                  child: AnyImageView(
+                                  child: const AnyImageView(
                                     url:'', //user.profileImage ?? '',
                                     isCircle: true,
                                   ),

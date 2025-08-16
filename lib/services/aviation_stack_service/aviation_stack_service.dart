@@ -19,10 +19,10 @@ class AviationStackService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final List results = data['data'];
+        final List results = data['data'] as List;
 
         return results.map<AeroplanesModel>((airport) {
-          return AeroplanesModel.fromJson(airport);
+          return AeroplanesModel.fromJson(airport as Map<String, dynamic>);
         }).toList();
       }
     } catch (e) {}

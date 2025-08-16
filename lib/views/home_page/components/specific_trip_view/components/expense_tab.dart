@@ -10,11 +10,11 @@ import '../../../../../utils/app_styles.dart';
 import '../controller/specific_trip_view_controller.dart';
 
 class ExpenseTab extends StatelessWidget {
-  final SpecificTripViewController controller;
   const ExpenseTab({super.key, required this.controller});
+  final SpecificTripViewController controller;
   @override
   Widget build(BuildContext context) {
-    List<UserWithDues> dues = getUsersWithHavingDuesForTrip(
+    final List<UserWithDues> dues = getUsersWithHavingDuesForTrip(
       controller.tripModel.value!,
     );
     return Container(
@@ -25,15 +25,13 @@ class ExpenseTab extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
+          side: const BorderSide(color: Color(0xFFE7E7E7)),
           borderRadius: BorderRadius.circular(26),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
             color: Color(0x0C000000),
             blurRadius: 92.99,
-            offset: Offset(0, 0),
-            spreadRadius: 0,
           ),
         ],
       ),
@@ -85,7 +83,7 @@ class ExpenseTab extends StatelessWidget {
             shrinkWrap: true,
             separatorBuilder:
                 (context, index) =>
-                    Divider(color: const Color(0xFFE7E7E7), thickness: 1),
+                    const Divider(color: Color(0xFFE7E7E7), thickness: 1),
             itemCount: dues.length,
             itemBuilder: (context, index) {
               return Row(
@@ -109,7 +107,7 @@ class ExpenseTab extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Text(
                     '\$${dues[index].dues}',
                     textAlign: TextAlign.right,
@@ -144,9 +142,9 @@ class ExpenseTab extends StatelessWidget {
                   ),
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
+                      side: const BorderSide(
                         width: 0.68,
-                        color: const Color(0xFF7B7B7B),
+                        color: Color(0xFF7B7B7B),
                       ),
                       borderRadius: BorderRadius.circular(24),
                     ),

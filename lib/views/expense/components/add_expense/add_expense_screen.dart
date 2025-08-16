@@ -21,7 +21,6 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: l10n.addExpense,
-      isBackIcon: true,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
       centerTitle: true,
@@ -142,7 +141,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: CustomElevatedButton(
           width: Get.width,
           height: Get.height * 0.06,

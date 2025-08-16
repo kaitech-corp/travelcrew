@@ -8,17 +8,6 @@ import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 
 class TripsWidget extends StatelessWidget {
-  final String destination;
-  final List<String> images;
-  final String country;
-  final String imageUrl;
-  final TripModel? tripModel;
-  final String startDate;
-  final String endDate;
-  final List<String> memberAvatars;
-  final int additionalMembers;
-  final int daysToGo;
-  final VoidCallback? onTap;
   const TripsWidget({
     super.key,
     this.tripModel,
@@ -33,6 +22,17 @@ class TripsWidget extends StatelessWidget {
     this.daysToGo = 7,
     this.onTap,
   });
+  final String destination;
+  final List<String> images;
+  final String country;
+  final String imageUrl;
+  final TripModel? tripModel;
+  final String startDate;
+  final String endDate;
+  final List<String> memberAvatars;
+  final int additionalMembers;
+  final int daysToGo;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -43,17 +43,16 @@ class TripsWidget extends StatelessWidget {
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(
+            side: const BorderSide(
               width: 0.91,
               strokeAlign: BorderSide.strokeAlignOutside,
-              color: const Color(0xFFE7E7E7),
+              color: Color(0xFFE7E7E7),
             ),
             borderRadius: BorderRadius.circular(21.90),
           ),
           shadows: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.25),
-              spreadRadius: 0,
               blurRadius: 1,
               offset: const Offset(0, 1),
             ),
@@ -62,7 +61,6 @@ class TripsWidget extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24.r),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [_buildTripImage(), _buildTripDetails()],
           ),
         ),
@@ -75,8 +73,6 @@ class TripsWidget extends StatelessWidget {
       padding: const EdgeInsets.all(7),
       child: AnyImageView(
         url: images.isNotEmpty ? images.first : '',
-
-        fit: BoxFit.cover,
         borderRadius: BorderRadius.circular(18.r),
         width: 135.w,
         height: 101.h,
@@ -92,7 +88,6 @@ class TripsWidget extends StatelessWidget {
         children: [
           SizedBox(height: 10.h),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(
                 Icons.location_on_outlined,
@@ -208,7 +203,6 @@ Widget buildMemberAvatars({
                 width: 22.w,
                 isCircle: true,
                 url: memberAvatars[index],
-                fit: BoxFit.cover,
                 fileType:
                     memberAvatars[index].startsWith('http')
                         ? SourceType.network

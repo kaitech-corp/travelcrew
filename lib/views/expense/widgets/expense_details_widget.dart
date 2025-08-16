@@ -11,11 +11,6 @@ import '../../../utils/app_strings.dart';
 import '../../../utils/app_styles.dart';
 
 class ExpenseDetailsWidget extends StatelessWidget {
-  final bool isPending;
-  final ExpenseModel expenseModel;
-  final TripModel tripModel;
-  final List<PublicUserModel> usersWithHavingDues;
-  final ExpenseController controller;
   const ExpenseDetailsWidget({
     super.key,
     required this.tripModel,
@@ -24,6 +19,11 @@ class ExpenseDetailsWidget extends StatelessWidget {
     required this.usersWithHavingDues,
     required this.expenseModel,
   });
+  final bool isPending;
+  final ExpenseModel expenseModel;
+  final TripModel tripModel;
+  final List<PublicUserModel> usersWithHavingDues;
+  final ExpenseController controller;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,7 +33,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
       decoration: ShapeDecoration(
         color: const Color(0xFFFAFAFA),
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
+          side: const BorderSide(color: Color(0xFFE7E7E7)),
           borderRadius: BorderRadius.circular(26),
         ),
       ),
@@ -67,7 +67,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               if (tripModel.joindUsersList != null &&
                   tripModel.joindUsersList!.isNotEmpty)
                 Container(
@@ -98,7 +98,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                           color:
                               isPending
                                   ? const Color(0xFFC7AA01)
-                                  : Color(0xFF4AD10B),
+                                  : const Color(0xFF4AD10B),
                           fontSize: 11.sp,
 
                           fontWeight: FontWeight.w500,
@@ -119,7 +119,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
               ),
             ],
           ),
-          Divider(),
+          const Divider(),
           SizedBox(height: 8.h),
           ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
@@ -148,7 +148,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Text(
                     '\$${expenseModel.amount}',
                     textAlign: TextAlign.right,
@@ -176,13 +176,12 @@ class ExpenseDetailsWidget extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: Colors.grey.shade200,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: const Color(0xFFCFCFCF)),
+                  side: const BorderSide(color: Color(0xFFCFCFCF)),
                   borderRadius: BorderRadius.circular(24),
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 4,
                 children: [
                   Text(

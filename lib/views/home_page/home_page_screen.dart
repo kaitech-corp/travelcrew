@@ -41,10 +41,9 @@ class HomePageScreen extends GetView<HomePageController> {
                 padding: EdgeInsets.zero,
                 height: 50.h,
                 isCircle: true,
-                fileType: SourceType.network,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             GestureDetector(
               onTap: () {
                 Get.toNamed(kNotificationScreenRoute);
@@ -102,7 +101,7 @@ class HomePageScreen extends GetView<HomePageController> {
                         border: InputBorder.none,
                         isDense: true,
                         prefixIconConstraints: BoxConstraints(maxWidth: 30.w),
-                        prefixIcon: ImageIcon(
+                        prefixIcon: const ImageIcon(
                           AssetImage(AppImages.kSearchIcon),
                           color: AppColors.kGreyColor,
                         ),
@@ -111,7 +110,7 @@ class HomePageScreen extends GetView<HomePageController> {
                       style: AppStyles.labelTextStyle().copyWith(fontSize: 14),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   GestureDetector(
                     onTap: () async {
                       // showGeneralDialog(
@@ -149,8 +148,8 @@ class HomePageScreen extends GetView<HomePageController> {
                       width: 43.41.w,
                       height: 43.41.h,
                       padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF4F4F4),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF4F4F4),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -173,7 +172,7 @@ class HomePageScreen extends GetView<HomePageController> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   GestureDetector(
                     onTap: () {
                       mainViewController?.selectedIndex.value = -1;
@@ -196,7 +195,7 @@ class HomePageScreen extends GetView<HomePageController> {
               child: Obx(
                 () =>
                     controller.isLoadingMyTrips.isTrue
-                        ? Center(child: CircularProgressIndicator())
+                        ? const Center(child: CircularProgressIndicator())
                         : controller.filteredMyTrips.isEmpty
                         ? Center(child: Text(l10n.noTripsFound))
                         : ListView.separated(
@@ -346,7 +345,7 @@ class HomePageScreen extends GetView<HomePageController> {
                           child: SizedBox(
                             height: 2,
                             width: 100.w,
-                            child: LinearProgressIndicator(),
+                            child: const LinearProgressIndicator(),
                           ),
                         ),
                       ),
@@ -356,7 +355,7 @@ class HomePageScreen extends GetView<HomePageController> {
               child: Obx(
                 () =>
                     controller.isLoadingOtherTrips.isTrue
-                        ? Center(child: CircularProgressIndicator())
+                        ? const Center(child: CircularProgressIndicator())
                         : controller.isTabsReady.value
                         ? TabBarView(
                           controller: controller.tabController,
@@ -379,7 +378,7 @@ class HomePageScreen extends GetView<HomePageController> {
                             ),
                           ],
                         )
-                        : Center(child: CircularProgressIndicator()),
+                        : const Center(child: CircularProgressIndicator()),
               ),
             ),
           ],
@@ -390,7 +389,7 @@ class HomePageScreen extends GetView<HomePageController> {
 
   Widget _buildTripsTab(String tabName, List<TripModel> tripss) {
     return tripss.isEmpty
-        ? Center(child: Text('No trips found.'))
+        ? const Center(child: Text('No trips found.'))
         : ListView.separated(
           shrinkWrap: true,
           padding: EdgeInsets.only(right: 18.w, bottom: 100.h),

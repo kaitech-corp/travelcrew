@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -29,14 +30,14 @@ class GeoServices {
         'Location permissions are permanently denied, we cannot request permissions.',
       );
     }
-    return await Geolocator.getCurrentPosition(
+    return Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
   }
 
   static Future<Placemark> getPlacemark() async {
-    Position position = await determinePosition();
-    List<Placemark> placemarks = await placemarkFromCoordinates(
+    final Position position = await determinePosition();
+    final List<Placemark> placemarks = await placemarkFromCoordinates(
       position.latitude,
       position.longitude,
     );
@@ -50,7 +51,7 @@ class GeoServices {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       final location = json['results'][0]['geometry']['location'];
-      return LatLng(location['lat'], location['lng']);
+      return LatLng(location['lat'] as double, location['lng'] as double);
     } else {
       throw Exception('Failed to fetch location');
     }
@@ -59,7 +60,7 @@ class GeoServices {
   static Future<List<Map<String, String>>> fetchSuggestions(
     String input,
   ) async {
-    List<Map<String, String>> suggestions = [];
+    final List<Map<String, String>> suggestions = [];
     try {
       if (input.isEmpty) return [];
       final String request =
@@ -67,16 +68,18 @@ class GeoServices {
       final response = await http.get(Uri.parse(request));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        for (var element in json['predictions']) {
+        for (final element in json['predictions']) {
           suggestions.add({
-            'place_id': element['place_id'],
-            'description': element['description'],
+            'place_id': element['place_id'] as String,
+            'description': element['description'] as String,
           });
         }
         return suggestions;
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return suggestions;
   }
@@ -85,7 +88,7 @@ class GeoServices {
     String input, {
     String? type,
   }) async {
-    List<Map<String, String>> suggestions = [];
+    final List<Map<String, String>> suggestions = [];
     try {
       if (input.isEmpty) return [];
       String request =
@@ -96,36 +99,38 @@ class GeoServices {
       final response = await http.get(Uri.parse(request));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        for (var element in json['predictions']) {
+        for (final element in json['predictions']) {
           suggestions.add({
-            'place_id': element['place_id'],
-            'description': element['description'],
+            'place_id': element['place_id'] as String,
+            'description': element['description'] as String,
           });
         }
         return suggestions;
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return suggestions;
   }
 
   static Future<String> getAddress(double lat, double long) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    return "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}";
+    final List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    return '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}';
   }
 
   static Future<String> getCountryCode(double lat, double long) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    final List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
     return placemarks[0].isoCountryCode!;
   }
 
   static Future<String> getCity(double lat, double long) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    final List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
     return placemarks[0].locality!;
   }
 
-  static getLocationDetailsFromPlaceId(String placeId) async {
+  static Future getLocationDetailsFromPlaceId(String placeId) async {
     try {
       final String request =
           'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$kGoogleMapKey';

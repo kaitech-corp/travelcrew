@@ -15,7 +15,7 @@ class ExpenseTripCardShimmer extends StatelessWidget {
       decoration: ShapeDecoration(
         color: const Color(0xFFFAFAFA),
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
+          side: const BorderSide(color: Color(0xFFE7E7E7)),
           borderRadius: BorderRadius.circular(26),
         ),
       ),

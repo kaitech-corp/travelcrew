@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/expense_model.dart';
@@ -15,15 +16,15 @@ class AddExpenseController extends GetxController {
   TextEditingController expenseNameController = TextEditingController(),
       amountController = TextEditingController();
 
-  Rxn<DateTime> expenceDate = Rxn<DateTime>(null);
+  Rxn<DateTime> expenceDate = Rxn<DateTime>();
 
-  addExpense() async {
-    ExpenseModel expenseModel = ExpenseModel(
+  Future<void> addExpense() async {
+    final ExpenseModel expenseModel = ExpenseModel(
       paidByUsers: [],
       name: expenseNameController.text,
       amount: double.parse(amountController.text),
       date: expenceDate.value ?? DateTime.now(),
-      id: Uuid().v6(),
+      id: const Uuid().v6(),
       tripId: Get.arguments['tripId'],
       createdBy: GlobalVariables.loggedInUser.value?.uid ?? '',
     );
@@ -41,7 +42,11 @@ class AddExpenseController extends GetxController {
           showCustomSnackBar(content: 'Failed to add expense');
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error adding expense: $e');
+      }
+    }
     GlobalVariables.showLoader.value = false;
   }
 }

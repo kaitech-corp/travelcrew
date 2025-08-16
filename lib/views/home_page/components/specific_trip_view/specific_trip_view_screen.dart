@@ -31,7 +31,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
   Widget build(BuildContext context) {
     Future.microtask(() {
       controller.tripModel.value =
-          Get.arguments is TripModel ? Get.arguments : Get.arguments['trip'];
+          Get.arguments is TripModel ? Get.arguments as TripModel : Get.arguments['trip'] as TripModel;
     });
     return CustomScaffold(
       onWillPop: () {
@@ -39,6 +39,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
           Get.back();
         } else {
           Get.offAllNamed(kMainViewScreenRoute);
+          // Get.close(1);
         }
       },
       screenName: '',
@@ -52,7 +53,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
       body: Obx(
         () =>
             controller.tripModel.value == null
-                ? SizedBox()
+                ? const SizedBox()
                 : Stack(
                   children: [
                     SingleChildScrollView(
@@ -82,7 +83,6 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                 .value
                                                 ?.images[index] ??
                                             '',
-                                        fileType: SourceType.network,
                                       ),
                                       Align(
                                         alignment: Alignment.topCenter,
@@ -104,7 +104,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                       .withValues(alpha: .15),
                                                   borderRadius:
                                                       BorderRadius.circular(50),
-                                                  child: Icon(
+                                                  child: const Icon(
                                                     Icons.arrow_back_ios_new,
                                                     color:
                                                         AppColors.kWhiteColor,
@@ -112,7 +112,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                   ),
                                                 ),
                                               ),
-                                              Spacer(),
+                                              const Spacer(),
                                               GestureDetector(
                                                 // onTap:
                                                 //     () => controller.doitFavourite(
@@ -154,7 +154,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                                     .value!
                                                                     .id
                                                             ? showLoaderWhenAddingToFavourites()
-                                                            : Icon(
+                                                            : const Icon(
                                                               Icons
                                                                   .star_rounded,
                                                               // color:
@@ -263,10 +263,10 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                                                   (
                                                                                     c,
                                                                                   ) => AlertDialog(
-                                                                                    title: Text(
+                                                                                    title: const Text(
                                                                                       'Are you sure you want to delete this trip?',
                                                                                     ),
-                                                                                    content: Text(
+                                                                                    content: const Text(
                                                                                       'This action cannot be undone.',
                                                                                     ),
                                                                                     actions: [
@@ -274,7 +274,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                                                         onPressed: () {
                                                                                           Get.back();
                                                                                         },
-                                                                                        child: Text(
+                                                                                        child: const Text(
                                                                                           'Cancel',
                                                                                         ),
                                                                                       ),
@@ -283,7 +283,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                                                           controller.removeTrip();
                                                                                           Get.back();
                                                                                         },
-                                                                                        child: Text(
+                                                                                        child: const Text(
                                                                                           'Delete',
                                                                                         ),
                                                                                       ),
@@ -314,7 +314,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                       .withValues(alpha: .15),
                                                   borderRadius:
                                                       BorderRadius.circular(50),
-                                                  child: Icon(
+                                                  child: const Icon(
                                                     Icons.more_vert,
                                                     color:
                                                         AppColors.kWhiteColor,
@@ -340,7 +340,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                     ? Get
                                                         .arguments
                                                         .images
-                                                        .length
+                                                        .length as int
                                                     : 3,
                                             height: 24,
                                           ),
@@ -417,18 +417,17 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                   decoration: ShapeDecoration(
                                     color: const Color(0xFFFAFAFA),
                                     shape: RoundedRectangleBorder(
-                                      side: BorderSide(
+                                      side: const BorderSide(
                                         width: 0.20,
-                                        color: const Color(0xFFD2D5D9),
+                                        color: Color(0xFFD2D5D9),
                                       ),
                                       borderRadius: BorderRadius.circular(19),
                                     ),
-                                    shadows: [
+                                    shadows: const [
                                       BoxShadow(
                                         color: Color(0x0A4580C4),
                                         blurRadius: 20,
                                         offset: Offset(2, 12),
-                                        spreadRadius: 0,
                                       ),
                                     ],
                                   ),
@@ -641,7 +640,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                   ?.joindUsersList
                                                   ?.isEmpty ??
                                               true
-                                          ? Center(
+                                          ? const Center(
                                             child: Text(
                                               'No one has joined yet',
                                             ),
@@ -776,17 +775,11 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                       selectedTabColor: Colors.blue.withValues(
                                         alpha: 0.1,
                                       ),
-                                      unselectedTabColor: const Color(
-                                        0xFFF2F2F2,
-                                      ),
-                                      selectedTextColor: Colors.black,
                                       unselectedTextColor: Colors.black87,
-                                      selectedBorderColor: Colors.blue,
                                       height: 45,
                                       tabSpacing: 12,
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                         right: 1,
-                                        left: 0,
                                       ),
                                     ),
                                   ),
@@ -836,7 +829,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                               .uid,
                                     ) ??
                                     false
-                                ? "Open Chat"
+                                ? 'Open Chat'
                                 : 'Send Message',
                         onPressed: () async {
                           late UsersController usersController;
@@ -847,8 +840,8 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                           }
                           usersController.currentTrip.value =
                               Get.arguments is TripModel
-                                  ? Get.arguments
-                                  : Get.arguments['trip'];
+                                  ? Get.arguments as TripModel
+                                  : Get.arguments['trip'] as TripModel;
 
                           usersController.listenToChat();
 
@@ -868,10 +861,6 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
 }
 
 class MoreVertDialogueWidget extends StatelessWidget {
-  final String title;
-  final String? imagePath;
-  final Function()? onTap;
-  final IconData? iconData;
   const MoreVertDialogueWidget({
     super.key,
     required this.title,
@@ -879,6 +868,10 @@ class MoreVertDialogueWidget extends StatelessWidget {
     this.imagePath,
     this.onTap,
   });
+  final String title;
+  final String? imagePath;
+  final Function()? onTap;
+  final IconData? iconData;
 
   @override
   Widget build(BuildContext context) {
@@ -896,8 +889,6 @@ class MoreVertDialogueWidget extends StatelessWidget {
         onTap: onTap,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 11.13.w,
           children: [
             iconData != null

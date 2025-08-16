@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/expense_model.dart';
@@ -25,9 +26,9 @@ class ExpenseController extends GetxController {
 
   ExpenseModel? expenseToSettle;
 
-  Rxn<PublicUserModel> selectedUser = Rxn<PublicUserModel>(null);
+  Rxn<PublicUserModel> selectedUser = Rxn<PublicUserModel>();
 
-  settleUp() async {
+  Future<void> settleUp() async {
     try {
       if (selectedUser.value != null) {
         expenseToSettle!.paidByUsers.add(selectedUser.value!.uid);
@@ -46,14 +47,18 @@ class ExpenseController extends GetxController {
       } else {
         showCustomSnackBar(content: 'Please select a user');
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error settling up expense: $e');
+      }
+    }
   }
 }
 
 class UserWithDues {
+  UserWithDues({required this.user, required this.dues});
   PublicUserModel user;
   double dues;
-  UserWithDues({required this.user, required this.dues});
 }
 
 List<PublicUserModel> getUsersWithHavingDues(
@@ -67,12 +72,12 @@ List<PublicUserModel> getUsersWithHavingDues(
 }
 
 List<UserWithDues> getUsersWithHavingDuesForTrip(TripModel trip) {
-  List<UserWithDues> users = [];
-  for (var expence in trip.expenses ?? []) {
-    var res = getUsersWithHavingDues(expence, trip);
+  final List<UserWithDues> users = [];
+  for (final expense in trip.expenses ?? []) {
+    final res = getUsersWithHavingDues(expense as ExpenseModel, trip);
     users.addAll(
       res.map((e) {
-        return UserWithDues(user: e, dues: expence.amount);
+        return UserWithDues(user: e, dues: expense.amount);
       }).toList(),
     );
   }

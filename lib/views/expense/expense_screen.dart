@@ -12,8 +12,8 @@ import '../../utils/app_styles.dart';
 import '../custom_widgets/custom_scaffold.dart';
 
 class ExpenseScreen extends GetView<ExpenseController> {
-  final bool fromMainView;
   const ExpenseScreen({super.key, this.fromMainView = false});
+  final bool fromMainView;
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -25,9 +25,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
     return CustomScaffold(
       screenName: l10n.expenses,
       isBackIcon: false,
-      isFullBody: false,
       centerTitle: true,
-      leadingWidth: 70,
       actions: [
         Row(
           children: [
@@ -90,7 +88,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       Obx(
                         () => Text(
                           '\$ ${0 + (controller.tripModel.value?.expenses?.fold(0.0, (previousValue, element) => (previousValue ?? 0) + element.amount) ?? 0)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontFamily: 'Urbanist',
@@ -115,7 +113,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
             ),
             SizedBox(height: 10.h),
             Obx(() {
-              List<UserWithDues> dues = getUsersWithHavingDuesForTrip(
+              final List<UserWithDues> dues = getUsersWithHavingDuesForTrip(
                 controller.tripModel.value!,
               );
 
@@ -137,7 +135,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Text(
                         '\${dues[index].dues}',
                         textAlign: TextAlign.right,

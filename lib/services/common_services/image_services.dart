@@ -12,7 +12,7 @@ class ImageServices {
     }
   }
 
-  getMultiImages() async {
+  Future<List<String>> getMultiImages() async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage();
     return images.map((image) => image.path).toList();

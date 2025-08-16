@@ -6,9 +6,9 @@ import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/custom_text_field.dart';
 
 class FilterTripsWidget extends StatelessWidget {
+  const FilterTripsWidget({super.key, this.onPriceRangeChanged});
   final Function(double minimum, double maximum, List<String> continents)?
   onPriceRangeChanged;
-  const FilterTripsWidget({super.key, this.onPriceRangeChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +173,7 @@ class FilterTripsWidget extends StatelessWidget {
                   ),
                   onPressed: () => Navigator.pop(context),
                   child: Text(
-                    "Reset",
+                    'Reset',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
                       fontSize: 14.57,
@@ -206,9 +206,9 @@ class FilterTripsWidget extends StatelessWidget {
                       );
                       return;
                     }
-                    double minPrice =
+                    final double minPrice =
                         double.tryParse(_minPriceController.text) ?? 0;
-                    double maxPrice =
+                    final double maxPrice =
                         double.tryParse(_maxPriceController.text) ?? 10000000;
                     onPriceRangeChanged?.call(
                       minPrice,
@@ -217,7 +217,7 @@ class FilterTripsWidget extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    "Ok",
+                    'Ok',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
                       fontSize: 14.57,

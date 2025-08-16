@@ -8,8 +8,8 @@ import '../../../../../utils/app_colors.dart';
 import '../../../../../utils/app_styles.dart';
 
 class LodgingTab extends StatelessWidget {
-  final SpecificTripViewController controller;
   const LodgingTab({super.key, required this.controller});
+  final SpecificTripViewController controller;
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(

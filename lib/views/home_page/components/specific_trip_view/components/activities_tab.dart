@@ -13,8 +13,8 @@ import '../../../../custom_widgets/like_widget.dart';
 import '../controller/specific_trip_view_controller.dart';
 
 class ActivitiesTab extends StatelessWidget {
-  final SpecificTripViewController controller;
   const ActivitiesTab({super.key, required this.controller});
+  final SpecificTripViewController controller;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -104,10 +104,9 @@ class ActivitiesTab extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 6.98,
               children: [
-                Icon(Icons.add, size: 20, color: const Color(0xFF1D7FC2)),
+                const Icon(Icons.add, size: 20, color: Color(0xFF1D7FC2)),
                 Text(
                   'Add Activity',
                   style: AppStyles.labelTextStyle().copyWith(
@@ -128,15 +127,6 @@ class ActivitiesTab extends StatelessWidget {
 }
 
 class ActivityWidget extends StatelessWidget {
-  final Function()? onLiked;
-  final SpecificTripViewController? controller;
-  final String? title;
-  final bool isLiked;
-  final int index;
-  final String? description;
-  final int likesCount;
-  final String timing;
-  final Function()? onDelete;
   const ActivityWidget({
     super.key,
     required this.index,
@@ -149,6 +139,15 @@ class ActivityWidget extends StatelessWidget {
     this.title,
     this.description,
   });
+  final Function()? onLiked;
+  final SpecificTripViewController? controller;
+  final String? title;
+  final bool isLiked;
+  final int index;
+  final String? description;
+  final int likesCount;
+  final String timing;
+  final Function()? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +185,7 @@ class ActivityWidget extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(height: 5.0),
+                  const SizedBox(height: 5.0),
                   Text(
                     description ?? '1180 Seven Seas Drive, Lak...',
                     style: AppStyles.labelTextStyle().copyWith(
@@ -197,9 +196,9 @@ class ActivityWidget extends StatelessWidget {
                       height: 1.23,
                     ),
                   ),
-                  SizedBox(height: 5.0),
+                  const SizedBox(height: 5.0),
                   Container(
-                    padding: EdgeInsets.all(7.12),
+                    padding: const EdgeInsets.all(7.12),
                     decoration: ShapeDecoration(
                       color: AppColors.kGreyColor.withValues(alpha: .4),
                       shape: RoundedRectangleBorder(
@@ -207,8 +206,6 @@ class ActivityWidget extends StatelessWidget {
                       ),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
                           AppImages.kClockIcon,

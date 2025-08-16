@@ -18,10 +18,10 @@ class SpecificTripViewController extends GetxController
   final GlobalKey<ScaffoldState> addActivityScaffoldKey =
       GlobalKey<ScaffoldState>();
 
-  Rxn<DateTime> activityStartTime = Rxn<DateTime>(null);
-  Rxn<DateTime> activityEndTime = Rxn<DateTime>(null);
+  Rxn<DateTime> activityStartTime = Rxn<DateTime>();
+  Rxn<DateTime> activityEndTime = Rxn<DateTime>();
   RxBool isLiked = false.obs;
-  Rxn<TripModel> tripModel = Rxn<TripModel>(null);
+  Rxn<TripModel> tripModel = Rxn<TripModel>();
   RxBool isLocked = true.obs;
   final List<String> tripTabs = [
     'Transport',
@@ -45,7 +45,7 @@ class SpecificTripViewController extends GetxController
     selectedTabIndex.value = index;
   }
 
-  removeTrip() async {
+  Future<void> removeTrip() async {
     GlobalVariables.showLoader.value = true;
     try {
       await FirebaseTripService.deleteTrip(tripModel.value!.id).then((value) {
@@ -61,7 +61,7 @@ class SpecificTripViewController extends GetxController
     GlobalVariables.showLoader.value = false;
   }
 
-  likeActivity({required String activityId, bool isLiked = false}) async {
+  Future<void> likeActivity({required String activityId, bool isLiked = false}) async {
     try {
       await FirebaseTripService.likeActivity(
         activityId: activityId,
@@ -95,7 +95,7 @@ class SpecificTripViewController extends GetxController
     } catch (e) {}
   }
 
-  addActivity() async {
+  Future<void> addActivity() async {
     try {
       if (activityEndTime.value == null || activityStartTime.value == null) {
         showCustomSnackBar(
@@ -104,18 +104,18 @@ class SpecificTripViewController extends GetxController
         return;
       }
       GlobalVariables.showLoader.value = true;
-      ActivityModel activityModel = ActivityModel(
-        id: Get.arguments['toAdd'] ? Uuid().v6() : Get.arguments['activity'].id,
-        tripId: Get.arguments['tripId'],
+      final ActivityModel activityModel = ActivityModel(
+        id: Get.arguments['toAdd'] ? const Uuid().v6() : Get.arguments['activity'].id as String,
+        tripId: Get.arguments['tripId'] as String,
         title: activityNameController.text,
         location: locationController.text,
         startDateTime: activityStartTime.value ?? DateTime.now(),
         endDateTime: activityEndTime.value ?? DateTime.now(),
         description: activityNoteController.text,
         likedBy:
-            Get.arguments['toAdd'] ? [] : Get.arguments['activity'].likedBy,
+            Get.arguments['toAdd'] ? [] : Get.arguments['activity'].likedBy as List<String>,
         likesCount:
-            Get.arguments['toAdd'] ? 0 : Get.arguments['activity'].likesCount,
+            Get.arguments['toAdd'] ? 0 : Get.arguments['activity'].likesCount as int,
       );
       if (Get.arguments['toAdd']) {
         await FirebaseTripService.addActivity(activity: activityModel).then((
@@ -150,9 +150,9 @@ class SpecificTripViewController extends GetxController
   }
 
   RxList<SearchModel> locations = <SearchModel>[].obs;
-  void fetchLocations(String value) async {
+  Future<void> fetchLocations(String value) async {
     try {
-      var res = await GeoServices.fetchSuggestions(value);
+      final res = await GeoServices.fetchSuggestions(value);
       locations.value =
           res
               .map(

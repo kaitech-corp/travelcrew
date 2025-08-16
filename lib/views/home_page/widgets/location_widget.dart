@@ -12,8 +12,8 @@ import '../../../utils/app_strings.dart';
 import '../../../utils/app_styles.dart';
 
 class LocationWidget extends StatelessWidget {
-  final TripModel tripModel;
   const LocationWidget({super.key, required this.tripModel});
+  final TripModel tripModel;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

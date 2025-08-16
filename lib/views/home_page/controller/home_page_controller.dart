@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
+import 'package:travel_crew/utils/error_handler.dart';
+import 'package:travel_crew/utils/logger.dart';
 
 import '../../../services/geo_services.dart';
 
@@ -21,6 +24,7 @@ class HomePageController extends GetxController
   @override
   void onInit() {
     super.onInit();
+    AppLogger.debug('HomePageController initialized');
     // Initialize in the next frame to ensure vsync is properly set up
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabController = TabController(length: tabs.length, vsync: this);
@@ -28,8 +32,17 @@ class HomePageController extends GetxController
         selectedTabIndex.value = _tabController?.index ?? 0;
       });
       isTabsReady.value = true;
+      AppLogger.debug('TabController initialized with ${tabs.length} tabs');
     });
     getTrips();
+  }
+
+  @override
+  void onClose() {
+    AppLogger.debug('HomePageController disposing resources');
+    _tabController?.removeListener(() {});
+    _tabController?.dispose();
+    super.onClose();
   }
 
   RxBool isLoadingMyTrips = true.obs;
@@ -39,24 +52,39 @@ class HomePageController extends GetxController
   RxList<TripModel> otherTrips = <TripModel>[].obs;
   RxList<TripModel> otherFilteredTrips = <TripModel>[].obs;
   RxList<TripModel> nearbyTrips = <TripModel>[].obs;
-  getTrips() async {
+  Future<void> getTrips() async {
     try {
+      AppLogger.debug('Starting to fetch trips');
       isLoadingMyTrips.value = true;
       isLoadingOtherTrips.value = true;
+      
       FirebaseTripService.getMyTrips().then((value) {
         isLoadingMyTrips.value = false;
         myTrips.value = value;
         filteredMyTrips.value = value;
         myTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
+        AppLogger.info('Successfully loaded ${value.length} user trips');
+      }).catchError((error) {
+        isLoadingMyTrips.value = false;
+        ErrorHandler.handleFirebaseError(
+          error as Object,
+          operation: 'getMyTrips',
+        );
       });
+      
       getOtherTrips();
-    } catch (e) {
+    } catch (error, stackTrace) {
+      ErrorHandler.handleError(
+        error,
+        stackTrace: stackTrace,
+        context: 'getTrips',
+      );
       isLoadingMyTrips.value = false;
       isLoadingOtherTrips.value = false;
     }
   }
 
-  getFilterdTrips({
+  Future<void> getFilterdTrips({
     double minimum = 0,
     double maximum = 10000000,
     List<String> continents = const ['Europe', 'Asia'],
@@ -73,11 +101,15 @@ class HomePageController extends GetxController
         otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
         otherFilteredTrips.value = value.toList();
       });
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting filtered trips: $e');
+      }
+    }
     isLoadingOtherTrips.value = false;
   }
 
-  getOtherTrips() async {
+  Future<void> getOtherTrips() async {
     try {
       isLoadingOtherTrips.value = true;
       FirebaseTripService.getOtherTrips().then((value) {
@@ -87,11 +119,14 @@ class HomePageController extends GetxController
         otherFilteredTrips.value = value;
       });
     } catch (e) {
+      if (kDebugMode) {
+        print('Error getting other trips: $e');
+      }
       isLoadingOtherTrips.value = false;
     }
   }
 
-  getByLocation() async {
+  Future<void> getByLocation() async {
     try {
       otherTrips.clear();
       otherFilteredTrips.clear();
@@ -109,12 +144,15 @@ class HomePageController extends GetxController
         });
       });
     } catch (e) {
+      if (kDebugMode) {
+        print('Error getting trips by location: $e');
+      }
       showCustomSnackBar(content: e.toString());
     }
     isLoadingOtherTrips.value = false;
   }
 
-  applyMyTripsFilter(String filter) {
+  void applyMyTripsFilter(String filter) {
     filteredMyTrips.value =
         myTrips
             .where(
@@ -124,7 +162,7 @@ class HomePageController extends GetxController
             .toList();
   }
 
-  applyOtherTripsFilter(String filter) {
+  void applyOtherTripsFilter(String filter) {
     otherFilteredTrips.value =
         otherTrips
             .where(
@@ -134,7 +172,7 @@ class HomePageController extends GetxController
             .toList();
   }
 
-  getPopulatTrips() async {
+  Future<void> getPopulatTrips() async {
     try {
       isLoadingOtherTrips.value = true;
       FirebaseTripService.getPopularTrips().then((value) {
@@ -143,6 +181,9 @@ class HomePageController extends GetxController
         otherFilteredTrips.value = value.toList();
       });
     } catch (e) {
+      if (kDebugMode) {
+        print('Error getting popular trips: $e');
+      }
       isLoadingOtherTrips.value = false;
     }
   }

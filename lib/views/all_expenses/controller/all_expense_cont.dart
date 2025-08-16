@@ -20,7 +20,7 @@ class AllExpensesController extends GetxController {
   Future<void> fetchExpenses() async {
     isLoading.value = true;
     try {
-      await FirebaseTripService.getMyTrips(isAll: false).then((tripList) {
+      await FirebaseTripService.getMyTrips().then((tripList) {
         if (tripList.isNotEmpty) {
           trips.addAll(tripList);
         }

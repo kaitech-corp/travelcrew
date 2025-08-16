@@ -19,7 +19,6 @@ class SettleUpScreen extends GetView<ExpenseController> {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: l10n.settleUp,
-      isBackIcon: true,
       scaffoldKey: controller.expenseSettleScaffoldKey,
       className: runtimeType.toString(),
       centerTitle: true,
@@ -78,7 +77,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
             SimpleDropdown<PublicUserModel>(
               itemBuilder: (p0) {
                 return Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 12.0,
                   ),
@@ -107,7 +106,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: CustomElevatedButton(
           width: Get.width,
           height: Get.height * 0.06,

@@ -24,7 +24,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
     if (firstTime) {
       firstTime = false;
       if (!Get.arguments['toAdd']) {
-        ActivityModel activityModel =
+        final ActivityModel activityModel =
             Get.arguments['activity'] as ActivityModel;
         Future.microtask(() {
           controller.activityNameController.text = activityModel.title;

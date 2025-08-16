@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
@@ -57,9 +58,9 @@ class FirebaseTripService {
                 .get();
       }
       // showCustomSnackBar(content: snapShot.docs.length.toString());
-      var futures =
+      final futures =
           snapShot.docs.map((e) async {
-            TripModel tripModel = TripModel.fromMap(e.data());
+            final TripModel tripModel = TripModel.fromMap(e.data());
             tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
             tripModel.activities = await getTripActivities(
               tripId: tripModel.id,
@@ -77,14 +78,16 @@ class FirebaseTripService {
             );
             return tripModel;
           }).toList();
-      var list = await Future.wait(futures);
+      final list = await Future.wait(futures);
       kLogging('future Fetched trips: ${list.length}');
       list.sort((a, b) {
         return a.startDate.compareTo(b.startDate);
       });
       return list;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return [];
   }
@@ -93,7 +96,7 @@ class FirebaseTripService {
     try {
       final snapshot = await firestore.collection(kTripTable).doc(tripId).get();
       if (snapshot.exists) {
-        TripModel trip = TripModel.fromMap(snapshot.data()!);
+        final TripModel trip = TripModel.fromMap(snapshot.data()!);
         trip.expenses = await getTripExpenses(tripId: trip.id);
         trip.activities = await getTripActivities(tripId: trip.id);
         if (trip.joinedUsers != null && trip.joinedUsers!.isNotEmpty) {
@@ -121,14 +124,14 @@ class FirebaseTripService {
               )
               .get();
 
-      var filteredDocs =
+      final filteredDocs =
           snapshot.docs.where((doc) {
             return doc['tripStatus'] != TripStatus.deleted.name;
           }).toList();
 
-      var futures =
+      final futures =
           filteredDocs.map((e) async {
-            TripModel tripModel = TripModel.fromMap(e.data());
+            final TripModel tripModel = TripModel.fromMap(e.data());
             tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
             tripModel.activities = await getTripActivities(
               tripId: tripModel.id,
@@ -218,7 +221,7 @@ class FirebaseTripService {
               .where('tripId', isEqualTo: tripId)
               .get();
       return snapshot.docs.map((e) {
-        ActivityModel activityModel = ActivityModel.fromMap(e.data());
+        final ActivityModel activityModel = ActivityModel.fromMap(e.data());
         activityModel.id = e.id;
         return activityModel;
       }).toList();
@@ -335,12 +338,12 @@ class FirebaseTripService {
       });
       List<TripModel> trips = [];
       if (result.data != null && result.data['success'] == true) {
-        List<Map<String, dynamic>> filteredTrips =
+        final List<Map<String, dynamic>> filteredTrips =
             (result.data['nearbyTrips'] as List<dynamic>)
-                .map((trip) => Map<String, dynamic>.from(trip))
+                .map((trip) => Map<String, dynamic>.from(trip as Map<String, dynamic>))
                 .toList();
         trips = filteredTrips.map((trip) => TripModel.fromMap(trip)).toList();
-        var futures =
+        final futures =
             trips.map((e) async {
               e.expenses = await getTripExpenses(tripId: e.id);
               e.activities = await getTripActivities(tripId: e.id);
@@ -365,14 +368,14 @@ class FirebaseTripService {
 
   static Future<List<TripModel>> getPopularTrips() async {
     try {
-      var res =
+      final res =
           await firestore
               .collection(kTripTable)
               .orderBy('likesCount', descending: true)
               .get();
-      var future =
+      final future =
           res.docs.map((e) async {
-            TripModel tripModel = TripModel.fromMap(e.data());
+            final TripModel tripModel = TripModel.fromMap(e.data());
             tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
             tripModel.activities = await getTripActivities(
               tripId: tripModel.id,
@@ -415,12 +418,12 @@ class FirebaseTripService {
         if (result.data['filteredTrips'] == null) {
           return [];
         }
-        List<Map<String, dynamic>> filteredTrips =
+        final List<Map<String, dynamic>> filteredTrips =
             (result.data['filteredTrips'] as List<dynamic>)
-                .map((trip) => Map<String, dynamic>.from(trip))
+                .map((trip) => Map<String, dynamic>.from(trip as Map<String, dynamic>))
                 .toList();
         trips = filteredTrips.map((trip) => TripModel.fromMap(trip)).toList();
-        var futures =
+        final futures =
             trips.map((e) async {
               e.expenses = await getTripExpenses(tripId: e.id);
               e.activities = await getTripActivities(tripId: e.id);
@@ -458,9 +461,9 @@ class FirebaseTripService {
         if (result.data['users'] == null) {
           return [];
         }
-        List<Map<String, dynamic>> filteredUsers =
+        final List<Map<String, dynamic>> filteredUsers =
             (result.data['users'] as List<dynamic>)
-                .map((trip) => Map<String, dynamic>.from(trip))
+                .map((trip) => Map<String, dynamic>.from(trip as Map<String, dynamic>))
                 .toList();
         kLogging('filteredUsers: $filteredUsers');
         users = filteredUsers.map((trip) => PublicUserModel.fromMap(trip)).toList();

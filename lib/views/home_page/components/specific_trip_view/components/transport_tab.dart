@@ -8,8 +8,8 @@ import 'package:travel_crew/views/home_page/components/specific_trip_view/contro
 import '../../../../../utils/app_styles.dart';
 
 class TransportTab extends StatelessWidget {
-  final SpecificTripViewController controller;
   const TransportTab({super.key, required this.controller});
+  final SpecificTripViewController controller;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -159,7 +159,7 @@ class TransportTab extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 5.h),
-              Icon(Icons.arrow_downward, size: 20),
+              const Icon(Icons.arrow_downward, size: 20),
               SizedBox(height: 5.h),
               Text(
                 controller.tripModel.value?.arrivalAirport ?? 'Not available',
