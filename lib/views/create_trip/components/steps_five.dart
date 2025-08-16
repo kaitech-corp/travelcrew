@@ -17,8 +17,8 @@ import '../../custom_widgets/date_range_picker/range_picker_dialogue.dart';
 import 'steps_one.dart';
 
 class StepsFive extends StatelessWidget {
-  final CreateTripController controller;
   const StepsFive({super.key, required this.controller});
+  final CreateTripController controller;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -29,7 +29,7 @@ class StepsFive extends StatelessWidget {
           Obx(
             () =>
                 controller.activityList.isEmpty
-                    ? SizedBox.shrink()
+                    ? const SizedBox.shrink()
                     : Container(
                       margin: EdgeInsets.only(bottom: 15.h),
                       height: 110.h,
@@ -186,7 +186,7 @@ class StepsFive extends StatelessWidget {
                       controller.activityStartTime.value == null ||
                               controller.activityEndTime.value == null
                           ? 'Select activity start & end date'
-                          : '${controller.activityStartTime.value != null && controller.activityEndTime.value != null ? "${CommonCode.formatMonth(controller.activityStartTime.value!.month)} ${controller.activityStartTime.value!.day}, ${controller.activityStartTime.value!.year} - ${CommonCode.formatTime(controller.activityStartTime.value!)} to ${CommonCode.formatMonth(controller.activityEndTime.value!.month)} ${controller.activityEndTime.value!.day}, ${controller.activityEndTime.value!.year} - ${CommonCode.formatTime(controller.activityEndTime.value!)}" : ""}',
+                          : controller.activityStartTime.value != null && controller.activityEndTime.value != null ? '${CommonCode.formatMonth(controller.activityStartTime.value!.month)} ${controller.activityStartTime.value!.day}, ${controller.activityStartTime.value!.year} - ${CommonCode.formatTime(controller.activityStartTime.value!)} to ${CommonCode.formatMonth(controller.activityEndTime.value!.month)} ${controller.activityEndTime.value!.day}, ${controller.activityEndTime.value!.year} - ${CommonCode.formatTime(controller.activityEndTime.value!)}' : '',
 
                       // : '${DateFormat('MMM dd yyyy').format(controller.activityStartTime.value!)} - ${DateFormat('MMM dd yyyy').format(controller.activityEndTime.value!)}',
                       textAlign: TextAlign.center,

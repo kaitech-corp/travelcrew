@@ -31,7 +31,6 @@ class CreateTripScreen extends GetView<CreateTripController> {
     }
     return CustomScaffold(
       screenName: Get.arguments is! TripModel ? l10n.createTrip : l10n.updateTrip,
-      isBackIcon: true,
       onWillPop: () {
         GlobalVariables.showLoader.value = false;
         controller.previousStep();

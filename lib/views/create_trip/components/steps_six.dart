@@ -52,7 +52,7 @@ class StepsSix extends StatelessWidget {
               suffixIcon: Padding(
                 padding: EdgeInsets.only(right: 10.w),
                 child: ImageIcon(
-                  AssetImage(AppImages.kSendIcon),
+                  const AssetImage(AppImages.kSendIcon),
                   size: 25.sp,
                   color: AppColors.kPrimaryColor,
                 ),
@@ -90,7 +90,7 @@ class StepsSix extends StatelessWidget {
                 }
               },
               child: ImageIcon(
-                AssetImage(AppImages.kSendIcon),
+                const AssetImage(AppImages.kSendIcon),
                 size: 18.sp,
                 color: AppColors.kPrimaryColor,
               ),

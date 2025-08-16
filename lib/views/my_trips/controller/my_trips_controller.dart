@@ -19,7 +19,7 @@ class MyTripsController extends GetxController {
 
   RxBool isLoading = true.obs;
 
-  getTrips() async {
+  Future<void> getTrips() async {
     try {
       isLoading.value = true;
       trips.value = await FirebaseTripService.getMyTrips(
@@ -33,7 +33,7 @@ class MyTripsController extends GetxController {
     isLoading.value = false;
   }
 
-  applyFilter() {
+  void applyFilter() {
     if (selectedTabIndex.value == 1) {
       filteredTrips.value =
           trips.where((trip) {

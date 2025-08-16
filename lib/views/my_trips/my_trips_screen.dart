@@ -27,7 +27,6 @@ class MyTripsScreen extends GetView<MyTripsController> {
         mainViewController?.selectedIndex.value = 0;
       },
       screenName: l10n.myTrips,
-      isBackIcon: true,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
       className: runtimeType.toString(),
@@ -50,20 +49,19 @@ class MyTripsScreen extends GetView<MyTripsController> {
                         color:
                             controller.selectedTabIndex.value == 0
                                 ? const Color(0x0C19A7EC)
-                                : Color(0xFFF1F1F1),
+                                : const Color(0xFFF1F1F1),
                         shape: RoundedRectangleBorder(
                           side:
                               controller.selectedTabIndex.value == 0
-                                  ? BorderSide(
+                                  ? const BorderSide(
                                     width: 0.80,
-                                    color: const Color(0xFF19A7EC),
+                                    color: Color(0xFF19A7EC),
                                   )
                                   : BorderSide.none,
                           borderRadius: BorderRadius.circular(35),
                         ),
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             l10n.upcoming,
@@ -90,20 +88,19 @@ class MyTripsScreen extends GetView<MyTripsController> {
                         color:
                             controller.selectedTabIndex.value == 1
                                 ? const Color(0x0C19A7EC)
-                                : Color(0xFFF1F1F1),
+                                : const Color(0xFFF1F1F1),
                         shape: RoundedRectangleBorder(
                           side:
                               controller.selectedTabIndex.value == 1
-                                  ? BorderSide(
+                                  ? const BorderSide(
                                     width: 0.80,
-                                    color: const Color(0xFF19A7EC),
+                                    color: Color(0xFF19A7EC),
                                   )
                                   : BorderSide.none,
                           borderRadius: BorderRadius.circular(54.09),
                         ),
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Opacity(
                             opacity: 0.80,
@@ -173,9 +170,8 @@ class MyTripsScreen extends GetView<MyTripsController> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: AppColors.kPrimaryColor,
-                                  width: 1,
                                 ),
                               ),
                               prefixIcon: Padding(
@@ -196,7 +192,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                           ),
                         ],
                       )
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
             ),
             SizedBox(height: 20.h),
             Obx(
@@ -207,7 +203,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                         : Get.height * .7,
                 child:
                     controller.isLoading.isTrue
-                        ? Center(child: CircularProgressIndicator())
+                        ? const Center(child: CircularProgressIndicator())
                         : controller.filteredTrips.isEmpty
                         ? Center(child: Text(l10n.noTripsFound))
                         : ListView.builder(

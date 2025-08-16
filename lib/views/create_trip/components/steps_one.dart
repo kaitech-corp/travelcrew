@@ -2,7 +2,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:travel_crew/models/search_model.dart';
@@ -79,7 +78,6 @@ class StepsOne extends StatelessWidget {
                                       url:
                                           'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${snap.data.toString()}&key=$kGoogleMapKey',
                                       height: 199.h,
-                                      fileType: SourceType.network,
                                       width: context.width,
                                     )
                                     : ClipRRect(
@@ -91,9 +89,8 @@ class StepsOne extends StatelessWidget {
                                         child: Container(
                                           height: 199.h,
                                           width: context.width,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             color: Colors.white,
-                                            shape: BoxShape.rectangle,
                                           ),
                                         ),
                                       ),
@@ -286,24 +283,22 @@ class StepsOne extends StatelessWidget {
                     controller.selectedImages.isEmpty
                         ? GestureDetector(
                           onTap: () async {
-                            List<String> images = await ImagePickerBottomSheet()
+                            final List<String> images = await ImagePickerBottomSheet()
                                 .getImageFromCameraOrGallery(context);
                             if (images
-                                .where(((e) => e.isNotEmpty))
+                                .where((e) => e.isNotEmpty)
                                 .isNotEmpty) {
                               controller.selectedImages.addAll(
                                 images.map(
                                   (e) => SelectedImage(
                                     imageUrl: e,
-                                    isNetworkImage: F,
                                   ),
                                 ),
                               );
                             }
                           },
                           child: DottedBorder(
-                            dashPattern: [20, 20],
-                            strokeWidth: 1,
+                            dashPattern: const [20, 20],
                             color: const Color(0xFF1D7FC2),
                             radius: Radius.circular(24.r),
                             child: SizedBox(
@@ -350,17 +345,16 @@ class StepsOne extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () async {
-                                List<String> images =
+                                final List<String> images =
                                     await ImagePickerBottomSheet()
                                         .getImageFromCameraOrGallery(context);
                                 if (images
-                                    .where(((e) => e.isNotEmpty))
+                                    .where((e) => e.isNotEmpty)
                                     .isNotEmpty) {
                                   controller.selectedImages.addAll(
                                     images.map(
                                       (e) => SelectedImage(
                                         imageUrl: e,
-                                        isNetworkImage: false,
                                       ),
                                     ),
                                   );
@@ -384,9 +378,9 @@ class StepsOne extends StatelessWidget {
 }
 
 class CustomLocationLabel extends StatelessWidget {
-  final String text;
 
   const CustomLocationLabel({super.key, required this.text});
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -427,7 +421,7 @@ class CustomLocationLabel extends StatelessWidget {
 class RPSCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Path path_0 = Path();
+    final Path path_0 = Path();
     path_0.moveTo(size.width * 0.003246365, 0);
     path_0.lineTo(size.width * 0.9948629, 0);
     path_0.lineTo(size.width * 0.9812792, size.height * 0.01147123);
@@ -467,11 +461,11 @@ class RPSCustomPainter extends CustomPainter {
     path_0.lineTo(size.width * 0.003246365, 0);
     path_0.close();
 
-    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    final Paint paint0Fill = Paint()..style = PaintingStyle.fill;
     paint0Fill.color = Colors.black.withAlpha(153);
     canvas.drawPath(path_0, paint0Fill);
 
-    Path path_1 = Path();
+    final Path path_1 = Path();
     path_1.moveTo(size.width * 0.1758944, size.height * 0.4475800);
     path_1.cubicTo(
       size.width * 0.1758944,
@@ -569,7 +563,7 @@ class RPSCustomPainter extends CustomPainter {
   }
 }
 
-pickTime({
+Future<void> pickTime({
   String? title,
   required Function(TimeOfDay time) selectedTime,
 }) async {

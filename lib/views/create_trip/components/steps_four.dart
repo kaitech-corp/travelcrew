@@ -13,8 +13,8 @@ import '../../custom_widgets/location_dropdown.dart';
 import 'steps_one.dart';
 
 class StepsFour extends StatelessWidget {
-  final CreateTripController controller;
   const StepsFour({super.key, required this.controller});
+  final CreateTripController controller;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -35,7 +35,7 @@ class StepsFour extends StatelessWidget {
             SizedBox(height: 12.h),
             SimpleDropdown(
               hintText: 'Hotel',
-              items: ['Hotel', 'Home'],
+              items: const ['Hotel', 'Home'],
               onChanged: (v) {
                 controller.lodgingTypeController.text = v ?? '';
               },
@@ -186,7 +186,7 @@ class StepsFour extends StatelessWidget {
                       Text(
                         controller.checkInStartTime.value == null
                             ? 'Check-in & Check-out'
-                            : '${controller.checkInStartTime.value != null && controller.checkInEndTime.value != null ? "${CommonCode.formatMonth(controller.checkInStartTime.value!.month)} ${controller.checkInStartTime.value!.day}, ${controller.checkInStartTime.value!.year} - ${CommonCode.formatTime(controller.checkInStartTime.value!)} to ${CommonCode.formatMonth(controller.checkInEndTime.value!.month)} ${controller.checkInEndTime.value!.day}, ${controller.checkInEndTime.value!.year} - ${CommonCode.formatTime(controller.checkInEndTime.value!)}" : ""}',
+                            : controller.checkInStartTime.value != null && controller.checkInEndTime.value != null ? '${CommonCode.formatMonth(controller.checkInStartTime.value!.month)} ${controller.checkInStartTime.value!.day}, ${controller.checkInStartTime.value!.year} - ${CommonCode.formatTime(controller.checkInStartTime.value!)} to ${CommonCode.formatMonth(controller.checkInEndTime.value!.month)} ${controller.checkInEndTime.value!.day}, ${controller.checkInEndTime.value!.year} - ${CommonCode.formatTime(controller.checkInEndTime.value!)}' : '',
                         // : '${DateFormat('MMM dd').format(controller.checkInStartTime.value!)} - ${DateFormat('MMM dd, yyyy').format(controller.checkInEndTime.value!)}',
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(

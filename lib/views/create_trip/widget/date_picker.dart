@@ -7,13 +7,6 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 
 class DateRangePickerScreen extends StatefulWidget {
-  final DateTime? focusedDay;
-  final DateTime? rangeStart;
-  final DateTime? initialDate;
-  final DateTime? lastDate;
-  final DateTime? rangeEnd;
-  final Function(DateTime? startDate, DateTime? endDate)? onRangeSelected;
-  final Function(DateTime? selectedDate, DateTime? endDate) onRangeChanged;
   const DateRangePickerScreen({
     super.key,
     this.onRangeSelected,
@@ -24,6 +17,13 @@ class DateRangePickerScreen extends StatefulWidget {
     this.rangeStart,
     this.rangeEnd,
   });
+  final DateTime? focusedDay;
+  final DateTime? rangeStart;
+  final DateTime? initialDate;
+  final DateTime? lastDate;
+  final DateTime? rangeEnd;
+  final Function(DateTime? startDate, DateTime? endDate)? onRangeSelected;
+  final Function(DateTime? selectedDate, DateTime? endDate) onRangeChanged;
 
   @override
   _DateRangePickerScreenState createState() => _DateRangePickerScreenState();
@@ -47,7 +47,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
     return Container(
       decoration: BoxDecoration(
         // color: AppColors.kPrimaryColor,
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [Colors.black, Colors.grey],
@@ -70,18 +70,18 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                     size: 20.sp,
                   ),
                   onPressed: () {
-                    DateTime currentTime = DateTime(
+                    final DateTime currentTime = DateTime(
                       _focusedDay.year,
                       _focusedDay.month - 1,
                     );
                     if (currentTime.isAfter(
                           widget.initialDate ??
-                              DateTime.utc(DateTime.now().year - 6, 1, 1),
+                              DateTime.utc(DateTime.now().year - 6),
                         ) ||
                         (currentTime.month == widget.initialDate!.month &&
                             currentTime.year == widget.initialDate!.year)) {
-                      if ((currentTime.month == widget.initialDate!.month &&
-                          currentTime.year == widget.initialDate!.year)) {
+                      if (currentTime.month == widget.initialDate!.month &&
+                          currentTime.year == widget.initialDate!.year) {
                         setState(() {
                           _focusedDay = widget.focusedDay!;
                         });
@@ -98,7 +98,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                 ),
                 Text(
                   DateFormat('MMMM yyyy').format(_focusedDay),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -131,14 +131,14 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
             ),
           ),
           const SizedBox(height: 3.0),
-          Divider(color: AppColors.kGreyTextColor),
+          const Divider(color: AppColors.kGreyTextColor),
           SizedBox(height: 15.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: TableCalendar(
               firstDay:
                   widget.initialDate ??
-                  DateTime.utc(DateTime.now().year - 6, 1, 1),
+                  DateTime.utc(DateTime.now().year - 6),
               lastDay:
                   widget.lastDate ??
                   DateTime.utc(DateTime.now().year + 6, 12, 31),
@@ -164,7 +164,6 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                   size: 20.sp,
                 ),
               ),
-              calendarFormat: CalendarFormat.month,
               headerVisible: false, // Hide default header
               daysOfWeekStyle: const DaysOfWeekStyle(
                 weekdayStyle: TextStyle(color: Colors.white),
@@ -182,7 +181,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                   color: Colors.grey,
                 ),
 
-                cellMargin: EdgeInsets.all(1.5),
+                cellMargin: const EdgeInsets.all(1.5),
                 defaultDecoration: BoxDecoration(
                   color: Colors.grey.withAlpha(51),
                   shape: BoxShape.circle,
@@ -206,12 +205,12 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                 ),
                 rangeStartDecoration: BoxDecoration(
                   color: Colors.teal.withAlpha(77),
-                  border: Border.all(color: Colors.blue, width: 1),
+                  border: Border.all(color: Colors.blue),
                   shape: BoxShape.circle,
                 ),
                 rangeEndDecoration: BoxDecoration(
                   color: Colors.teal.withAlpha(77),
-                  border: Border.all(color: Colors.blue, width: 1),
+                  border: Border.all(color: Colors.blue),
                   shape: BoxShape.circle,
                 ),
                 rangeHighlightColor: Colors.teal.withAlpha(77),

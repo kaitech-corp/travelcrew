@@ -69,7 +69,7 @@ class StepsSeven extends StatelessWidget {
                 SizedBox(width: 5.w),
                 Image.asset(AppImages.kDollarIcon, scale: 4),
                 SizedBox(width: 5.w),
-                Icon(Icons.keyboard_arrow_up),
+                const Icon(Icons.keyboard_arrow_up),
               ],
             ),
           ),

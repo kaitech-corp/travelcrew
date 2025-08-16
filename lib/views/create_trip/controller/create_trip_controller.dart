@@ -1,5 +1,6 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,7 +24,7 @@ import '../../../utils/app_utils.dart';
 
 class CreateTripController extends GetxController {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  RxBool isLocked = true.obs;
+  RxBool isLocked = false.obs;
   RxString country = ''.obs;
   RxString selectedPlaceId = ''.obs;
   RxList<String> invitedUsersList = <String>[].obs;
@@ -41,12 +42,12 @@ class CreateTripController extends GetxController {
   RxList<ActivityModel> activityList = <ActivityModel>[].obs;
   // Total number of steps
   final int totalSteps = 7;
-  Rxn<DateTime> startDate = Rxn<DateTime>(null);
-  Rxn<DateTime> endDate = Rxn<DateTime>(null);
-  Rxn<DateTime> checkInStartTime = Rxn<DateTime>(null);
-  Rxn<DateTime> checkInEndTime = Rxn<DateTime>(null);
-  Rxn<DateTime> departureDate = Rxn<DateTime>(null);
-  Rxn<DateTime> arrivalDate = Rxn<DateTime>(null);
+  Rxn<DateTime> startDate = Rxn<DateTime>();
+  Rxn<DateTime> endDate = Rxn<DateTime>();
+  Rxn<DateTime> checkInStartTime = Rxn<DateTime>();
+  Rxn<DateTime> checkInEndTime = Rxn<DateTime>();
+  Rxn<DateTime> departureDate = Rxn<DateTime>();
+  Rxn<DateTime> arrivalDate = Rxn<DateTime>();
 
   // Trip data
   final tripNameController = TextEditingController();
@@ -86,10 +87,10 @@ class CreateTripController extends GetxController {
       airportDepartureFocusNode = FocusNode();
   RxString flightNumer = ''.obs;
 
-  Rxn<DateTime> activityStartTime = Rxn<DateTime>(null);
-  Rxn<DateTime> activityEndTime = Rxn<DateTime>(null);
-  Rxn<TripModel> tripModel = Rxn<TripModel>(null);
-  setAllValuesToEdit() {
+  Rxn<DateTime> activityStartTime = Rxn<DateTime>();
+  Rxn<DateTime> activityEndTime = Rxn<DateTime>();
+  Rxn<TripModel> tripModel = Rxn<TripModel>();
+  void setAllValuesToEdit() {
     tripNameController.text = tripModel.value!.title ?? '';
     country.value = tripModel.value!.country;
     destinationController.text = tripModel.value!.tripLocation ?? '';
@@ -125,7 +126,7 @@ class CreateTripController extends GetxController {
   }
 
   // Move to the next step
-  void nextStep() {
+  Future<void> nextStep() async {
     if (currentStep.value < totalSteps) {
       // Validate the current step's form
       if (currentStep.value == 1 && !formStep1.currentState!.validate()) {
@@ -135,17 +136,24 @@ class CreateTripController extends GetxController {
         showCustomSnackBar(content: 'Please select trip location');
         return;
       }
-      if (
-      // selectedImages.isEmpty ||
-      (startDate.value == null || endDate.value == null)) {
-        if (selectedImages.isEmpty) {
-          showCustomSnackBar(content: 'Please select at least one image');
-        }
-        if (startDate.value == null || endDate.value == null) {
-          showCustomSnackBar(content: 'Please select trip start and end date');
-        }
+      if (startDate.value == null || endDate.value == null) {
+        showCustomSnackBar(content: 'Please select trip start and end date');
         return;
-      } else if (currentStep.value == 2 &&
+      }
+      if (selectedImages.isEmpty) {
+        String? imageUrl;
+        if (selectedPlaceId.value.isNotEmpty) {
+          final photoReference =
+              await getLocationDetails(selectedPlaceId.value);
+          if (photoReference != null) {
+            imageUrl =
+                'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=$kGoogleMapKey';
+          }
+        }
+        imageUrl ??= 'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/travelcrew%2Fimages%2Ftravelcrew_image.png?alt=media&token=a90c5802-1b9e-44c9-b714-8a1cd3e1174f';
+        selectedImages.add(SelectedImage(imageUrl: imageUrl, isNetworkImage: true));
+      }
+      if (currentStep.value == 2 &&
           !formStep2.currentState!.validate()) {
         return;
       } else if (currentStep.value == 3 &&
@@ -186,29 +194,29 @@ class CreateTripController extends GetxController {
     }
   }
 
-  updateTrip() async {
+  Future<void> updateTrip() async {
     try {
       List<String> uploadedImages = [];
       if (selectedImages.isNotEmpty) {
         int i = 0;
-        var futures = selectedImages.map((e) async {
+        final futures = selectedImages.map((e) async {
           i++;
           if (e.isNetworkImage) {
             return e.imageUrl;
           } else {
-            String imageUrl = await uploadImageToFirebaseStorage(
+            final String imageUrl = await uploadImageToFirebaseStorage(
               imagePath: e.imageUrl,
               folderName: 'trip_images',
               title: 'Uploading trip image',
               subtitle: 'Uploading trip image',
-              imageName: '${tripModel.value!.id}${Uuid().v6()}_trip_image$i',
+              imageName: '${tripModel.value!.id}${const Uuid().v6()}_trip_image$i',
             );
             return imageUrl;
           }
         });
         uploadedImages = await Future.wait(futures);
       }
-      TripModel trip = TripModel(
+      final TripModel trip = TripModel(
         images: uploadedImages,
         tripStatus: TripStatus.upcoming.name,
         id: tripModel.value!.id,
@@ -249,7 +257,7 @@ class CreateTripController extends GetxController {
       );
       GlobalVariables.showLoader.value = true;
       if (tripModel.value!.tripLocation != destinationController.text) {
-        LatLng latln = await GeoServices.getLatLngFromPlace(
+        final LatLng latln = await GeoServices.getLatLngFromPlace(
           trip.tripLocation ?? '',
         );
         trip.latitude = latln.latitude;
@@ -264,7 +272,7 @@ class CreateTripController extends GetxController {
           showCustomSnackBar(content: 'Trip updated successfully');
           for (var i = 0; i < activityList.length; i++) {
             if (activityList[i].id == null) {
-              activityList[i].id = Uuid().v6();
+              activityList[i].id = const Uuid().v6();
               activityList[i].tripId = tripModel.value!.id;
               await FirebaseTripService.addActivity(activity: activityList[i]);
             }
@@ -281,7 +289,11 @@ class CreateTripController extends GetxController {
       });
       showCustomSnackBar(content: 'Trip updated successfully');
       GlobalVariables.showLoader.value = false;
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in updateTrip: $e');
+      }
+    }
   }
 
   // Move to the previous step
@@ -295,10 +307,10 @@ class CreateTripController extends GetxController {
   }
 
   // Submit the trip
-  submitTrip() async {
+  Future<void> submitTrip() async {
     try {
-      String id = Uuid().v4();
-      TripModel tripModel = TripModel(
+      final String id = const Uuid().v4();
+      final TripModel tripModel = TripModel(
         tripStatus: TripStatus.upcoming.name,
         id: id,
         tripLocation: destinationController.text,
@@ -341,17 +353,17 @@ class CreateTripController extends GetxController {
       List<String> uplaodedImages = [];
       if (selectedImages.isNotEmpty) {
         int i = 0;
-        var futures = selectedImages.map((e) async {
+        final futures = selectedImages.map((e) async {
           i++;
           if (e.isNetworkImage) {
             return e.imageUrl;
           } else {
-            String imageUrl = await uploadImageToFirebaseStorage(
+            final String imageUrl = await uploadImageToFirebaseStorage(
               imagePath: e.imageUrl,
-              folderName: 'trip_images',
+              folderName: 'travelcrew/trips',
               title: 'Uploading trip image',
               subtitle: 'Uploading trip image',
-              imageName: '${'$id${Uuid().v6()}'}_trip_image$i',
+              imageName: '${'$id${const Uuid().v6()}'}_trip_image$i',
             );
             return imageUrl;
           }
@@ -361,7 +373,7 @@ class CreateTripController extends GetxController {
       }
       if (invitedUsersList.isNotEmpty) {
         // Trigger email invitations via Firebase Extension
-        for (String email in invitedUsersList) {
+        for (final String email in invitedUsersList) {
           FirebaseFirestore.instance.collection('mail').add({
             'to': [email],
             'message': {
@@ -371,10 +383,10 @@ class CreateTripController extends GetxController {
           });
         }
       }
-      ExpenseModel exp = ExpenseModel(
+      final ExpenseModel exp = ExpenseModel(
         paidByUsers: [],
         date: expanseDate.value ?? DateTime.now(),
-        id: Uuid().v6(),
+        id: const Uuid().v6(),
         createdBy: GlobalVariables.loggedInUser.value!.uid,
         tripId: tripModel.id,
         name: expenseNameController.text,
@@ -382,7 +394,7 @@ class CreateTripController extends GetxController {
           amountPaidController.text.isEmpty ? '0' : amountPaidController.text,
         ),
       );
-      LatLng latln = await GeoServices.getLatLngFromPlace(
+      final LatLng latln = await GeoServices.getLatLngFromPlace(
         tripModel.tripLocation ?? '',
       );
       tripModel.latitude = latln.latitude;
@@ -403,7 +415,7 @@ class CreateTripController extends GetxController {
             if (isSuccess) {
               for (var i = 0; i < activityList.length; i++) {
                 activityList[i].tripId = tripModel.id;
-                activityList[i].id = Uuid().v6();
+                activityList[i].id = const Uuid().v6();
                 await FirebaseTripService.addActivity(
                   activity: activityList[i],
                 );
@@ -424,6 +436,9 @@ class CreateTripController extends GetxController {
         }
       });
     } catch (e) {
+      if (kDebugMode) {
+        print('Error in submitTrip: $e');
+      }
       showCustomSnackBar(
         content: e.toString(),
         contentType: ContentType.failure,
@@ -444,7 +459,7 @@ class CreateTripController extends GetxController {
   RxString selectedLocation = ''.obs;
   RxString searchText = ''.obs;
 
-  Rxn<DateTime?> expanseDate = Rxn<DateTime?>(null);
+  Rxn<DateTime?> expanseDate = Rxn<DateTime?>();
 
   RxList<SearchModel> locations = RxList();
   RxList<SearchModel> hotelLocations = RxList();
@@ -457,7 +472,7 @@ class CreateTripController extends GetxController {
   RxInt isLoadingSuggestions = (-1).obs;
 
   RxList<AeroplanesModel> airlineList = RxList();
-  fetchLocation(String? value, {int id = -1, String? type}) async {
+  Future<void> fetchLocation(String? value, {int id = -1, String? type}) async {
     if (value == null || value.isEmpty) {
       locations.clear();
       return;
@@ -466,7 +481,7 @@ class CreateTripController extends GetxController {
     await GeoServices.fetchPlaceSuggestions(value, type: type)
         .then((suggestions) async {
       locations.clear();
-      for (var e in suggestions) {
+      for (final e in suggestions) {
         locations.add(
           SearchModel(
             searchText: e['description'] ?? '',
@@ -482,7 +497,7 @@ class CreateTripController extends GetxController {
     }
   }
 
-  fetchHotelLocation(String? value, {int id = -1}) async {
+  Future<void> fetchHotelLocation(String? value, {int id = -1}) async {
     if (value == null || value.isEmpty) {
       hotelLocations.clear();
       return;
@@ -491,7 +506,7 @@ class CreateTripController extends GetxController {
     await GeoServices.fetchPlaceSuggestions(value, type: 'lodging')
         .then((suggestions) async {
       hotelLocations.clear();
-      for (var e in suggestions) {
+      for (final e in suggestions) {
         hotelLocations.add(
           SearchModel(
             searchText: e['description'] ?? '',
@@ -507,18 +522,22 @@ class CreateTripController extends GetxController {
     }
   }
 
-  getLocationDetails(String value) async {
+  Future getLocationDetails(String value) async {
     try {
       return await GeoServices.getLocationDetailsFromPlaceId(value).then((
         location,
       ) {
         return location['result']['photos'][0]['photo_reference'];
       });
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in getLocationDetails: $e');
+      }
+    }
     return null;
   }
 
-  fetchAeroPlanes(String? value) async {
+  Future<void> fetchAeroPlanes(String? value) async {
     try {
       if (value == null || value.isEmpty) {
         airlineList.clear();
@@ -540,11 +559,14 @@ class CreateTripController extends GetxController {
         // }
       });
     } catch (e) {
+      if (kDebugMode) {
+        print('Error in fetchAeroPlanes: $e');
+      }
       showCustomSnackBar(content: 'Failed to fetch aeroplanes');
     }
   }
 
-  removeActivity(String? id, int index) async {
+  Future<void> removeActivity(String? id, int index) async {
     try {
       if (id == null || id.isEmpty) {
         activityList.removeAt(index);
@@ -556,10 +578,14 @@ class CreateTripController extends GetxController {
           }
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in removeActivity: $e');
+      }
+    }
   }
 
-  searchFriends() async {
+  Future<void> searchFriends() async {
     try {
       if (searchFriendController.text.isEmpty) {
         return;
@@ -568,7 +594,7 @@ class CreateTripController extends GetxController {
         query: searchFriendController.text,
       ).then((users) {
         searchedFriends.clear();
-        for (var e in users) {
+        for (final e in users) {
           searchedFriends.add(
             SearchModel(
               searchText: e.displayName,
@@ -584,13 +610,16 @@ class CreateTripController extends GetxController {
         }
       });
     } catch (e) {
+      if (kDebugMode) {
+        print('Error in searchFriends: $e');
+      }
       showCustomSnackBar(content: 'Failed to fetch friends');
     }
   }
 }
 
 class SelectedImage {
+  SelectedImage({required this.imageUrl, this.isNetworkImage = false});
   String imageUrl;
   bool isNetworkImage;
-  SelectedImage({required this.imageUrl, this.isNetworkImage = false});
 }

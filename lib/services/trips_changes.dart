@@ -3,36 +3,36 @@ import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/views/home_page/controller/home_page_controller.dart';
 import 'package:travel_crew/views/my_trips/controller/my_trips_controller.dart';
 
-removeTripOverAll(TripModel trip) {
+void removeTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
-    HomePageController controller = Get.find<HomePageController>();
+    final HomePageController controller = Get.find<HomePageController>();
     controller.myTrips.removeWhere((element) => element.id == trip.id);
     controller.filteredMyTrips.removeWhere((element) => element.id == trip.id);
   }
   if (Get.isRegistered<MyTripsController>()) {
-    MyTripsController controller = Get.find<MyTripsController>();
+    final MyTripsController controller = Get.find<MyTripsController>();
     controller.trips.removeWhere((element) => element.id == trip.id);
     controller.filteredTrips.removeWhere((element) => element.id == trip.id);
   }
 }
 
-addTripOverAll(TripModel trip) {
+void addTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
-    HomePageController controller = Get.find<HomePageController>();
+    final HomePageController controller = Get.find<HomePageController>();
     controller.myTrips.insert(0, trip);
     controller.filteredMyTrips.insert(0, trip);
   }
   if (Get.isRegistered<MyTripsController>()) {
-    MyTripsController controller = Get.find<MyTripsController>();
+    final MyTripsController controller = Get.find<MyTripsController>();
     controller.trips.insert(0, trip);
     controller.filteredTrips.insert(0, trip);
   }
 }
 
-updateTripOverAll(TripModel trip) {
+void updateTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
-    HomePageController controller = Get.find<HomePageController>();
-    int index = controller.myTrips.indexWhere(
+    final HomePageController controller = Get.find<HomePageController>();
+    final int index = controller.myTrips.indexWhere(
       (element) => element.id == trip.id,
     );
     if (index != -1) {
@@ -41,8 +41,8 @@ updateTripOverAll(TripModel trip) {
     }
   }
   if (Get.isRegistered<MyTripsController>()) {
-    MyTripsController controller = Get.find<MyTripsController>();
-    int index = controller.trips.indexWhere((element) => element.id == trip.id);
+    final MyTripsController controller = Get.find<MyTripsController>();
+    final int index = controller.trips.indexWhere((element) => element.id == trip.id);
     if (index != -1) {
       controller.trips[index] = trip;
       controller.filteredTrips[index] = trip;

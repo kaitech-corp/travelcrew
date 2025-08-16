@@ -7,11 +7,6 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 
 class SingleDatePickerScreen extends StatefulWidget {
-  final DateTime? focusedDay;
-  final DateTime? initialDate;
-  final DateTime? lastDate;
-  final Function(DateTime? selectedDate)? onDateSelected;
-  final Function(DateTime? selectedDate) onDateChanged;
 
   const SingleDatePickerScreen({
     super.key,
@@ -21,6 +16,11 @@ class SingleDatePickerScreen extends StatefulWidget {
     this.initialDate,
     this.lastDate,
   });
+  final DateTime? focusedDay;
+  final DateTime? initialDate;
+  final DateTime? lastDate;
+  final Function(DateTime? selectedDate)? onDateSelected;
+  final Function(DateTime? selectedDate) onDateChanged;
 
   @override
   _SingleDatePickerScreenState createState() => _SingleDatePickerScreenState();
@@ -64,18 +64,18 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                     size: 20.sp,
                   ),
                   onPressed: () {
-                    DateTime currentTime = DateTime(
+                    final DateTime currentTime = DateTime(
                       _focusedDay.year,
                       _focusedDay.month - 1,
                     );
                     if (currentTime.isAfter(
                           widget.initialDate ??
-                              DateTime.utc(DateTime.now().year - 6, 1, 1),
+                              DateTime.utc(DateTime.now().year - 6),
                         ) ||
                         (currentTime.month == widget.initialDate!.month &&
                             currentTime.year == widget.initialDate!.year)) {
-                      if ((currentTime.month == widget.initialDate!.month &&
-                          currentTime.year == widget.initialDate!.year)) {
+                      if (currentTime.month == widget.initialDate!.month &&
+                          currentTime.year == widget.initialDate!.year) {
                         setState(() {
                           _focusedDay = widget.focusedDay!;
                         });
@@ -92,7 +92,7 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                 ),
                 Text(
                   DateFormat('MMMM yyyy').format(_focusedDay),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -125,14 +125,14 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
             ),
           ),
           const SizedBox(height: 3.0),
-          Divider(color: AppColors.kGreyTextColor),
+          const Divider(color: AppColors.kGreyTextColor),
           SizedBox(height: 15.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: TableCalendar(
               firstDay:
                   widget.initialDate ??
-                  DateTime.utc(DateTime.now().year - 6, 1, 1),
+                  DateTime.utc(DateTime.now().year - 6),
               lastDay:
                   widget.lastDate ??
                   DateTime.utc(DateTime.now().year + 6, 12, 31),
@@ -145,7 +145,6 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                   _focusedDay = focusedDay;
                 });
               },
-              calendarFormat: CalendarFormat.month,
               headerVisible: false,
               daysOfWeekStyle: const DaysOfWeekStyle(
                 weekdayStyle: TextStyle(color: Colors.white),
