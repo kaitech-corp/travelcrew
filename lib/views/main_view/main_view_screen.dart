@@ -37,14 +37,14 @@ class MainViewScreen extends GetView<MainViewController> {
           Obx(
             () =>
                 controller.selectedIndex.value == -1
-                    ? MyTripsScreen()
+                    ? const MyTripsScreen()
                     : controller.pages[controller.selectedIndex.value],
           ),
           if (!isKeyboardVisible)
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 5),
+                padding: const EdgeInsets.only(bottom: 5),
                 child: Obx(
                   () => CustomBottomBar(
                     navItems: [
@@ -114,6 +114,6 @@ class MainViewScreen extends GetView<MainViewController> {
   }
 }
 
-getColor(int index, int currentIndex) {
+void getColor(int index, int currentIndex) {
   index == currentIndex ? Colors.white : Colors.red;
 }

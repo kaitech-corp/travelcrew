@@ -8,7 +8,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_crew/services/firebase_options.dart';
+import 'package:travel_crew/firebase_options.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/views/main_view/controller/main_view_controller.dart';
 
@@ -21,15 +21,15 @@ import 'utils/screen_bindings.dart';
 
 late FirebaseFirestore firestore;
 MainViewController? mainViewController;
-String userDeviceToken = "";
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+String userDeviceToken = '';
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
   // initAppsflyer();
   userDeviceToken = await FirebasePushNotificationApi().initNotifications();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load();
 
   runApp(const MyApp());
 }
@@ -41,7 +41,7 @@ Future<void> initializeFirebase() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } else {
-    app = Firebase.app(); // Get the default app if already initialized
+    app = Firebase.app();
   }
 
   firestore = FirebaseFirestore.instanceFor(
@@ -85,11 +85,11 @@ class MyApp extends StatelessWidget {
   }
 
   ThemeData _buildTheme(Brightness brightness) {
-    var baseTheme = ThemeData(brightness: brightness);
+    final baseTheme = ThemeData(brightness: brightness);
     return baseTheme.copyWith(
       textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme),
       scaffoldBackgroundColor: AppColors.kScaffoldBgColor,
-      colorScheme: ThemeData().colorScheme.copyWith(
+      colorScheme: baseTheme.colorScheme.copyWith(
         primary: AppColors.kPrimaryColor,
       ),
       // bottomSheetTheme: BottomSheetThemeData(

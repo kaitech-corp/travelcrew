@@ -35,7 +35,7 @@ class OnboardingController extends GetxController {
       );
     } else {
       // Navigate to the next screen (e.g., home or login)
-      Get.offAll(() => LoginScreen());
+      Get.offAll(() => const LoginScreen());
     }
   }
 
