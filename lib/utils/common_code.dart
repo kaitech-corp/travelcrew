@@ -13,7 +13,7 @@ class CommonCode {
 
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return "Email is required";
+      return 'Email is required';
     }
     final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegExp.hasMatch(value)) {
@@ -24,7 +24,7 @@ class CommonCode {
 
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return "Password is required";
+      return 'Password is required';
     }
     if (value.length < 6) {
       return 'Password must be at least 6 characters long.';
@@ -46,30 +46,30 @@ class CommonCode {
     String confirmPassword,
   ) {
     if (password.isEmpty) {
-      return "Password is required";
+      return 'Password is required';
     }
     if (confirmPassword.isEmpty) {
-      return "You need to confirm password before proceeding";
+      return 'You need to confirm password before proceeding';
     }
     if (password != confirmPassword) {
-      return "Passwords do not match. Please enter again!";
+      return 'Passwords do not match. Please enter again!';
     }
     return null;
   }
 
   static String? validateContact(String? value) {
     if (value == null || value.isEmpty) {
-      return "Phone number is required";
+      return 'Phone number is required';
     }
     final phoneRegExp = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
     if (!phoneRegExp.hasMatch(value)) {
-      return "Invalid phone number format";
+      return 'Invalid phone number format';
     }
     return null;
   }
 
   bool removeTextFieldFocus() {
-    FocusScopeNode currentFocus = FocusScope.of(Get.context!);
+    final FocusScopeNode currentFocus = FocusScope.of(Get.context!);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus!.unfocus();
       return true;
@@ -78,7 +78,7 @@ class CommonCode {
   }
 
   static bool isValidEmail(String email) {
-    bool emailValid = RegExp(
+    final bool emailValid = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
     ).hasMatch(email);
     log('=====================is email valid $emailValid');
@@ -147,7 +147,7 @@ class CommonCode {
       return {};
     }
 
-    Map<String, dynamic> result = {};
+    final Map<String, dynamic> result = {};
 
     firestoreData.forEach((key, value) {
       if (value is Map<dynamic, dynamic>) {
@@ -163,7 +163,7 @@ class CommonCode {
           // Handle array values
           result[key] =
               (value['arrayValue']['values'] as List?)
-                  ?.map((e) => parseFirestoreMap(e))
+                  ?.map((e) => parseFirestoreMap(e as Map<String, dynamic>))
                   .toList() ??
               [];
         } else {

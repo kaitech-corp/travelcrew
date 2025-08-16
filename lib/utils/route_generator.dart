@@ -35,7 +35,7 @@ class RouteGenerator {
     return [
       GetPage(
         name: kSplashScreenRoute,
-        page: () => SplashScreen(),
+        page: () => const SplashScreen(),
         binding: ScreenBindings(),
       ),
       GetPage(
@@ -131,17 +131,17 @@ class RouteGenerator {
       ),
       GetPage(
         name: kGroupDetailScreenRoute,
-        page: () => GroupDetailScreen(),
+        page: () => const GroupDetailScreen(),
         binding: ScreenBindings(),
       ),
       GetPage(
         name: kProfileSetUpScreenRoute,
-        page: () => ProfileSetupPage(),
+        page: () => const ProfileSetupPage(),
         binding: ScreenBindings(),
       ),
       GetPage(
         name: kDateRangePickerScreenRoute,
-        page: () => RangeCalendarDialog(),
+        page: () => const RangeCalendarDialog(),
         binding: ScreenBindings(),
       ),
       GetPage(

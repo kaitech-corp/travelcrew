@@ -35,13 +35,13 @@ class AppColors {
   static const Color productBgColor = Color(0xFFFEC106);
   /// list of gradient colors
   static List<Color> gradientGetStarted = [
-    Color(0xFFFDEFF9),
-    Color(0xFFFFF1E0),
+    const Color(0xFFFDEFF9),
+    const Color(0xFFFFF1E0),
   ];
   static List<Color> gradientWhoWeAre = [
-    Color(0xFFF8E8E8),
-    Color(0xFFF7F5E6),
-    Color(0xFFECEAFF),
-    Color(0xFFF4F7FF),
+    const Color(0xFFF8E8E8),
+    const Color(0xFFF7F5E6),
+    const Color(0xFFECEAFF),
+    const Color(0xFFF4F7FF),
   ];
 }

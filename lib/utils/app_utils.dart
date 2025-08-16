@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/session_services.dart';
@@ -11,7 +12,7 @@ import '../services/notifications/notfication_services.dart';
 import 'custom_snackbar.dart';
 
 class AppUtils {
-  static showConfirmationDialogue({
+  static Future<void> showConfirmationDialogue({
     required String title,
     String? description,
     String btnYesText = 'YES',
@@ -60,7 +61,7 @@ Future<String> uploadImageToFirebaseStorage({
   try {
     // Correctly construct the full path
     final baseRef = FirebaseStorage.instance.ref().child(
-      '$folderName',
+      folderName,
     );
 
     // Append user ID if folder is 'users_profile'
@@ -75,10 +76,10 @@ Future<String> uploadImageToFirebaseStorage({
 
     // Listen to upload progress
     uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-      double progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      final double progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       FirebasePushNotificationApi().showProgressNotification(
         progress.toInt(),
-        id,
+        id as int,
         title: title,
         subTitle: subtitle,
       );
@@ -87,14 +88,16 @@ Future<String> uploadImageToFirebaseStorage({
     // Wait for completion
     // final snapshot = 
     await uploadTask.whenComplete(() {
-      FirebasePushNotificationApi().showCompletionNotification(id: id);
+      FirebasePushNotificationApi().showCompletionNotification(id: id as int);
     });
 
     // Get download URL
     final imageUrl = await fullRef.getDownloadURL();
     return imageUrl;
   } catch (e) {
-    debugPrint('Upload Error: $e');
+    if (kDebugMode) {
+      print('Error uploading image to Firebase Storage: $e');
+    }
     showCustomSnackBar(content: 'Failed to upload image');
     return '';
   }

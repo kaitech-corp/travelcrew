@@ -13,13 +13,13 @@ void showCustomSnackBar({
   Color backgroundColor = AppColors.kPrimaryColor,
 }) {
   if (Get.context == null) {
-    debugPrint("Get.context is null. Cannot show snackbar.");
+    debugPrint('Get.context is null. Cannot show snackbar.');
     return;
   }
   if (Get.isSnackbarOpen) {
     Get.closeCurrentSnackbar();
   }
-  Future.delayed(Duration(milliseconds: 100), () {
+  Future.delayed(const Duration(milliseconds: 100), () {
     Get.showSnackbar(
       GetSnackBar(
         snackPosition: SnackPosition.TOP,
