@@ -5,24 +5,6 @@ import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 
 class UserNotificationModel {
-  String notificationId;
-  String notificationMessage;
-  String notificationTitle;
-  String notificationType;
-  DateTime createdAt;
-  TripModel? trip;
-  PublicUserModel? addedBy;
-  String? releaseDate;
-  String createdBy;
-  String notificationForId;
-  DateTime updateAt;
-  String updateBy;
-  List<String> sentTo;
-  bool isTopic;
-  bool isLoading;
-  String notificationStatus;
-  List notificationTopic;
-  bool isActive;
   UserNotificationModel({
     required this.notificationId,
     required this.notificationMessage,
@@ -46,6 +28,48 @@ class UserNotificationModel {
     required this.isActive,
   });
 
+  String notificationId;
+  String notificationMessage;
+  String notificationTitle;
+  String notificationType;
+  DateTime createdAt;
+  TripModel? trip;
+  PublicUserModel? addedBy;
+  String? releaseDate;
+  String createdBy;
+  String notificationForId;
+  DateTime updateAt;
+  String updateBy;
+  List<String> sentTo;
+  bool isTopic;
+  bool isLoading;
+  String notificationStatus;
+  List<dynamic> notificationTopic;
+  bool isActive;
+
+  factory UserNotificationModel.fromMap(Map<String, dynamic> map) {
+    return UserNotificationModel(
+      notificationId: (map['notificationId'] as String?) ?? '',
+      notificationStatus: (map['notificationStatus'] as String?) ?? '',
+      notificationMessage: (map['notificationMessage'] as String?) ?? '',
+      notificationTitle: (map['notificationTitle'] as String?) ?? '',
+      notificationType: (map['notificationType'] as String?) ?? '',
+      createdAt: DateTime.fromMillisecondsSinceEpoch((map['createdAt'] as int?) ?? 0),
+      releaseDate: map['releaseDate'] as String?,
+      createdBy: (map['createdBy'] as String?) ?? '',
+      notificationForId: (map['notificationForId'] as String?) ?? '',
+      updateAt: DateTime.fromMillisecondsSinceEpoch((map['updateAt'] as int?) ?? 0),
+      updateBy: (map['updateBy'] as String?) ?? '',
+      sentTo: List<String>.from((map['sentTo'] as List<dynamic>?) ?? <dynamic>[]),
+      isTopic: (map['isTopic'] as bool?) ?? false,
+      notificationTopic: List<dynamic>.from((map['notificationTopic'] as List<dynamic>?) ?? <dynamic>[]),
+      isActive: (map['isActive'] as bool?) ?? false,
+    );
+  }
+
+  factory UserNotificationModel.fromJson(String source) =>
+      UserNotificationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
   UserNotificationModel copyWith({
     String? notificationId,
     String? notificationMessage,
@@ -60,7 +84,7 @@ class UserNotificationModel {
     String? updateBy,
     List<String>? sentTo,
     bool? isTopic,
-    List? notificationTopic,
+    List<dynamic>? notificationTopic,
     bool? isActive,
   }) {
     return UserNotificationModel(
@@ -105,30 +129,7 @@ class UserNotificationModel {
     return result;
   }
 
-  factory UserNotificationModel.fromMap(Map<String, dynamic> map) {
-    return UserNotificationModel(
-      notificationId: map['notificationId'] ?? '',
-      notificationStatus: map['notificationStatus'] ?? '',
-      notificationMessage: map['notificationMessage'] ?? '',
-      notificationTitle: map['notificationTitle'] ?? '',
-      notificationType: map['notificationType'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      releaseDate: map['releaseDate'],
-      createdBy: map['createdBy'] ?? '',
-      notificationForId: map['notificationForId'] ?? '',
-      updateAt: DateTime.fromMillisecondsSinceEpoch(map['updateAt']),
-      updateBy: map['updateBy'] ?? '',
-      sentTo: List<String>.from(map['sentTo']),
-      isTopic: map['isTopic'] ?? false,
-      notificationTopic: List.from(map['notificationTopic']),
-      isActive: map['isActive'] ?? false,
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory UserNotificationModel.fromJson(String source) =>
-      UserNotificationModel.fromMap(json.decode(source));
 
   @override
   String toString() {

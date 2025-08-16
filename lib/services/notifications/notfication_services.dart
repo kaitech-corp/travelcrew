@@ -2,15 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  print('===========Title ${message.notification?.title}');
-  print('===========Body: ${message.notification?.body}');
-  print('===========Payload: ${message.data}');
+  if (kDebugMode) {
+    print('===========Title ${message.notification?.title}');
+    print('===========Body: ${message.notification?.body}');
+    print('===========Payload: ${message.data}');
+  }
 }
 
 class FirebasePushNotificationApi {
@@ -29,21 +32,18 @@ class FirebasePushNotificationApi {
     description:
         'This channel is used for important notifications.', // description
     importance: Importance.max,
-    playSound: true,
 
     audioAttributesUsage: AudioAttributesUsage.voiceCommunication,
-    enableVibration: true,
-    showBadge: true,
   );
   void handleMessage(RemoteMessage? message) {
-    print('=========handleMessage:: $message');
+    if (kDebugMode){print('=========handleMessage:: $message');}
     if (message == null) return;
 
     // Get.toNamed(kSplashScreenRoute, arguments: message);
   }
 
   Future<void> requestNotificationPermission() async {
-    var status = await Permission.notification.status;
+    final status = await Permission.notification.status;
     if (!status.isGranted) {
       await Permission.notification.request();
     }
@@ -120,7 +120,7 @@ class FirebasePushNotificationApi {
 
       await flutterLocalNotificationsPlugin.show(
         message.notification?.body == 'Incomming video call' ||
-                message.notification?.body == "Incomming voice call"
+                message.notification?.body == 'Incomming voice call'
             ? 1
             : notification.hashCode,
         notification.title,
@@ -132,15 +132,14 @@ class FirebasePushNotificationApi {
 
             fullScreenIntent:
                 message.notification?.body == 'Incomming video call' ||
-                        message.notification?.body == "Incomming voice call"
+                        message.notification?.body == 'Incomming voice call'
                     ? true
                     : false,
             androidChannel.id,
             androidChannel.name,
-            playSound: true,
             importance: Importance.high,
             channelDescription: androidChannel.description,
-            // TODO add a proper drawable resource to android, for now using
+            // TODOadd a proper drawable resource to android, for now using
             //      one that already exists in example app.
             icon: '@mipmap/ic_launcher',
             showProgress: true,
@@ -157,14 +156,14 @@ class FirebasePushNotificationApi {
       requestBadgePermission: false,
       requestAlertPermission: false,
     );
-    const android = AndroidInitializationSettings("@mipmap/ic_launcher");
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const settings = InitializationSettings(android: android, iOS: ios);
     await flutterLocalNotificationsPlugin.initialize(
       settings,
       onDidReceiveBackgroundNotificationResponse: backGroundResponse,
       onDidReceiveNotificationResponse: (response) {
         final message = RemoteMessage.fromMap(
-          jsonDecode(response.payload ?? ""),
+          jsonDecode(response.payload ?? '') as Map<String, dynamic>,
         );
 
         handleMessage(message);
@@ -185,13 +184,11 @@ class FirebasePushNotificationApi {
     // FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     await initPushNotifications();
     await initLocalNotifications();
-    return fcmToken ?? "";
+    return fcmToken ?? '';
   }
 }
 
-backGroundResponse(response) {
-  // final message = 
-  RemoteMessage.fromMap(jsonDecode(response.payload ?? ""));
+void backGroundResponse(response) {
+  // final message =
+  RemoteMessage.fromMap(jsonDecode((response.payload as String?) ?? '') as Map<String, dynamic>);
 }
-
-
