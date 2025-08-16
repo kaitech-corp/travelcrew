@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/services/notifications/notifications_firebase_service.dart';
 
 import '../../../models/Notifications/notification_model.dart';
-import '../../../services/notifications/NotificationsFirebaseService.dart';
+import '../../../utils/error_handler.dart';
 
 class NotificationController extends GetxController {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -10,19 +11,23 @@ class NotificationController extends GetxController {
   RxBool isLoading = false.obs;
 
   @override
-  onInit() {
+  void onInit() {
     super.onInit();
     // Perform initialization tasks here
     getNotification();
   }
 
-  getNotification() async {
+  Future<void> getNotification() async {
     try {
       isLoading.value = true;
       notifications.value =
           await FirebaseNotificationsService.getUserNotifications(type: '');
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      ErrorHandler.handleError(
+        e,
+        stackTrace: stackTrace,
+        context: 'getNotification',
+      );
     }
     isLoading.value = false;
   }

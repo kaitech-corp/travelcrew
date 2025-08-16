@@ -55,7 +55,7 @@ class NotificationsScreen extends GetView<NotificationController> {
                 itemCount: controller.notifications.length,
                 shrinkWrap: true,
                 itemBuilder: (context, indexx) {
-                  NotificationModel notificationModel =
+                  final NotificationModel notificationModel =
                       controller.notifications[indexx];
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,13 +72,12 @@ class NotificationsScreen extends GetView<NotificationController> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: notificationModel.notifications.length,
                         itemBuilder: (context, index) {
-                          UserNotificationModel notification =
+                          final UserNotificationModel notification =
                               notificationModel.notifications[index];
                           return ListTile(
                             title: Text(notification.notificationTitle),
                             leading: getImageUrl(notification),
                             subtitle: ReadMoreTextWidget(
-                              trimLines: 2,
                               textStyle: AppStyles.labelTextStyle().copyWith(
                                 color: AppColors.kBlackColor.withValues(
                                   alpha: .5,
@@ -104,14 +103,12 @@ class NotificationsScreen extends GetView<NotificationController> {
         url: notification.trip?.images.first ?? '',
         height: 80,
         width: 80,
-        isCircle: false,
       );
     } else {
       return AnyImageView(
         url: notification.addedBy?.urlToImage ?? '',
         height: 80,
         width: 80,
-        isCircle: false,
       );
     }
   }

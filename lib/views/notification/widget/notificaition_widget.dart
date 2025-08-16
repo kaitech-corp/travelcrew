@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NotificationWidget extends StatelessWidget {
-  final String title;
-  final String message;
-  final DateTime timestamp;
-  final IconData icon;
-  final Color iconColor;
-  final Color backgroundColor;
-  final BorderRadius? borderRadius;
-  final EdgeInsets padding;
 
   const NotificationWidget({
     super.key,
@@ -22,6 +14,14 @@ class NotificationWidget extends StatelessWidget {
     this.borderRadius,
     this.padding = const EdgeInsets.all(16),
   });
+  final String title;
+  final String message;
+  final DateTime timestamp;
+  final IconData icon;
+  final Color iconColor;
+  final Color backgroundColor;
+  final BorderRadius? borderRadius;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
