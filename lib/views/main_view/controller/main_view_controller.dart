@@ -12,11 +12,11 @@ class MainViewController extends GetxController {
   var selectedIndex = 0.obs;
   List<Widget> pages = [
     const HomePageScreen(),
-    MyTripsScreen(),
+    const MyTripsScreen(),
     CreateTripScreen(),
-    UsersScreen(),
+    const UsersScreen(),
     // ExpenseScreen(fromMainView: true),
-    AllExpensesScreen(),
+    const AllExpensesScreen(),
     // ProfileScreen(),
     // const   CompaniesScreen(),
     // const   JobsScreen(),

@@ -17,7 +17,7 @@ class SplashController extends GetxController {
     });
   }
 
-  setUser() async {
+  Future<void> setUser() async {
     if (FirebaseAuth.instance.currentUser == null) {
       if ((await SecureStorageService.readByKey(key: 'haveSeenOnboarding')) ==
           null) {

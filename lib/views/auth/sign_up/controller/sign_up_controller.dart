@@ -15,7 +15,7 @@ import '../../../../services/session_services.dart';
 
 class SignUpController extends GetxController {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  Rxn<Country?> selectedCountry = Rxn(null);
+  Rxn<Country?> selectedCountry = Rxn();
   GlobalKey<FormState> profileSetupFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   RxString selectedImage = ''.obs;
@@ -49,7 +49,7 @@ class SignUpController extends GetxController {
     // Implement sign in logic
   }
 
-  void createAccount() async {
+  Future<void> createAccount() async {
     try {
       GlobalVariables.showLoader.value = true;
       await AuthService.checkEmailExistence(emailController.text).then((
@@ -60,8 +60,8 @@ class SignUpController extends GetxController {
         GlobalVariables.loggedInUser.value = UserModel(
           displayName: userNameController.text,
           email: emailController.text,
-          uid: Uuid().v4(),
-          email_confirmed: false,
+          uid: const Uuid().v4(),
+          emailConfirmed: false,
           // profileImage: '',
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
@@ -78,13 +78,16 @@ class SignUpController extends GetxController {
       });
     } catch (e) {
       GlobalVariables.showLoader.value = false;
-      print(e);
+      showCustomSnackBar(
+        contentType: ContentType.failure,
+        content: 'Failed to create account. Please try again.',
+      );
     }
   }
 
-  detectCountryFromNumber(String number) {
+  void detectCountryFromNumber(String number) {
     // Extract the dial code, e.g., +92
-    for (var country in countries) {
+    for (final country in countries) {
       if (number.startsWith(country.dialCode)) {
         selectedCountry.value = country;
         phoneController.text = number
@@ -109,18 +112,17 @@ class SignUpController extends GetxController {
     // Navigate to sign up screen
   }
 
-  updateProfile() async {
+  Future<void> updateProfile() async {
     try {
       GlobalVariables.showLoader.value = true;
       String? image;
       if (selectedImage.value.isNotEmpty) {
         image = await uploadImageToFirebaseStorage(
           imagePath: selectedImage.value,
-          folderName: 'users_profile',
           title: 'Uploading profile image',
           subtitle: 'Uploading profile image',
           imageName:
-              '${GlobalVariables.loggedInUser.value?.uid ?? Uuid().v4()}_profile_image',
+              '${GlobalVariables.loggedInUser.value?.uid ?? const Uuid().v4()}_profile_image',
         );
       }
 

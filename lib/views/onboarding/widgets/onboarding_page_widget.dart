@@ -11,10 +11,10 @@ import '../../custom_widgets/custom_elevated_button.dart';
 import '../controller/onboarding_controller.dart';
 
 class OnboardingPageWidget extends StatelessWidget {
+  OnboardingPageWidget({super.key, required this.page, required this.index});
   final OnboardingController controller = Get.find<OnboardingController>();
   final OnboardingPage page;
   final int index;
-  OnboardingPageWidget({super.key, required this.page, required this.index});
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -33,7 +33,7 @@ class OnboardingPageWidget extends StatelessWidget {
           child: BlurryContainer(
             blur: 7,
             color: Colors.black.withValues(alpha: .2),
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(42.01),
               topRight: Radius.circular(42.01),
             ),
@@ -45,7 +45,6 @@ class OnboardingPageWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.w),

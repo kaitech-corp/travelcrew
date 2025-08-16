@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PageIndicator extends StatelessWidget {
-  final int currentIndex;
-  final int totalIndexes;
-  final double height;
   const PageIndicator({
     super.key,
     this.height = 21,
     required this.currentIndex,
     required this.totalIndexes,
   });
+  final int currentIndex;
+  final int totalIndexes;
+  final double height;
   @override
   Widget build(BuildContext context) {
     return Row(

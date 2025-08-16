@@ -28,7 +28,6 @@ class ProfileSetupPage extends GetView<SignUpController> {
           key: controller.profileSetupFormKey,
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
                 if (Get.arguments != 'fromProfile') ...{
@@ -36,7 +35,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Profile Setup",
+                      'Profile Setup',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: 36.68,
@@ -81,7 +80,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                     Positioned(
                       child: AnyImageView(
                         ontap: () async {
-                          List<String> pickedImage =
+                          final List<String> pickedImage =
                               await ImagePickerBottomSheet()
                                   .getImageFromCameraOrGallery(context);
                           if (pickedImage.isNotEmpty) {
@@ -105,8 +104,8 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       url: AppImages.kIcUser,
                       height: 35.h,
                       width: 35.w,
-                      padding: EdgeInsets.all(5),
-                      containerBackgroundColor: Color(0xFFF4F4F4),
+                      padding: const EdgeInsets.all(5),
+                      containerBackgroundColor: const Color(0xFFF4F4F4),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     SizedBox(width: 10.w),
@@ -124,7 +123,6 @@ class ProfileSetupPage extends GetView<SignUpController> {
                 SizedBox(height: 10.h),
                 CustomTextField(
                   controller: controller.userNameController,
-                  textInputAction: TextInputAction.next,
                   focusNode: controller.userNameFocus,
                   hintText: 'User Name',
                   validator: (p0) {
@@ -143,8 +141,8 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       url: AppImages.kPhoneIcon,
                       height: 35.h,
                       width: 35.w,
-                      padding: EdgeInsets.all(5),
-                      containerBackgroundColor: Color(0xFFF4F4F4),
+                      padding: const EdgeInsets.all(5),
+                      containerBackgroundColor: const Color(0xFFF4F4F4),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     SizedBox(width: 10.w),
@@ -251,7 +249,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       ),
                     ),
                     child: Text(
-                      Get.arguments == 'fromProfile' ? 'Update' : "Complete",
+                      Get.arguments == 'fromProfile' ? 'Update' : 'Complete',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
                         fontSize: 14.67,

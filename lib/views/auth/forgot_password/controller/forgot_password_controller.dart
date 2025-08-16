@@ -20,12 +20,12 @@ class ForgotPasswordController extends GetxController {
 
   void onContinue() {
     if (selectedOption.value == 0) {
-      String email = emailController.text.trim();
+      final String email = emailController.text.trim();
       if (email.isNotEmpty && GetUtils.isEmail(email)) {
         sendPasswordResetEmail();
       }
     } else {
-      String phone = phoneController.text.trim();
+      final String phone = phoneController.text.trim();
       if (phone.isNotEmpty) {}
     }
   }
@@ -34,7 +34,7 @@ class ForgotPasswordController extends GetxController {
     Get.back();
   }
 
-  sendPasswordResetEmail() async {
+  Future<void> sendPasswordResetEmail() async {
     try {
       GlobalVariables.showLoader.value = true;
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);

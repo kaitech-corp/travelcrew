@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SocialButton extends StatelessWidget {
+  const SocialButton({super.key, required this.icon, required this.onTap});
   final String icon;
   final VoidCallback onTap;
-  const SocialButton({super.key, required this.icon, required this.onTap});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -13,7 +13,7 @@ class SocialButton extends StatelessWidget {
       child: Container(
         width: 50.w,
         height: 50.w,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
           // color: Colors.grey[100],
         ),

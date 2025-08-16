@@ -5,11 +5,6 @@ import 'package:travel_crew/utils/app_styles.dart';
 import '../../../../utils/app_colors.dart';
 
 class ResetOptionTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Widget icon;
-  final bool isSelected;
-  final VoidCallback onTap;
   const ResetOptionTile({
     super.key,
     required this.title,
@@ -18,6 +13,11 @@ class ResetOptionTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
+  final String title;
+  final String subtitle;
+  final Widget icon;
+  final bool isSelected;
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(

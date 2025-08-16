@@ -68,7 +68,7 @@ class NewPasswordController extends GetxController {
     isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
   }
 
-  resetPassword() async {
+  Future<void> resetPassword() async {
     try {
       GlobalVariables.showLoader.value = true;
 
@@ -82,7 +82,7 @@ class NewPasswordController extends GetxController {
       });
       // To check the result:
       if (result.data['success'] == true) {
-        Get.dialog(Center(child: WellDoneDialog()), barrierColor: Colors.grey);
+        Get.dialog(const Center(child: WellDoneDialog()), barrierColor: Colors.grey);
       } else {
         // Password reset failed
         showCustomSnackBar(content: 'Password reset failed');

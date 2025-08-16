@@ -252,7 +252,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
               ),
             ),
           ),
-          BackButtonWidget(),
+          const BackButtonWidget(),
         ],
       ),
     );

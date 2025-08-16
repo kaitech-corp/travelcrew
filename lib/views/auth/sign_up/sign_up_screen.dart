@@ -22,8 +22,6 @@ class SignUpScreen extends GetView<SignUpController> {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: '',
-      isBackIcon: true,
-      isFullBody: false,
       // leadingWidth: ,
       centerTitle: true,
       scaffoldKey: controller.scaffoldKey,
@@ -54,7 +52,7 @@ class SignUpScreen extends GetView<SignUpController> {
                       color: AppColors.kGreyColor.withAlpha(51),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Icon(
                         Icons.email_outlined,
                         color: Colors.black.withAlpha(140),
@@ -169,7 +167,7 @@ class SignUpScreen extends GetView<SignUpController> {
                           color:
                               controller.isRememberMe.isTrue
                                   ? AppColors.kPrimaryColor
-                                  : Color(0xFF666666),
+                                  : const Color(0xFF666666),
                           size: 18.sp,
                         ),
                       ),

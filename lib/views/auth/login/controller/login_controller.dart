@@ -34,7 +34,7 @@ class LoginController extends GetxController {
   }
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  void login() async {
+  Future<void> login() async {
     try {
       GlobalVariables.showLoader.value = true;
       // Login logic
@@ -78,7 +78,7 @@ class LoginController extends GetxController {
     GlobalVariables.showLoader.value = false;
   }
 
-  static validateError(String message, {String? email}) async {
+  static Future<void> validateError(String message, {String? email}) async {
     if (message == 'Email not confirmed') {
       // This was Supabase specific. For Firebase, you might trigger
       // FirebaseAuth.instance.currentUser?.sendEmailVerification()
@@ -102,16 +102,16 @@ class LoginController extends GetxController {
       //     content: e.toString(),
       //   );
       // }
-      debugPrint("Email not confirmed. Original email: $email. Implement Firebase email verification resend if needed.");
+      debugPrint('Email not confirmed. Original email: $email. Implement Firebase email verification resend if needed.');
       // For now, just showing a snackbar
-      showCustomSnackBar(contentType: ContentType.warning, title: "Email Verification", content: "Please verify your email address.");
+      showCustomSnackBar(contentType: ContentType.warning, title: 'Email Verification', content: 'Please verify your email address.');
     }
   }
 
-  loginWithGoogle() async {
+  Future<void> loginWithGoogle() async {
     try {
       GlobalVariables.showLoader.value = true;
-      UserCredential? response = await _googleSignIn();
+      final UserCredential? response = await _googleSignIn();
       if (response != null) {
         await AuthService.getUser();
         showCustomSnackBar(content: 'Login Successful');
@@ -150,7 +150,7 @@ class LoginController extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential = await FirebaseAuth.instance
+      final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(credential);
 
       return userCredential;
@@ -158,10 +158,10 @@ class LoginController extends GetxController {
     return null;
   }
 
-  void continueAsGuest() async {
+  Future<void> continueAsGuest() async {
     try {
       GlobalVariables.showLoader.value = true;
-      UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+      final UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
       if (userCredential.user != null) {
         GlobalVariables.showLoader.value = false;
         Get.toNamed(kMainViewScreenRoute);
@@ -190,7 +190,7 @@ class LoginController extends GetxController {
 
   RxBool isPasswordVisible = true.obs;
 
-  loginWithApple() async {
+  Future<void> loginWithApple() async {
     try {
       GlobalVariables.showLoader.value = true;
       final appleCredential = await SignInWithApple.getAppleIDCredential(

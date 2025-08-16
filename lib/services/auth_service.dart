@@ -1,10 +1,13 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/services/secure_storage_service.dart';
+import 'package:travel_crew/utils/error_handler.dart';
+import 'package:travel_crew/utils/logger.dart';
 
 import '../models/user_model.dart';
 import '../utils/app_strings.dart';
@@ -37,7 +40,6 @@ class AuthService {
       Get.offAllNamed(kMainViewScreenRoute);
       if (!fromSplash) {
         showCustomSnackBar(
-          contentType: ContentType.success,
           title: 'Success',
           content: 'Logged in successfully',
         );
@@ -49,72 +51,90 @@ class AuthService {
 
   static Future<UserModel?> getUser({String? userId}) async {
     try {
-      String? userid = userId ?? _auth.currentUser?.uid;
+      final String? userid = userId ?? _auth.currentUser?.uid;
       if (userid != null) {
-        print('Fetching user with ID: $userid');
-        DocumentSnapshot userDoc =
+        AppLogger.debug('Fetching user with ID: $userid');
+        
+        final DocumentSnapshot userDoc =
             await _firestore.collection(kUsersCollection).doc(userid).get();
         if (userDoc.exists) {
-          print('User document exists: ${userDoc.data()}');
-          UserModel user = UserModel.fromMap(
-            userDoc.data() as Map<String, dynamic>,
+          AppLogger.debug('User document exists for ID: $userid');
+          
+          final UserModel user = UserModel.fromMap(
+            userDoc.data()! as Map<String, dynamic>,
           );
-          if (userId == null && user.isDeleted) {
-            // showCustomSnackBar(
-            //   contentType: ContentType.failure,
-            //   title: 'Error',
-            //   content: 'Account deleted. Please contact support.',
-            // );
+          if (userId == null && user.isDeleted == true) {
+            AppLogger.warning('User account is deleted: $userid');
             return null;
           }
+          GlobalVariables.loggedInUser.value = user;
+          AppLogger.info('Successfully retrieved user: $userid');
           return user;
         } else {
-          print('User document does not exist, creating new user');
+          AppLogger.info('User document does not exist, creating new user: $userid');
+          
           // Create a new user if the document does not exist
-          UserModel newUser = UserModel(
+          final UserModel newUser = UserModel(
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
             uid: userid,
             email: _auth.currentUser?.email ?? '',
             displayName:
                 _auth.currentUser?.displayName ??
-                'User' + userid.substring(0, 5),
+                'User${userid.substring(0, 5)}',
             phone: _auth.currentUser?.phoneNumber ?? '',
-            isDeleted: false, // Default to false
-            email_confirmed: false, // Default to false
+            emailConfirmed: false, // Default to false
           );
           await _firestore
               .collection(kUsersCollection)
               .doc(userid)
               .set(newUser.toMap());
           GlobalVariables.loggedInUser.value = newUser;
+          AppLogger.info('Successfully created new user: $userid');
           return newUser;
         }
+      } else {
+        AppLogger.warning('No user ID available for getUser');
       }
-    } catch (e) {}
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'getUser',
+      );
+    }
     return null;
   }
 
   static Future<PublicUserModel?> getUserPublicProfile({String? userId}) async {
     try {
-      String? userid = userId ?? _auth.currentUser?.uid;
+      final String? userid = userId ?? _auth.currentUser?.uid;
       if (userid != null) {
-        print('Fetching user with ID: $userid');
-        DocumentSnapshot userDoc =
+        AppLogger.debug('Fetching public profile for user ID: $userid');
+        
+        final DocumentSnapshot userDoc =
             await _firestore.collection(kUsersCollection).doc(userid).get();
         if (userDoc.exists) {
-          print('User document exists: ${userDoc.data()}');
-          PublicUserModel user = PublicUserModel.fromMap(
-            userDoc.data() as Map<String, dynamic>,
+          AppLogger.debug('Public profile document exists for ID: $userid');
+          
+          final PublicUserModel user = PublicUserModel.fromMap(
+            userDoc.data()! as Map<String, dynamic>,
           );
+          AppLogger.info('Successfully retrieved public profile: $userid');
           return user;
+        } else {
+          AppLogger.warning('Public profile document not found for ID: $userid');
         }
       } else {
-        print('No user ID provided, returning mock data');
+        AppLogger.warning('No user ID provided for getUserPublicProfile');
         return null;
       }
-    } catch (e) {
-      print('Error fetching user public profile: $e');
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'getUserPublicProfile',
+      );
       return null;
     }
     return null;
@@ -165,7 +185,12 @@ class AuthService {
         );
       }
       return false;
-    } catch (e) {
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'login',
+      );
       GlobalVariables.showLoader.value = false;
       return false;
     }
@@ -190,21 +215,25 @@ class AuthService {
 
       await userCredential.user!.sendEmailVerification();
       showCustomSnackBar(
-        contentType: ContentType.success,
         title: 'Success',
         content: 'Account created successfully. Please verify your email.',
       );
       Get.offAllNamed(kLoginScreenRoute);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'signUp',
+      );
       GlobalVariables.showLoader.value = false;
-      if (e is FirebaseAuthException) {
-        if (e.code == 'email-already-in-use') {
+      if (error is FirebaseAuthException) {
+        if (error.code == 'email-already-in-use') {
           showCustomSnackBar(
             contentType: ContentType.failure,
             title: 'Error',
             content: 'Email already in use.',
           );
-        } else if (e.code == 'invalid-email') {
+        } else if (error.code == 'invalid-email') {
           showCustomSnackBar(
             contentType: ContentType.failure,
             title: 'Error',
@@ -214,11 +243,11 @@ class AuthService {
           showCustomSnackBar(
             contentType: ContentType.failure,
             title: 'Error',
-            content: e.message ?? 'An unknown error occurred.',
+            content: error.message ?? 'An unknown error occurred.',
           );
         }
       } else {
-        showCustomSnackBar(content: e.toString());
+        showCustomSnackBar(content: error.toString());
       }
     } finally {
       GlobalVariables.showLoader.value = false;
@@ -284,6 +313,9 @@ class AuthService {
       }
       return true;
     } catch (e) {
+      if (kDebugMode) {
+        print('Error in validateUserExistance: $e');
+      }
       showCustomSnackBar(
         contentType: ContentType.failure,
         title: 'Error',
@@ -302,7 +334,11 @@ class AuthService {
         await _firestore.collection('users').doc(user.uid).update(attributes);
         return true;
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in updateUserAttributes: $e');
+      }
+    }
     return false;
   }
 
@@ -312,6 +348,9 @@ class AuthService {
       await _auth.signOut();
       Get.offAllNamed(kLoginScreenRoute);
     } catch (e) {
+      if (kDebugMode) {
+        print('Error in signOut: $e');
+      }
       showCustomSnackBar(
         contentType: ContentType.failure,
         title: 'Error',
@@ -333,7 +372,6 @@ class AuthService {
           );
           GlobalVariables.showLoader.value = false;
           showCustomSnackBar(
-            contentType: ContentType.success,
             title: 'Success',
             content: 'Password updated successfully',
           );
@@ -342,6 +380,9 @@ class AuthService {
         return true;
       }
     } catch (e) {
+      if (kDebugMode) {
+        print('Error in updatePasword: $e');
+      }
       GlobalVariables.showLoader.value = false;
       if (e is FirebaseAuthException) {
         if (e.code == 'weak-password') {
@@ -384,11 +425,15 @@ class AuthService {
             .map((user) => PublicUserModel.fromMap(user.data()))
             .toList();
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in getTripUsers: $e');
+      }
+    }
     return [];
   }
 
-  static deleteAccount() async {
+  static Future<void> deleteAccount() async {
     try {
       GlobalVariables.showLoader.value = true;
       await updateUserAttributes(attributes: {'isDeleted': true}).then((
@@ -405,7 +450,11 @@ class AuthService {
           );
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in deleteAccount: $e');
+      }
+    }
     GlobalVariables.showLoader.value = false;
   }
 }

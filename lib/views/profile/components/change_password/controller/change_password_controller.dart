@@ -1,11 +1,11 @@
-import "package:awesome_snackbar_content/awesome_snackbar_content.dart"
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart'
     show ContentType;
-import "package:flutter/material.dart";
-import "package:get/get.dart";
-import "package:travel_crew/services/auth_service.dart";
-import "package:travel_crew/services/secure_storage_service.dart";
-import "package:travel_crew/services/session_services.dart";
-import "package:travel_crew/utils/custom_snackbar.dart";
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/services/auth_service.dart';
+import 'package:travel_crew/services/secure_storage_service.dart';
+import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/utils/custom_snackbar.dart';
 
 class ChangePasswordController extends GetxController {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -19,7 +19,7 @@ class ChangePasswordController extends GetxController {
       newPasswordFocus = FocusNode(),
       confirmPasswordFocus = FocusNode();
 
-  updatePasssword() async {
+  Future<void> updatePasssword() async {
     try {
       GlobalVariables.showLoader.value = true;
       await SecureStorageService.verifyOldPassword(

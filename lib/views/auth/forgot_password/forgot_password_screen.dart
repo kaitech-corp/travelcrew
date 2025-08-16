@@ -128,7 +128,6 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                         controller: controller.emailController,
                         hintText: 'Enter your email',
                         textInputType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
                         validator:
                             (p0) =>
                                 p0!.isEmpty
@@ -143,7 +142,7 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
               ],
             ),
           ),
-          BackButtonWidget(),
+          const BackButtonWidget(),
         ],
       ),
     );
