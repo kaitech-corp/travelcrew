@@ -31,7 +31,6 @@ class GroupDetailScreen extends GetView<UsersController> {
           children: [
             AnyImageView(
               url: controller.currentTrip.value?.images.first ?? '',
-              fileType: SourceType.network,
               height: 52.h,
               width: 52.w,
               isCircle: true,
@@ -40,7 +39,6 @@ class GroupDetailScreen extends GetView<UsersController> {
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
@@ -66,7 +64,7 @@ class GroupDetailScreen extends GetView<UsersController> {
 
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
-                          color: Color(0xFF666666),
+                          color: const Color(0xFF666666),
                           fontSize: 11.sp,
 
                           fontWeight: FontWeight.w400,
@@ -86,11 +84,11 @@ class GroupDetailScreen extends GetView<UsersController> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Members",
+                'Members',
                 style: AppStyles.labelTextStyle().copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -108,7 +106,7 @@ class GroupDetailScreen extends GetView<UsersController> {
             child: Obx(
               () =>
                   controller.isLoadingUsers.isTrue
-                      ? Center(child: CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator())
                       : ListView.builder(
                         padding: EdgeInsets.zero,
                         shrinkWrap: true,
@@ -119,11 +117,10 @@ class GroupDetailScreen extends GetView<UsersController> {
                                   ? controller.currentTrip.value!.createdByUser
                                   : controller.tripUsers[index - 1];
                           return member == null
-                              ? SizedBox.shrink()
+                              ? const SizedBox.shrink()
                               : ListTile(
                                 leading: AnyImageView(
                                   url: member.urlToImage ?? '',
-                                  fileType: SourceType.network,
                                   height: 50.h,
                                   width: 50.w,
                                   isCircle: true,
@@ -164,7 +161,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                             ),
                                           ),
                                           child: Text(
-                                            "Admin",
+                                            'Admin',
                                             style: TextStyle(fontSize: 12.sp),
                                           ),
                                         )
@@ -183,10 +180,10 @@ class GroupDetailScreen extends GetView<UsersController> {
                                               builder:
                                                   (context) => AlertDialog(
                                                     title: const Text(
-                                                      "Remove User",
+                                                      'Remove User',
                                                     ),
                                                     content: Text(
-                                                      "Are you sure you want to remove from group?",
+                                                      'Are you sure you want to remove from group?',
                                                       style: TextStyle(
                                                         fontSize: 16.sp,
                                                       ),
@@ -196,7 +193,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                                         onPressed:
                                                             () => Get.back(),
                                                         child: const Text(
-                                                          "Cancel",
+                                                          'Cancel',
                                                         ),
                                                       ),
                                                       TextButton(
@@ -207,7 +204,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                                           Get.back();
                                                         },
                                                         child: const Text(
-                                                          "Remove",
+                                                          'Remove',
                                                         ),
                                                       ),
                                                     ],
@@ -236,22 +233,22 @@ class GroupDetailScreen extends GetView<UsersController> {
                     context: context,
                     builder:
                         (context) => AlertDialog(
-                          title: const Text("Leave Group"),
+                          title: const Text('Leave Group'),
                           content: Text(
-                            "Are you sure you want to leave this group?",
+                            'Are you sure you want to leave this group?',
                             style: TextStyle(fontSize: 16.sp),
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Get.back(),
-                              child: const Text("Cancel"),
+                              child: const Text('Cancel'),
                             ),
                             TextButton(
                               onPressed: () {
                                 controller.leaveGroup();
                                 Get.back();
                               },
-                              child: const Text("Leave"),
+                              child: const Text('Leave'),
                             ),
                           ],
                         ),
@@ -259,7 +256,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                 },
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: Text(
-                  "Leave Group",
+                  'Leave Group',
                   style: AppStyles.labelTextStyle().copyWith(
                     color: const Color(0xFFDA2828),
                     fontSize: 13.95.sp,

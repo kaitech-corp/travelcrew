@@ -9,14 +9,6 @@ import '../../../home_page/widgets/trips_widget.dart';
 import '../controller/users_controller.dart';
 
 class UsersWidget extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final String subtitle;
-  final int unreadCount;
-  final String timestamp;
-  final TripModel tripModel;
-  final List<String> memberImages;
-  final int extraMembers;
   const UsersWidget({
     super.key,
     required this.imageUrl,
@@ -28,6 +20,14 @@ class UsersWidget extends StatelessWidget {
     required this.memberImages,
     this.extraMembers = 0,
   });
+  final String imageUrl;
+  final String title;
+  final String subtitle;
+  final int unreadCount;
+  final String timestamp;
+  final TripModel tripModel;
+  final List<String> memberImages;
+  final int extraMembers;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

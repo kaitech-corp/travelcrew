@@ -1,21 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_crew/models/chat_module/ChatUser.dart';
+import 'package:flutter/foundation.dart';
+import 'package:travel_crew/main.dart';
+import 'package:travel_crew/models/chat_module/chat_message.dart';
+import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 
-import '../models/chat_module/ChatMessage.dart';
 import '../models/chat_module/chatroom.dart';
 import '../utils/app_strings.dart';
 
 class ChatFirebaseService {
-  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static Future<ChatRoom?> getChatsByRoomId({required String roomId}) async {
     try {
-      var result =
-          await _firestore.collection(kTripChatCollection).doc(roomId).get();
+      final result =
+          await firestore.collection(kTripChatCollection).doc(roomId).get();
       if (result.exists) {
         return ChatRoom.fromMap(result.data()!);
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in getChatsByRoomId for roomId: $roomId. Error: $e');
+      }
+    }
     return null;
   }
 
@@ -23,14 +28,14 @@ class ChatFirebaseService {
     required String userId,
   }) async {
     try {
-      var result =
-          await _firestore
+      final result =
+          await firestore
               .collection(kTripChatCollection)
               .where('usersIds', arrayContains: userId)
               .get();
       if (result.docs.isNotEmpty) {
-        var futures = result.docs.map((e) async {
-          var chatRoom = ChatRoom.fromMap(e.data());
+        final futures = result.docs.map((e) async {
+          final chatRoom = ChatRoom.fromMap(e.data());
           chatRoom.trip = await FirebaseTripService.getTripById(
             tripId: chatRoom.roomId,
           );
@@ -38,18 +43,27 @@ class ChatFirebaseService {
         });
         return Future.wait(futures);
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in getChatRoomsByUserId for userId: $userId. Error: $e');
+      }
+    }
     return [];
   }
 
   static Future<ChatRoom?> checkIfRoomExists({required String roomId}) async {
     try {
-      var result =
-          await _firestore.collection(kTripChatCollection).doc(roomId).get();
+      final result =
+          await firestore.collection(kTripChatCollection).doc(roomId).get();
       if (result.exists) {
         return ChatRoom.fromMap(result.data()!);
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in checkIfRoomExists for roomId: $roomId. Error: $e');
+      }
+      return null;
+    }
     return null;
   }
 
@@ -58,7 +72,7 @@ class ChatFirebaseService {
   //   static Future<List<String>> getAllActiveUsers() async {
   //     List<String> users = [];
   //     try {
-  //       var res = await _firestore
+  //       var res = await firestore
   //           .collection(kActiveUsersCollection)
   //           .doc(kActiveUsersDocumentId)
   //           .get();
@@ -79,64 +93,117 @@ class ChatFirebaseService {
   //     {required List<String> users, bool isToAdd = true}) async {
   //   try {
   //     if (isToAdd) {
-  //       await _firestore
+  //       await firestore
   //           .collection(kActiveUsersCollection)
   //           .doc(kActiveUsersDocumentId)
   //           .update({'users': FieldValue.arrayUnion(users)});
   //     } else {
-  //       await _firestore
+  //       await firestore
   //           .collection(kActiveUsersCollection)
   //           .doc(kActiveUsersDocumentId)
   //           .update({'users': users});
   //     }
   //   } catch (e) {}
   // }
-  static updateChatRoom({
+  static Future<void> updateChatRoom({
     required String roomId,
     required ChatRoom chatToSave,
   }) async {
     try {
-      await _firestore
+      await firestore
           .collection(kTripChatCollection)
           .doc(roomId)
           .update(chatToSave.toMap());
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in updateChatRoom for roomId: $roomId. Error: $e');
+      }
+    }
   }
 
   // creating chat room if not exists
-  static createChatRoom({required ChatRoom chatroom}) async {
+  static Future<void> createChatRoom({required ChatRoom chatroom}) async {
     try {
-      await _firestore
+      await firestore
           .collection(kTripChatCollection)
           .doc(chatroom.roomId)
           .set(chatroom.toMap());
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+          'Error in createChatRoom for roomId: ${chatroom.roomId}. Error: $e',
+        );
+      }
+    }
   }
 
   // to save message in firebase
 
-  static sendMessage({
+  static Future<void> sendMessage({
     required String roomId,
     required ChatMessage chatToSave,
   }) async {
+    if (kDebugMode) {
+      print('Saving message in room: $roomId');
+    }
     try {
-      await _firestore.collection(kTripChatCollection).doc(roomId).update({
+      await firestore
+          .collection(kTripChatCollection)
+          .doc(roomId)
+          .collection(kTripChatMessagesCollection)
+          .doc(chatToSave.chateId)
+          .set(chatToSave.copyWith(createdAt: Timestamp.now()).toMap());
+      await firestore.collection(kTripChatCollection).doc(roomId).update({
         'updatedAt': Timestamp.now(),
-        'chats': FieldValue.arrayUnion([chatToSave.toMap()]),
       });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print('Error in sendMessage for roomId: $roomId. Error: $e');
+      }
     }
   }
 
-  static updateIsTyping({
+  static Future<void> updateIsTyping({
     required List<ChatUser> users,
     required String roomId,
   }) async {
     try {
-      await _firestore.collection(kTripChatCollection).doc(roomId).update({
+      await firestore.collection(kTripChatCollection).doc(roomId).update({
         'users': users.map((e) => e.toMap()).toList(),
       });
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in updateIsTyping for roomId: $roomId. Error: $e');
+      }
+    }
+  }
+
+  static Future<List<ChatMessage>> getPaginatedChats(
+    String roomId,
+    DocumentSnapshot? lastVisible,
+    int limit,
+  ) async {
+    try {
+      Query query = firestore
+          .collection(kTripChatCollection)
+          .doc(roomId)
+          .collection(kTripChatMessagesCollection)
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      if (lastVisible != null) {
+        query = query.startAfterDocument(lastVisible);
+      }
+
+      final snapshot = await query.get();
+      return snapshot.docs
+          .map((doc) => ChatMessage.fromMap(doc.data()! as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in getPaginatedChats for roomId: $roomId. Error: $e');
+      }
+      return [];
+    }
   }
 }

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/context_extensions.dart';
 import 'package:intl/intl.dart';
-import 'package:travel_crew/models/chat_module/ChatUser.dart';
-
-import '../../../models/chat_module/ChatMessage.dart';
+import 'package:travel_crew/models/chat_module/chat_message.dart';
+import 'package:travel_crew/models/chat_module/chat_user.dart';
 import '../../../services/session_services.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_images.dart';
@@ -13,13 +12,13 @@ import '../../custom_widgets/any_image_view.dart';
 import '../../custom_widgets/text_widget.dart';
 
 class MessageWidget extends StatelessWidget {
-  final ChatMessage message;
-  final ChatUser userModel;
   const MessageWidget({
     super.key,
     required this.message,
     required this.userModel,
   });
+  final ChatMessage message;
+  final ChatUser userModel;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +43,11 @@ class MessageWidget extends StatelessWidget {
         children: [
           Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 10,
             children: [
               if (message.createdBy == GlobalVariables.loggedInUser.value!.uid)
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
               if (message.createdBy !=
                   GlobalVariables.loggedInUser.value!.uid) ...{
                 Row(
@@ -58,13 +56,12 @@ class MessageWidget extends StatelessWidget {
                     AnyImageView(
                       width: 17.87.w,
                       height: 17.87.w,
-                      fileType: SourceType.network,
                       url: userModel.profileImage,
                       isCircle: true,
                       containerBackgroundColor: AppColors.kGreyColor.withValues(
                         alpha: .3,
                       ),
-                      errorWidget: Icon(Icons.error),
+                      errorWidget: const Icon(Icons.error),
                     ),
                     TextWidget(
                       labelText:
@@ -93,7 +90,7 @@ class MessageWidget extends StatelessWidget {
                       message.createdBy ==
                               GlobalVariables.loggedInUser.value!.uid
                           ? AppColors.kWhiteColor
-                          : Color(0xFF151515),
+                          : const Color(0xFF151515),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topLeft:
@@ -106,8 +103,8 @@ class MessageWidget extends StatelessWidget {
                                   GlobalVariables.loggedInUser.value!.uid
                               ? Radius.zero
                               : Radius.circular(16.r),
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16),
+                      bottomLeft: const Radius.circular(16),
+                      bottomRight: const Radius.circular(16),
                     ),
                   ),
                 ),
@@ -147,7 +144,7 @@ class MessageWidget extends StatelessWidget {
                         'hh:mm a',
                       ).format(message.createdAt.toDate()),
                       style: AppStyles.labelTextStyle().copyWith(
-                        color: Color(0xFFA1A4C1),
+                        color: const Color(0xFFA1A4C1),
                         fontSize: 10,
 
                         fontWeight: FontWeight.w500,
@@ -165,12 +162,11 @@ class MessageWidget extends StatelessWidget {
               width: 42.38.w,
               height: 42.h,
               url: userModel.profileImage,
-              fileType: SourceType.network,
               isCircle: true,
               containerBackgroundColor: AppColors.kGreyColor.withValues(
                 alpha: .3,
               ),
-              errorWidget: Icon(Icons.error),
+              errorWidget: const Icon(Icons.error),
             ),
           },
         ],

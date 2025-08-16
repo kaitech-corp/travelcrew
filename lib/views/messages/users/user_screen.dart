@@ -24,7 +24,6 @@ class UsersScreen extends GetView<UsersController> {
       screenName: l10n.messages,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
-      isBackIcon: true,
       className: runtimeType.toString(),
       body: Column(
         children: [
@@ -36,7 +35,7 @@ class UsersScreen extends GetView<UsersController> {
             style: AppStyles.labelTextStyle().copyWith(
               fontSize: 14,
               fontWeight: FontWeight.w400,
-              color: Color(0xFF333333),
+              color: const Color(0xFF333333),
             ),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(
@@ -84,14 +83,14 @@ class UsersScreen extends GetView<UsersController> {
           Expanded(
             child: Obx(
               () =>
-                  controller.isLoading.isTrue
-                      ? Center(child: CircularProgressIndicator())
+                  controller.isLoadingChats.isTrue
+                      ? const Center(child: CircularProgressIndicator())
                       : controller.chatRooms.isEmpty
                       ? Center(child: Text(l10n.noChatsFound))
                       : ListView.separated(
                         itemCount: controller.chatRooms.length,
                         shrinkWrap: true,
-                        separatorBuilder: (context, index) => Divider(),
+                        separatorBuilder: (context, index) => const Divider(),
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
@@ -110,10 +109,8 @@ class UsersScreen extends GetView<UsersController> {
                                   controller.chatRooms[index].trip?.title ?? '',
                               subtitle:
                                   '${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripEndDate ?? DateTime.now())}',
-                              unreadCount: 0,
                               timestamp: DateFormat('dd MMM, hh:mma').format(
-                                controller.chatRooms[index].chats.last.createdAt
-                                    .toDate(),
+                                controller.chatRooms[index].updatedAt?.toDate() ?? DateTime.now(),
                               ),
                               memberImages:
                                   controller.chatRooms[index].users
