@@ -14,14 +14,6 @@ import '../info_row.dart';
 import '../text_widget.dart';
 
 class OtpBottomSheet extends StatelessWidget {
-  final String title;
-  final String description;
-  final TextEditingController otpController;
-  final bool isTimerComplete;
-  final String email;
-  final VoidCallback onResend;
-  final VoidCallback onVerify;
-  final RxInt count;
   const OtpBottomSheet({
     super.key,
     required this.otpController,
@@ -33,6 +25,14 @@ class OtpBottomSheet extends StatelessWidget {
     required this.description,
     required this.count,
   });
+  final String title;
+  final String description;
+  final TextEditingController otpController;
+  final bool isTimerComplete;
+  final String email;
+  final VoidCallback onResend;
+  final VoidCallback onVerify;
+  final RxInt count;
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -42,7 +42,6 @@ class OtpBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             spacing: 15.h,
             children: [
@@ -51,7 +50,7 @@ class OtpBottomSheet extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Get.back(),
-                    child: Icon(Icons.arrow_back),
+                    child: const Icon(Icons.arrow_back),
                   ),
                   TextWidget(
                     labelText: title,
@@ -71,7 +70,7 @@ class OtpBottomSheet extends StatelessWidget {
                     TextSpan(
                       text: description,
                       style: AppStyles.labelTextStyle().copyWith(
-                        color: Color(0x99141414),
+                        color: const Color(0x99141414),
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                         height: 1.25,
@@ -95,7 +94,6 @@ class OtpBottomSheet extends StatelessWidget {
               ),
               Center(
                 child: Pinput(
-                  length: 4,
                   controller: otpController,
                   submittedPinTheme: PinTheme(
                     width: 56.w,
@@ -142,7 +140,7 @@ class OtpBottomSheet extends StatelessWidget {
               Center(
                 child: Obx(
                   () => InfoRow(
-                    text: "Resend again in ${count.value} secs",
+                    text: 'Resend again in ${count.value} secs',
                     icon: Icon(
                       Icons.restore_outlined,
                       size: 16.sp,

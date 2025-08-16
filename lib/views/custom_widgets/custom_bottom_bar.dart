@@ -5,14 +5,6 @@ import '../../../../utils/app_colors.dart';
 import '../../utils/app_styles.dart';
 
 class CustomBottomBar extends StatelessWidget {
-  final List<BottomNavigationBarItem> navItems;
-  final Function(int) onTap;
-  final int selectedIndex;
-  final Color backgroundColor;
-  final Color selectedIconColor;
-  final Color unselectedIconColor;
-  final Color selectedLabelColor;
-  final Color unselectedLabelColor;
   const CustomBottomBar({
     super.key,
     required this.navItems,
@@ -24,6 +16,14 @@ class CustomBottomBar extends StatelessWidget {
     this.selectedLabelColor = AppColors.kGreenColor,
     this.unselectedLabelColor = AppColors.kWhiteColor,
   });
+  final List<BottomNavigationBarItem> navItems;
+  final Function(int) onTap;
+  final int selectedIndex;
+  final Color backgroundColor;
+  final Color selectedIconColor;
+  final Color unselectedIconColor;
+  final Color selectedLabelColor;
+  final Color unselectedLabelColor;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -44,7 +44,7 @@ class CustomBottomBar extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withAlpha(38),
               blurRadius: 10.0,
-              offset: Offset(0, 5),
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -60,7 +60,7 @@ class CustomBottomBar extends StatelessWidget {
                   width: 50.w,
                   height: 50.h,
                   margin: EdgeInsets.only(bottom: 10.h),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.kPrimaryColor,
                     shape: BoxShape.circle,
                   ),

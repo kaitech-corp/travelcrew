@@ -1,21 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 class CustomShimmerWidget extends StatelessWidget {
-  final double height;
-  final double width;
-  final BorderRadius? borderRadius;
-  final bool isCircle;
-  final double mainAxisSpacing;
-  final EdgeInsetsGeometry? padding;
-  final Widget? customWidget;
-  final bool isScrollable;
-  final double crossAxisSpacing;
-  final bool isListview;
-  final int crossAxisCount;
-  final bool applyShimmerFromHere;
-  final double childAspectRatio;
-  final Axis scrollDirection;
-  final int itemCount;
   const CustomShimmerWidget(
       {super.key,
       this.height = 80,
@@ -33,6 +18,21 @@ class CustomShimmerWidget extends StatelessWidget {
       this.isListview = true,
       this.scrollDirection = Axis.horizontal,
       this.itemCount = 10});
+  final double height;
+  final double width;
+  final BorderRadius? borderRadius;
+  final bool isCircle;
+  final double mainAxisSpacing;
+  final EdgeInsetsGeometry? padding;
+  final Widget? customWidget;
+  final bool isScrollable;
+  final double crossAxisSpacing;
+  final bool isListview;
+  final int crossAxisCount;
+  final bool applyShimmerFromHere;
+  final double childAspectRatio;
+  final Axis scrollDirection;
+  final int itemCount;
   @override
   Widget build(BuildContext context) {
     return padding != null
@@ -42,7 +42,7 @@ class CustomShimmerWidget extends StatelessWidget {
           )
         : getMain();
   }
-  getMain() {
+  BoxScrollView getMain() {
     return isListview
         ? ListView.separated(
             shrinkWrap: true,

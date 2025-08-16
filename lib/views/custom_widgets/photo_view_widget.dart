@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 class PhotoViewWidget extends StatelessWidget {
-  final String imageUrl;
-  final ImageSourceType sourceType;
-  final bool viewCloseButton;
   const PhotoViewWidget({
     super.key,
     required this.imageUrl,
     required this.sourceType,
     this.viewCloseButton = true,
   });
+  final String imageUrl;
+  final ImageSourceType sourceType;
+  final bool viewCloseButton;
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
@@ -20,7 +20,7 @@ class PhotoViewWidget extends StatelessWidget {
       case ImageSourceType.network:
         imageProvider = CachedNetworkImageProvider(
           imageUrl,
-          headers: {
+          headers: const {
             // HttpHeaders.authorizationHeader:
             //     'Bearer ${supabase.auth.currentSession?.accessToken}'
           },
@@ -66,7 +66,7 @@ class PhotoViewWidget extends StatelessWidget {
   }
 }
 enum ImageSourceType { network, file, asset }
-previewImageDialogue({
+void previewImageDialogue({
   required String imageUrl,
   required ImageSourceType sourceType,
   double? width,

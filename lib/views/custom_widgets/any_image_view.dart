@@ -5,21 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AnyImageView extends StatelessWidget {
-  final String url;
-  final SourceType fileType;
-  final String errorImage;
-  final Color? containerBackgroundColor;
-  final Widget? errorWidget;
-  final EdgeInsetsGeometry? padding;
-  final BoxFit fit;
-  final BoxBorder? border;
-  final Color? imageColor;
-  final double? height;
-  final BorderRadius? borderRadius;
-  final double? width;
-  final bool useCache;
-  final bool isCircle;
-  final Function()? ontap;
   const AnyImageView({
     super.key,
     this.ontap,
@@ -38,6 +23,21 @@ class AnyImageView extends StatelessWidget {
     this.errorImage = 'assets/icons/ic_user.png',
     required this.url,
   });
+  final String url;
+  final SourceType fileType;
+  final String errorImage;
+  final Color? containerBackgroundColor;
+  final Widget? errorWidget;
+  final EdgeInsetsGeometry? padding;
+  final BoxFit fit;
+  final BoxBorder? border;
+  final Color? imageColor;
+  final double? height;
+  final BorderRadius? borderRadius;
+  final double? width;
+  final bool useCache;
+  final bool isCircle;
+  final Function()? ontap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(onTap: ontap, child: getContainer());
@@ -49,7 +49,7 @@ class AnyImageView extends StatelessWidget {
           border != null
               ? const EdgeInsets.all(1)
               : errorImage == 'assets/icons/ic_user.png'
-              ? EdgeInsets.all(3)
+              ? const EdgeInsets.all(3)
               : padding,
       height: height,
       width: width,
@@ -77,7 +77,7 @@ class AnyImageView extends StatelessWidget {
             ? CachedNetworkImage(
               filterQuality: FilterQuality.high,
               imageUrl: url,
-              httpHeaders: {
+              httpHeaders: const {
                 // HttpHeaders.authorizationHeader:
                 //     'Bearer ${supabase.auth.currentSession?.accessToken}'
               },
@@ -96,7 +96,7 @@ class AnyImageView extends StatelessWidget {
             : Image.network(
               url,
               fit: fit,
-              headers: {
+              headers: const {
                 // HttpHeaders.authorizationHeader:
                 //     'Bearer ${supabase.auth.currentSession?.accessToken}'
               },

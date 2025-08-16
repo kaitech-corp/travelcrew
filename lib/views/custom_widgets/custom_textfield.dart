@@ -233,7 +233,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           fontWeight: FontWeight.w400,
         ),
     floatingLabelBehavior: FloatingLabelBehavior.always,
-    hintText: widget.hintText ?? "",
+    hintText: widget.hintText ?? '',
     hintStyle:
         widget.hintStyle ??
         AppStyles.labelTextStyle().copyWith(
@@ -249,7 +249,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               onTap: () {
                 showCountryPicker(
                   context: Get.context!,
-                  showPhoneCode: false,
                   onSelect: (b) {},
                 );
               },
@@ -265,7 +264,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 ],
               ),
             )
-            : SizedBox.shrink()),
+            : const SizedBox.shrink()),
     suffixIconConstraints: widget.suffixConstraints,
     isDense: true,
     contentPadding: widget.contentPadding ?? const EdgeInsets.all(15),
@@ -310,10 +309,10 @@ class CustomExpiryDateFormatter extends TextInputFormatter {
       // Limit the length to 5 characters
       text = text.substring(0, 5);
     }
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     for (var i = 0; i < text.length; i++) {
       if (i == 1) {
-        var month = int.tryParse(text.substring(0, i + 1)) ?? 0;
+        final month = int.tryParse(text.substring(0, i + 1)) ?? 0;
         if (month > 12) {
           // If the month is greater than 12, return the old value
           return oldValue;
@@ -343,7 +342,7 @@ class CustomCreditCardFormatter extends TextInputFormatter {
       // Limit the length to 19 characters
       text = text.substring(0, 19);
     }
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     for (var i = 0; i < text.length; i++) {
       buffer.write(text[i]);
       if ((i + 1) % 4 == 0 && i != text.length - 1) {

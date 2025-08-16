@@ -5,8 +5,8 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 
 class CustomLockToggle extends StatelessWidget {
-  final RxBool isLocked;
   const CustomLockToggle({super.key, required this.isLocked});
+  final RxBool isLocked;
   @override
   Widget build(BuildContext context) {
     return Obx(

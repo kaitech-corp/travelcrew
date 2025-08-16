@@ -52,7 +52,7 @@ class CustomElevatedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(width, height),
         elevation: isShadow ? 1 : 0,
-        animationDuration: Duration(milliseconds: 500),
+        animationDuration: const Duration(milliseconds: 500),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
         backgroundColor: isDisabled ? Colors.grey : backgroundColor,
         shape: RoundedRectangleBorder(
@@ -71,7 +71,7 @@ class CustomElevatedButton extends StatelessWidget {
               ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  iconStart ?? SizedBox.shrink(),
+                  iconStart ?? const SizedBox.shrink(),
                   SizedBox(width: 10.w),
                   Text(
                     title,
@@ -84,7 +84,7 @@ class CustomElevatedButton extends StatelessWidget {
                         ),
                   ),
                   SizedBox(width: 10.w),
-                  icon ?? SizedBox.shrink(),
+                  icon ?? const SizedBox.shrink(),
                 ],
               )
               : Text(
@@ -143,14 +143,14 @@ class CustomButtonTwoIcon extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(width, height),
         elevation: isShadow ? 5 : 0,
-        animationDuration: Duration(milliseconds: 500),
+        animationDuration: const Duration(milliseconds: 500),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
         backgroundColor: isDisabled ? Colors.grey : backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50.r),
           side:
               isReversed
-                  ? BorderSide(color: AppColors.kSecondaryColor, width: 0.7)
+                  ? const BorderSide(color: AppColors.kSecondaryColor, width: 0.7)
                   : BorderSide.none,
         ),
       ),

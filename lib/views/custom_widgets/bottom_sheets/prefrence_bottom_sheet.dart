@@ -7,25 +7,24 @@ import '../custom_elevated_button.dart';
 import '../text_widget.dart';
 import 'general_bottom_sheet.dart';
 class PrefrenceBottomSheet extends StatelessWidget {
-  final List<String> availableTags;
-  final List<String> sellectedTags;
-  final Function(String) onTagSelected;
   const PrefrenceBottomSheet({
     super.key,
     required this.availableTags,
     required this.sellectedTags,
     required this.onTagSelected,
   });
+  final List<String> availableTags;
+  final List<String> sellectedTags;
+  final Function(String) onTagSelected;
   @override
   Widget build(BuildContext context) {
     return GeneralBottomSheet(
-      isCrossIcon: false,
       color: AppColors.kWhiteColor,
       child: Container(
         // height: Get.height * 0.4,
         width: Get.width,
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-        decoration: ShapeDecoration(
+        decoration: const ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -38,13 +37,11 @@ class PrefrenceBottomSheet extends StatelessWidget {
               color: Color(0x1E000000),
               blurRadius: 10,
               offset: Offset(0, 4),
-              spreadRadius: 0,
             ),
           ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10.h,
           children: [

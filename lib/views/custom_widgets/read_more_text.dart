@@ -4,14 +4,6 @@ import 'package:readmore/readmore.dart';
 import '../../utils/app_styles.dart';
 
 class ReadMoreTextWidget extends StatelessWidget {
-  final String text;
-  final TextStyle? textStyle;
-  final TextStyle? readLessTextStyle;
-  final TrimMode? trimMode;
-  final TextStyle? readMoreTextStyle;
-  final String? readMoreText;
-  final String? readLessText;
-  final int trimLines;
   const ReadMoreTextWidget({
     super.key,
     required this.text,
@@ -23,6 +15,14 @@ class ReadMoreTextWidget extends StatelessWidget {
     this.readLessTextStyle,
     this.readMoreTextStyle,
   });
+  final String text;
+  final TextStyle? textStyle;
+  final TextStyle? readLessTextStyle;
+  final TrimMode? trimMode;
+  final TextStyle? readMoreTextStyle;
+  final String? readMoreText;
+  final String? readLessText;
+  final int trimLines;
   @override
   Widget build(BuildContext context) {
     return ReadMoreText(

@@ -5,15 +5,15 @@ import '../../../../utils/app_colors.dart';
 import '../../utils/app_styles.dart';
 
 class CustomPhoneField extends StatefulWidget {
-  final ValueChanged<Country> onCountrySelected;
-  final Country selectedCountry;
-  final TextEditingController controller;
   const CustomPhoneField({
     super.key,
     required this.onCountrySelected,
     required this.selectedCountry,
     required this.controller,
   });
+  final ValueChanged<Country> onCountrySelected;
+  final Country selectedCountry;
+  final TextEditingController controller;
   @override
   CustomPhoneFieldState createState() => CustomPhoneFieldState();
 }
@@ -57,7 +57,6 @@ class CustomPhoneFieldState extends State<CustomPhoneField> {
             onTap: () {
               showCountryPicker(
                 context: context,
-                showPhoneCode: false, // Hide country code
                 onSelect: widget.onCountrySelected,
               );
             },

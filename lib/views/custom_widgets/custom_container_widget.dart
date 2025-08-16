@@ -1,12 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../../../../utils/app_colors.dart';
 class CustomContainerWidget extends StatelessWidget {
-  final Widget child;
-  final Function()? onTap;
-  final EdgeInsetsGeometry padding;
-  final double? height;
-  final double? width;
-  final double? borderRadius;
   const CustomContainerWidget({
     super.key,
     required this.child,
@@ -16,6 +10,12 @@ class CustomContainerWidget extends StatelessWidget {
     this.height,
     this.padding = const EdgeInsets.all(16),
   });
+  final Widget child;
+  final Function()? onTap;
+  final EdgeInsetsGeometry padding;
+  final double? height;
+  final double? width;
+  final double? borderRadius;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

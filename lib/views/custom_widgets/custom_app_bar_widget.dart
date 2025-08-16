@@ -7,6 +7,21 @@ import '../../../../utils/app_styles.dart';
 import '../../../../utils/debugging.dart';
 
 class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({
+    super.key,
+    this.screenTitle = '',
+    this.backIcon = true,
+    this.className = '',
+    this.actions = const [],
+    this.onBackButtonTap,
+    required this.scaffoldKey,
+    this.leadingWidth = 76,
+    this.centerTitle,
+    this.screenTitleColor,
+    this.leadingWidget,
+    this.backIconColor,
+    this.title,
+  });
   final String screenTitle;
   final String className;
   final VoidCallback? onBackButtonTap;
@@ -19,21 +34,6 @@ class CustomAppBar extends StatelessWidget {
   final bool backIcon;
   final bool? centerTitle;
   final Color? backIconColor;
-  const CustomAppBar({
-    super.key,
-    this.screenTitle = "",
-    this.backIcon = true,
-    this.className = "",
-    this.actions = const [],
-    this.onBackButtonTap,
-    required this.scaffoldKey,
-    this.leadingWidth = 76,
-    this.centerTitle,
-    this.screenTitleColor,
-    this.leadingWidget,
-    this.backIconColor,
-    this.title,
-  });
   @override
   Widget build(BuildContext context) {
     kLogging('=============class name$className ${leadingWidth == 0.0}');
@@ -64,7 +64,7 @@ class CustomAppBar extends StatelessWidget {
                       leadingWidget ??
                       (backIcon && Navigator.canPop(context)
                           ? Image.asset(AppImages.kBackIcon, scale: 4)
-                          : SizedBox.shrink()),
+                          : const SizedBox.shrink()),
                 ),
               )
               : const SizedBox.shrink(),

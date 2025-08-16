@@ -14,7 +14,7 @@ class ImagePickerBottomSheet {
     BuildContext context, {
     bool isMultiSelect = false,
   }) async {
-    Completer<List<String>> completer = Completer<List<String>>();
+    final Completer<List<String>> completer = Completer<List<String>>();
     await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
@@ -45,7 +45,7 @@ class ImagePickerBottomSheet {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(
+                  leading: const Icon(
                     Icons.camera,
                     color: AppColors.kPrimaryColor,
                     size: 20,
@@ -61,17 +61,17 @@ class ImagePickerBottomSheet {
                   onTap: () async {
                     Navigator.pop(context);
                     if (isMultiSelect) {
-                      List<String> files =
+                      final List<String> files =
                           await ImageServices().getMultiImages();
                       completer.complete(files);
                       return;
                     }
-                    String file = await ImageServices().getImageCamera();
+                    final String file = await ImageServices().getImageCamera();
                     completer.complete([file]);
                   },
                 ),
                 ListTile(
-                  leading: Icon(
+                  leading: const Icon(
                     Icons.photo_library,
                     color: AppColors.kPrimaryColor,
                     size: 20,
@@ -86,7 +86,7 @@ class ImagePickerBottomSheet {
                   ),
                   onTap: () async {
                     Navigator.pop(context);
-                    String file = await ImageServices().getImageGallery();
+                    final String file = await ImageServices().getImageGallery();
                     completer.complete([file]);
                   },
                 ),

@@ -6,11 +6,6 @@ import '../../utils/app_colors.dart';
 import '../../utils/app_styles.dart';
 
 class SimpleDropdown<T> extends StatefulWidget {
-  final List<T> items;
-  final T? value;
-  final ValueChanged<T?> onChanged;
-  final Widget Function(T)? itemBuilder;
-  final String hintText;
   const SimpleDropdown({
     super.key,
     required this.items,
@@ -19,6 +14,11 @@ class SimpleDropdown<T> extends StatefulWidget {
     this.value,
     this.hintText = 'Select Members',
   });
+  final List<T> items;
+  final T? value;
+  final ValueChanged<T?> onChanged;
+  final Widget Function(T)? itemBuilder;
+  final String hintText;
   @override
   _SimpleDropdownState<T> createState() => _SimpleDropdownState<T>();
 }
@@ -54,7 +54,7 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
             onTap: _toggleDropdown,
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(30.0),
@@ -107,7 +107,7 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
                 widget.itemBuilder != null
                     ? widget.itemBuilder!(item)
                     : Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 16.0,
                         vertical: 12.0,
                       ),

@@ -11,14 +11,6 @@ import '../../../utils/app_styles.dart';
 import '../../create_trip/widget/date_picker.dart';
 
 class RangeCalendarDialog extends GetView<RangePickerController> {
-  final DateTime? focusedDay;
-  final bool isRange;
-  final DateTime? rangeStart;
-  final DateTime? initialDate;
-  final DateTime? lastDate;
-  final DateTime? rangeEnd;
-  final Function(DateTime? selectedDate)? onDateSelected;
-  final Function(DateTime? startDate, DateTime? endDate)? onRangeSelected;
   const RangeCalendarDialog({
     super.key,
     this.focusedDay,
@@ -30,6 +22,14 @@ class RangeCalendarDialog extends GetView<RangePickerController> {
     this.rangeEnd,
     this.onRangeSelected,
   });
+  final DateTime? focusedDay;
+  final bool isRange;
+  final DateTime? rangeStart;
+  final DateTime? initialDate;
+  final DateTime? lastDate;
+  final DateTime? rangeEnd;
+  final Function(DateTime? selectedDate)? onDateSelected;
+  final Function(DateTime? startDate, DateTime? endDate)? onRangeSelected;
 
   @override
   Widget build(BuildContext context) {

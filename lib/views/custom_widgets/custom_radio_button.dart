@@ -3,10 +3,6 @@ import 'package:travel_crew/views/custom_widgets/text_widget.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_styles.dart';
 class CustomRadioButton<T> extends StatelessWidget {
-  final T value;
-  final T groupValue;
-  final String text;
-  final ValueChanged<T?> onChanged;
   const CustomRadioButton({
     super.key,
     required this.value,
@@ -14,6 +10,10 @@ class CustomRadioButton<T> extends StatelessWidget {
     required this.text,
     required this.onChanged,
   });
+  final T value;
+  final T groupValue;
+  final String text;
+  final ValueChanged<T?> onChanged;
   @override
   Widget build(BuildContext context) {
     return InkWell(

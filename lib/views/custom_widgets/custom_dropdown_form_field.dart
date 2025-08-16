@@ -5,11 +5,6 @@ import 'package:get/get.dart';
 import '../../utils/app_styles.dart';
 
 class CustomDropdownFormField extends StatefulWidget {
-  final String title;
-  final List<String> items;
-  final String selectedItem;
-  final Function(String) onItemSelected;
-  final String hintText;
   const CustomDropdownFormField({
     super.key,
     required this.title,
@@ -18,6 +13,11 @@ class CustomDropdownFormField extends StatefulWidget {
     required this.onItemSelected,
     this.hintText = 'Select Item',
   });
+  final String title;
+  final List<String> items;
+  final String selectedItem;
+  final Function(String) onItemSelected;
+  final String hintText;
   @override
   State<CustomDropdownFormField> createState() =>
       _CustomDropdownFormFieldState();

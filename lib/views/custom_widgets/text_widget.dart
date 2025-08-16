@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 import '../../../utils/app_styles.dart';
 class TextWidget extends StatelessWidget {
-  final String labelText;
-  final TextStyle? style;
-  final TextAlign? textAlign;
-  final TextDirection? textDirection;
-  final bool? softWrap;
-  final TextOverflow? overflow;
-  final int? maxLines;
-  final Function()? onTap;
   const TextWidget({
     super.key,
     required this.labelText,
@@ -21,6 +13,14 @@ class TextWidget extends StatelessWidget {
     this.maxLines,
     this.onTap,
   });
+  final String labelText;
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final TextDirection? textDirection;
+  final bool? softWrap;
+  final TextOverflow? overflow;
+  final int? maxLines;
+  final Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(

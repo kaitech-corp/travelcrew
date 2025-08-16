@@ -5,24 +5,6 @@ import '../../utils/app_colors.dart';
 import '../../utils/app_styles.dart';
 
 class CustomTextField extends StatefulWidget {
-  final TextEditingController? controller;
-  final String? hintText;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final Function(String)? onFieldSubmitted;
-  final TextInputAction textInputAction;
-  final EdgeInsetsGeometry? contentPadding;
-  final FocusNode? focusNode;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final String? Function(String?)? validator;
-  final void Function(String)? onChanged;
-  final bool readOnly;
-  final Color? fillColor;
-  final BoxConstraints? prefixIconConstraints;
-  final BoxConstraints? suffixIconConstraints;
-  final double? width;
-  final double? height;
   const CustomTextField({
     super.key,
     this.onFieldSubmitted,
@@ -44,6 +26,24 @@ class CustomTextField extends StatefulWidget {
     this.width,
     this.height,
   });
+  final TextEditingController? controller;
+  final String? hintText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final Function(String)? onFieldSubmitted;
+  final TextInputAction textInputAction;
+  final EdgeInsetsGeometry? contentPadding;
+  final FocusNode? focusNode;
+  final bool obscureText;
+  final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final bool readOnly;
+  final Color? fillColor;
+  final BoxConstraints? prefixIconConstraints;
+  final BoxConstraints? suffixIconConstraints;
+  final double? width;
+  final double? height;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -68,7 +68,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.dispose();
   }
 
-  onFocus() {
+  void onFocus() {
     if (focusNode!.hasFocus) {
       setState(() {
         fillColor = AppColors.kWhiteColor;
@@ -87,7 +87,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
       height: widget.height,
       child: TextFormField(
         onFieldSubmitted: widget.onFieldSubmitted,
-        textCapitalization: TextCapitalization.none,
         focusNode: focusNode,
         textInputAction: widget.textInputAction,
         controller: widget.controller,
@@ -136,15 +135,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.r),
-            borderSide: BorderSide(color: AppColors.kPrimaryColor, width: 1),
+            borderSide: const BorderSide(color: AppColors.kPrimaryColor),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.r),
-            borderSide: BorderSide(color: AppColors.kRedColor, width: 1),
+            borderSide: const BorderSide(color: AppColors.kRedColor),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.r),
-            borderSide: BorderSide(color: AppColors.kRedColor, width: 1),
+            borderSide: const BorderSide(color: AppColors.kRedColor),
           ),
           filled: true,
           fillColor: fillColor,

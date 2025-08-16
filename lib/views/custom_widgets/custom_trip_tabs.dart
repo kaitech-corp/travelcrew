@@ -4,18 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../utils/app_styles.dart';
 
 class CustomTripTabs extends StatelessWidget {
-  final List<String> tabs;
-  final int selectedIndex;
-  final Function(int) onTabChanged;
-  final double height;
-  final double tabBorderRadius;
-  final Color selectedTabColor;
-  final Color unselectedTabColor;
-  final Color selectedTextColor;
-  final Color unselectedTextColor;
-  final Color selectedBorderColor;
-  final double tabSpacing;
-  final EdgeInsets padding;
   const CustomTripTabs({
     super.key,
     required this.tabs,
@@ -31,6 +19,18 @@ class CustomTripTabs extends StatelessWidget {
     this.tabSpacing = 8,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
   });
+  final List<String> tabs;
+  final int selectedIndex;
+  final Function(int) onTabChanged;
+  final double height;
+  final double tabBorderRadius;
+  final Color selectedTabColor;
+  final Color unselectedTabColor;
+  final Color selectedTextColor;
+  final Color unselectedTextColor;
+  final Color selectedBorderColor;
+  final double tabSpacing;
+  final EdgeInsets padding;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,7 +40,6 @@ class CustomTripTabs extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: List.generate(
             tabs.length,
             (index) => Padding(

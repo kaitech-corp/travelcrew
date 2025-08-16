@@ -6,6 +6,41 @@ import 'custom_app_bar_widget.dart';
 import 'custom_screen_loader.dart';
 
 class CustomScaffold extends StatefulWidget {
+  CustomScaffold({
+    super.key,
+    required this.className,
+    this.isBackIcon = true,
+    this.resizeToAvoidBottomInset = true,
+    required this.screenName,
+    this.subScreenName,
+    this.onWillPop,
+    this.appBarSize,
+    this.centerTitle,
+    this.onBackButtonPressed,
+    this.gestureDetectorOnPanDown,
+    this.gestureDetectorOnTap,
+    this.onNotificationListener,
+    required this.scaffoldKey,
+    required this.body,
+    this.padding = const EdgeInsets.only(left: 18, right: 18),
+    this.gridview,
+    this.bottomBarIndex = 0,
+    this.showAppBarProfile = false,
+    this.showAppBarBackButton = false,
+    this.showActionButton = false,
+    this.isFullBody = false,
+    this.bottomNavigationBar,
+    this.title,
+    this.floatingActionButton,
+    this.leadingWidth = 70,
+    this.listOfPopupMenuItems = const [],
+    this.actions = const [],
+    this.leadingWidget,
+    this.drawer,
+    this.backIconColor,
+    this.openDrawerCallback,
+    this.backgroundColor,
+  });
   final Widget body;
   final String className;
   final String screenName;
@@ -37,47 +72,10 @@ class CustomScaffold extends StatefulWidget {
   EdgeInsets padding = const EdgeInsets.only(
     left: 15,
     right: 15,
-    top: 0,
-    bottom: 0,
   );
   Widget? drawer;
   final Function? openDrawerCallback;
   final Color? backgroundColor;
-  CustomScaffold({
-    super.key,
-    required this.className,
-    this.isBackIcon = true,
-    this.resizeToAvoidBottomInset = true,
-    required this.screenName,
-    this.subScreenName,
-    this.onWillPop,
-    this.appBarSize,
-    this.centerTitle,
-    this.onBackButtonPressed,
-    this.gestureDetectorOnPanDown,
-    this.gestureDetectorOnTap,
-    this.onNotificationListener,
-    required this.scaffoldKey,
-    required this.body,
-    this.padding = const EdgeInsets.only(left: 18, right: 18, bottom: 0),
-    this.gridview,
-    this.bottomBarIndex = 0,
-    this.showAppBarProfile = false,
-    this.showAppBarBackButton = false,
-    this.showActionButton = false,
-    this.isFullBody = false,
-    this.bottomNavigationBar,
-    this.title,
-    this.floatingActionButton,
-    this.leadingWidth = 70,
-    this.listOfPopupMenuItems = const [],
-    this.actions = const [],
-    this.leadingWidget,
-    this.drawer,
-    this.backIconColor,
-    this.openDrawerCallback,
-    this.backgroundColor,
-  });
   @override
   CustomScaffoldState createState() => CustomScaffoldState();
 }
@@ -154,7 +152,6 @@ class CustomScaffoldState extends State<CustomScaffold> {
                           ),
                           child: SafeArea(
                             child: Column(
-                              mainAxisSize: MainAxisSize.max,
                               children: [
                                 Flexible(child: Container(child: widget.body)),
                               ],
@@ -179,18 +176,18 @@ class CustomScaffoldState extends State<CustomScaffold> {
 }
 
 Future<bool?> showExitConfirmationDialog(BuildContext context) async {
-  return await showDialog<bool>(
+  return showDialog<bool>(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text('Confirm Exit'),
-        content: Text('Are you sure you want to exit?'),
+        title: const Text('Confirm Exit'),
+        content: const Text('Are you sure you want to exit?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
-          TextButton(onPressed: () => exit(0), child: Text('Exit')),
+          TextButton(onPressed: () => exit(0), child: const Text('Exit')),
         ],
       );
     },

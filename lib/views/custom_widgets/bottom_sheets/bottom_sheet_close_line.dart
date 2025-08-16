@@ -4,7 +4,7 @@ class BottomSheetCloseLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
       height: 5.0,
       width: 50.0,
       decoration: BoxDecoration(

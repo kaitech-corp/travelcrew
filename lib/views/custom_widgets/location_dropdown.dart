@@ -9,17 +9,6 @@ import 'package:travel_crew/utils/common_code.dart';
 import '../../utils/app_styles.dart';
 
 class LocationDropdownWidget extends StatefulWidget {
-  final List<SearchModel> items;
-  final String selectedText;
-  final TextEditingController textEditingController;
-  final Widget? suffixIcon;
-  final Function(String placeId, SearchModel searchText)? onTap;
-  final TextInputAction textInputAction;
-  final BoxConstraints? suffixIconConstraints;
-  final String hintText;
-  final String? Function(String?)? validator;
-  final FocusNode focusNode;
-  final Function(String? value)? onChanged;
 
   const LocationDropdownWidget({
     required this.selectedText,
@@ -35,6 +24,17 @@ class LocationDropdownWidget extends StatefulWidget {
     required this.focusNode,
     this.suffixIcon,
   });
+  final List<SearchModel> items;
+  final String selectedText;
+  final TextEditingController textEditingController;
+  final Widget? suffixIcon;
+  final Function(String placeId, SearchModel searchText)? onTap;
+  final TextInputAction textInputAction;
+  final BoxConstraints? suffixIconConstraints;
+  final String hintText;
+  final String? Function(String?)? validator;
+  final FocusNode focusNode;
+  final Function(String? value)? onChanged;
 
   @override
   State<LocationDropdownWidget> createState() => _LocationDropdownWidgetState();
@@ -43,12 +43,12 @@ class LocationDropdownWidget extends StatefulWidget {
 class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
   bool showDropdown = false;
   @override
-  initState() {
+  void initState() {
     super.initState();
     widget.focusNode.addListener(checkIfFocus);
   }
 
-  checkIfFocus() {
+  void checkIfFocus() {
     if (widget.focusNode.hasFocus) {
       GlobalVariables.showDropdown.value = true;
     } else {
@@ -97,9 +97,8 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
               enabledBorder: border,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30.r),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: AppColors.kPrimaryColor,
-                  width: 1,
                 ),
               ),
               prefixIcon: Padding(
@@ -130,7 +129,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
           Obx(
             () =>
                 GlobalVariables.showDropdown.isFalse
-                    ? SizedBox.shrink()
+                    ? const SizedBox.shrink()
                     : Padding(
                       padding: EdgeInsets.only(bottom: 10.h, top: 10.h),
                       child: ConstrainedBox(

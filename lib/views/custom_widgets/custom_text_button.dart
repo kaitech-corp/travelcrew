@@ -41,13 +41,12 @@ class CustomTextButton extends StatelessWidget {
         minimumSize: Size(width, height),
         elevation: 6,
         tapTargetSize: MaterialTapTargetSize.padded,
-        animationDuration: Duration(milliseconds: 500),
+        animationDuration: const Duration(milliseconds: 500),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: borderColor ?? Theme.of(context).colorScheme.surface,
-            width: 1,
           ),
           borderRadius: BorderRadius.circular(50.r),
         ),

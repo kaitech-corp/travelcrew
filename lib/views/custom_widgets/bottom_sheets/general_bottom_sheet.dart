@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 class GeneralBottomSheet extends StatelessWidget {
-  final Widget child;
-  final Color? color;
-  final bool isCrossIcon;
   const GeneralBottomSheet({
     super.key,
     required this.child,
     this.color,
     this.isCrossIcon = false,
   });
+  final Widget child;
+  final Color? color;
+  final bool isCrossIcon;
   @override
   Widget build(BuildContext context) {
     return Stack(

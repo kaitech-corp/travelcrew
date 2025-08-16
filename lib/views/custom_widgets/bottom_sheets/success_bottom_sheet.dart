@@ -10,10 +10,6 @@ import '../text_widget.dart';
 import 'bottom_sheet_close_line.dart';
 import 'general_bottom_sheet.dart';
 class SuccessBottomSheet extends StatelessWidget {
-  final String title;
-  final String description;
-  final VoidCallback onContinue;
-  final String buttonText;
   const SuccessBottomSheet({
     super.key,
     required this.title,
@@ -21,17 +17,19 @@ class SuccessBottomSheet extends StatelessWidget {
     required this.onContinue,
     required this.buttonText,
   });
+  final String title;
+  final String description;
+  final VoidCallback onContinue;
+  final String buttonText;
   @override
   Widget build(BuildContext context) {
     return GeneralBottomSheet(
       child: SizedBox(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           spacing: 12.h,
           children: [
-            BottomSheetCloseLine(),
+            const BottomSheetCloseLine(),
             SizedBox(height: 10.h),
             Center(
               child: AnyImageView(
