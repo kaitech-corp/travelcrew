@@ -1,13 +1,6 @@
 import 'dart:convert';
 
 class ExpenseModel {
-  String? id;
-  String tripId;
-  String name;
-  double amount;
-  List<String> paidByUsers;
-  String createdBy;
-  DateTime date;
   ExpenseModel({
     this.id,
     required this.createdBy,
@@ -17,6 +10,30 @@ class ExpenseModel {
     required this.amount,
     required this.date,
   });
+
+  factory ExpenseModel.fromMap(Map<String, dynamic> map) {
+    return ExpenseModel(
+      paidByUsers: List<String>.from(map['paidByUsers'] as List<dynamic>? ?? []),
+      createdBy: map['createdBy'] as String? ?? '',
+      id: map['id'] as String?,
+      tripId: map['tripId'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      amount: (map['amount'] as num?)?.toDouble() ?? 0.0,
+      date: map['date'] != null
+          ? DateTime.parse(map['date'] as String)
+          : DateTime.now(),
+    );
+  }
+
+  factory ExpenseModel.fromJson(String source) =>
+      ExpenseModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  String? id;
+  String tripId;
+  String name;
+  double amount;
+  List<String> paidByUsers;
+  String createdBy;
+  DateTime date;
 
   ExpenseModel copyWith({
     String? id,
@@ -39,35 +56,18 @@ class ExpenseModel {
   }
 
   Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
-
-    result.addAll({'createdBy': createdBy});
-    result.addAll({'paidByUsers': paidByUsers});
-    result.addAll({'id': id});
-    result.addAll({'tripId': tripId});
-    result.addAll({'name': name});
-    result.addAll({'amount': amount});
-    result.addAll({'date': date.toIso8601String()});
-
-    return result;
-  }
-
-  factory ExpenseModel.fromMap(Map<String, dynamic> map) {
-    return ExpenseModel(
-      paidByUsers: List<String>.from(map['paidByUsers'] ?? []),
-      createdBy: map['createdBy'] ?? '',
-      id: map['id'] ?? '',
-      tripId: map['tripId'] ?? '',
-      name: map['name'] ?? '',
-      amount: map['amount']?.toDouble() ?? 0.0,
-      date: DateTime.parse(map['date']),
-    );
+    return <String, dynamic>{
+      'createdBy': createdBy,
+      'paidByUsers': paidByUsers,
+      'id': id,
+      'tripId': tripId,
+      'name': name,
+      'amount': amount,
+      'date': date.toIso8601String(),
+    };
   }
 
   String toJson() => json.encode(toMap());
-
-  factory ExpenseModel.fromJson(String source) =>
-      ExpenseModel.fromMap(json.decode(source));
 
   @override
   String toString() {

@@ -6,44 +6,6 @@ import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 
 class TripModel {
-  double latitude;
-  double longitude;
-  String continent;
-  final String id;
-  final String destination;
-  List<PublicUserModel>? joindUsersList;
-  final String? tripStatus;
-  final String? title;
-  PublicUserModel? createdByUser;
-  final String createdBy;
-  final DateTime? tripStartDate;
-  final DateTime? tripEndDate;
-  final String? tripLocation;
-  int favouriteCount;
-  final double tripBudget;
-  final String country;
-  final DateTime startDate;
-  List<String>? joinedUsers;
-  List<String>? invitedUsers;
-  final bool? isPrivate;
-  final String? airlineName;
-  final String? flightNumber;
-  final DateTime? departureDate;
-  final DateTime? arrivalDate;
-  final String? departureAirport;
-  final String? arrivalAirport;
-  final String? lodgingType;
-  final String? hotelName;
-  final String? hotelAddress;
-  final DateTime? checkInDate;
-  final DateTime? checkOutDate;
-  final double? expensePerNight;
-  List<ActivityModel>? activities;
-  List<ExpenseModel>? expenses;
-
-  final String endDate;
-  final int daysToGo;
-  List<String> images;
 
   TripModel({
     this.createdByUser,
@@ -84,6 +46,111 @@ class TripModel {
     required this.images,
     this.continent = '',
   });
+
+  factory TripModel.fromMap(Map<String, dynamic> map) {
+    return TripModel(
+      id: map['id'] as String? ?? '',
+      destination: map['destination'] as String? ?? '',
+      latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (map['longitude'] as num?)?.toDouble() ?? 0.0,
+      favouriteCount: (map['favouriteCount'] as num?)?.toInt() ?? 0,
+      tripStatus: map['tripStatus'] as String? ?? TripStatus.upcoming.name,
+      title: map['title'] as String?,
+      createdBy: map['createdBy'] as String? ?? '',
+      tripStartDate: map['tripStartDate'] != null
+          ? DateTime.parse(map['tripStartDate'] as String)
+          : null,
+      tripEndDate: map['tripEndDate'] != null
+          ? DateTime.parse(map['tripEndDate'] as String)
+          : null,
+      tripLocation: map['tripLocation'] as String?,
+      tripBudget: (map['tripBudget'] as num?)?.toDouble() ?? 0.0,
+      country: map['country'] as String? ?? '',
+      startDate: map['startDate'] != null
+          ? DateTime.parse(map['startDate'] as String)
+          : DateTime.now(),
+      joinedUsers: (map['joinedUsers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      invitedUsers: (map['invitedUsers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      isPrivate: map['isPrivate'] as bool?,
+      airlineName: map['airlineName'] as String?,
+      flightNumber: map['flightNumber'] as String?,
+      departureDate: map['departureDate'] != null
+          ? DateTime.parse(map['departureDate'] as String)
+          : null,
+      arrivalDate: map['arrivalDate'] != null
+          ? DateTime.parse(map['arrivalDate'] as String)
+          : null,
+      departureAirport: map['departureAirport'] as String?,
+      arrivalAirport: map['arrivalAirport'] as String?,
+      lodgingType: map['lodgingType'] as String?,
+      hotelName: map['hotelName'] as String?,
+      hotelAddress: map['hotelAddress'] as String?,
+      checkInDate: map['checkInDate'] != null
+          ? DateTime.parse(map['checkInDate'] as String)
+          : null,
+      checkOutDate: map['checkOutDate'] != null
+          ? DateTime.parse(map['checkOutDate'] as String)
+          : null,
+      expensePerNight: (map['expensePerNight'] as num?)?.toDouble(),
+      activities: (map['activities'] as List<dynamic>?)
+          ?.map((e) => ActivityModel.fromMap(e as Map<String, dynamic>))
+          .toList(),
+      expenses: (map['expenses'] as List<dynamic>?)
+          ?.map((e) => ExpenseModel.fromMap(e as Map<String, dynamic>))
+          .toList(),
+      endDate: map['endDate'] as String? ?? '',
+      daysToGo: (map['daysToGo'] as num?)?.toInt() ?? 0,
+      images:
+          (map['images'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              [],
+      continent: map['continent'] as String? ?? '',
+    );
+  }
+
+  factory TripModel.fromJson(String source) =>
+      TripModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  double latitude;
+  double longitude;
+  String continent;
+  final String id;
+  final String destination;
+  List<PublicUserModel>? joindUsersList;
+  final String? tripStatus;
+  final String? title;
+  PublicUserModel? createdByUser;
+  final String createdBy;
+  final DateTime? tripStartDate;
+  final DateTime? tripEndDate;
+  final String? tripLocation;
+  int favouriteCount;
+  final double tripBudget;
+  final String country;
+  final DateTime startDate;
+  List<String>? joinedUsers;
+  List<String>? invitedUsers;
+  final bool? isPrivate;
+  final String? airlineName;
+  final String? flightNumber;
+  final DateTime? departureDate;
+  final DateTime? arrivalDate;
+  final String? departureAirport;
+  final String? arrivalAirport;
+  final String? lodgingType;
+  final String? hotelName;
+  final String? hotelAddress;
+  final DateTime? checkInDate;
+  final DateTime? checkOutDate;
+  final double? expensePerNight;
+  List<ActivityModel>? activities;
+  List<ExpenseModel>? expenses;
+
+  final String endDate;
+  final int daysToGo;
+  List<String> images;
 
   TripModel copyWith({
     String? id,
@@ -162,167 +229,46 @@ class TripModel {
   }
 
   Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
-
-    result.addAll({'tripStatus': tripStatus});
-    result.addAll({'latitude': latitude});
-    result.addAll({'longitude': longitude});
-    result.addAll({'id': id});
-    result.addAll({'favouriteCount': favouriteCount});
-    result.addAll({'destination': destination});
-    if (title != null) {
-      result.addAll({'title': title});
-    }
-    result.addAll({'createdBy': createdBy});
-    if (tripStartDate != null) {
-      result.addAll({'tripStartDate': tripStartDate!.toIso8601String()});
-    }
-    if (tripEndDate != null) {
-      result.addAll({'tripEndDate': tripEndDate!.toIso8601String()});
-    }
-    if (tripLocation != null) {
-      result.addAll({'tripLocation': tripLocation});
-    }
-    result.addAll({'tripBudget': tripBudget});
-    result.addAll({'country': country});
-    result.addAll({'startDate': startDate.toIso8601String()});
-    if (joinedUsers != null) {
-      result.addAll({'joinedUsers': joinedUsers});
-    }
-    if (invitedUsers != null) {
-      result.addAll({'invitedUsers': invitedUsers});
-    }
-    if (isPrivate != null) {
-      result.addAll({'isPrivate': isPrivate});
-    }
-    if (airlineName != null) {
-      result.addAll({'airlineName': airlineName});
-    }
-    if (flightNumber != null) {
-      result.addAll({'flightNumber': flightNumber});
-    }
-    if (departureDate != null) {
-      result.addAll({'departureDate': departureDate!.toIso8601String()});
-    }
-    if (arrivalDate != null) {
-      result.addAll({'arrivalDate': arrivalDate!.toIso8601String()});
-    }
-    if (departureAirport != null) {
-      result.addAll({'departureAirport': departureAirport});
-    }
-    if (arrivalAirport != null) {
-      result.addAll({'arrivalAirport': arrivalAirport});
-    }
-    if (lodgingType != null) {
-      result.addAll({'lodgingType': lodgingType});
-    }
-    if (hotelName != null) {
-      result.addAll({'hotelName': hotelName});
-    }
-    if (hotelAddress != null) {
-      result.addAll({'hotelAddress': hotelAddress});
-    }
-    if (checkInDate != null) {
-      result.addAll({'checkInDate': checkInDate!.toIso8601String()});
-    }
-    if (checkOutDate != null) {
-      result.addAll({'checkOutDate': checkOutDate!.toIso8601String()});
-    }
-    if (expensePerNight != null) {
-      result.addAll({'expensePerNight': expensePerNight});
-    }
-    if (activities != null) {
-      result.addAll({'activities': activities!.map((x) => x.toMap()).toList()});
-    }
-    if (expenses != null) {
-      result.addAll({'expenses': expenses!.map((x) => x.toMap()).toList()});
-    }
-    // result.addAll({'endDate': endDate});
-    // result.addAll({'daysToGo': daysToGo});
-    result.addAll({'images': images});
-    result.addAll({'continent': continent});
-
-    return result;
-  }
-
-  factory TripModel.fromMap(Map<String, dynamic> map) {
-    return TripModel(
-      id: map['id'] ?? '',
-      destination: map['destination'] ?? '',
-      latitude: map['latitude']?.toDouble() ?? 0.0,
-      longitude: map['longitude']?.toDouble() ?? 0.0,
-      favouriteCount:
-          map['favouriteCount'] is String
-              ? int.parse(map['favouriteCount'])
-              : map['favouriteCount']?.toInt() ?? 0,
-      tripStatus: map['tripStatus'] ?? TripStatus.upcoming.name,
-      title: map['title'],
-      createdBy: map['createdBy'] ?? '',
-      tripStartDate:
-          map['tripStartDate'] != null
-              ? DateTime.parse(map['tripStartDate'])
-              : null,
-      tripEndDate:
-          map['tripEndDate'] != null
-              ? DateTime.parse(map['tripEndDate'])
-              : null,
-      tripLocation: map['tripLocation'],
-      tripBudget: map['tripBudget']?.toDouble() ?? 0.0,
-      country: map['country'] ?? '',
-      startDate:
-          map['startDate'] != null
-              ? DateTime.parse(map['startDate'])
-              : DateTime.now(),
-      joinedUsers: List<String>.from(map['joinedUsers']),
-      invitedUsers: List<String>.from(map['invitedUsers']),
-      isPrivate: map['isPrivate'],
-      airlineName: map['airlineName'],
-      flightNumber: map['flightNumber'],
-      departureDate:
-          map['departureDate'] != null
-              ? DateTime.parse(map['departureDate'])
-              : null,
-      arrivalDate:
-          map['arrivalDate'] != null
-              ? DateTime.parse(map['arrivalDate'])
-              : null,
-      departureAirport: map['departureAirport'],
-      arrivalAirport: map['arrivalAirport'],
-      lodgingType: map['lodgingType'],
-      hotelName: map['hotelName'],
-      hotelAddress: map['hotelAddress'],
-      checkInDate:
-          map['checkInDate'] != null
-              ? DateTime.parse(map['checkInDate'])
-              : null,
-      checkOutDate:
-          map['checkOutDate'] != null
-              ? DateTime.parse(map['checkOutDate'])
-              : null,
-      expensePerNight: map['expensePerNight']?.toDouble(),
-      activities:
-          map['activities'] != null
-              ? List<ActivityModel>.from(
-                map['activities']?.map((x) => ActivityModel.fromMap(x)),
-              )
-              : null,
-      expenses:
-          map['expenses'] != null
-              ? List<ExpenseModel>.from(
-                map['expenses']?.map((x) => ExpenseModel.fromMap(x)),
-              )
-              : null,
-      endDate: map['endDate'] ?? '',
-      daysToGo: map['daysToGo']?.toInt() ?? 0,
-      images: List<String>.from(map['images']),
-      continent: map['continent'] ?? '',
-    );
+    return <String, dynamic>{
+      'tripStatus': tripStatus,
+      'latitude': latitude,
+      'longitude': longitude,
+      'id': id,
+      'favouriteCount': favouriteCount,
+      'destination': destination,
+      'title': title,
+      'createdBy': createdBy,
+      'tripStartDate': tripStartDate?.toIso8601String(),
+      'tripEndDate': tripEndDate?.toIso8601String(),
+      'tripLocation': tripLocation,
+      'tripBudget': tripBudget,
+      'country': country,
+      'startDate': startDate.toIso8601String(),
+      'joinedUsers': joinedUsers,
+      'invitedUsers': invitedUsers,
+      'isPrivate': isPrivate,
+      'airlineName': airlineName,
+      'flightNumber': flightNumber,
+      'departureDate': departureDate?.toIso8601String(),
+      'arrivalDate': arrivalDate?.toIso8601String(),
+      'departureAirport': departureAirport,
+      'arrivalAirport': arrivalAirport,
+      'lodgingType': lodgingType,
+      'hotelName': hotelName,
+      'hotelAddress': hotelAddress,
+      'checkInDate': checkInDate?.toIso8601String(),
+      'checkOutDate': checkOutDate?.toIso8601String(),
+      'expensePerNight': expensePerNight,
+      'activities': activities?.map((x) => x.toMap()).toList(),
+      'expenses': expenses?.map((x) => x.toMap()).toList(),
+      'endDate': endDate,
+      'daysToGo': daysToGo,
+      'images': images,
+      'continent': continent,
+    };
   }
 
   String toJson() => json.encode(toMap());
-
-  factory TripModel.fromJson(String source) =>
-      TripModel.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -440,7 +386,7 @@ List<TripModel> trips = [
       'https://t3.ftcdn.net/jpg/02/65/23/70/360_F_265237090_Muthvb72m2POYFjyx7F5UCQLh9JdBtKN.jpg',
     ],
     country: 'Japan',
-    startDate: DateTime(2024, 7, 1),
+    startDate: DateTime(2024, 7),
     endDate: '10 July',
 
     daysToGo: 5,

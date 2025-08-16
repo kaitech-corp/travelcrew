@@ -1,11 +1,11 @@
 class ContinentBox {
+
+  ContinentBox(this.name, this.minLat, this.maxLat, this.minLng, this.maxLng);
   final String name;
   final double minLat;
   final double maxLat;
   final double minLng;
   final double maxLng;
-
-  ContinentBox(this.name, this.minLat, this.maxLat, this.minLng, this.maxLng);
 
   bool contains(double lat, double lng) {
     return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;

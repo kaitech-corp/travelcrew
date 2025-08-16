@@ -3,21 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class PublicUserModel {
-  String displayName;
-  String? email;
-  String? facebookLink;
-  String? firstName;
-  String? hometown;
-  String? instagramLink;
-  String? lastName;
-  List<String>? blockedList;
-  List<String>? followers;
-  List<String>? following;
-  List<String>? topDestinations;
-  int? tripsCreated;
-  int? tripsJoined;
-  String uid;
-  String? urlToImage;
 
   PublicUserModel({
     required this.displayName,
@@ -36,6 +21,51 @@ class PublicUserModel {
     required this.uid,
     this.urlToImage,
   });
+
+  factory PublicUserModel.fromMap(Map<String, dynamic> map) {
+    return PublicUserModel(
+      displayName: map['displayName'] as String? ?? '',
+      email: map['email'] as String?,
+      facebookLink: map['facebookLink'] as String?,
+      firstName: map['firstName'] as String?,
+      hometown: map['hometown'] as String?,
+      instagramLink: map['instagramLink'] as String?,
+      lastName: map['lastName'] as String?,
+      blockedList: (map['blockedList'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      followers: (map['followers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      following: (map['following'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      topDestinations: (map['topDestinations'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      tripsCreated: map['tripsCreated'] as int?,
+      tripsJoined: map['tripsJoined'] as int?,
+      uid: map['uid'] as String? ?? '',
+      urlToImage: map['urlToImage'] as String?,
+    );
+  }
+  factory PublicUserModel.fromJson(String source) =>
+      PublicUserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  String displayName;
+  String? email;
+  String? facebookLink;
+  String? firstName;
+  String? hometown;
+  String? instagramLink;
+  String? lastName;
+  List<String>? blockedList;
+  List<String>? followers;
+  List<String>? following;
+  List<String>? topDestinations;
+  int? tripsCreated;
+  int? tripsJoined;
+  String uid;
+  String? urlToImage;
 
   PublicUserModel copyWith({
     String? displayName,
@@ -74,45 +104,23 @@ class PublicUserModel {
   }
 
   Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
-
-    result.addAll({'displayName': displayName});
-    result.addAll({'email': email});
-    result.addAll({'facebookLink': facebookLink});
-    result.addAll({'firstName': firstName});
-    result.addAll({'hometown': hometown});
-    result.addAll({'instagramLink': instagramLink});
-    result.addAll({'lastName': lastName});
-    result.addAll({'blockedList': blockedList});
-    result.addAll({'followers': followers});
-    result.addAll({'following': following});
-    result.addAll({'topDestinations': topDestinations});
-    result.addAll({'tripsCreated': tripsCreated});
-    result.addAll({'tripsJoined': tripsJoined});
-    result.addAll({'uid': uid});
-    result.addAll({'urlToImage': urlToImage});
-
-    return result;
-  }
-
-  factory PublicUserModel.fromMap(Map<String, dynamic> map) {
-    return PublicUserModel(
-      displayName: map['displayName'] ?? '',
-      email: map['email'],
-      facebookLink: map['facebookLink'],
-      firstName: map['firstName'],
-      hometown: map['hometown'],
-      instagramLink: map['instagramLink'],
-      lastName: map['lastName'],
-      blockedList: List<String>.from(map['blockedList'] ?? []),
-      followers: List<String>.from(map['followers'] ?? []),
-      following: List<String>.from(map['following'] ?? []),
-      topDestinations: List<String>.from(map['topDestinations'] ?? []),
-      tripsCreated: map['tripsCreated']?.toInt(),
-      tripsJoined: map['tripsJoined']?.toInt(),
-      uid: map['uid'] ?? '',
-      urlToImage: map['urlToImage'],
-    );
+    return <String, dynamic>{
+      'displayName': displayName,
+      'email': email,
+      'facebookLink': facebookLink,
+      'firstName': firstName,
+      'hometown': hometown,
+      'instagramLink': instagramLink,
+      'lastName': lastName,
+      'blockedList': blockedList,
+      'followers': followers,
+      'following': following,
+      'topDestinations': topDestinations,
+      'tripsCreated': tripsCreated,
+      'tripsJoined': tripsJoined,
+      'uid': uid,
+      'urlToImage': urlToImage,
+    };
   }
 
   @override
@@ -123,8 +131,9 @@ class PublicUserModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! PublicUserModel) return false;
-    return other.displayName == displayName &&
+
+    return other is PublicUserModel &&
+        other.displayName == displayName &&
         other.email == email &&
         other.facebookLink == facebookLink &&
         other.firstName == firstName &&
@@ -141,9 +150,26 @@ class PublicUserModel {
         other.urlToImage == urlToImage;
   }
 
+  @override
+  int get hashCode {
+    return displayName.hashCode ^
+        email.hashCode ^
+        facebookLink.hashCode ^
+        firstName.hashCode ^
+        hometown.hashCode ^
+        instagramLink.hashCode ^
+        lastName.hashCode ^
+        blockedList.hashCode ^
+        followers.hashCode ^
+        following.hashCode ^
+        topDestinations.hashCode ^
+        tripsCreated.hashCode ^
+        tripsJoined.hashCode ^
+        uid.hashCode ^
+        urlToImage.hashCode;
+  }
+
   String toJson() => json.encode(toMap());
-  factory PublicUserModel.fromJson(String source) =>
-      PublicUserModel.fromMap(json.decode(source));
 
   // Mock data for testing purposes
   static PublicUserModel mockData() {

@@ -1,10 +1,4 @@
 class AeroplanesModel {
-  final String? flightDate;
-  final String? flightStatus;
-  final Departure? departure;
-  final Arrival? arrival;
-  final Airline? airline;
-  final Flight? flight;
 
   const AeroplanesModel({
     this.flightDate,
@@ -16,22 +10,21 @@ class AeroplanesModel {
   });
 
   AeroplanesModel.fromJson(Map<String, dynamic> json)
-    : flightDate = json['flight_date'],
-      flightStatus = json['flight_status'],
-      departure = Departure.fromJson(json['departure']),
-      arrival = Arrival.fromJson(json['arrival']),
-      airline = Airline.fromJson(json['airline']),
-      flight = Flight.fromJson(json['flight']);
+    : flightDate = json['flight_date'] as String?,
+      flightStatus = json['flight_status'] as String?,
+      departure = json['departure'] != null ? Departure.fromJson(json['departure'] as Map<String, dynamic>) : null,
+      arrival = json['arrival'] != null ? Arrival.fromJson(json['arrival'] as Map<String, dynamic>) : null,
+      airline = json['airline'] != null ? Airline.fromJson(json['airline'] as Map<String, dynamic>) : null,
+      flight = json['flight'] != null ? Flight.fromJson(json['flight'] as Map<String, dynamic>) : null;
+  final String? flightDate;
+  final String? flightStatus;
+  final Departure? departure;
+  final Arrival? arrival;
+  final Airline? airline;
+  final Flight? flight;
 }
 
 class Departure {
-  final String? airport;
-  final String? timezone;
-  final String? iata;
-  final String? icao;
-  final String? terminal;
-  final String? scheduled;
-  final String? estimated;
 
   const Departure({
     this.airport,
@@ -43,21 +36,23 @@ class Departure {
     this.estimated,
   });
   Departure.fromJson(Map<String, dynamic> json)
-    : airport = json['airport'],
-      timezone = json['timezone'],
-      iata = json['iata'],
-      icao = json['icao'],
-      terminal = json['terminal'],
-      scheduled = json['scheduled'],
-      estimated = json['estimated'];
-}
-
-class Arrival {
+    : airport = json['airport'] as String?,
+      timezone = json['timezone'] as String?,
+      iata = json['iata'] as String?,
+      icao = json['icao'] as String?,
+      terminal = json['terminal'] as String?,
+      scheduled = json['scheduled'] as String?,
+      estimated = json['estimated'] as String?;
   final String? airport;
   final String? timezone;
   final String? iata;
   final String? icao;
+  final String? terminal;
   final String? scheduled;
+  final String? estimated;
+}
+
+class Arrival {
 
   const Arrival({
     this.airport,
@@ -67,35 +62,40 @@ class Arrival {
     this.scheduled,
   });
   Arrival.fromJson(Map<String, dynamic> json)
-    : airport = json['airport'],
-      timezone = json['timezone'],
-      iata = json['iata'],
-      icao = json['icao'],
-      scheduled = json['scheduled'];
+    : airport = json['airport'] as String?,
+      timezone = json['timezone'] as String?,
+      iata = json['iata'] as String?,
+      icao = json['icao'] as String?,
+      scheduled = json['scheduled'] as String?;
+  final String? airport;
+  final String? timezone;
+  final String? iata;
+  final String? icao;
+  final String? scheduled;
 }
 
 class Airline {
-  final String? name;
-  final String? iata;
-  final String? icao;
 
   const Airline({this.name, this.iata, this.icao});
 
   Airline.fromJson(Map<String, dynamic> json)
-    : name = json['name'],
-      iata = json['iata'],
-      icao = json['icao'];
+    : name = json['name'] as String?,
+      iata = json['iata'] as String?,
+      icao = json['icao'] as String?;
+  final String? name;
+  final String? iata;
+  final String? icao;
 }
 
 class Flight {
-  final String? number;
-  final String? iata;
-  final String? icao;
 
   const Flight({this.number, this.iata, this.icao});
 
   Flight.fromJson(Map<String, dynamic> json)
-    : number = json['number'],
-      iata = json['iata'],
-      icao = json['icao'];
+    : number = json['number'] as String?,
+      iata = json['iata'] as String?,
+      icao = json['icao'] as String?;
+  final String? number;
+  final String? iata;
+  final String? icao;
 }

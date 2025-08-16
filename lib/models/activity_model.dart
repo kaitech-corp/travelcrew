@@ -1,15 +1,6 @@
 import 'dart:convert';
 
 class ActivityModel {
-  String title;
-  String? id;
-  String tripId;
-  String description;
-  List<String> likedBy;
-  int likesCount = 0;
-  DateTime? startDateTime;
-  DateTime? endDateTime;
-  String? location;
   ActivityModel({
     required this.likesCount,
     required this.title,
@@ -21,6 +12,38 @@ class ActivityModel {
     this.endDateTime,
     this.location,
   });
+
+  factory ActivityModel.fromMap(Map<String, dynamic> map) {
+    return ActivityModel(
+      likesCount: (map['likesCount'] as int?) ?? 0,
+      likedBy: List<String>.from((map['likedBy'] as List<dynamic>?) ?? <dynamic>[]),
+      title: (map['title'] as String?) ?? '',
+      id: map['id'] as String?,
+      tripId: (map['tripId'] as String?) ?? '',
+      description: (map['description'] as String?) ?? '',
+      startDateTime:
+          map['startDateTime'] != null
+              ? DateTime.parse(map['startDateTime'] as String)
+              : null,
+      endDateTime:
+          map['endDateTime'] != null
+              ? DateTime.parse(map['endDateTime'] as String)
+              : null,
+      location: map['location'] as String?,
+    );
+  }
+
+  factory ActivityModel.fromJson(String source) =>
+      ActivityModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  String title;
+  String? id;
+  String tripId;
+  String description;
+  List<String> likedBy;
+  int likesCount = 0;
+  DateTime? startDateTime;
+  DateTime? endDateTime;
+  String? location;
 
   ActivityModel copyWith({
     String? title,
@@ -66,30 +89,7 @@ class ActivityModel {
     return result;
   }
 
-  factory ActivityModel.fromMap(Map<String, dynamic> map) {
-    return ActivityModel(
-      likesCount: map['likesCount']?.toInt() ?? 0,
-      likedBy: List<String>.from(map['likedBy'] ?? []),
-      title: map['title'] ?? '',
-      id: map['id'] ?? '',
-      tripId: map['tripId'] ?? '',
-      description: map['description'] ?? '',
-      startDateTime:
-          map['startDateTime'] != null
-              ? DateTime.parse(map['startDateTime'])
-              : null,
-      endDateTime:
-          map['endDateTime'] != null
-              ? DateTime.parse(map['endDateTime'])
-              : null,
-      location: map['location'],
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory ActivityModel.fromJson(String source) =>
-      ActivityModel.fromMap(json.decode(source));
 
   @override
   String toString() {

@@ -3,27 +3,44 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  String? displayName;
-  String email;
-  bool isDeleted;
-  String uid;
-  String? phone;
-  bool? email_confirmed;
-  Timestamp? createdAt;
-  Timestamp? updatedAt;
-  String? profileImage;
 
   UserModel({
     this.displayName,
     this.isDeleted = false,
     required this.email,
     required this.uid,
-     this.phone,
-     this.email_confirmed,
-     this.createdAt,
-     this.updatedAt,
+    this.phone,
+    this.emailConfirmed,
+    this.createdAt,
+    this.updatedAt,
     this.profileImage,
   });
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      displayName: map['displayName'] as String?,
+      isDeleted: map['isDeleted'] as bool? ?? false,
+      email: map['email'] as String? ?? '',
+      uid: map['uid'] as String? ?? '',
+      phone: map['phone'] as String?,
+      profileImage: map['profileImage'] as String?,
+      emailConfirmed: map['emailConfirmed'] as bool?,
+      createdAt: map['createdAt'] as Timestamp?,
+      updatedAt: map['updatedAt'] as Timestamp?,
+    );
+  }
+
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  String? displayName;
+  String email;
+  bool isDeleted;
+  String uid;
+  String? phone;
+  bool? emailConfirmed;
+  Timestamp? createdAt;
+  Timestamp? updatedAt;
+  String? profileImage;
 
   UserModel copyWith({
     String? displayName,
@@ -32,7 +49,7 @@ class UserModel {
     String? uid,
     String? password,
     String? phone,
-    bool? email_confirmed,
+    bool? emailConfirmed,
     bool? isDeleted,
     Timestamp? createdAt,
     Timestamp? updatedAt,
@@ -44,50 +61,31 @@ class UserModel {
       uid: uid ?? this.uid,
       phone: phone ?? this.phone,
       profileImage: profileImage ?? this.profileImage,
-      email_confirmed: email_confirmed ?? this.email_confirmed,
+      emailConfirmed: emailConfirmed ?? this.emailConfirmed,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
-
-    result.addAll({'displayName': displayName});
-    result.addAll({'email': email});
-    result.addAll({'isDeleted': isDeleted});
-    result.addAll({'uid': uid});
-    result.addAll({'phone': phone});
-    result.addAll({'profileImage': profileImage});
-    result.addAll({'email_confirmed': email_confirmed});
-    result.addAll({'createdAt': createdAt});
-    result.addAll({'updatedAt': updatedAt});
-
-    return result;
-  }
-
-  factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
-      displayName: map['displayName'] ?? '',
-      isDeleted: map['isDeleted'] ?? false,
-      email: map['email'] ?? '',
-      uid: map['uid'] ?? '',
-      phone: map['phone'] ?? '',
-      profileImage: map['profileImage'],
-      email_confirmed: map['email_confirmed'] ?? false,
-      createdAt: map['createdAt'] ?? Timestamp.now(),
-      updatedAt: map['updatedAt'] ?? Timestamp.now(),
-    );
+    return <String, dynamic>{
+      'displayName': displayName,
+      'email': email,
+      'isDeleted': isDeleted,
+      'uid': uid,
+      'phone': phone,
+      'profileImage': profileImage,
+      'emailConfirmed': emailConfirmed,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
   }
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) =>
-      UserModel.fromMap(json.decode(source));
-
   @override
   String toString() {
-    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, profileImage: $profileImage, email_confirmed: $email_confirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, profileImage: $profileImage, emailConfirmed: $emailConfirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -100,7 +98,7 @@ class UserModel {
         other.uid == uid &&
         other.phone == phone &&
         other.profileImage == profileImage &&
-        other.email_confirmed == email_confirmed &&
+        other.emailConfirmed == emailConfirmed &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
   }
@@ -112,7 +110,7 @@ class UserModel {
         uid.hashCode ^
         phone.hashCode ^
         profileImage.hashCode ^
-        email_confirmed.hashCode ^
+        emailConfirmed.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
   }
