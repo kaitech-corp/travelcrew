@@ -19,7 +19,7 @@ class PublicUserModel {
     this.tripsCreated,
     this.tripsJoined,
     required this.uid,
-    this.urlToImage,
+    this.profileImage,
   });
 
   factory PublicUserModel.fromMap(Map<String, dynamic> map) {
@@ -46,7 +46,7 @@ class PublicUserModel {
       tripsCreated: map['tripsCreated'] as int?,
       tripsJoined: map['tripsJoined'] as int?,
       uid: map['uid'] as String? ?? '',
-      urlToImage: map['urlToImage'] as String?,
+      profileImage: map['profileImage'] as String?,
     );
   }
   factory PublicUserModel.fromJson(String source) =>
@@ -65,7 +65,7 @@ class PublicUserModel {
   int? tripsCreated;
   int? tripsJoined;
   String uid;
-  String? urlToImage;
+  String? profileImage;
 
   PublicUserModel copyWith({
     String? displayName,
@@ -82,7 +82,7 @@ class PublicUserModel {
     int? tripsCreated,
     int? tripsJoined,
     String? uid,
-    String? urlToImage,
+    String? profileImage,
   }) {
     return PublicUserModel(
       displayName: displayName ?? this.displayName,
@@ -99,7 +99,7 @@ class PublicUserModel {
       tripsCreated: tripsCreated ?? this.tripsCreated,
       tripsJoined: tripsJoined ?? this.tripsJoined,
       uid: uid ?? this.uid,
-      urlToImage: urlToImage ?? this.urlToImage,
+      profileImage: profileImage ?? this.profileImage,
     );
   }
 
@@ -119,13 +119,13 @@ class PublicUserModel {
       'tripsCreated': tripsCreated,
       'tripsJoined': tripsJoined,
       'uid': uid,
-      'urlToImage': urlToImage,
+      'profileImage': profileImage,
     };
   }
 
   @override
   String toString() {
-    return 'PublicUserModel(displayName: $displayName, email: $email, facebookLink: $facebookLink, firstName: $firstName, hometown: $hometown, instagramLink: $instagramLink, lastName: $lastName, blockedList: $blockedList, followers: $followers, following: $following, topDestinations: $topDestinations, tripsCreated: $tripsCreated, tripsJoined: $tripsJoined, uid: $uid, urlToImage: $urlToImage)';
+    return 'PublicUserModel(displayName: $displayName, email: $email, facebookLink: $facebookLink, firstName: $firstName, hometown: $hometown, instagramLink: $instagramLink, lastName: $lastName, blockedList: $blockedList, followers: $followers, following: $following, topDestinations: $topDestinations, tripsCreated: $tripsCreated, tripsJoined: $tripsJoined, uid: $uid, profileImage: $profileImage)';
   }
 
   @override
@@ -147,7 +147,7 @@ class PublicUserModel {
         other.tripsCreated == tripsCreated &&
         other.tripsJoined == tripsJoined &&
         other.uid == uid &&
-        other.urlToImage == urlToImage;
+        other.profileImage == profileImage;
   }
 
   @override
@@ -166,7 +166,7 @@ class PublicUserModel {
         tripsCreated.hashCode ^
         tripsJoined.hashCode ^
         uid.hashCode ^
-        urlToImage.hashCode;
+        profileImage.hashCode;
   }
 
   String toJson() => json.encode(toMap());
@@ -188,7 +188,7 @@ class PublicUserModel {
       tripsCreated: 0,
       tripsJoined: 0,
       uid: '1234567890',
-      urlToImage: 'https://example.com/image.jpg',
+      profileImage: 'https://example.com/image.jpg',
     );
   }
 }

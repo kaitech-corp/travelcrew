@@ -9,6 +9,9 @@ class ExpenseModel {
     required this.paidByUsers,
     required this.amount,
     required this.date,
+    this.splitType = 'equally',
+    this.owedTo = const {},
+    this.owners = const {},
   });
 
   factory ExpenseModel.fromMap(Map<String, dynamic> map) {
@@ -22,6 +25,9 @@ class ExpenseModel {
       date: map['date'] != null
           ? DateTime.parse(map['date'] as String)
           : DateTime.now(),
+      splitType: map['splitType'] as String? ?? 'equally',
+      owedTo: Map<String, double>.from(map['owedTo'] as Map<String, dynamic>? ?? {}),
+      owners: Map<String, double>.from(map['owners'] as Map<String, dynamic>? ?? {}),
     );
   }
 
@@ -34,6 +40,9 @@ class ExpenseModel {
   List<String> paidByUsers;
   String createdBy;
   DateTime date;
+  String splitType;
+  Map<String, double> owedTo;
+  Map<String, double> owners;
 
   ExpenseModel copyWith({
     String? id,
@@ -43,6 +52,9 @@ class ExpenseModel {
     double? amount,
     List<String>? paidByUsers,
     DateTime? date,
+    String? splitType,
+    Map<String, double>? owedTo,
+    Map<String, double>? owners,
   }) {
     return ExpenseModel(
       paidByUsers: paidByUsers ?? this.paidByUsers,
@@ -52,6 +64,9 @@ class ExpenseModel {
       name: name ?? this.name,
       amount: amount ?? this.amount,
       date: date ?? this.date,
+      splitType: splitType ?? this.splitType,
+      owedTo: owedTo ?? this.owedTo,
+      owners: owners ?? this.owners,
     );
   }
 
@@ -64,6 +79,9 @@ class ExpenseModel {
       'name': name,
       'amount': amount,
       'date': date.toIso8601String(),
+      'splitType': splitType,
+      'owedTo': owedTo,
+      'owners': owners,
     };
   }
 
