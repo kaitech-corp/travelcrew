@@ -148,7 +148,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                               child: Text(
                                 '+${trip.joindUsersList!.length - 4}',
                                 style: AppStyles.labelTextStyle().copyWith(
-                                  fontSize: 10.sp,
+                                  fontSize: AppStyles.fontSize10,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
