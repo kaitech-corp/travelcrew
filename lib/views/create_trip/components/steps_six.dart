@@ -66,7 +66,7 @@ class StepsSix extends StatelessWidget {
             'Send Invites (Email)',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.sp,
+              fontSize: AppStyles.fontSize20,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -91,7 +91,7 @@ class StepsSix extends StatelessWidget {
               },
               child: ImageIcon(
                 const AssetImage(AppImages.kSendIcon),
-                size: 18.sp,
+                size: AppStyles.fontSize18,
                 color: AppColors.kPrimaryColor,
               ),
             ),
@@ -108,7 +108,7 @@ class StepsSix extends StatelessWidget {
             'Users who will be invited',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.sp,
+              fontSize: AppStyles.fontSize20,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -133,7 +133,7 @@ class StepsSix extends StatelessWidget {
                             e,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: Colors.black,
-                              fontSize: 16.sp,
+                              fontSize: AppStyles.fontSize16,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

@@ -72,7 +72,7 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
                               fontWeight: FontWeight.w500,
                             )
                             : AppStyles.labelTextStyle().copyWith(
-                              fontSize: 16.sp,
+                              fontSize: AppStyles.fontSize16,
                               color: Colors.grey[600],
                             ),
                   ),

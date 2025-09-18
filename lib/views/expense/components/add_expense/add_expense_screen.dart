@@ -35,8 +35,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                 l10n.expenseName,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.sp,
-
+                  fontSize: AppStyles.fontSize20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -56,8 +55,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                 l10n.amountPaid,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.sp,
-
+                  fontSize: AppStyles.fontSize20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -73,8 +71,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                 l10n.date,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.sp,
-
+                  fontSize: AppStyles.fontSize20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -84,16 +81,14 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                   CommonCode().removeTextFieldFocus();
                   showDialog(
                     context: context,
-                    builder:
-                        (c) => RangeCalendarDialog(
-                          focusedDay:
-                              controller.expenceDate.value ?? DateTime.now(),
-                          initialDate: DateTime(DateTime.now().year - 1),
-                          lastDate: DateTime(DateTime.now().year + 4),
-                          onDateSelected: (d) {
-                            controller.expenceDate.value = d;
-                          },
-                        ),
+                    builder: (c) => RangeCalendarDialog(
+                      focusedDay: controller.expenceDate.value ?? DateTime.now(),
+                      initialDate: DateTime(DateTime.now().year - 1),
+                      lastDate: DateTime(DateTime.now().year + 4),
+                      onDateSelected: (d) {
+                        controller.expenceDate.value = d;
+                      },
+                    ),
                   );
                 },
                 child: Container(
@@ -114,14 +109,13 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                       Text(
                         controller.expenceDate.value != null
                             ? DateFormat(
-                              'EEE, dd MMM',
-                            ).format(controller.expenceDate.value!)
+                                'EEE, dd MMM',
+                              ).format(controller.expenceDate.value!)
                             : l10n.selectDate,
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
                           fontSize: 13.95,
-
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -136,6 +130,57 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                 ),
               ),
               SizedBox(height: 27.h),
+              Text(
+                'Split Options',
+                style: AppStyles.labelTextStyle().copyWith(
+                  color: Colors.black,
+                  fontSize: AppStyles.fontSize20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  value: controller.splitType.value,
+                  items: [
+                    const DropdownMenuItem(
+                      value: 'equally',
+                      child: Text('Split Equally'),
+                    ),
+                    const DropdownMenuItem(
+                      value: 'custom',
+                      child: Text('Custom Split'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    controller.splitType.value = value!;
+                  },
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Obx(() {
+                if (controller.splitType.value == 'custom') {
+                  return Column(
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: controller.tripMembers.length,
+                        itemBuilder: (context, index) {
+                          final member = controller.tripMembers[index];
+                          return CheckboxListTile(
+                            title: Text(member.displayName ?? ''),
+                            value: controller.selectedMembers.contains(member.uid),
+                            onChanged: (value) {
+                              controller.toggleMemberSelection(member.uid);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
             ],
           ),
         ),

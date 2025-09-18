@@ -29,7 +29,7 @@ class WellDoneDialog extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppStyles.labelTextStyle().copyWith(
               color: AppColors.kWhiteColor,
-              fontSize: 28.sp,
+              fontSize: AppStyles.fontSize28,
 
               fontWeight: FontWeight.w600,
               decoration: TextDecoration.none,

@@ -55,7 +55,7 @@ class OtpBottomSheet extends StatelessWidget {
                   TextWidget(
                     labelText: title,
                     style: AppStyles.appBarHeadingTextStyle().copyWith(
-                      fontSize: 20.sp,
+                      fontSize: AppStyles.fontSize20,
                       color: AppColors.kBlackColor,
                       fontWeight: FontWeight.w600,
                       height: 1.80,
@@ -99,7 +99,7 @@ class OtpBottomSheet extends StatelessWidget {
                     width: 56.w,
                     height: 56.h,
                     textStyle: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 22.sp,
+                      fontSize: AppStyles.fontSize22,
                       fontWeight: FontWeight.bold,
                       color: AppColors.kWhiteColor,
                     ),
@@ -113,7 +113,7 @@ class OtpBottomSheet extends StatelessWidget {
                     width: 56.w,
                     height: 56.h,
                     textStyle: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 22.sp,
+                      fontSize: AppStyles.fontSize22,
                       fontWeight: FontWeight.bold,
                     ),
                     decoration: BoxDecoration(
@@ -143,7 +143,7 @@ class OtpBottomSheet extends StatelessWidget {
                     text: 'Resend again in ${count.value} secs',
                     icon: Icon(
                       Icons.restore_outlined,
-                      size: 16.sp,
+                      size: AppStyles.fontSize16,
                       color: AppColors().klabeltextcolor,
                     ),
                   ),
@@ -155,7 +155,7 @@ class OtpBottomSheet extends StatelessWidget {
                   onTap: onResend,
                   style: AppStyles.labelTextStyle().copyWith(
                     color: AppColors.kBlackColor,
-                    fontSize: 16.sp,
+                    fontSize: AppStyles.fontSize16,
                     fontWeight: FontWeight.w600,
                     height: 1.25,
                   ),

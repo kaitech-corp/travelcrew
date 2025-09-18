@@ -62,13 +62,13 @@ class CustomTextButton extends StatelessWidget {
                         textStyle ??
                         AppStyles.labelTextStyle().copyWith(
                           color: foregroundColor,
-                          fontSize: 14.sp,
+                          fontSize: AppStyles.fontSize14,
                           fontWeight: FontWeight.w600,
                         ),
                   ),
                   SizedBox(width: 10.w),
                   icon ??
-                      Icon(weight: 20, Icons.arrow_forward_ios, size: 12.sp),
+                      Icon(weight: 20, Icons.arrow_forward_ios, size: AppStyles.fontSize12),
                 ],
               )
               : Text(
@@ -76,7 +76,7 @@ class CustomTextButton extends StatelessWidget {
                 style:
                     textStyle ??
                     AppStyles.labelTextStyle().copyWith(
-                      fontSize: 14.sp,
+                      fontSize: AppStyles.fontSize14,
                       color: foregroundColor,
                       fontWeight: FontWeight.w600,
                     ),

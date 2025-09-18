@@ -107,7 +107,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
               l10n.whoOwesWhat,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 18.sp,
+                fontSize: AppStyles.fontSize18,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -141,7 +141,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                         textAlign: TextAlign.right,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF1D7FC2),
-                          fontSize: 13.sp,
+                          fontSize: AppStyles.fontSize13,
 
                           fontWeight: FontWeight.w600,
                         ),

@@ -67,7 +67,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                   icon: Icon(
                     Icons.arrow_back_ios,
                     color: Colors.white,
-                    size: 20.sp,
+                    size: AppStyles.fontSize20,
                   ),
                   onPressed: () {
                     final DateTime currentTime = DateTime(
@@ -108,7 +108,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                   icon: Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
-                    size: 20.sp,
+                    size: AppStyles.fontSize20,
                   ),
                   onPressed: () {
                     if (DateTime(
@@ -150,18 +150,18 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                 formatButtonVisible: false,
                 titleTextStyle: AppStyles.labelTextStyle().copyWith(
                   color: Colors.white,
-                  fontSize: 18.sp,
+                  fontSize: AppStyles.fontSize18,
                   fontWeight: FontWeight.w600,
                 ),
                 leftChevronIcon: Icon(
                   Icons.arrow_back_ios,
                   color: Colors.white,
-                  size: 20.sp,
+                  size: AppStyles.fontSize20,
                 ),
                 rightChevronIcon: Icon(
                   Icons.arrow_forward_ios,
                   color: Colors.white,
-                  size: 20.sp,
+                  size: AppStyles.fontSize20,
                 ),
               ),
               headerVisible: false, // Hide default header

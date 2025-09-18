@@ -31,7 +31,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
               l10n.expenseName,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.sp,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -47,7 +47,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
               l10n.amountOwed,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.sp,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -68,7 +68,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
               l10n.paidBy,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.sp,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -121,7 +121,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
                       l10n.confirmSettleUp.toString().replaceFirst('{userName}', controller.selectedUser.value?.displayName ?? ''),
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 16.sp,
+                        fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

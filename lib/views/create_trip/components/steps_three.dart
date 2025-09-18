@@ -28,7 +28,7 @@ class StepsThree extends StatelessWidget {
               'Airline Name',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.sp,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -324,7 +324,7 @@ class StepsThree extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 13.sp,
+                        fontSize: AppStyles.fontSize13,
 
                         fontWeight: FontWeight.w500,
                       ),

@@ -97,14 +97,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
         onChanged: widget.onChanged,
         readOnly: widget.readOnly,
         style: AppStyles.labelTextStyle().copyWith(
-          fontSize: 16.sp,
+          fontSize: AppStyles.fontSize16,
           color: Colors.black87,
         ),
         decoration: InputDecoration(
           hintText: widget.hintText,
           errorMaxLines: 2,
           hintStyle: AppStyles.labelTextStyle().copyWith(
-            fontSize: 16.sp,
+            fontSize: AppStyles.fontSize16,
             fontWeight: FontWeight.w500,
             height: 1.25,
             color: Colors.grey[600],

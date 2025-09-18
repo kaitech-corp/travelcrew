@@ -49,7 +49,7 @@ class LoginScreen extends GetView<LoginController> {
                         child: Icon(
                           Icons.email_outlined,
                           color: Colors.black.withAlpha(140),
-                          size: 20.sp,
+                          size: AppStyles.fontSize20,
                         ),
                       ),
                     ),
@@ -144,7 +144,7 @@ class LoginScreen extends GetView<LoginController> {
                                     controller.isRememberMe.isTrue
                                         ? AppColors.kPrimaryColor
                                         : const Color(0xFF666666),
-                                size: 18.sp,
+                                size: AppStyles.fontSize18,
                               ),
                             ),
                           ),
@@ -153,7 +153,7 @@ class LoginScreen extends GetView<LoginController> {
                             l10n.rememberMe,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: const Color(0xFF666666),
-                              fontSize: 14.sp,
+                              fontSize: AppStyles.fontSize14,
 
                               fontWeight: FontWeight.w500,
                             ),
@@ -205,7 +205,7 @@ class LoginScreen extends GetView<LoginController> {
                     Text(
                       l10n.orSignInWith,
                       style: AppStyles.labelTextStyle().copyWith(
-                        fontSize: 14.sp,
+                        fontSize: AppStyles.fontSize14,
                         color: Colors.grey[600],
                       ),
                     ),
@@ -265,7 +265,7 @@ class LoginScreen extends GetView<LoginController> {
                         l10n.signup,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: AppColors.kPrimaryColor,
-                          fontSize: 14.sp,
+                          fontSize: AppStyles.fontSize14,
 
                           fontWeight: FontWeight.w600,
                           decoration: TextDecoration.underline,

@@ -66,7 +66,7 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
                     _selectedItem.isEmpty ? widget.hintText : widget.title,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black87,
-                      fontSize: 16.sp,
+                      fontSize: AppStyles.fontSize16,
 
                       fontWeight: FontWeight.w500,
                     ),
@@ -125,14 +125,14 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
                                 if (isSelected)
                                   Icon(
                                     Icons.check,
-                                    size: 16.sp,
+                                    size: AppStyles.fontSize16,
                                     color: Colors.blue,
                                   ),
                                 Text(
                                   item,
                                   style: AppStyles.labelTextStyle().copyWith(
                                     color: Colors.black87,
-                                    fontSize: 14.sp,
+                                    fontSize: AppStyles.fontSize14,
 
                                     fontWeight:
                                         isSelected

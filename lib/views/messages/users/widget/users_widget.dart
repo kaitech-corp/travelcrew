@@ -108,7 +108,7 @@ class UsersWidget extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF6B7280),
-                          fontSize: 13.sp,
+                          fontSize: AppStyles.fontSize13,
 
                           fontWeight: FontWeight.w400,
                         ),

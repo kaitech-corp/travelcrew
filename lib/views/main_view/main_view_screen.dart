@@ -15,7 +15,7 @@ class MainViewScreen extends GetView<MainViewController> {
   Widget build(BuildContext context) {
     isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
     mainViewController = controller;
-    DateTime? lastBackPressed;
+    // DateTime? lastBackPressed;
     return CustomScaffold(
       className: '',
       screenName: '',

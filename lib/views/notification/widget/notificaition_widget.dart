@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:travel_crew/utils/app_styles.dart';
 
 class NotificationWidget extends StatelessWidget {
 
@@ -53,7 +54,7 @@ class NotificationWidget extends StatelessWidget {
                     title,
                     style: TextStyle(
                       color: iconColor,
-                      fontSize: 18.sp,
+                      fontSize: AppStyles.fontSize18,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -61,7 +62,7 @@ class NotificationWidget extends StatelessWidget {
 
                 Text(
                   _formatTimestamp(timestamp),
-                  style: TextStyle(color: Colors.black54, fontSize: 14.sp),
+                  style: TextStyle(color: Colors.black54, fontSize: AppStyles.fontSize14),
                 ),
               ],
             ),
@@ -72,7 +73,7 @@ class NotificationWidget extends StatelessWidget {
                 message,
                 style: TextStyle(
                   color: Colors.black87,
-                  fontSize: 14.sp,
+                  fontSize: AppStyles.fontSize14,
                   height: 1.4.h,
                 ),
               ),

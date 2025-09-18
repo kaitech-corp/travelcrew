@@ -56,7 +56,7 @@ class SignUpScreen extends GetView<SignUpController> {
                       child: Icon(
                         Icons.email_outlined,
                         color: Colors.black.withAlpha(140),
-                        size: 20.sp,
+                        size: AppStyles.fontSize20,
                       ),
                     ),
                   ),
@@ -168,7 +168,7 @@ class SignUpScreen extends GetView<SignUpController> {
                               controller.isRememberMe.isTrue
                                   ? AppColors.kPrimaryColor
                                   : const Color(0xFF666666),
-                          size: 18.sp,
+                          size: AppStyles.fontSize18,
                         ),
                       ),
                     ),
@@ -177,7 +177,7 @@ class SignUpScreen extends GetView<SignUpController> {
                       l10n.agreeToTerms,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFF666666),
-                        fontSize: 14.sp,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w500,
                       ),
@@ -246,7 +246,7 @@ class SignUpScreen extends GetView<SignUpController> {
                       'Sign In',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: AppColors.kPrimaryColor,
-                        fontSize: 14.sp,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.underline,

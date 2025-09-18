@@ -80,7 +80,7 @@ class CustomBottomBar extends StatelessWidget {
                           isSelected
                               ? Colors.white
                               : Colors.white.withAlpha(179),
-                      size: 24.sp,
+                      size: AppStyles.fontSize24,
                     ),
                     child: item.icon,
                   ),
@@ -93,7 +93,7 @@ class CustomBottomBar extends StatelessWidget {
                             isSelected
                                 ? Colors.white
                                 : Colors.white.withAlpha(179),
-                        fontSize: 12.sp,
+                        fontSize: AppStyles.fontSize12,
 
                         fontWeight:
                             isSelected ? FontWeight.w600 : FontWeight.w400,

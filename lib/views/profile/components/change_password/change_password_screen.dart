@@ -34,7 +34,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     l10n.oldPassword,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
-                      fontSize: 14.sp,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -61,7 +61,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     l10n.password,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
-                      fontSize: 14.sp,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -90,7 +90,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     l10n.confirmPassword,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
-                      fontSize: 14.sp,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

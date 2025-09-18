@@ -46,7 +46,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                     textAlign: TextAlign.start,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF0B0B0B),
-                      fontSize: 16.sp,
+                      fontSize: AppStyles.fontSize16,
                       fontWeight: FontWeight.w600,
                       height: 1.82,
                     ),
@@ -65,7 +65,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF666666),
-                          fontSize: 11.sp,
+                          fontSize: AppStyles.fontSize11,
 
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0.30,
@@ -120,7 +120,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                               ? const SizedBox.shrink()
                               : ListTile(
                                 leading: AnyImageView(
-                                  url: member.urlToImage ?? '',
+                                  url: member.profileImage ?? '',
                                   height: 50.h,
                                   width: 50.w,
                                   isCircle: true,
@@ -162,7 +162,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                           ),
                                           child: Text(
                                             'Admin',
-                                            style: TextStyle(fontSize: 12.sp),
+                                            style: TextStyle(fontSize: AppStyles.fontSize12),
                                           ),
                                         )
                                         : GlobalVariables
@@ -185,7 +185,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                                                     content: Text(
                                                       'Are you sure you want to remove from group?',
                                                       style: TextStyle(
-                                                        fontSize: 16.sp,
+                                                        fontSize: AppStyles.fontSize16,
                                                       ),
                                                     ),
                                                     actions: [
@@ -236,7 +236,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                           title: const Text('Leave Group'),
                           content: Text(
                             'Are you sure you want to leave this group?',
-                            style: TextStyle(fontSize: 16.sp),
+                            style: TextStyle(fontSize: AppStyles.fontSize16),
                           ),
                           actions: [
                             TextButton(

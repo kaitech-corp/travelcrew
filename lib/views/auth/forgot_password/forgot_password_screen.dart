@@ -77,7 +77,7 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black.withAlpha(140),
-                          fontSize: 14.sp,
+                          fontSize: AppStyles.fontSize14,
 
                           fontWeight: FontWeight.w500,
                         ),

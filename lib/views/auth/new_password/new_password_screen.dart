@@ -43,7 +43,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                       textAlign: TextAlign.center,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 24.sp,
+                        fontSize: AppStyles.fontSize24,
 
                         fontWeight: FontWeight.w600,
                       ),
@@ -142,7 +142,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                   //         'Password must contain:',
                   //         style:AppStyles.labelTextStyle().copyWith(
                   //           color: Colors.black.withValues(alpha:0.7),
-                  //           fontSize: 14.sp,
+                  //           fontSize: AppStyles.fontSize14,
                   //
                   //           fontWeight: FontWeight.w500,
                   //         ),
@@ -157,14 +157,14 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                   //             color: controller.isPasswordValid.value
                   //                 ? Colors.green
                   //                 : Colors.grey,
-                  //             size: 16.sp,
+                  //             size: AppStyles.fontSize16,
                   //           )),
                   //           SizedBox(width: 8.w),
                   //           Text(
                   //             'At least 8 characters',
                   //             style:AppStyles.labelTextStyle().copyWith(
                   //               color: Colors.black.withValues(alpha:0.7),
-                  //               fontSize: 14.sp,
+                  //               fontSize: AppStyles.fontSize14,
                   //
                   //               fontWeight: FontWeight.w400,
                   //             ),
@@ -181,14 +181,14 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                   //             color: controller.doPasswordsMatch.value && controller.isConfirmPasswordValid.value
                   //                 ? Colors.green
                   //                 : Colors.grey,
-                  //             size: 16.sp,
+                  //             size: AppStyles.fontSize16,
                   //           )),
                   //           SizedBox(width: 8.w),
                   //           Text(
                   //             'Passwords match',
                   //             style:AppStyles.labelTextStyle().copyWith(
                   //               color: Colors.black.withValues(alpha:0.7),
-                  //               fontSize: 14.sp,
+                  //               fontSize: AppStyles.fontSize14,
                   //
                   //               fontWeight: FontWeight.w400,
                   //             ),

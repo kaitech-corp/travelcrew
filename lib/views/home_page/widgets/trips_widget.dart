@@ -91,7 +91,7 @@ class TripsWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.location_on_outlined,
-                size: 18.sp,
+                size: AppStyles.fontSize18,
                 color: Colors.black54,
               ),
               SizedBox(width: 4.w),
@@ -126,7 +126,7 @@ class TripsWidget extends StatelessWidget {
               Text(
                 '|',
                 style: AppStyles.labelTextStyle().copyWith(
-                  fontSize: 24.sp,
+                  fontSize: AppStyles.fontSize24,
                   color: Colors.black26,
                 ),
               ),
@@ -134,7 +134,7 @@ class TripsWidget extends StatelessWidget {
               Image.asset(AppImages.kPlaneIcon, scale: 4),
               SizedBox(width: 4.w),
               Text(
-                '${daysToGo}d. to go',
+                'in ${daysToGo}d.',
                 style: AppStyles.labelTextStyle().copyWith(
                   fontSize: 10.99,
                   fontWeight: FontWeight.w500,
@@ -167,7 +167,7 @@ class TripsWidget extends StatelessWidget {
               buildMemberAvatars(
                 memberAvatars:
                     (tripModel?.joindUsersList
-                                ?.map((e) => e.urlToImage ?? '')
+                                ?.map((e) => e.profileImage ?? '')
                                 .toList() ??
                             [])
                         .take(4)
@@ -226,7 +226,7 @@ Widget buildMemberAvatars({
                   '+$additionalMembers',
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.white,
-                    fontSize: 9.sp,
+                    fontSize: AppStyles.fontSize9,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

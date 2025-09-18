@@ -44,7 +44,7 @@ class SuccessBottomSheet extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppStyles.labelTextStyle().copyWith(
                 color: AppColors.kWhiteColor,
-                fontSize: 24.sp,
+                fontSize: AppStyles.fontSize24,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -53,7 +53,7 @@ class SuccessBottomSheet extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.white,
-                fontSize: 13.sp,
+                fontSize: AppStyles.fontSize13,
                 fontWeight: FontWeight.w400,
               ),
             ),

@@ -79,7 +79,7 @@ class CustomElevatedButton extends StatelessWidget {
                         textStyle ??
                         AppStyles.labelTextStyle().copyWith(
                           color: foregroundColor ?? AppColors.kWhiteColor,
-                          fontSize: 16.sp,
+                          fontSize: AppStyles.fontSize16,
                           fontWeight: FontWeight.w600,
                         ),
                   ),
@@ -92,7 +92,7 @@ class CustomElevatedButton extends StatelessWidget {
                 style:
                     textStyle ??
                     AppStyles.labelTextStyle().copyWith(
-                      fontSize: 16.sp,
+                      fontSize: AppStyles.fontSize16,
 
                       fontWeight: FontWeight.w600,
                       color: foregroundColor ?? AppColors.kWhiteColor,
@@ -150,7 +150,10 @@ class CustomButtonTwoIcon extends StatelessWidget {
           borderRadius: BorderRadius.circular(50.r),
           side:
               isReversed
-                  ? const BorderSide(color: AppColors.kSecondaryColor, width: 0.7)
+                  ? const BorderSide(
+                    color: AppColors.kSecondaryColor,
+                    width: 0.7,
+                  )
                   : BorderSide.none,
         ),
       ),
@@ -163,7 +166,7 @@ class CustomButtonTwoIcon extends StatelessWidget {
             title,
             style: AppStyles.labelTextStyle().copyWith(
               color: foregroundColor ?? AppColors.kWhiteColor,
-              fontSize: 16.sp,
+              fontSize: AppStyles.fontSize16,
               fontWeight: FontWeight.w600,
             ),
           ),

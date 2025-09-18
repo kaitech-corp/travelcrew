@@ -38,7 +38,7 @@ class ImagePickerBottomSheet {
                   child: Text(
                     'Choose your preference',
                     style: AppStyles.appBarHeadingTextStyle().copyWith(
-                      fontSize: 20.sp,
+                      fontSize: AppStyles.fontSize20,
                       color: AppColors.kPrimaryColor,
                       fontWeight: FontWeight.w700,
                     ),
@@ -53,7 +53,7 @@ class ImagePickerBottomSheet {
                   title: Text(
                     'Camera',
                     style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 16.sp,
+                      fontSize: AppStyles.fontSize16,
                       color: AppColors.kPrimaryColor,
                       fontWeight: FontWeight.w500,
                     ),
@@ -79,7 +79,7 @@ class ImagePickerBottomSheet {
                   title: Text(
                     'Gallery',
                     style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 16.sp,
+                      fontSize: AppStyles.fontSize16,
                       color: AppColors.kPrimaryColor,
                       fontWeight: FontWeight.w500,
                     ),

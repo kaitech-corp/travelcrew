@@ -256,7 +256,7 @@ class StepsOne extends StatelessWidget {
                       'Choose who can see and join your trip. Keep it private for invited members or make it public for everyone to explore!',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey,
-                        fontSize: 13.sp,
+                        fontSize: AppStyles.fontSize13,
 
                         fontWeight: FontWeight.w400,
                       ),

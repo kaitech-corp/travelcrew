@@ -63,7 +63,7 @@ class LocationWidget extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.location_on_outlined,
-                          size: 20.sp,
+                          size: AppStyles.fontSize20,
                           color: Colors.white,
                         ),
                         // Image.asset(AppImages.kLocationIcon, scale: 4),
@@ -81,7 +81,7 @@ class LocationWidget extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.star, size: 15.sp, color: Colors.yellow),
+                            Icon(Icons.star, size: AppStyles.fontSize15, color: Colors.yellow),
                             SizedBox(width: 5.w),
                             Text(
                               '4.8',

@@ -27,7 +27,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
               l10n.terms,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 18.sp,
+                fontSize: AppStyles.fontSize18,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -37,7 +37,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
               l10n.termsContent,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 14.sp,
+                fontSize: AppStyles.fontSize14,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -50,7 +50,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
               l10n.useLicense,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 18.sp,
+                fontSize: AppStyles.fontSize18,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -60,7 +60,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
               l10n.useLicenseContent,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 14.sp,
+                fontSize: AppStyles.fontSize14,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -83,7 +83,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
               l10n.additionalParagraph,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 14.sp,
+                fontSize: AppStyles.fontSize14,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -104,7 +104,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
           '•',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black87,
-            fontSize: 14.sp,
+            fontSize: AppStyles.fontSize14,
 
             fontWeight: FontWeight.w600,
           ),
@@ -115,7 +115,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
             text,
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black87,
-              fontSize: 14.sp,
+              fontSize: AppStyles.fontSize14,
 
               fontWeight: FontWeight.w400,
               height: 1.5,

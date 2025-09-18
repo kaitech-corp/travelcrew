@@ -132,7 +132,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 widget.labelStyle ??
                 widget.textStyle ??
                 AppStyles.labelTextStyle().copyWith(
-                  fontSize: 14.sp,
+                  fontSize: AppStyles.fontSize14,
                   fontWeight: FontWeight.w400,
                 ),
           ),
@@ -173,7 +173,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               style:
                   widget.textStyle ??
                   AppStyles.labelTextStyle().copyWith(
-                    fontSize: 14.sp,
+                    fontSize: AppStyles.fontSize14,
                     fontWeight: FontWeight.w400,
                   ),
               obscureText: widget.obscureText!,
@@ -229,7 +229,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     labelStyle:
         widget.labelStyle ??
         AppStyles.labelTextStyle().copyWith(
-          fontSize: 14.sp,
+          fontSize: AppStyles.fontSize14,
           fontWeight: FontWeight.w400,
         ),
     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -237,7 +237,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     hintStyle:
         widget.hintStyle ??
         AppStyles.labelTextStyle().copyWith(
-          fontSize: 14.sp,
+          fontSize: AppStyles.fontSize14,
           fontWeight: FontWeight.w400,
         ),
     prefixIcon: widget.prefix,

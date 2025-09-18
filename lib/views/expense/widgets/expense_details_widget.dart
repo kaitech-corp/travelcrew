@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/expense/controller/expense_conrtoller.dart';
 
 import '../../../utils/app_strings.dart';
@@ -48,7 +49,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                     expenseModel.name,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black,
-                      fontSize: 20.sp,
+                      fontSize: AppStyles.fontSize20,
 
                       fontWeight: FontWeight.w600,
                     ),
@@ -99,7 +100,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                               isPending
                                   ? const Color(0xFFC7AA01)
                                   : const Color(0xFF4AD10B),
-                          fontSize: 11.sp,
+                          fontSize: AppStyles.fontSize11,
 
                           fontWeight: FontWeight.w500,
                         ),
@@ -129,14 +130,21 @@ class ExpenseDetailsWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               return Row(
                 children: [
-                  Image.network(
-                    controller
+                  AnyImageView(
+                    ontap: () {
+                      Get.toNamed(kProfileScreenRoute);
+                    },
+                    url:
+                        controller
                             .tripModel
                             .value
                             ?.joindUsersList?[index]
-                            .urlToImage ??
+                            .profileImage ??
                         '',
-                    scale: 4,
+                    width: 50.w,
+                    padding: EdgeInsets.zero,
+                    height: 50.h,
+                    isCircle: true,
                   ),
                   SizedBox(width: 10.w),
                   Text(
@@ -154,7 +162,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                     textAlign: TextAlign.right,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF1D7FC2),
-                      fontSize: 13.sp,
+                      fontSize: AppStyles.fontSize13,
 
                       fontWeight: FontWeight.w600,
                     ),

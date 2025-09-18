@@ -188,7 +188,7 @@ class MessagesScreen extends GetView<UsersController> {
                           textAlign: TextAlign.center,
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.white,
-                            fontSize: 10.sp,
+                            fontSize: AppStyles.fontSize10,
                             fontWeight: FontWeight.w400,
                             letterSpacing: 0.30,
                           ),

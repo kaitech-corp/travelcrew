@@ -49,7 +49,7 @@ class PrefrenceBottomSheet extends StatelessWidget {
               labelText: 'Preferences',
               style: AppStyles.labelTextStyle().copyWith(
                 color: AppColors.kBlackColor,
-                fontSize: 20.sp,
+                fontSize: AppStyles.fontSize20,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -90,7 +90,7 @@ class PrefrenceBottomSheet extends StatelessWidget {
                                   isSelected
                                       ? AppColors.kWhiteColor
                                       : AppColors.kBlackColor,
-                              fontSize: 14.sp,
+                              fontSize: AppStyles.fontSize14,
                             ),
                           ),
                         ),

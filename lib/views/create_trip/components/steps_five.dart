@@ -262,7 +262,7 @@ class StepsFive extends StatelessWidget {
                 'Add Another Activity',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: const Color(0xFF1D7FC2),
-                  fontSize: 20.sp,
+                  fontSize: AppStyles.fontSize20,
                   fontWeight: FontWeight.w600,
                   decoration: TextDecoration.underline,
                   decorationColor: const Color(0xFF1D7FC2),

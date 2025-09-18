@@ -61,7 +61,7 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                   icon: Icon(
                     Icons.arrow_back_ios,
                     color: Colors.white,
-                    size: 20.sp,
+                    size: AppStyles.fontSize20,
                   ),
                   onPressed: () {
                     final DateTime currentTime = DateTime(
@@ -102,7 +102,7 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                   icon: Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
-                    size: 20.sp,
+                    size: AppStyles.fontSize20,
                   ),
                   onPressed: () {
                     if (DateTime(

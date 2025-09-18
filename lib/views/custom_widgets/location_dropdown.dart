@@ -84,7 +84,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                       : AppColors.kLightGreyColor,
               filled: true,
               hintStyle: AppStyles.labelTextStyle().copyWith(
-                fontSize: 16.sp,
+                fontSize: AppStyles.fontSize16,
                 color: Colors.grey[600],
               ),
 
@@ -112,7 +112,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                         GlobalVariables.showDropdown.isTrue
                             ? Colors.blue
                             : AppColors.kBlackColor,
-                    size: 24.sp,
+                    size: AppStyles.fontSize24,
                   ),
                 ),
               ),
@@ -179,7 +179,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                                         widget.items[index].searchText ?? '',
                                         style: AppStyles.labelTextStyle()
                                             .copyWith(
-                                              fontSize: 16.sp,
+                                              fontSize: AppStyles.fontSize16,
                                               fontWeight: FontWeight.w500,
                                               color:
                                                   isSelected
@@ -207,7 +207,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                                           '${widget.items[index].views} views',
                                           style: AppStyles.labelTextStyle()
                                               .copyWith(
-                                                fontSize: 12.sp,
+                                                fontSize: AppStyles.fontSize12,
                                                 color:
                                                     isSelected
                                                         ? Colors.blue

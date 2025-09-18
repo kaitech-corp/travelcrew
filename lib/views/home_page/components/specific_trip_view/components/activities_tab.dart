@@ -235,7 +235,7 @@ class ActivityWidget extends StatelessWidget {
                       textAlign: TextAlign.right,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 14.sp,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w500,
                       ),

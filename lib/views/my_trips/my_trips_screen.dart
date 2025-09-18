@@ -67,7 +67,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                             l10n.upcoming,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: Colors.black,
-                              fontSize: 12.sp,
+                              fontSize: AppStyles.fontSize12,
 
                               fontWeight: FontWeight.w500,
                             ),
@@ -154,7 +154,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                               filled: true,
                               fillColor: AppColors.kLightGreyColor,
                               hintStyle: AppStyles.labelTextStyle().copyWith(
-                                fontSize: 16.sp,
+                                fontSize: AppStyles.fontSize16,
                                 color: Colors.grey[600],
                               ),
                               contentPadding: EdgeInsets.symmetric(
@@ -182,7 +182,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
                                   child: Icon(
                                     Icons.search,
                                     color: AppColors.kBlackColor,
-                                    size: 24.sp,
+                                    size: AppStyles.fontSize24,
                                   ),
                                 ),
                               ),

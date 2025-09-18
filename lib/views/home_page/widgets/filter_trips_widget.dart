@@ -49,7 +49,7 @@ class FilterTripsWidget extends StatelessWidget {
                       controller: _minPriceController,
                       prefixIcon: Icon(
                         Icons.attach_money,
-                        size: 22.sp,
+                        size: AppStyles.fontSize22,
                         color: AppColors.kBlackColor.withValues(alpha: .5),
                       ),
                       prefixIconConstraints: BoxConstraints(maxWidth: 30.w),
@@ -93,7 +93,7 @@ class FilterTripsWidget extends StatelessWidget {
                       fillColor: Colors.white.withValues(alpha: .2),
                       prefixIcon: Icon(
                         Icons.attach_money,
-                        size: 22.sp,
+                        size: AppStyles.fontSize22,
                         color: AppColors.kBlackColor.withValues(alpha: .5),
                       ),
                       prefixIconConstraints: BoxConstraints(maxWidth: 30.w),

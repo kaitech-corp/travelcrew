@@ -23,7 +23,7 @@ class InfoRow extends StatelessWidget {
               maxLines: 3,
               style: AppStyles.labelTextStyle().copyWith(
                 color: AppColors().klabeltextcolor,
-                fontSize: 12.sp,
+                fontSize: AppStyles.fontSize12,
                 fontWeight: FontWeight.w400,
                 height: 1.92,
               ),

@@ -27,7 +27,7 @@ class AboutScreen extends GetView<AboutController> {
               l10n.aboutTitle,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 22.sp,
+                fontSize: AppStyles.fontSize22,
 
                 fontWeight: FontWeight.w700,
               ),
@@ -39,7 +39,7 @@ class AboutScreen extends GetView<AboutController> {
               l10n.aboutContent1,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 15.sp,
+                fontSize: AppStyles.fontSize15,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -51,7 +51,7 @@ class AboutScreen extends GetView<AboutController> {
               l10n.aboutContent2,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 15.sp,
+                fontSize: AppStyles.fontSize15,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -63,7 +63,7 @@ class AboutScreen extends GetView<AboutController> {
               l10n.aboutContent3,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 15.sp,
+                fontSize: AppStyles.fontSize15,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -75,7 +75,7 @@ class AboutScreen extends GetView<AboutController> {
               l10n.aboutContent4,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black87,
-                fontSize: 15.sp,
+                fontSize: AppStyles.fontSize15,
 
                 fontWeight: FontWeight.w400,
                 height: 1.5,
