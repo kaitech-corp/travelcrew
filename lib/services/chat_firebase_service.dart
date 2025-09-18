@@ -206,4 +206,74 @@ class ChatFirebaseService {
       return [];
     }
   }
+
+  /// Safely add a user to a chatroom, preventing duplicates
+  static Future<bool> addUserToChatRoom({
+    required String roomId,
+    required ChatUser user,
+  }) async {
+    try {
+      final chatRoom = await getChatsByRoomId(roomId: roomId);
+      if (chatRoom == null) {
+        if (kDebugMode) {
+          print('Cannot add user to non-existent chatroom: $roomId');
+        }
+        return false;
+      }
+
+      final userAdded = chatRoom.addUserSafely(user);
+      if (!userAdded) {
+        if (kDebugMode) {
+          print('User ${user.id} is already in chatroom: $roomId');
+        }
+        return false; // User was already in the chatroom
+      }
+
+      await updateChatRoom(roomId: roomId, chatToSave: chatRoom);
+      if (kDebugMode) {
+        print('Successfully added user ${user.id} to chatroom: $roomId');
+      }
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in addUserToChatRoom for roomId: $roomId, userId: ${user.id}. Error: $e');
+      }
+      return false;
+    }
+  }
+
+  /// Remove a user from a chatroom
+  static Future<bool> removeUserFromChatRoom({
+    required String roomId,
+    required String userId,
+  }) async {
+    try {
+      final chatRoom = await getChatsByRoomId(roomId: roomId);
+      if (chatRoom == null) {
+        if (kDebugMode) {
+          print('Cannot remove user from non-existent chatroom: $roomId');
+        }
+        return false;
+      }
+
+      final userRemoved = chatRoom.removeUser(userId);
+      if (!userRemoved) {
+        if (kDebugMode) {
+          print('User $userId was not found in chatroom: $roomId');
+        }
+        return false;
+      }
+
+      await updateChatRoom(roomId: roomId, chatToSave: chatRoom);
+      if (kDebugMode) {
+        print('Successfully removed user $userId from chatroom: $roomId');
+      }
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in removeUserFromChatRoom for roomId: $roomId, userId: $userId. Error: $e');
+      }
+      return false;
+    }
+  }
 }
