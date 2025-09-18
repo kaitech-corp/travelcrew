@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:travel_crew/main.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
@@ -39,7 +39,9 @@ class FirebaseNotificationsService {
       ress.sort((a, b) => b.date.compareTo(a.date));
       return ress;
     } catch (e) {
-      if(kDebugMode){print(e);}
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return [];
   }
@@ -48,22 +50,31 @@ class FirebaseNotificationsService {
     required String type,
   }) async {
     final result =
-        await FirebaseFirestore.instance
+        await firestore
             .collection(kNotificationsCollection)
+            .doc(GlobalVariables.loggedInUser.value!.uid)
+            .collection(kNotificationsSubCollection)
             .where(
               'sentTo',
-              arrayContainsAny: ['All', GlobalVariables.loggedInUser.value!.uid],
+              arrayContainsAny: [
+                'All',
+                GlobalVariables.loggedInUser.value!.uid,
+              ],
             )
             .get();
     final futures =
         result.docs.map((e) async {
-          final UserNotificationModel us = UserNotificationModel.fromMap(e.data());
+          final UserNotificationModel us = UserNotificationModel.fromMap(
+            e.data(),
+          );
           if (us.notificationType == NotificationType.trip.status) {
             us.trip = await FirebaseTripService.getTripById(
               tripId: us.notificationForId,
             );
           }
-          us.addedBy = await AuthService.getUserPublicProfile(userId: us.createdBy);
+          us.addedBy = await AuthService.getUserPublicProfile(
+            userId: us.createdBy,
+          );
           return us;
         }).toList();
     final res = await Future.wait(futures);
@@ -107,12 +118,16 @@ class FirebaseNotificationsService {
     UserNotificationModel notification,
   ) async {
     try {
-      await FirebaseFirestore.instance
+      await firestore
           .collection(kNotificationsCollection)
+          .doc(GlobalVariables.loggedInUser.value!.uid)
+          .collection(kNotificationsSubCollection)
           .add(notification.toMap())
           .then((value) => value.update({'notificationId': value.id}));
     } catch (e) {
-      if(kDebugMode){print(e);}
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -121,8 +136,10 @@ class FirebaseNotificationsService {
     required Map<String, dynamic> data,
   }) async {
     try {
-      await FirebaseFirestore.instance
+      await firestore
           .collection(kNotificationsCollection)
+          .doc(GlobalVariables.loggedInUser.value!.uid)
+          .collection(kNotificationsSubCollection)
           .doc(notificationId)
           .update(data);
       return true;

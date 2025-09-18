@@ -254,6 +254,23 @@ class FirebaseTripService {
     return false;
   }
 
+  static Future<bool> joinTrip({
+    required String tripId,
+    required String userId,
+  }) async {
+    try {
+      await firestore.collection(kTripTable).doc(tripId).update({
+        'joinedUsers': FieldValue.arrayUnion([userId]),
+      });
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error joining trip: $e');
+      }
+    }
+    return false;
+  }
+
   static Future<bool> likeActivity({
     required String activityId,
     required String userId,

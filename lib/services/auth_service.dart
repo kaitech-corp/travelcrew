@@ -26,23 +26,27 @@ class AuthService {
         Get.offAllNamed(kOnboardingScreenRoute);
         return;
       }
-      if (GlobalVariables.loggedInUser.value != null &&
-          !user.emailVerified) {
-        showCustomSnackBar(
-          contentType: ContentType.warning,
-          content: 'Verify your email to continue. Check your inbox for a verification link.',
-        );
-        if (fromSplash) {
-          Get.offAllNamed(kLoginScreenRoute);
-        }
-        return;
-      }
+
+      // Check for public profile and create if it doesn't exist
+      await _createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+
+      // Check email verification status
+      // if (GlobalVariables.loggedInUser.value?.emailConfirmed != true) {
+      //   showCustomSnackBar(
+      //     contentType: ContentType.warning,
+      //     content:
+      //         'Verify your email to continue. Check your inbox for a verification link.',
+      //   );
+      //   if (fromSplash) {
+      //     Get.offAllNamed(kLoginScreenRoute);
+      //   }
+      //   return;
+      // }
+
+      // User is verified and logged in successfully
       Get.offAllNamed(kMainViewScreenRoute);
       if (!fromSplash) {
-        showCustomSnackBar(
-          title: 'Success',
-          content: 'Logged in successfully',
-        );
+        showCustomSnackBar(title: 'Success', content: 'Logged in successfully');
       }
     } else {
       Get.offAllNamed(kOnboardingScreenRoute);
@@ -54,12 +58,12 @@ class AuthService {
       final String? userid = userId ?? _auth.currentUser?.uid;
       if (userid != null) {
         AppLogger.debug('Fetching user with ID: $userid');
-        
+
         final DocumentSnapshot userDoc =
             await _firestore.collection(kUsersCollection).doc(userid).get();
         if (userDoc.exists) {
           AppLogger.debug('User document exists for ID: $userid');
-          
+
           final UserModel user = UserModel.fromMap(
             userDoc.data()! as Map<String, dynamic>,
           );
@@ -71,8 +75,10 @@ class AuthService {
           AppLogger.info('Successfully retrieved user: $userid');
           return user;
         } else {
-          AppLogger.info('User document does not exist, creating new user: $userid');
-          
+          AppLogger.info(
+            'User document does not exist, creating new user: $userid',
+          );
+
           // Create a new user if the document does not exist
           final UserModel newUser = UserModel(
             createdAt: Timestamp.now(),
@@ -111,19 +117,24 @@ class AuthService {
       final String? userid = userId ?? _auth.currentUser?.uid;
       if (userid != null) {
         AppLogger.debug('Fetching public profile for user ID: $userid');
-        
+
         final DocumentSnapshot userDoc =
-            await _firestore.collection(kUsersCollection).doc(userid).get();
+            await _firestore
+                .collection(kUsersPublicProfileCollection)
+                .doc(userid)
+                .get();
         if (userDoc.exists) {
           AppLogger.debug('Public profile document exists for ID: $userid');
-          
+
           final PublicUserModel user = PublicUserModel.fromMap(
             userDoc.data()! as Map<String, dynamic>,
           );
           AppLogger.info('Successfully retrieved public profile: $userid');
           return user;
         } else {
-          AppLogger.warning('Public profile document not found for ID: $userid');
+          AppLogger.warning(
+            'Public profile document not found for ID: $userid',
+          );
         }
       } else {
         AppLogger.warning('No user ID provided for getUserPublicProfile');
@@ -157,6 +168,10 @@ class AuthService {
         showCustomSnackBar(content: 'Credentials not valid or account deleted');
         return false;
       }
+
+      // Check for public profile and create if it doesn't exist
+      await _createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+
       GlobalVariables.showLoader.value = false;
       // SecureStorageService.saveInStorage(key: kPasswordKey, data: password);
       // await FirebaseMessaging.instance.subscribeToTopic(_auth.currentUser!.uid);
@@ -456,5 +471,28 @@ class AuthService {
       }
     }
     GlobalVariables.showLoader.value = false;
+  }
+
+  static Future<void> _createPublicProfileIfNeeded(UserModel? user) async {
+    if (user == null) return;
+
+    final publicProfileRef = _firestore
+        .collection('publicProfile')
+        .doc(user.uid);
+    final publicProfileDoc = await publicProfileRef.get();
+
+    if (!publicProfileDoc.exists) {
+      final publicProfile = PublicUserModel(
+        displayName: user.displayName ?? user.uid.substring(0, 5),
+        email: user.email ?? '',
+        uid: user.uid,
+        profileImage: user.profileImage ?? '',
+        followers: [],
+        following: [],
+        tripsCreated: 0,
+        tripsJoined: 0,
+      );
+      await publicProfileRef.set(publicProfile.toMap());
+    }
   }
 }
