@@ -37,8 +37,10 @@ const kTripChatCollection = 'chat';
 const kTripChatMessagesCollection = 'messages';
 const kActivityTable = 'activity';
 const kUsersCollection = 'users';
+const kUsersPublicProfileCollection = 'publicProfile';
 const kOtpCollection = 'otps';
 const kNotificationsCollection = 'notifications';
+const kNotificationsSubCollection = 'notification';
 
 const kGoogleMapKey = 'AIzaSyAI-dmSoDwLdFshrmoS-ypNRSItEIsCb3Q';
 
