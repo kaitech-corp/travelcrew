@@ -1,4 +1,5 @@
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const functions = require("firebase-functions");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
@@ -79,3 +80,28 @@ exports.sendPushNotification = onDocumentCreated("notifications/{notificationId}
   }
 });
 
+/**
+ * Triggered when a new user is created.
+ * This function creates a public profile for the new user.
+ */
+exports.createPublicProfile = functions.auth.user().onCreate(async (user) => {
+  const db = getFirestore();
+  const publicProfile = {
+    displayName: user.displayName || 'New User',
+    email: user.email || '',
+    uid: user.uid,
+    urlToImage: user.photoURL || '',
+    // Initialize other fields as needed
+    followers: [],
+    following: [],
+    tripsCreated: 0,
+    tripsJoined: 0,
+  };
+
+  try {
+    await db.collection('publicProfile').doc(user.uid).set(publicProfile);
+    console.log(`Public profile created for user: ${user.uid}`);
+  } catch (error) {
+    console.error("Error creating public profile:", error);
+  }
+});

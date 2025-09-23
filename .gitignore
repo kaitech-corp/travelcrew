@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+scripts/
 
 # IntelliJ related
 *.iml
@@ -21,7 +22,7 @@
 #.vscode/
 
 # Flutter/Dart/Pub related
-**/doc/api/
+**/doc/
 .env
 .dart_tool/
 .flutter-plugins
@@ -53,3 +54,5 @@ lib/firebase_options.dart
 assets/
 ios/GoogleService-Info.plist
 android/app/google-services.json
+.clinerules
+
