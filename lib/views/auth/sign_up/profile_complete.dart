@@ -69,9 +69,9 @@ class ProfileSetupPage extends GetView<SignUpController> {
                               Get.arguments == 'fromProfile' &&
                                       controller.selectedImage.isEmpty
                                   ? GlobalVariables
-                                          .userProfile
+                                          .loggedInUser
                                           .value
-                                          ?.urlToImage ??
+                                          ?.profileImage ??
                                       ''
                                   : controller.selectedImage.value,
                         ),

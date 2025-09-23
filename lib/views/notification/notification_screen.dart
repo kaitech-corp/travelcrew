@@ -106,7 +106,7 @@ class NotificationsScreen extends GetView<NotificationController> {
       );
     } else {
       return AnyImageView(
-        url: notification.addedBy?.urlToImage ?? '',
+        url: notification.addedBy?.profileImage ?? '',
         height: 80,
         width: 80,
       );

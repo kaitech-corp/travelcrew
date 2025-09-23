@@ -17,10 +17,10 @@ class ChatRoom {
 
   factory ChatRoom.fromMap(Map<String, dynamic> map) {
     return ChatRoom(
-      roomId: (map['roomId'] as String)  ?? '',
+      roomId: (map['roomId'] as String?) ?? '',
       usersIds: List<String>.from((map['usersIds'] as List<dynamic>?) ?? <dynamic>[]),
       updatedAt: (map['updatedAt'] as Timestamp?) ?? Timestamp.fromDate(DateTime(1999)),
-      users: List<ChatUser>.from(map['users']?.map((x) => ChatUser.fromMap(x))),
+      users: List<ChatUser>.from(map['users']?.map((x) => ChatUser.fromMap(x)) ?? []),
     );
   }
 
@@ -82,5 +82,30 @@ class ChatRoom {
     return roomId.hashCode ^
         updatedAt.hashCode ^
         users.hashCode;
+  }
+
+  /// Check if a user is already in the chatroom
+  bool containsUser(String userId) {
+    return usersIds.contains(userId) || users.any((user) => user.id == userId);
+  }
+
+  /// Safely add a user to the chatroom if not already present
+  bool addUserSafely(ChatUser user) {
+    if (containsUser(user.id)) {
+      return false; // User already exists
+    }
+    
+    users.add(user);
+    usersIds.add(user.id);
+    return true; // User was added successfully
+  }
+
+  /// Remove a user from the chatroom
+  bool removeUser(String userId) {
+    final initialUserCount = users.length;
+    users.removeWhere((user) => user.id == userId);
+    final userRemoved = users.length < initialUserCount;
+    final userIdRemoved = usersIds.remove(userId);
+    return userRemoved || userIdRemoved;
   }
 }

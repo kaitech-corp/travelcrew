@@ -31,7 +31,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 isNetworkImage: true,
                 title: l10n.personalInformation,
                 leadingImage:
-                    GlobalVariables.userProfile.value?.urlToImage ?? '',
+                    GlobalVariables.loggedInUser.value?.profileImage ?? '',
                 onTap:
                     () => Get.toNamed(
                       kProfileSetUpScreenRoute,
@@ -90,7 +90,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         content: Text(
                           l10n.confirmDeleteAccount,
                           style: AppStyles.labelTextStyle().copyWith(
-                            fontSize: 14.sp,
+                            fontSize: AppStyles.fontSize14,
                             fontWeight: FontWeight.w400,
                           ),
                         ),

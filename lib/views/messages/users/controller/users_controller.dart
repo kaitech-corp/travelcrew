@@ -172,19 +172,39 @@ class UsersController extends GetxController {
         return;
       }
 
-      chatRoom.value!.users.add(
+      // Check if user is already in the chatroom
+      final isUserAlreadyInTrip = currentTrip.value?.joinedUsers?.contains(currentUser.uid) ?? false;
+
+      if (chatRoom.value!.containsUser(currentUser.uid) && isUserAlreadyInTrip) {
+        AppLogger.info('User ${currentUser.uid} is already in the chatroom: $roomId');
+        showCustomSnackBar(content: 'You are already in this chat room');
+        return;
+      }
+
+      // Safely add user to chatroom using the helper method
+      final userAddedToChat = chatRoom.value!.addUserSafely(
         ChatUser(
           id: currentUser.uid,
           unreadedMessages: 0,
           lastActive: Timestamp.now(),
           name: currentUser.displayName ?? '',
-          profileImage: GlobalVariables.userProfile.value?.urlToImage ?? '',
+          profileImage: GlobalVariables.userProfile.value?.profileImage ?? '',
           isOnline: true,
           isTyping: false,
         ),
       );
-      chatRoom.value!.usersIds.add(currentUser.uid);
-      currentTrip.value?.joinedUsers?.add(currentUser.uid);
+
+      if (userAddedToChat) {
+        AppLogger.debug('Added user to chat room successfully');
+      } else {
+        AppLogger.debug('User was already in chat room');
+      }
+
+      // Add user to trip joinedUsers only if not already present
+      if (!isUserAlreadyInTrip) {
+        currentTrip.value?.joinedUsers?.add(currentUser.uid);
+        AppLogger.debug('Added user to trip joinedUsers list');
+      }
       
       if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
       chatRoom.refresh();
@@ -281,7 +301,7 @@ class UsersController extends GetxController {
             unreadedMessages: 0,
             lastActive: Timestamp.now(),
             name: currentUser.displayName ?? '',
-            profileImage: GlobalVariables.userProfile.value?.urlToImage ?? '',
+            profileImage: GlobalVariables.userProfile.value?.profileImage ?? '',
             isOnline: true,
             isTyping: false,
           ),

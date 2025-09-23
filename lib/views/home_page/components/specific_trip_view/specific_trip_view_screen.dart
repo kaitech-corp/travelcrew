@@ -31,7 +31,9 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
   Widget build(BuildContext context) {
     Future.microtask(() {
       controller.tripModel.value =
-          Get.arguments is TripModel ? Get.arguments as TripModel : Get.arguments['trip'] as TripModel;
+          Get.arguments is TripModel
+              ? Get.arguments as TripModel
+              : Get.arguments['trip'] as TripModel;
     });
     return CustomScaffold(
       onWillPop: () {
@@ -233,6 +235,40 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                                           imagePath:
                                                                               AppImages.kIcEditTrip,
                                                                         ),
+                                                                      // Show "Invite" option for trip owner
+                                                                      if (GlobalVariables.isLoggedInUser(
+                                                                        controller.tripModel.value?.createdBy ??
+                                                                            '',
+                                                                      ))
+                                                                        MoreVertDialogueWidget(
+                                                                          title:
+                                                                              'Invite',
+                                                                          onTap: () {
+                                                                            Get.back();
+                                                                            controller.inviteToTrip();
+                                                                          },
+                                                                          iconData:
+                                                                              LucideIcons.userPlus,
+                                                                        ),
+                                                                      // Show "Join Trip" option for non-owners who haven't joined
+                                                                      if (!GlobalVariables.isLoggedInUser(
+                                                                            controller.tripModel.value?.createdBy ??
+                                                                                '',
+                                                                          ) &&
+                                                                          !(controller.tripModel.value?.joinedUsers?.contains(
+                                                                                GlobalVariables.loggedInUser.value?.uid,
+                                                                              ) ??
+                                                                              false))
+                                                                        MoreVertDialogueWidget(
+                                                                          title:
+                                                                              'Join Trip',
+                                                                          onTap: () {
+                                                                            Get.back();
+                                                                            controller.joinTrip();
+                                                                          },
+                                                                          iconData:
+                                                                              LucideIcons.plus,
+                                                                        ),
                                                                       MoreVertDialogueWidget(
                                                                         imagePath:
                                                                             AppImages.kIcShareTrip,
@@ -338,9 +374,10 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                             totalIndexes:
                                                 Get.arguments is TripModel
                                                     ? Get
-                                                        .arguments
-                                                        .images
-                                                        .length as int
+                                                            .arguments
+                                                            .images
+                                                            .length
+                                                        as int
                                                     : 3,
                                             height: 24,
                                           ),
@@ -394,7 +431,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                   'Description',
                                   style: AppStyles.labelTextStyle().copyWith(
                                     color: const Color(0xFF0F0F0F),
-                                    fontSize: 17.sp,
+                                    fontSize: AppStyles.fontSize17,
 
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -444,7 +481,8 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                   color: const Color(
                                                     0xFF0F0F0F,
                                                   ),
-                                                  fontSize: 17.sp,
+                                                  fontSize:
+                                                      AppStyles.fontSize17,
 
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -473,7 +511,9 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                           color: const Color(
                                                             0xFFA4ABB3,
                                                           ),
-                                                          fontSize: 13.sp,
+                                                          fontSize:
+                                                              AppStyles
+                                                                  .fontSize13,
 
                                                           fontWeight:
                                                               FontWeight.w500,
@@ -503,7 +543,9 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                           color: const Color(
                                                             0xFFA4ABB3,
                                                           ),
-                                                          fontSize: 13.sp,
+                                                          fontSize:
+                                                              AppStyles
+                                                                  .fontSize13,
 
                                                           fontWeight:
                                                               FontWeight.w500,
@@ -525,7 +567,8 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                   color: const Color(
                                                     0xFF0F0F0F,
                                                   ),
-                                                  fontSize: 17.sp,
+                                                  fontSize:
+                                                      AppStyles.fontSize17,
 
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -554,7 +597,9 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                           color: const Color(
                                                             0xFFA4ABB3,
                                                           ),
-                                                          fontSize: 13.sp,
+                                                          fontSize:
+                                                              AppStyles
+                                                                  .fontSize13,
 
                                                           fontWeight:
                                                               FontWeight.w500,
@@ -584,7 +629,9 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                           color: const Color(
                                                             0xFFA4ABB3,
                                                           ),
-                                                          fontSize: 13.sp,
+                                                          fontSize:
+                                                              AppStyles
+                                                                  .fontSize13,
 
                                                           fontWeight:
                                                               FontWeight.w500,
@@ -611,7 +658,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                       style: AppStyles.labelTextStyle()
                                           .copyWith(
                                             color: const Color(0xFF0F0F0F),
-                                            fontSize: 22.sp,
+                                            fontSize: AppStyles.fontSize22,
 
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -661,15 +708,31 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                             itemBuilder: (context, index) {
                                               return Row(
                                                 children: [
-                                                  Image.network(
-                                                    controller
+                                                  AnyImageView(
+                                                    ontap: () {
+                                                      // Get.toNamed(kProfileScreenRoute);
+                                                    },
+                                                    url:
+                                                        controller
                                                             .tripModel
                                                             .value
                                                             ?.joindUsersList?[index]
-                                                            .urlToImage ??
+                                                            .profileImage ??
                                                         '',
-                                                    scale: 4,
+                                                    width: 50.w,
+                                                    padding: EdgeInsets.zero,
+                                                    height: 50.h,
+                                                    isCircle: true,
                                                   ),
+                                                  // Image.network(
+                                                  //   controller
+                                                  //           .tripModel
+                                                  //           .value
+                                                  //           ?.joindUsersList?[index]
+                                                  //           .profileImage ??
+                                                  //       '',
+                                                  //   scale: 4,
+                                                  // ),
                                                   SizedBox(width: 10.w),
                                                   Expanded(
                                                     child: Text(
@@ -679,18 +742,17 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                               ?.joindUsersList?[index]
                                                               .displayName ??
                                                           '',
-                                                      style:
-                                                          AppStyles.labelTextStyle()
-                                                              .copyWith(
-                                                                color:
-                                                                    const Color(
-                                                                      0xFF1F1F1F,
-                                                                    ),
-                                                                fontSize: 13.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
+                                                      style: AppStyles.labelTextStyle()
+                                                          .copyWith(
+                                                            color: const Color(
+                                                              0xFF1F1F1F,
+                                                            ),
+                                                            fontSize:
+                                                                AppStyles
+                                                                    .fontSize13,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -738,7 +800,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                 //   'Trip Privacy',
                                 //   style: AppStyles.labelTextStyle().copyWith(
                                 //     color: Colors.black,
-                                //     fontSize: 20.sp,
+                                //     fontSize: AppStyles.fontSize20,
 
                                 //     fontWeight: FontWeight.w600,
                                 //   ),
@@ -752,7 +814,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                 //         'Choose who can see and join your trip. Keep it private for invited members or make it public for everyone to explore!',
                                 //         style: AppStyles.labelTextStyle().copyWith(
                                 //           color: Colors.grey,
-                                //           fontSize: 13.sp,
+                                //           fontSize: AppStyles.fontSize13,
 
                                 //           fontWeight: FontWeight.w400,
                                 //         ),
@@ -778,9 +840,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                       unselectedTextColor: Colors.black87,
                                       height: 45,
                                       tabSpacing: 12,
-                                      padding: const EdgeInsets.only(
-                                        right: 1,
-                                      ),
+                                      padding: const EdgeInsets.only(right: 1),
                                     ),
                                   ),
                                 ),
@@ -892,7 +952,11 @@ class MoreVertDialogueWidget extends StatelessWidget {
           spacing: 11.13.w,
           children: [
             iconData != null
-                ? Icon(iconData, color: AppColors.kWhiteColor, size: 24.sp)
+                ? Icon(
+                  iconData,
+                  color: AppColors.kWhiteColor,
+                  size: AppStyles.fontSize24,
+                )
                 : AnyImageView(
                   width: 22.26.w,
                   height: 22.26.h,

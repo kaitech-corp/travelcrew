@@ -42,23 +42,35 @@ class LoginController extends GetxController {
         email: emailController.text,
         password: passwordController.text,
       );
-        if (loginSuccess) {
+      
+      if (loginSuccess) {
+        // Check email verification status
+        if (GlobalVariables.loggedInUser.value?.emailConfirmed != true) {
           GlobalVariables.showLoader.value = false;
-          // if (isRememberMe.isTrue) {
-          //   SecureStorageService.saveInStorage(
-          //     key: 'rememberMe',
-          //     data: jsonEncode({
-          //       'email': emailController.text,
-          //       'password': passwordController.text,
-          //     }),
-          //   );
-          // } else {
-          //   SecureStorageService.deleteKey(key: 'rememberMe');
-          // }
-          Get.offAllNamed(kMainViewScreenRoute);
-        } else {
-          GlobalVariables.showLoader.value = false;
+          showCustomSnackBar(
+            contentType: ContentType.warning,
+            title: 'Email Verification Required',
+            content: 'Please verify your email to continue. Check your inbox for a verification link.',
+          );
+          return;
         }
+        
+        GlobalVariables.showLoader.value = false;
+        // if (isRememberMe.isTrue) {
+        //   SecureStorageService.saveInStorage(
+        //     key: 'rememberMe',
+        //     data: jsonEncode({
+        //       'email': emailController.text,
+        //       'password': passwordController.text,
+        //     }),
+        //   );
+        // } else {
+        //   SecureStorageService.deleteKey(key: 'rememberMe');
+        // }
+        Get.offAllNamed(kMainViewScreenRoute);
+      } else {
+        GlobalVariables.showLoader.value = false;
+      }
     } catch (e) {
       GlobalVariables.showLoader.value = false;
       String message;

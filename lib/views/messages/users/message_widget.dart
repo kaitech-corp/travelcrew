@@ -61,7 +61,7 @@ class MessageWidget extends StatelessWidget {
                       containerBackgroundColor: AppColors.kGreyColor.withValues(
                         alpha: .3,
                       ),
-                      errorWidget: const Icon(Icons.error),
+                      errorWidget: const Icon(Icons.chat),
                     ),
                     TextWidget(
                       labelText:

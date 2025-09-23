@@ -102,6 +102,8 @@ class CreateTripController extends GetxController {
     addressController.text = tripModel.value!.hotelAddress ?? '';
     invitedUsersList.value = tripModel.value!.invitedUsers ?? [];
     selectedLocation.value = tripModel.value!.tripLocation ?? '';
+    // Set selectedPlaceId to a non-empty value when editing to bypass location validation
+    selectedPlaceId.value = 'existing_location';
     arrivalDate.value = tripModel.value?.arrivalDate;
     departureDate.value = tripModel.value?.departureDate;
     expensePerNightController.text =
@@ -132,7 +134,8 @@ class CreateTripController extends GetxController {
       if (currentStep.value == 1 && !formStep1.currentState!.validate()) {
         return;
       }
-      if (selectedPlaceId.isEmpty) {
+      // Only require location selection for new trips, not when editing
+      if (selectedPlaceId.isEmpty && Get.arguments is! TripModel) {
         showCustomSnackBar(content: 'Please select trip location');
         return;
       }
@@ -599,7 +602,7 @@ class CreateTripController extends GetxController {
             SearchModel(
               searchText: e.displayName,
               placeId: e.uid,
-              imageUrl: e.urlToImage,
+              imageUrl: e.profileImage,
             ),
           );
         }

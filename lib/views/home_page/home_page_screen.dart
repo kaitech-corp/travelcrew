@@ -36,7 +36,7 @@ class HomePageScreen extends GetView<HomePageController> {
                 ontap: () {
                   Get.toNamed(kProfileScreenRoute);
                 },
-                url: GlobalVariables.userProfile.value?.urlToImage ?? '',
+                url: GlobalVariables.loggedInUser.value?.profileImage ?? '',
                 width: 50.w,
                 padding: EdgeInsets.zero,
                 height: 50.h,

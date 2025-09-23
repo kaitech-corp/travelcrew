@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
 import 'package:travel_crew/services/session_services.dart';
@@ -175,5 +176,138 @@ class SpecificTripViewController extends GetxController
     } catch (e) {}
     GlobalVariables.addingToFavourites.value = '';
     return isLiked.value;
+  }
+
+  Future<void> joinTrip() async {
+    try {
+      if (tripModel.value == null) {
+        showCustomSnackBar(content: 'Trip not found');
+        return;
+      }
+
+      final currentUserId = GlobalVariables.loggedInUser.value?.uid;
+      if (currentUserId == null) {
+        showCustomSnackBar(content: 'Please log in to join this trip');
+        return;
+      }
+
+      // Check if user is already in the trip
+      if (tripModel.value!.joinedUsers?.contains(currentUserId) == true) {
+        showCustomSnackBar(content: 'You are already part of this trip');
+        return;
+      }
+
+      GlobalVariables.showLoader.value = true;
+      
+      final success = await FirebaseTripService.joinTrip(
+        tripId: tripModel.value!.id,
+        userId: currentUserId,
+      );
+
+      if (success) {
+        // Update local trip model
+        tripModel.value!.joinedUsers ??= [];
+        tripModel.value!.joinedUsers!.add(currentUserId);
+        
+        // Refresh the joined users list
+        if (tripModel.value!.joinedUsers!.isNotEmpty) {
+          tripModel.value!.joindUsersList = await AuthService.getTripUsers(
+            userIds: tripModel.value!.joinedUsers!,
+          );
+        }
+        
+        tripModel.refresh();
+        updateTripOverAll(tripModel.value!);
+        
+        showCustomSnackBar(content: 'Successfully joined the trip!');
+      } else {
+        showCustomSnackBar(content: 'Failed to join trip. Please try again.');
+      }
+    } catch (e) {
+      showCustomSnackBar(content: 'An error occurred while joining the trip');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  Future<void> inviteToTrip() async {
+    try {
+      if (tripModel.value == null) {
+        showCustomSnackBar(content: 'Trip not found');
+        return;
+      }
+
+      // Navigate to invite screen or show invite dialog
+      // For now, we'll show a simple dialog to get email
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Invite to Trip'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Enter email address to invite:'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: TextEditingController(),
+                decoration: const InputDecoration(
+                  hintText: 'Email address',
+                  border: OutlineInputBorder(),
+                ),
+                onSubmitted: (email) {
+                  if (email.isNotEmpty && email.contains('@')) {
+                    _sendInvite(email);
+                    Get.back();
+                  } else {
+                    showCustomSnackBar(content: 'Please enter a valid email address');
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Get email from text field and send invite
+                Get.back();
+                showCustomSnackBar(content: 'Invite functionality will be implemented');
+              },
+              child: const Text('Send Invite'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      showCustomSnackBar(content: 'An error occurred while inviting to trip');
+    }
+  }
+
+  Future<void> _sendInvite(String email) async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      
+      // Add email to invited users list
+      tripModel.value!.invitedUsers ??= [];
+      if (!tripModel.value!.invitedUsers!.contains(email)) {
+        tripModel.value!.invitedUsers!.add(email);
+        
+        // Update trip in Firebase
+        await FirebaseTripService.updateTrip(
+          tripId: tripModel.value!.id,
+          data: {'invitedUsers': tripModel.value!.invitedUsers},
+        );
+        
+        showCustomSnackBar(content: 'Invitation sent to $email');
+      } else {
+        showCustomSnackBar(content: 'User already invited');
+      }
+    } catch (e) {
+      showCustomSnackBar(content: 'Failed to send invitation');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
   }
 }
