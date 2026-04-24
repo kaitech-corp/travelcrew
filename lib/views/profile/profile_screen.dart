@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/views/profile/controller/profle_controller.dart';
 import 'package:travel_crew/views/profile/widgets/profile_widget.dart';
@@ -20,6 +21,7 @@ class ProfileScreen extends GetView<ProfileController> {
     return CustomScaffold(
       screenName: l10n.profile,
       centerTitle: true,
+      showNotificationBell: true,
       scaffoldKey: controller.scaffoldKey,
       className: runtimeType.toString(),
       body: SingleChildScrollView(
@@ -37,6 +39,75 @@ class ProfileScreen extends GetView<ProfileController> {
                       kProfileSetUpScreenRoute,
                       arguments: 'fromProfile',
                     ),
+              ),
+            ),
+            SizedBox(height: 10.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Get.toNamed(kConnectionsScreenRoute, arguments: {
+                        'userId': GlobalVariables.loggedInUser.value?.uid,
+                        'initialIndex': 0
+                      }),
+                      child: Container(
+                        padding: EdgeInsets.all(10.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.kWhiteColor,
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(color: AppColors.kLightGreyColor),
+                        ),
+                        child: Column(
+                          children: [
+                            Obx(
+                              () => Text(
+                                '${controller.publicProfile.value?.followers?.length ?? 0}',
+                                style: AppStyles.labelTextStyle().copyWith(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Text(l10n.followers),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Get.toNamed(kConnectionsScreenRoute, arguments: {
+                        'userId': GlobalVariables.loggedInUser.value?.uid,
+                        'initialIndex': 1
+                      }),
+                      child: Container(
+                        padding: EdgeInsets.all(10.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.kWhiteColor,
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(color: AppColors.kLightGreyColor),
+                        ),
+                        child: Column(
+                          children: [
+                            Obx(
+                              () => Text(
+                                '${controller.publicProfile.value?.following?.length ?? 0}',
+                                style: AppStyles.labelTextStyle().copyWith(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Text(l10n.following),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 50.h),
