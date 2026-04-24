@@ -119,6 +119,8 @@
   "onboardingSubtitle3": "Descubre viajes públicos o crea tu propia aventura privada.",
   "updateTrip": "Actualizar Viaje",
   "upcoming": "Próximo",
+  "active": "Activo",
+  "past": "Pasado",
   "complete": "Completo",
   "cityCountryZone": "Ciudad, País, Zona...",
   "viewAll": "Ver Todo",
@@ -143,5 +145,10 @@
   "select": "Seleccionar",
   "confirmAndSettle": "Confirmar y Saldar",
   "confirmSettleUp": "¿Estás seguro de que quieres saldar cuentas con {userName}?",
-  "confirm": "Confirmar"
+  "confirm": "Confirmar",
+  "social": "Social",
+  "followers": "Seguidores",
+  "following": "Siguiendo",
+  "noFollowersFound": "No se encontraron seguidores.",
+  "noFollowingFound": "No se encontró a nadie siguiendo."
 }

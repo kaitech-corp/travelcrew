@@ -119,6 +119,8 @@
   "onboardingSubtitle3": "发现公共旅行或创建您自己的私人冒险。",
   "updateTrip": "更新旅行",
   "upcoming": "即将开始",
+  "active": "进行中",
+  "past": "过去",
   "complete": "已完成",
   "cityCountryZone": "城市, 国家, 地区...",
   "viewAll": "查看全部",
@@ -143,5 +145,10 @@
   "select": "选择",
   "confirmAndSettle": "确认并结算",
   "confirmSettleUp": "您确定要与 {userName} 结算吗？",
-  "confirm": "确认"
+  "confirm": "确认",
+  "social": "社交",
+  "followers": "粉丝",
+  "following": "关注中",
+  "noFollowersFound": "未找到粉丝。",
+  "noFollowingFound": "未找到关注的人。"
 }

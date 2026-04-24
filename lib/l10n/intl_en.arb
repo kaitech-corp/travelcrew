@@ -119,6 +119,8 @@
   "onboardingSubtitle3": "Discover public trips or create your own private adventure.",
   "updateTrip": "Update Trip",
   "upcoming": "Upcoming",
+  "active": "Active",
+  "past": "Past",
   "complete": "Complete",
   "cityCountryZone": "City, Country, Zone...",
   "viewAll": "View All",
@@ -143,5 +145,10 @@
   "select": "Select",
   "confirmAndSettle": "Confirm & Settle",
   "confirmSettleUp": "Are you sure you want to settle up with {userName}?",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "social": "Social",
+  "followers": "Followers",
+  "following": "Following",
+  "noFollowersFound": "No followers found.",
+  "noFollowingFound": "No following found."
 }
