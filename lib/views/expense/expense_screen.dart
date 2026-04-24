@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/models/expense_model.dart';
+import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/views/expense/controller/expense_conrtoller.dart';
@@ -113,36 +114,59 @@ class ExpenseScreen extends GetView<ExpenseController> {
             ),
             SizedBox(height: 10.h),
             Obx(() {
-              final List<UserWithDues> dues = getUsersWithHavingDuesForTrip(
-                controller.tripModel.value!,
-              );
+              final settlements = controller.optimalSettlements;
+              final currentUid = GlobalVariables.loggedInUser.value?.uid ?? '';
+              final users = controller.tripModel.value?.joindUsersList ?? [];
+
+              String nameFor(String uid) {
+                if (uid == currentUid) return 'You';
+                return users.firstWhere(
+                  (u) => u.uid == uid,
+                  orElse: () => users.first,
+                ).displayName;
+              }
+
+              if (settlements.isEmpty) {
+                return Text(
+                  'All settled up!',
+                  style: AppStyles.labelTextStyle().copyWith(
+                    color: const Color(0xFF4AD10B),
+                    fontSize: AppStyles.fontSize13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                );
+              }
 
               return ListView.separated(
                 shrinkWrap: true,
-                itemCount: dues.length,
-                separatorBuilder: (context, index) => SizedBox(height: 20.h),
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: settlements.length,
+                separatorBuilder: (_, __) => SizedBox(height: 12.h),
                 itemBuilder: (context, index) {
+                  final s = settlements[index];
+                  final isCurrentUserPaying = s.fromUserId == currentUid;
                   return Row(
                     children: [
                       Image.asset(AppImages.kMemberIcon, scale: 4),
                       SizedBox(width: 10.w),
-                      Text(
-                        '${dues[index].user.displayName} ${l10n.owesYou}',
-                        style: AppStyles.labelTextStyle().copyWith(
-                          color: const Color(0xFF1F1F1F),
-                          fontSize: 13,
-
-                          fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Text(
+                          '${nameFor(s.fromUserId)} → ${nameFor(s.toUserId)}',
+                          style: AppStyles.labelTextStyle().copyWith(
+                            color: isCurrentUserPaying
+                                ? const Color(0xFFD9534F)
+                                : const Color(0xFF1F1F1F),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       Text(
-                        '\${dues[index].dues}',
+                        '\$${s.amount.toStringAsFixed(2)}',
                         textAlign: TextAlign.right,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF1D7FC2),
                           fontSize: AppStyles.fontSize13,
-
                           fontWeight: FontWeight.w600,
                         ),
                       ),

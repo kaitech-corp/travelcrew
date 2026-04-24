@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/expense_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 
@@ -27,6 +28,10 @@ class ExpenseController extends GetxController {
   ExpenseModel? expenseToSettle;
 
   Rxn<PublicUserModel> selectedUser = Rxn<PublicUserModel>();
+
+  List<Settlement> get optimalSettlements => tripModel.value != null
+      ? ExpenseService().computeOptimalSettlements(tripModel.value!)
+      : [];
 
   Future<void> settleUp() async {
     try {

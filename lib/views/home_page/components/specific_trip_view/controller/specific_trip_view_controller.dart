@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
+import 'package:travel_crew/services/expense_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
 import 'package:travel_crew/services/session_services.dart';
@@ -31,6 +32,57 @@ class SpecificTripViewController extends GetxController
     'Activities',
   ];
   final selectedTabIndex = 0.obs;
+
+  final ScrollController scrollController = ScrollController();
+  final Map<String, GlobalKey> sectionKeys = {
+    'Overview': GlobalKey(),
+    'Crew': GlobalKey(),
+    'Activities': GlobalKey(),
+    'Flights': GlobalKey(),
+    'Lodging': GlobalKey(),
+    'Transport': GlobalKey(),
+    'Expenses': GlobalKey(),
+  };
+
+  List<Settlement> get optimalSettlements => tripModel.value != null
+      ? ExpenseService().computeOptimalSettlements(tripModel.value!)
+      : [];
+
+  Future<void> markSettlementPaid(String fromUserId) async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      for (final expense in tripModel.value?.expenses ?? []) {
+        if (expense.createdBy != fromUserId &&
+            !expense.paidByUsers.contains(fromUserId)) {
+          expense.paidByUsers.add(fromUserId);
+          await FirebaseTripService.updateExpense(expense);
+        }
+      }
+      tripModel.refresh();
+      showCustomSnackBar(content: 'Settlement marked as paid');
+    } catch (e) {
+      showCustomSnackBar(content: 'Failed to mark settlement');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  void scrollToSection(String section) {
+    final key = sectionKeys[section];
+    if (key?.currentContext != null) {
+      Scrollable.ensureVisible(
+        key!.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  void onClose() {
+    scrollController.dispose();
+    super.onClose();
+  }
 
   TextEditingController activityNoteController = TextEditingController(),
       activityNameController = TextEditingController(),
@@ -74,7 +126,7 @@ class SpecificTripViewController extends GetxController
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likedBy
-                .remove(GlobalVariables.loggedInUser.value!.uid);
+                .remove(GlobalVariables.currentUid);
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likesCount--;
@@ -82,7 +134,7 @@ class SpecificTripViewController extends GetxController
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likedBy
-                .add(GlobalVariables.loggedInUser.value!.uid);
+                .add(GlobalVariables.currentUid);
             tripModel.value?.activities
                 ?.firstWhere((element) => element.id == activityId)
                 .likesCount++;
