@@ -41,7 +41,7 @@ class CreateTripController extends GetxController {
   final RxInt currentStep = 1.obs;
   RxList<ActivityModel> activityList = <ActivityModel>[].obs;
   // Total number of steps
-  final int totalSteps = 7;
+  final int totalSteps = 1;
   Rxn<DateTime> startDate = Rxn<DateTime>();
   Rxn<DateTime> endDate = Rxn<DateTime>();
   Rxn<DateTime> checkInStartTime = Rxn<DateTime>();
@@ -90,6 +90,81 @@ class CreateTripController extends GetxController {
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
   Rxn<DateTime> activityEndTime = Rxn<DateTime>();
   Rxn<TripModel> tripModel = Rxn<TripModel>();
+  void setFromImport(Map<String, dynamic> data) {
+    try {
+      tripNameController.text = (data['title'] as String?) ?? '';
+      destinationController.text = (data['destination'] as String?) ?? '';
+      country.value = (data['country'] as String?) ?? '';
+      selectedLocation.value = destinationController.text;
+      selectedPlaceId.value = 'existing_location';
+      isLocked.value = (data['is_private'] as bool?) ?? false;
+
+      if (data['start_date'] != null) {
+        startDate.value = DateTime.tryParse(data['start_date'] as String);
+      }
+      if (data['end_date'] != null) {
+        endDate.value = DateTime.tryParse(data['end_date'] as String);
+      }
+
+      _applyAirlineImport(data['airline']);
+      _applyLodgingImport(data['lodging']);
+      _applyActivitiesImport(data['activities']);
+    } catch (e, stack) {
+      kLogging('setFromImport error: $e\n$stack');
+      showCustomSnackBar(content: 'Some fields could not be imported — please fill them in manually');
+    }
+  }
+
+  void _applyAirlineImport(dynamic raw) {
+    if (raw is! Map<String, dynamic>) return;
+    airLineNameController.text = (raw['name'] as String?) ?? '';
+    flightNumberController.text = (raw['flight_number'] as String?) ?? '';
+    airportDepartureController.text = (raw['departure_airport'] as String?) ?? '';
+    airportArrivalController.text = (raw['arrival_airport'] as String?) ?? '';
+    if (raw['departure_date'] != null) {
+      departureDate.value = DateTime.tryParse(raw['departure_date'] as String);
+    }
+    if (raw['arrival_date'] != null) {
+      arrivalDate.value = DateTime.tryParse(raw['arrival_date'] as String);
+    }
+  }
+
+  void _applyLodgingImport(dynamic raw) {
+    if (raw is! Map<String, dynamic>) return;
+    lodgingTypeController.text = (raw['type'] as String?) ?? '';
+    hotelNameController.text = (raw['name'] as String?) ?? '';
+    addressController.text = (raw['address'] as String?) ?? '';
+    if (raw['check_in'] != null) {
+      checkInStartTime.value = DateTime.tryParse(raw['check_in'] as String);
+    }
+    if (raw['check_out'] != null) {
+      checkInEndTime.value = DateTime.tryParse(raw['check_out'] as String);
+    }
+    if (raw['cost_per_night'] != null) {
+      expensePerNightController.text = (raw['cost_per_night'] as num).toString();
+    }
+  }
+
+  void _applyActivitiesImport(dynamic raw) {
+    if (raw is! List) return;
+    activityList.value = raw
+        .whereType<Map<String, dynamic>>()
+        .map((act) => ActivityModel(
+              title: (act['title'] as String?) ?? '',
+              description: (act['description'] as String?) ?? '',
+              location: act['location'] as String?,
+              startDateTime: act['start_datetime'] != null
+                  ? DateTime.tryParse(act['start_datetime'] as String)
+                  : null,
+              endDateTime: act['end_datetime'] != null
+                  ? DateTime.tryParse(act['end_datetime'] as String)
+                  : null,
+              tripId: '',
+              likesCount: 0,
+            ))
+        .toList();
+  }
+
   void setAllValuesToEdit() {
     tripNameController.text = tripModel.value!.title ?? '';
     country.value = tripModel.value!.country;
@@ -241,7 +316,7 @@ class CreateTripController extends GetxController {
         country: destinationController.text.split(',').lastOrNull ?? '',
         startDate: startDate.value!,
         daysToGo: 2,
-        createdBy: GlobalVariables.loggedInUser.value!.uid,
+        createdBy: GlobalVariables.currentUid,
         title: tripNameController.text,
         destination: destinationController.text,
         tripStartDate: startDate.value!,
@@ -334,7 +409,7 @@ class CreateTripController extends GetxController {
         country: destinationController.text.split(',').lastOrNull ?? '',
         startDate: startDate.value!,
         daysToGo: 2,
-        createdBy: GlobalVariables.loggedInUser.value!.uid,
+        createdBy: GlobalVariables.currentUid,
         title: tripNameController.text,
         destination: destinationController.text,
         tripStartDate: startDate.value!,
@@ -390,7 +465,7 @@ class CreateTripController extends GetxController {
         paidByUsers: [],
         date: expanseDate.value ?? DateTime.now(),
         id: const Uuid().v6(),
-        createdBy: GlobalVariables.loggedInUser.value!.uid,
+        createdBy: GlobalVariables.currentUid,
         tripId: tripModel.id,
         name: expenseNameController.text,
         amount: double.parse(

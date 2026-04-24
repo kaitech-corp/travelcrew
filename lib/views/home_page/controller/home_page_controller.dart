@@ -45,32 +45,14 @@ class HomePageController extends GetxController
     super.onClose();
   }
 
-  RxBool isLoadingMyTrips = true.obs;
   RxBool isLoadingOtherTrips = true.obs;
-  RxList<TripModel> myTrips = <TripModel>[].obs;
-  RxList<TripModel> filteredMyTrips = <TripModel>[].obs;
   RxList<TripModel> otherTrips = <TripModel>[].obs;
   RxList<TripModel> otherFilteredTrips = <TripModel>[].obs;
   RxList<TripModel> nearbyTrips = <TripModel>[].obs;
   Future<void> getTrips() async {
     try {
       AppLogger.debug('Starting to fetch trips');
-      isLoadingMyTrips.value = true;
       isLoadingOtherTrips.value = true;
-      
-      FirebaseTripService.getMyTrips().then((value) {
-        isLoadingMyTrips.value = false;
-        myTrips.value = value;
-        filteredMyTrips.value = value;
-        myTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
-        AppLogger.info('Successfully loaded ${value.length} user trips');
-      }).catchError((error) {
-        isLoadingMyTrips.value = false;
-        ErrorHandler.handleFirebaseError(
-          error as Object,
-          operation: 'getMyTrips',
-        );
-      });
       
       getOtherTrips();
     } catch (error, stackTrace) {
@@ -79,7 +61,6 @@ class HomePageController extends GetxController
         stackTrace: stackTrace,
         context: 'getTrips',
       );
-      isLoadingMyTrips.value = false;
       isLoadingOtherTrips.value = false;
     }
   }
@@ -150,16 +131,6 @@ class HomePageController extends GetxController
       showCustomSnackBar(content: e.toString());
     }
     isLoadingOtherTrips.value = false;
-  }
-
-  void applyMyTripsFilter(String filter) {
-    filteredMyTrips.value =
-        myTrips
-            .where(
-              (trip) =>
-                  trip.title!.toLowerCase().contains(filter.toLowerCase()),
-            )
-            .toList();
   }
 
   void applyOtherTripsFilter(String filter) {

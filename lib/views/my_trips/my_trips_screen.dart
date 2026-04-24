@@ -29,7 +29,24 @@ class MyTripsScreen extends GetView<MyTripsController> {
       screenName: l10n.myTrips,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
+      showNotificationBell: true,
       className: runtimeType.toString(),
+      actions: [
+        GestureDetector(
+          onTap: () => Get.toNamed(kImportTripScreenRoute),
+          child: Padding(
+            padding: EdgeInsets.only(right: 8.w),
+            child: const Icon(Icons.auto_awesome_rounded, size: 22, color: Colors.black87),
+          ),
+        ),
+        GestureDetector(
+          onTap: () => Get.toNamed(kCreateTripScreenRoute),
+          child: Padding(
+            padding: EdgeInsets.only(right: 15.w),
+            child: Image.asset(AppImages.kAddIcon, scale: 5),
+          ),
+        ),
+      ],
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Column(
@@ -38,95 +55,18 @@ class MyTripsScreen extends GetView<MyTripsController> {
             Obx(
               () => Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => controller.changeTab(0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 19.09,
-                        vertical: 9.55,
-                      ),
-                      decoration: ShapeDecoration(
-                        color:
-                            controller.selectedTabIndex.value == 0
-                                ? const Color(0x0C19A7EC)
-                                : const Color(0xFFF1F1F1),
-                        shape: RoundedRectangleBorder(
-                          side:
-                              controller.selectedTabIndex.value == 0
-                                  ? const BorderSide(
-                                    width: 0.80,
-                                    color: Color(0xFF19A7EC),
-                                  )
-                                  : BorderSide.none,
-                          borderRadius: BorderRadius.circular(35),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            l10n.upcoming,
-                            style: AppStyles.labelTextStyle().copyWith(
-                              color: Colors.black,
-                              fontSize: AppStyles.fontSize12,
-
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 20.w),
-                  GestureDetector(
-                    onTap: () => controller.changeTab(1),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 19.09,
-                        vertical: 9.55,
-                      ),
-                      decoration: ShapeDecoration(
-                        color:
-                            controller.selectedTabIndex.value == 1
-                                ? const Color(0x0C19A7EC)
-                                : const Color(0xFFF1F1F1),
-                        shape: RoundedRectangleBorder(
-                          side:
-                              controller.selectedTabIndex.value == 1
-                                  ? const BorderSide(
-                                    width: 0.80,
-                                    color: Color(0xFF19A7EC),
-                                  )
-                                  : BorderSide.none,
-                          borderRadius: BorderRadius.circular(54.09),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Opacity(
-                            opacity: 0.80,
-                            child: Text(
-                              l10n.complete,
-                              style: AppStyles.labelTextStyle().copyWith(
-                                color: Colors.black,
-                                fontSize: 12.73,
-
-                                fontWeight: FontWeight.w500,
-                                height: 1.25,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _buildTab(context, 0, l10n.upcoming),
+                  SizedBox(width: 10.w),
+                  _buildTab(context, 1, 'Active'),
+                  SizedBox(width: 10.w),
+                  _buildTab(context, 2, 'Past'),
                 ],
               ),
             ),
-            // SizedBox(height: 20.h),
             Obx(
               () =>
-                  controller.selectedTabIndex.value == 1
-                      ? Column(
+                  controller.selectedTabIndex.value != -1 // Show search for all tabs if needed, but the original only showed for "Complete"
+                  ? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(height: 20.h),
@@ -197,10 +137,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
             SizedBox(height: 20.h),
             Obx(
               () => SizedBox(
-                height:
-                    controller.selectedTabIndex.value == 1
-                        ? Get.height * 0.6
-                        : Get.height * .7,
+                height: Get.height * 0.65,
                 child:
                     controller.isLoading.isTrue
                         ? const Center(child: CircularProgressIndicator())
@@ -249,6 +186,42 @@ class MyTripsScreen extends GetView<MyTripsController> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTab(BuildContext context, int index, String label) {
+    return GestureDetector(
+      onTap: () => controller.changeTab(index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15.0,
+          vertical: 9.0,
+        ),
+        decoration: ShapeDecoration(
+          color:
+              controller.selectedTabIndex.value == index
+                  ? const Color(0x0C19A7EC)
+                  : const Color(0xFFF1F1F1),
+          shape: RoundedRectangleBorder(
+            side:
+                controller.selectedTabIndex.value == index
+                    ? const BorderSide(
+                      width: 0.80,
+                      color: Color(0xFF19A7EC),
+                    )
+                    : BorderSide.none,
+            borderRadius: BorderRadius.circular(35),
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppStyles.labelTextStyle().copyWith(
+            color: Colors.black,
+            fontSize: AppStyles.fontSize12,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

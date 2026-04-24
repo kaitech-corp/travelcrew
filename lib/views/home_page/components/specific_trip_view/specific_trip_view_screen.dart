@@ -12,8 +12,6 @@ import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
-import 'package:travel_crew/views/custom_widgets/custom_trip_tabs.dart';
-import 'package:travel_crew/views/home_page/components/specific_trip_view/components/expense_tab.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/components/transport_tab.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
 
@@ -21,7 +19,6 @@ import '../../../custom_widgets/custom_elevated_button.dart';
 import '../../../custom_widgets/custom_scaffold.dart';
 import '../../../messages/users/controller/users_controller.dart';
 import '../../../onboarding/widgets/page_indicator.dart';
-import '../../widgets/location_widget.dart';
 import 'components/activities_tab.dart';
 import 'components/lodging_tab.dart';
 
@@ -59,335 +56,12 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                 : Stack(
                   children: [
                     SingleChildScrollView(
+                      controller: controller.scrollController,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: Get.height * 0.45,
-                            child: PageView.builder(
-                              itemCount:
-                                  controller.tripModel.value?.images.length ??
-                                  0,
-                              itemBuilder:
-                                  (c, index) => Stack(
-                                    children: [
-                                      Container(
-                                        width: Get.width,
-                                        height: Get.height * 0.45,
-                                        color: Colors.black,
-                                      ),
-                                      AnyImageView(
-                                        width: Get.width,
-                                        height: Get.height * 0.45,
-                                        url:
-                                            controller
-                                                .tripModel
-                                                .value
-                                                ?.images[index] ??
-                                            '',
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topCenter,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 40.h),
-                                          child: Row(
-                                            children: [
-                                              SizedBox(width: 10.w),
-                                              GestureDetector(
-                                                onTap: () => Get.back(),
-                                                child: BlurryContainer(
-                                                  padding: EdgeInsets.all(
-                                                    10.sp,
-                                                  ),
-                                                  blur: 7,
-                                                  height: 51.14.h,
-                                                  width: 51.14.w,
-                                                  color: Colors.black
-                                                      .withValues(alpha: .15),
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  child: const Icon(
-                                                    Icons.arrow_back_ios_new,
-                                                    color:
-                                                        AppColors.kWhiteColor,
-                                                    size: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              GestureDetector(
-                                                // onTap:
-                                                //     () => controller.doitFavourite(
-                                                //       controller
-                                                //           .tripModel
-                                                //           .value
-                                                //           ?.id,
-                                                //       isFavourites:
-                                                //           GlobalVariables
-                                                //               .userProfile
-                                                //               .value
-                                                //               ?.favouriteTrips
-                                                //               ?.contains(
-                                                //                 controller
-                                                //                     .tripModel
-                                                //                     .value
-                                                //                     ?.id,
-                                                //               ) ??
-                                                //           false,
-                                                //     ),
-                                                child: BlurryContainer(
-                                                  padding: EdgeInsets.all(
-                                                    10.sp,
-                                                  ),
-                                                  blur: 7,
-                                                  height: 51.14.h,
-                                                  width: 51.14.w,
-                                                  color: Colors.black
-                                                      .withValues(alpha: .15),
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  child: Obx(
-                                                    () =>
-                                                        GlobalVariables
-                                                                    .addingToFavourites
-                                                                    .value ==
-                                                                controller
-                                                                    .tripModel
-                                                                    .value!
-                                                                    .id
-                                                            ? showLoaderWhenAddingToFavourites()
-                                                            : const Icon(
-                                                              Icons
-                                                                  .star_rounded,
-                                                              // color:
-                                                              //     GlobalVariables
-                                                              //                 .loggedInUser
-                                                              //                 .value
-                                                              //                 ?.favouriteTrips
-                                                              //                 ?.contains(
-                                                              //                   controller.tripModel.value?.id,
-                                                              //                 ) ??
-                                                              //             false
-                                                              //         ? AppColors
-                                                              //             .productBgColor
-                                                              //         : const Color(
-                                                              //           0xFF77818D,
-                                                              //         ),
-                                                              size: 25,
-                                                            ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (c) => Stack(
-                                                          children: [
-                                                            SizedBox(
-                                                              height:
-                                                                  context
-                                                                      .height,
-                                                              width:
-                                                                  context.width,
-                                                            ),
-                                                            Positioned(
-                                                              top: 60.h,
-                                                              right: 30.w,
-                                                              child: SizedBox(
-                                                                width: 204.07.w,
-                                                                child: BlurryContainer(
-                                                                  blur: 7,
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            .15,
-                                                                      ),
-                                                                  padding:
-                                                                      EdgeInsets.all(
-                                                                        11.sp,
-                                                                      ),
-                                                                  child: Column(
-                                                                    spacing:
-                                                                        7.h,
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
-                                                                    children: [
-                                                                      if (GlobalVariables.isLoggedInUser(
-                                                                        controller.tripModel.value?.createdBy ??
-                                                                            '',
-                                                                      ))
-                                                                        MoreVertDialogueWidget(
-                                                                          title:
-                                                                              'Edit Trip',
-                                                                          onTap: () {
-                                                                            Get.back();
-                                                                            Get.offAndToNamed(
-                                                                              kCreateTripScreenRoute,
-                                                                              arguments:
-                                                                                  controller.tripModel.value,
-                                                                            );
-                                                                          },
-                                                                          imagePath:
-                                                                              AppImages.kIcEditTrip,
-                                                                        ),
-                                                                      // Show "Invite" option for trip owner
-                                                                      if (GlobalVariables.isLoggedInUser(
-                                                                        controller.tripModel.value?.createdBy ??
-                                                                            '',
-                                                                      ))
-                                                                        MoreVertDialogueWidget(
-                                                                          title:
-                                                                              'Invite',
-                                                                          onTap: () {
-                                                                            Get.back();
-                                                                            controller.inviteToTrip();
-                                                                          },
-                                                                          iconData:
-                                                                              LucideIcons.userPlus,
-                                                                        ),
-                                                                      // Show "Join Trip" option for non-owners who haven't joined
-                                                                      if (!GlobalVariables.isLoggedInUser(
-                                                                            controller.tripModel.value?.createdBy ??
-                                                                                '',
-                                                                          ) &&
-                                                                          !(controller.tripModel.value?.joinedUsers?.contains(
-                                                                                GlobalVariables.loggedInUser.value?.uid,
-                                                                              ) ??
-                                                                              false))
-                                                                        MoreVertDialogueWidget(
-                                                                          title:
-                                                                              'Join Trip',
-                                                                          onTap: () {
-                                                                            Get.back();
-                                                                            controller.joinTrip();
-                                                                          },
-                                                                          iconData:
-                                                                              LucideIcons.plus,
-                                                                        ),
-                                                                      MoreVertDialogueWidget(
-                                                                        imagePath:
-                                                                            AppImages.kIcShareTrip,
-                                                                        title:
-                                                                            'Share Trip',
-                                                                        onTap: () async {
-                                                                          Get.back();
-                                                                          await Share.share(
-                                                                            'Check out this trip I found on Travel Crew!',
-                                                                            subject:
-                                                                                'Travel Crew Trip',
-                                                                          );
-                                                                        },
-                                                                      ),
-                                                                      if (GlobalVariables.isLoggedInUser(
-                                                                        controller.tripModel.value?.createdBy ??
-                                                                            '',
-                                                                      ))
-                                                                        MoreVertDialogueWidget(
-                                                                          title:
-                                                                              'Remove',
-                                                                          onTap: () {
-                                                                            Get.back();
-                                                                            showDialog(
-                                                                              context:
-                                                                                  context,
-                                                                              builder:
-                                                                                  (
-                                                                                    c,
-                                                                                  ) => AlertDialog(
-                                                                                    title: const Text(
-                                                                                      'Are you sure you want to delete this trip?',
-                                                                                    ),
-                                                                                    content: const Text(
-                                                                                      'This action cannot be undone.',
-                                                                                    ),
-                                                                                    actions: [
-                                                                                      TextButton(
-                                                                                        onPressed: () {
-                                                                                          Get.back();
-                                                                                        },
-                                                                                        child: const Text(
-                                                                                          'Cancel',
-                                                                                        ),
-                                                                                      ),
-                                                                                      TextButton(
-                                                                                        onPressed: () {
-                                                                                          controller.removeTrip();
-                                                                                          Get.back();
-                                                                                        },
-                                                                                        child: const Text(
-                                                                                          'Delete',
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                            );
-                                                                          },
-                                                                          iconData:
-                                                                              LucideIcons.trash2,
-                                                                        ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                  );
-                                                },
-                                                child: BlurryContainer(
-                                                  padding: EdgeInsets.all(
-                                                    10.sp,
-                                                  ),
-                                                  blur: 7,
-                                                  height: 51.14.h,
-                                                  width: 51.14.w,
-                                                  color: Colors.black
-                                                      .withValues(alpha: .15),
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  child: const Icon(
-                                                    Icons.more_vert,
-                                                    color:
-                                                        AppColors.kWhiteColor,
-                                                    size: 25,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            bottom: 15.h,
-                                          ),
-                                          child: PageIndicator(
-                                            currentIndex: index,
-                                            totalIndexes:
-                                                Get.arguments is TripModel
-                                                    ? Get
-                                                            .arguments
-                                                            .images
-                                                            .length
-                                                        as int
-                                                    : 3,
-                                            height: 24,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 20.h),
+                          _buildHeaderImage(context),
+                          _buildJumpNav(),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -395,477 +69,47 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  controller.tripModel.value?.title ?? '',
-                                  style: AppStyles.labelTextStyle()
-                                      .copyWith()
-                                      .copyWith(
-                                        color: const Color(0xFF0F0F0F),
-                                        fontSize: 22,
-
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                _buildSectionHeader('Overview'),
+                                _buildOverviewSection(),
+                                
+                                _buildSectionHeader('Crew'),
+                                _buildCrewSection(),
+                                
+                                _buildSectionHeader(
+                                  'Activities',
+                                  onAdd: () {
+                                    Get.toNamed(
+                                      kAddActivityScreenRoute,
+                                      arguments: {
+                                        'tripId': controller.tripModel.value?.id,
+                                        'toAdd': true,
+                                        'onAdded': (activity) {
+                                          controller.tripModel.value?.activities ??= [];
+                                          controller.tripModel.value?.activities?.add(activity);
+                                          controller.tripModel.refresh();
+                                        },
+                                      },
+                                    );
+                                  },
                                 ),
-                                SizedBox(height: 8.h),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      AppImages.kPinLocation,
-                                      scale: 4,
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Text(
-                                      controller.tripModel.value?.country ?? '',
-                                      style: AppStyles.labelTextStyle()
-                                          .copyWith(
-                                            color: const Color(0xFF1D7FC2),
-                                            fontSize: 15,
-
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20.h),
-                                Text(
-                                  'Description',
-                                  style: AppStyles.labelTextStyle().copyWith(
-                                    color: const Color(0xFF0F0F0F),
-                                    fontSize: AppStyles.fontSize17,
-
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(height: 5.h),
-                                Text(
-                                  controller.tripModel.value?.tripLocation ??
-                                      '',
-                                  style: AppStyles.labelTextStyle().copyWith(
-                                    color: const Color(0xFF77818D),
-                                    fontSize: 15,
-
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(height: 20.h),
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFFAFAFA),
-                                    shape: RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                        width: 0.20,
-                                        color: Color(0xFFD2D5D9),
-                                      ),
-                                      borderRadius: BorderRadius.circular(19),
-                                    ),
-                                    shadows: const [
-                                      BoxShadow(
-                                        color: Color(0x0A4580C4),
-                                        blurRadius: 20,
-                                        offset: Offset(2, 12),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Trip Start',
-                                            style: AppStyles.labelTextStyle()
-                                                .copyWith(
-                                                  color: const Color(
-                                                    0xFF0F0F0F,
-                                                  ),
-                                                  fontSize:
-                                                      AppStyles.fontSize17,
-
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                          ),
-                                          SizedBox(height: 20.h),
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                AppImages.kCalendarIcon,
-                                                scale: 4,
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Text(
-                                                DateFormat(
-                                                  'EEEE, dd MMM',
-                                                ).format(
-                                                  controller
-                                                          .tripModel
-                                                          .value
-                                                          ?.tripStartDate ??
-                                                      DateTime.now(),
-                                                ),
-                                                style:
-                                                    AppStyles.labelTextStyle()
-                                                        .copyWith(
-                                                          color: const Color(
-                                                            0xFFA4ABB3,
-                                                          ),
-                                                          fontSize:
-                                                              AppStyles
-                                                                  .fontSize13,
-
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 20.h),
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                AppImages.kClockIcon,
-                                                scale: 4,
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Text(
-                                                DateFormat('hh:mm a').format(
-                                                  controller
-                                                          .tripModel
-                                                          .value
-                                                          ?.tripStartDate ??
-                                                      DateTime.now(),
-                                                ),
-                                                style:
-                                                    AppStyles.labelTextStyle()
-                                                        .copyWith(
-                                                          color: const Color(
-                                                            0xFFA4ABB3,
-                                                          ),
-                                                          fontSize:
-                                                              AppStyles
-                                                                  .fontSize13,
-
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(width: 20.w),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Trip End',
-                                            style: AppStyles.labelTextStyle()
-                                                .copyWith(
-                                                  color: const Color(
-                                                    0xFF0F0F0F,
-                                                  ),
-                                                  fontSize:
-                                                      AppStyles.fontSize17,
-
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                          ),
-                                          SizedBox(height: 20.h),
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                AppImages.kCalendarIcon,
-                                                scale: 4,
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Text(
-                                                DateFormat(
-                                                  'EEEE, dd MMM',
-                                                ).format(
-                                                  controller
-                                                          .tripModel
-                                                          .value
-                                                          ?.tripEndDate ??
-                                                      DateTime.now(),
-                                                ),
-                                                style:
-                                                    AppStyles.labelTextStyle()
-                                                        .copyWith(
-                                                          color: const Color(
-                                                            0xFFA4ABB3,
-                                                          ),
-                                                          fontSize:
-                                                              AppStyles
-                                                                  .fontSize13,
-
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 20.h),
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                AppImages.kClockIcon,
-                                                scale: 4,
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Text(
-                                                DateFormat('hh:mm a').format(
-                                                  controller
-                                                          .tripModel
-                                                          .value
-                                                          ?.tripEndDate ??
-                                                      DateTime.now(),
-                                                ),
-                                                style:
-                                                    AppStyles.labelTextStyle()
-                                                        .copyWith(
-                                                          color: const Color(
-                                                            0xFFA4ABB3,
-                                                          ),
-                                                          fontSize:
-                                                              AppStyles
-                                                                  .fontSize13,
-
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20.h),
-                                Row(
-                                  children: [
-                                    Text(
-                                      controller
-                                              .tripModel
-                                              .value
-                                              ?.joinedUsers
-                                              ?.length
-                                              .toString() ??
-                                          '0',
-                                      style: AppStyles.labelTextStyle()
-                                          .copyWith(
-                                            color: const Color(0xFF0F0F0F),
-                                            fontSize: AppStyles.fontSize22,
-
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Text(
-                                      'People are Going',
-                                      style: AppStyles.labelTextStyle()
-                                          .copyWith(
-                                            color: const Color(0xFF0F0F0F),
-                                            fontSize: 13,
-
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.40,
-                                            letterSpacing: -0.01,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.h),
-                                Obx(
-                                  () =>
-                                      controller
-                                                  .tripModel
-                                                  .value
-                                                  ?.joindUsersList
-                                                  ?.isEmpty ??
-                                              true
-                                          ? const Center(
-                                            child: Text(
-                                              'No one has joined yet',
-                                            ),
-                                          )
-                                          : ListView.separated(
-                                            padding: EdgeInsets.zero,
-                                            shrinkWrap: true,
-                                            separatorBuilder:
-                                                (context, index) =>
-                                                    SizedBox(height: 10.h),
-                                            itemCount:
-                                                controller
-                                                    .tripModel
-                                                    .value
-                                                    ?.joindUsersList
-                                                    ?.length ??
-                                                0,
-                                            itemBuilder: (context, index) {
-                                              return Row(
-                                                children: [
-                                                  AnyImageView(
-                                                    ontap: () {
-                                                      // Get.toNamed(kProfileScreenRoute);
-                                                    },
-                                                    url:
-                                                        controller
-                                                            .tripModel
-                                                            .value
-                                                            ?.joindUsersList?[index]
-                                                            .profileImage ??
-                                                        '',
-                                                    width: 50.w,
-                                                    padding: EdgeInsets.zero,
-                                                    height: 50.h,
-                                                    isCircle: true,
-                                                  ),
-                                                  // Image.network(
-                                                  //   controller
-                                                  //           .tripModel
-                                                  //           .value
-                                                  //           ?.joindUsersList?[index]
-                                                  //           .profileImage ??
-                                                  //       '',
-                                                  //   scale: 4,
-                                                  // ),
-                                                  SizedBox(width: 10.w),
-                                                  Expanded(
-                                                    child: Text(
-                                                      controller
-                                                              .tripModel
-                                                              .value
-                                                              ?.joindUsersList?[index]
-                                                              .displayName ??
-                                                          '',
-                                                      style: AppStyles.labelTextStyle()
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xFF1F1F1F,
-                                                            ),
-                                                            fontSize:
-                                                                AppStyles
-                                                                    .fontSize13,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                ),
-                                SizedBox(height: 30.h),
-                                // Container(
-                                //   padding: const EdgeInsets.symmetric(
-                                //     horizontal: 19.09,
-                                //     vertical: 9.55,
-                                //   ),
-                                //   decoration: ShapeDecoration(
-                                //     color: const Color(0x0C19A7EC),
-                                //     shape: RoundedRectangleBorder(
-                                //       side: BorderSide(
-                                //         width: 0.80,
-                                //         color: const Color(0xFF19A7EC),
-                                //       ),
-                                //       borderRadius: BorderRadius.circular(35),
-                                //     ),
-                                //   ),
-                                //   child: Row(
-                                //     mainAxisSize: MainAxisSize.min,
-                                //     mainAxisAlignment: MainAxisAlignment.center,
-                                //     crossAxisAlignment: CrossAxisAlignment.center,
-                                //     children: [
-                                //       Icon(Icons.add, size: 20),
-                                //       Text(
-                                //         'Invite Friends',
-                                //         style: AppStyles.labelTextStyle().copyWith(
-                                //           color: Colors.black,
-                                //           fontSize: 12.73,
-
-                                //           fontWeight: FontWeight.w500,
-                                //           height: 1.25,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // SizedBox(height: 20.h),
-                                // Text(
-                                //   'Trip Privacy',
-                                //   style: AppStyles.labelTextStyle().copyWith(
-                                //     color: Colors.black,
-                                //     fontSize: AppStyles.fontSize20,
-
-                                //     fontWeight: FontWeight.w600,
-                                //   ),
-                                // ),
-                                // SizedBox(height: 10.h),
-                                // Row(
-                                //   children: [
-                                //     SizedBox(
-                                //       width: Get.width * 0.65,
-                                //       child: Text(
-                                //         'Choose who can see and join your trip. Keep it private for invited members or make it public for everyone to explore!',
-                                //         style: AppStyles.labelTextStyle().copyWith(
-                                //           color: Colors.grey,
-                                //           fontSize: AppStyles.fontSize13,
-
-                                //           fontWeight: FontWeight.w400,
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     SizedBox(width: 10.w),
-                                //     CustomLockToggle(isLocked: controller.isLocked),
-                                //     SizedBox(height: 20.h),
-                                //   ],
-                                // ),
-                                // SizedBox(height: 20.h),
-                                Obx(
-                                  () => SizedBox(
-                                    width: Get.width,
-                                    child: CustomTripTabs(
-                                      tabs: controller.tripTabs,
-                                      selectedIndex:
-                                          controller.selectedTabIndex.value,
-                                      onTabChanged: controller.changeTab,
-                                      selectedTabColor: Colors.blue.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      unselectedTextColor: Colors.black87,
-                                      height: 45,
-                                      tabSpacing: 12,
-                                      padding: const EdgeInsets.only(right: 1),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20.h),
-                                Obx(() {
-                                  switch (controller.selectedTabIndex.value) {
-                                    case 0:
-                                      return TransportTab(
-                                        controller: controller,
-                                      );
-                                    case 1:
-                                      return ExpenseTab(controller: controller);
-                                    case 2:
-                                      return LodgingTab(controller: controller);
-                                    case 3:
-                                      return ActivitiesTab(
-                                        controller: controller,
-                                      );
-                                    default:
-                                      return TransportTab(
-                                        controller: controller,
-                                      );
-                                  }
-                                }),
-                                SizedBox(height: 70.h),
+                                ActivitiesTab(controller: controller),
+                                
+                                _buildSectionHeader('Flights'),
+                                TransportTab(controller: controller),
+                                
+                                _buildSectionHeader('Lodging'),
+                                LodgingTab(controller: controller),
+                                
+                                _buildSectionHeader('Transport'),
+                                // Add additional transport if any, or placeholder
+                                const Text('No additional transport info'),
+                                
+                                _buildSectionHeader('Expenses'),
+                                _buildExpenseSummary(),
+                                SizedBox(height: 12.h),
+                                Obx(() => _buildSettlementCard(context)),
+                                
+                                SizedBox(height: 100.h),
                               ],
                             ),
                           ),
@@ -916,6 +160,640 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                   ],
                 ),
       ),
+    );
+  }
+
+  Widget _buildHeaderImage(BuildContext context) {
+    return SizedBox(
+      height: Get.height * 0.45,
+      child: PageView.builder(
+        itemCount: controller.tripModel.value?.images.length ?? 0,
+        itemBuilder:
+            (c, index) => Stack(
+              children: [
+                Container(
+                  width: Get.width,
+                  height: Get.height * 0.45,
+                  color: Colors.black,
+                ),
+                AnyImageView(
+                  width: Get.width,
+                  height: Get.height * 0.45,
+                  url: controller.tripModel.value?.images[index] ?? '',
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 40.h),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 10.w),
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          child: BlurryContainer(
+                            padding: EdgeInsets.all(10.sp),
+                            blur: 7,
+                            height: 51.14.h,
+                            width: 51.14.w,
+                            color: Colors.black.withValues(alpha: .15),
+                            borderRadius: BorderRadius.circular(50),
+                            child: const Icon(
+                              Icons.arrow_back_ios_new,
+                              color: AppColors.kWhiteColor,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (c) => Stack(
+                                    children: [
+                                      SizedBox(
+                                        height: context.height,
+                                        width: context.width,
+                                      ),
+                                      Positioned(
+                                        top: 60.h,
+                                        right: 30.w,
+                                        child: SizedBox(
+                                          width: 204.07.w,
+                                          child: BlurryContainer(
+                                            blur: 7,
+                                            color: Colors.black.withValues(
+                                              alpha: .15,
+                                            ),
+                                            padding: EdgeInsets.all(11.sp),
+                                            child: Column(
+                                              spacing: 7.h,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (GlobalVariables.isLoggedInUser(
+                                                  controller
+                                                          .tripModel
+                                                          .value
+                                                          ?.createdBy ??
+                                                      '',
+                                                ))
+                                                  MoreVertDialogueWidget(
+                                                    title: 'Edit Trip',
+                                                    onTap: () {
+                                                      Get.back();
+                                                      Get.offAndToNamed(
+                                                        kCreateTripScreenRoute,
+                                                        arguments:
+                                                            controller
+                                                                .tripModel
+                                                                .value,
+                                                      );
+                                                    },
+                                                    imagePath:
+                                                        AppImages.kIcEditTrip,
+                                                  ),
+                                                if (GlobalVariables.isLoggedInUser(
+                                                  controller
+                                                          .tripModel
+                                                          .value
+                                                          ?.createdBy ??
+                                                      '',
+                                                ))
+                                                  MoreVertDialogueWidget(
+                                                    title: 'Invite',
+                                                    onTap: () {
+                                                      Get.back();
+                                                      controller
+                                                          .inviteToTrip();
+                                                    },
+                                                    iconData:
+                                                        LucideIcons.userPlus,
+                                                  ),
+                                                if (!GlobalVariables.isLoggedInUser(
+                                                      controller
+                                                              .tripModel
+                                                              .value
+                                                              ?.createdBy ??
+                                                          '',
+                                                    ) &&
+                                                    !(controller
+                                                            .tripModel
+                                                            .value
+                                                            ?.joinedUsers
+                                                            ?.contains(
+                                                              GlobalVariables
+                                                                  .loggedInUser
+                                                                  .value
+                                                                  ?.uid,
+                                                            ) ??
+                                                        false))
+                                                  MoreVertDialogueWidget(
+                                                    title: 'Join Trip',
+                                                    onTap: () {
+                                                      Get.back();
+                                                      controller.joinTrip();
+                                                    },
+                                                    iconData: LucideIcons.plus,
+                                                  ),
+                                                MoreVertDialogueWidget(
+                                                  imagePath:
+                                                      AppImages.kIcShareTrip,
+                                                  title: 'Share Trip',
+                                                  onTap: () async {
+                                                    Get.back();
+                                                    await Share.share(
+                                                      'Check out this trip I found on Travel Crew!',
+                                                      subject:
+                                                          'Travel Crew Trip',
+                                                    );
+                                                  },
+                                                ),
+                                                if (GlobalVariables.isLoggedInUser(
+                                                  controller
+                                                          .tripModel
+                                                          .value
+                                                          ?.createdBy ??
+                                                      '',
+                                                ))
+                                                  MoreVertDialogueWidget(
+                                                    title: 'Remove',
+                                                    onTap: () {
+                                                      Get.back();
+                                                      showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (c) => AlertDialog(
+                                                              title: const Text(
+                                                                'Are you sure you want to delete this trip?',
+                                                              ),
+                                                              content: const Text(
+                                                                'This action cannot be undone.',
+                                                              ),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                        Get.back();
+                                                                      },
+                                                                  child:
+                                                                      const Text(
+                                                                        'Cancel',
+                                                                      ),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                        controller
+                                                                            .removeTrip();
+                                                                        Get.back();
+                                                                      },
+                                                                  child:
+                                                                      const Text(
+                                                                        'Delete',
+                                                                      ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                      );
+                                                    },
+                                                    iconData:
+                                                        LucideIcons.trash2,
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                            );
+                          },
+                          child: BlurryContainer(
+                            padding: EdgeInsets.all(10.sp),
+                            blur: 7,
+                            height: 51.14.h,
+                            width: 51.14.w,
+                            color: Colors.black.withValues(alpha: .15),
+                            borderRadius: BorderRadius.circular(50),
+                            child: const Icon(
+                              Icons.more_vert,
+                              color: AppColors.kWhiteColor,
+                              size: 25,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                      ],
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 15.h),
+                    child: PageIndicator(
+                      currentIndex: index,
+                      totalIndexes:
+                          controller.tripModel.value?.images.length ?? 0,
+                      height: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+      ),
+    );
+  }
+
+  Widget _buildJumpNav() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+      child: Row(
+        children:
+            controller.sectionKeys.keys.map((section) {
+              return Padding(
+                padding: EdgeInsets.only(right: 8.w),
+                child: ActionChip(
+                  label: Text(section),
+                  onPressed: () => controller.scrollToSection(section),
+                  backgroundColor: AppColors.kLightGreyColor,
+                  labelStyle: AppStyles.labelTextStyle().copyWith(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, {VoidCallback? onAdd}) {
+    return Column(
+      key: controller.sectionKeys[title],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 20.h),
+        Row(
+          children: [
+            Text(
+              title,
+              style: AppStyles.labelTextStyle().copyWith(
+                color: const Color(0xFF0F0F0F),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Spacer(),
+            if (onAdd != null)
+              IconButton(
+                onPressed: onAdd,
+                icon: const Icon(Icons.add_circle, color: Colors.blue),
+              ),
+          ],
+        ),
+        const Divider(),
+        SizedBox(height: 10.h),
+      ],
+    );
+  }
+
+  Widget _buildOverviewSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          controller.tripModel.value?.title ?? '',
+          style: AppStyles.labelTextStyle().copyWith(
+            color: const Color(0xFF0F0F0F),
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Row(
+          children: [
+            Image.asset(AppImages.kPinLocation, scale: 4),
+            SizedBox(width: 5.w),
+            Text(
+              controller.tripModel.value?.country ?? '',
+              style: AppStyles.labelTextStyle().copyWith(
+                color: const Color(0xFF1D7FC2),
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 15.h),
+        Text(
+          'Description',
+          style: AppStyles.labelTextStyle().copyWith(
+            color: const Color(0xFF0F0F0F),
+            fontSize: AppStyles.fontSize17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 5.h),
+        Text(
+          controller.tripModel.value?.tripLocation ?? '',
+          style: AppStyles.labelTextStyle().copyWith(
+            color: const Color(0xFF77818D),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        SizedBox(height: 15.h),
+        _buildDateCard(),
+      ],
+    );
+  }
+
+  Widget _buildDateCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: ShapeDecoration(
+        color: const Color(0xFFFAFAFA),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 0.20, color: Color(0xFFD2D5D9)),
+          borderRadius: BorderRadius.circular(19),
+        ),
+      ),
+      child: Row(
+        children: [
+          _buildDateColumn(
+            'Trip Start',
+            controller.tripModel.value?.tripStartDate,
+          ),
+          SizedBox(width: 20.w),
+          _buildDateColumn('Trip End', controller.tripModel.value?.tripEndDate),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateColumn(String title, DateTime? date) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: AppStyles.labelTextStyle().copyWith(
+            color: const Color(0xFF0F0F0F),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Row(
+          children: [
+            Image.asset(AppImages.kCalendarIcon, scale: 5),
+            SizedBox(width: 5.w),
+            Text(
+              DateFormat('dd MMM yyyy').format(date ?? DateTime.now()),
+              style: AppStyles.labelTextStyle().copyWith(
+                color: const Color(0xFFA4ABB3),
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCrewSection() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              controller.tripModel.value?.joinedUsers?.length.toString() ?? '0',
+              style: AppStyles.labelTextStyle().copyWith(
+                color: const Color(0xFF0F0F0F),
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(width: 5.w),
+            Text(
+              'People Going',
+              style: AppStyles.labelTextStyle().copyWith(fontSize: 13),
+            ),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        Obx(
+          () =>
+              controller.tripModel.value?.joindUsersList?.isEmpty ?? true
+                  ? const Text('No one joined yet')
+                  : SizedBox(
+                    height: 60.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount:
+                          controller.tripModel.value?.joindUsersList?.length ??
+                          0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 10.w),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                              controller
+                                      .tripModel
+                                      .value
+                                      ?.joindUsersList?[index]
+                                      .profileImage ??
+                                  '',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExpenseSummary() {
+    final totalBudget = controller.tripModel.value?.tripBudget ?? 0.0;
+    final totalSpent =
+        controller.tripModel.value?.expenses?.fold(
+              0.0,
+              (sum, e) => sum + e.amount,
+            ) ??
+        0.0;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.kLightGreyColor,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Total Budget'),
+              Text('\$${totalBudget.toStringAsFixed(2)}'),
+            ],
+          ),
+          SizedBox(height: 10.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Total Spent'),
+              Text(
+                '\$${totalSpent.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: totalSpent > totalBudget ? Colors.red : Colors.green,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettlementCard(BuildContext context) {
+    final currentUid = GlobalVariables.loggedInUser.value?.uid ?? '';
+    final settlements = controller.optimalSettlements;
+    final users = controller.tripModel.value?.joindUsersList ?? [];
+
+    String nameFor(String uid) {
+      if (uid == currentUid) return 'You';
+      try {
+        return users.firstWhere((u) => u.uid == uid).displayName;
+      } catch (_) {
+        return uid.substring(0, 6);
+      }
+    }
+
+    if (settlements.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF4AD10B).withValues(alpha: .1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Color(0xFF4AD10B)),
+            SizedBox(width: 10.w),
+            Text(
+              'All settled up!',
+              style: AppStyles.labelTextStyle().copyWith(
+                color: const Color(0xFF4AD10B),
+                fontWeight: FontWeight.w600,
+                fontSize: AppStyles.fontSize14,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: settlements.map((s) {
+        final isCurrentUserPaying = s.fromUserId == currentUid;
+        return Container(
+          margin: EdgeInsets.only(bottom: 10.h),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: isCurrentUserPaying
+                ? const Color(0xFFFFEBEB)
+                : AppColors.kLightGreyColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      nameFor(s.fromUserId),
+                      style: AppStyles.labelTextStyle().copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: AppStyles.fontSize13,
+                        color: isCurrentUserPaying
+                            ? const Color(0xFFD9534F)
+                            : const Color(0xFF1F1F1F),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      child: Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
+                    ),
+                    Text(
+                      nameFor(s.toUserId),
+                      style: AppStyles.labelTextStyle().copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: AppStyles.fontSize13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '\$${s.amount.toStringAsFixed(2)}',
+                style: AppStyles.labelTextStyle().copyWith(
+                  color: const Color(0xFF1D7FC2),
+                  fontWeight: FontWeight.w700,
+                  fontSize: AppStyles.fontSize13,
+                ),
+              ),
+              if (isCurrentUserPaying) ...[
+                SizedBox(width: 8.w),
+                GestureDetector(
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Mark as Paid'),
+                      content: Text(
+                        'Confirm you have paid ${nameFor(s.toUserId)} \$${s.amount.toStringAsFixed(2)}?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: Get.back,
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.back();
+                            controller.markSettlementPaid(s.fromUserId);
+                          },
+                          child: const Text('Confirm'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1D7FC2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Mark Paid',
+                      style: AppStyles.labelTextStyle().copyWith(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 }

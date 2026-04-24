@@ -100,9 +100,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Country? selectedCountry;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    selectedCountry = Country.parse('Us');
+    selectedCountry = Country.parse('US');
   }
 
   @override
@@ -249,7 +248,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               onTap: () {
                 showCountryPicker(
                   context: Get.context!,
-                  onSelect: (b) {},
+                  onSelect: (b) {
+                    setState(() {
+                      selectedCountry = b;
+                    });
+                    widget.onCountryChanged?.call(b);
+                  },
                 );
               },
               child: Row(

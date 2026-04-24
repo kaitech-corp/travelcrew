@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:travel_crew/utils/app_strings.dart';
-import 'package:travel_crew/views/all_expenses/all_expenses_screen.dart';
-import 'package:travel_crew/views/create_trip/create_trip_screen.dart';
-import 'package:travel_crew/views/messages/users/user_screen.dart';
+import 'package:travel_crew/views/inbox/inbox_screen.dart';
+import 'package:travel_crew/views/profile/profile_screen.dart';
 
 import '../../home_page/home_page_screen.dart';
 import '../../my_trips/my_trips_screen.dart';
@@ -13,21 +11,11 @@ class MainViewController extends GetxController {
   List<Widget> pages = [
     const HomePageScreen(),
     const MyTripsScreen(),
-    CreateTripScreen(),
-    const UsersScreen(),
-    // ExpenseScreen(fromMainView: true),
-    const AllExpensesScreen(),
-    // ProfileScreen(),
-    // const   CompaniesScreen(),
-    // const   JobsScreen(),
-    // const   MyProfileScreen(),
+    const InboxScreen(),
+    const ProfileScreen(),
   ];
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   void changeIndex(int index) {
-    if (index == 2) {
-      Get.toNamed(kCreateTripScreenRoute);
-      return;
-    }
     selectedIndex.value = index;
   }
 }

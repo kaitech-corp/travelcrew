@@ -25,32 +25,22 @@ class HomePageScreen extends GetView<HomePageController> {
     return CustomScaffold(
       screenName: '',
       isBackIcon: false,
-      leadingWidth: Get.width,
+      leadingWidth: 70,
       padding: EdgeInsets.zero,
+      showNotificationBell: true,
       leadingWidget: Padding(
-        padding: EdgeInsets.only(right: 20.w, left: 5.w),
-        child: Row(
-          children: [
-            Obx(
-              () => AnyImageView(
-                ontap: () {
-                  Get.toNamed(kProfileScreenRoute);
-                },
-                url: GlobalVariables.loggedInUser.value?.profileImage ?? '',
-                width: 50.w,
-                padding: EdgeInsets.zero,
-                height: 50.h,
-                isCircle: true,
-              ),
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () {
-                Get.toNamed(kNotificationScreenRoute);
-              },
-              child: Image.asset(AppImages.kNotificationIcon, scale: 4),
-            ),
-          ],
+        padding: EdgeInsets.only(left: 5.w),
+        child: Obx(
+          () => AnyImageView(
+            ontap: () {
+              Get.toNamed(kProfileScreenRoute);
+            },
+            url: GlobalVariables.loggedInUser.value?.profileImage ?? '',
+            width: 50.w,
+            padding: EdgeInsets.zero,
+            height: 50.h,
+            isCircle: true,
+          ),
         ),
       ),
       scaffoldKey: controller.scaffoldKey,
@@ -86,7 +76,6 @@ class HomePageScreen extends GetView<HomePageController> {
                     child: TextFormField(
                       textCapitalization: TextCapitalization.sentences,
                       onChanged: (value) {
-                        controller.applyMyTripsFilter(value);
                         controller.applyOtherTripsFilter(value);
                       },
                       decoration: InputDecoration(
@@ -160,122 +149,7 @@ class HomePageScreen extends GetView<HomePageController> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 20.h, bottom: 1.h, right: 20.h),
-              child: Row(
-                children: [
-                  Text(
-                    l10n.myTrips,
-                    style: AppStyles.labelTextStyle().copyWith(
-                      color: const Color(0xFF121212),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      mainViewController?.selectedIndex.value = -1;
-                      // Get.toNamed(kMyTripsScreenRoute);
-                    },
-                    child: Text(
-                      l10n.viewAll,
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color: const Color(0xFF121212),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 150.h,
-              child: Obx(
-                () =>
-                    controller.isLoadingMyTrips.isTrue
-                        ? const Center(child: CircularProgressIndicator())
-                        : controller.filteredMyTrips.isEmpty
-                        ? Center(child: Text(l10n.noTripsFound))
-                        : ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemBuilder:
-                              (c, index) => TripsWidget(
-                                tripModel: controller.filteredMyTrips[index],
-                                onTap: () {
-                                  Get.toNamed(
-                                    kSpecificTripViewScreenRoute,
-                                    arguments:
-                                        controller.filteredMyTrips[index],
-                                  );
-                                },
-                                images:
-                                    controller.filteredMyTrips[index].images,
-                                daysToGo:
-                                    (controller
-                                                .filteredMyTrips[index]
-                                                .tripStartDate
-                                                ?.isAfter(DateTime.now()) ??
-                                            false)
-                                        ? controller
-                                                .filteredMyTrips[index]
-                                                .tripStartDate
-                                                ?.difference(DateTime.now())
-                                                .inDays ??
-                                            0
-                                        : 0,
-                                destination:
-                                    controller
-                                        .filteredMyTrips[index]
-                                        .destination,
-                                country:
-                                    controller.filteredMyTrips[index].country,
-                                startDate: DateFormat('dd MMM').format(
-                                  controller
-                                          .filteredMyTrips[index]
-                                          .tripStartDate ??
-                                      DateTime.now(),
-                                ),
-                                endDate: DateFormat('dd MMM').format(
-                                  controller
-                                          .filteredMyTrips[index]
-                                          .tripEndDate ??
-                                      DateTime.now(),
-                                ),
-                              ),
-                          separatorBuilder: (c, index) => SizedBox(width: 7.w),
-                          itemCount: controller.filteredMyTrips.length,
-                        ),
-              ),
-            ),
 
-            // SingleChildScrollView(
-            //   scrollDirection: Axis.horizontal,
-            //   child: Row(
-            //     spacing: 7.w,
-            //     children:
-            //         trips
-            //             .map(
-            //               (e) => TripsWidget(
-            //                 onTap: () {
-            //                   Get.toNamed(
-            //                     kSpecificTripViewScreenRoute,
-            //                     arguments: e,
-            //                   );
-            //                 },
-            //                 images: e.images,
-            //                 daysToGo: e.daysToGo,
-            //                 destination: e.destination,
-            //                 country: e.country,
-            //                 startDate: DateFormat('dd MMM').format(e.startDate),
-            //                 endDate: e.endDate,
-            //               ),
-            //             )
-            //             .toList(),
-            //   ),
-            // ),
             SizedBox(height: 16.h),
             Obx(
               () =>
