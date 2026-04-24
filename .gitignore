@@ -37,23 +37,22 @@ scripts/
 lib/generated_plugin_registrant.dart
 
 # Android Studio will place build artifacts here
-/android/
 /android/app/debug
 /android/app/profile
 /android/app/release
 /android/app/main
 
 # IOS
+/assets/
 /ios/build/
-/pubspec.yaml
-ios/Flutter/Generated.xcconfig
+ios/Flutter/
 ios/Pods
 ios/Pods/Target Support Files
 assets/travelcrew_auth.json
 lib/firebase_options.dart
-assets/
 ios/GoogleService-Info.plist
 android/app/google-services.json
+android/key.properties
 .clinerules
 
 firebase.json
@@ -62,3 +61,5 @@ firestore.rules
 .claude/
 
 resources/
+
+ios/Flutter/Generated.xcconfig

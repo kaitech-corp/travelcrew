@@ -6,25 +6,25 @@ service cloud.firestore {
     	//Read
       allow read: if request.auth != null;
       //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if request.auth.uid == '123456789';
     }
     match /recommended_activities/{documents} {
     	//Read
       allow read: if request.auth != null;
       //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if request.auth.uid == '123456789';
     }
     match /recommended_trips/{documents} {
     	//Read
       allow read: if request.auth != null;
       //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if request.auth.uid == '123456789';
     }
     match /apiKeys/{documents} {
     	//Read
       allow read: if request.auth != null;
       //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if request.auth.uid == '123456789';
     }
     match /version/{documents} {
     	//Read
@@ -44,7 +44,7 @@ service cloud.firestore {
     }
     match /location/{documents}/locations/{doc} {
     	//Read
-      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3' || resource.data.uid == request.auth.uid;
+      allow read: if request.auth.uid == '123456789' || resource.data.uid == request.auth.uid;
       //Write
       allow write: if request.auth != null;
     }
@@ -52,14 +52,12 @@ service cloud.firestore {
     	//Read
       allow read: if request.auth != null;
       //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if request.auth.uid == '123456789';
     }
     match /dmConversations/{document}/messages/{docs} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-      allow delete: if request.auth != null;
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/dmConversations/$(document)).data.users;
+      allow write: if request.auth.uid in get(/databases/$(database)/documents/dmConversations/$(document)).data.users;
+      allow delete: if request.auth.uid in get(/databases/$(database)/documents/dmConversations/$(document)).data.users;
     }
     match /dmConversations/{doc} {
     	//Read
@@ -75,10 +73,8 @@ service cloud.firestore {
       allow delete: if request.auth.uid == resource.data.uid;
     }
     match /tokens/{userID}/tokens/{doc} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
+      allow read: if belongsTo(userID) || request.auth.uid == '123456789';
+      allow write: if belongsTo(userID);
     }
     match /dmChat/{chatID} {
     	//Read
@@ -96,21 +92,21 @@ service cloud.firestore {
 
     match /feedback/{documents} {
     	//Read
-      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow read: if request.auth.uid == '123456789';
       //Write
       allow write: if request.auth != null;
-      allow delete: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow delete: if request.auth.uid == '123456789';
     }
         match /reports/{documents}/{collections}/{docs} {
     	//Read
-      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow read: if request.auth.uid == '123456789';
       //Write
       allow write: if request.auth != null;
-      allow delete: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow delete: if request.auth.uid == '123456789';
     }
     match /trips/{documents} {
     	//Read
-      allow read: if true;
+      allow read: if request.auth != null;
       //Write
       allow write: if request.auth != null;
       allow update: if request.auth != null;
@@ -187,19 +183,25 @@ service cloud.firestore {
       }
   
     match /privateTrips/{documents} {
-    	//Read
-      allow read: if request.auth.uid in resource.data.accessUsers;
-      //Write
-      allow write: if request.auth != null;
-      allow update: if request.auth in resource.data.accessUsers;
-      allow delete: if request.auth.uid == resource.data.ownerID
+      allow read: if request.auth.uid in resource.data.accessUsers || request.auth.uid == resource.data.ownerID;
+      allow create: if request.auth != null && request.resource.data.ownerID == request.auth.uid;
+      allow update: if request.auth.uid == resource.data.ownerID || request.auth.uid in resource.data.accessUsers;
+      allow delete: if request.auth.uid == resource.data.ownerID;
     }
-      match /userPublicProfile/{users} {
-      //Read
+    match /publicProfile/{userId} {
+      // Allow any authenticated user to read public profiles
       allow read: if request.auth != null;
       
-      //Write
-      allow write: if request.auth != null;
+      // Allow users to create their own profile
+      allow create: if belongsTo(userId);
+      
+      // Allow users to update their own profile.
+      // OR allow any authenticated user to add/remove only their own UID from another user's followers list.
+      allow update: if belongsTo(userId) ||
+                   (request.auth != null &&
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followers']) &&
+                    (request.resource.data.followers.toSet().difference(resource.data.followers.toSet()) == [request.auth.uid].toSet() ||
+                     resource.data.followers.toSet().difference(request.resource.data.followers.toSet()) == [request.auth.uid].toSet()));
     }
       match /lodging/{details} {
       //Read
@@ -255,33 +257,27 @@ service cloud.firestore {
     
       match /users/{user} {
       //Read
-      allow read: if belongsTo(user) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow read: if belongsTo(user) || request.auth.uid == '123456789';
       
       //Write
-      allow write: if belongsTo(user)|| request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if belongsTo(user)|| request.auth.uid == '123456789';
     }
         match /settings/{user} {
       //Read
-      allow read: if belongsTo(user) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow read: if belongsTo(user) || request.auth.uid == '123456789';
       
       //Write
-      allow write: if belongsTo(user)|| request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+      allow write: if belongsTo(user)|| request.auth.uid == '123456789';
     }
       
       match /notifications/{document}/notifications/{documents} {
-    	//Read
       allow read: if request.auth != null;
-      
-      //Write
       allow write: if request.auth != null && !exists(/databases/$(database)/documents/unique/$(documents));
-      allow delete: if documents in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
+      allow delete: if belongsTo(document);
       }
       
       match /chat/{documents}/messages/{document} {
-    	//Read
-      allow read: if request.auth != null;
-      
-      //Write
+      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
       allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
       allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
       }
