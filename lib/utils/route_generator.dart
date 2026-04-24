@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:travel_crew/views/all_expenses/all_expenses_screen.dart';
+import 'package:travel_crew/views/import_trip/import_trip_screen.dart';
 import 'package:travel_crew/views/auth/sign_up/profile_complete.dart';
 import 'package:travel_crew/views/custom_widgets/date_range_picker/range_picker_dialogue.dart'
     show RangeCalendarDialog;
@@ -7,6 +8,7 @@ import 'package:travel_crew/views/expense/expense_screen.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/components/add_activity.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/specific_trip_view_screen.dart';
 import 'package:travel_crew/views/messages/users/group_detail_screen.dart';
+import 'package:travel_crew/views/profile/components/connections/connections_screen.dart';
 import 'package:travel_crew/views/profile/profile_screen.dart';
 
 import '../views/auth/forgot_password/forgot_password_screen.dart';
@@ -90,6 +92,11 @@ class RouteGenerator {
         binding: ScreenBindings(),
       ),
       GetPage(
+        name: kImportTripScreenRoute,
+        page: () => const ImportTripScreen(),
+        binding: ScreenBindings(),
+      ),
+      GetPage(
         name: kNewPasswordScreenRoute,
         page: () => const NewPasswordScreen(),
         binding: ScreenBindings(),
@@ -157,6 +164,11 @@ class RouteGenerator {
       GetPage(
         name: kNotificationScreenRoute,
         page: () => const NotificationsScreen(),
+        binding: ScreenBindings(),
+      ),
+      GetPage(
+        name: kConnectionsScreenRoute,
+        page: () => const ConnectionsScreen(),
         binding: ScreenBindings(),
       ),
       GetPage(

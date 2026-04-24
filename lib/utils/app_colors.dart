@@ -3,8 +3,8 @@ class AppColors {
   static const Color kPrimaryColor = Color(0xFF1D7FC2);
   static const Color kSecondaryColor = Color(0xFFEE4266);
   static const Color kSecondaryColor2 = Color(0xFFC2E812);
-  static const Color kBackgroundColor =kWhiteColor;
-  static const Color kScaffoldBgColor = kWhiteColor;
+  static const Color kBackgroundColor =Color(0xFFF8F8F8);
+  static const Color kScaffoldBgColor = Color(0xFFF8F8F8);
   static const Color kPurpleColor = Color(0xFF9747FF);
   static const Color kWhiteColor = Colors.white;
   static const Color kAppBarHeadingColor = kBlackColor;

@@ -27,7 +27,9 @@ const kDateRangePickerScreenRoute = '/DateRangePickerScreen';
 const kMessagesScreenRoute = '/MessagesScreen';
 const kAddActivityScreenRoute = '/AddActivityScreen';
 const kNotificationScreenRoute = '/NotificationScreen';
+const kConnectionsScreenRoute = '/ConnectionsScreen';
 const kAllExpensesScreenRoute = '/AllExpensesScreen';
+const kImportTripScreenRoute = '/ImportTripScreen';
 
 /// Tables
 

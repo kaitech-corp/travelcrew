@@ -68,7 +68,7 @@ Future<String> uploadImageToFirebaseStorage({
     final fullRef =
         folderName == 'users'
             ? baseRef
-                .child(GlobalVariables.loggedInUser.value!.uid)
+                .child(GlobalVariables.currentUid)
                 .child(imageName)
             : baseRef.child(imageName);
 

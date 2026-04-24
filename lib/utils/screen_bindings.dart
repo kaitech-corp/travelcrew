@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:travel_crew/views/all_expenses/controller/all_expense_cont.dart';
+import 'package:travel_crew/views/import_trip/import_trip_controller.dart';
 import 'package:travel_crew/views/auth/forgot_password/controller/forgot_password_controller.dart';
 import 'package:travel_crew/views/auth/new_password/controller/new_password_controller.dart';
 import 'package:travel_crew/views/auth/sign_up/controller/sign_up_controller.dart';
@@ -14,6 +15,7 @@ import 'package:travel_crew/views/messages/users/controller/users_controller.dar
 import 'package:travel_crew/views/my_trips/controller/my_trips_controller.dart';
 import 'package:travel_crew/views/onboarding/controller/onboarding_controller.dart';
 import 'package:travel_crew/views/profile/components/about/controller/about_controller.dart';
+import 'package:travel_crew/views/profile/components/connections/controller/connections_controller.dart';
 import 'package:travel_crew/views/profile/components/change_password/controller/change_password_controller.dart';
 import 'package:travel_crew/views/profile/components/help_n_support/controller/help_n_support_controller.dart';
 import 'package:travel_crew/views/profile/components/privacy_policy/controller/privacy_policy_controller.dart';
@@ -57,5 +59,7 @@ class ScreenBindings extends Bindings {
     Get.lazyPut(() => RangePickerController());
     Get.lazyPut(() => NotificationController());
     Get.lazyPut(() => AllExpensesController());
+    Get.lazyPut(() => ImportTripController());
+    Get.lazyPut(() => ConnectionsController());
   }
 }

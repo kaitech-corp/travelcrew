@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'custom_snackbar.dart';
 import 'logger.dart';
 
 /// Global error handling utility for consistent error management
@@ -29,13 +33,26 @@ class ErrorHandler {
       }
     }
     
-    // TODO: Add crash reporting integration (Firebase Crashlytics, Sentry, etc.)
-    // _reportToCrashlytics(error, stackTrace, context);
+    if (!kDebugMode) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: errorContext,
+        fatal: false,
+      );
+    }
     
-    // TODO: Show user-friendly error message if requested
-    // if (showToUser && userMessage != null) {
-    //   _showErrorToUser(userMessage);
-    // }
+    if (showToUser && userMessage != null) {
+      _showErrorToUser(userMessage);
+    }
+  }
+
+  static void _showErrorToUser(String message) {
+    showCustomSnackBar(
+      contentType: ContentType.failure,
+      content: message,
+      title: 'Error',
+    );
   }
   
   /// Handle Firebase-specific errors with better context
@@ -77,6 +94,29 @@ class ErrorHandler {
   
   /// Get user-friendly error message for Firebase errors
   static String _getFirebaseErrorMessage(Object error) {
+    if (error is FirebaseAuthException) {
+      switch (error.code) {
+        case 'user-not-found':
+          return 'No user found for that email.';
+        case 'wrong-password':
+          return 'Wrong password provided for that user.';
+        case 'email-already-in-use':
+          return 'The email address is already in use by another account.';
+        case 'invalid-email':
+          return 'The email address is badly formatted.';
+        case 'weak-password':
+          return 'The password is too weak.';
+        case 'user-disabled':
+          return 'This user account has been disabled.';
+        case 'too-many-requests':
+          return 'Too many requests. Please try again later.';
+        case 'operation-not-allowed':
+          return 'Signing in with Email and Password is not enabled.';
+        default:
+          return error.message ?? 'Authentication error occurred.';
+      }
+    }
+
     final String errorString = error.toString().toLowerCase();
     
     if (errorString.contains('network')) {
