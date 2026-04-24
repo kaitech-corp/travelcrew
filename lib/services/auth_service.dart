@@ -473,11 +473,123 @@ class AuthService {
     GlobalVariables.showLoader.value = false;
   }
 
+  static Future<bool> followUser(String targetUserId) async {
+    try {
+      final String? currentUserId = _auth.currentUser?.uid;
+      if (currentUserId == null) return false;
+
+      // Add targetUserId to currentUser's 'following' list
+      await _firestore
+          .collection(kUsersPublicProfileCollection)
+          .doc(currentUserId)
+          .update({
+            'following': FieldValue.arrayUnion([targetUserId]),
+          });
+
+      // Add currentUserId to targetUser's 'followers' list
+      await _firestore
+          .collection(kUsersPublicProfileCollection)
+          .doc(targetUserId)
+          .update({
+            'followers': FieldValue.arrayUnion([currentUserId]),
+          });
+
+      return true;
+    } catch (e) {
+      AppLogger.error('Error in followUser: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> unfollowUser(String targetUserId) async {
+    try {
+      final String? currentUserId = _auth.currentUser?.uid;
+      if (currentUserId == null) return false;
+
+      // Remove targetUserId from currentUser's 'following' list
+      await _firestore
+          .collection(kUsersPublicProfileCollection)
+          .doc(currentUserId)
+          .update({
+            'following': FieldValue.arrayRemove([targetUserId]),
+          });
+
+      // Remove currentUserId from targetUser's 'followers' list
+      await _firestore
+          .collection(kUsersPublicProfileCollection)
+          .doc(targetUserId)
+          .update({
+            'followers': FieldValue.arrayRemove([currentUserId]),
+          });
+
+      return true;
+    } catch (e) {
+      AppLogger.error('Error in unfollowUser: $e');
+      return false;
+    }
+  }
+
+  static Future<List<PublicUserModel>> getFollowers(String userId) async {
+    try {
+      final userDoc =
+          await _firestore
+              .collection(kUsersPublicProfileCollection)
+              .doc(userId)
+              .get();
+      if (userDoc.exists) {
+        final user = PublicUserModel.fromMap(
+          userDoc.data()! as Map<String, dynamic>,
+        );
+        if (user.followers != null && user.followers!.isNotEmpty) {
+          final followersDocs =
+              await _firestore
+                  .collection(kUsersPublicProfileCollection)
+                  .where(FieldPath.documentId, whereIn: user.followers)
+                  .get();
+          return followersDocs.docs
+              .map((doc) => PublicUserModel.fromMap(doc.data()))
+              .toList();
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Error in getFollowers: $e');
+    }
+    return [];
+  }
+
+  static Future<List<PublicUserModel>> getFollowing(String userId) async {
+    try {
+      final userDoc =
+          await _firestore
+              .collection(kUsersPublicProfileCollection)
+              .doc(userId)
+              .get();
+      if (userDoc.exists) {
+        final user = PublicUserModel.fromMap(
+          userDoc.data()! as Map<String, dynamic>,
+        );
+        if (user.following != null && user.following!.isNotEmpty) {
+          final followingDocs =
+              await _firestore
+                  .collection(kUsersPublicProfileCollection)
+                  .where(FieldPath.documentId, whereIn: user.following)
+                  .get();
+          return followingDocs.docs
+              .map((doc) => PublicUserModel.fromMap(doc.data()))
+              .toList();
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Error in getFollowing: $e');
+    }
+    return [];
+  }
+
   static Future<void> _createPublicProfileIfNeeded(UserModel? user) async {
     if (user == null) return;
 
     final publicProfileRef = _firestore
-        .collection('publicProfile')
+        .collection(kUsersPublicProfileCollection)
         .doc(user.uid);
     final publicProfileDoc = await publicProfileRef.get();
 

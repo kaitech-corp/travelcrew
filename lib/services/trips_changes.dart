@@ -6,8 +6,8 @@ import 'package:travel_crew/views/my_trips/controller/my_trips_controller.dart';
 void removeTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
-    controller.myTrips.removeWhere((element) => element.id == trip.id);
-    controller.filteredMyTrips.removeWhere((element) => element.id == trip.id);
+    controller.otherTrips.removeWhere((element) => element.id == trip.id);
+    controller.otherFilteredTrips.removeWhere((element) => element.id == trip.id);
   }
   if (Get.isRegistered<MyTripsController>()) {
     final MyTripsController controller = Get.find<MyTripsController>();
@@ -19,8 +19,8 @@ void removeTripOverAll(TripModel trip) {
 void addTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
-    controller.myTrips.insert(0, trip);
-    controller.filteredMyTrips.insert(0, trip);
+    controller.otherTrips.insert(0, trip);
+    controller.otherFilteredTrips.insert(0, trip);
   }
   if (Get.isRegistered<MyTripsController>()) {
     final MyTripsController controller = Get.find<MyTripsController>();
@@ -32,12 +32,12 @@ void addTripOverAll(TripModel trip) {
 void updateTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
-    final int index = controller.myTrips.indexWhere(
+    final int index = controller.otherTrips.indexWhere(
       (element) => element.id == trip.id,
     );
     if (index != -1) {
-      controller.myTrips[index] = trip;
-      controller.filteredMyTrips[index] = trip;
+      controller.otherTrips[index] = trip;
+      controller.otherFilteredTrips[index] = trip;
     }
   }
   if (Get.isRegistered<MyTripsController>()) {

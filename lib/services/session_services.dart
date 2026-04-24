@@ -15,6 +15,8 @@ class GlobalVariables {
   static RxString addingToFavourites = ''.obs;
   static RxBool showDropdown = false.obs;
 
+  static String get currentUid => loggedInUser.value?.uid ?? '';
+
   static bool isLoggedInUser(String id) {
     return loggedInUser.value?.uid == id;
   }
