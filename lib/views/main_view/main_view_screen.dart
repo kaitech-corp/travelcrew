@@ -55,10 +55,8 @@ class MainViewScreen extends GetView<MainViewController> {
                                 ? AppImages.kHomeFilledIcon
                                 : AppImages.kHomeIcon,
                           ),
-
-                          // color: getColor(0, controller.selectedIndex.value),
                         ),
-                        label: 'Home',
+                        label: 'Explore',
                       ),
                       BottomNavigationBarItem(
                         icon: ImageIcon(
@@ -67,37 +65,28 @@ class MainViewScreen extends GetView<MainViewController> {
                                 ? AppImages.kTripsFilledIcon
                                 : AppImages.kTripIcon,
                           ),
-                          // color: getColor(1, controller.selectedIndex.value),
-                          // scale: 3,
                         ),
-
-                        label: 'My Trip',
+                        label: 'My Trips',
                       ),
                       BottomNavigationBarItem(
-                        icon: Image.asset(AppImages.kAddIcon, scale: 7),
-                        label: '',
+                        icon: ImageIcon(
+                          AssetImage(
+                            controller.selectedIndex.value == 2
+                                ? AppImages.kChatFilledIcon
+                                : AppImages.kChatIcon,
+                          ),
+                        ),
+                        label: 'Inbox',
                       ),
                       BottomNavigationBarItem(
                         icon: ImageIcon(
                           AssetImage(
                             controller.selectedIndex.value == 3
-                                ? AppImages.kChatFilledIcon
-                                : AppImages.kChatIcon,
+                                ? AppImages.kProfileFilledIcon
+                                : AppImages.kProfileIcon,
                           ),
-                          // color: getColor(3, controller.selectedIndex.value),
                         ),
-                        label: 'Chat',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: ImageIcon(
-                          AssetImage(
-                            controller.selectedIndex.value == 4
-                                ? AppImages.kDollarIcon
-                                : AppImages.kDollarIcon,
-                          ),
-                          // color: getColor(4, controller.selectedIndex.value),
-                        ),
-                        label: 'Expense',
+                        label: 'Profile',
                       ),
                     ],
                     selectedIndex: controller.selectedIndex.value,

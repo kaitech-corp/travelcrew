@@ -35,13 +35,12 @@ class SignUpController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     GlobalVariables.loggedInUser.value?.phone =
         GlobalVariables.loggedInUser.value?.phone?.replaceAll('+', '') ?? '';
     if (GlobalVariables.loggedInUser.value?.phone != null &&
         GlobalVariables.loggedInUser.value?.phone != '') {
-      // detectCountryFromNumber(GlobalVariables.loggedInUser.value.phone);
+      detectCountryFromNumber(GlobalVariables.loggedInUser.value?.phone ?? '');
     }
   }
 
@@ -57,7 +56,7 @@ class SignUpController extends GetxController {
       ) async {
         GlobalVariables.showLoader.value = false;
         // if (!v) {
-        GlobalVariables.loggedInUser.value = UserModel(
+        final newUser = UserModel(
           displayName: userNameController.text,
           email: emailController.text,
           uid: const Uuid().v4(),
@@ -67,8 +66,9 @@ class SignUpController extends GetxController {
           updatedAt: Timestamp.now(),
           phone: '',
         );
+        GlobalVariables.loggedInUser.value = newUser;
         await AuthService.signUp(
-          user: GlobalVariables.loggedInUser.value!,
+          user: newUser,
           password: passwordController.text,
         );
         emailController.clear();
@@ -140,7 +140,7 @@ class SignUpController extends GetxController {
           selectedImage.value = '';
           GlobalVariables
               .loggedInUser
-              .value = GlobalVariables.loggedInUser.value!.copyWith(
+              .value = GlobalVariables.loggedInUser.value?.copyWith(
             profileImage:
                 image ?? GlobalVariables.loggedInUser.value?.profileImage,
             phone:

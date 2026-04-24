@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -39,11 +40,11 @@ class CustomAppBar extends StatelessWidget {
     kLogging('=============class name$className ${leadingWidth == 0.0}');
     return AppBar(
       scrolledUnderElevation: 0,
-      // systemOverlayStyle: const SystemUiOverlayStyle(
-      //   statusBarColor: Colors.transparent,
-      //   statusBarIconBrightness: Brightness.dark,
-      //   statusBarBrightness: Brightness.dark,
-      // ), //TODO Acroding to design
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
       elevation: 0,
       backgroundColor: Colors.transparent,
       actions: actions,

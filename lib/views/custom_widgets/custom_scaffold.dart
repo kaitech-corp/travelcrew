@@ -1,7 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/views/notification/controller/notification_controller.dart';
 
+import '../../utils/app_colors.dart';
+import '../../utils/app_images.dart';
+import '../main_view/controller/main_view_controller.dart';
 import 'custom_app_bar_widget.dart';
 import 'custom_screen_loader.dart';
 
@@ -40,6 +45,7 @@ class CustomScaffold extends StatefulWidget {
     this.backIconColor,
     this.openDrawerCallback,
     this.backgroundColor,
+    this.showNotificationBell = false,
   });
   final Widget body;
   final String className;
@@ -76,16 +82,82 @@ class CustomScaffold extends StatefulWidget {
   Widget? drawer;
   final Function? openDrawerCallback;
   final Color? backgroundColor;
+  final bool showNotificationBell;
   @override
   CustomScaffoldState createState() => CustomScaffoldState();
 }
 
 class CustomScaffoldState extends State<CustomScaffold> {
+  Widget _buildNotificationBell() {
+    if (!Get.isRegistered<NotificationController>()) {
+      return GestureDetector(
+        onTap: () {
+          if (Get.isRegistered<MainViewController>()) {
+            Get.find<MainViewController>().changeIndex(2);
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Image.asset(AppImages.kNotificationIcon, scale: 4),
+        ),
+      );
+    }
+    final notifController = Get.find<NotificationController>();
+    return Obx(() {
+      final unread = notifController.notifications
+          .fold<int>(0, (sum, group) => sum + group.notifications.length);
+      return GestureDetector(
+        onTap: () {
+          if (Get.isRegistered<MainViewController>()) {
+            Get.find<MainViewController>().changeIndex(2);
+          } else {
+            Get.toNamed('/NotificationScreen');
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Image.asset(AppImages.kNotificationIcon, scale: 4),
+              if (unread > 0)
+                Positioned(
+                  right: -4,
+                  top: -4,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      color: AppColors.kPrimaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                    child: Text(
+                      unread > 99 ? '99+' : '$unread',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
     //   statusBarColor: Colors.transparent,
     // ));
+    final effectiveActions = [
+      if (widget.showNotificationBell) _buildNotificationBell(),
+      ...?widget.actions,
+    ];
     return PopScope(
       canPop: widget.onWillPop == null,
       onPopInvokedWithResult: (didPop, result) async {
@@ -126,7 +198,7 @@ class CustomScaffoldState extends State<CustomScaffold> {
                     title: widget.title,
                     leadingWidth: widget.leadingWidth,
                     backIcon: widget.isBackIcon,
-                    actions: widget.actions ?? [],
+                    actions: effectiveActions,
                     backIconColor: widget.backIconColor,
                     scaffoldKey: widget.scaffoldKey,
                     centerTitle: widget.centerTitle ?? false,
