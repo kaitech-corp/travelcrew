@@ -208,7 +208,7 @@ class MessagesScreen extends GetView<UsersController> {
                     controller.isLoadingChats.isTrue
                         ? const SizedBox.shrink()
                         : controller.currentTrip.value!.createdBy !=
-                                GlobalVariables.loggedInUser.value!.uid &&
+                                GlobalVariables.currentUid &&
                             (controller.chatRoom.value == null ||
                                 !(controller.currentTrip.value!.joinedUsers
                                         ?.any(

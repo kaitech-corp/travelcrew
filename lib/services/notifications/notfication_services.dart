@@ -139,9 +139,7 @@ class FirebasePushNotificationApi {
             androidChannel.name,
             importance: Importance.high,
             channelDescription: androidChannel.description,
-            // TODOadd a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            icon: '@mipmap/ic_launcher',
+            icon: '@drawable/tc_logo',
             showProgress: true,
           ),
         ),
@@ -156,7 +154,7 @@ class FirebasePushNotificationApi {
       requestBadgePermission: false,
       requestAlertPermission: false,
     );
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('@drawable/tc_logo');
     const settings = InitializationSettings(android: android, iOS: ios);
     await flutterLocalNotificationsPlugin.initialize(
       settings,

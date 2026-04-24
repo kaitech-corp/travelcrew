@@ -20,7 +20,7 @@ class GroupController extends GetxController {
     try {
       isLoading.value = true;
       final res = await ChatFirebaseService.getChatRoomsByUserId(
-        userId: GlobalVariables.loggedInUser.value!.uid,
+        userId: GlobalVariables.currentUid,
       );
       chatRooms.value = res.where((element) => element.trip != null).toList();
     } catch (e) {

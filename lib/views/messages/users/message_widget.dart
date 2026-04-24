@@ -25,18 +25,18 @@ class MessageWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         left:
-            message.createdBy == GlobalVariables.loggedInUser.value!.uid
+            message.createdBy == GlobalVariables.currentUid
                 ? 0
                 : 10.w,
         right:
-            message.createdBy == GlobalVariables.loggedInUser.value!.uid
+            message.createdBy == GlobalVariables.currentUid
                 ? 10.w
                 : 0,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment:
-            message.createdBy == GlobalVariables.loggedInUser.value!.uid
+            message.createdBy == GlobalVariables.currentUid
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,10 +46,10 @@ class MessageWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 10,
             children: [
-              if (message.createdBy == GlobalVariables.loggedInUser.value!.uid)
+              if (message.createdBy == GlobalVariables.currentUid)
                 const SizedBox(height: 5),
               if (message.createdBy !=
-                  GlobalVariables.loggedInUser.value!.uid) ...{
+                  GlobalVariables.currentUid) ...{
                 Row(
                   spacing: 5.w,
                   children: [
@@ -66,7 +66,7 @@ class MessageWidget extends StatelessWidget {
                     TextWidget(
                       labelText:
                           message.createdBy ==
-                                  GlobalVariables.loggedInUser.value!.uid
+                                  GlobalVariables.currentUid
                               ? 'You'
                               : userModel.name,
                       style: AppStyles.labelTextStyle().copyWith(
@@ -82,25 +82,25 @@ class MessageWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 width:
-                    message.createdBy == GlobalVariables.loggedInUser.value!.uid
+                    message.createdBy == GlobalVariables.currentUid
                         ? context.width * 0.67
                         : context.width * 0.8,
                 decoration: ShapeDecoration(
                   color:
                       message.createdBy ==
-                              GlobalVariables.loggedInUser.value!.uid
+                              GlobalVariables.currentUid
                           ? AppColors.kWhiteColor
                           : const Color(0xFF151515),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topLeft:
                           message.createdBy !=
-                                  GlobalVariables.loggedInUser.value!.uid
+                                  GlobalVariables.currentUid
                               ? Radius.zero
                               : Radius.circular(16.r),
                       topRight:
                           message.createdBy ==
-                                  GlobalVariables.loggedInUser.value!.uid
+                                  GlobalVariables.currentUid
                               ? Radius.zero
                               : Radius.circular(16.r),
                       bottomLeft: const Radius.circular(16),
@@ -113,7 +113,7 @@ class MessageWidget extends StatelessWidget {
                   style: AppStyles.labelTextStyle().copyWith(
                     color:
                         message.createdBy ==
-                                GlobalVariables.loggedInUser.value!.uid
+                                GlobalVariables.currentUid
                             ? AppColors.kBlackColor
                             : Colors.white,
                     fontSize: 12,
@@ -124,14 +124,14 @@ class MessageWidget extends StatelessWidget {
               ),
               SizedBox(
                 width:
-                    message.createdBy == GlobalVariables.loggedInUser.value!.uid
+                    message.createdBy == GlobalVariables.currentUid
                         ? context.width * 0.67
                         : context.width * 0.8,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (message.createdBy ==
-                        GlobalVariables.loggedInUser.value!.uid) ...{
+                        GlobalVariables.currentUid) ...{
                       ImageIcon(
                         AssetImage(AppImages.kMessageReadIcon),
                         color: AppColors.kPrimaryColor,
@@ -156,7 +156,7 @@ class MessageWidget extends StatelessWidget {
               ),
             ],
           ),
-          if (message.createdBy == GlobalVariables.loggedInUser.value!.uid) ...{
+          if (message.createdBy == GlobalVariables.currentUid) ...{
             SizedBox(width: 5.w),
             AnyImageView(
               width: 42.38.w,

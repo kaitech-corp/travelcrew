@@ -223,7 +223,7 @@ class GroupDetailScreen extends GetView<UsersController> {
                 controller.currentTrip.value!.createdBy,
               ) &&
               controller.currentTrip.value!.joinedUsers!.contains(
-                GlobalVariables.loggedInUser.value!.uid,
+                GlobalVariables.currentUid,
               ))
             Padding(
               padding: const EdgeInsets.all(20.0),

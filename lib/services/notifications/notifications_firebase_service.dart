@@ -15,14 +15,17 @@ class FirebaseNotificationsService {
     required String type,
   }) async {
     try {
+      final user = GlobalVariables.loggedInUser.value;
+      if (user == null) return [];
       final List<UserNotificationModel> notification = await _getNotifications(
         type: type,
       );
-      notification.removeWhere(
-        (element) => element.createdAt.isBefore(
-          GlobalVariables.loggedInUser.value!.createdAt!.toDate(),
-        ),
-      );
+      final userCreatedAt = user.createdAt?.toDate();
+      if (userCreatedAt != null) {
+        notification.removeWhere(
+          (element) => element.createdAt.isBefore(userCreatedAt),
+        );
+      }
       final res = groupBy(
         notification,
         (p0) => p0.createdAt.toString().split(' ').first,
@@ -49,18 +52,14 @@ class FirebaseNotificationsService {
   static Future<List<UserNotificationModel>> _getNotifications({
     required String type,
   }) async {
+    final uid = GlobalVariables.loggedInUser.value?.uid;
+    if (uid == null) return [];
     final result =
         await firestore
             .collection(kNotificationsCollection)
-            .doc(GlobalVariables.loggedInUser.value!.uid)
+            .doc(uid)
             .collection(kNotificationsSubCollection)
-            .where(
-              'sentTo',
-              arrayContainsAny: [
-                'All',
-                GlobalVariables.loggedInUser.value!.uid,
-              ],
-            )
+            .where('sentTo', arrayContainsAny: ['All', uid])
             .get();
     final futures =
         result.docs.map((e) async {
@@ -94,6 +93,8 @@ class FirebaseNotificationsService {
     List<String> notificationTopic = const ['User loggedIn'],
   }) async {
     try {
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return;
       final UserNotificationModel userNotificationModel = UserNotificationModel(
         notificationId: const Uuid().v4(),
         notificationMessage: message,
@@ -101,9 +102,9 @@ class FirebaseNotificationsService {
         notificationType: notificationType,
         notificationForId: notificationForId,
         createdAt: DateTime.now(),
-        createdBy: GlobalVariables.loggedInUser.value!.uid,
+        createdBy: uid,
         updateAt: DateTime.now(),
-        updateBy: GlobalVariables.loggedInUser.value!.uid,
+        updateBy: uid,
         sentTo: sentTo,
         isTopic: isTopic,
         releaseDate: releaseDate,
@@ -118,9 +119,11 @@ class FirebaseNotificationsService {
     UserNotificationModel notification,
   ) async {
     try {
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return;
       await firestore
           .collection(kNotificationsCollection)
-          .doc(GlobalVariables.loggedInUser.value!.uid)
+          .doc(uid)
           .collection(kNotificationsSubCollection)
           .add(notification.toMap())
           .then((value) => value.update({'notificationId': value.id}));
@@ -136,9 +139,11 @@ class FirebaseNotificationsService {
     required Map<String, dynamic> data,
   }) async {
     try {
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return false;
       await firestore
           .collection(kNotificationsCollection)
-          .doc(GlobalVariables.loggedInUser.value!.uid)
+          .doc(uid)
           .collection(kNotificationsSubCollection)
           .doc(notificationId)
           .update(data);
