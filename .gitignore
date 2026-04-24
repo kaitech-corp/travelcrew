@@ -56,3 +56,9 @@ ios/GoogleService-Info.plist
 android/app/google-services.json
 .clinerules
 
+firebase.json
+firebase.json
+firestore.rules
+.claude/
+
+resources/
