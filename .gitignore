@@ -9,6 +9,7 @@
 .history
 .svn/
 scripts/
+.claude
 
 # IntelliJ related
 *.iml
@@ -49,17 +50,22 @@ ios/Flutter/
 ios/Pods
 ios/Pods/Target Support Files
 assets/travelcrew_auth.json
+ios/Flutter/Generated.xcconfig
 lib/firebase_options.dart
 ios/GoogleService-Info.plist
 android/app/google-services.json
 android/key.properties
 .clinerules
 
+# Firebase related
 firebase.json
 firebase.json
 firestore.rules
-.claude/
 
+# Docs
 resources/
+CLAUDE.md
 
-ios/Flutter/Generated.xcconfig
+# Local files
+lib/utils/app_strings_keys.dart
+

@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
 
   # Firebase
   firebase_core: ^4.7.0
@@ -27,19 +27,19 @@ dependencies:
   cloud_functions: ^6.2.0
 
   # Authentication
-  google_sign_in: ^6.3.0
+  google_sign_in: ^7.2.0
   sign_in_with_apple: ^7.0.1
   googleapis_auth: ^2.0.0
 
   # Device & System Features
   image_picker: ^1.2.1
-  file_picker: ^9.2.0
+  file_picker: ^11.0.2
   video_player: ^2.10.1
-  geolocator: ^13.0.4
+  geolocator: ^14.0.2
   google_maps_flutter: ^2.14.0
-  geocoding: ^3.0.0
+  geocoding: ^4.0.0
   permission_handler: ^12.0.1
-  flutter_local_notifications: ^19.5.0
+  flutter_local_notifications: ^21.0.0
 
   # UI
   cupertino_icons: ^1.0.8
@@ -49,19 +49,19 @@ dependencies:
   intl_phone_field: ^3.2.0
   photo_view: ^0.15.0
   readmore: ^3.0.0
-  google_fonts: ^6.3.2
+  google_fonts: ^8.0.2
   country_picker: ^2.0.27
-  pinput: ^5.0.1
+  pinput: ^6.0.2
   mobkit_dashed_border: ^0.0.7
   modal_progress_hud_nsn: ^0.5.1
   flutter_swipe_action_cell: ^3.1.6
   custom_rating_bar: ^3.0.0
-  timelines_plus: ^1.0.8
+  timelines_plus: ^2.0.0
   flutter_quill: ^11.5.0
-  dotted_border: ^2.1.0
+  dotted_border: ^3.1.0
   blur: ^4.0.2
   blurrycontainer: ^2.1.0
-  syncfusion_flutter_datepicker: ^29.1.37
+  syncfusion_flutter_datepicker: ^33.2.3
   table_calendar: ^3.1.3
   lucide_icons: ^0.257.0
   awesome_snackbar_content: ^0.1.5
@@ -71,9 +71,9 @@ dependencies:
   get: ^4.7.3
 
   # Utilities & Helpers
-  share_plus: ^10.1.4
-  flutter_dotenv: ^5.2.1
-  flutter_secure_storage: ^9.2.4
+  share_plus: ^12.0.2
+  flutter_dotenv: ^6.0.1
+  flutter_secure_storage: ^10.0.0
 
   # Development/Build Utilities
   change_app_package_name: ^1.5.0 
@@ -92,7 +92,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   flutter_launcher_icons: "^0.14.4"
 
 # For information on the generic Dart part of this file, see the
