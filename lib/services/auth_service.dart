@@ -11,6 +11,7 @@ import 'package:travel_crew/utils/logger.dart';
 
 import '../models/user_model.dart';
 import '../utils/app_strings.dart';
+import '../utils/app_strings_keys.dart';
 import '../utils/custom_snackbar.dart';
 import 'session_services.dart';
 
@@ -18,7 +19,7 @@ class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = firestore;
 
-  static Future<void> validateUser({fromSplash = false}) async {
+  static Future<void> validateUser({bool fromSplash = false}) async {
     final user = _auth.currentUser;
     if (user != null) {
       GlobalVariables.loggedInUser.value = await AuthService.getUser();
@@ -538,7 +539,7 @@ class AuthService {
               .get();
       if (userDoc.exists) {
         final user = PublicUserModel.fromMap(
-          userDoc.data()! as Map<String, dynamic>,
+          userDoc.data()!,
         );
         if (user.followers != null && user.followers!.isNotEmpty) {
           final followersDocs =
@@ -566,7 +567,7 @@ class AuthService {
               .get();
       if (userDoc.exists) {
         final user = PublicUserModel.fromMap(
-          userDoc.data()! as Map<String, dynamic>,
+          userDoc.data()!,
         );
         if (user.following != null && user.following!.isNotEmpty) {
           final followingDocs =
@@ -596,7 +597,7 @@ class AuthService {
     if (!publicProfileDoc.exists) {
       final publicProfile = PublicUserModel(
         displayName: user.displayName ?? user.uid.substring(0, 5),
-        email: user.email ?? '',
+        email: user.email,
         uid: user.uid,
         profileImage: user.profileImage ?? '',
         followers: [],

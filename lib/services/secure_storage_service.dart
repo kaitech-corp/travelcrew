@@ -1,7 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:travel_crew/utils/app_strings.dart';
+import 'package:travel_crew/utils/app_strings_keys.dart';
 
 import '../utils/custom_snackbar.dart';
 

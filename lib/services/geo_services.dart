@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import '../utils/app_strings.dart';
+import '../utils/app_strings_keys.dart';
 
 class GeoServices {
   static Future<Position> determinePosition() async {
@@ -31,7 +31,7 @@ class GeoServices {
       );
     }
     return Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
   }
 
@@ -140,7 +140,9 @@ class GeoServices {
 
         return json;
       }
-    } catch (e) {}
+    } catch (_) {
+      return null;
+    }
     return null;
   }
 }

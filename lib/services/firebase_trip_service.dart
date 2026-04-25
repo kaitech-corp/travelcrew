@@ -11,6 +11,7 @@ import 'package:travel_crew/utils/debugging.dart';
 import '../models/activity_model.dart';
 import '../models/expense_model.dart';
 import '../models/trip_model.dart';
+import '../models/user_flight_model.dart';
 import 'session_services.dart';
 
 final functions = FirebaseFunctions.instance;
@@ -109,7 +110,9 @@ class FirebaseTripService {
         trip.createdByUser = await AuthService.getUserPublicProfile(userId: trip.createdBy);
         return trip;
       }
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+    }
     return null;
   }
 
@@ -207,7 +210,9 @@ class FirebaseTripService {
               .where('tripId', isEqualTo: tripId)
               .get();
       return snapshot.docs.map((e) => ExpenseModel.fromMap(e.data())).toList();
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+    }
     return [];
   }
 
@@ -225,7 +230,9 @@ class FirebaseTripService {
         activityModel.id = e.id;
         return activityModel;
       }).toList();
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+    }
     return [];
   }
 
@@ -250,7 +257,10 @@ class FirebaseTripService {
         'joinedUsers': FieldValue.arrayRemove([userId]),
       });
       return true;
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+      showCustomSnackBar(content: e.toString());
+    }
     return false;
   }
 
@@ -266,6 +276,44 @@ class FirebaseTripService {
     } catch (e) {
       if (kDebugMode) {
         print('Error joining trip: $e');
+      }
+    }
+    return false;
+  }
+
+  static Future<bool> toggleTripFavorite({
+    required String tripId,
+    required String userId,
+    required bool isFavorite,
+  }) async {
+    try {
+      final userRef = firestore.collection(kUsersCollection).doc(userId);
+      final tripRef = firestore.collection(kTripTable).doc(tripId);
+
+      if (isFavorite) {
+        // Unfavorite
+        await userRef.update({
+          'favouriteTrips': FieldValue.arrayRemove([tripId]),
+        });
+        await tripRef.update({
+          'favouriteCount': FieldValue.increment(-1),
+        });
+        GlobalVariables.loggedInUser.value?.favouriteTrips.remove(tripId);
+      } else {
+        // Favorite
+        await userRef.update({
+          'favouriteTrips': FieldValue.arrayUnion([tripId]),
+        });
+        await tripRef.update({
+          'favouriteCount': FieldValue.increment(1),
+        });
+        GlobalVariables.loggedInUser.value?.favouriteTrips.add(tripId);
+      }
+      GlobalVariables.loggedInUser.refresh();
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error toggling favorite: $e');
       }
     }
     return false;
@@ -289,7 +337,9 @@ class FirebaseTripService {
         });
       }
       return true;
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+    }
     return false;
   }
 
@@ -300,7 +350,10 @@ class FirebaseTripService {
           .doc(activity.id)
           .update(activity.toMap());
       return true;
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+      showCustomSnackBar(content: e.toString());
+    }
     return false;
   }
 
@@ -311,7 +364,10 @@ class FirebaseTripService {
           .doc(expenseToSettle.id)
           .update(expenseToSettle.toMap());
       return true;
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+      showCustomSnackBar(content: e.toString());
+    }
     return false;
   }
 
@@ -332,8 +388,49 @@ class FirebaseTripService {
     try {
       await firestore.collection(kActivityTable).doc(id).delete();
       return true;
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+      showCustomSnackBar(content: e.toString());
+    }
     return false;
+  }
+
+  static Future<bool> addFlight({required UserFlightModel flight}) async {
+    try {
+      await firestore.collection(kFlightTable).doc(flight.id).set(flight.toMap());
+      return true;
+    } catch (e) {
+      showCustomSnackBar(content: e.toString());
+      return false;
+    }
+  }
+
+  static Future<bool> deleteFlight({required String id}) async {
+    try {
+      await firestore.collection(kFlightTable).doc(id).delete();
+      return true;
+    } catch (e) {
+      kLogging('error $e');
+      showCustomSnackBar(content: e.toString());
+    }
+    return false;
+  }
+
+  static Future<List<UserFlightModel>> getTripFlights({
+    required String tripId,
+  }) async {
+    try {
+      final snapshot = await firestore
+          .collection(kFlightTable)
+          .where('tripId', isEqualTo: tripId)
+          .get();
+      return snapshot.docs
+          .map((e) => UserFlightModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return [];
   }
 
   /// get nearby trips by latitude and longitude with radius
@@ -348,34 +445,48 @@ class FirebaseTripService {
     required int radius,
   }) async {
     try {
-      final result = await functions.httpsCallable(kNearByTripsFunction).call({
-        'lat': latitude,
-        'lng': longitude,
-        'radius': radius, // in Kilometers
-      });
-      List<TripModel> trips = [];
-      if (result.data != null && result.data['success'] == true) {
-        final List<Map<String, dynamic>> filteredTrips =
-            (result.data['nearbyTrips'] as List<dynamic>)
-                .map((trip) => Map<String, dynamic>.from(trip as Map<String, dynamic>))
-                .toList();
-        trips = filteredTrips.map((trip) => TripModel.fromMap(trip)).toList();
-        final futures =
-            trips.map((e) async {
-              e.expenses = await getTripExpenses(tripId: e.id);
-              e.activities = await getTripActivities(tripId: e.id);
-              if (e.joinedUsers != null && e.joinedUsers!.isNotEmpty) {
-                e.joindUsersList = await AuthService.getTripUsers(
-                  userIds: e.joinedUsers ?? [],
-                );
-              } else {
-                e.joindUsersList = [];
-              }
-              e.createdByUser = await AuthService.getUserPublicProfile(userId: e.createdBy);
-            }).toList();
-        await Future.wait(futures);
-        return trips;
-      }
+      // Bounding box: 1 degree ≈ 111km
+      final double delta = radius / 111.0;
+      final double minLat = latitude - delta;
+      final double maxLat = latitude + delta;
+      final double minLng = longitude - delta;
+      final double maxLng = longitude + delta;
+
+      final snapshot = await firestore
+          .collection(kTripTable)
+          .where('latitude', isGreaterThan: minLat)
+          .where('latitude', isLessThan: maxLat)
+          .get();
+
+      final filteredDocs = snapshot.docs.where((doc) {
+        final data = doc.data();
+        final lng = (data['longitude'] as num?)?.toDouble() ?? 0.0;
+        final status = data['tripStatus'] as String?;
+        final createdBy = data['createdBy'] as String?;
+        return lng >= minLng &&
+            lng <= maxLng &&
+            status != TripStatus.deleted.name &&
+            createdBy != GlobalVariables.loggedInUser.value?.uid;
+      }).toList();
+
+      final futures = filteredDocs.map((e) async {
+        final TripModel tripModel = TripModel.fromMap(e.data());
+        tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
+        tripModel.activities = await getTripActivities(tripId: tripModel.id);
+        if (tripModel.joinedUsers != null && tripModel.joinedUsers!.isNotEmpty) {
+          tripModel.joindUsersList = await AuthService.getTripUsers(
+            userIds: tripModel.joinedUsers ?? [],
+          );
+        } else {
+          tripModel.joindUsersList = [];
+        }
+        tripModel.createdByUser = await AuthService.getUserPublicProfile(
+          userId: tripModel.createdBy,
+        );
+        return tripModel;
+      }).toList();
+
+      return await Future.wait(futures);
     } catch (e) {
       kLogging('error $e');
       showCustomSnackBar(content: e.toString());
@@ -411,7 +522,80 @@ class FirebaseTripService {
             return tripModel;
           }).toList();
       return await Future.wait(future);
-    } catch (e) {}
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return [];
+  }
+
+  static Future<List<TripModel>> getRecommendedTrips() async {
+    try {
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return [];
+
+      // Gather continents from trips the user has joined and favourited
+      final Set<String> continents = {};
+
+      final joinedSnap = await firestore
+          .collection(kTripTable)
+          .where('joinedUsers', arrayContains: uid)
+          .get();
+      for (final doc in joinedSnap.docs) {
+        final c = doc.data()['continent'] as String?;
+        if (c != null && c.isNotEmpty) continents.add(c);
+      }
+
+      final favouriteIds =
+          GlobalVariables.loggedInUser.value?.favouriteTrips ?? [];
+      if (favouriteIds.isNotEmpty) {
+        final favSnap = await firestore
+            .collection(kTripTable)
+            .where(FieldPath.documentId,
+                whereIn: favouriteIds.take(10).toList())
+            .get();
+        for (final doc in favSnap.docs) {
+          final c = doc.data()['continent'] as String?;
+          if (c != null && c.isNotEmpty) continents.add(c);
+        }
+      }
+
+      // No history — fall back to popular trips
+      if (continents.isEmpty) return getPopularTrips();
+
+      final snap = await firestore
+          .collection(kTripTable)
+          .where('continent', whereIn: continents.toList())
+          .get();
+
+      final filteredDocs = snap.docs.where((doc) {
+        final data = doc.data();
+        return data['createdBy'] != uid &&
+            data['tripStatus'] != TripStatus.deleted.name;
+      }).toList();
+
+      final futures = filteredDocs.map((e) async {
+        final TripModel tripModel = TripModel.fromMap(e.data());
+        tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
+        tripModel.activities = await getTripActivities(tripId: tripModel.id);
+        if (tripModel.joinedUsers != null &&
+            tripModel.joinedUsers!.isNotEmpty) {
+          tripModel.joindUsersList = await AuthService.getTripUsers(
+            userIds: tripModel.joinedUsers ?? [],
+          );
+        } else {
+          tripModel.joindUsersList = [];
+        }
+        tripModel.createdByUser = await AuthService.getUserPublicProfile(
+          userId: tripModel.createdBy,
+        );
+        return tripModel;
+      }).toList();
+
+      return await Future.wait(futures);
+    } catch (e) {
+      kLogging('error $e');
+      showCustomSnackBar(content: e.toString());
+    }
     return [];
   }
 
@@ -467,7 +651,7 @@ class FirebaseTripService {
   /// [email] is the email of the user
   /// [return] list of users
   /// [logs] logs if there is an error
-  static Future<List<PublicUserModel>> searchUser({required query}) async {
+  static Future<List<PublicUserModel>> searchUser({required String query}) async {
     try {
       final result = await functions.httpsCallable(kSearchUsersFunction).call({
         'query': query,
