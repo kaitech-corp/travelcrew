@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:travel_crew/models/search_model.dart';
 import 'package:travel_crew/services/session_services.dart';
-import 'package:travel_crew/utils/app_strings.dart';
+import 'package:travel_crew/utils/app_strings_keys.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/utils/common_code.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';

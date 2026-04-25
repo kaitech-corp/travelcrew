@@ -21,23 +21,26 @@ class AddActivity extends GetView<SpecificTripViewController> {
   bool firstTime = true;
   @override
   Widget build(BuildContext context) {
+    final args = Get.arguments as Map<String, dynamic>? ?? {};
+    final bool toAdd = args['toAdd'] as bool? ?? true;
+    final ActivityModel? activity =
+        toAdd ? null : args['activity'] as ActivityModel?;
+
     if (firstTime) {
       firstTime = false;
-      if (!Get.arguments['toAdd']) {
-        final ActivityModel activityModel =
-            Get.arguments['activity'] as ActivityModel;
+      if (!toAdd && activity != null) {
         Future.microtask(() {
-          controller.activityNameController.text = activityModel.title;
-          controller.locationController.text = activityModel.location ?? '';
-          controller.activityNoteController.text = activityModel.description;
-          controller.activityStartTime.value = activityModel.startDateTime;
-          controller.activityEndTime.value = activityModel.endDateTime;
+          controller.activityNameController.text = activity.title;
+          controller.locationController.text = activity.location ?? '';
+          controller.activityNoteController.text = activity.description;
+          controller.activityStartTime.value = activity.startDateTime;
+          controller.activityEndTime.value = activity.endDateTime;
         });
       }
     }
     return CustomScaffold(
       className: runtimeType.toString(),
-      screenName: '${Get.arguments['toAdd'] ? 'Add' : 'Update'} Activity',
+      screenName: '${toAdd ? 'Add' : 'Update'} Activity',
       centerTitle: true,
       scaffoldKey: controller.addActivityScaffoldKey,
       body: SingleChildScrollView(
@@ -49,7 +52,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
               'Activity Name',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93.sp,
+                fontSize: AppStyles.fontSize20,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -70,7 +73,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
               'Location',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93.sp,
+                fontSize: AppStyles.fontSize20,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -100,7 +103,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
               'Date & Time',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -183,7 +186,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
-                          fontSize: 13.95,
+                          fontSize: AppStyles.fontSize13,
                           fontWeight: FontWeight.w500,
                           height: 1.25,
                         ),
@@ -205,7 +208,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
               'Activity Notes',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -220,7 +223,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
             SizedBox(height: 20.h),
             CustomElevatedButton(
               width: context.width,
-              title: Get.arguments['toAdd'] ? 'Add' : 'Update',
+              title: toAdd ? 'Add' : 'Update',
               onPressed: () {
                 controller.addActivity();
               },

@@ -12,10 +12,11 @@ import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
+import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
+import 'package:travel_crew/views/custom_widgets/custom_text_field.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/components/transport_tab.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
 
-import '../../../custom_widgets/custom_elevated_button.dart';
 import '../../../custom_widgets/custom_scaffold.dart';
 import '../../../messages/users/controller/users_controller.dart';
 import '../../../onboarding/widgets/page_indicator.dart';
@@ -94,17 +95,38 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                 ),
                                 ActivitiesTab(controller: controller),
                                 
-                                _buildSectionHeader('Flights'),
+                                _buildSectionHeader(
+                                  'Flights',
+                                  onAdd: () => _showAddFlightSheet(context),
+                                ),
                                 TransportTab(controller: controller),
-                                
-                                _buildSectionHeader('Lodging'),
+
+                                _buildSectionHeader(
+                                  'Lodging',
+                                  onAdd: () => Get.toNamed(
+                                    kCreateTripScreenRoute,
+                                    arguments: controller.tripModel.value,
+                                  ),
+                                ),
                                 LodgingTab(controller: controller),
-                                
-                                _buildSectionHeader('Transport'),
-                                // Add additional transport if any, or placeholder
-                                const Text('No additional transport info'),
-                                
-                                _buildSectionHeader('Expenses'),
+
+                                _buildSectionHeader(
+                                  'Expenses',
+                                  onAdd: () => Get.toNamed(
+                                    kAddExpenseScreenRoute,
+                                    arguments: {
+                                      'tripId': controller.tripModel.value?.id,
+                                      'trip': controller.tripModel.value,
+                                      'tripMembers':
+                                          controller.tripModel.value?.joinedUsers ?? [],
+                                      'onAdd': (expense) {
+                                        controller.tripModel.value?.expenses ??= [];
+                                        controller.tripModel.value?.expenses?.add(expense);
+                                        controller.tripModel.refresh();
+                                      },
+                                    },
+                                  ),
+                                ),
                                 _buildExpenseSummary(),
                                 SizedBox(height: 12.h),
                                 Obx(() => _buildSettlementCard(context)),
@@ -420,7 +442,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                   onPressed: () => controller.scrollToSection(section),
                   backgroundColor: AppColors.kLightGreyColor,
                   labelStyle: AppStyles.labelTextStyle().copyWith(
-                    fontSize: 12,
+                    fontSize: AppStyles.fontSize12,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -442,7 +464,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
               title,
               style: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFF0F0F0F),
-                fontSize: 18,
+                fontSize: AppStyles.fontSize18,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -468,7 +490,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
           controller.tripModel.value?.title ?? '',
           style: AppStyles.labelTextStyle().copyWith(
             color: const Color(0xFF0F0F0F),
-            fontSize: 22,
+            fontSize: AppStyles.fontSize22,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -481,7 +503,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
               controller.tripModel.value?.country ?? '',
               style: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFF1D7FC2),
-                fontSize: 15,
+                fontSize: AppStyles.fontSize15,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -501,7 +523,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
           controller.tripModel.value?.tripLocation ?? '',
           style: AppStyles.labelTextStyle().copyWith(
             color: const Color(0xFF77818D),
-            fontSize: 15,
+            fontSize: AppStyles.fontSize15,
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -543,7 +565,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
           title,
           style: AppStyles.labelTextStyle().copyWith(
             color: const Color(0xFF0F0F0F),
-            fontSize: 15,
+            fontSize: AppStyles.fontSize15,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -556,7 +578,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
               DateFormat('dd MMM yyyy').format(date ?? DateTime.now()),
               style: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFFA4ABB3),
-                fontSize: 12,
+                fontSize: AppStyles.fontSize12,
               ),
             ),
           ],
@@ -574,14 +596,14 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
               controller.tripModel.value?.joinedUsers?.length.toString() ?? '0',
               style: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFF0F0F0F),
-                fontSize: 22,
+                fontSize: AppStyles.fontSize22,
                 fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(width: 5.w),
             Text(
               'People Going',
-              style: AppStyles.labelTextStyle().copyWith(fontSize: 13),
+              style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize13),
             ),
           ],
         ),
@@ -657,6 +679,141 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  void _showAddFlightSheet(BuildContext context) {
+    controller.clearFlightForm();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (sheetContext) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'Add Your Flight',
+                style: AppStyles.labelTextStyle().copyWith(
+                  fontSize: AppStyles.fontSize18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              CustomTextField(
+                controller: controller.flightAirlineController,
+                hintText: 'Airline name',
+              ),
+              SizedBox(height: 12.h),
+              CustomTextField(
+                controller: controller.flightNumberController,
+                hintText: 'Flight number',
+              ),
+              SizedBox(height: 12.h),
+              CustomTextField(
+                controller: controller.flightDepartureAirportController,
+                hintText: 'Departure airport',
+              ),
+              SizedBox(height: 12.h),
+              CustomTextField(
+                controller: controller.flightArrivalAirportController,
+                hintText: 'Arrival airport',
+              ),
+              SizedBox(height: 12.h),
+              Obx(
+                () => _buildDateTile(
+                  label: controller.flightDepartureDate.value == null
+                      ? 'Departure date'
+                      : 'Departure: ${DateFormat('MMM dd, yyyy').format(controller.flightDepartureDate.value!)}',
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2030),
+                    );
+                    if (picked != null) {
+                      controller.flightDepartureDate.value = picked;
+                    }
+                  },
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Obx(
+                () => _buildDateTile(
+                  label: controller.flightArrivalDate.value == null
+                      ? 'Arrival date'
+                      : 'Arrival: ${DateFormat('MMM dd, yyyy').format(controller.flightArrivalDate.value!)}',
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2030),
+                    );
+                    if (picked != null) {
+                      controller.flightArrivalDate.value = picked;
+                    }
+                  },
+                ),
+              ),
+              SizedBox(height: 20.h),
+              CustomElevatedButton(
+                width: double.infinity,
+                title: 'Add Flight',
+                onPressed: () => controller.addFlight(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateTile({required String label, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: AppColors.kLightGreyColor,
+          borderRadius: BorderRadius.circular(27.r),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: AppStyles.labelTextStyle().copyWith(
+                  fontSize: AppStyles.fontSize13,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            Image.asset(AppImages.kCalendarIcon, scale: 5, color: Colors.black54),
+          ],
+        ),
       ),
     );
   }
@@ -783,7 +940,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                       'Mark Paid',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
-                        fontSize: 11,
+                        fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -846,7 +1003,7 @@ class MoreVertDialogueWidget extends StatelessWidget {
                 title,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.white,
-                  fontSize: 16.70.sp,
+                  fontSize: AppStyles.fontSize16,
                   fontWeight: FontWeight.w600,
                   height: 1.33.h,
                 ),

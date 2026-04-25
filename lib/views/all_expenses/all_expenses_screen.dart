@@ -34,7 +34,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                         itemCount: 3,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (_, __) => const ExpenseTripCardShimmer(),
+                        itemBuilder: (_, _) => const ExpenseTripCardShimmer(),
                       )
                       : controller.trips.isEmpty
                       ? const Center(child: Text('No expenses found'))
@@ -82,7 +82,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                     labelText: trip.title ?? 'N/A',
 
                     style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 23.95,
+                      fontSize: AppStyles.fontSize24,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -91,7 +91,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                       TextWidget(
                         labelText: 'Total Expense',
                         style: AppStyles.labelTextStyle().copyWith(
-                          fontSize: 10.64.sp,
+                          fontSize: AppStyles.fontSize12,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -100,7 +100,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                         labelText:
                             '\$${trip.expenses!.fold(0.0, (previousValue, element) => (previousValue ?? 0) + element.amount)}',
                         style: AppStyles.labelTextStyle().copyWith(
-                          fontSize: 20,
+                          fontSize: AppStyles.fontSize20,
                           fontWeight: FontWeight.w600,
                         ),
 
@@ -119,7 +119,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                           TextWidget(
                             labelText: 'No participants',
                             style: AppStyles.labelTextStyle().copyWith(
-                              fontSize: 10.64.sp,
+                              fontSize: AppStyles.fontSize12,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -131,7 +131,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                                 (user) => Padding(
                                   padding: EdgeInsets.only(right: 4.w),
                                   child: const AnyImageView(
-                                    url:'', //user.profileImage ?? '',
+                                    url: '', //user.profileImage ?? '',
                                     isCircle: true,
                                   ),
                                 ),
@@ -148,7 +148,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                               child: Text(
                                 '+${trip.joindUsersList!.length - 4}',
                                 style: AppStyles.labelTextStyle().copyWith(
-                                  fontSize: AppStyles.fontSize10,
+                                  fontSize: AppStyles.fontSize12,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),

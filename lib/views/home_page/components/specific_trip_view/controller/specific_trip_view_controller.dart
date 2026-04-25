@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/models/user_flight_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/expense_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
@@ -40,9 +41,16 @@ class SpecificTripViewController extends GetxController
     'Activities': GlobalKey(),
     'Flights': GlobalKey(),
     'Lodging': GlobalKey(),
-    'Transport': GlobalKey(),
     'Expenses': GlobalKey(),
   };
+
+  // Flight form state
+  final TextEditingController flightAirlineController = TextEditingController();
+  final TextEditingController flightNumberController = TextEditingController();
+  final TextEditingController flightDepartureAirportController = TextEditingController();
+  final TextEditingController flightArrivalAirportController = TextEditingController();
+  final Rxn<DateTime> flightDepartureDate = Rxn<DateTime>();
+  final Rxn<DateTime> flightArrivalDate = Rxn<DateTime>();
 
   List<Settlement> get optimalSettlements => tripModel.value != null
       ? ExpenseService().computeOptimalSettlements(tripModel.value!)
@@ -79,9 +87,98 @@ class SpecificTripViewController extends GetxController
   }
 
   @override
+  void onInit() {
+    super.onInit();
+    ever(tripModel, (TripModel? trip) {
+      if (trip != null && trip.flights == null) {
+        loadFlights();
+      }
+    });
+  }
+
+  @override
   void onClose() {
     scrollController.dispose();
+    flightAirlineController.dispose();
+    flightNumberController.dispose();
+    flightDepartureAirportController.dispose();
+    flightArrivalAirportController.dispose();
     super.onClose();
+  }
+
+  void clearFlightForm() {
+    flightAirlineController.clear();
+    flightNumberController.clear();
+    flightDepartureAirportController.clear();
+    flightArrivalAirportController.clear();
+    flightDepartureDate.value = null;
+    flightArrivalDate.value = null;
+  }
+
+  Future<void> loadFlights() async {
+    final tripId = tripModel.value?.id;
+    if (tripId == null) return;
+    final flights = await FirebaseTripService.getTripFlights(tripId: tripId);
+    tripModel.value?.flights = flights;
+    tripModel.refresh();
+  }
+
+  Future<void> addFlight() async {
+    final tripId = tripModel.value?.id;
+    if (tripId == null) {
+      showCustomSnackBar(content: 'Trip not found');
+      return;
+    }
+    try {
+      GlobalVariables.showLoader.value = true;
+      final flight = UserFlightModel(
+        id: const Uuid().v6(),
+        tripId: tripId,
+        userId: GlobalVariables.currentUid,
+        displayName: GlobalVariables.loggedInUser.value?.displayName,
+        airlineName: flightAirlineController.text.trim().isEmpty
+            ? null
+            : flightAirlineController.text.trim(),
+        flightNumber: flightNumberController.text.trim().isEmpty
+            ? null
+            : flightNumberController.text.trim(),
+        departureAirport: flightDepartureAirportController.text.trim().isEmpty
+            ? null
+            : flightDepartureAirportController.text.trim(),
+        arrivalAirport: flightArrivalAirportController.text.trim().isEmpty
+            ? null
+            : flightArrivalAirportController.text.trim(),
+        departureDate: flightDepartureDate.value,
+        arrivalDate: flightArrivalDate.value,
+      );
+      final success = await FirebaseTripService.addFlight(flight: flight);
+      if (success) {
+        tripModel.value?.flights ??= [];
+        tripModel.value?.flights?.add(flight);
+        tripModel.refresh();
+        Get.back();
+        showCustomSnackBar(content: 'Flight added');
+      }
+    } catch (e) {
+      showCustomSnackBar(content: 'Failed to add flight');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  Future<void> deleteFlight(String id) async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      final success = await FirebaseTripService.deleteFlight(id: id);
+      if (success) {
+        tripModel.value?.flights?.removeWhere((f) => f.id == id);
+        tripModel.refresh();
+      }
+    } catch (e) {
+      showCustomSnackBar(content: 'Failed to delete flight');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
   }
 
   TextEditingController activityNoteController = TextEditingController(),
@@ -156,27 +253,31 @@ class SpecificTripViewController extends GetxController
         );
         return;
       }
+      final args = Get.arguments as Map<String, dynamic>? ?? {};
+      final bool toAdd = args['toAdd'] as bool? ?? true;
+      final String tripId = args['tripId'] as String? ?? tripModel.value?.id ?? '';
+      if (tripId.isEmpty) {
+        showCustomSnackBar(content: 'Trip not found');
+        return;
+      }
+      final ActivityModel? existingActivity = args['activity'] as ActivityModel?;
       GlobalVariables.showLoader.value = true;
       final ActivityModel activityModel = ActivityModel(
-        id: Get.arguments['toAdd'] ? const Uuid().v6() : Get.arguments['activity'].id as String,
-        tripId: Get.arguments['tripId'] as String,
+        id: toAdd ? const Uuid().v6() : (existingActivity?.id ?? const Uuid().v6()),
+        tripId: tripId,
         title: activityNameController.text,
         location: locationController.text,
         startDateTime: activityStartTime.value ?? DateTime.now(),
         endDateTime: activityEndTime.value ?? DateTime.now(),
         description: activityNoteController.text,
-        likedBy:
-            Get.arguments['toAdd'] ? [] : Get.arguments['activity'].likedBy as List<String>,
-        likesCount:
-            Get.arguments['toAdd'] ? 0 : Get.arguments['activity'].likesCount as int,
+        likedBy: toAdd ? [] : (existingActivity?.likedBy ?? []),
+        likesCount: toAdd ? 0 : (existingActivity?.likesCount ?? 0),
       );
-      if (Get.arguments['toAdd']) {
-        await FirebaseTripService.addActivity(activity: activityModel).then((
-          value,
-        ) {
+      if (toAdd) {
+        await FirebaseTripService.addActivity(activity: activityModel).then((value) {
           GlobalVariables.showLoader.value = false;
           if (value) {
-            Get.arguments['onAdded']?.call(activityModel);
+            (args['onAdded'] as Function?)?.call(activityModel);
             Get.back();
             showCustomSnackBar(content: 'Activity added successfully');
           } else {
@@ -184,12 +285,10 @@ class SpecificTripViewController extends GetxController
           }
         });
       } else {
-        await FirebaseTripService.updateActivity(activity: activityModel).then((
-          value,
-        ) {
+        await FirebaseTripService.updateActivity(activity: activityModel).then((value) {
           GlobalVariables.showLoader.value = false;
           if (value) {
-            Get.arguments['onAdded']?.call(activityModel);
+            (args['onAdded'] as Function?)?.call(activityModel);
             Get.back();
             showCustomSnackBar(content: 'Activity updated successfully');
           } else {

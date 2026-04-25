@@ -49,6 +49,7 @@ class HomePageController extends GetxController
   RxList<TripModel> otherTrips = <TripModel>[].obs;
   RxList<TripModel> otherFilteredTrips = <TripModel>[].obs;
   RxList<TripModel> nearbyTrips = <TripModel>[].obs;
+  RxList<TripModel> recommendedTrips = <TripModel>[].obs;
   Future<void> getTrips() async {
     try {
       AppLogger.debug('Starting to fetch trips');
@@ -109,28 +110,24 @@ class HomePageController extends GetxController
 
   Future<void> getByLocation() async {
     try {
-      otherTrips.clear();
-      otherFilteredTrips.clear();
+      nearbyTrips.clear();
       isLoadingOtherTrips.value = true;
-      await GeoServices.determinePosition().then((value) async {
-        await FirebaseTripService.getNearbyTrips(
-          latitude: value.latitude,
-          longitude: value.longitude,
-          radius: 100,
-        ).then((value) {
-          isLoadingOtherTrips.value = false;
-          otherTrips.value = value;
-          otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
-          otherFilteredTrips.value = value.toList();
-        });
-      });
+      final position = await GeoServices.determinePosition();
+      final trips = await FirebaseTripService.getNearbyTrips(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        radius: 100,
+      );
+      trips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      nearbyTrips.value = trips;
     } catch (e) {
       if (kDebugMode) {
         print('Error getting trips by location: $e');
       }
       showCustomSnackBar(content: e.toString());
+    } finally {
+      isLoadingOtherTrips.value = false;
     }
-    isLoadingOtherTrips.value = false;
   }
 
   void applyOtherTripsFilter(String filter) {
@@ -159,5 +156,19 @@ class HomePageController extends GetxController
     }
   }
 
-  void getRecommendedTrips() {}
+  Future<void> getRecommendedTrips() async {
+    try {
+      recommendedTrips.clear();
+      isLoadingOtherTrips.value = true;
+      final trips = await FirebaseTripService.getRecommendedTrips();
+      trips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      recommendedTrips.value = trips;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting recommended trips: $e');
+      }
+    } finally {
+      isLoadingOtherTrips.value = false;
+    }
+  }
 }
