@@ -114,6 +114,8 @@ class ChatMessage {
   }
 }
 
+// Values are persisted by name, so keep the legacy enum casing.
+// ignore: constant_identifier_names
 enum MessageType { Text, Audio, Audio_Call, Video_call, Image }
 
 enum MessageStatus {
