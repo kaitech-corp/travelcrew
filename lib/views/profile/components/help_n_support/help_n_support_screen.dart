@@ -25,14 +25,6 @@ class HelpNSupportScreen extends GetView<HelpNSupportController> {
             title: l10n.safetyAndSecurity,
             description: l10n.safetyAndSecurityDescription,
           ),
-          HelpSupportExpansionTile(
-            title: l10n.returnsAndRefunds,
-            description: l10n.returnsAndRefundsDescription1,
-          ),
-          HelpSupportExpansionTile(
-            title: l10n.returnsAndRefunds,
-            description: l10n.returnsAndRefundsDescription2,
-          ),
         ],
       ),
     );

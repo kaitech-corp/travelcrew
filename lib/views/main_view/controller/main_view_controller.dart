@@ -11,6 +11,7 @@ class MainViewController extends GetxController {
   List<Widget> pages = [
     const HomePageScreen(),
     const MyTripsScreen(),
+    const SizedBox(), // placeholder for create-trip plus button (index 2)
     const InboxScreen(),
     const ProfileScreen(),
   ];

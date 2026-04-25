@@ -20,6 +20,7 @@ class TripsWidget extends StatelessWidget {
     this.memberAvatars = const [AppImages.kMember1Icon, AppImages.kMember2Icon],
     this.additionalMembers = 4,
     this.daysToGo = 7,
+    this.tripTimingLabel,
     this.onTap,
   });
   final String destination;
@@ -32,6 +33,7 @@ class TripsWidget extends StatelessWidget {
   final List<String> memberAvatars;
   final int additionalMembers;
   final int daysToGo;
+  final String? tripTimingLabel;
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
@@ -60,9 +62,7 @@ class TripsWidget extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24.r),
-          child: Row(
-            children: [_buildTripImage(), _buildTripDetails()],
-          ),
+          child: Row(children: [_buildTripImage(), _buildTripDetails()]),
         ),
       ),
     );
@@ -99,7 +99,7 @@ class TripsWidget extends StatelessWidget {
                 child: Text(
                   country,
                   style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: 11.84,
+                    fontSize: AppStyles.fontSize12,
                     fontWeight: FontWeight.w500,
                     height: 1.29,
                   ),
@@ -116,7 +116,7 @@ class TripsWidget extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: 20.29,
+                    fontSize: AppStyles.fontSize20,
                     fontWeight: FontWeight.w600,
                     height: 1.33,
                   ),
@@ -134,9 +134,9 @@ class TripsWidget extends StatelessWidget {
               Image.asset(AppImages.kPlaneIcon, scale: 4),
               SizedBox(width: 4.w),
               Text(
-                'in ${daysToGo}d.',
+                tripTimingLabel ?? 'in ${daysToGo}d.',
                 style: AppStyles.labelTextStyle().copyWith(
-                  fontSize: 10.99,
+                  fontSize: AppStyles.fontSize12,
                   fontWeight: FontWeight.w500,
                   height: 1.23,
                 ),
@@ -158,7 +158,7 @@ class TripsWidget extends StatelessWidget {
                   Text(
                     '$startDate - $endDate',
                     style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 9.98,
+                      fontSize: AppStyles.fontSize12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -226,7 +226,7 @@ Widget buildMemberAvatars({
                   '+$additionalMembers',
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.white,
-                    fontSize: AppStyles.fontSize9,
+                    fontSize: AppStyles.fontSize12,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

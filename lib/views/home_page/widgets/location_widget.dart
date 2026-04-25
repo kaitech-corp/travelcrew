@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 
 import '../../../utils/app_colors.dart';
@@ -52,7 +54,7 @@ class LocationWidget extends StatelessWidget {
                       tripModel.title ?? '',
                       style: GoogleFonts.urbanist().copyWith(
                         color: Colors.white,
-                        fontSize: 25.48,
+                        fontSize: AppStyles.fontSize24,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w500,
                       ),
@@ -72,7 +74,7 @@ class LocationWidget extends StatelessWidget {
                           tripModel.country,
                           style: GoogleFonts.urbanist().copyWith(
                             color: Colors.white,
-                            fontSize: 12.74,
+                            fontSize: AppStyles.fontSize12,
                             fontWeight: FontWeight.w500,
                             height: 1.29,
                           ),
@@ -87,7 +89,7 @@ class LocationWidget extends StatelessWidget {
                               '4.8',
                               style: AppStyles.labelTextStyle().copyWith(
                                 color: Colors.white,
-                                fontSize: 12.74,
+                                fontSize: AppStyles.fontSize12,
                                 fontWeight: FontWeight.w500,
                                 height: 1.29,
                               ),
@@ -107,16 +109,25 @@ class LocationWidget extends StatelessWidget {
             child: GestureDetector(
               onTap: () async {
                 try {
+                  final userId = GlobalVariables.loggedInUser.value?.uid;
+                  if (userId == null) {
+                    showCustomSnackBar(content: 'Please login to favorite trips');
+                    return;
+                  }
+                  
                   GlobalVariables.addingToFavourites.value = tripModel.id;
-                  // AuthService.addToFavourites(
-                  //   id: tripModel.id,
-                  //   isFavourites:
-                  //       GlobalVariables.loggedInUser.value?.favouriteTrips
-                  //           ?.contains(tripModel.id) ??
-                  //       false,
-                  // ).then((v) {
-                  //   GlobalVariables.addingToFavourites.value = '';
-                  // });
+                  
+                  final isCurrentlyFavorite = GlobalVariables.loggedInUser.value?.favouriteTrips
+                          .contains(tripModel.id) ??
+                      false;
+
+                  await FirebaseTripService.toggleTripFavorite(
+                    tripId: tripModel.id,
+                    userId: userId,
+                    isFavorite: isCurrentlyFavorite,
+                  );
+                  
+                  GlobalVariables.addingToFavourites.value = '';
                 } catch (e) {
                   GlobalVariables.addingToFavourites.value = '';
                 }
@@ -133,22 +144,22 @@ class LocationWidget extends StatelessWidget {
                       GlobalVariables.addingToFavourites.value == tripModel.id
                           ? showLoaderWhenAddingToFavourites()
                           : Icon(
-                            // GlobalVariables.loggedInUser.value?.favouriteTrips
-                            //             ?.contains(tripModel.id) ??
-                            //         false
-                            //     ? 
-                                Icons.star_rounded,
-                                // : Icons.star_border,
+                               GlobalVariables.loggedInUser.value?.favouriteTrips
+                                            .contains(tripModel.id) ??
+                                        false
+                                ? 
+                                Icons.star_rounded
+                                : Icons.star_border,
                             size: 25.sp,
                             color:
-                                // GlobalVariables
-                                //             .loggedInUser
-                                //             .value
-                                //             ?.favouriteTrips
-                                //             ?.contains(tripModel.id) ??
-                                //         false
-                                //     ? AppColors.productBgColor
-                                //     :
+                                GlobalVariables
+                                            .loggedInUser
+                                            .value
+                                            ?.favouriteTrips
+                                            .contains(tripModel.id) ??
+                                        false
+                                    ? AppColors.productBgColor
+                                    :
                                      Colors.white,
                           ),
                 ),

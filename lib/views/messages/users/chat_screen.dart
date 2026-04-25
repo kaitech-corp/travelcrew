@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_crew/models/chat_module/chat_message.dart';
+import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
@@ -58,7 +59,7 @@ class MessagesScreen extends GetView<UsersController> {
                       overflow: TextOverflow.ellipsis,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFF0B0B0B),
-                        fontSize: 16,
+                        fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w600,
                         height: 1.82,
                       ),
@@ -74,9 +75,9 @@ class MessagesScreen extends GetView<UsersController> {
                           labelText:
                               ' ${DateFormat('dd MMM').format(controller.currentTrip.value?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.currentTrip.value?.tripEndDate ?? DateTime.now())}',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Color(0xFF666666),
-                            fontSize: 10.77,
+                            fontSize: AppStyles.fontSize12,
 
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.30,
@@ -118,48 +119,49 @@ class MessagesScreen extends GetView<UsersController> {
                 bottomLeft: Radius.circular(25.r),
                 bottomRight: Radius.circular(25.r),
               ),
-              child: Obx(
-                () {
-                  if (controller.isLoadingChats.isTrue &&
-                      (controller.chatRoom.value == null ||
-                          controller.messages.isEmpty)) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+              child: Obx(() {
+                if (controller.isLoadingChats.isTrue &&
+                    (controller.chatRoom.value == null ||
+                        controller.messages.isEmpty)) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  if (controller.chatRoom.value == null) {
-                    return const Center(child: Text('No messages yet.'));
-                  }
+                if (controller.chatRoom.value == null) {
+                  return const Center(child: Text('No messages yet.'));
+                }
 
-                  return ListView.separated(
-                    controller: controller.scrollController,
-                    padding: EdgeInsets.only(top: 50.h),
-                    shrinkWrap: true,
-                    itemBuilder: (c, index) {
-                      if (index == controller.messages.length) {
-                        return  controller.isFetchingMore
-                            ? const Center(child: CircularProgressIndicator())
-                            : const SizedBox.shrink();
-                      }
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: index == 0 ? 100.h : 0,
-                        ),
-                        child: MessageWidget(
-                          userModel: controller.chatRoom.value!.users.firstWhere(
-                            (u) =>
-                                u.id ==
-                                controller
-                                    .messages[index].createdBy,
+                return ListView.separated(
+                  controller: controller.scrollController,
+                  padding: EdgeInsets.only(top: 50.h),
+                  shrinkWrap: true,
+                  itemBuilder: (c, index) {
+                    if (index == controller.messages.length) {
+                      return controller.isFetchingMore
+                          ? const Center(child: CircularProgressIndicator())
+                          : const SizedBox.shrink();
+                    }
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: index == 0 ? 100.h : 0),
+                      child: MessageWidget(
+                        userModel: controller.chatRoom.value!.users.firstWhere(
+                          (u) => u.id == controller.messages[index].createdBy,
+                          orElse: () => ChatUser(
+                            id: controller.messages[index].createdBy,
+                            unreadedMessages: 0,
+                            name: 'Unknown',
+                            profileImage: '',
+                            isOnline: false,
+                            isTyping: false,
                           ),
-                          message: controller.messages[index],
                         ),
-                      );
-                    },
-                    separatorBuilder: (c, index) => SizedBox(height: 43.h),
-                    itemCount: (controller.messages.length) + 1,
-                  );
-                },
-              ),
+                        message: controller.messages[index],
+                      ),
+                    );
+                  },
+                  separatorBuilder: (c, index) => SizedBox(height: 43.h),
+                  itemCount: (controller.messages.length) + 1,
+                );
+              }),
             ),
             Align(
               alignment: Alignment.topCenter,
@@ -188,7 +190,7 @@ class MessagesScreen extends GetView<UsersController> {
                           textAlign: TextAlign.center,
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.white,
-                            fontSize: AppStyles.fontSize10,
+                            fontSize: AppStyles.fontSize12,
                             fontWeight: FontWeight.w400,
                             letterSpacing: 0.30,
                           ),
@@ -247,7 +249,7 @@ class MessagesScreen extends GetView<UsersController> {
                                 hintText: 'Say something',
                                 hintStyle: AppStyles.labelTextStyle().copyWith(
                                   color: const Color(0xFF6B7280),
-                                  fontSize: 12,
+                                  fontSize: AppStyles.fontSize12,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 0.36,
                                 ),
@@ -284,11 +286,10 @@ class MessagesScreen extends GetView<UsersController> {
                                             data: controller.tecMessage.text,
                                           ),
                                         );
-                                         AppLogger.debug(
+                                        AppLogger.debug(
                                           'Message sent: ${controller.tecMessage.text}',
                                         );
                                         controller.tecMessage.clear();
-                                       
                                       },
                                     ),
                                   ),

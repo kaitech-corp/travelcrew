@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/main.dart';
+import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -36,7 +37,11 @@ class MyTripsScreen extends GetView<MyTripsController> {
           onTap: () => Get.toNamed(kImportTripScreenRoute),
           child: Padding(
             padding: EdgeInsets.only(right: 8.w),
-            child: const Icon(Icons.auto_awesome_rounded, size: 22, color: Colors.black87),
+            child: const Icon(
+              Icons.auto_awesome_rounded,
+              size: 22,
+              color: Colors.black87,
+            ),
           ),
         ),
         GestureDetector(
@@ -65,8 +70,9 @@ class MyTripsScreen extends GetView<MyTripsController> {
             ),
             Obx(
               () =>
-                  controller.selectedTabIndex.value != -1 // Show search for all tabs if needed, but the original only showed for "Complete"
-                  ? Column(
+                  controller.selectedTabIndex.value !=
+                          -1 // Show search for all tabs if needed, but the original only showed for "Complete"
+                      ? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(height: 20.h),
@@ -161,7 +167,12 @@ class MyTripsScreen extends GetView<MyTripsController> {
                                   images:
                                       controller.filteredTrips[index].images,
                                   daysToGo:
-                                      controller.filteredTrips[index].daysToGo,
+                                      controller
+                                          .filteredTrips[index]
+                                          .computedDaysToGo,
+                                  tripTimingLabel: _tripTimingLabel(
+                                    controller.filteredTrips[index],
+                                  ),
                                   destination:
                                       controller
                                           .filteredTrips[index]
@@ -191,14 +202,33 @@ class MyTripsScreen extends GetView<MyTripsController> {
     );
   }
 
+  String _tripTimingLabel(TripModel trip) {
+    final days = trip.computedDaysToGo;
+    if (days > 0) {
+      return 'in ${days}d.';
+    }
+    if (days == 0) {
+      return 'Today';
+    }
+
+    final end = trip.tripEndDate ?? trip.effectiveStartDate;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final endDate = DateTime(end.year, end.month, end.day);
+
+    if (!endDate.isBefore(today)) {
+      return 'Active';
+    }
+
+    final daysAgo = today.difference(endDate).inDays;
+    return '${daysAgo}d. ago';
+  }
+
   Widget _buildTab(BuildContext context, int index, String label) {
     return GestureDetector(
       onTap: () => controller.changeTab(index),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15.0,
-          vertical: 9.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 9.0),
         decoration: ShapeDecoration(
           color:
               controller.selectedTabIndex.value == index
@@ -207,10 +237,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
           shape: RoundedRectangleBorder(
             side:
                 controller.selectedTabIndex.value == index
-                    ? const BorderSide(
-                      width: 0.80,
-                      color: Color(0xFF19A7EC),
-                    )
+                    ? const BorderSide(width: 0.80, color: Color(0xFF19A7EC))
                     : BorderSide.none,
             borderRadius: BorderRadius.circular(35),
           ),

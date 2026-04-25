@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
-import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/home_page/controller/home_page_controller.dart';
 import 'package:travel_crew/views/home_page/widgets/location_widget.dart';
-import 'package:travel_crew/views/home_page/widgets/trips_widget.dart';
 import '../../services/session_services.dart';
 import '../../utils/app_strings.dart';
 import '../../utils/app_styles.dart';
@@ -81,7 +78,7 @@ class HomePageScreen extends GetView<HomePageController> {
                       decoration: InputDecoration(
                         hintText: l10n.search,
                         hintStyle: AppStyles.labelTextStyle().copyWith(
-                          fontSize: 13.44,
+                          fontSize: AppStyles.fontSize13,
                           fontWeight: FontWeight.w400,
                           height: 1.40,
                           color: const Color(0xFF9C9FA3),
@@ -96,7 +93,7 @@ class HomePageScreen extends GetView<HomePageController> {
                         ),
                         contentPadding: EdgeInsets.zero,
                       ),
-                      style: AppStyles.labelTextStyle().copyWith(fontSize: 14),
+                      style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize14),
                     ),
                   ),
                   const Spacer(),
@@ -171,7 +168,7 @@ class HomePageScreen extends GetView<HomePageController> {
                                     } else if (index == 2) {
                                       controller.getByLocation();
                                     } else {
-                                      controller.getOtherTrips();
+                                      controller.getRecommendedTrips();
                                     }
                                   },
                                   child: Column(
@@ -188,7 +185,7 @@ class HomePageScreen extends GetView<HomePageController> {
                                                           index
                                                       ? const Color(0xFFF36D72)
                                                       : AppColors.kBlackColor,
-                                              fontSize: 14,
+                                              fontSize: AppStyles.fontSize14,
                                               fontWeight: FontWeight.w500,
                                             ),
                                       ),
@@ -244,11 +241,11 @@ class HomePageScreen extends GetView<HomePageController> {
                             ),
                             _buildTripsTab(
                               l10n.nearby,
-                              controller.otherFilteredTrips,
+                              controller.nearbyTrips,
                             ),
                             _buildTripsTab(
                               l10n.recommended,
-                              controller.otherFilteredTrips,
+                              controller.recommendedTrips,
                             ),
                           ],
                         )
