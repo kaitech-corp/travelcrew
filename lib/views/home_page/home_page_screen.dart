@@ -35,7 +35,7 @@ class HomePageScreen extends GetView<HomePageController> {
             url: GlobalVariables.loggedInUser.value?.profileImage ?? '',
             width: 50.w,
             padding: EdgeInsets.zero,
-            height: 50.h,
+            height: 50.w,
             isCircle: true,
           ),
         ),
