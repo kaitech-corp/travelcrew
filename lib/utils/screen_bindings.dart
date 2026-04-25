@@ -34,32 +34,29 @@ class ScreenBindings extends Bindings {
     Get.lazyPut(() => OnboardingController());
     Get.lazyPut(() => LoginController());
     Get.lazyPut(() => ForgotPasswordController());
-    Get.lazyPut(() => ProfileController());
-    Get.lazyPut(() => HelpNSupportController());
-    Get.lazyPut(() => GroupController());
+    // fenix: true keeps these alive / recreates them when used in the bottom nav
+    Get.lazyPut(() => ProfileController(), fenix: true);
+    Get.lazyPut(() => HelpNSupportController(), fenix: true);
+    Get.lazyPut(() => GroupController(), fenix: true);
     // Get.lazyPut(() => OtpController());
     Get.lazyPut(() => NewPasswordController());
-    Get.lazyPut(() => MainViewController());
-    Get.lazyPut(() => HomePageController());
-    Get.lazyPut(() => SpecificTripViewController());
+    Get.lazyPut(() => MainViewController(), fenix: true);
+    Get.lazyPut(() => HomePageController(), fenix: true);
+    Get.lazyPut(() => SpecificTripViewController(), fenix: true);
     Get.lazyPut(() => CreateTripController());
-    Get.lazyPut(() => NewPasswordController());
     Get.lazyPut(() => SignUpController());
-    Get.lazyPut(() => MyTripsController());
+    Get.lazyPut(() => MyTripsController(), fenix: true);
     Get.lazyPut(() => ChangePasswordController());
     Get.lazyPut(() => PrivacyPolicyController());
-    Get.lazyPut(() => AboutController());
+    Get.lazyPut(() => AboutController(), fenix: true);
     Get.lazyPut(() => AddExpenseController());
     Get.lazyPut(() => ExpenseController());
     Get.lazyPut(() => SettleUpController());
-    Get.lazyPut(() => MyTripsController());
-    Get.lazyPut(() => UsersController());
-    Get.lazyPut(() => AboutController());
-    Get.lazyPut(() => MyTripsController());
+    Get.lazyPut(() => UsersController(), fenix: true);
     Get.lazyPut(() => RangePickerController());
-    Get.lazyPut(() => NotificationController());
+    Get.lazyPut(() => NotificationController(), fenix: true);
     Get.lazyPut(() => AllExpensesController());
     Get.lazyPut(() => ImportTripController());
-    Get.lazyPut(() => ConnectionsController());
+    Get.lazyPut(() => ConnectionsController(), fenix: true);
   }
 }
