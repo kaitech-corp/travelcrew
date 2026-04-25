@@ -70,10 +70,10 @@ class FirebasePushNotificationApi {
       iOS: iOSPlatformChannelSpecifics,
     );
     flutterLocalNotificationsPlugin.show(
-      id,
-      title ?? 'Uploading File',
-      '${subTitle ?? ''} progress:$progress%',
-      platformChannelSpecifics,
+      id:id,
+      title:title ?? 'Uploading File',
+      body:'${subTitle ?? ''} progress:$progress%',
+      notificationDetails: platformChannelSpecifics, 
     );
   }
 
@@ -90,15 +90,15 @@ class FirebasePushNotificationApi {
       iOS: iOSPlatformChannelSpecifics,
     );
     flutterLocalNotificationsPlugin.show(
-      id,
-      'Upload complete',
-      'Your file has been uploaded successfully.',
-      platformChannelSpecifics,
+      id: id,
+      title:'Upload complete',
+      body:'Your file has been uploaded successfully.',
+      notificationDetails:  platformChannelSpecifics,
     );
 
     // Auto hide notification after 3 seconds
     Future.delayed(const Duration(seconds: 5), () async {
-      await flutterLocalNotificationsPlugin.cancel(id);
+      await flutterLocalNotificationsPlugin.cancel(id:id);
     });
   }
 
@@ -119,13 +119,13 @@ class FirebasePushNotificationApi {
       if (notification == null) return;
 
       await flutterLocalNotificationsPlugin.show(
-        message.notification?.body == 'Incomming video call' ||
+        id:message.notification?.body == 'Incomming video call' ||
                 message.notification?.body == 'Incomming voice call'
             ? 1
             : notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
+        title:notification.title,
+        body:notification.body,
+        notificationDetails:  NotificationDetails(
           iOS: const DarwinNotificationDetails(),
           android: AndroidNotificationDetails(
             audioAttributesUsage: AudioAttributesUsage.voiceCommunication,
@@ -156,7 +156,7 @@ class FirebasePushNotificationApi {
     );
     const android = AndroidInitializationSettings('@drawable/tc_logo');
     const settings = InitializationSettings(android: android, iOS: ios);
-    await flutterLocalNotificationsPlugin.initialize(
+    await flutterLocalNotificationsPlugin.initialize(settings: 
       settings,
       onDidReceiveBackgroundNotificationResponse: backGroundResponse,
       onDidReceiveNotificationResponse: (response) {

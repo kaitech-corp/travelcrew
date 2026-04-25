@@ -9,7 +9,7 @@ class FilePickerService {
   static final FilePickerService _instance = FilePickerService._internal();
   static Future<FilePickerResult?> _pickFiles() async {
     try {
-      final FilePickerResult? result = await FilePicker.platform.pickFiles(
+      final FilePickerResult? result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf', 'doc', 'docx'],
       );
