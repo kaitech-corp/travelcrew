@@ -38,17 +38,12 @@ const kExpenseTable = 'expense';
 const kTripChatCollection = 'chat';
 const kTripChatMessagesCollection = 'messages';
 const kActivityTable = 'activity';
+const kFlightTable = 'flights';
 const kUsersCollection = 'users';
 const kUsersPublicProfileCollection = 'publicProfile';
 const kOtpCollection = 'otps';
 const kNotificationsCollection = 'notifications';
 const kNotificationsSubCollection = 'notification';
-
-const kGoogleMapKey = 'AIzaSyAI-dmSoDwLdFshrmoS-ypNRSItEIsCb3Q';
-
-// Keys
-const kAviationStackAccessKey = '246ceff61c61d2c9ed5be77990ff28e6';
-const kPasswordKey = 'password';
 
 /// functions
 const kResetUserPasswordFunction = 'resetUserPassword';
