@@ -20,6 +20,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../models/expense_model.dart';
 import '../../../utils/app_strings.dart';
+import '../../../utils/app_strings_keys.dart';
 import '../../../utils/app_utils.dart';
 
 class CreateTripController extends GetxController {
@@ -111,7 +112,10 @@ class CreateTripController extends GetxController {
       _applyActivitiesImport(data['activities']);
     } catch (e, stack) {
       kLogging('setFromImport error: $e\n$stack');
-      showCustomSnackBar(content: 'Some fields could not be imported — please fill them in manually');
+      showCustomSnackBar(
+        content:
+            'Some fields could not be imported — please fill them in manually',
+      );
     }
   }
 
@@ -119,7 +123,8 @@ class CreateTripController extends GetxController {
     if (raw is! Map<String, dynamic>) return;
     airLineNameController.text = (raw['name'] as String?) ?? '';
     flightNumberController.text = (raw['flight_number'] as String?) ?? '';
-    airportDepartureController.text = (raw['departure_airport'] as String?) ?? '';
+    airportDepartureController.text =
+        (raw['departure_airport'] as String?) ?? '';
     airportArrivalController.text = (raw['arrival_airport'] as String?) ?? '';
     if (raw['departure_date'] != null) {
       departureDate.value = DateTime.tryParse(raw['departure_date'] as String);
@@ -141,28 +146,34 @@ class CreateTripController extends GetxController {
       checkInEndTime.value = DateTime.tryParse(raw['check_out'] as String);
     }
     if (raw['cost_per_night'] != null) {
-      expensePerNightController.text = (raw['cost_per_night'] as num).toString();
+      expensePerNightController.text =
+          (raw['cost_per_night'] as num).toString();
     }
   }
 
   void _applyActivitiesImport(dynamic raw) {
     if (raw is! List) return;
-    activityList.value = raw
-        .whereType<Map<String, dynamic>>()
-        .map((act) => ActivityModel(
-              title: (act['title'] as String?) ?? '',
-              description: (act['description'] as String?) ?? '',
-              location: act['location'] as String?,
-              startDateTime: act['start_datetime'] != null
-                  ? DateTime.tryParse(act['start_datetime'] as String)
-                  : null,
-              endDateTime: act['end_datetime'] != null
-                  ? DateTime.tryParse(act['end_datetime'] as String)
-                  : null,
-              tripId: '',
-              likesCount: 0,
-            ))
-        .toList();
+    activityList.value =
+        raw
+            .whereType<Map<String, dynamic>>()
+            .map(
+              (act) => ActivityModel(
+                title: (act['title'] as String?) ?? '',
+                description: (act['description'] as String?) ?? '',
+                location: act['location'] as String?,
+                startDateTime:
+                    act['start_datetime'] != null
+                        ? DateTime.tryParse(act['start_datetime'] as String)
+                        : null,
+                endDateTime:
+                    act['end_datetime'] != null
+                        ? DateTime.tryParse(act['end_datetime'] as String)
+                        : null,
+                tripId: '',
+                likesCount: 0,
+              ),
+            )
+            .toList();
   }
 
   void setAllValuesToEdit() {
@@ -218,21 +229,24 @@ class CreateTripController extends GetxController {
         showCustomSnackBar(content: 'Please select trip start and end date');
         return;
       }
-      if (selectedImages.isEmpty) {
+      if (currentStep.value == 1 && selectedImages.isEmpty) {
         String? imageUrl;
         if (selectedPlaceId.value.isNotEmpty) {
-          final photoReference =
-              await getLocationDetails(selectedPlaceId.value);
+          final photoReference = await getLocationDetails(
+            selectedPlaceId.value,
+          );
           if (photoReference != null) {
             imageUrl =
                 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=$kGoogleMapKey';
           }
         }
-        imageUrl ??= 'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/travelcrew%2Fimages%2Ftravelcrew_image.png?alt=media&token=a90c5802-1b9e-44c9-b714-8a1cd3e1174f';
-        selectedImages.add(SelectedImage(imageUrl: imageUrl, isNetworkImage: true));
+        imageUrl ??=
+            'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/travelcrew%2Fimages%2Ftravelcrew_image.png?alt=media&token=a90c5802-1b9e-44c9-b714-8a1cd3e1174f';
+        selectedImages.add(
+          SelectedImage(imageUrl: imageUrl, isNetworkImage: true),
+        );
       }
-      if (currentStep.value == 2 &&
-          !formStep2.currentState!.validate()) {
+      if (currentStep.value == 2 && !formStep2.currentState!.validate()) {
         return;
       } else if (currentStep.value == 3 &&
           !formStep3.currentState!.validate()) {
@@ -287,7 +301,8 @@ class CreateTripController extends GetxController {
               folderName: 'trip_images',
               title: 'Uploading trip image',
               subtitle: 'Uploading trip image',
-              imageName: '${tripModel.value!.id}${const Uuid().v6()}_trip_image$i',
+              imageName:
+                  '${tripModel.value!.id}${const Uuid().v6()}_trip_image$i',
             );
             return imageUrl;
           }
@@ -315,7 +330,7 @@ class CreateTripController extends GetxController {
         checkOutDate: checkInEndTime.value ?? DateTime.now(),
         country: destinationController.text.split(',').lastOrNull ?? '',
         startDate: startDate.value!,
-        daysToGo: 2,
+        daysToGo: _calendarDaysUntil(startDate.value!),
         createdBy: GlobalVariables.currentUid,
         title: tripNameController.text,
         destination: destinationController.text,
@@ -365,13 +380,21 @@ class CreateTripController extends GetxController {
           showCustomSnackBar(content: 'Failed to update trip');
         }
       });
-      showCustomSnackBar(content: 'Trip updated successfully');
-      GlobalVariables.showLoader.value = false;
     } catch (e) {
       if (kDebugMode) {
         print('Error in updateTrip: $e');
       }
+    } finally {
+      GlobalVariables.showLoader.value = false;
     }
+  }
+
+  int _calendarDaysUntil(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final targetDate = DateTime(date.year, date.month, date.day);
+
+    return targetDate.difference(today).inDays;
   }
 
   // Move to the previous step
@@ -408,7 +431,7 @@ class CreateTripController extends GetxController {
         checkOutDate: checkInEndTime.value ?? DateTime.now(),
         country: destinationController.text.split(',').lastOrNull ?? '',
         startDate: startDate.value!,
-        daysToGo: 2,
+        daysToGo: _calendarDaysUntil(startDate.value!),
         createdBy: GlobalVariables.currentUid,
         title: tripNameController.text,
         destination: destinationController.text,
@@ -428,6 +451,18 @@ class CreateTripController extends GetxController {
         images: [],
       );
       GlobalVariables.showLoader.value = true;
+      if (selectedImages.isEmpty && selectedPlaceId.value.isNotEmpty) {
+        final photoReference = await getLocationDetails(selectedPlaceId.value);
+        if (photoReference != null) {
+          selectedImages.add(
+            SelectedImage(
+              imageUrl:
+                  'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=$kGoogleMapKey',
+              isNetworkImage: true,
+            ),
+          );
+        }
+      }
       List<String> uplaodedImages = [];
       if (selectedImages.isNotEmpty) {
         int i = 0;
@@ -456,7 +491,8 @@ class CreateTripController extends GetxController {
             'to': [email],
             'message': {
               'subject': 'You have been invited to a trip!',
-              'text': 'You have been invited to join the trip: ${tripModel.title}. Open the Travel Crew app to accept.',
+              'text':
+                  'You have been invited to join the trip: ${tripModel.title}. Open the Travel Crew app to accept.',
             },
           });
         }
@@ -556,8 +592,9 @@ class CreateTripController extends GetxController {
       return;
     }
     isLoadingSuggestions.value = id;
-    await GeoServices.fetchPlaceSuggestions(value, type: type)
-        .then((suggestions) async {
+    await GeoServices.fetchPlaceSuggestions(value, type: type).then((
+      suggestions,
+    ) async {
       locations.clear();
       for (final e in suggestions) {
         locations.add(
@@ -581,8 +618,9 @@ class CreateTripController extends GetxController {
       return;
     }
     isLoadingSuggestions.value = id;
-    await GeoServices.fetchPlaceSuggestions(value, type: 'lodging')
-        .then((suggestions) async {
+    await GeoServices.fetchPlaceSuggestions(value, type: 'lodging').then((
+      suggestions,
+    ) async {
       hotelLocations.clear();
       for (final e in suggestions) {
         hotelLocations.add(

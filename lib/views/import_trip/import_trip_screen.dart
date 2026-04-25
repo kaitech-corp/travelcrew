@@ -75,9 +75,9 @@ class ImportTripScreen extends GetView<ImportTripController> {
               alignment: Alignment.center,
               child: Text(
                 number,
-                style: const TextStyle(
+                style:  TextStyle(
                   color: Colors.white,
-                  fontSize: 13,
+                  fontSize: AppStyles.fontSize13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -86,7 +86,7 @@ class ImportTripScreen extends GetView<ImportTripController> {
             Text(
               title,
               style: AppStyles.labelTextStyle().copyWith(
-                fontSize: 15,
+                fontSize: AppStyles.fontSize15,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -109,7 +109,7 @@ class ImportTripScreen extends GetView<ImportTripController> {
       child: Text(
         'Paste the prompt into ChatGPT, Claude, Gemini, or any AI assistant. Describe your trip in the chat, then ask it to format the output using the prompt.',
         style: AppStyles.labelTextStyle().copyWith(
-          fontSize: 13,
+          fontSize: AppStyles.fontSize13,
           color: Colors.black87,
           height: 1.5,
         ),
@@ -137,9 +137,9 @@ class _PromptCard extends StatelessWidget {
         children: [
           Text(
             ImportTripController.aiPrompt,
-            style: const TextStyle(
+            style:  TextStyle(
               fontFamily: 'monospace',
-              fontSize: 11,
+              fontSize: AppStyles.fontSize12,
               color: Color(0xFF333333),
               height: 1.5,
             ),
@@ -153,7 +153,7 @@ class _PromptCard extends StatelessWidget {
               label: const Text('Copy Prompt'),
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.kPrimaryColor,
-                textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                textStyle:  TextStyle(fontWeight: FontWeight.w600, fontSize: AppStyles.fontSize13),
               ),
             ),
           ),
@@ -172,11 +172,11 @@ class _PasteField extends StatelessWidget {
     return TextField(
       controller: controller.pasteController,
       maxLines: 12,
-      style: AppStyles.labelTextStyle().copyWith(fontSize: 13, height: 1.5),
+      style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize13, height: 1.5),
       decoration: InputDecoration(
         hintText: 'Paste the JSON output from your AI here...',
         hintStyle: AppStyles.labelTextStyle().copyWith(
-          fontSize: 13,
+          fontSize: AppStyles.fontSize13,
           color: Colors.grey,
         ),
         filled: true,

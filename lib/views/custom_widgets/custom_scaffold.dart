@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/notification/controller/notification_controller.dart';
 
 import '../../utils/app_colors.dart';
@@ -93,7 +94,7 @@ class CustomScaffoldState extends State<CustomScaffold> {
       return GestureDetector(
         onTap: () {
           if (Get.isRegistered<MainViewController>()) {
-            Get.find<MainViewController>().changeIndex(2);
+            Get.find<MainViewController>().changeIndex(3);
           }
         },
         child: Padding(
@@ -109,7 +110,7 @@ class CustomScaffoldState extends State<CustomScaffold> {
       return GestureDetector(
         onTap: () {
           if (Get.isRegistered<MainViewController>()) {
-            Get.find<MainViewController>().changeIndex(2);
+            Get.find<MainViewController>().changeIndex(3);
           } else {
             Get.toNamed('/NotificationScreen');
           }
@@ -133,9 +134,9 @@ class CustomScaffoldState extends State<CustomScaffold> {
                     constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
                     child: Text(
                       unread > 99 ? '99+' : '$unread',
-                      style: const TextStyle(
+                      style:  TextStyle(
                         color: Colors.white,
-                        fontSize: 9,
+                        fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -161,7 +162,11 @@ class CustomScaffoldState extends State<CustomScaffold> {
     return PopScope(
       canPop: widget.onWillPop == null,
       onPopInvokedWithResult: (didPop, result) async {
-        widget.onWillPop?.call();
+        if (!didPop && widget.onWillPop != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.onWillPop?.call();
+          });
+        }
       },
       child: Stack(
         children: [

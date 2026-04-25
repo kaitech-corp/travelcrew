@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:travel_crew/models/aeroplanes_model.dart';
-import 'package:travel_crew/utils/app_strings.dart';
+import 'package:travel_crew/utils/app_strings_keys.dart';
 
 class AviationStackService {
   /// Function to fetch airport suggestions using AviationStack API
@@ -25,7 +25,9 @@ class AviationStackService {
           return AeroplanesModel.fromJson(airport as Map<String, dynamic>);
         }).toList();
       }
-    } catch (e) {}
+    } catch (_) {
+      return [];
+    }
     return [];
   }
 }

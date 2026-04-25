@@ -73,7 +73,7 @@ class ConnectionsScreen extends GetView<ConnectionsController> {
           title: Text(
             user.displayName,
             style: AppStyles.labelTextStyle().copyWith(
-              fontSize: 16.sp,
+              fontSize: AppStyles.fontSize16,
               fontWeight: FontWeight.w600,
             ),
           ),

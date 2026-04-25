@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/views/my_trips/my_trips_screen.dart';
 
 import '../../../utils/app_images.dart';
@@ -45,7 +46,7 @@ class MainViewScreen extends GetView<MainViewController> {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 5),
-                child: Obx(
+                    child: Obx(
                   () => CustomBottomBar(
                     navItems: [
                       BottomNavigationBarItem(
@@ -68,10 +69,15 @@ class MainViewScreen extends GetView<MainViewController> {
                         ),
                         label: 'My Trips',
                       ),
+                      // Index 2: plus button — rendered as circle by CustomBottomBar
+                      const BottomNavigationBarItem(
+                        icon: SizedBox.shrink(),
+                        label: '',
+                      ),
                       BottomNavigationBarItem(
                         icon: ImageIcon(
                           AssetImage(
-                            controller.selectedIndex.value == 2
+                            controller.selectedIndex.value == 3
                                 ? AppImages.kChatFilledIcon
                                 : AppImages.kChatIcon,
                           ),
@@ -81,7 +87,7 @@ class MainViewScreen extends GetView<MainViewController> {
                       BottomNavigationBarItem(
                         icon: ImageIcon(
                           AssetImage(
-                            controller.selectedIndex.value == 3
+                            controller.selectedIndex.value == 4
                                 ? AppImages.kProfileFilledIcon
                                 : AppImages.kProfileIcon,
                           ),
@@ -91,7 +97,12 @@ class MainViewScreen extends GetView<MainViewController> {
                     ],
                     selectedIndex: controller.selectedIndex.value,
                     onTap: (index) {
-                      controller.changeIndex(index);
+                      if (index == 2) {
+                        // Plus button → navigate to Create Trip
+                        Get.toNamed(kCreateTripScreenRoute);
+                      } else {
+                        controller.changeIndex(index);
+                      }
                     },
                   ),
                 ),

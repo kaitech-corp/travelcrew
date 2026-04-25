@@ -46,7 +46,7 @@ class HelpSupportExpansionTile extends StatelessWidget {
             description,
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 10,
+              fontSize: AppStyles.fontSize12,
               fontWeight: FontWeight.w300,
               letterSpacing: 0.30,
             ),

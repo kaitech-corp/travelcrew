@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 
 import '../../../utils/app_colors.dart';
@@ -68,7 +69,7 @@ class ProfileWidget extends StatelessWidget {
                 title,
                 style: GoogleFonts.nunito().copyWith(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: AppStyles.fontSize16,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.16,
                 ),
