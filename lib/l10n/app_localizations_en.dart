@@ -189,7 +189,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccount => 'Delete Account';
 
   @override
-  String get confirmDeleteAccount => 'Are you sure you want to delete your account? This action cannot be undone.';
+  String get confirmDeleteAccount =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
 
   @override
   String get noTripsFound => 'No trips found.';
@@ -240,7 +241,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordTitle => 'Forgot password?';
 
   @override
-  String get forgotPasswordSubtitle => 'In order to help you select the contact information that we must use to reset your password';
+  String get forgotPasswordSubtitle =>
+      'In order to help you select the contact information that we must use to reset your password';
 
   @override
   String get sendToEmail => 'Send to your email';
@@ -252,13 +254,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createNewPassword => 'Create New Password';
 
   @override
-  String get newPasswordSubtitle => 'Please enter your new password. Remember that your new password must be different from the passwords used previously';
+  String get newPasswordSubtitle =>
+      'Please enter your new password. Remember that your new password must be different from the passwords used previously';
 
   @override
   String get needHelp => 'Need help?';
 
   @override
-  String get feedbackRequest => 'Please send any feedback or bug reports to\nRoamAI@asistant.com';
+  String get feedbackRequest =>
+      'Please send any feedback or bug reports to\nRoamAI@asistant.com';
 
   @override
   String get personalInformation => 'Personal Information';
@@ -270,28 +274,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get safetyAndSecurity => 'Safety & Security';
 
   @override
-  String get safetyAndSecurityDescription => 'We protect your data with SSL encryption, ensuring secure transactions at Afriva.com. You\'re covered for unauthorized credit card use.';
+  String get safetyAndSecurityDescription =>
+      'We protect your data with SSL encryption, ensuring secure transactions at Afriva.com. You\'re covered for unauthorized credit card use.';
 
   @override
   String get returnsAndRefunds => 'Returns & Refunds';
 
   @override
-  String get returnsAndRefundsDescription1 => 'Follow our return policy for fast processing. Contact warranty providers...';
+  String get returnsAndRefundsDescription1 =>
+      'Follow our return policy for fast processing. Contact warranty providers...';
 
   @override
-  String get returnsAndRefundsDescription2 => 'Follow our return policy for fast processing. Contact warranty providers for defective products first. For other returns, a Return Merchandise Authorization (RMA#) is required.';
+  String get returnsAndRefundsDescription2 =>
+      'Follow our return policy for fast processing. Contact warranty providers for defective products first. For other returns, a Return Merchandise Authorization (RMA#) is required.';
 
   @override
   String get terms => '1. Terms';
 
   @override
-  String get termsContent => 'Tellus at sit ante rutrum suspendisse pretium, vitae vel dignissim. Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus. Sapien felis ultrices fringilla nisi sit nibh. Etiam volutpat nisl ornare lorem mus at a, et pulvinar.';
+  String get termsContent =>
+      'Tellus at sit ante rutrum suspendisse pretium, vitae vel dignissim. Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus. Sapien felis ultrices fringilla nisi sit nibh. Etiam volutpat nisl ornare lorem mus at a, et pulvinar.';
 
   @override
   String get useLicense => '2. Use License';
 
   @override
-  String get useLicenseContent => 'Fermentum erat nisl duis varius risus. Augue ac facilisi porta metus enim. Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
+  String get useLicenseContent =>
+      'Fermentum erat nisl duis varius risus. Augue ac facilisi porta metus enim. Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
 
   @override
   String get bullet1 => 'Fermentum erat nisl duis varius risus.';
@@ -300,28 +309,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bullet2 => 'Augue ac facilisi porta metus enim.';
 
   @override
-  String get bullet3 => 'Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
+  String get bullet3 =>
+      'Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
 
   @override
-  String get bullet4 => 'Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus.';
+  String get bullet4 =>
+      'Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus.';
 
   @override
-  String get additionalParagraph => 'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
+  String get additionalParagraph =>
+      'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
 
   @override
   String get aboutTitle => 'About';
 
   @override
-  String get aboutContent1 => 'At TravelCrew, we are a passionate and driven team committed to delivering innovative solutions and exceptional experiences. Our company was founded with the goal of making travel planning with friends and family easier and more enjoyable, and we work tirelessly to build trust and lasting relationships with our clients, partners, and community.';
+  String get aboutContent1 =>
+      'At TravelCrew, we are a passionate and driven team committed to delivering innovative solutions and exceptional experiences. Our company was founded with the goal of making travel planning with friends and family easier and more enjoyable, and we work tirelessly to build trust and lasting relationships with our clients, partners, and community.';
 
   @override
-  String get aboutContent2 => 'We believe in integrity, collaboration, excellence, innovation, and strive to create a positive impact in everything we do. Whether it\'s through our travel planning tools, we are dedicated to making a difference and empowering individuals and groups to reach their fullest potential.';
+  String get aboutContent2 =>
+      'We believe in integrity, collaboration, excellence, innovation, and strive to create a positive impact in everything we do. Whether it\'s through our travel planning tools, we are dedicated to making a difference and empowering individuals and groups to reach their fullest potential.';
 
   @override
-  String get aboutContent3 => 'Our team is made up of diverse, talented professionals from various backgrounds who share a common vision of achieving greatness. Together, we work towards our collective goals with a sense of purpose, creativity, and enthusiasm.';
+  String get aboutContent3 =>
+      'Our team is made up of diverse, talented professionals from various backgrounds who share a common vision of achieving greatness. Together, we work towards our collective goals with a sense of purpose, creativity, and enthusiasm.';
 
   @override
-  String get aboutContent4 => 'Join us as we continue to push the boundaries of what\'s possible and shape the future of travel planning.';
+  String get aboutContent4 =>
+      'Join us as we continue to push the boundaries of what\'s possible and shape the future of travel planning.';
 
   @override
   String get oldPassword => 'Old Password';
@@ -339,19 +355,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle1 => 'Plan Your Dream Trips Together';
 
   @override
-  String get onboardingSubtitle1 => 'Create and share travel itineraries with friends in just a few taps.';
+  String get onboardingSubtitle1 =>
+      'Create and share travel itineraries with friends in just a few taps.';
 
   @override
   String get onboardingTitle2 => 'Stay Connected with Your Travel Crew';
 
   @override
-  String get onboardingSubtitle2 => 'Chat, share updates, and keep everyone in the loop.';
+  String get onboardingSubtitle2 =>
+      'Chat, share updates, and keep everyone in the loop.';
 
   @override
   String get onboardingTitle3 => 'Explore and Join Exciting Trips';
 
   @override
-  String get onboardingSubtitle3 => 'Discover public trips or create your own private adventure.';
+  String get onboardingSubtitle3 =>
+      'Discover public trips or create your own private adventure.';
 
   @override
   String get updateTrip => 'Update Trip';

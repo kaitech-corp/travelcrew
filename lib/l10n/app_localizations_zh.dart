@@ -270,7 +270,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get safetyAndSecurity => '安全与保障';
 
   @override
-  String get safetyAndSecurityDescription => '我们使用SSL加密保护您的数据，确保在Afriva.com上的安全交易。您受到未经授权的信用卡使用的保护。';
+  String get safetyAndSecurityDescription =>
+      '我们使用SSL加密保护您的数据，确保在Afriva.com上的安全交易。您受到未经授权的信用卡使用的保护。';
 
   @override
   String get returnsAndRefunds => '退货与退款';
@@ -279,19 +280,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get returnsAndRefundsDescription1 => '请遵循我们的退货政策以便快速处理。请联系保修提供商...';
 
   @override
-  String get returnsAndRefundsDescription2 => '请遵循我们的退货政策以便快速处理。对于有缺陷的产品，请首先联系保修提供商。对于其他退货，需要退货授权（RMA＃）。';
+  String get returnsAndRefundsDescription2 =>
+      '请遵循我们的退货政策以便快速处理。对于有缺陷的产品，请首先联系保修提供商。对于其他退货，需要退货授权（RMA＃）。';
 
   @override
   String get terms => '1. 条款';
 
   @override
-  String get termsContent => 'Tellus at sit ante rutrum suspendisse pretium, vitae vel dignissim. Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus. Sapien felis ultrices fringilla nisi sit nibh. Etiam volutpat nisl ornare lorem mus at a, et pulvinar.';
+  String get termsContent =>
+      'Tellus at sit ante rutrum suspendisse pretium, vitae vel dignissim. Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus. Sapien felis ultrices fringilla nisi sit nibh. Etiam volutpat nisl ornare lorem mus at a, et pulvinar.';
 
   @override
   String get useLicense => '2. 使用许可';
 
   @override
-  String get useLicenseContent => 'Fermentum erat nisl duis varius risus. Augue ac facilisi porta metus enim. Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
+  String get useLicenseContent =>
+      'Fermentum erat nisl duis varius risus. Augue ac facilisi porta metus enim. Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
 
   @override
   String get bullet1 => 'Fermentum erat nisl duis varius risus.';
@@ -300,25 +304,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get bullet2 => 'Augue ac facilisi porta metus enim.';
 
   @override
-  String get bullet3 => 'Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
+  String get bullet3 =>
+      'Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
 
   @override
-  String get bullet4 => 'Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus.';
+  String get bullet4 =>
+      'Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus.';
 
   @override
-  String get additionalParagraph => 'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
+  String get additionalParagraph =>
+      'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
 
   @override
   String get aboutTitle => '关于';
 
   @override
-  String get aboutContent1 => '在TravelCrew，我们是一支充满激情和干劲的团队，致力于提供创新的解决方案和卓越的体验。我们公司的成立旨在让与朋友和家人的旅行计划变得更轻松、更愉快，我们不懈地努力与客户、合作伙伴和社区建立信任和持久的关系。';
+  String get aboutContent1 =>
+      '在TravelCrew，我们是一支充满激情和干劲的团队，致力于提供创新的解决方案和卓越的体验。我们公司的成立旨在让与朋友和家人的旅行计划变得更轻松、更愉快，我们不懈地努力与客户、合作伙伴和社区建立信任和持久的关系。';
 
   @override
-  String get aboutContent2 => '我们信奉诚信、协作、卓越、创新，并努力在我们所做的每一件事中创造积极的影响。无论是通过我们的旅行计划工具，我们都致力于有所作为，并赋予个人和团体充分发挥其潜力的能力。';
+  String get aboutContent2 =>
+      '我们信奉诚信、协作、卓越、创新，并努力在我们所做的每一件事中创造积极的影响。无论是通过我们的旅行计划工具，我们都致力于有所作为，并赋予个人和团体充分发挥其潜力的能力。';
 
   @override
-  String get aboutContent3 => '我们的团队由来自不同背景的多元化、才华横溢的专业人士组成，他们拥有实现卓越的共同愿景。我们共同以目标感、创造力和热情努力实现我们的集体目标。';
+  String get aboutContent3 =>
+      '我们的团队由来自不同背景的多元化、才华横溢的专业人士组成，他们拥有实现卓越的共同愿景。我们共同以目标感、创造力和热情努力实现我们的集体目标。';
 
   @override
   String get aboutContent4 => '加入我们，我们将继续挑战可能性的极限，塑造旅行计划的未来。';
