@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
+import 'package:travel_crew/models/user_flight_model.dart';
 
 class TripModel {
-
   TripModel({
     this.createdByUser,
     required this.id,
@@ -57,56 +57,67 @@ class TripModel {
       tripStatus: map['tripStatus'] as String? ?? TripStatus.upcoming.name,
       title: map['title'] as String?,
       createdBy: map['createdBy'] as String? ?? '',
-      tripStartDate: map['tripStartDate'] != null
-          ? DateTime.parse(map['tripStartDate'] as String)
-          : null,
-      tripEndDate: map['tripEndDate'] != null
-          ? DateTime.parse(map['tripEndDate'] as String)
-          : null,
+      tripStartDate:
+          map['tripStartDate'] != null
+              ? DateTime.parse(map['tripStartDate'] as String)
+              : null,
+      tripEndDate:
+          map['tripEndDate'] != null
+              ? DateTime.parse(map['tripEndDate'] as String)
+              : null,
       tripLocation: map['tripLocation'] as String?,
       tripBudget: (map['tripBudget'] as num?)?.toDouble() ?? 0.0,
       country: map['country'] as String? ?? '',
-      startDate: map['startDate'] != null
-          ? DateTime.parse(map['startDate'] as String)
-          : DateTime.now(),
-      joinedUsers: (map['joinedUsers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      invitedUsers: (map['invitedUsers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      startDate:
+          map['startDate'] != null
+              ? DateTime.parse(map['startDate'] as String)
+              : DateTime.now(),
+      joinedUsers:
+          (map['joinedUsers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      invitedUsers:
+          (map['invitedUsers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
       isPrivate: map['isPrivate'] as bool?,
       airlineName: map['airlineName'] as String?,
       flightNumber: map['flightNumber'] as String?,
-      departureDate: map['departureDate'] != null
-          ? DateTime.parse(map['departureDate'] as String)
-          : null,
-      arrivalDate: map['arrivalDate'] != null
-          ? DateTime.parse(map['arrivalDate'] as String)
-          : null,
+      departureDate:
+          map['departureDate'] != null
+              ? DateTime.parse(map['departureDate'] as String)
+              : null,
+      arrivalDate:
+          map['arrivalDate'] != null
+              ? DateTime.parse(map['arrivalDate'] as String)
+              : null,
       departureAirport: map['departureAirport'] as String?,
       arrivalAirport: map['arrivalAirport'] as String?,
       lodgingType: map['lodgingType'] as String?,
       hotelName: map['hotelName'] as String?,
       hotelAddress: map['hotelAddress'] as String?,
-      checkInDate: map['checkInDate'] != null
-          ? DateTime.parse(map['checkInDate'] as String)
-          : null,
-      checkOutDate: map['checkOutDate'] != null
-          ? DateTime.parse(map['checkOutDate'] as String)
-          : null,
+      checkInDate:
+          map['checkInDate'] != null
+              ? DateTime.parse(map['checkInDate'] as String)
+              : null,
+      checkOutDate:
+          map['checkOutDate'] != null
+              ? DateTime.parse(map['checkOutDate'] as String)
+              : null,
       expensePerNight: (map['expensePerNight'] as num?)?.toDouble(),
-      activities: (map['activities'] as List<dynamic>?)
-          ?.map((e) => ActivityModel.fromMap(e as Map<String, dynamic>))
-          .toList(),
-      expenses: (map['expenses'] as List<dynamic>?)
-          ?.map((e) => ExpenseModel.fromMap(e as Map<String, dynamic>))
-          .toList(),
+      activities:
+          (map['activities'] as List<dynamic>?)
+              ?.map((e) => ActivityModel.fromMap(e as Map<String, dynamic>))
+              .toList(),
+      expenses:
+          (map['expenses'] as List<dynamic>?)
+              ?.map((e) => ExpenseModel.fromMap(e as Map<String, dynamic>))
+              .toList(),
       endDate: map['endDate'] as String? ?? '',
       daysToGo: (map['daysToGo'] as num?)?.toInt() ?? 0,
       images:
           (map['images'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-              [],
+          [],
       continent: map['continent'] as String? ?? '',
     );
   }
@@ -147,10 +158,25 @@ class TripModel {
   final double? expensePerNight;
   List<ActivityModel>? activities;
   List<ExpenseModel>? expenses;
+  List<UserFlightModel>? flights;
 
   final String endDate;
   final int daysToGo;
   List<String> images;
+
+  DateTime get effectiveStartDate => tripStartDate ?? startDate;
+
+  int get computedDaysToGo {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final start = DateTime(
+      effectiveStartDate.year,
+      effectiveStartDate.month,
+      effectiveStartDate.day,
+    );
+
+    return start.difference(today).inDays;
+  }
 
   TripModel copyWith({
     String? id,

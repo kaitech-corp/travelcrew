@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class UserModel {
 
@@ -14,6 +15,7 @@ class UserModel {
     this.createdAt,
     this.updatedAt,
     this.profileImage,
+    this.favouriteTrips = const [],
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -27,6 +29,10 @@ class UserModel {
       emailConfirmed: map['emailConfirmed'] as bool?,
       createdAt: map['createdAt'] as Timestamp?,
       updatedAt: map['updatedAt'] as Timestamp?,
+      favouriteTrips: (map['favouriteTrips'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
     );
   }
 
@@ -41,6 +47,7 @@ class UserModel {
   Timestamp? createdAt;
   Timestamp? updatedAt;
   String? profileImage;
+  List<String> favouriteTrips;
 
   UserModel copyWith({
     String? displayName,
@@ -53,6 +60,7 @@ class UserModel {
     bool? isDeleted,
     Timestamp? createdAt,
     Timestamp? updatedAt,
+    List<String>? favouriteTrips,
   }) {
     return UserModel(
       displayName: displayName ?? this.displayName,
@@ -64,6 +72,7 @@ class UserModel {
       emailConfirmed: emailConfirmed ?? this.emailConfirmed,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      favouriteTrips: favouriteTrips ?? this.favouriteTrips,
     );
   }
 
@@ -78,6 +87,7 @@ class UserModel {
       'emailConfirmed': emailConfirmed,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'favouriteTrips': favouriteTrips,
     };
   }
 
@@ -85,7 +95,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, profileImage: $profileImage, emailConfirmed: $emailConfirmed, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(displayName: $displayName, email: $email, uid: $uid, phone: $phone, profileImage: $profileImage, emailConfirmed: $emailConfirmed, createdAt: $createdAt, updatedAt: $updatedAt, favouriteTrips: $favouriteTrips)';
   }
 
   @override
@@ -100,7 +110,8 @@ class UserModel {
         other.profileImage == profileImage &&
         other.emailConfirmed == emailConfirmed &&
         other.createdAt == createdAt &&
-        other.updatedAt == updatedAt;
+        other.updatedAt == updatedAt &&
+        listEquals(other.favouriteTrips, favouriteTrips);
   }
 
   @override
@@ -112,6 +123,7 @@ class UserModel {
         profileImage.hashCode ^
         emailConfirmed.hashCode ^
         createdAt.hashCode ^
-        updatedAt.hashCode;
+        updatedAt.hashCode ^
+        favouriteTrips.hashCode;
   }
 }
