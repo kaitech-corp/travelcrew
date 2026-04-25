@@ -111,7 +111,7 @@ class ActivitiesTab extends StatelessWidget {
                   'Add Activity',
                   style: AppStyles.labelTextStyle().copyWith(
                     color: const Color(0xFF1D7FC2),
-                    fontSize: 13.95,
+                    fontSize: AppStyles.fontSize13,
 
                     fontWeight: FontWeight.w600,
                     height: 1.25,
@@ -180,7 +180,7 @@ class ActivityWidget extends StatelessWidget {
                     title ?? 'Cincerella’s Roy',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black,
-                      fontSize: 17.79.sp,
+                      fontSize: AppStyles.fontSize17,
 
                       fontWeight: FontWeight.w600,
                     ),
@@ -190,7 +190,7 @@ class ActivityWidget extends StatelessWidget {
                     description ?? '1180 Seven Seas Drive, Lak...',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withValues(alpha: 140),
-                      fontSize: 11.57,
+                      fontSize: AppStyles.fontSize12,
 
                       fontWeight: FontWeight.w500,
                       height: 1.23,
@@ -217,7 +217,7 @@ class ActivityWidget extends StatelessWidget {
                           timing,
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.black,
-                            fontSize: 12,
+                            fontSize: AppStyles.fontSize12,
 
                             fontWeight: FontWeight.w600,
                           ),

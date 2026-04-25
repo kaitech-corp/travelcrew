@@ -61,7 +61,7 @@ class RangeCalendarDialog extends GetView<RangePickerController> {
                       textAlign: TextAlign.center,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: AppColors.kPrimaryColor,
-                        fontSize: 13.95,
+                        fontSize: AppStyles.fontSize13,
                         fontWeight: FontWeight.w500,
                         height: 1.25,
                       ),

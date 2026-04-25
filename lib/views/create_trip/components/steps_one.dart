@@ -36,7 +36,7 @@ class StepsOne extends StatelessWidget {
                 'Trip Name',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.93,
+                  fontSize: AppStyles.fontSize20,
 
                   fontWeight: FontWeight.w600,
                   height: 1.33,
@@ -55,7 +55,7 @@ class StepsOne extends StatelessWidget {
                 'Destination',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.93,
+                  fontSize: AppStyles.fontSize20,
 
                   fontWeight: FontWeight.w600,
                   height: 1.33,
@@ -68,33 +68,70 @@ class StepsOne extends StatelessWidget {
                         ? Stack(
                           children: [
                             FutureBuilder(
-                              future: controller.getLocationDetails(
-                                controller.selectedPlaceId.value,
-                              ),
+                              future: controller.selectedPlaceId.value ==
+                                      'existing_location'
+                                  ? Future.value(null)
+                                  : controller.getLocationDetails(
+                                      controller.selectedPlaceId.value,
+                                    ),
                               builder: (c, snap) {
-                                return snap.hasData
-                                    ? AnyImageView(
-                                      borderRadius: BorderRadius.circular(25.r),
-                                      url:
-                                          'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${snap.data.toString()}&key=$kGoogleMapKey',
-                                      height: 199.h,
-                                      width: context.width,
-                                    )
-                                    : ClipRRect(
-                                      borderRadius: BorderRadius.circular(20.r),
-                                      child: Shimmer.fromColors(
-                                        baseColor: Colors.grey,
-                                        highlightColor:
-                                            Theme.of(context).primaryColor,
-                                        child: Container(
-                                          height: 199.h,
-                                          width: context.width,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                          ),
+                                if (snap.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.r),
+                                    child: Shimmer.fromColors(
+                                      baseColor: Colors.grey,
+                                      highlightColor:
+                                          Theme.of(context).primaryColor,
+                                      child: Container(
+                                        height: 199.h,
+                                        width: context.width,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
                                         ),
                                       ),
-                                    );
+                                    ),
+                                  );
+                                }
+                                if (snap.hasData) {
+                                  return AnyImageView(
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    url:
+                                        'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${snap.data.toString()}&key=$kGoogleMapKey',
+                                    height: 199.h,
+                                    width: context.width,
+                                  );
+                                }
+                                // No Google Places photo — show first uploaded
+                                // image or a neutral placeholder
+                                final firstImage =
+                                    controller.selectedImages.isNotEmpty
+                                        ? controller.selectedImages.first
+                                        : null;
+                                if (firstImage != null) {
+                                  return AnyImageView(
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    url: firstImage.imageUrl,
+                                    height: 199.h,
+                                    width: context.width,
+                                    fileType: firstImage.isNetworkImage
+                                        ? SourceType.network
+                                        : SourceType.file,
+                                  );
+                                }
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.r),
+                                  child: Container(
+                                    height: 199.h,
+                                    width: context.width,
+                                    color: Colors.grey.shade200,
+                                    child: Icon(
+                                      Icons.location_on_outlined,
+                                      color: Colors.grey.shade400,
+                                      size: 48.sp,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             Align(
@@ -141,7 +178,7 @@ class StepsOne extends StatelessWidget {
                   'Date',
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.black,
-                    fontSize: 20.93,
+                    fontSize: AppStyles.fontSize20,
 
                     fontWeight: FontWeight.w600,
                     height: 1.33,
@@ -219,7 +256,7 @@ class StepsOne extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: Colors.black,
-                              fontSize: 13.95.sp,
+                              fontSize: AppStyles.fontSize13,
 
                               fontWeight: FontWeight.w500,
                               height: 1.25.h,
@@ -242,7 +279,7 @@ class StepsOne extends StatelessWidget {
                 'Trip Privacy',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.93,
+                  fontSize: AppStyles.fontSize20,
 
                   fontWeight: FontWeight.w600,
                   height: 1.33,
@@ -271,7 +308,7 @@ class StepsOne extends StatelessWidget {
                 'Trip Cover Image',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 20.93,
+                  fontSize: AppStyles.fontSize20,
                   fontWeight: FontWeight.w600,
                   height: 1.33,
                 ),
@@ -283,24 +320,20 @@ class StepsOne extends StatelessWidget {
                     controller.selectedImages.isEmpty
                         ? GestureDetector(
                           onTap: () async {
-                            final List<String> images = await ImagePickerBottomSheet()
-                                .getImageFromCameraOrGallery(context);
-                            if (images
-                                .where((e) => e.isNotEmpty)
-                                .isNotEmpty) {
+                            final List<String> images =
+                                await ImagePickerBottomSheet()
+                                    .getImageFromCameraOrGallery(context);
+                            if (images.where((e) => e.isNotEmpty).isNotEmpty) {
                               controller.selectedImages.addAll(
-                                images.map(
-                                  (e) => SelectedImage(
-                                    imageUrl: e,
-                                  ),
-                                ),
+                                images.map((e) => SelectedImage(imageUrl: e)),
                               );
                             }
                           },
                           child: DottedBorder(
-                            dashPattern: const [20, 20],
-                            color: const Color(0xFF1D7FC2),
-                            radius: Radius.circular(24.r),
+                            options: CircularDottedBorderOptions(
+                              dashPattern: const [20, 20],
+                              color: const Color(0xFF1D7FC2),
+                            ),
                             child: SizedBox(
                               width: Get.width,
                               height: 164.h,
@@ -353,9 +386,7 @@ class StepsOne extends StatelessWidget {
                                     .isNotEmpty) {
                                   controller.selectedImages.addAll(
                                     images.map(
-                                      (e) => SelectedImage(
-                                        imageUrl: e,
-                                      ),
+                                      (e) => SelectedImage(imageUrl: e),
                                     ),
                                   );
                                 }
@@ -378,7 +409,6 @@ class StepsOne extends StatelessWidget {
 }
 
 class CustomLocationLabel extends StatelessWidget {
-
   const CustomLocationLabel({super.key, required this.text});
   final String text;
 
@@ -405,7 +435,7 @@ class CustomLocationLabel extends StatelessWidget {
                 maxLines: 1,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.white,
-                  fontSize: 15.70,
+                  fontSize: AppStyles.fontSize15,
                   fontWeight: FontWeight.w600,
                   height: 1.33,
                 ),

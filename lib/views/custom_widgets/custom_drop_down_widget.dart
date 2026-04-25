@@ -68,7 +68,7 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
                         value != null
                             ? AppStyles.labelTextStyle().copyWith(
                               color: Colors.black87,
-                              fontSize: 16.0,
+                              fontSize: AppStyles.fontSize16,
                               fontWeight: FontWeight.w500,
                             )
                             : AppStyles.labelTextStyle().copyWith(
@@ -115,7 +115,7 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
                         item.toString(),
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black87,
-                          fontSize: 14.0,
+                          fontSize: AppStyles.fontSize14,
                         ),
                       ),
                     ),

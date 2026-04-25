@@ -31,18 +31,18 @@ class ReadMoreTextWidget extends StatelessWidget {
       trimLines: trimLines,
       trimCollapsedText: readMoreText ?? 'Show more',
       trimExpandedText: readLessText ?? 'Show less',
-      style: textStyle ?? AppStyles.labelTextStyle().copyWith(fontSize: 12),
+      style: textStyle ?? AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize12),
       lessStyle:
           readLessTextStyle ??
           AppStyles.labelTextStyle().copyWith(
-            fontSize: 14,
+            fontSize: AppStyles.fontSize14,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).primaryColor,
           ),
       moreStyle:
           readMoreTextStyle ??
           AppStyles.labelTextStyle().copyWith(
-            fontSize: 14,
+            fontSize: AppStyles.fontSize14,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).primaryColor,
           ),

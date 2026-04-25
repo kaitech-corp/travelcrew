@@ -76,7 +76,7 @@ class CustomAppBar extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 27.91.sp,
+              fontSize: AppStyles.fontSize28,
               fontWeight: FontWeight.w600,
               height: 1.25.h,
             ),

@@ -60,7 +60,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF6B7280),
-                      fontSize: 10,
+                      fontSize: AppStyles.fontSize12,
 
                       fontWeight: FontWeight.w400,
                       letterSpacing: 0.10,
@@ -100,7 +100,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                               isPending
                                   ? const Color(0xFFC7AA01)
                                   : const Color(0xFF4AD10B),
-                          fontSize: AppStyles.fontSize11,
+                          fontSize: AppStyles.fontSize12,
 
                           fontWeight: FontWeight.w500,
                         ),
@@ -113,7 +113,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                 '\$${expenseModel.amount}',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: const Color(0xFF1D7FC2),
-                  fontSize: 20,
+                  fontSize: AppStyles.fontSize20,
 
                   fontWeight: FontWeight.w600,
                 ),
@@ -151,7 +151,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                     '${controller.tripModel.value?.joindUsersList?[index].displayName} ${'owes you'}',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF1F1F1F),
-                      fontSize: 13,
+                      fontSize: AppStyles.fontSize13,
 
                       fontWeight: FontWeight.w500,
                     ),
@@ -196,7 +196,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                     'Settle Up',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black,
-                      fontSize: 13,
+                      fontSize: AppStyles.fontSize13,
 
                       fontWeight: FontWeight.w500,
                       height: 1.19,

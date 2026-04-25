@@ -25,7 +25,7 @@ class StepsSeven extends StatelessWidget {
             'Expense Name',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -47,7 +47,7 @@ class StepsSeven extends StatelessWidget {
             'Amount Paid',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
             ),
@@ -78,7 +78,7 @@ class StepsSeven extends StatelessWidget {
             'Date',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
             ),

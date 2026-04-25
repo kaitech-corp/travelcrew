@@ -38,7 +38,7 @@ class SignUpScreen extends GetView<SignUpController> {
                 textAlign: TextAlign.center,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 36.68,
+                  fontSize: AppStyles.fontSize28,
 
                   fontWeight: FontWeight.w600,
                 ),
@@ -65,7 +65,7 @@ class SignUpScreen extends GetView<SignUpController> {
                     l10n.email,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
-                      fontSize: 14.67,
+                      fontSize: AppStyles.fontSize14,
 
                       fontWeight: FontWeight.w500,
                       height: 1.25,
@@ -97,7 +97,7 @@ class SignUpScreen extends GetView<SignUpController> {
                     l10n.password,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
-                      fontSize: 14.67,
+                      fontSize: AppStyles.fontSize14,
 
                       fontWeight: FontWeight.w500,
                       height: 1.25,
@@ -129,7 +129,7 @@ class SignUpScreen extends GetView<SignUpController> {
                     l10n.confirmPassword,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black.withAlpha(140),
-                      fontSize: 14.67,
+                      fontSize: AppStyles.fontSize14,
 
                       fontWeight: FontWeight.w500,
                       height: 1.25,
@@ -157,11 +157,12 @@ class SignUpScreen extends GetView<SignUpController> {
                   children: [
                     Obx(
                       () => DottedBorder(
-                        color:
-                            controller.isRememberMe.isTrue
-                                ? AppColors.kPrimaryColor
-                                : const Color(0xFF666666),
-                        borderType: BorderType.Circle,
+                        options: CircularDottedBorderOptions(
+                          color:
+                              controller.isRememberMe.isTrue
+                                  ? AppColors.kPrimaryColor
+                                  : const Color(0xFF666666),
+                        ),
                         child: Icon(
                           Icons.check_circle,
                           color:
@@ -231,7 +232,7 @@ class SignUpScreen extends GetView<SignUpController> {
                     'Already have an account?',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF333333),
-                      fontSize: 14,
+                      fontSize: AppStyles.fontSize14,
 
                       fontWeight: FontWeight.w500,
                       height: 1.29,

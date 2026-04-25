@@ -33,7 +33,7 @@ class UsersScreen extends GetView<UsersController> {
               // your logic here
             },
             style: AppStyles.labelTextStyle().copyWith(
-              fontSize: 14,
+              fontSize: AppStyles.fontSize14,
               fontWeight: FontWeight.w400,
               color: const Color(0xFF333333),
             ),
@@ -47,7 +47,7 @@ class UsersScreen extends GetView<UsersController> {
               hintText: l10n.search,
               hintStyle: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFF9C9FA3),
-                fontSize: 13.44,
+                fontSize: AppStyles.fontSize13,
 
                 fontWeight: FontWeight.w400,
                 height: 1.40,
@@ -110,7 +110,7 @@ class UsersScreen extends GetView<UsersController> {
                               subtitle:
                                   '${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripEndDate ?? DateTime.now())}',
                               timestamp: DateFormat('dd MMM, hh:mma').format(
-                                controller.chatRooms[index].updatedAt?.toDate() ?? DateTime.now(),
+                                controller.chatRooms[index].updatedAt.toDate() ?? DateTime.now(),
                               ),
                               memberImages:
                                   controller.chatRooms[index].users

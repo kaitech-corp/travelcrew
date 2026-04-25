@@ -261,7 +261,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 children: [
                   Text(
                     selectedCountry!.flagEmoji,
-                    style: AppStyles.labelTextStyle().copyWith(fontSize: 24),
+                    style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize24),
                   ),
                   const SizedBox(width: 6),
                   const Icon(Icons.arrow_drop_down, color: Colors.black54),

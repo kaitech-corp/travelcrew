@@ -26,7 +26,7 @@ class LodgingTab extends StatelessWidget {
         'Lodging Details',
         style: AppStyles.labelTextStyle().copyWith(
           color: Colors.black,
-          fontSize: 20.93,
+          fontSize: AppStyles.fontSize20,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -87,7 +87,7 @@ class LodgingTab extends StatelessWidget {
           label,
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
             fontWeight: FontWeight.w600,
             height: 1.33,
           ),
@@ -97,7 +97,7 @@ class LodgingTab extends StatelessWidget {
           value,
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black.withValues(alpha: 140),
-            fontSize: 18,
+            fontSize: AppStyles.fontSize18,
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -113,7 +113,7 @@ class LodgingTab extends StatelessWidget {
           label,
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
             fontWeight: FontWeight.w600,
             height: 1.33,
           ),
@@ -130,7 +130,7 @@ class LodgingTab extends StatelessWidget {
               value,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black.withValues(alpha: 140),
-                fontSize: 18,
+                fontSize: AppStyles.fontSize18,
                 fontWeight: FontWeight.w500,
               ),
             ),

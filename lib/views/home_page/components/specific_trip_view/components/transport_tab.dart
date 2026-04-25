@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_crew/models/user_flight_model.dart';
+import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
@@ -19,7 +22,7 @@ class TransportTab extends StatelessWidget {
           'Airline Name',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
 
             fontWeight: FontWeight.w600,
             height: 1.33,
@@ -30,7 +33,7 @@ class TransportTab extends StatelessWidget {
           controller.tripModel.value?.airlineName ?? '',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black.withValues(alpha: 140),
-            fontSize: 18,
+            fontSize: AppStyles.fontSize18,
 
             fontWeight: FontWeight.w500,
           ),
@@ -40,7 +43,7 @@ class TransportTab extends StatelessWidget {
           'Flight Number',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
 
             fontWeight: FontWeight.w600,
             height: 1.33,
@@ -51,7 +54,7 @@ class TransportTab extends StatelessWidget {
           controller.tripModel.value?.flightNumber ?? '',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black.withValues(alpha: 140),
-            fontSize: 18,
+            fontSize: AppStyles.fontSize18,
 
             fontWeight: FontWeight.w500,
           ),
@@ -61,7 +64,7 @@ class TransportTab extends StatelessWidget {
           'Departure Date & Time',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
 
             fontWeight: FontWeight.w600,
           ),
@@ -75,7 +78,7 @@ class TransportTab extends StatelessWidget {
               ),
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black.withValues(alpha: 140),
-                fontSize: 18,
+                fontSize: AppStyles.fontSize18,
 
                 fontWeight: FontWeight.w500,
               ),
@@ -94,7 +97,7 @@ class TransportTab extends StatelessWidget {
           'Arrival Date & Time',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
 
             fontWeight: FontWeight.w600,
             height: 1.33,
@@ -109,7 +112,7 @@ class TransportTab extends StatelessWidget {
               ),
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black.withValues(alpha: 140),
-                fontSize: 18,
+                fontSize: AppStyles.fontSize18,
 
                 fontWeight: FontWeight.w500,
               ),
@@ -127,7 +130,7 @@ class TransportTab extends StatelessWidget {
           'Airport/Station Details',
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: 20.93,
+            fontSize: AppStyles.fontSize20,
             fontWeight: FontWeight.w600,
             height: 1.33,
           ),
@@ -153,7 +156,7 @@ class TransportTab extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 13.95,
+                  fontSize: AppStyles.fontSize13,
                   height: 1.25,
                   fontWeight: FontWeight.w500,
                 ),
@@ -166,8 +169,7 @@ class TransportTab extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,
-                  fontSize: 13.95,
-
+                  fontSize: AppStyles.fontSize13,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -175,7 +177,133 @@ class TransportTab extends StatelessWidget {
             ],
           ),
         ),
+        SizedBox(height: 24.h),
+        Text(
+          'Crew Flights',
+          style: AppStyles.labelTextStyle().copyWith(
+            color: const Color(0xFF0F0F0F),
+            fontSize: AppStyles.fontSize16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const Divider(),
+        SizedBox(height: 8.h),
+        Obx(() {
+          final flights = controller.tripModel.value?.flights ?? [];
+          if (flights.isEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: Text(
+                'No crew flights added yet',
+                style: AppStyles.labelTextStyle().copyWith(
+                  color: Colors.black54,
+                  fontSize: AppStyles.fontSize14,
+                ),
+              ),
+            );
+          }
+          return Column(
+            children: flights
+                .map((flight) => _buildCrewFlightCard(flight, controller))
+                .toList(),
+          );
+        }),
       ],
+    );
+  }
+
+  Widget _buildCrewFlightCard(
+    UserFlightModel flight,
+    SpecificTripViewController controller,
+  ) {
+    final isOwner = flight.userId == GlobalVariables.currentUid;
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: AppColors.kLightGreyColor,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (flight.displayName != null)
+                  Text(
+                    flight.displayName!,
+                    style: AppStyles.labelTextStyle().copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: AppStyles.fontSize14,
+                    ),
+                  ),
+                if (flight.airlineName != null || flight.flightNumber != null)
+                  Text(
+                    [flight.airlineName, flight.flightNumber]
+                        .whereType<String>()
+                        .join(' · '),
+                    style: AppStyles.labelTextStyle().copyWith(
+                      fontSize: AppStyles.fontSize13,
+                    ),
+                  ),
+                if (flight.departureAirport != null ||
+                    flight.arrivalAirport != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 4.h),
+                    child: Row(
+                      children: [
+                        Text(
+                          flight.departureAirport ?? '—',
+                          style: AppStyles.labelTextStyle().copyWith(
+                            fontSize: AppStyles.fontSize12,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Icon(
+                            Icons.arrow_forward,
+                            size: 12,
+                            color: Colors.black45,
+                          ),
+                        ),
+                        Text(
+                          flight.arrivalAirport ?? '—',
+                          style: AppStyles.labelTextStyle().copyWith(
+                            fontSize: AppStyles.fontSize12,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (flight.departureDate != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 4.h),
+                    child: Text(
+                      DateFormat('MMM dd, yyyy').format(flight.departureDate!),
+                      style: AppStyles.labelTextStyle().copyWith(
+                        fontSize: AppStyles.fontSize12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (isOwner)
+            GestureDetector(
+              onTap: () => controller.deleteFlight(flight.id),
+              child: const Icon(
+                Icons.delete_outline,
+                size: 20,
+                color: Colors.redAccent,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

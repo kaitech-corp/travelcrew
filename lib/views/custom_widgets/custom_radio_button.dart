@@ -25,7 +25,7 @@ class CustomRadioButton<T> extends StatelessWidget {
           TextWidget(
             labelText: text,
             style: AppStyles.labelTextStyle().copyWith(
-              fontSize: 13,
+              fontSize: AppStyles.fontSize13,
               fontWeight: FontWeight.w400,
               color: AppColors().klabeltextcolor,
             ),

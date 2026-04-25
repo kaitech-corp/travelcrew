@@ -98,9 +98,9 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                 ),
                 Text(
                   DateFormat('MMMM yyyy').format(_focusedDay),
-                  style: const TextStyle(
+                  style:  TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: AppStyles.fontSize18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -279,7 +279,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                     'Cancel',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
-                      fontSize: 14.49,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w600,
                       height: 1.25,
                     ),
@@ -311,7 +311,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                     'Ok',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
-                      fontSize: 14.49,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w600,
                       height: 1.25,
                     ),

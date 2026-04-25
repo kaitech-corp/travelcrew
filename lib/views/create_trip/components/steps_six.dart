@@ -25,7 +25,7 @@ class StepsSix extends StatelessWidget {
             'Search Friend (In-App)',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93.sp,
+              fontSize: AppStyles.fontSize20,
               fontWeight: FontWeight.w600,
               height: 1.33.h,
             ),

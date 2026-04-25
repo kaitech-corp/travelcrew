@@ -43,7 +43,7 @@ class WellDoneDialog extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.white.withAlpha(140),
-                fontSize: 15.88.sp,
+                fontSize: AppStyles.fontSize15,
 
                 fontWeight: FontWeight.w500,
                 decoration: TextDecoration.none,
@@ -76,7 +76,7 @@ class WellDoneDialog extends StatelessWidget {
                     'Return to Login',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
-                      fontSize: 14.12.sp,
+                      fontSize: AppStyles.fontSize14,
 
                       fontWeight: FontWeight.w600,
                       height: 1.25,

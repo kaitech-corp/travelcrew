@@ -71,7 +71,7 @@ class OtpBottomSheet extends StatelessWidget {
                       text: description,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0x99141414),
-                        fontSize: 16,
+                        fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w400,
                         height: 1.25,
                       ),
@@ -126,7 +126,7 @@ class OtpBottomSheet extends StatelessWidget {
                     width: 56.w,
                     height: 56.h,
                     textStyle: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 22,
+                      fontSize: AppStyles.fontSize22,
                       color: AppColors.kSecondaryColor,
                       fontWeight: FontWeight.bold,
                     ),

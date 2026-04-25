@@ -80,7 +80,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                         l10n.totalCost,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.white,
-                          fontSize: 20.93.sp,
+                          fontSize: AppStyles.fontSize20,
                           fontFamily: 'Urbanist',
                           fontWeight: FontWeight.w600,
                           height: 1.33,
@@ -89,9 +89,9 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       Obx(
                         () => Text(
                           '\$ ${0 + (controller.tripModel.value?.expenses?.fold(0.0, (previousValue, element) => (previousValue ?? 0) + element.amount) ?? 0)}',
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: AppStyles.fontSize20,
                             fontFamily: 'Urbanist',
                             fontWeight: FontWeight.w600,
                             height: 1,
@@ -141,7 +141,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: settlements.length,
-                separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                separatorBuilder: (_, _) => SizedBox(height: 12.h),
                 itemBuilder: (context, index) {
                   final s = settlements[index];
                   final isCurrentUserPaying = s.fromUserId == currentUid;
@@ -156,7 +156,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                             color: isCurrentUserPaying
                                 ? const Color(0xFFD9534F)
                                 : const Color(0xFF1F1F1F),
-                            fontSize: 13,
+                            fontSize: AppStyles.fontSize13,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -180,7 +180,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
               l10n.expenseDetails,
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
                 fontWeight: FontWeight.w600,
               ),
             ),

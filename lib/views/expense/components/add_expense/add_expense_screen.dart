@@ -115,7 +115,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
-                          fontSize: 13.95,
+                          fontSize: AppStyles.fontSize13,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -141,7 +141,7 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
               SizedBox(height: 12.h),
               Obx(
                 () => DropdownButtonFormField<String>(
-                  value: controller.splitType.value,
+                  initialValue: controller.splitType.value,
                   items: [
                     const DropdownMenuItem(
                       value: 'equally',

@@ -65,7 +65,7 @@ class StepsFive extends StatelessWidget {
             'Activity Name',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
             ),
@@ -85,7 +85,7 @@ class StepsFive extends StatelessWidget {
             'Location',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
             ),
@@ -109,7 +109,7 @@ class StepsFive extends StatelessWidget {
             'Date & Time',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
             ),
@@ -192,7 +192,7 @@ class StepsFive extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 13.95,
+                        fontSize: AppStyles.fontSize13,
                         fontWeight: FontWeight.w500,
                         height: 1.25,
                       ),
@@ -214,7 +214,7 @@ class StepsFive extends StatelessWidget {
             'Activity Notes',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
             ),

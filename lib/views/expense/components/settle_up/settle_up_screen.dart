@@ -85,7 +85,7 @@ class SettleUpScreen extends GetView<ExpenseController> {
                     p0.displayName.toString(),
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.black87,
-                      fontSize: 14.0,
+                      fontSize: AppStyles.fontSize14,
                     ),
                   ),
                 );

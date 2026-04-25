@@ -67,13 +67,13 @@ class _MessagesTab extends StatelessWidget {
       children: [
         SizedBox(height: 12.h),
         TextField(
-          style: AppStyles.labelTextStyle().copyWith(fontSize: 14, color: const Color(0xFF333333)),
+          style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize14, color: const Color(0xFF333333)),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             hintText: l10n.search,
             hintStyle: AppStyles.labelTextStyle().copyWith(
               color: const Color(0xFF9C9FA3),
-              fontSize: 13,
+              fontSize: AppStyles.fontSize13,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(42),
@@ -96,7 +96,7 @@ class _MessagesTab extends StatelessWidget {
                     ? Center(child: Text(l10n.noChatsFound))
                     : ListView.separated(
                         itemCount: controller.chatRooms.length,
-                        separatorBuilder: (_, __) => const Divider(),
+                        separatorBuilder: (_, _) => const Divider(),
                         itemBuilder: (context, index) {
                           final room = controller.chatRooms[index];
                           return UsersWidget(
@@ -131,7 +131,7 @@ class _NotificationsTab extends StatelessWidget {
       if (controller.isLoading.value) {
         return ListView.builder(
           itemCount: 8,
-          itemBuilder: (_, __) => Shimmer.fromColors(
+          itemBuilder: (_, _) => Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
             child: ListTile(
@@ -158,7 +158,7 @@ class _NotificationsTab extends StatelessWidget {
                 child: Text(
                   DateFormat('dd MMM, yyyy').format(group.date),
                   style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: 12,
+                    fontSize: AppStyles.fontSize12,
                     color: Colors.grey,
                     fontWeight: FontWeight.w500,
                   ),
@@ -175,12 +175,12 @@ class _NotificationsTab extends StatelessWidget {
                     leading: _notificationImage(n),
                     title: Text(
                       n.notificationTitle,
-                      style: AppStyles.labelTextStyle().copyWith(fontSize: 13, fontWeight: FontWeight.w600),
+                      style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize13, fontWeight: FontWeight.w600),
                     ),
                     subtitle: ReadMoreTextWidget(
                       textStyle: AppStyles.labelTextStyle().copyWith(
                         color: AppColors.kBlackColor.withValues(alpha: .5),
-                        fontSize: 12,
+                        fontSize: AppStyles.fontSize12,
                       ),
                       text: n.notificationMessage,
                     ),

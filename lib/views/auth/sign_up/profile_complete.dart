@@ -38,7 +38,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       'Profile Setup',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 36.68,
+                        fontSize: AppStyles.fontSize28,
                         fontWeight: FontWeight.w600,
                         height: 1.20,
                       ),
@@ -113,7 +113,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       'Name',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 14.67,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w500,
                       ),
@@ -150,7 +150,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       'Nationality & Phone Number',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey,
-                        fontSize: 14.67,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w500,
                       ),
@@ -177,7 +177,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                   // disableLengthCheck: true,
                   dropdownIconPosition: IconPosition.trailing,
                   dropdownTextStyle: AppStyles.labelTextStyle().copyWith(
-                    fontSize: 14.67,
+                    fontSize: AppStyles.fontSize14,
                     fontWeight: FontWeight.w500,
                     height: 1.25,
                     color: Colors.grey[600],
@@ -192,7 +192,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                     errorMaxLines: 2,
                     hintText: '555 *** ****',
                     hintStyle: AppStyles.labelTextStyle().copyWith(
-                      fontSize: 14.67,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w500,
                       height: 1.25,
                       color: Colors.grey[600],
@@ -252,7 +252,7 @@ class ProfileSetupPage extends GetView<SignUpController> {
                       Get.arguments == 'fromProfile' ? 'Update' : 'Complete',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
-                        fontSize: 14.67,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w600,
                         height: 1.25,
                       ),

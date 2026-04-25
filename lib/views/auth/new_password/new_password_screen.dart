@@ -59,7 +59,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black.withAlpha(140),
-                          fontSize: 14.95,
+                          fontSize: AppStyles.fontSize14,
 
                           fontWeight: FontWeight.w500,
                           height: 1.25,
@@ -80,7 +80,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                               l10n.password,
                               style: AppStyles.labelTextStyle().copyWith(
                                 color: Colors.black,
-                                fontSize: 14.67,
+                                fontSize: AppStyles.fontSize14,
 
                                 fontWeight: FontWeight.w500,
                               ),
@@ -112,7 +112,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                               l10n.confirmPassword,
                               style: AppStyles.labelTextStyle().copyWith(
                                 color: Colors.black,
-                                fontSize: 14.67,
+                                fontSize: AppStyles.fontSize14,
 
                                 fontWeight: FontWeight.w500,
                               ),
@@ -231,7 +231,7 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
                         l10n.needHelp,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
-                          fontSize: 14.95,
+                          fontSize: AppStyles.fontSize14,
 
                           fontWeight: FontWeight.w600,
                           height: 1.25,

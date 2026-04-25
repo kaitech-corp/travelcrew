@@ -27,7 +27,7 @@ class StepsFour extends StatelessWidget {
               'Lodging Type',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -45,7 +45,7 @@ class StepsFour extends StatelessWidget {
               'Hotel Name',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -72,7 +72,7 @@ class StepsFour extends StatelessWidget {
               'Address',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -112,7 +112,7 @@ class StepsFour extends StatelessWidget {
               'Check-in & Check-out',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -191,7 +191,7 @@ class StepsFour extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
-                          fontSize: 13.95,
+                          fontSize: AppStyles.fontSize13,
 
                           fontWeight: FontWeight.w500,
                           height: 1.25,
@@ -213,7 +213,7 @@ class StepsFour extends StatelessWidget {
             //   'Expanse Per Night',
             //   style: AppStyles.labelTextStyle().copyWith(
             //     color: Colors.black,
-            //     fontSize: 20.93,
+            //     fontSize: AppStyles.fontSize20,
 
             //     fontWeight: FontWeight.w600,
             //   ),

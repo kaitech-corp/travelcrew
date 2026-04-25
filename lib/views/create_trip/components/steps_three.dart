@@ -48,7 +48,7 @@ class StepsThree extends StatelessWidget {
               'Flight Number',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -67,7 +67,7 @@ class StepsThree extends StatelessWidget {
               'Departure Date & Time',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -132,7 +132,7 @@ class StepsThree extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
-                          fontSize: 13.95,
+                          fontSize: AppStyles.fontSize13,
 
                           fontWeight: FontWeight.w500,
                           height: 1.25,
@@ -154,7 +154,7 @@ class StepsThree extends StatelessWidget {
               'Arrival Date & Time',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -219,7 +219,7 @@ class StepsThree extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
-                          fontSize: 13.95,
+                          fontSize: AppStyles.fontSize13,
 
                           fontWeight: FontWeight.w500,
                           height: 1.25,
@@ -241,7 +241,7 @@ class StepsThree extends StatelessWidget {
               'Airport/Station Details',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
-                fontSize: 20.93,
+                fontSize: AppStyles.fontSize20,
 
                 fontWeight: FontWeight.w600,
                 height: 1.33,
@@ -307,7 +307,7 @@ class StepsThree extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 13.95.sp,
+                        fontSize: AppStyles.fontSize13,
                         fontWeight: FontWeight.w500,
                         height: 1.25,
                       ),

@@ -5,10 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppStyles {
-  // Font Sizes
-  static final double fontSize9 = 9.sp;
-  static final double fontSize10 = 10.sp;
-  static final double fontSize11 = 11.sp;
+  // Font Sizes — minimum size is 12.sp
   static final double fontSize12 = 12.sp;
   static final double fontSize13 = 13.sp;
   static final double fontSize14 = 14.sp;

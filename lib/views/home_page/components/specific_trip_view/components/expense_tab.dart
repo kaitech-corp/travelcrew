@@ -47,7 +47,7 @@ class ExpenseTab extends StatelessWidget {
             'Total Trip Cost',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
               fontWeight: FontWeight.w600,
               height: 1.33,
             ),
@@ -76,7 +76,7 @@ class ExpenseTab extends StatelessWidget {
                         color: expenseSummary['remainingBudget'] < 0 
                             ? Colors.red 
                             : Colors.green,
-                        fontSize: 12,
+                        fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -104,7 +104,7 @@ class ExpenseTab extends StatelessWidget {
                       'You Spent',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: 12,
+                        fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -112,7 +112,7 @@ class ExpenseTab extends StatelessWidget {
                       '\$${expenseSummary['userSpent'].toStringAsFixed(2)}',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 16,
+                        fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -129,7 +129,7 @@ class ExpenseTab extends StatelessWidget {
                       'Your Share',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: 12,
+                        fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -137,7 +137,7 @@ class ExpenseTab extends StatelessWidget {
                       '\$${expenseSummary['userShare'].toStringAsFixed(2)}',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
-                        fontSize: 16,
+                        fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -154,7 +154,7 @@ class ExpenseTab extends StatelessWidget {
                       'Net Balance',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: 12,
+                        fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -164,7 +164,7 @@ class ExpenseTab extends StatelessWidget {
                         color: expenseSummary['netBalance'] >= 0 
                             ? Colors.green 
                             : Colors.red,
-                        fontSize: 16,
+                        fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -187,14 +187,14 @@ class ExpenseTab extends StatelessWidget {
           
           // Show debt information
           if (userDebts.isEmpty)
-            const Center(
+             Center(
               child: Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Text(
                   'All expenses are settled!',
                   style: TextStyle(
                     color: Colors.green,
-                    fontSize: 16,
+                    fontSize: AppStyles.fontSize16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -240,7 +240,7 @@ class ExpenseTab extends StatelessWidget {
                             : 'You owe ${user.displayName}',
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF1F1F1F),
-                          fontSize: 13,
+                          fontSize: AppStyles.fontSize13,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -333,7 +333,7 @@ class ExpenseTab extends StatelessWidget {
                           'Add Expense',
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.white,
-                            fontSize: 13,
+                            fontSize: AppStyles.fontSize13,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

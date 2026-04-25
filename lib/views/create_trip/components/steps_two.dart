@@ -22,7 +22,7 @@ class StepsTwo extends StatelessWidget {
             'Airline Name',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
               height: 1.33,
@@ -51,7 +51,7 @@ class StepsTwo extends StatelessWidget {
             'Flight Number',
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
-              fontSize: 20.93,
+              fontSize: AppStyles.fontSize20,
 
               fontWeight: FontWeight.w600,
               height: 1.33,

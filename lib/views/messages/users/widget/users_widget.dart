@@ -66,7 +66,7 @@ class UsersWidget extends StatelessWidget {
                           TextSpan(
                             text: title,
                             style: AppStyles.labelTextStyle().copyWith(
-                              fontSize: 16,
+                              fontSize: AppStyles.fontSize16,
                               fontWeight: FontWeight.bold,
                             ),
                             children: [
@@ -91,7 +91,7 @@ class UsersWidget extends StatelessWidget {
                                           style: AppStyles.labelTextStyle()
                                               .copyWith(
                                                 color: Colors.white,
-                                                fontSize: 12,
+                                                fontSize: AppStyles.fontSize12,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                         ),
@@ -131,7 +131,7 @@ class UsersWidget extends StatelessWidget {
                           Text(
                             subtitle,
                             style: AppStyles.labelTextStyle().copyWith(
-                              fontSize: 14,
+                              fontSize: AppStyles.fontSize14,
                               color: Colors.black,
                             ),
                           ),

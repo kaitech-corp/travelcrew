@@ -44,7 +44,7 @@ class CongratulationsDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.white.withAlpha(140), // Adjust opacity for better readability
-                  fontSize: 15.88,
+                  fontSize: AppStyles.fontSize15,
 
                   fontWeight: FontWeight.w500,
                   height: 1.33,
@@ -78,7 +78,7 @@ class CongratulationsDialog extends StatelessWidget {
                       'Accept',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
-                        fontSize: 14.12,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w600,
                         height: 1.25,

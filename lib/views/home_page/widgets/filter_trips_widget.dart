@@ -22,7 +22,7 @@ class FilterTripsWidget extends StatelessWidget {
           Text(
             'Price Range',
             style: AppStyles.labelTextStyle().copyWith(
-              fontSize: 18,
+              fontSize: AppStyles.fontSize18,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
@@ -39,7 +39,7 @@ class FilterTripsWidget extends StatelessWidget {
                       'Minimum',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
-                        fontSize: 14.57,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w500,
                         height: 1.25,
                       ),
@@ -66,7 +66,7 @@ class FilterTripsWidget extends StatelessWidget {
                 child: Text(
                   '-',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: AppStyles.fontSize20,
                     color: Colors.black.withValues(alpha: .5),
                   ),
                 ),
@@ -80,7 +80,7 @@ class FilterTripsWidget extends StatelessWidget {
                       'Maximum',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
-                        fontSize: 14.57,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w500,
                         height: 1.25,
                       ),
@@ -106,10 +106,10 @@ class FilterTripsWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 25.h),
-          const Text(
+           Text(
             'Continent',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: AppStyles.fontSize18,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
@@ -176,7 +176,7 @@ class FilterTripsWidget extends StatelessWidget {
                     'Reset',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
-                      fontSize: 14.57,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w600,
                       height: 1.25,
                     ),
@@ -220,7 +220,7 @@ class FilterTripsWidget extends StatelessWidget {
                     'Ok',
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
-                      fontSize: 14.57,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w600,
                       height: 1.25,
                     ),

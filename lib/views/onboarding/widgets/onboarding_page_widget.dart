@@ -53,7 +53,7 @@ class OnboardingPageWidget extends StatelessWidget {
                     index == 0 ? l10n.onboardingTitle1 : index == 1 ? l10n.onboardingTitle2 : l10n.onboardingTitle3,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
-                      fontSize: 28.01,
+                      fontSize: AppStyles.fontSize28,
 
                       fontWeight: FontWeight.w600,
                       height: 1.25,
@@ -66,7 +66,7 @@ class OnboardingPageWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.white.withValues(alpha: 140),
-                    fontSize: 15.76,
+                    fontSize: AppStyles.fontSize15,
 
                     fontWeight: FontWeight.w500,
                     height: 1.33,

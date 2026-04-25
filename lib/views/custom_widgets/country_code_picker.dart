@@ -35,7 +35,7 @@ class CustomPhoneFieldState extends State<CustomPhoneField> {
           Text(
             '+${widget.selectedCountry.phoneCode}',
             style: AppStyles.labelTextStyle().copyWith(
-              fontSize: 16,
+              fontSize: AppStyles.fontSize16,
               color: AppColors().klabeltextcolor,
             ),
           ),
@@ -64,7 +64,7 @@ class CustomPhoneFieldState extends State<CustomPhoneField> {
               children: [
                 Text(
                   widget.selectedCountry.flagEmoji,
-                  style: AppStyles.labelTextStyle().copyWith(fontSize: 24),
+                  style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize24),
                 ),
                 const SizedBox(width: 6),
                 const Icon(Icons.arrow_downward, color: Colors.black54),

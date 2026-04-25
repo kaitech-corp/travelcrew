@@ -65,7 +65,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               () => Text(
                                 '${controller.publicProfile.value?.followers?.length ?? 0}',
                                 style: AppStyles.labelTextStyle().copyWith(
-                                  fontSize: 18.sp,
+                                  fontSize: AppStyles.fontSize18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -96,7 +96,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               () => Text(
                                 '${controller.publicProfile.value?.following?.length ?? 0}',
                                 style: AppStyles.labelTextStyle().copyWith(
-                                  fontSize: 18.sp,
+                                  fontSize: AppStyles.fontSize18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -216,7 +216,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       l10n.logout,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFFDA2828),
-                        fontSize: 13.95.sp,
+                        fontSize: AppStyles.fontSize13,
 
                         fontWeight: FontWeight.w600,
                         height: 1.25.h,
