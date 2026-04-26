@@ -43,8 +43,10 @@ class ImportTripScreen extends GetView<ImportTripController> {
             Obx(
               () => CustomElevatedButton(
                 width: Get.width,
-                title: controller.isParsing.value ? 'Importing...' : 'Import Trip',
-                onPressed: controller.isParsing.value ? () {} : controller.importTrip,
+                title:
+                    controller.isParsing.value ? 'Importing...' : 'Import Trip',
+                onPressed:
+                    controller.isParsing.value ? () {} : controller.importTrip,
                 height: 52.h,
               ),
             ),
@@ -75,7 +77,7 @@ class ImportTripScreen extends GetView<ImportTripController> {
               alignment: Alignment.center,
               child: Text(
                 number,
-                style:  TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: AppStyles.fontSize13,
                   fontWeight: FontWeight.bold,
@@ -137,7 +139,7 @@ class _PromptCard extends StatelessWidget {
         children: [
           Text(
             ImportTripController.aiPrompt,
-            style:  TextStyle(
+            style: TextStyle(
               fontFamily: 'monospace',
               fontSize: AppStyles.fontSize12,
               color: Color(0xFF333333),
@@ -153,7 +155,10 @@ class _PromptCard extends StatelessWidget {
               label: const Text('Copy Prompt'),
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.kPrimaryColor,
-                textStyle:  TextStyle(fontWeight: FontWeight.w600, fontSize: AppStyles.fontSize13),
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: AppStyles.fontSize13,
+                ),
               ),
             ),
           ),
@@ -172,7 +177,10 @@ class _PasteField extends StatelessWidget {
     return TextField(
       controller: controller.pasteController,
       maxLines: 12,
-      style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize13, height: 1.5),
+      style: AppStyles.labelTextStyle().copyWith(
+        fontSize: AppStyles.fontSize13,
+        height: 1.5,
+      ),
       decoration: InputDecoration(
         hintText: 'Paste the JSON output from your AI here...',
         hintStyle: AppStyles.labelTextStyle().copyWith(
@@ -192,7 +200,10 @@ class _PasteField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.kPrimaryColor, width: 1.5),
+          borderSide: const BorderSide(
+            color: AppColors.kPrimaryColor,
+            width: 1.5,
+          ),
         ),
       ),
     );

@@ -10,11 +10,10 @@ import '../custom_widgets/custom_scaffold.dart';
 import 'controller/main_view_controller.dart';
 
 class MainViewScreen extends GetView<MainViewController> {
-  MainViewScreen({super.key});
-  late bool isKeyboardVisible = false;
+  const MainViewScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
     mainViewController = controller;
     // DateTime? lastBackPressed;
     return CustomScaffold(
@@ -46,7 +45,7 @@ class MainViewScreen extends GetView<MainViewController> {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 5),
-                    child: Obx(
+                child: Obx(
                   () => CustomBottomBar(
                     navItems: [
                       BottomNavigationBarItem(

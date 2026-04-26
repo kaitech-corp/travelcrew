@@ -37,8 +37,12 @@ class ForgotPasswordController extends GetxController {
   Future<void> sendPasswordResetEmail() async {
     try {
       GlobalVariables.showLoader.value = true;
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
-      showCustomSnackBar(content: 'Password reset email sent. Please check your inbox.');
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text,
+      );
+      showCustomSnackBar(
+        content: 'Password reset email sent. Please check your inbox.',
+      );
       Get.offAllNamed(kLoginScreenRoute);
     } on FirebaseAuthException catch (e) {
       showCustomSnackBar(content: e.message ?? 'An error occurred.');

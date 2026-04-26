@@ -18,7 +18,9 @@ class ProfileController extends GetxController {
   Future<void> fetchPublicProfile() async {
     final String? userId = GlobalVariables.loggedInUser.value?.uid;
     if (userId != null) {
-      publicProfile.value = await AuthService.getUserPublicProfile(userId: userId);
+      publicProfile.value = await AuthService.getUserPublicProfile(
+        userId: userId,
+      );
     }
   }
 }

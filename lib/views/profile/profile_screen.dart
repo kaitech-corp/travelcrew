@@ -48,10 +48,14 @@ class ProfileScreen extends GetView<ProfileController> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => Get.toNamed(kConnectionsScreenRoute, arguments: {
-                        'userId': GlobalVariables.loggedInUser.value?.uid,
-                        'initialIndex': 0
-                      }),
+                      onTap:
+                          () => Get.toNamed(
+                            kConnectionsScreenRoute,
+                            arguments: {
+                              'userId': GlobalVariables.loggedInUser.value?.uid,
+                              'initialIndex': 0,
+                            },
+                          ),
                       child: Container(
                         padding: EdgeInsets.all(10.r),
                         decoration: BoxDecoration(
@@ -79,10 +83,14 @@ class ProfileScreen extends GetView<ProfileController> {
                   SizedBox(width: 10.w),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => Get.toNamed(kConnectionsScreenRoute, arguments: {
-                        'userId': GlobalVariables.loggedInUser.value?.uid,
-                        'initialIndex': 1
-                      }),
+                      onTap:
+                          () => Get.toNamed(
+                            kConnectionsScreenRoute,
+                            arguments: {
+                              'userId': GlobalVariables.loggedInUser.value?.uid,
+                              'initialIndex': 1,
+                            },
+                          ),
                       child: Container(
                         padding: EdgeInsets.all(10.r),
                         decoration: BoxDecoration(

@@ -98,7 +98,7 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
                       SizedBox(height: 4.5.h),
                       TextWidget(
                         labelText:
-                            '\$${trip.expenses!.fold(0.0, (previousValue, element) => (previousValue ?? 0) + element.amount)}',
+                            '\$${trip.expenses!.fold(0.0, (previousValue, element) => previousValue + element.amount)}',
                         style: AppStyles.labelTextStyle().copyWith(
                           fontSize: AppStyles.fontSize20,
                           fontWeight: FontWeight.w600,

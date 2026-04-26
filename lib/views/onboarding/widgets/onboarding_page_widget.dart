@@ -50,7 +50,11 @@ class OnboardingPageWidget extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Text(
                     textAlign: TextAlign.center,
-                    index == 0 ? l10n.onboardingTitle1 : index == 1 ? l10n.onboardingTitle2 : l10n.onboardingTitle3,
+                    index == 0
+                        ? l10n.onboardingTitle1
+                        : index == 1
+                        ? l10n.onboardingTitle2
+                        : l10n.onboardingTitle3,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: Colors.white,
                       fontSize: AppStyles.fontSize28,
@@ -62,7 +66,11 @@ class OnboardingPageWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  index == 0 ? l10n.onboardingSubtitle1 : index == 1 ? l10n.onboardingSubtitle2 : l10n.onboardingSubtitle3,
+                  index == 0
+                      ? l10n.onboardingSubtitle1
+                      : index == 1
+                      ? l10n.onboardingSubtitle2
+                      : l10n.onboardingSubtitle3,
                   textAlign: TextAlign.center,
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.white.withValues(alpha: 140),

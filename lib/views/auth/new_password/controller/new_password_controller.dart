@@ -82,12 +82,19 @@ class NewPasswordController extends GetxController {
       });
       // To check the result:
       if (result.data['success'] == true) {
-        Get.dialog(const Center(child: WellDoneDialog()), barrierColor: Colors.grey);
+        Get.dialog(
+          const Center(child: WellDoneDialog()),
+          barrierColor: Colors.grey,
+        );
       } else {
         // Password reset failed
         showCustomSnackBar(content: 'Password reset failed');
       }
-    } catch (e) {}
-    GlobalVariables.showLoader.value = F;
+    } catch (e) {
+      debugPrint('Password reset failed: $e');
+      showCustomSnackBar(content: 'Password reset failed');
+    } finally {
+      GlobalVariables.showLoader.value = F;
+    }
   }
 }

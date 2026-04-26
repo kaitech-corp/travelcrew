@@ -106,7 +106,7 @@ class FilterTripsWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 25.h),
-           Text(
+          Text(
             'Continent',
             style: TextStyle(
               fontSize: AppStyles.fontSize18,

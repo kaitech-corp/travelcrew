@@ -51,9 +51,15 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
   Future<void> copyPrompt() async {
     try {
       await Clipboard.setData(const ClipboardData(text: aiPrompt));
-      showCustomSnackBar(content: 'Prompt copied — paste it into your AI assistant');
+      showCustomSnackBar(
+        content: 'Prompt copied — paste it into your AI assistant',
+      );
     } catch (e, stack) {
-      ErrorHandler.handleError(e, stackTrace: stack, context: 'ImportTrip.copyPrompt');
+      ErrorHandler.handleError(
+        e,
+        stackTrace: stack,
+        context: 'ImportTrip.copyPrompt',
+      );
       showCustomSnackBar(content: 'Could not copy to clipboard');
     }
   }
@@ -68,30 +74,69 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
     isParsing.value = true;
     try {
       // Strip markdown code fences if the AI wrapped the JSON
-      final cleaned = raw
-          .replaceAll(RegExp(r'^```json\s*', multiLine: true), '')
-          .replaceAll(RegExp(r'^```\s*', multiLine: true), '')
-          .trim();
+      final cleaned =
+          raw
+              .replaceAll(RegExp(r'^```json\s*', multiLine: true), '')
+              .replaceAll(RegExp(r'^```\s*', multiLine: true), '')
+              .trim();
 
       final data = json.decode(cleaned) as Map<String, dynamic>;
 
       // Validate required fields
       if ((data['destination'] as String?)?.isEmpty ?? true) {
-        showCustomSnackBar(content: 'Destination is required — ask your AI to include it');
+        showCustomSnackBar(
+          content: 'Destination is required — ask your AI to include it',
+        );
         return;
       }
       if (data['start_date'] == null || data['end_date'] == null) {
-        showCustomSnackBar(content: 'Start and end dates are required — ask your AI to include them');
+        showCustomSnackBar(
+          content:
+              'Start and end dates are required — ask your AI to include them',
+        );
         return;
+      }
+      final startDate = DateTime.tryParse(data['start_date'] as String? ?? '');
+      final endDate = DateTime.tryParse(data['end_date'] as String? ?? '');
+      if (startDate == null || endDate == null || endDate.isBefore(startDate)) {
+        showCustomSnackBar(content: 'Trip dates are invalid');
+        return;
+      }
+      final activities = data['activities'];
+      if (activities is List && activities.length > 50) {
+        showCustomSnackBar(content: 'Import is limited to 50 activities');
+        return;
+      }
+      final lodging = data['lodging'];
+      if (lodging is Map && lodging['cost_per_night'] != null) {
+        final cost = lodging['cost_per_night'];
+        if (cost is! num || cost < 0) {
+          showCustomSnackBar(content: 'Lodging cost must be a positive number');
+          return;
+        }
       }
 
       Get.toNamed(kCreateTripScreenRoute, arguments: data);
     } on FormatException catch (e, stack) {
-      ErrorHandler.handleError(e, stackTrace: stack, context: 'ImportTrip.parse');
-      showCustomSnackBar(content: 'Could not parse the response — make sure you copied the full JSON output');
+      ErrorHandler.handleError(
+        e,
+        stackTrace: stack,
+        context: 'ImportTrip.parse',
+      );
+      showCustomSnackBar(
+        content:
+            'Could not parse the response — make sure you copied the full JSON output',
+      );
     } catch (e, stack) {
-      ErrorHandler.handleError(e, stackTrace: stack, context: 'ImportTrip.importTrip');
-      showCustomSnackBar(content: 'Something went wrong — try copying the prompt again and re-running your AI');
+      ErrorHandler.handleError(
+        e,
+        stackTrace: stack,
+        context: 'ImportTrip.importTrip',
+      );
+      showCustomSnackBar(
+        content:
+            'Something went wrong — try copying the prompt again and re-running your AI',
+      );
     } finally {
       isParsing.value = false;
     }

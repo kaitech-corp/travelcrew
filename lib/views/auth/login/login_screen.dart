@@ -98,7 +98,6 @@ class LoginScreen extends GetView<LoginController> {
                 SizedBox(height: 10.h),
                 Obx(
                   () => CustomTextField(
-                    
                     textInputAction: TextInputAction.done,
                     controller: controller.passwordController,
                     hintText: l10n.password,
@@ -134,11 +133,11 @@ class LoginScreen extends GetView<LoginController> {
                           Obx(
                             () => DottedBorder(
                               options: CircularDottedBorderOptions(
-                          color:
-                              controller.isRememberMe.isTrue
-                                  ? AppColors.kPrimaryColor
-                                  : const Color(0xFF666666),
-                        ),
+                                color:
+                                    controller.isRememberMe.isTrue
+                                        ? AppColors.kPrimaryColor
+                                        : const Color(0xFF666666),
+                              ),
                               child: Icon(
                                 Icons.check_circle,
                                 color:

@@ -83,7 +83,11 @@ class LocationWidget extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.star, size: AppStyles.fontSize15, color: Colors.yellow),
+                            Icon(
+                              Icons.star,
+                              size: AppStyles.fontSize15,
+                              color: Colors.yellow,
+                            ),
                             SizedBox(width: 5.w),
                             Text(
                               '4.8',
@@ -111,13 +115,16 @@ class LocationWidget extends StatelessWidget {
                 try {
                   final userId = GlobalVariables.loggedInUser.value?.uid;
                   if (userId == null) {
-                    showCustomSnackBar(content: 'Please login to favorite trips');
+                    showCustomSnackBar(
+                      content: 'Please login to favorite trips',
+                    );
                     return;
                   }
-                  
+
                   GlobalVariables.addingToFavourites.value = tripModel.id;
-                  
-                  final isCurrentlyFavorite = GlobalVariables.loggedInUser.value?.favouriteTrips
+
+                  final isCurrentlyFavorite =
+                      GlobalVariables.loggedInUser.value?.favouriteTrips
                           .contains(tripModel.id) ??
                       false;
 
@@ -126,7 +133,7 @@ class LocationWidget extends StatelessWidget {
                     userId: userId,
                     isFavorite: isCurrentlyFavorite,
                   );
-                  
+
                   GlobalVariables.addingToFavourites.value = '';
                 } catch (e) {
                   GlobalVariables.addingToFavourites.value = '';
@@ -144,11 +151,10 @@ class LocationWidget extends StatelessWidget {
                       GlobalVariables.addingToFavourites.value == tripModel.id
                           ? showLoaderWhenAddingToFavourites()
                           : Icon(
-                               GlobalVariables.loggedInUser.value?.favouriteTrips
-                                            .contains(tripModel.id) ??
-                                        false
-                                ? 
-                                Icons.star_rounded
+                            GlobalVariables.loggedInUser.value?.favouriteTrips
+                                        .contains(tripModel.id) ??
+                                    false
+                                ? Icons.star_rounded
                                 : Icons.star_border,
                             size: 25.sp,
                             color:
@@ -159,8 +165,7 @@ class LocationWidget extends StatelessWidget {
                                             .contains(tripModel.id) ??
                                         false
                                     ? AppColors.productBgColor
-                                    :
-                                     Colors.white,
+                                    : Colors.white,
                           ),
                 ),
               ),

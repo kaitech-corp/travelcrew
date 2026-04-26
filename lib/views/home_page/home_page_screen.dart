@@ -93,21 +93,14 @@ class HomePageScreen extends GetView<HomePageController> {
                         ),
                         contentPadding: EdgeInsets.zero,
                       ),
-                      style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize14),
+                      style: AppStyles.labelTextStyle().copyWith(
+                        fontSize: AppStyles.fontSize14,
+                      ),
                     ),
                   ),
                   const Spacer(),
                   GestureDetector(
                     onTap: () async {
-                      // showGeneralDialog(
-                      //   context: context,
-                      //   pageBuilder: (_, d, c) {
-                      //     return Dialog(
-                      //       backgroundColor: AppColors.kGreyColor,
-                      //       child: FilterTripsWidget(),
-                      //     );
-                      //   },
-                      // );
                       await showModalBottomSheet(
                         backgroundColor: AppColors.kGreyColor,
                         isScrollControlled: true,
@@ -164,7 +157,7 @@ class HomePageScreen extends GetView<HomePageController> {
                                     if (index == 0) {
                                       controller.getOtherTrips();
                                     } else if (index == 1) {
-                                      controller.getPopulatTrips();
+                                      controller.getPopularTrips();
                                     } else if (index == 2) {
                                       controller.getByLocation();
                                     } else {
@@ -239,10 +232,7 @@ class HomePageScreen extends GetView<HomePageController> {
                               l10n.popular,
                               controller.otherFilteredTrips,
                             ),
-                            _buildTripsTab(
-                              l10n.nearby,
-                              controller.nearbyTrips,
-                            ),
+                            _buildTripsTab(l10n.nearby, controller.nearbyTrips),
                             _buildTripsTab(
                               l10n.recommended,
                               controller.recommendedTrips,

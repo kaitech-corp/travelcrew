@@ -24,14 +24,8 @@ class MessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left:
-            message.createdBy == GlobalVariables.currentUid
-                ? 0
-                : 10.w,
-        right:
-            message.createdBy == GlobalVariables.currentUid
-                ? 10.w
-                : 0,
+        left: message.createdBy == GlobalVariables.currentUid ? 0 : 10.w,
+        right: message.createdBy == GlobalVariables.currentUid ? 10.w : 0,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -48,8 +42,7 @@ class MessageWidget extends StatelessWidget {
             children: [
               if (message.createdBy == GlobalVariables.currentUid)
                 const SizedBox(height: 5),
-              if (message.createdBy !=
-                  GlobalVariables.currentUid) ...{
+              if (message.createdBy != GlobalVariables.currentUid) ...{
                 Row(
                   spacing: 5.w,
                   children: [
@@ -65,8 +58,7 @@ class MessageWidget extends StatelessWidget {
                     ),
                     TextWidget(
                       labelText:
-                          message.createdBy ==
-                                  GlobalVariables.currentUid
+                          message.createdBy == GlobalVariables.currentUid
                               ? 'You'
                               : userModel.name,
                       style: AppStyles.labelTextStyle().copyWith(
@@ -87,20 +79,17 @@ class MessageWidget extends StatelessWidget {
                         : context.width * 0.8,
                 decoration: ShapeDecoration(
                   color:
-                      message.createdBy ==
-                              GlobalVariables.currentUid
+                      message.createdBy == GlobalVariables.currentUid
                           ? AppColors.kWhiteColor
                           : AppColors.kLightGreyColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topLeft:
-                          message.createdBy !=
-                                  GlobalVariables.currentUid
+                          message.createdBy != GlobalVariables.currentUid
                               ? Radius.zero
                               : Radius.circular(16.r),
                       topRight:
-                          message.createdBy ==
-                                  GlobalVariables.currentUid
+                          message.createdBy == GlobalVariables.currentUid
                               ? Radius.zero
                               : Radius.circular(16.r),
                       bottomLeft: const Radius.circular(16),
@@ -126,8 +115,7 @@ class MessageWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (message.createdBy ==
-                        GlobalVariables.currentUid) ...{
+                    if (message.createdBy == GlobalVariables.currentUid) ...{
                       ImageIcon(
                         AssetImage(AppImages.kMessageReadIcon),
                         color: AppColors.kPrimaryColor,

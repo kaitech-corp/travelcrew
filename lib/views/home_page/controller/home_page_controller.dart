@@ -54,8 +54,8 @@ class HomePageController extends GetxController
     try {
       AppLogger.debug('Starting to fetch trips');
       isLoadingOtherTrips.value = true;
-      
-      getOtherTrips();
+
+      await getOtherTrips();
     } catch (error, stackTrace) {
       ErrorHandler.handleError(
         error,
@@ -73,37 +73,35 @@ class HomePageController extends GetxController
   }) async {
     try {
       isLoadingOtherTrips.value = true;
-      await FirebaseTripService.getFilteredTrips(
+      final value = await FirebaseTripService.getFilteredTrips(
         minBudget: minimum.toString(),
         maxBudget: maximum.toString(),
         continents: continents,
-      ).then((value) {
-        isLoadingOtherTrips.value = false;
-        otherTrips.value = value;
-        otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
-        otherFilteredTrips.value = value.toList();
-      });
+      );
+      otherTrips.value = value;
+      otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      otherFilteredTrips.value = value.toList();
     } catch (e) {
       if (kDebugMode) {
         print('Error getting filtered trips: $e');
       }
+    } finally {
+      isLoadingOtherTrips.value = false;
     }
-    isLoadingOtherTrips.value = false;
   }
 
   Future<void> getOtherTrips() async {
     try {
       isLoadingOtherTrips.value = true;
-      FirebaseTripService.getOtherTrips().then((value) {
-        isLoadingOtherTrips.value = false;
-        otherTrips.value = value;
-        otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
-        otherFilteredTrips.value = value;
-      });
+      final value = await FirebaseTripService.getOtherTrips();
+      otherTrips.value = value;
+      otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      otherFilteredTrips.value = value;
     } catch (e) {
       if (kDebugMode) {
         print('Error getting other trips: $e');
       }
+    } finally {
       isLoadingOtherTrips.value = false;
     }
   }
@@ -140,18 +138,17 @@ class HomePageController extends GetxController
             .toList();
   }
 
-  Future<void> getPopulatTrips() async {
+  Future<void> getPopularTrips() async {
     try {
       isLoadingOtherTrips.value = true;
-      FirebaseTripService.getPopularTrips().then((value) {
-        isLoadingOtherTrips.value = false;
-        otherTrips.value = value;
-        otherFilteredTrips.value = value.toList();
-      });
+      final value = await FirebaseTripService.getPopularTrips();
+      otherTrips.value = value;
+      otherFilteredTrips.value = value.toList();
     } catch (e) {
       if (kDebugMode) {
         print('Error getting popular trips: $e');
       }
+    } finally {
       isLoadingOtherTrips.value = false;
     }
   }

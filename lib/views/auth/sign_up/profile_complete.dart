@@ -169,7 +169,6 @@ class ProfileSetupPage extends GetView<SignUpController> {
                   //   }
                   //   return null;
                   // },
-
                   controller: controller.phoneController,
                   focusNode: controller.phoneFocus,
                   initialCountryCode:

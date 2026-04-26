@@ -46,6 +46,7 @@ class UsersController extends GetxController {
     // Load chat rooms when controller is initialized
     loadChatRooms();
   }
+
   Future<void> getUsersDetail() async {
     try {
       tripUsers.value = [];
@@ -56,7 +57,9 @@ class UsersController extends GetxController {
       }
 
       isLoadingUsers.value = true;
-      AppLogger.debug('Getting user details for ${currentTrip.value!.joinedUsers?.length} users');
+      AppLogger.debug(
+        'Getting user details for ${currentTrip.value!.joinedUsers?.length} users',
+      );
 
       final res = await AuthService.getTripUsers(
         userIds: currentTrip.value!.joinedUsers?.toList() ?? [],
@@ -104,26 +107,24 @@ class UsersController extends GetxController {
     }
   }
 
-  
-
   Future<void> listenToChat() async {
     try {
       // Clean up existing listeners to prevent memory leaks
       await _cleanupListeners();
-      
+
       isLoadingChats.value = true;
       roomId = currentTrip.value?.id;
-      
+
       if (roomId == null) {
         AppLogger.warning('Cannot listen to chat: roomId is null');
         return;
       }
-      
+
       AppLogger.debug('Starting to listen to chat room: $roomId');
-      
+
       final res = await ChatFirebaseService.checkIfRoomExists(roomId: roomId!);
       chatRoom.value = res;
-      
+
       if (res == null) {
         AppLogger.info('Chat room does not exist, creating new room');
         final bool created = await createChatRoom();
@@ -132,7 +133,7 @@ class UsersController extends GetxController {
           return;
         }
       }
-      
+
       listenToMessages(roomId!);
       listenToCollection(roomId: roomId!);
       AppLogger.info('Successfully started listening to chat room: $roomId');
@@ -173,10 +174,14 @@ class UsersController extends GetxController {
       }
 
       // Check if user is already in the chatroom
-      final isUserAlreadyInTrip = currentTrip.value?.joinedUsers?.contains(currentUser.uid) ?? false;
+      final isUserAlreadyInTrip =
+          currentTrip.value?.joinedUsers?.contains(currentUser.uid) ?? false;
 
-      if (chatRoom.value!.containsUser(currentUser.uid) && isUserAlreadyInTrip) {
-        AppLogger.info('User ${currentUser.uid} is already in the chatroom: $roomId');
+      if (chatRoom.value!.containsUser(currentUser.uid) &&
+          isUserAlreadyInTrip) {
+        AppLogger.info(
+          'User ${currentUser.uid} is already in the chatroom: $roomId',
+        );
         showCustomSnackBar(content: 'You are already in this chat room');
         return;
       }
@@ -205,10 +210,10 @@ class UsersController extends GetxController {
         currentTrip.value?.joinedUsers?.add(currentUser.uid);
         AppLogger.debug('Added user to trip joinedUsers list');
       }
-      
+
       if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
       chatRoom.refresh();
-      
+
       // Send notification
       FirebaseNotificationsService.saveNotifications(
         message: '${currentUser.displayName} joined your trip.',
@@ -217,12 +222,12 @@ class UsersController extends GetxController {
         notificationForId: currentTrip.value!.id,
         notificationType: NotificationType.trip.status,
       );
-      
+
       await ChatFirebaseService.updateChatRoom(
         roomId: roomId!,
         chatToSave: chatRoom.value!,
       );
-      
+
       AppLogger.info('Successfully joined room: $roomId');
     } catch (error, stackTrace) {
       ErrorHandler.handleFirebaseError(
@@ -239,10 +244,8 @@ class UsersController extends GetxController {
     try {
       if (roomListner == null) {
         AppLogger.debug('Setting up room listener for: $roomId');
-        final res = firestore
-            .collection(kTripChatCollection)
-            .doc(roomId);
-            
+        final res = firestore.collection(kTripChatCollection).doc(roomId);
+
         roomListner = res.snapshots().listen(
           (event) {
             try {
@@ -329,22 +332,22 @@ class UsersController extends GetxController {
       }
 
       AppLogger.debug('Saving message in room: $roomId');
-      
+
       // Add message to local list for immediate UI update
       messages.add(chatToSave);
       scrollToEnd();
-      
+
       // Send message to Firebase
       await ChatFirebaseService.sendMessage(
-        chatToSave: chatToSave, 
+        chatToSave: chatToSave,
         roomId: roomId!,
       );
-      
+
       AppLogger.info('Successfully saved message to room: $roomId');
     } catch (error, stackTrace) {
       // Remove message from local list if sending failed
       messages.removeWhere((msg) => msg.chateId == chatToSave.chateId);
-      
+
       ErrorHandler.handleFirebaseError(
         error,
         stackTrace: stackTrace,
@@ -370,7 +373,6 @@ class UsersController extends GetxController {
   RxList<ChatMessage> messages = <ChatMessage>[].obs;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? messageListener;
 
-
   @override
   void onClose() {
     roomListner?.cancel();
@@ -382,7 +384,7 @@ class UsersController extends GetxController {
   void listenToMessages(String roomId) {
     try {
       AppLogger.debug('Setting up message listener for room: $roomId');
-      
+
       messageListener = firestore
           .collection(kTripChatCollection)
           .doc(roomId)
@@ -393,15 +395,18 @@ class UsersController extends GetxController {
             (event) {
               try {
                 if (event.docs.isNotEmpty) {
-                  final newMessages = event.docs
-                      .map((e) => ChatMessage.fromMap(e.data()))
-                      .toList()
-                      .reversed
-                      .toList();
-                  
+                  final newMessages =
+                      event.docs
+                          .map((e) => ChatMessage.fromMap(e.data()))
+                          .toList()
+                          .reversed
+                          .toList();
+
                   messages.value = newMessages;
                   scrollToEnd();
-                  AppLogger.debug('Updated ${newMessages.length} messages from listener');
+                  AppLogger.debug(
+                    'Updated ${newMessages.length} messages from listener',
+                  );
                 }
               } catch (error, stackTrace) {
                 ErrorHandler.handleError(
@@ -426,8 +431,6 @@ class UsersController extends GetxController {
       );
     }
   }
-  
-  
 
   Future<void> leaveGroup({String? userId}) async {
     try {
@@ -443,7 +446,9 @@ class UsersController extends GetxController {
       }
 
       GlobalVariables.showLoader.value = true;
-      AppLogger.info('User leaving group: ${currentTrip.value!.id}, userId: $targetUserId');
+      AppLogger.info(
+        'User leaving group: ${currentTrip.value!.id}, userId: $targetUserId',
+      );
 
       final success = await FirebaseTripService.leaveGroup(
         groupId: currentTrip.value!.id,
@@ -452,19 +457,22 @@ class UsersController extends GetxController {
 
       if (success) {
         showCustomSnackBar(
-          content: userId != null
-              ? 'Removed successfully!'
-              : 'You have left the group',
+          content:
+              userId != null
+                  ? 'Removed successfully!'
+                  : 'You have left the group',
         );
-        
+
         currentTrip.value?.joinedUsers?.remove(targetUserId);
         if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
-        
+
         if (userId == null) {
           // Current user is leaving
           mainViewController?.selectedIndex.value = 0;
           Get.offAllNamed(kMainViewScreenRoute);
-          AppLogger.info('Current user left the group, navigating to main view');
+          AppLogger.info(
+            'Current user left the group, navigating to main view',
+          );
         } else {
           // Removing another user
           currentTrip.refresh();
