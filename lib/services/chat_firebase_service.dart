@@ -197,7 +197,9 @@ class ChatFirebaseService {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => ChatMessage.fromMap(doc.data()! as Map<String, dynamic>))
+          .map(
+            (doc) => ChatMessage.fromMap(doc.data()! as Map<String, dynamic>),
+          )
           .toList();
     } catch (e) {
       if (kDebugMode) {
@@ -236,7 +238,9 @@ class ChatFirebaseService {
       return true;
     } catch (e) {
       if (kDebugMode) {
-        print('Error in addUserToChatRoom for roomId: $roomId, userId: ${user.id}. Error: $e');
+        print(
+          'Error in addUserToChatRoom for roomId: $roomId, userId: ${user.id}. Error: $e',
+        );
       }
       return false;
     }
@@ -271,7 +275,9 @@ class ChatFirebaseService {
       return true;
     } catch (e) {
       if (kDebugMode) {
-        print('Error in removeUserFromChatRoom for roomId: $roomId, userId: $userId. Error: $e');
+        print(
+          'Error in removeUserFromChatRoom for roomId: $roomId, userId: $userId. Error: $e',
+        );
       }
       return false;
     }

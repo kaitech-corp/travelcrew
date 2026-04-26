@@ -5,13 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/services/secure_storage_service.dart';
+import 'package:travel_crew/services/notifications/notfication_services.dart';
 import 'package:travel_crew/utils/error_handler.dart';
 import 'package:travel_crew/utils/logger.dart';
 
 import '../models/user_model.dart';
 import '../utils/app_strings.dart';
-import '../utils/app_strings_keys.dart';
 import '../utils/custom_snackbar.dart';
 import 'session_services.dart';
 
@@ -31,18 +30,20 @@ class AuthService {
       // Check for public profile and create if it doesn't exist
       await _createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
 
-      // Check email verification status
-      // if (GlobalVariables.loggedInUser.value?.emailConfirmed != true) {
-      //   showCustomSnackBar(
-      //     contentType: ContentType.warning,
-      //     content:
-      //         'Verify your email to continue. Check your inbox for a verification link.',
-      //   );
-      //   if (fromSplash) {
-      //     Get.offAllNamed(kLoginScreenRoute);
-      //   }
-      //   return;
-      // }
+      await _syncEmailVerification(user);
+      if (!_canAccessApp(user)) {
+        if (!fromSplash) {
+          showCustomSnackBar(
+            contentType: ContentType.warning,
+            title: 'Email Verification Required',
+            content: 'Please verify your email to continue. Check your inbox.',
+          );
+        }
+        Get.offAllNamed(kLoginScreenRoute);
+        return;
+      }
+
+      await FirebasePushNotificationApi().saveTokenForCurrentUser();
 
       // User is verified and logged in successfully
       Get.offAllNamed(kMainViewScreenRoute);
@@ -172,9 +173,19 @@ class AuthService {
 
       // Check for public profile and create if it doesn't exist
       await _createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+      await _syncEmailVerification(credential.user);
+      if (!_canAccessApp(credential.user)) {
+        showCustomSnackBar(
+          contentType: ContentType.warning,
+          title: 'Email Verification Required',
+          content: 'Please verify your email to continue. Check your inbox.',
+        );
+        GlobalVariables.showLoader.value = false;
+        return false;
+      }
+      await FirebasePushNotificationApi().saveTokenForCurrentUser();
 
       GlobalVariables.showLoader.value = false;
-      // SecureStorageService.saveInStorage(key: kPasswordKey, data: password);
       // await FirebaseMessaging.instance.subscribeToTopic(_auth.currentUser!.uid);
       return true;
     } on FirebaseAuthException catch (e) {
@@ -377,22 +388,32 @@ class AuthService {
     }
   }
 
-  static Future<bool> updatePasword({required String newPassword}) async {
+  static Future<bool> updatePasword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        await user.updatePassword(newPassword).then((_) async {
-          await SecureStorageService.saveInStorage(
-            key: kPasswordKey,
-            data: newPassword,
+        final email = user.email;
+        if (email == null || email.isEmpty) {
+          throw FirebaseAuthException(
+            code: 'missing-email',
+            message: 'Current user does not have an email password credential.',
           );
-          GlobalVariables.showLoader.value = false;
-          showCustomSnackBar(
-            title: 'Success',
-            content: 'Password updated successfully',
-          );
-          Get.offAllNamed(kLoginScreenRoute);
-        });
+        }
+        final credential = EmailAuthProvider.credential(
+          email: email,
+          password: currentPassword,
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        GlobalVariables.showLoader.value = false;
+        showCustomSnackBar(
+          title: 'Success',
+          content: 'Password updated successfully',
+        );
+        Get.offAllNamed(kLoginScreenRoute);
         return true;
       }
     } catch (e) {
@@ -424,6 +445,33 @@ class AuthService {
       }
     }
     return false;
+  }
+
+  static bool isCurrentUserEmailVerified() {
+    final user = _auth.currentUser;
+    return user == null || _canAccessApp(user);
+  }
+
+  static bool _canAccessApp(User? user) {
+    if (user == null) return false;
+    if (user.isAnonymous) return true;
+    final providerIds = user.providerData.map((p) => p.providerId).toSet();
+    if (!providerIds.contains(EmailAuthProvider.PROVIDER_ID)) return true;
+    return user.emailVerified;
+  }
+
+  static Future<void> _syncEmailVerification(User? user) async {
+    if (user == null) return;
+    await user.reload();
+    final refreshed = _auth.currentUser ?? user;
+    if (GlobalVariables.loggedInUser.value?.emailConfirmed !=
+        refreshed.emailVerified) {
+      GlobalVariables.loggedInUser.value = GlobalVariables.loggedInUser.value
+          ?.copyWith(emailConfirmed: refreshed.emailVerified);
+      await _firestore.collection(kUsersCollection).doc(refreshed.uid).update({
+        'emailConfirmed': refreshed.emailVerified,
+      });
+    }
   }
 
   static Future<List<PublicUserModel>> getTripUsers({
@@ -538,9 +586,7 @@ class AuthService {
               .doc(userId)
               .get();
       if (userDoc.exists) {
-        final user = PublicUserModel.fromMap(
-          userDoc.data()!,
-        );
+        final user = PublicUserModel.fromMap(userDoc.data()!);
         if (user.followers != null && user.followers!.isNotEmpty) {
           final followersDocs =
               await _firestore
@@ -566,9 +612,7 @@ class AuthService {
               .doc(userId)
               .get();
       if (userDoc.exists) {
-        final user = PublicUserModel.fromMap(
-          userDoc.data()!,
-        );
+        final user = PublicUserModel.fromMap(userDoc.data()!);
         if (user.following != null && user.following!.isNotEmpty) {
           final followingDocs =
               await _firestore

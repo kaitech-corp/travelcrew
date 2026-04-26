@@ -46,6 +46,7 @@ class FirebaseTripService {
                             TripStatus.completed.name,
                           ],
                 )
+                .limit(50)
                 .get();
       } else {
         snapShot =
@@ -56,6 +57,7 @@ class FirebaseTripService {
                   'createdBy',
                   isEqualTo: GlobalVariables.loggedInUser.value?.uid,
                 )
+                .limit(50)
                 .get();
       }
       // showCustomSnackBar(content: snapShot.docs.length.toString());
@@ -107,7 +109,9 @@ class FirebaseTripService {
         } else {
           trip.joindUsersList = [];
         }
-        trip.createdByUser = await AuthService.getUserPublicProfile(userId: trip.createdBy);
+        trip.createdByUser = await AuthService.getUserPublicProfile(
+          userId: trip.createdBy,
+        );
         return trip;
       }
     } catch (e) {
@@ -125,6 +129,8 @@ class FirebaseTripService {
                 'createdBy',
                 isNotEqualTo: GlobalVariables.loggedInUser.value?.uid,
               )
+              .where('isPrivate', isEqualTo: false)
+              .limit(50)
               .get();
 
       final filteredDocs =
@@ -290,25 +296,31 @@ class FirebaseTripService {
       final userRef = firestore.collection(kUsersCollection).doc(userId);
       final tripRef = firestore.collection(kTripTable).doc(tripId);
 
-      if (isFavorite) {
-        // Unfavorite
-        await userRef.update({
-          'favouriteTrips': FieldValue.arrayRemove([tripId]),
-        });
-        await tripRef.update({
-          'favouriteCount': FieldValue.increment(-1),
-        });
-        GlobalVariables.loggedInUser.value?.favouriteTrips.remove(tripId);
-      } else {
-        // Favorite
-        await userRef.update({
-          'favouriteTrips': FieldValue.arrayUnion([tripId]),
-        });
-        await tripRef.update({
-          'favouriteCount': FieldValue.increment(1),
-        });
-        GlobalVariables.loggedInUser.value?.favouriteTrips.add(tripId);
-      }
+      await firestore.runTransaction((transaction) async {
+        final tripSnapshot = await transaction.get(tripRef);
+        final currentCount =
+            (tripSnapshot.data()?['favouriteCount'] as num?)?.toInt() ?? 0;
+        if (isFavorite) {
+          transaction.update(userRef, {
+            'favouriteTrips': FieldValue.arrayRemove([tripId]),
+          });
+          transaction.update(tripRef, {
+            'favouriteCount': currentCount > 0 ? currentCount - 1 : 0,
+          });
+          GlobalVariables.loggedInUser.value?.favouriteTrips.remove(tripId);
+        } else {
+          transaction.update(userRef, {
+            'favouriteTrips': FieldValue.arrayUnion([tripId]),
+          });
+          transaction.update(tripRef, {'favouriteCount': currentCount + 1});
+          if (GlobalVariables.loggedInUser.value?.favouriteTrips.contains(
+                tripId,
+              ) !=
+              true) {
+            GlobalVariables.loggedInUser.value?.favouriteTrips.add(tripId);
+          }
+        }
+      });
       GlobalVariables.loggedInUser.refresh();
       return true;
     } catch (e) {
@@ -325,17 +337,23 @@ class FirebaseTripService {
     bool isLiked = false,
   }) async {
     try {
-      if (isLiked) {
-        await firestore.collection(kActivityTable).doc(activityId).update({
-          'likedBy': FieldValue.arrayRemove([userId]),
-          'likesCount': FieldValue.increment(-1),
-        });
-      } else {
-        await firestore.collection(kActivityTable).doc(activityId).update({
-          'likedBy': FieldValue.arrayUnion([userId]),
-          'likesCount': FieldValue.increment(1),
-        });
-      }
+      final activityRef = firestore.collection(kActivityTable).doc(activityId);
+      await firestore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(activityRef);
+        final currentCount =
+            (snapshot.data()?['likesCount'] as num?)?.toInt() ?? 0;
+        if (isLiked) {
+          transaction.update(activityRef, {
+            'likedBy': FieldValue.arrayRemove([userId]),
+            'likesCount': currentCount > 0 ? currentCount - 1 : 0,
+          });
+        } else {
+          transaction.update(activityRef, {
+            'likedBy': FieldValue.arrayUnion([userId]),
+            'likesCount': currentCount + 1,
+          });
+        }
+      });
       return true;
     } catch (e) {
       kLogging('error $e');
@@ -397,7 +415,10 @@ class FirebaseTripService {
 
   static Future<bool> addFlight({required UserFlightModel flight}) async {
     try {
-      await firestore.collection(kFlightTable).doc(flight.id).set(flight.toMap());
+      await firestore
+          .collection(kFlightTable)
+          .doc(flight.id)
+          .set(flight.toMap());
       return true;
     } catch (e) {
       showCustomSnackBar(content: e.toString());
@@ -420,10 +441,11 @@ class FirebaseTripService {
     required String tripId,
   }) async {
     try {
-      final snapshot = await firestore
-          .collection(kFlightTable)
-          .where('tripId', isEqualTo: tripId)
-          .get();
+      final snapshot =
+          await firestore
+              .collection(kFlightTable)
+              .where('tripId', isEqualTo: tripId)
+              .get();
       return snapshot.docs
           .map((e) => UserFlightModel.fromMap(e.data()))
           .toList();
@@ -452,39 +474,47 @@ class FirebaseTripService {
       final double minLng = longitude - delta;
       final double maxLng = longitude + delta;
 
-      final snapshot = await firestore
-          .collection(kTripTable)
-          .where('latitude', isGreaterThan: minLat)
-          .where('latitude', isLessThan: maxLat)
-          .get();
+      final snapshot =
+          await firestore
+              .collection(kTripTable)
+              .where('isPrivate', isEqualTo: false)
+              .where('latitude', isGreaterThan: minLat)
+              .where('latitude', isLessThan: maxLat)
+              .limit(50)
+              .get();
 
-      final filteredDocs = snapshot.docs.where((doc) {
-        final data = doc.data();
-        final lng = (data['longitude'] as num?)?.toDouble() ?? 0.0;
-        final status = data['tripStatus'] as String?;
-        final createdBy = data['createdBy'] as String?;
-        return lng >= minLng &&
-            lng <= maxLng &&
-            status != TripStatus.deleted.name &&
-            createdBy != GlobalVariables.loggedInUser.value?.uid;
-      }).toList();
+      final filteredDocs =
+          snapshot.docs.where((doc) {
+            final data = doc.data();
+            final lng = (data['longitude'] as num?)?.toDouble() ?? 0.0;
+            final status = data['tripStatus'] as String?;
+            final createdBy = data['createdBy'] as String?;
+            return lng >= minLng &&
+                lng <= maxLng &&
+                status != TripStatus.deleted.name &&
+                createdBy != GlobalVariables.loggedInUser.value?.uid;
+          }).toList();
 
-      final futures = filteredDocs.map((e) async {
-        final TripModel tripModel = TripModel.fromMap(e.data());
-        tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
-        tripModel.activities = await getTripActivities(tripId: tripModel.id);
-        if (tripModel.joinedUsers != null && tripModel.joinedUsers!.isNotEmpty) {
-          tripModel.joindUsersList = await AuthService.getTripUsers(
-            userIds: tripModel.joinedUsers ?? [],
-          );
-        } else {
-          tripModel.joindUsersList = [];
-        }
-        tripModel.createdByUser = await AuthService.getUserPublicProfile(
-          userId: tripModel.createdBy,
-        );
-        return tripModel;
-      }).toList();
+      final futures =
+          filteredDocs.map((e) async {
+            final TripModel tripModel = TripModel.fromMap(e.data());
+            tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
+            tripModel.activities = await getTripActivities(
+              tripId: tripModel.id,
+            );
+            if (tripModel.joinedUsers != null &&
+                tripModel.joinedUsers!.isNotEmpty) {
+              tripModel.joindUsersList = await AuthService.getTripUsers(
+                userIds: tripModel.joinedUsers ?? [],
+              );
+            } else {
+              tripModel.joindUsersList = [];
+            }
+            tripModel.createdByUser = await AuthService.getUserPublicProfile(
+              userId: tripModel.createdBy,
+            );
+            return tripModel;
+          }).toList();
 
       return await Future.wait(futures);
     } catch (e) {
@@ -499,8 +529,11 @@ class FirebaseTripService {
       final res =
           await firestore
               .collection(kTripTable)
-              .orderBy('likesCount', descending: true)
+              .where('isPrivate', isEqualTo: false)
+              .orderBy('favouriteCount', descending: true)
+              .limit(50)
               .get();
+      kLogging(res.docs.length.toString());
       final future =
           res.docs.map((e) async {
             final TripModel tripModel = TripModel.fromMap(e.data());
@@ -536,10 +569,12 @@ class FirebaseTripService {
       // Gather continents from trips the user has joined and favourited
       final Set<String> continents = {};
 
-      final joinedSnap = await firestore
-          .collection(kTripTable)
-          .where('joinedUsers', arrayContains: uid)
-          .get();
+      final joinedSnap =
+          await firestore
+              .collection(kTripTable)
+              .where('joinedUsers', arrayContains: uid)
+              .limit(50)
+              .get();
       for (final doc in joinedSnap.docs) {
         final c = doc.data()['continent'] as String?;
         if (c != null && c.isNotEmpty) continents.add(c);
@@ -548,11 +583,14 @@ class FirebaseTripService {
       final favouriteIds =
           GlobalVariables.loggedInUser.value?.favouriteTrips ?? [];
       if (favouriteIds.isNotEmpty) {
-        final favSnap = await firestore
-            .collection(kTripTable)
-            .where(FieldPath.documentId,
-                whereIn: favouriteIds.take(10).toList())
-            .get();
+        final favSnap =
+            await firestore
+                .collection(kTripTable)
+                .where(
+                  FieldPath.documentId,
+                  whereIn: favouriteIds.take(10).toList(),
+                )
+                .get();
         for (final doc in favSnap.docs) {
           final c = doc.data()['continent'] as String?;
           if (c != null && c.isNotEmpty) continents.add(c);
@@ -562,34 +600,41 @@ class FirebaseTripService {
       // No history — fall back to popular trips
       if (continents.isEmpty) return getPopularTrips();
 
-      final snap = await firestore
-          .collection(kTripTable)
-          .where('continent', whereIn: continents.toList())
-          .get();
+      final snap =
+          await firestore
+              .collection(kTripTable)
+              .where('isPrivate', isEqualTo: false)
+              .where('continent', whereIn: continents.toList())
+              .limit(50)
+              .get();
 
-      final filteredDocs = snap.docs.where((doc) {
-        final data = doc.data();
-        return data['createdBy'] != uid &&
-            data['tripStatus'] != TripStatus.deleted.name;
-      }).toList();
+      final filteredDocs =
+          snap.docs.where((doc) {
+            final data = doc.data();
+            return data['createdBy'] != uid &&
+                data['tripStatus'] != TripStatus.deleted.name;
+          }).toList();
 
-      final futures = filteredDocs.map((e) async {
-        final TripModel tripModel = TripModel.fromMap(e.data());
-        tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
-        tripModel.activities = await getTripActivities(tripId: tripModel.id);
-        if (tripModel.joinedUsers != null &&
-            tripModel.joinedUsers!.isNotEmpty) {
-          tripModel.joindUsersList = await AuthService.getTripUsers(
-            userIds: tripModel.joinedUsers ?? [],
-          );
-        } else {
-          tripModel.joindUsersList = [];
-        }
-        tripModel.createdByUser = await AuthService.getUserPublicProfile(
-          userId: tripModel.createdBy,
-        );
-        return tripModel;
-      }).toList();
+      final futures =
+          filteredDocs.map((e) async {
+            final TripModel tripModel = TripModel.fromMap(e.data());
+            tripModel.expenses = await getTripExpenses(tripId: tripModel.id);
+            tripModel.activities = await getTripActivities(
+              tripId: tripModel.id,
+            );
+            if (tripModel.joinedUsers != null &&
+                tripModel.joinedUsers!.isNotEmpty) {
+              tripModel.joindUsersList = await AuthService.getTripUsers(
+                userIds: tripModel.joinedUsers ?? [],
+              );
+            } else {
+              tripModel.joindUsersList = [];
+            }
+            tripModel.createdByUser = await AuthService.getUserPublicProfile(
+              userId: tripModel.createdBy,
+            );
+            return tripModel;
+          }).toList();
 
       return await Future.wait(futures);
     } catch (e) {
@@ -621,7 +666,10 @@ class FirebaseTripService {
         }
         final List<Map<String, dynamic>> filteredTrips =
             (result.data['filteredTrips'] as List<dynamic>)
-                .map((trip) => Map<String, dynamic>.from(trip as Map<String, dynamic>))
+                .map(
+                  (trip) =>
+                      Map<String, dynamic>.from(trip as Map<String, dynamic>),
+                )
                 .toList();
         trips = filteredTrips.map((trip) => TripModel.fromMap(trip)).toList();
         final futures =
@@ -635,7 +683,9 @@ class FirebaseTripService {
               } else {
                 e.joindUsersList = [];
               }
-              e.createdByUser = await AuthService.getUserPublicProfile(userId: e.createdBy);
+              e.createdByUser = await AuthService.getUserPublicProfile(
+                userId: e.createdBy,
+              );
             }).toList();
         await Future.wait(futures);
         return trips;
@@ -646,33 +696,68 @@ class FirebaseTripService {
     return [];
   }
 
-  /// search user by name and email
-  /// [name] is the name of the user
-  /// [email] is the email of the user
-  /// [return] list of users
-  /// [logs] logs if there is an error
-  static Future<List<PublicUserModel>> searchUser({required String query}) async {
+  /// Search users in the publicProfile collection by displayName prefix
+  /// or exact email match, directly via Firestore.
+  static Future<List<PublicUserModel>> searchUser({
+    required String query,
+  }) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return [];
     try {
-      final result = await functions.httpsCallable(kSearchUsersFunction).call({
-        'query': query,
-      });
-      kLogging('result: ${result.data}');
-      List<PublicUserModel> users = [];
-      if (result.data != null && result.data['success'] == true) {
-        if (result.data['users'] == null) {
-          return [];
-        }
-        final List<Map<String, dynamic>> filteredUsers =
-            (result.data['users'] as List<dynamic>)
-                .map((trip) => Map<String, dynamic>.from(trip as Map<String, dynamic>))
-                .toList();
-        kLogging('filteredUsers: $filteredUsers');
-        users = filteredUsers.map((trip) => PublicUserModel.fromMap(trip)).toList();
-        return users;
+      // Build the upper bound for a prefix range query
+      final String end =
+          trimmed.substring(0, trimmed.length - 1) +
+          String.fromCharCode(trimmed.codeUnitAt(trimmed.length - 1) + 1);
+
+      final results = <String, PublicUserModel>{};
+
+      // Prefix search on displayName
+      final nameSnap =
+          await firestore
+              .collection(kUsersPublicProfileCollection)
+              .where('displayName', isGreaterThanOrEqualTo: trimmed)
+              .where('displayName', isLessThan: end)
+              .limit(20)
+              .get();
+      for (final doc in nameSnap.docs) {
+        results[doc.id] = PublicUserModel.fromMap(doc.data());
       }
+
+      // Exact email match
+      final emailSnap =
+          await firestore
+              .collection(kUsersPublicProfileCollection)
+              .where('email', isEqualTo: trimmed)
+              .limit(10)
+              .get();
+      for (final doc in emailSnap.docs) {
+        results[doc.id] = PublicUserModel.fromMap(doc.data());
+      }
+
+      kLogging('searchUser: found ${results.length} results for "$trimmed"');
+      return results.values.toList();
     } catch (e) {
       showCustomSnackBar(content: e.toString());
     }
     return [];
+  }
+
+  static Future<bool> sendTripInvites({
+    required String tripId,
+    required String tripTitle,
+    required List<String> emails,
+  }) async {
+    try {
+      if (emails.isEmpty) return true;
+      await functions.httpsCallable('sendTripInvites').call({
+        'tripId': tripId,
+        'tripTitle': tripTitle,
+        'emails': emails,
+      });
+      return true;
+    } catch (e) {
+      showCustomSnackBar(content: e.toString());
+    }
+    return false;
   }
 }

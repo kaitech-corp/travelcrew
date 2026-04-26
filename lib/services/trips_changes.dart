@@ -7,7 +7,9 @@ void removeTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
     controller.otherTrips.removeWhere((element) => element.id == trip.id);
-    controller.otherFilteredTrips.removeWhere((element) => element.id == trip.id);
+    controller.otherFilteredTrips.removeWhere(
+      (element) => element.id == trip.id,
+    );
   }
   if (Get.isRegistered<MyTripsController>()) {
     final MyTripsController controller = Get.find<MyTripsController>();
@@ -42,7 +44,9 @@ void updateTripOverAll(TripModel trip) {
   }
   if (Get.isRegistered<MyTripsController>()) {
     final MyTripsController controller = Get.find<MyTripsController>();
-    final int index = controller.trips.indexWhere((element) => element.id == trip.id);
+    final int index = controller.trips.indexWhere(
+      (element) => element.id == trip.id,
+    );
     if (index != -1) {
       controller.trips[index] = trip;
       controller.filteredTrips[index] = trip;

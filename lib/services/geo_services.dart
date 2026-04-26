@@ -116,17 +116,26 @@ class GeoServices {
   }
 
   static Future<String> getAddress(double lat, double long) async {
-    final List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    final List<Placemark> placemarks = await placemarkFromCoordinates(
+      lat,
+      long,
+    );
     return '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}';
   }
 
   static Future<String> getCountryCode(double lat, double long) async {
-    final List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    final List<Placemark> placemarks = await placemarkFromCoordinates(
+      lat,
+      long,
+    );
     return placemarks[0].isoCountryCode!;
   }
 
   static Future<String> getCity(double lat, double long) async {
-    final List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    final List<Placemark> placemarks = await placemarkFromCoordinates(
+      lat,
+      long,
+    );
     return placemarks[0].locality!;
   }
 

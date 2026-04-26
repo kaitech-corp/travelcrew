@@ -111,8 +111,12 @@ class FirebaseNotificationsService {
         notificationTopic: notificationTopic,
         isActive: true,
       );
-      _saveNotification(userNotificationModel);
-    } catch (e) {}
+      await _saveNotification(userNotificationModel);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   static Future<void> _saveNotification(
@@ -148,7 +152,11 @@ class FirebaseNotificationsService {
           .doc(notificationId)
           .update(data);
       return true;
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
     return false;
   }
 }

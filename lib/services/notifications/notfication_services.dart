@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
+import '../session_services.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   if (kDebugMode) {
@@ -36,7 +37,9 @@ class FirebasePushNotificationApi {
     audioAttributesUsage: AudioAttributesUsage.voiceCommunication,
   );
   void handleMessage(RemoteMessage? message) {
-    if (kDebugMode){print('=========handleMessage:: $message');}
+    if (kDebugMode) {
+      print('=========handleMessage:: $message');
+    }
     if (message == null) return;
 
     // Get.toNamed(kSplashScreenRoute, arguments: message);
@@ -70,10 +73,10 @@ class FirebasePushNotificationApi {
       iOS: iOSPlatformChannelSpecifics,
     );
     flutterLocalNotificationsPlugin.show(
-      id:id,
-      title:title ?? 'Uploading File',
-      body:'${subTitle ?? ''} progress:$progress%',
-      notificationDetails: platformChannelSpecifics, 
+      id: id,
+      title: title ?? 'Uploading File',
+      body: '${subTitle ?? ''} progress:$progress%',
+      notificationDetails: platformChannelSpecifics,
     );
   }
 
@@ -91,14 +94,14 @@ class FirebasePushNotificationApi {
     );
     flutterLocalNotificationsPlugin.show(
       id: id,
-      title:'Upload complete',
-      body:'Your file has been uploaded successfully.',
-      notificationDetails:  platformChannelSpecifics,
+      title: 'Upload complete',
+      body: 'Your file has been uploaded successfully.',
+      notificationDetails: platformChannelSpecifics,
     );
 
     // Auto hide notification after 3 seconds
     Future.delayed(const Duration(seconds: 5), () async {
-      await flutterLocalNotificationsPlugin.cancel(id:id);
+      await flutterLocalNotificationsPlugin.cancel(id: id);
     });
   }
 
@@ -119,13 +122,14 @@ class FirebasePushNotificationApi {
       if (notification == null) return;
 
       await flutterLocalNotificationsPlugin.show(
-        id:message.notification?.body == 'Incomming video call' ||
-                message.notification?.body == 'Incomming voice call'
-            ? 1
-            : notification.hashCode,
-        title:notification.title,
-        body:notification.body,
-        notificationDetails:  NotificationDetails(
+        id:
+            message.notification?.body == 'Incomming video call' ||
+                    message.notification?.body == 'Incomming voice call'
+                ? 1
+                : notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: NotificationDetails(
           iOS: const DarwinNotificationDetails(),
           android: AndroidNotificationDetails(
             audioAttributesUsage: AudioAttributesUsage.voiceCommunication,
@@ -156,8 +160,8 @@ class FirebasePushNotificationApi {
     );
     const android = AndroidInitializationSettings('@drawable/tc_logo');
     const settings = InitializationSettings(android: android, iOS: ios);
-    await flutterLocalNotificationsPlugin.initialize(settings: 
-      settings,
+    await flutterLocalNotificationsPlugin.initialize(
+      settings: settings,
       onDidReceiveBackgroundNotificationResponse: backGroundResponse,
       onDidReceiveNotificationResponse: (response) {
         final message = RemoteMessage.fromMap(
@@ -179,14 +183,33 @@ class FirebasePushNotificationApi {
   Future<String> initNotifications() async {
     await _firebaseMessaging.requestPermission();
     final fcmToken = await _firebaseMessaging.getToken();
+    await saveTokenForCurrentUser(fcmToken);
+    FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenForCurrentUser);
     // FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     await initPushNotifications();
     await initLocalNotifications();
     return fcmToken ?? '';
   }
+
+  Future<void> saveTokenForCurrentUser([String? token]) async {
+    final uid = GlobalVariables.loggedInUser.value?.uid;
+    if (uid == null || uid.isEmpty) return;
+    final currentToken = token ?? await _firebaseMessaging.getToken();
+    if (currentToken == null || currentToken.isEmpty) return;
+    await firestore
+        .collection('tokens')
+        .doc(uid)
+        .collection('tokens')
+        .doc(currentToken)
+        .set({
+          'token': currentToken,
+          'platform': defaultTargetPlatform.name,
+          'updatedAt': DateTime.now().toIso8601String(),
+        });
+  }
 }
 
-void backGroundResponse(response) {
+void backGroundResponse(NotificationResponse response) {
   // final message =
-  RemoteMessage.fromMap(jsonDecode((response.payload as String?) ?? '') as Map<String, dynamic>);
+  RemoteMessage.fromMap(jsonDecode(response.payload ?? ''));
 }

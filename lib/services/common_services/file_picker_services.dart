@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import '../../utils/debugging.dart';
+
 class FilePickerService {
   factory FilePickerService() {
     return _instance;
@@ -19,6 +20,7 @@ class FilePickerService {
       return null;
     }
   }
+
   /// pick only one file
   static Future<File?> pickFile() async {
     final FilePickerResult? result = await _pickFiles();
