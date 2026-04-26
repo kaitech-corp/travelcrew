@@ -6,6 +6,7 @@ import 'package:travel_crew/views/custom_widgets/date_range_picker/range_picker_
     show RangeCalendarDialog;
 import 'package:travel_crew/views/expense/expense_screen.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/components/add_activity.dart';
+import 'package:travel_crew/views/home_page/components/specific_trip_view/components/add_lodging.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/specific_trip_view_screen.dart';
 import 'package:travel_crew/views/messages/users/group_detail_screen.dart';
 import 'package:travel_crew/views/profile/components/connections/connections_screen.dart';
@@ -80,7 +81,7 @@ class RouteGenerator {
         page: () => const HelpNSupportScreen(),
         binding: ScreenBindings(),
       ),
-      
+
       GetPage(
         name: kMainViewScreenRoute,
         page: () => MainViewScreen(),
@@ -159,6 +160,11 @@ class RouteGenerator {
       GetPage(
         name: kAddActivityScreenRoute,
         page: () => AddActivity(),
+        binding: ScreenBindings(),
+      ),
+      GetPage(
+        name: kAddLodgingScreenRoute,
+        page: () => AddLodgingScreen(),
         binding: ScreenBindings(),
       ),
       GetPage(

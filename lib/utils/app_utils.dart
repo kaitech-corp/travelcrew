@@ -56,39 +56,36 @@ Future<String> uploadImageToFirebaseStorage({
   String? title,
   String? subtitle,
   String folderName = 'users_profile',
-  id = 0,
+  int id = 0,
 }) async {
   try {
     // Correctly construct the full path
-    final baseRef = FirebaseStorage.instance.ref().child(
-      folderName,
-    );
+    final baseRef = FirebaseStorage.instance.ref().child(folderName);
 
     // Append user ID if folder is 'users_profile'
     final fullRef =
         folderName == 'users'
-            ? baseRef
-                .child(GlobalVariables.currentUid)
-                .child(imageName)
+            ? baseRef.child(GlobalVariables.currentUid).child(imageName)
             : baseRef.child(imageName);
 
     final uploadTask = fullRef.putFile(File(imagePath));
 
     // Listen to upload progress
     uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-      final double progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      final double progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       FirebasePushNotificationApi().showProgressNotification(
         progress.toInt(),
-        id as int,
+        id,
         title: title,
         subTitle: subtitle,
       );
     });
 
     // Wait for completion
-    // final snapshot = 
+    // final snapshot =
     await uploadTask.whenComplete(() {
-      FirebasePushNotificationApi().showCompletionNotification(id: id as int);
+      FirebasePushNotificationApi().showCompletionNotification(id: id);
     });
 
     // Get download URL

@@ -26,6 +26,7 @@ const kProfileSetUpScreenRoute = '/ProfileSetUpScreen';
 const kDateRangePickerScreenRoute = '/DateRangePickerScreen';
 const kMessagesScreenRoute = '/MessagesScreen';
 const kAddActivityScreenRoute = '/AddActivityScreen';
+const kAddLodgingScreenRoute = '/AddLodgingScreen';
 const kNotificationScreenRoute = '/NotificationScreen';
 const kConnectionsScreenRoute = '/ConnectionsScreen';
 const kAllExpensesScreenRoute = '/AllExpensesScreen';

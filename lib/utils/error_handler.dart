@@ -24,7 +24,7 @@ class ErrorHandler {
       error: error,
       stackTrace: stackTrace,
     );
-    
+
     // In debug mode, also print to console for immediate visibility
     if (kDebugMode) {
       debugPrint('🔴 ERROR [$errorContext]: $error');
@@ -32,7 +32,7 @@ class ErrorHandler {
         debugPrint('Stack trace: $stackTrace');
       }
     }
-    
+
     if (!kDebugMode) {
       FirebaseCrashlytics.instance.recordError(
         error,
@@ -41,7 +41,7 @@ class ErrorHandler {
         fatal: false,
       );
     }
-    
+
     if (showToUser && userMessage != null) {
       _showErrorToUser(userMessage);
     }
@@ -54,18 +54,19 @@ class ErrorHandler {
       title: 'Error',
     );
   }
-  
+
   /// Handle Firebase-specific errors with better context
   static void handleFirebaseError(
     Object error, {
     StackTrace? stackTrace,
     String? operation,
   }) {
-    final String context = operation != null ? 'Firebase $operation' : 'Firebase';
-    
+    final String context =
+        operation != null ? 'Firebase $operation' : 'Firebase';
+
     // Provide more specific error messages for common Firebase errors
     final String userMessage = _getFirebaseErrorMessage(error);
-    
+
     handleError(
       error,
       stackTrace: stackTrace,
@@ -74,24 +75,26 @@ class ErrorHandler {
       showToUser: true,
     );
   }
-  
+
   /// Handle network-related errors
   static void handleNetworkError(
     Object error, {
     StackTrace? stackTrace,
     String? endpoint,
   }) {
-    final String context = endpoint != null ? 'Network request to $endpoint' : 'Network request';
-    
+    final String context =
+        endpoint != null ? 'Network request to $endpoint' : 'Network request';
+
     handleError(
       error,
       stackTrace: stackTrace,
       context: context,
-      userMessage: 'Network connection error. Please check your internet connection.',
+      userMessage:
+          'Network connection error. Please check your internet connection.',
       showToUser: true,
     );
   }
-  
+
   /// Get user-friendly error message for Firebase errors
   static String _getFirebaseErrorMessage(Object error) {
     if (error is FirebaseAuthException) {
@@ -118,7 +121,7 @@ class ErrorHandler {
     }
 
     final String errorString = error.toString().toLowerCase();
-    
+
     if (errorString.contains('network')) {
       return 'Network connection error. Please check your internet connection.';
     } else if (errorString.contains('permission')) {
@@ -134,10 +137,10 @@ class ErrorHandler {
     } else if (errorString.contains('quota-exceeded')) {
       return 'Service temporarily unavailable. Please try again later.';
     }
-    
+
     return 'An unexpected error occurred. Please try again.';
   }
-  
+
   /// Wrap async operations with error handling
   static Future<T?> wrapAsync<T>(
     Future<T> Function() operation, {
@@ -147,15 +150,11 @@ class ErrorHandler {
     try {
       return await operation();
     } catch (error, stackTrace) {
-      handleError(
-        error,
-        stackTrace: stackTrace,
-        context: context,
-      );
+      handleError(error, stackTrace: stackTrace, context: context);
       return fallbackValue;
     }
   }
-  
+
   /// Wrap sync operations with error handling
   static T? wrapSync<T>(
     T Function() operation, {
@@ -165,11 +164,7 @@ class ErrorHandler {
     try {
       return operation();
     } catch (error, stackTrace) {
-      handleError(
-        error,
-        stackTrace: stackTrace,
-        context: context,
-      );
+      handleError(error, stackTrace: stackTrace, context: context);
       return fallbackValue;
     }
   }

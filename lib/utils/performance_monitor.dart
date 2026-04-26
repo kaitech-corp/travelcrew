@@ -7,42 +7,54 @@ import 'logger.dart';
 class PerformanceMonitor {
   static final Map<String, DateTime> _timers = <String, DateTime>{};
   static final Map<String, List<int>> _measurements = <String, List<int>>{};
-  
+
   /// Start a performance timer with a given name
   static void startTimer(String name) {
     _timers[name] = DateTime.now();
-    AppLogger.debug('Performance timer started: $name', tag: 'PerformanceMonitor');
+    AppLogger.debug(
+      'Performance timer started: $name',
+      tag: 'PerformanceMonitor',
+    );
   }
-  
+
   /// End a performance timer and log the duration
   static int? endTimer(String name, {bool logResult = true}) {
     final DateTime? startTime = _timers[name];
     if (startTime == null) {
-      AppLogger.warning('Timer "$name" was not started', tag: 'PerformanceMonitor');
+      AppLogger.warning(
+        'Timer "$name" was not started',
+        tag: 'PerformanceMonitor',
+      );
       return null;
     }
-    
+
     final DateTime endTime = DateTime.now();
     final int durationMs = endTime.difference(startTime).inMilliseconds;
-    
+
     // Store measurement for analytics
     _measurements.putIfAbsent(name, () => <int>[]).add(durationMs);
-    
+
     // Remove the timer
     _timers.remove(name);
-    
+
     if (logResult) {
-      AppLogger.info('Performance: $name took ${durationMs}ms', tag: 'PerformanceMonitor');
+      AppLogger.info(
+        'Performance: $name took ${durationMs}ms',
+        tag: 'PerformanceMonitor',
+      );
     }
-    
+
     // Warn about slow operations
     if (durationMs > 1000) {
-      AppLogger.warning('Slow operation detected: $name took ${durationMs}ms', tag: 'PerformanceMonitor');
+      AppLogger.warning(
+        'Slow operation detected: $name took ${durationMs}ms',
+        tag: 'PerformanceMonitor',
+      );
     }
-    
+
     return durationMs;
   }
-  
+
   /// Measure the execution time of a synchronous operation
   static T measureSync<T>(String name, T Function() operation) {
     startTimer(name);
@@ -55,9 +67,12 @@ class PerformanceMonitor {
       rethrow;
     }
   }
-  
+
   /// Measure the execution time of an asynchronous operation
-  static Future<T> measureAsync<T>(String name, Future<T> Function() operation) async {
+  static Future<T> measureAsync<T>(
+    String name,
+    Future<T> Function() operation,
+  ) async {
     startTimer(name);
     try {
       final T result = await operation();
@@ -68,14 +83,14 @@ class PerformanceMonitor {
       rethrow;
     }
   }
-  
+
   /// Get performance statistics for a given timer name
   static PerformanceStats? getStats(String name) {
     final List<int>? measurements = _measurements[name];
     if (measurements == null || measurements.isEmpty) {
       return null;
     }
-    
+
     final List<int> sortedMeasurements = List<int>.from(measurements)..sort();
     final int count = measurements.length;
     final int sum = measurements.reduce((int a, int b) => a + b);
@@ -83,7 +98,7 @@ class PerformanceMonitor {
     final int min = sortedMeasurements.first;
     final int max = sortedMeasurements.last;
     final int median = sortedMeasurements[count ~/ 2];
-    
+
     return PerformanceStats(
       name: name,
       count: count,
@@ -94,30 +109,33 @@ class PerformanceMonitor {
       total: sum,
     );
   }
-  
+
   /// Get all performance statistics
   static Map<String, PerformanceStats> getAllStats() {
     final Map<String, PerformanceStats> allStats = <String, PerformanceStats>{};
-    
+
     for (final String name in _measurements.keys) {
       final PerformanceStats? stats = getStats(name);
       if (stats != null) {
         allStats[name] = stats;
       }
     }
-    
+
     return allStats;
   }
-  
+
   /// Log performance summary
   static void logSummary() {
     final Map<String, PerformanceStats> allStats = getAllStats();
-    
+
     if (allStats.isEmpty) {
-      AppLogger.info('No performance measurements recorded', tag: 'PerformanceMonitor');
+      AppLogger.info(
+        'No performance measurements recorded',
+        tag: 'PerformanceMonitor',
+      );
       return;
     }
-    
+
     AppLogger.info('Performance Summary:', tag: 'PerformanceMonitor');
     for (final PerformanceStats stats in allStats.values) {
       AppLogger.info(
@@ -127,14 +145,17 @@ class PerformanceMonitor {
       );
     }
   }
-  
+
   /// Clear all measurements
   static void clearMeasurements() {
     _measurements.clear();
     _timers.clear();
-    AppLogger.debug('Performance measurements cleared', tag: 'PerformanceMonitor');
+    AppLogger.debug(
+      'Performance measurements cleared',
+      tag: 'PerformanceMonitor',
+    );
   }
-  
+
   /// Monitor memory usage (basic implementation)
   static void logMemoryUsage(String context) {
     if (kDebugMode) {
@@ -142,7 +163,7 @@ class PerformanceMonitor {
       AppLogger.debug('Memory check at: $context', tag: 'PerformanceMonitor');
     }
   }
-  
+
   /// Monitor frame rendering performance
   static void startFrameMonitoring() {
     if (kDebugMode) {
@@ -150,7 +171,7 @@ class PerformanceMonitor {
       AppLogger.debug('Frame monitoring started', tag: 'PerformanceMonitor');
     }
   }
-  
+
   /// Stop frame monitoring
   static void stopFrameMonitoring() {
     if (kDebugMode) {
@@ -178,10 +199,10 @@ class PerformanceStats {
   final int max;
   final int median;
   final int total;
-  
+
   @override
   String toString() {
     return 'PerformanceStats(name: $name, count: $count, avg: ${average.toStringAsFixed(1)}ms, '
-           'min: ${min}ms, max: ${max}ms, median: ${median}ms)';
+        'min: ${min}ms, max: ${max}ms, median: ${median}ms)';
   }
 }

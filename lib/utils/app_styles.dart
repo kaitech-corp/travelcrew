@@ -19,15 +19,15 @@ class AppStyles {
   static final double fontSize28 = 28.sp;
 
   static TextStyle labelTextStyle() => GoogleFonts.urbanist(
-        fontSize: fontSize14,
-        fontWeight: FontWeight.w400,
-        color: AppColors.kBlackColor,
-      );
+    fontSize: fontSize14,
+    fontWeight: FontWeight.w400,
+    color: AppColors.kBlackColor,
+  );
   static TextStyle appBarHeadingTextStyle() => GoogleFonts.urbanist(
-        fontSize: fontSize24,
-        fontWeight: FontWeight.w500,
-        color: Colors.black,
-      );
+    fontSize: fontSize24,
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+  );
   static ButtonStyle get fillPrimary => ElevatedButton.styleFrom(
     backgroundColor: AppColors.kPrimaryColor,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
