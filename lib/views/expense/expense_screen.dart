@@ -89,7 +89,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       Obx(
                         () => Text(
                           '\$ ${0 + (controller.tripModel.value?.expenses?.fold(0.0, (previousValue, element) => (previousValue ?? 0) + element.amount) ?? 0)}',
-                          style:  TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: AppStyles.fontSize20,
                             fontFamily: 'Urbanist',
@@ -120,10 +120,9 @@ class ExpenseScreen extends GetView<ExpenseController> {
 
               String nameFor(String uid) {
                 if (uid == currentUid) return 'You';
-                return users.firstWhere(
-                  (u) => u.uid == uid,
-                  orElse: () => users.first,
-                ).displayName;
+                return users
+                    .firstWhere((u) => u.uid == uid, orElse: () => users.first)
+                    .displayName;
               }
 
               if (settlements.isEmpty) {
@@ -153,9 +152,10 @@ class ExpenseScreen extends GetView<ExpenseController> {
                         child: Text(
                           '${nameFor(s.fromUserId)} → ${nameFor(s.toUserId)}',
                           style: AppStyles.labelTextStyle().copyWith(
-                            color: isCurrentUserPaying
-                                ? const Color(0xFFD9534F)
-                                : const Color(0xFF1F1F1F),
+                            color:
+                                isCurrentUserPaying
+                                    ? const Color(0xFFD9534F)
+                                    : const Color(0xFF1F1F1F),
                             fontSize: AppStyles.fontSize13,
                             fontWeight: FontWeight.w500,
                           ),

@@ -23,7 +23,7 @@ class ExpenseService {
   Map<String, double> calculateUserDebts(TripModel trip) {
     final Map<String, double> userDebts = {};
     final currentUserId = GlobalVariables.loggedInUser.value?.uid ?? '';
-    final joinedUsers = trip.joinedUsers ?? [];
+    final joinedUsers = _participantsForTrip(trip);
 
     if (joinedUsers.isEmpty || (trip.expenses?.isEmpty ?? true)) {
       return userDebts;
@@ -40,7 +40,9 @@ class ExpenseService {
     }
 
     // Remove users with no debt and current user
-    userDebts.removeWhere((userId, debt) => userId == currentUserId || debt.abs() < 0.01);
+    userDebts.removeWhere(
+      (userId, debt) => userId == currentUserId || debt.abs() < 0.01,
+    );
 
     return userDebts;
   }
@@ -95,7 +97,7 @@ class ExpenseService {
     String currentUserId,
   ) {
     final paidBy = expense.createdBy;
-    
+
     if (expense.owedTo.isNotEmpty) {
       expense.owedTo.forEach((userId, amount) {
         if (userId != paidBy) {
@@ -127,7 +129,8 @@ class ExpenseService {
           // This payer contributed to the expense
           if (payerId == currentUserId) {
             // Current user was one of the payers, reduce what they owe to creator
-            userDebts[expense.createdBy] = (userDebts[expense.createdBy] ?? 0) + amountPerPayer;
+            userDebts[expense.createdBy] =
+                (userDebts[expense.createdBy] ?? 0) + amountPerPayer;
           } else if (expense.createdBy == currentUserId) {
             // Current user is creator, reduce what this payer owes them
             userDebts[payerId] = (userDebts[payerId] ?? 0) - amountPerPayer;
@@ -150,7 +153,8 @@ class ExpenseService {
         totalSpent += expense.amount;
       }
       // Add any additional payments made by current user
-      if (expense.paidByUsers.contains(currentUserId) && expense.createdBy != currentUserId) {
+      if (expense.paidByUsers.contains(currentUserId) &&
+          expense.createdBy != currentUserId) {
         // Calculate the portion paid by current user
         final payerCount = expense.paidByUsers.length;
         if (payerCount > 0) {
@@ -163,15 +167,15 @@ class ExpenseService {
 
   /// Calculates the current user's share of total trip expenses
   double calculateUserShare(TripModel trip) {
-    final joinedUsers = trip.joinedUsers ?? [];
-    if (joinedUsers.isEmpty || (trip.expenses?.isEmpty ?? true)) {
+    final participants = _participantsForTrip(trip);
+    if (participants.isEmpty || (trip.expenses?.isEmpty ?? true)) {
       return 0.0;
     }
 
     double totalShare = 0.0;
     for (final expense in trip.expenses ?? []) {
       if (expense.splitType == 'equally') {
-        totalShare += expense.amount / joinedUsers.length;
+        totalShare += expense.amount / participants.length;
       } else if (expense.owedTo.isNotEmpty) {
         final currentUserId = GlobalVariables.loggedInUser.value?.uid ?? '';
         totalShare += expense.owedTo[currentUserId] ?? 0.0;
@@ -186,7 +190,10 @@ class ExpenseService {
       return 0.0;
     }
 
-    return (trip.expenses ?? []).fold(0.0, (sum, expense) => sum + expense.amount);
+    return (trip.expenses ?? []).fold(
+      0.0,
+      (sum, expense) => sum + expense.amount,
+    );
   }
 
   /// Gets expenses created by a specific user
@@ -195,7 +202,9 @@ class ExpenseService {
       return [];
     }
 
-    return (trip.expenses ?? []).where((expense) => expense.createdBy == userId).toList();
+    return (trip.expenses ?? [])
+        .where((expense) => expense.createdBy == userId)
+        .toList();
   }
 
   /// Gets expenses where a specific user owes money
@@ -208,7 +217,8 @@ class ExpenseService {
       if (expense.splitType == 'equally') {
         return expense.createdBy != userId;
       } else {
-        return expense.owedTo.containsKey(userId) && expense.createdBy != userId;
+        return expense.owedTo.containsKey(userId) &&
+            expense.createdBy != userId;
       }
     }).toList();
   }
@@ -226,12 +236,12 @@ class ExpenseService {
     }
 
     final Map<String, List<ExpenseModel>> groupedExpenses = {};
-    
+
     for (final expense in trip.expenses ?? []) {
       // You can customize this logic based on expense categories
       // For now, grouping by expense name prefix or using a default category
       String category = _extractCategory(expense.name);
-      
+
       if (!groupedExpenses.containsKey(category)) {
         groupedExpenses[category] = [];
       }
@@ -244,14 +254,23 @@ class ExpenseService {
   /// Extracts category from expense name (can be customized)
   String _extractCategory(String expenseName) {
     final name = expenseName.toLowerCase();
-    
-    if (name.contains('food') || name.contains('restaurant') || name.contains('meal')) {
+
+    if (name.contains('food') ||
+        name.contains('restaurant') ||
+        name.contains('meal')) {
       return 'Food & Dining';
-    } else if (name.contains('transport') || name.contains('taxi') || name.contains('uber') || name.contains('flight')) {
+    } else if (name.contains('transport') ||
+        name.contains('taxi') ||
+        name.contains('uber') ||
+        name.contains('flight')) {
       return 'Transportation';
-    } else if (name.contains('hotel') || name.contains('accommodation') || name.contains('lodging')) {
+    } else if (name.contains('hotel') ||
+        name.contains('accommodation') ||
+        name.contains('lodging')) {
       return 'Accommodation';
-    } else if (name.contains('activity') || name.contains('tour') || name.contains('ticket')) {
+    } else if (name.contains('activity') ||
+        name.contains('tour') ||
+        name.contains('ticket')) {
       return 'Activities';
     } else if (name.contains('shopping') || name.contains('souvenir')) {
       return 'Shopping';
@@ -276,10 +295,12 @@ class ExpenseService {
     balances.removeWhere((_, v) => v.abs() < 0.01);
     if (balances.isEmpty) return [];
 
-    final creditors = balances.entries.where((e) => e.value > 0).toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    final debtors = balances.entries.where((e) => e.value < 0).toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+    final creditors =
+        balances.entries.where((e) => e.value > 0).toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+    final debtors =
+        balances.entries.where((e) => e.value < 0).toList()
+          ..sort((a, b) => a.value.compareTo(b.value));
 
     final creditAmounts = creditors.map((e) => e.value).toList();
     final debitAmounts = debtors.map((e) => e.value.abs()).toList();
@@ -289,13 +310,16 @@ class ExpenseService {
     var di = 0;
 
     while (ci < creditors.length && di < debtors.length) {
-      final transfer = (min(creditAmounts[ci], debitAmounts[di]) * 100).round() / 100;
+      final transfer =
+          (min(creditAmounts[ci], debitAmounts[di]) * 100).round() / 100;
       if (transfer > 0.01) {
-        settlements.add(Settlement(
-          fromUserId: debtors[di].key,
-          toUserId: creditors[ci].key,
-          amount: transfer,
-        ));
+        settlements.add(
+          Settlement(
+            fromUserId: debtors[di].key,
+            toUserId: creditors[ci].key,
+            amount: transfer,
+          ),
+        );
       }
       creditAmounts[ci] -= transfer;
       debitAmounts[di] -= transfer;
@@ -309,14 +333,17 @@ class ExpenseService {
   /// Computes each user's net balance across all unsettled expenses.
   /// Positive = owed money by others. Negative = owes money to others.
   Map<String, double> _computeNetBalances(TripModel trip) {
-    final joinedUsers = trip.joinedUsers ?? [];
+    final joinedUsers = _participantsForTrip(trip);
     final balances = <String, double>{for (final uid in joinedUsers) uid: 0.0};
 
     for (final expense in trip.expenses ?? []) {
       final payer = expense.createdBy;
-      final unsettled = joinedUsers
-          .where((uid) => uid != payer && !expense.paidByUsers.contains(uid))
-          .toList();
+      final unsettled =
+          joinedUsers
+              .where(
+                (uid) => uid != payer && !expense.paidByUsers.contains(uid),
+              )
+              .toList();
 
       if (unsettled.isEmpty) continue;
 
@@ -340,6 +367,13 @@ class ExpenseService {
     return balances;
   }
 
+  List<String> _participantsForTrip(TripModel trip) {
+    return <String>{
+      trip.createdBy,
+      ...?trip.joinedUsers,
+    }.where((uid) => uid.isNotEmpty).toList();
+  }
+
   /// Gets summary statistics for the trip expenses
   Map<String, dynamic> getTripExpenseSummary(TripModel trip) {
     final totalExpenses = calculateTotalTripExpenses(trip);
@@ -347,7 +381,7 @@ class ExpenseService {
     final userSpent = calculateUserTotalSpent(trip);
     final netBalance = calculateNetBalance(trip);
     final remainingBudget = trip.tripBudget - totalExpenses;
-    
+
     return {
       'totalExpenses': totalExpenses,
       'userShare': userShare,

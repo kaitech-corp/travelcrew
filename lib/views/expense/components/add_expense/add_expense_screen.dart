@@ -81,14 +81,16 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                   CommonCode().removeTextFieldFocus();
                   showDialog(
                     context: context,
-                    builder: (c) => RangeCalendarDialog(
-                      focusedDay: controller.expenceDate.value ?? DateTime.now(),
-                      initialDate: DateTime(DateTime.now().year - 1),
-                      lastDate: DateTime(DateTime.now().year + 4),
-                      onDateSelected: (d) {
-                        controller.expenceDate.value = d;
-                      },
-                    ),
+                    builder:
+                        (c) => RangeCalendarDialog(
+                          focusedDay:
+                              controller.expenceDate.value ?? DateTime.now(),
+                          initialDate: DateTime(DateTime.now().year - 1),
+                          lastDate: DateTime(DateTime.now().year + 4),
+                          onDateSelected: (d) {
+                            controller.expenceDate.value = d;
+                          },
+                        ),
                   );
                 },
                 child: Container(
@@ -109,8 +111,8 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                       Text(
                         controller.expenceDate.value != null
                             ? DateFormat(
-                                'EEE, dd MMM',
-                              ).format(controller.expenceDate.value!)
+                              'EEE, dd MMM',
+                            ).format(controller.expenceDate.value!)
                             : l10n.selectDate,
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
@@ -168,8 +170,10 @@ class AddExpenseScreen extends GetView<AddExpenseController> {
                         itemBuilder: (context, index) {
                           final member = controller.tripMembers[index];
                           return CheckboxListTile(
-                            title: Text(member.displayName ?? ''),
-                            value: controller.selectedMembers.contains(member.uid),
+                            title: Text(member.displayName),
+                            value: controller.selectedMembers.contains(
+                              member.uid,
+                            ),
                             onChanged: (value) {
                               controller.toggleMemberSelection(member.uid);
                             },

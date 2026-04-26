@@ -118,7 +118,10 @@ class SettleUpScreen extends GetView<ExpenseController> {
                   (c) => AlertDialog(
                     title: Text(l10n.settleUp),
                     content: Text(
-                      l10n.confirmSettleUp.toString().replaceFirst('{userName}', controller.selectedUser.value?.displayName ?? ''),
+                      l10n.confirmSettleUp.toString().replaceFirst(
+                        '{userName}',
+                        controller.selectedUser.value?.displayName ?? '',
+                      ),
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: AppStyles.fontSize16,

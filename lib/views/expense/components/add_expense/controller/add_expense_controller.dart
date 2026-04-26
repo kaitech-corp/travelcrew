@@ -26,7 +26,7 @@ class AddExpenseController extends GetxController {
   RxMap<String, double> owners = <String, double>{}.obs;
   RxList<PublicUserModel> tripMembers = <PublicUserModel>[].obs;
   RxList<String> selectedMembers = <String>[].obs;
-  
+
   final ExpenseService _expenseService = ExpenseService();
   TripModel? _currentTrip;
 
@@ -55,7 +55,7 @@ class AddExpenseController extends GetxController {
     }
 
     final expenseAmount = double.tryParse(amountController.text) ?? 0.0;
-    
+
     // Validate expense amount
     if (expenseAmount <= 0) {
       showCustomSnackBar(content: 'Please enter a valid expense amount');
@@ -63,10 +63,14 @@ class AddExpenseController extends GetxController {
     }
 
     // Check budget constraints if trip is available
-    if (_currentTrip != null && !_expenseService.canAddExpense(_currentTrip!, expenseAmount)) {
-      final remainingBudget = _currentTrip!.tripBudget - _expenseService.calculateTotalTripExpenses(_currentTrip!);
+    if (_currentTrip != null &&
+        !_expenseService.canAddExpense(_currentTrip!, expenseAmount)) {
+      final remainingBudget =
+          _currentTrip!.tripBudget -
+          _expenseService.calculateTotalTripExpenses(_currentTrip!);
       showCustomSnackBar(
-        content: 'Expense exceeds remaining budget of \$${remainingBudget.toStringAsFixed(2)}',
+        content:
+            'Expense exceeds remaining budget of \$${remainingBudget.toStringAsFixed(2)}',
         contentType: ContentType.failure,
       );
       return;
@@ -113,14 +117,20 @@ class AddExpenseController extends GetxController {
           Get.back();
           showCustomSnackBar(content: 'Expense added successfully');
         } else {
-          showCustomSnackBar(content: 'Failed to add expense', contentType: ContentType.failure);
+          showCustomSnackBar(
+            content: 'Failed to add expense',
+            contentType: ContentType.failure,
+          );
         }
       });
     } catch (e) {
       if (kDebugMode) {
         print('Error adding expense: $e');
       }
-      showCustomSnackBar(content: 'Error adding expense: ${e.toString()}', contentType: ContentType.failure);
+      showCustomSnackBar(
+        content: 'Error adding expense: ${e.toString()}',
+        contentType: ContentType.failure,
+      );
     }
     GlobalVariables.showLoader.value = false;
   }
@@ -137,10 +147,10 @@ class AddExpenseController extends GetxController {
   /// Validates that custom split amounts don't exceed total expense
   bool validateCustomSplit() {
     if (splitType.value != 'custom') return true;
-    
+
     final totalOwed = owedTo.values.fold(0.0, (sum, amount) => sum + amount);
     final expenseAmount = double.tryParse(amountController.text) ?? 0.0;
-    
+
     return totalOwed <= expenseAmount;
   }
 

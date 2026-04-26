@@ -29,22 +29,28 @@ class ExpenseController extends GetxController {
 
   Rxn<PublicUserModel> selectedUser = Rxn<PublicUserModel>();
 
-  List<Settlement> get optimalSettlements => tripModel.value != null
-      ? ExpenseService().computeOptimalSettlements(tripModel.value!)
-      : [];
+  List<Settlement> get optimalSettlements =>
+      tripModel.value != null
+          ? ExpenseService().computeOptimalSettlements(tripModel.value!)
+          : [];
 
   Future<void> settleUp() async {
     try {
       if (selectedUser.value != null) {
-        expenseToSettle!.paidByUsers.add(selectedUser.value!.uid);
+        final selectedUid = selectedUser.value!.uid;
+        if (!expenseToSettle!.paidByUsers.contains(selectedUid)) {
+          expenseToSettle!.paidByUsers.add(selectedUid);
+        }
 
         await FirebaseTripService.updateExpense(expenseToSettle!).then((
           value,
         ) async {
-          tripModel.value!.expenses!
-              .firstWhere((element) => element.id == expenseToSettle!.id)
-              .paidByUsers
-              .add(selectedUser.value!.uid);
+          final localExpense = tripModel.value!.expenses!.firstWhere(
+            (element) => element.id == expenseToSettle!.id,
+          );
+          if (!localExpense.paidByUsers.contains(selectedUid)) {
+            localExpense.paidByUsers.add(selectedUid);
+          }
           tripModel.refresh();
           Get.back();
           showCustomSnackBar(content: 'Expense settled successfully');
