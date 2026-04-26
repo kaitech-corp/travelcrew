@@ -1,293 +1,165 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    match /tripAds/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-    match /recommended_activities/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-    match /recommended_trips/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-    match /apiKeys/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-    match /version/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-    }
-    match /addReview/{documents}/review/{doc} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-    }
-    match /feed/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-    }
-    match /location/{documents}/locations/{doc} {
-    	//Read
-      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3' || resource.data.uid == request.auth.uid;
-      //Write
-      allow write: if request.auth != null;
-    }
-    match /suggestions/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-    match /dmConversations/{document}/messages/{docs} {
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/dmConversations/$(document)).data.users;
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/dmConversations/$(document)).data.users;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/dmConversations/$(document)).data.users;
-    }
-    match /dmConversations/{doc} {
-    	//Read
-      allow read: if request.auth.uid in resource.data.users;
-      //Write
-      allow write: if request.auth != null;
-    }
-    match /dmChat/{chatID}/messages/{doc} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-      allow delete: if request.auth.uid == resource.data.uid;
-    }
-    match /tokens/{userID}/tokens/{doc} {
-      allow read: if belongsTo(userID) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-      allow write: if belongsTo(userID);
-    }
-    match /dmChat/{chatID} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-    }
-    
-    match /unique/{documents} {
-    	//Read
-      // allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
+    function signedIn() {
+      return request.auth != null;
     }
 
-    match /feedback/{documents} {
-    	//Read
-      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-      //Write
-      allow write: if request.auth != null;
-      allow delete: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+    function uid() {
+      return request.auth.uid;
     }
-        match /reports/{documents}/{collections}/{docs} {
-    	//Read
-      allow read: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-      //Write
-      allow write: if request.auth != null;
-      allow delete: if request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.admin == true;
     }
-    match /trips/{documents} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-      allow update: if request.auth != null;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-    }
-    match /trips/{documents}/Members/{member} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-      allow update: if request.auth != null;
-      allow delete: if request.auth != null;
-    }
-    match /privateTrips/{documents}/Members/{member} {
-    	//Read
-      allow read: if resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      //Write
-      allow write: if request.auth != null;
-      allow update: if resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow delete: if resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-    }
-    match /splitItem/{documents}/Item/{docs} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      }
-    match /costDetails/{documents}/Users/{docs} {
-    	//Read
-      allow read: if request.auth != null;
-      //Write
-      allow write: if request.auth != null;
-      allow update: if request.auth != null;
-      allow delete: if request.auth != null;
-      }
-    match /costDetails/{documents} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      }
-    match /splitItem/{documents} {
-      //Read
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-      }
-    match /bringList/{documents}/Items/{docs} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      }
-    match /bringList/{documents} {
-      //Read
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-      }
-    
-    match /needList/{documents}/Items/{docs} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      }
-    match /needList/{documents} {
-      //Read
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-      }
-  
-    match /privateTrips/{documents} {
-      allow read: if request.auth.uid in resource.data.accessUsers || request.auth.uid == resource.data.ownerID;
-      allow create: if request.auth != null && request.resource.data.ownerID == request.auth.uid;
-      allow update: if request.auth.uid == resource.data.ownerID || request.auth.uid in resource.data.accessUsers;
-      allow delete: if request.auth.uid == resource.data.ownerID;
-    }
-    match /publicProfile/{userId} {
-      // Allow any authenticated user to read public profiles
-      allow read: if request.auth != null;
-      
-      // Allow users to create their own profile
-      allow create: if belongsTo(userId);
-      
-      // Allow users to update their own profile.
-      // OR allow any authenticated user to add/remove only their own UID from another user's followers list.
-      allow update: if belongsTo(userId) ||
-                   (request.auth != null &&
-                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followers']) &&
-                    (request.resource.data.followers.toSet().difference(resource.data.followers.toSet()) == [request.auth.uid].toSet() ||
-                     resource.data.followers.toSet().difference(request.resource.data.followers.toSet()) == [request.auth.uid].toSet()));
-    }
-      match /lodging/{details} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      
-      //Write
-      allow create: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow delete: if details in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-    }
-      match /lodging/{details}/lodging/{document} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow delete: if request.auth.uid == resource.data.uid;
-    }
-      match /activities/{details} {
-      //Read
-			allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers;
-    
-      //Write
-      allow create: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow delete: if details in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-    }
-      match /activities/{details}/activity/{document} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow delete: if request.auth.uid == resource.data.uid;
-    }
-    	match /transport/{details} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers;
-    
-      //Write
-      allow create: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow update: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow delete: if details in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.trips;
-    }
-      match /transport/{details}/mode/{document} {
-      //Read
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      
-      //Write
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(details)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(details)).data.accessUsers;
-      allow delete: if request.auth.uid == resource.data.uid;
-    }
-    
-      match /users/{user} {
-      //Read
-      allow read: if belongsTo(user) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-      
-      //Write
-      allow write: if belongsTo(user)|| request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-        match /settings/{user} {
-      //Read
-      allow read: if belongsTo(user) || request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-      
-      //Write
-      allow write: if belongsTo(user)|| request.auth.uid == 'NTjJZIWR5jXCVzgl7xIG39Iz0dG3';
-    }
-      
-      match /notifications/{document}/notifications/{documents} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && !exists(/databases/$(database)/documents/unique/$(documents));
-      allow delete: if belongsTo(document);
-      }
-      
-      match /chat/{documents}/messages/{document} {
-      allow read: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow write: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      allow delete: if request.auth.uid in get(/databases/$(database)/documents/trips/$(documents)).data.accessUsers || resource.data.ownerID == request.auth.uid || request.auth.uid in get(/databases/$(database)/documents/privateTrips/$(documents)).data.accessUsers;
-      }
-      
-    // function resourceMatchesUID() {
-    //     return request.auth.uid == resource.data.ownerID;
-    // }
-    
+
     function belongsTo(userId) {
-    return request.auth.uid == userId
-		}
+      return signedIn() && uid() == userId;
+    }
+
+    function tripRef(tripId) {
+      return /databases/$(database)/documents/trips/$(tripId);
+    }
+
+    function tripData(tripId) {
+      return get(tripRef(tripId)).data;
+    }
+
+    function isTripOwnerForData(data) {
+      return signedIn() && data.createdBy == uid();
+    }
+
+    function isTripMemberForData(data) {
+      return signedIn() &&
+        (data.createdBy == uid() ||
+         uid() in (data.joinedUsers == null ? [] : data.joinedUsers));
+    }
+
+    function canReadTripData(data) {
+      return isAdmin() ||
+        (signedIn() &&
+         (data.isPrivate != true || isTripMemberForData(data)));
+    }
+
+    function canWriteTripData(data) {
+      return isAdmin() || isTripOwnerForData(data);
+    }
+
+    function canReadTripId(tripId) {
+      return exists(tripRef(tripId)) && canReadTripData(tripData(tripId));
+    }
+
+    function canWriteTripId(tripId) {
+      return exists(tripRef(tripId)) && canWriteTripData(tripData(tripId));
+    }
+
+    match /users/{userId} {
+      allow read, update, delete: if belongsTo(userId) || isAdmin();
+      allow create: if belongsTo(userId) || isAdmin();
+    }
+
+    match /settings/{userId} {
+      allow read, write: if belongsTo(userId) || isAdmin();
+    }
+
+    match /publicProfile/{userId} {
+      allow read: if signedIn();
+      allow create: if belongsTo(userId) || isAdmin();
+      allow delete: if belongsTo(userId) || isAdmin();
+      allow update: if belongsTo(userId) ||
+        isAdmin() ||
+        (signedIn() &&
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followers']) &&
+         (request.resource.data.followers.toSet().difference(resource.data.followers.toSet()) == [uid()].toSet() ||
+          resource.data.followers.toSet().difference(request.resource.data.followers.toSet()) == [uid()].toSet()));
+    }
+
+    match /trips/{tripId} {
+      allow read: if canReadTripData(resource.data);
+      allow create: if signedIn() &&
+        request.resource.data.createdBy == uid() &&
+        request.resource.data.id == tripId;
+      allow update: if canWriteTripData(resource.data) &&
+        request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if canWriteTripData(resource.data);
+
+      match /Members/{memberId} {
+        allow read: if canReadTripId(tripId);
+        allow create, update, delete: if canWriteTripId(tripId) || belongsTo(memberId);
+      }
+    }
+
+    match /expense/{expenseId} {
+      allow read: if canReadTripId(resource.data.tripId);
+      allow create: if signedIn() &&
+        request.resource.data.createdBy == uid() &&
+        canReadTripId(request.resource.data.tripId);
+      allow update, delete: if signedIn() &&
+        (resource.data.createdBy == uid() || canWriteTripId(resource.data.tripId));
+    }
+
+    match /activity/{activityId} {
+      allow read: if canReadTripId(resource.data.tripId);
+      allow create: if signedIn() &&
+        request.resource.data.tripId is string &&
+        canReadTripId(request.resource.data.tripId);
+      allow update: if signedIn() && canReadTripId(resource.data.tripId);
+      allow delete: if signedIn() &&
+        (canWriteTripId(resource.data.tripId) || resource.data.createdBy == uid());
+    }
+
+    match /flights/{flightId} {
+      allow read: if canReadTripId(resource.data.tripId);
+      allow create: if signedIn() && canReadTripId(request.resource.data.tripId);
+      allow update, delete: if signedIn() &&
+        (resource.data.createdBy == uid() || canWriteTripId(resource.data.tripId));
+    }
+
+    match /chat/{roomId} {
+      allow read, update, delete: if signedIn() && uid() in resource.data.usersIds;
+      allow create: if signedIn() && uid() in request.resource.data.usersIds;
+
+      match /messages/{messageId} {
+        allow read: if signedIn() && uid() in get(/databases/$(database)/documents/chat/$(roomId)).data.usersIds;
+        allow create: if signedIn() &&
+          uid() in get(/databases/$(database)/documents/chat/$(roomId)).data.usersIds &&
+          request.resource.data.createdBy == uid();
+        allow update, delete: if signedIn() && resource.data.createdBy == uid();
+      }
+    }
+
+    match /notifications/{userId}/notification/{notificationId} {
+      allow read, update, delete: if belongsTo(userId) || isAdmin();
+      allow create: if signedIn() &&
+        (request.resource.data.createdBy == uid() || belongsTo(userId) || isAdmin());
+    }
+
+    match /tokens/{userId}/tokens/{tokenId} {
+      allow read: if belongsTo(userId) || isAdmin();
+      allow write: if belongsTo(userId) || isAdmin();
+    }
+
+    match /mail/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /apiKeys/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /feedback/{document} {
+      allow create: if signedIn();
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /reports/{document=**} {
+      allow create: if signedIn();
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
   }
 }
