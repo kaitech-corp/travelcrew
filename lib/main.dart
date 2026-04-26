@@ -20,7 +20,6 @@ import 'utils/app_strings.dart';
 import 'utils/route_generator.dart';
 import 'utils/screen_bindings.dart';
 
-
 late FirebaseFirestore firestore;
 MainViewController? mainViewController;
 String userDeviceToken = '';
@@ -29,7 +28,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  await dotenv.load();
+  await dotenv.load(isOptional: true);
 
   if (!kDebugMode) {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -61,6 +60,7 @@ Future<void> initializeFirebase() async {
   );
   firestore.settings = const Settings(persistenceEnabled: true);
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
