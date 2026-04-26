@@ -75,7 +75,7 @@ class MessagesScreen extends GetView<UsersController> {
                           labelText:
                               ' ${DateFormat('dd MMM').format(controller.currentTrip.value?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.currentTrip.value?.tripEndDate ?? DateTime.now())}',
                           textAlign: TextAlign.center,
-                          style:  TextStyle(
+                          style: TextStyle(
                             color: Color(0xFF666666),
                             fontSize: AppStyles.fontSize12,
 
@@ -145,14 +145,15 @@ class MessagesScreen extends GetView<UsersController> {
                       child: MessageWidget(
                         userModel: controller.chatRoom.value!.users.firstWhere(
                           (u) => u.id == controller.messages[index].createdBy,
-                          orElse: () => ChatUser(
-                            id: controller.messages[index].createdBy,
-                            unreadedMessages: 0,
-                            name: 'Unknown',
-                            profileImage: '',
-                            isOnline: false,
-                            isTyping: false,
-                          ),
+                          orElse:
+                              () => ChatUser(
+                                id: controller.messages[index].createdBy,
+                                unreadedMessages: 0,
+                                name: 'Unknown',
+                                profileImage: '',
+                                isOnline: false,
+                                isTyping: false,
+                              ),
                         ),
                         message: controller.messages[index],
                       ),

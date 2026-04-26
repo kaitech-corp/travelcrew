@@ -110,7 +110,7 @@ class UsersScreen extends GetView<UsersController> {
                               subtitle:
                                   '${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripEndDate ?? DateTime.now())}',
                               timestamp: DateFormat('dd MMM, hh:mma').format(
-                                controller.chatRooms[index].updatedAt.toDate() ?? DateTime.now(),
+                                controller.chatRooms[index].updatedAt.toDate(),
                               ),
                               memberImages:
                                   controller.chatRooms[index].users
