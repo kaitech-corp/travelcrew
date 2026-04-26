@@ -126,7 +126,9 @@ class StepsThree extends StatelessWidget {
                     Obx(
                       () => Text(
                         controller.departureDate.value != null
-                            ? controller.departureDate.value != null ? '${CommonCode.formatMonth(controller.departureDate.value!.month)} ${controller.departureDate.value!.day}, ${controller.departureDate.value!.year} - ${CommonCode.formatTime(controller.departureDate.value!)}' : ''
+                            ? controller.departureDate.value != null
+                                ? '${CommonCode.formatMonth(controller.departureDate.value!.month)} ${controller.departureDate.value!.day}, ${controller.departureDate.value!.year} - ${CommonCode.formatTime(controller.departureDate.value!)}'
+                                : ''
                             : 'June 10, 2025 - 10:00 AM',
                         // 'June 10, 2025 - 10:00 AM',
                         textAlign: TextAlign.center,
@@ -213,7 +215,9 @@ class StepsThree extends StatelessWidget {
                     Obx(
                       () => Text(
                         controller.arrivalDate.value != null
-                            ? controller.arrivalDate.value != null ? '${CommonCode.formatMonth(controller.arrivalDate.value!.month)} ${controller.arrivalDate.value!.day}, ${controller.arrivalDate.value!.year} - ${CommonCode.formatTime(controller.arrivalDate.value!)}' : ''
+                            ? controller.arrivalDate.value != null
+                                ? '${CommonCode.formatMonth(controller.arrivalDate.value!.month)} ${controller.arrivalDate.value!.day}, ${controller.arrivalDate.value!.year} - ${CommonCode.formatTime(controller.arrivalDate.value!)}'
+                                : ''
                             : 'June 10, 2025 - 5:30 PM',
                         // 'June 10, 2025 - 5:30 PM',
                         textAlign: TextAlign.center,

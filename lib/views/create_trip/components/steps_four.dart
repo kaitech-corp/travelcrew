@@ -59,10 +59,13 @@ class StepsFour extends StatelessWidget {
                 onChanged: (value) {
                   controller.fetchHotelLocation(value);
                 },
-                onTap: (placeId, searchText) =>
-                    controller.hotelNameController.text = searchText.searchText,
-                validator: (p0) =>
-                    p0?.isBlank ?? true ? 'Please select a hotel' : null,
+                onTap:
+                    (placeId, searchText) =>
+                        controller.hotelNameController.text =
+                            searchText.searchText,
+                validator:
+                    (p0) =>
+                        p0?.isBlank ?? true ? 'Please select a hotel' : null,
                 textEditingController: controller.hotelNameController,
                 focusNode: controller.hotelNameFocusNode,
               ),
@@ -186,7 +189,10 @@ class StepsFour extends StatelessWidget {
                       Text(
                         controller.checkInStartTime.value == null
                             ? 'Check-in & Check-out'
-                            : controller.checkInStartTime.value != null && controller.checkInEndTime.value != null ? '${CommonCode.formatMonth(controller.checkInStartTime.value!.month)} ${controller.checkInStartTime.value!.day}, ${controller.checkInStartTime.value!.year} - ${CommonCode.formatTime(controller.checkInStartTime.value!)} to ${CommonCode.formatMonth(controller.checkInEndTime.value!.month)} ${controller.checkInEndTime.value!.day}, ${controller.checkInEndTime.value!.year} - ${CommonCode.formatTime(controller.checkInEndTime.value!)}' : '',
+                            : controller.checkInStartTime.value != null &&
+                                controller.checkInEndTime.value != null
+                            ? '${CommonCode.formatMonth(controller.checkInStartTime.value!.month)} ${controller.checkInStartTime.value!.day}, ${controller.checkInStartTime.value!.year} - ${CommonCode.formatTime(controller.checkInStartTime.value!)} to ${CommonCode.formatMonth(controller.checkInEndTime.value!.month)} ${controller.checkInEndTime.value!.day}, ${controller.checkInEndTime.value!.year} - ${CommonCode.formatTime(controller.checkInEndTime.value!)}'
+                            : '',
                         // : '${DateFormat('MMM dd').format(controller.checkInStartTime.value!)} - ${DateFormat('MMM dd, yyyy').format(controller.checkInEndTime.value!)}',
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(

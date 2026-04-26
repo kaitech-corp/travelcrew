@@ -95,7 +95,11 @@ class StepsFive extends StatelessWidget {
             () => LocationDropdownWidget(
               hintText: 'Location',
               items: controller.locations,
-              onChanged: (value) => controller.fetchLocation(value ?? '', type: 'tourist_attraction'),
+              onChanged:
+                  (value) => controller.fetchLocation(
+                    value ?? '',
+                    type: 'tourist_attraction',
+                  ),
               // validator:
               //     (p0) =>
               //         p0?.isBlank == true ? 'Please select a location' : null,
@@ -186,7 +190,10 @@ class StepsFive extends StatelessWidget {
                       controller.activityStartTime.value == null ||
                               controller.activityEndTime.value == null
                           ? 'Select activity start & end date'
-                          : controller.activityStartTime.value != null && controller.activityEndTime.value != null ? '${CommonCode.formatMonth(controller.activityStartTime.value!.month)} ${controller.activityStartTime.value!.day}, ${controller.activityStartTime.value!.year} - ${CommonCode.formatTime(controller.activityStartTime.value!)} to ${CommonCode.formatMonth(controller.activityEndTime.value!.month)} ${controller.activityEndTime.value!.day}, ${controller.activityEndTime.value!.year} - ${CommonCode.formatTime(controller.activityEndTime.value!)}' : '',
+                          : controller.activityStartTime.value != null &&
+                              controller.activityEndTime.value != null
+                          ? '${CommonCode.formatMonth(controller.activityStartTime.value!.month)} ${controller.activityStartTime.value!.day}, ${controller.activityStartTime.value!.year} - ${CommonCode.formatTime(controller.activityStartTime.value!)} to ${CommonCode.formatMonth(controller.activityEndTime.value!.month)} ${controller.activityEndTime.value!.day}, ${controller.activityEndTime.value!.year} - ${CommonCode.formatTime(controller.activityEndTime.value!)}'
+                          : '',
 
                       // : '${DateFormat('MMM dd yyyy').format(controller.activityStartTime.value!)} - ${DateFormat('MMM dd yyyy').format(controller.activityEndTime.value!)}',
                       textAlign: TextAlign.center,

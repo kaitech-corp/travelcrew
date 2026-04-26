@@ -68,12 +68,13 @@ class StepsOne extends StatelessWidget {
                         ? Stack(
                           children: [
                             FutureBuilder(
-                              future: controller.selectedPlaceId.value ==
-                                      'existing_location'
-                                  ? Future.value(null)
-                                  : controller.getLocationDetails(
-                                      controller.selectedPlaceId.value,
-                                    ),
+                              future:
+                                  controller.selectedPlaceId.value ==
+                                          'existing_location'
+                                      ? Future.value(null)
+                                      : controller.getLocationDetails(
+                                        controller.selectedPlaceId.value,
+                                      ),
                               builder: (c, snap) {
                                 if (snap.connectionState ==
                                     ConnectionState.waiting) {
@@ -114,9 +115,10 @@ class StepsOne extends StatelessWidget {
                                     url: firstImage.imageUrl,
                                     height: 199.h,
                                     width: context.width,
-                                    fileType: firstImage.isNetworkImage
-                                        ? SourceType.network
-                                        : SourceType.file,
+                                    fileType:
+                                        firstImage.isNetworkImage
+                                            ? SourceType.network
+                                            : SourceType.file,
                                   );
                                 }
                                 return ClipRRect(
