@@ -9,7 +9,6 @@ import 'package:travel_crew/utils/common_code.dart';
 import '../../utils/app_styles.dart';
 
 class LocationDropdownWidget extends StatefulWidget {
-
   const LocationDropdownWidget({
     required this.selectedText,
     super.key,
@@ -97,9 +96,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
               enabledBorder: border,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30.r),
-                borderSide: const BorderSide(
-                  color: AppColors.kPrimaryColor,
-                ),
+                borderSide: const BorderSide(color: AppColors.kPrimaryColor),
               ),
               prefixIcon: Padding(
                 padding: EdgeInsets.only(left: 7.w),
@@ -176,7 +173,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                                     SizedBox(width: 10.w),
                                     Expanded(
                                       child: Text(
-                                        widget.items[index].searchText ?? '',
+                                        widget.items[index].searchText,
                                         style: AppStyles.labelTextStyle()
                                             .copyWith(
                                               fontSize: AppStyles.fontSize16,

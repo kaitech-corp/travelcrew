@@ -14,14 +14,16 @@ import '../controller/specific_trip_view_controller.dart';
 class ExpenseTab extends StatelessWidget {
   const ExpenseTab({super.key, required this.controller});
   final SpecificTripViewController controller;
-  
+
   @override
   Widget build(BuildContext context) {
     final expenseService = ExpenseService();
     final trip = controller.tripModel.value!;
-    final Map<String, double> userDebts = expenseService.calculateUserDebts(trip);
+    final Map<String, double> userDebts = expenseService.calculateUserDebts(
+      trip,
+    );
     final expenseSummary = expenseService.getTripExpenseSummary(trip);
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: 15.h),
       padding: const EdgeInsets.all(16),
@@ -32,12 +34,7 @@ class ExpenseTab extends StatelessWidget {
           side: const BorderSide(color: Color(0xFFE7E7E7)),
           borderRadius: BorderRadius.circular(26),
         ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x0C000000),
-            blurRadius: 92.99,
-          ),
-        ],
+        shadows: const [BoxShadow(color: Color(0x0C000000), blurRadius: 92.99)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,9 +70,10 @@ class ExpenseTab extends StatelessWidget {
                     Text(
                       'Budget: \$${trip.tripBudget.toStringAsFixed(2)} • Remaining: \$${expenseSummary['remainingBudget'].toStringAsFixed(2)}',
                       style: AppStyles.labelTextStyle().copyWith(
-                        color: expenseSummary['remainingBudget'] < 0 
-                            ? Colors.red 
-                            : Colors.green,
+                        color:
+                            expenseSummary['remainingBudget'] < 0
+                                ? Colors.red
+                                : Colors.green,
                         fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.w400,
                       ),
@@ -86,7 +84,7 @@ class ExpenseTab extends StatelessWidget {
             ],
           ),
           SizedBox(height: 15.h),
-          
+
           // User's expense summary
           Container(
             padding: EdgeInsets.all(12.w),
@@ -118,11 +116,7 @@ class ExpenseTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                Container(
-                  width: 1,
-                  height: 30,
-                  color: Colors.grey.shade300,
-                ),
+                Container(width: 1, height: 30, color: Colors.grey.shade300),
                 Column(
                   children: [
                     Text(
@@ -143,11 +137,7 @@ class ExpenseTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                Container(
-                  width: 1,
-                  height: 30,
-                  color: Colors.grey.shade300,
-                ),
+                Container(width: 1, height: 30, color: Colors.grey.shade300),
                 Column(
                   children: [
                     Text(
@@ -161,9 +151,10 @@ class ExpenseTab extends StatelessWidget {
                     Text(
                       '${expenseSummary['netBalance'] >= 0 ? '+' : ''}\$${expenseSummary['netBalance'].toStringAsFixed(2)}',
                       style: AppStyles.labelTextStyle().copyWith(
-                        color: expenseSummary['netBalance'] >= 0 
-                            ? Colors.green 
-                            : Colors.red,
+                        color:
+                            expenseSummary['netBalance'] >= 0
+                                ? Colors.green
+                                : Colors.red,
                         fontSize: AppStyles.fontSize16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -173,7 +164,7 @@ class ExpenseTab extends StatelessWidget {
               ],
             ),
           ),
-          
+
           SizedBox(height: 15.h),
           Text(
             'Who Owes What?',
@@ -184,10 +175,10 @@ class ExpenseTab extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.h),
-          
+
           // Show debt information
           if (userDebts.isEmpty)
-             Center(
+            Center(
               child: Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Text(
@@ -205,21 +196,34 @@ class ExpenseTab extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               shrinkWrap: true,
-              separatorBuilder: (context, index) =>
-                  const Divider(color: Color(0xFFE7E7E7), thickness: 1),
+              separatorBuilder:
+                  (context, index) =>
+                      const Divider(color: Color(0xFFE7E7E7), thickness: 1),
               itemCount: userDebts.length,
               itemBuilder: (context, index) {
                 final userId = userDebts.keys.elementAt(index);
                 final amount = userDebts.values.elementAt(index);
                 final user = controller.tripModel.value?.joindUsersList
-                    ?.firstWhere((u) => u.uid == userId, orElse: () => 
-                        PublicUserModel(displayName: 'Unknown User', email: '', uid: userId, profileImage: '', followers: [], following: [], tripsCreated: 0, tripsJoined: 0));
-                
+                    ?.firstWhere(
+                      (u) => u.uid == userId,
+                      orElse:
+                          () => PublicUserModel(
+                            displayName: 'Unknown User',
+                            email: '',
+                            uid: userId,
+                            profileImage: '',
+                            followers: [],
+                            following: [],
+                            tripsCreated: 0,
+                            tripsJoined: 0,
+                          ),
+                    );
+
                 if (user == null || amount == 0) return const SizedBox.shrink();
-                
+
                 final isOwedToCurrentUser = amount > 0;
                 final displayAmount = amount.abs();
-                
+
                 return Row(
                   children: [
                     AnyImageView(
@@ -235,7 +239,7 @@ class ExpenseTab extends StatelessWidget {
                     SizedBox(width: 10.w),
                     Expanded(
                       child: Text(
-                        isOwedToCurrentUser 
+                        isOwedToCurrentUser
                             ? '${user.displayName} owes you'
                             : 'You owe ${user.displayName}',
                         style: AppStyles.labelTextStyle().copyWith(
@@ -249,9 +253,14 @@ class ExpenseTab extends StatelessWidget {
                       '\$${displayAmount.toStringAsFixed(2)}',
                       textAlign: TextAlign.right,
                       style: AppStyles.labelTextStyle().copyWith(
-                        color: isOwedToCurrentUser 
-                            ? const Color(0xFF1D7FC2)  // Blue for money owed to you
-                            : const Color(0xFFE74C3C), // Red for money you owe
+                        color:
+                            isOwedToCurrentUser
+                                ? const Color(
+                                  0xFF1D7FC2,
+                                ) // Blue for money owed to you
+                                : const Color(
+                                  0xFFE74C3C,
+                                ), // Red for money you owe
                         fontSize: AppStyles.fontSize13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -266,10 +275,11 @@ class ExpenseTab extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: () => Get.toNamed(
-                  kExpenseScreenRoute,
-                  arguments: controller.tripModel.value!,
-                ),
+                onTap:
+                    () => Get.toNamed(
+                      kExpenseScreenRoute,
+                      arguments: controller.tripModel.value!,
+                    ),
                 child: Container(
                   width: 150.w,
                   height: 34.h,
@@ -350,5 +360,4 @@ class ExpenseTab extends StatelessWidget {
       ),
     );
   }
-
 }

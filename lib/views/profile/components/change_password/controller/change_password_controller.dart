@@ -3,7 +3,6 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/auth_service.dart';
-import 'package:travel_crew/services/secure_storage_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 
@@ -22,25 +21,25 @@ class ChangePasswordController extends GetxController {
   Future<void> updatePasssword() async {
     try {
       GlobalVariables.showLoader.value = true;
-      await SecureStorageService.verifyOldPassword(
-        passwordToCheck: currentPasswordController.text,
-      ).then((value) async {
-        if (value) {
-          if (newPasswordController.text == confirmPasswordController.text) {
-            await AuthService.updatePasword(
-              newPassword: newPasswordController.text,
-            );
-          } else {
-            showCustomSnackBar(
-              title: 'Error',
-              contentType: ContentType.failure,
-              content: "New password and confirm password doesn't match.",
-            );
-          }
-        }
-        GlobalVariables.showLoader.value = false;
-      });
+      if (newPasswordController.text != confirmPasswordController.text) {
+        showCustomSnackBar(
+          title: 'Error',
+          contentType: ContentType.failure,
+          content: "New password and confirm password doesn't match.",
+        );
+        return;
+      }
+      await AuthService.updatePasword(
+        currentPassword: currentPasswordController.text,
+        newPassword: newPasswordController.text,
+      );
     } catch (e) {
+      showCustomSnackBar(
+        title: 'Error',
+        contentType: ContentType.failure,
+        content: 'Password update failed. Check your current password.',
+      );
+    } finally {
       GlobalVariables.showLoader.value = false;
     }
   }

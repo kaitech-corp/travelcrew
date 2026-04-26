@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 
 class NotificationWidget extends StatelessWidget {
-
   const NotificationWidget({
     super.key,
     required this.title,
@@ -33,7 +32,7 @@ class NotificationWidget extends StatelessWidget {
         borderRadius: borderRadius ?? BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -62,7 +61,10 @@ class NotificationWidget extends StatelessWidget {
 
                 Text(
                   _formatTimestamp(timestamp),
-                  style: TextStyle(color: Colors.black54, fontSize: AppStyles.fontSize14),
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: AppStyles.fontSize14,
+                  ),
                 ),
               ],
             ),

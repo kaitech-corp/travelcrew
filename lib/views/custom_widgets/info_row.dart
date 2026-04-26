@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:travel_crew/views/custom_widgets/text_widget.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_styles.dart';
+
 class InfoRow extends StatelessWidget {
   const InfoRow({super.key, required this.text, this.icon});
   final String text;

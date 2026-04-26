@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
+
 class PhotoViewWidget extends StatelessWidget {
   const PhotoViewWidget({
     super.key,
@@ -65,7 +66,9 @@ class PhotoViewWidget extends StatelessWidget {
     );
   }
 }
+
 enum ImageSourceType { network, file, asset }
+
 void previewImageDialogue({
   required String imageUrl,
   required ImageSourceType sourceType,

@@ -16,6 +16,7 @@ import '../../../../create_trip/components/steps_one.dart';
 import '../../../../custom_widgets/custom_text_field.dart';
 import '../../../../custom_widgets/date_range_picker/range_picker_dialogue.dart';
 
+// ignore: must_be_immutable
 class AddActivity extends GetView<SpecificTripViewController> {
   AddActivity({super.key});
   bool firstTime = true;

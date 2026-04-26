@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class FavIcon extends StatelessWidget {
   const FavIcon({super.key, required this.isFavorite, this.onTap});
   final bool isFavorite;
@@ -10,7 +11,10 @@ class FavIcon extends StatelessWidget {
       child: Container(
         width: 27.47,
         height: 27.47,
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+        ),
         child: Icon(
           isFavorite ? Icons.favorite : Icons.favorite_border,
           color: isFavorite ? Colors.red : Colors.grey,

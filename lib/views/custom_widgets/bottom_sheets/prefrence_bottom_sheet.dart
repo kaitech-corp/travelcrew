@@ -6,6 +6,7 @@ import '../../../utils/app_styles.dart';
 import '../custom_elevated_button.dart';
 import '../text_widget.dart';
 import 'general_bottom_sheet.dart';
+
 class PrefrenceBottomSheet extends StatelessWidget {
   const PrefrenceBottomSheet({
     super.key,

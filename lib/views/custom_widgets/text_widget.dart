@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 import '../../../utils/app_styles.dart';
+
 class TextWidget extends StatelessWidget {
   const TextWidget({
     super.key,

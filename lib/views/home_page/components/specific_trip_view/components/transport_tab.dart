@@ -203,9 +203,10 @@ class TransportTab extends StatelessWidget {
             );
           }
           return Column(
-            children: flights
-                .map((flight) => _buildCrewFlightCard(flight, controller))
-                .toList(),
+            children:
+                flights
+                    .map((flight) => _buildCrewFlightCard(flight, controller))
+                    .toList(),
           );
         }),
       ],
@@ -241,9 +242,10 @@ class TransportTab extends StatelessWidget {
                   ),
                 if (flight.airlineName != null || flight.flightNumber != null)
                   Text(
-                    [flight.airlineName, flight.flightNumber]
-                        .whereType<String>()
-                        .join(' · '),
+                    [
+                      flight.airlineName,
+                      flight.flightNumber,
+                    ].whereType<String>().join(' · '),
                     style: AppStyles.labelTextStyle().copyWith(
                       fontSize: AppStyles.fontSize13,
                     ),

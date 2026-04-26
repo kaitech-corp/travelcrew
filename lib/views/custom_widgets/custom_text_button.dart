@@ -68,7 +68,11 @@ class CustomTextButton extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w),
                   icon ??
-                      Icon(weight: 20, Icons.arrow_forward_ios, size: AppStyles.fontSize12),
+                      Icon(
+                        weight: 20,
+                        Icons.arrow_forward_ios,
+                        size: AppStyles.fontSize12,
+                      ),
                 ],
               )
               : Text(

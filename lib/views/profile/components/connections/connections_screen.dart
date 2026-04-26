@@ -28,10 +28,7 @@ class ConnectionsScreen extends GetView<ConnectionsController> {
               labelColor: Theme.of(context).primaryColor,
               unselectedLabelColor: Colors.grey,
               indicatorColor: Theme.of(context).primaryColor,
-              tabs: [
-                Tab(text: l10n.followers),
-                Tab(text: l10n.following),
-              ],
+              tabs: [Tab(text: l10n.followers), Tab(text: l10n.following)],
             ),
             Expanded(
               child: Obx(() {

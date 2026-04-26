@@ -11,6 +11,7 @@ import '../main_view/controller/main_view_controller.dart';
 import 'custom_app_bar_widget.dart';
 import 'custom_screen_loader.dart';
 
+// ignore: must_be_immutable
 class CustomScaffold extends StatefulWidget {
   CustomScaffold({
     super.key,
@@ -76,10 +77,7 @@ class CustomScaffold extends StatefulWidget {
   Widget? floatingActionButton;
   double leadingWidth = 70;
   Color? backIconColor;
-  EdgeInsets padding = const EdgeInsets.only(
-    left: 15,
-    right: 15,
-  );
+  EdgeInsets padding = const EdgeInsets.only(left: 15, right: 15);
   Widget? drawer;
   final Function? openDrawerCallback;
   final Color? backgroundColor;
@@ -105,8 +103,10 @@ class CustomScaffoldState extends State<CustomScaffold> {
     }
     final notifController = Get.find<NotificationController>();
     return Obx(() {
-      final unread = notifController.notifications
-          .fold<int>(0, (sum, group) => sum + group.notifications.length);
+      final unread = notifController.notifications.fold<int>(
+        0,
+        (sum, group) => sum + group.notifications.length,
+      );
       return GestureDetector(
         onTap: () {
           if (Get.isRegistered<MainViewController>()) {
@@ -131,10 +131,13 @@ class CustomScaffoldState extends State<CustomScaffold> {
                       color: AppColors.kPrimaryColor,
                       shape: BoxShape.circle,
                     ),
-                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
                     child: Text(
                       unread > 99 ? '99+' : '$unread',
-                      style:  TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: AppStyles.fontSize12,
                         fontWeight: FontWeight.bold,

@@ -20,7 +20,7 @@ class SimpleDropdown<T> extends StatefulWidget {
   final Widget Function(T)? itemBuilder;
   final String hintText;
   @override
-  _SimpleDropdownState<T> createState() => _SimpleDropdownState<T>();
+  State<SimpleDropdown<T>> createState() => _SimpleDropdownState<T>();
 }
 
 class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
@@ -54,7 +54,10 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
             onTap: _toggleDropdown,
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 16.0,
+              ),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(30.0),

@@ -23,8 +23,10 @@ class ConnectionsController extends GetxController {
   Future<void> loadConnections(String userId) async {
     isLoading.value = true;
     try {
-      final List<PublicUserModel> followersList = await AuthService.getFollowers(userId);
-      final List<PublicUserModel> followingList = await AuthService.getFollowing(userId);
+      final List<PublicUserModel> followersList =
+          await AuthService.getFollowers(userId);
+      final List<PublicUserModel> followingList =
+          await AuthService.getFollowing(userId);
       followers.assignAll(followersList);
       following.assignAll(followingList);
     } catch (e) {

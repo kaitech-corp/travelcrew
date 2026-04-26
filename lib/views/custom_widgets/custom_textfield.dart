@@ -12,6 +12,7 @@ import '../../utils/app_colors.dart';
 import '../../utils/app_styles.dart';
 import '../../utils/common_code.dart';
 
+// ignore: must_be_immutable
 class CustomTextFormField extends StatefulWidget {
   CustomTextFormField({
     super.key,
@@ -261,7 +262,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 children: [
                   Text(
                     selectedCountry!.flagEmoji,
-                    style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize24),
+                    style: AppStyles.labelTextStyle().copyWith(
+                      fontSize: AppStyles.fontSize24,
+                    ),
                   ),
                   const SizedBox(width: 6),
                   const Icon(Icons.arrow_drop_down, color: Colors.black54),

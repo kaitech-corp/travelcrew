@@ -43,7 +43,9 @@ class CongratulationsDialog extends StatelessWidget {
                 'Your confirmation code has been successfully verified.',
                 textAlign: TextAlign.center,
                 style: AppStyles.labelTextStyle().copyWith(
-                  color: Colors.white.withAlpha(140), // Adjust opacity for better readability
+                  color: Colors.white.withAlpha(
+                    140,
+                  ), // Adjust opacity for better readability
                   fontSize: AppStyles.fontSize15,
 
                   fontWeight: FontWeight.w500,

@@ -47,14 +47,17 @@ class SpecificTripViewController extends GetxController
   // Flight form state
   final TextEditingController flightAirlineController = TextEditingController();
   final TextEditingController flightNumberController = TextEditingController();
-  final TextEditingController flightDepartureAirportController = TextEditingController();
-  final TextEditingController flightArrivalAirportController = TextEditingController();
+  final TextEditingController flightDepartureAirportController =
+      TextEditingController();
+  final TextEditingController flightArrivalAirportController =
+      TextEditingController();
   final Rxn<DateTime> flightDepartureDate = Rxn<DateTime>();
   final Rxn<DateTime> flightArrivalDate = Rxn<DateTime>();
 
-  List<Settlement> get optimalSettlements => tripModel.value != null
-      ? ExpenseService().computeOptimalSettlements(tripModel.value!)
-      : [];
+  List<Settlement> get optimalSettlements =>
+      tripModel.value != null
+          ? ExpenseService().computeOptimalSettlements(tripModel.value!)
+          : [];
 
   Future<void> markSettlementPaid(String fromUserId) async {
     try {
@@ -103,6 +106,11 @@ class SpecificTripViewController extends GetxController
     flightNumberController.dispose();
     flightDepartureAirportController.dispose();
     flightArrivalAirportController.dispose();
+    lodgingTypeController.dispose();
+    lodgingHotelNameController.dispose();
+    lodgingAddressController.dispose();
+    hotelNameFocusNode.dispose();
+    lodgingAddressFocusNode.dispose();
     super.onClose();
   }
 
@@ -136,18 +144,22 @@ class SpecificTripViewController extends GetxController
         tripId: tripId,
         userId: GlobalVariables.currentUid,
         displayName: GlobalVariables.loggedInUser.value?.displayName,
-        airlineName: flightAirlineController.text.trim().isEmpty
-            ? null
-            : flightAirlineController.text.trim(),
-        flightNumber: flightNumberController.text.trim().isEmpty
-            ? null
-            : flightNumberController.text.trim(),
-        departureAirport: flightDepartureAirportController.text.trim().isEmpty
-            ? null
-            : flightDepartureAirportController.text.trim(),
-        arrivalAirport: flightArrivalAirportController.text.trim().isEmpty
-            ? null
-            : flightArrivalAirportController.text.trim(),
+        airlineName:
+            flightAirlineController.text.trim().isEmpty
+                ? null
+                : flightAirlineController.text.trim(),
+        flightNumber:
+            flightNumberController.text.trim().isEmpty
+                ? null
+                : flightNumberController.text.trim(),
+        departureAirport:
+            flightDepartureAirportController.text.trim().isEmpty
+                ? null
+                : flightDepartureAirportController.text.trim(),
+        arrivalAirport:
+            flightArrivalAirportController.text.trim().isEmpty
+                ? null
+                : flightArrivalAirportController.text.trim(),
         departureDate: flightDepartureDate.value,
         arrivalDate: flightArrivalDate.value,
       );
@@ -191,6 +203,108 @@ class SpecificTripViewController extends GetxController
 
   RxString searchText = ''.obs;
 
+  // Lodging form state
+  final TextEditingController lodgingTypeController = TextEditingController();
+  final TextEditingController lodgingHotelNameController =
+      TextEditingController();
+  final TextEditingController lodgingAddressController =
+      TextEditingController();
+  final Rxn<DateTime> lodgingCheckIn = Rxn<DateTime>();
+  final Rxn<DateTime> lodgingCheckOut = Rxn<DateTime>();
+  final RxList<SearchModel> hotelLocations = <SearchModel>[].obs;
+  final RxString lodgingHotelSearchText = ''.obs;
+  final FocusNode hotelNameFocusNode = FocusNode();
+  final FocusNode lodgingAddressFocusNode = FocusNode();
+
+  void initLodgingFromTrip() {
+    final trip = tripModel.value;
+    if (trip == null) return;
+    lodgingTypeController.text = trip.lodgingType ?? '';
+    lodgingHotelNameController.text = trip.hotelName ?? '';
+    lodgingAddressController.text = trip.hotelAddress ?? '';
+    lodgingCheckIn.value = trip.checkInDate;
+    lodgingCheckOut.value = trip.checkOutDate;
+  }
+
+  Future<void> fetchHotelLocations(String? value) async {
+    if (value == null || value.isEmpty) {
+      hotelLocations.clear();
+      return;
+    }
+    await GeoServices.fetchPlaceSuggestions(value, type: 'lodging').then((
+      suggestions,
+    ) {
+      hotelLocations.value =
+          suggestions
+              .map(
+                (e) => SearchModel(
+                  searchText: e['description'] ?? '',
+                  placeId: e['place_id'],
+                ),
+              )
+              .toList();
+    });
+  }
+
+  Future<void> fetchLodgingAddressLocations(String? value) async {
+    if (value == null || value.isEmpty) {
+      locations.clear();
+      return;
+    }
+    await GeoServices.fetchSuggestions(value).then((suggestions) {
+      locations.value =
+          suggestions
+              .map(
+                (e) => SearchModel(
+                  searchText: e['description'] ?? '',
+                  placeId: e['place_id'],
+                ),
+              )
+              .toList();
+    });
+  }
+
+  Future<void> saveLodging() async {
+    final trip = tripModel.value;
+    if (trip == null) return;
+    try {
+      GlobalVariables.showLoader.value = true;
+      await FirebaseTripService.updateTrip(
+        tripId: trip.id,
+        data: {
+          'lodgingType': lodgingTypeController.text,
+          'hotelName': lodgingHotelNameController.text,
+          'hotelAddress': lodgingAddressController.text,
+          'checkInDate':
+              lodgingCheckIn.value?.toIso8601String() ??
+              trip.checkInDate?.toIso8601String(),
+          'checkOutDate':
+              lodgingCheckOut.value?.toIso8601String() ??
+              trip.checkOutDate?.toIso8601String(),
+        },
+      ).then((success) {
+        if (success) {
+          tripModel.value = trip.copyWith(
+            lodgingType: lodgingTypeController.text,
+            hotelName: lodgingHotelNameController.text,
+            hotelAddress: lodgingAddressController.text,
+            checkInDate: lodgingCheckIn.value,
+            checkOutDate: lodgingCheckOut.value,
+          );
+          updateTripOverAll(tripModel.value!);
+          Get.back();
+          showCustomSnackBar(content: 'Lodging updated successfully');
+        } else {
+          showCustomSnackBar(content: 'Failed to update lodging');
+        }
+      });
+    } catch (e) {
+      showCustomSnackBar(content: 'An error occurred');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
   void changeTab(int index) {
     selectedTabIndex.value = index;
   }
@@ -207,11 +321,17 @@ class SpecificTripViewController extends GetxController
           showCustomSnackBar(content: 'Failed to remove trip');
         }
       });
-    } catch (e) {}
-    GlobalVariables.showLoader.value = false;
+    } catch (e) {
+      debugPrint('Failed to remove trip: $e');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
   }
 
-  Future<void> likeActivity({required String activityId, bool isLiked = false}) async {
+  Future<void> likeActivity({
+    required String activityId,
+    bool isLiked = false,
+  }) async {
     try {
       await FirebaseTripService.likeActivity(
         activityId: activityId,
@@ -242,7 +362,9 @@ class SpecificTripViewController extends GetxController
         tripModel.refresh();
         updateTripOverAll(tripModel.value!);
       });
-    } catch (e) {}
+    } catch (e) {
+      debugPrint('Failed to like activity: $e');
+    }
   }
 
   Future<void> addActivity() async {
@@ -255,15 +377,20 @@ class SpecificTripViewController extends GetxController
       }
       final args = Get.arguments as Map<String, dynamic>? ?? {};
       final bool toAdd = args['toAdd'] as bool? ?? true;
-      final String tripId = args['tripId'] as String? ?? tripModel.value?.id ?? '';
+      final String tripId =
+          args['tripId'] as String? ?? tripModel.value?.id ?? '';
       if (tripId.isEmpty) {
         showCustomSnackBar(content: 'Trip not found');
         return;
       }
-      final ActivityModel? existingActivity = args['activity'] as ActivityModel?;
+      final ActivityModel? existingActivity =
+          args['activity'] as ActivityModel?;
       GlobalVariables.showLoader.value = true;
       final ActivityModel activityModel = ActivityModel(
-        id: toAdd ? const Uuid().v6() : (existingActivity?.id ?? const Uuid().v6()),
+        id:
+            toAdd
+                ? const Uuid().v6()
+                : (existingActivity?.id ?? const Uuid().v6()),
         tripId: tripId,
         title: activityNameController.text,
         location: locationController.text,
@@ -274,7 +401,9 @@ class SpecificTripViewController extends GetxController
         likesCount: toAdd ? 0 : (existingActivity?.likesCount ?? 0),
       );
       if (toAdd) {
-        await FirebaseTripService.addActivity(activity: activityModel).then((value) {
+        await FirebaseTripService.addActivity(activity: activityModel).then((
+          value,
+        ) {
           GlobalVariables.showLoader.value = false;
           if (value) {
             (args['onAdded'] as Function?)?.call(activityModel);
@@ -285,7 +414,9 @@ class SpecificTripViewController extends GetxController
           }
         });
       } else {
-        await FirebaseTripService.updateActivity(activity: activityModel).then((value) {
+        await FirebaseTripService.updateActivity(activity: activityModel).then((
+          value,
+        ) {
           GlobalVariables.showLoader.value = false;
           if (value) {
             (args['onAdded'] as Function?)?.call(activityModel);
@@ -314,7 +445,9 @@ class SpecificTripViewController extends GetxController
                 ),
               )
               .toList();
-    } catch (e) {}
+    } catch (e) {
+      debugPrint('Failed to fetch locations: $e');
+    }
   }
 
   Future<bool> doitFavourite(String? id, {required bool isFavourites}) async {
@@ -324,7 +457,9 @@ class SpecificTripViewController extends GetxController
       //   id: id ?? '',
       //   isFavourites: isFavourites,
       // ).then((value) {});
-    } catch (e) {}
+    } catch (e) {
+      debugPrint('Failed to update favourite state: $e');
+    }
     GlobalVariables.addingToFavourites.value = '';
     return isLiked.value;
   }
@@ -349,7 +484,7 @@ class SpecificTripViewController extends GetxController
       }
 
       GlobalVariables.showLoader.value = true;
-      
+
       final success = await FirebaseTripService.joinTrip(
         tripId: tripModel.value!.id,
         userId: currentUserId,
@@ -359,17 +494,17 @@ class SpecificTripViewController extends GetxController
         // Update local trip model
         tripModel.value!.joinedUsers ??= [];
         tripModel.value!.joinedUsers!.add(currentUserId);
-        
+
         // Refresh the joined users list
         if (tripModel.value!.joinedUsers!.isNotEmpty) {
           tripModel.value!.joindUsersList = await AuthService.getTripUsers(
             userIds: tripModel.value!.joinedUsers!,
           );
         }
-        
+
         tripModel.refresh();
         updateTripOverAll(tripModel.value!);
-        
+
         showCustomSnackBar(content: 'Successfully joined the trip!');
       } else {
         showCustomSnackBar(content: 'Failed to join trip. Please try again.');
@@ -388,8 +523,7 @@ class SpecificTripViewController extends GetxController
         return;
       }
 
-      // Navigate to invite screen or show invite dialog
-      // For now, we'll show a simple dialog to get email
+      final emailController = TextEditingController();
       Get.dialog(
         AlertDialog(
           title: const Text('Invite to Trip'),
@@ -399,7 +533,7 @@ class SpecificTripViewController extends GetxController
               const Text('Enter email address to invite:'),
               const SizedBox(height: 16),
               TextField(
-                controller: TextEditingController(),
+                controller: emailController,
                 decoration: const InputDecoration(
                   hintText: 'Email address',
                   border: OutlineInputBorder(),
@@ -409,7 +543,9 @@ class SpecificTripViewController extends GetxController
                     _sendInvite(email);
                     Get.back();
                   } else {
-                    showCustomSnackBar(content: 'Please enter a valid email address');
+                    showCustomSnackBar(
+                      content: 'Please enter a valid email address',
+                    );
                   }
                 },
               ),
@@ -422,9 +558,15 @@ class SpecificTripViewController extends GetxController
             ),
             TextButton(
               onPressed: () {
-                // Get email from text field and send invite
-                Get.back();
-                showCustomSnackBar(content: 'Invite functionality will be implemented');
+                final email = emailController.text.trim();
+                if (email.isNotEmpty && email.contains('@')) {
+                  _sendInvite(email);
+                  Get.back();
+                } else {
+                  showCustomSnackBar(
+                    content: 'Please enter a valid email address',
+                  );
+                }
               },
               child: const Text('Send Invite'),
             ),
@@ -439,19 +581,26 @@ class SpecificTripViewController extends GetxController
   Future<void> _sendInvite(String email) async {
     try {
       GlobalVariables.showLoader.value = true;
-      
+
       // Add email to invited users list
       tripModel.value!.invitedUsers ??= [];
       if (!tripModel.value!.invitedUsers!.contains(email)) {
         tripModel.value!.invitedUsers!.add(email);
-        
-        // Update trip in Firebase
-        await FirebaseTripService.updateTrip(
+
+        final updated = await FirebaseTripService.updateTrip(
           tripId: tripModel.value!.id,
           data: {'invitedUsers': tripModel.value!.invitedUsers},
         );
-        
-        showCustomSnackBar(content: 'Invitation sent to $email');
+        final sent = await FirebaseTripService.sendTripInvites(
+          tripId: tripModel.value!.id,
+          tripTitle: tripModel.value!.title ?? tripModel.value!.destination,
+          emails: [email],
+        );
+        if (updated && sent) {
+          showCustomSnackBar(content: 'Invitation sent to $email');
+        } else {
+          showCustomSnackBar(content: 'Failed to send invitation');
+        }
       } else {
         showCustomSnackBar(content: 'User already invited');
       }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_crew/views/custom_widgets/text_widget.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_styles.dart';
+
 class CustomRadioButton<T> extends StatelessWidget {
   const CustomRadioButton({
     super.key,
@@ -21,6 +22,7 @@ class CustomRadioButton<T> extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // ignore: deprecated_member_use
           Radio<T>(value: value, groupValue: groupValue, onChanged: onChanged),
           TextWidget(
             labelText: text,
