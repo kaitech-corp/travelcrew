@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_colors.dart';
@@ -72,21 +73,26 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                               children: [
                                 _buildSectionHeader('Overview'),
                                 _buildOverviewSection(),
-                                
+
                                 _buildSectionHeader('Crew'),
                                 _buildCrewSection(),
-                                
+
                                 _buildSectionHeader(
                                   'Activities',
                                   onAdd: () {
                                     Get.toNamed(
                                       kAddActivityScreenRoute,
                                       arguments: {
-                                        'tripId': controller.tripModel.value?.id,
+                                        'tripId':
+                                            controller.tripModel.value?.id,
                                         'toAdd': true,
                                         'onAdded': (activity) {
-                                          controller.tripModel.value?.activities ??= [];
-                                          controller.tripModel.value?.activities?.add(activity);
+                                          controller
+                                              .tripModel
+                                              .value
+                                              ?.activities ??= [];
+                                          controller.tripModel.value?.activities
+                                              ?.add(activity);
                                           controller.tripModel.refresh();
                                         },
                                       },
@@ -94,7 +100,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                   },
                                 ),
                                 ActivitiesTab(controller: controller),
-                                
+
                                 _buildSectionHeader(
                                   'Flights',
                                   onAdd: () => _showAddFlightSheet(context),
@@ -103,34 +109,45 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
 
                                 _buildSectionHeader(
                                   'Lodging',
-                                  onAdd: () => Get.toNamed(
-                                    kCreateTripScreenRoute,
-                                    arguments: controller.tripModel.value,
-                                  ),
+                                  onAdd:
+                                      () => Get.toNamed(
+                                        kAddLodgingScreenRoute,
+                                        arguments: controller.tripModel.value,
+                                      ),
                                 ),
                                 LodgingTab(controller: controller),
 
                                 _buildSectionHeader(
                                   'Expenses',
-                                  onAdd: () => Get.toNamed(
-                                    kAddExpenseScreenRoute,
-                                    arguments: {
-                                      'tripId': controller.tripModel.value?.id,
-                                      'trip': controller.tripModel.value,
-                                      'tripMembers':
-                                          controller.tripModel.value?.joinedUsers ?? [],
-                                      'onAdd': (expense) {
-                                        controller.tripModel.value?.expenses ??= [];
-                                        controller.tripModel.value?.expenses?.add(expense);
-                                        controller.tripModel.refresh();
-                                      },
-                                    },
-                                  ),
+                                  onAdd:
+                                      () => Get.toNamed(
+                                        kAddExpenseScreenRoute,
+                                        arguments: {
+                                          'tripId':
+                                              controller.tripModel.value?.id,
+                                          'trip': controller.tripModel.value,
+                                          'tripMembers':
+                                              controller
+                                                  .tripModel
+                                                  .value
+                                                  ?.joinedUsers ??
+                                              [],
+                                          'onAdd': (expense) {
+                                            controller
+                                                .tripModel
+                                                .value
+                                                ?.expenses ??= [];
+                                            controller.tripModel.value?.expenses
+                                                ?.add(expense);
+                                            controller.tripModel.refresh();
+                                          },
+                                        },
+                                      ),
                                 ),
                                 _buildExpenseSummary(),
                                 SizedBox(height: 12.h),
                                 Obx(() => _buildSettlementCard(context)),
-                                
+
                                 SizedBox(height: 100.h),
                               ],
                             ),
@@ -286,8 +303,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                     title: 'Invite',
                                                     onTap: () {
                                                       Get.back();
-                                                      controller
-                                                          .inviteToTrip();
+                                                      controller.inviteToTrip();
                                                     },
                                                     iconData:
                                                         LucideIcons.userPlus,
@@ -324,10 +340,13 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                   title: 'Share Trip',
                                                   onTap: () async {
                                                     Get.back();
-                                                    await Share.share(
-                                                      'Check out this trip I found on Travel Crew!',
-                                                      subject:
-                                                          'Travel Crew Trip',
+                                                    await SharePlus.instance.share(
+                                                      ShareParams(
+                                                        text:
+                                                            'Check out this trip I found on Travel Crew!',
+                                                        subject:
+                                                            'Travel Crew Trip',
+                                                      ),
                                                     );
                                                   },
                                                 ),
@@ -354,22 +373,20 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                               ),
                                                               actions: [
                                                                 TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                        Get.back();
-                                                                      },
+                                                                  onPressed: () {
+                                                                    Get.back();
+                                                                  },
                                                                   child:
                                                                       const Text(
                                                                         'Cancel',
                                                                       ),
                                                                 ),
                                                                 TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                        controller
-                                                                            .removeTrip();
-                                                                        Get.back();
-                                                                      },
+                                                                  onPressed: () {
+                                                                    controller
+                                                                        .removeTrip();
+                                                                    Get.back();
+                                                                  },
                                                                   child:
                                                                       const Text(
                                                                         'Delete',
@@ -603,7 +620,9 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
             SizedBox(width: 5.w),
             Text(
               'People Going',
-              style: AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize13),
+              style: AppStyles.labelTextStyle().copyWith(
+                fontSize: AppStyles.fontSize13,
+              ),
             ),
           ],
         ),
@@ -620,16 +639,16 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                           controller.tripModel.value?.joindUsersList?.length ??
                           0,
                       itemBuilder: (context, index) {
+                        final user =
+                            controller.tripModel.value!.joindUsersList![index];
                         return Padding(
                           padding: EdgeInsets.only(right: 10.w),
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              controller
-                                      .tripModel
-                                      .value
-                                      ?.joindUsersList?[index]
-                                      .profileImage ??
-                                  '',
+                          child: GestureDetector(
+                            onTap: () => _showCrewMemberSheet(context, user),
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                user.profileImage ?? '',
+                              ),
                             ),
                           ),
                         );
@@ -641,13 +660,99 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
     );
   }
 
+  void _showCrewMemberSheet(BuildContext context, PublicUserModel user) {
+    final fullName = [
+      user.firstName,
+      user.lastName,
+    ].where((p) => p != null && p.isNotEmpty).join(' ');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder:
+          (_) => Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+            ),
+            padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 36.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                CircleAvatar(
+                  radius: 44.r,
+                  backgroundImage:
+                      (user.profileImage?.isNotEmpty == true)
+                          ? NetworkImage(user.profileImage!)
+                          : null,
+                  backgroundColor: AppColors.kLightGreyColor,
+                  child:
+                      (user.profileImage?.isNotEmpty != true)
+                          ? Icon(Icons.person, size: 44.r, color: Colors.grey)
+                          : null,
+                ),
+                SizedBox(height: 14.h),
+                Text(
+                  user.displayName,
+                  style: AppStyles.labelTextStyle().copyWith(
+                    fontSize: AppStyles.fontSize20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+                if (fullName.isNotEmpty) ...[
+                  SizedBox(height: 4.h),
+                  Text(
+                    fullName,
+                    style: AppStyles.labelTextStyle().copyWith(
+                      fontSize: AppStyles.fontSize16,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+                if (user.hometown?.isNotEmpty == true) ...[
+                  SizedBox(height: 8.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        LucideIcons.mapPin,
+                        size: 14.r,
+                        color: Colors.black38,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        user.hometown!,
+                        style: AppStyles.labelTextStyle().copyWith(
+                          fontSize: AppStyles.fontSize14,
+                          color: Colors.black38,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                SizedBox(height: 6.h),
+              ],
+            ),
+          ),
+    );
+  }
+
   Widget _buildExpenseSummary() {
     final totalBudget = controller.tripModel.value?.tripBudget ?? 0.0;
     final totalSpent =
         controller.tripModel.value?.expenses?.fold(
-              0.0,
-              (sum, e) => sum + e.amount,
-            ) ??
+          0.0,
+          (sum, e) => sum + e.amount,
+        ) ??
         0.0;
 
     return Container(
@@ -691,102 +796,105 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder: (sheetContext) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Container(
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(2),
+      builder:
+          (sheetContext) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+            ),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    'Add Your Flight',
+                    style: AppStyles.labelTextStyle().copyWith(
+                      fontSize: AppStyles.fontSize18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextField(
+                    controller: controller.flightAirlineController,
+                    hintText: 'Airline name',
+                  ),
+                  SizedBox(height: 12.h),
+                  CustomTextField(
+                    controller: controller.flightNumberController,
+                    hintText: 'Flight number',
+                  ),
+                  SizedBox(height: 12.h),
+                  CustomTextField(
+                    controller: controller.flightDepartureAirportController,
+                    hintText: 'Departure airport',
+                  ),
+                  SizedBox(height: 12.h),
+                  CustomTextField(
+                    controller: controller.flightArrivalAirportController,
+                    hintText: 'Arrival airport',
+                  ),
+                  SizedBox(height: 12.h),
+                  Obx(
+                    () => _buildDateTile(
+                      label:
+                          controller.flightDepartureDate.value == null
+                              ? 'Departure date'
+                              : 'Departure: ${DateFormat('MMM dd, yyyy').format(controller.flightDepartureDate.value!)}',
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                        );
+                        if (picked != null) {
+                          controller.flightDepartureDate.value = picked;
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Obx(
+                    () => _buildDateTile(
+                      label:
+                          controller.flightArrivalDate.value == null
+                              ? 'Arrival date'
+                              : 'Arrival: ${DateFormat('MMM dd, yyyy').format(controller.flightArrivalDate.value!)}',
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                        );
+                        if (picked != null) {
+                          controller.flightArrivalDate.value = picked;
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  CustomElevatedButton(
+                    width: double.infinity,
+                    title: 'Add Flight',
+                    onPressed: () => controller.addFlight(),
+                  ),
+                ],
               ),
-              SizedBox(height: 16.h),
-              Text(
-                'Add Your Flight',
-                style: AppStyles.labelTextStyle().copyWith(
-                  fontSize: AppStyles.fontSize18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: 16.h),
-              CustomTextField(
-                controller: controller.flightAirlineController,
-                hintText: 'Airline name',
-              ),
-              SizedBox(height: 12.h),
-              CustomTextField(
-                controller: controller.flightNumberController,
-                hintText: 'Flight number',
-              ),
-              SizedBox(height: 12.h),
-              CustomTextField(
-                controller: controller.flightDepartureAirportController,
-                hintText: 'Departure airport',
-              ),
-              SizedBox(height: 12.h),
-              CustomTextField(
-                controller: controller.flightArrivalAirportController,
-                hintText: 'Arrival airport',
-              ),
-              SizedBox(height: 12.h),
-              Obx(
-                () => _buildDateTile(
-                  label: controller.flightDepartureDate.value == null
-                      ? 'Departure date'
-                      : 'Departure: ${DateFormat('MMM dd, yyyy').format(controller.flightDepartureDate.value!)}',
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime(2030),
-                    );
-                    if (picked != null) {
-                      controller.flightDepartureDate.value = picked;
-                    }
-                  },
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Obx(
-                () => _buildDateTile(
-                  label: controller.flightArrivalDate.value == null
-                      ? 'Arrival date'
-                      : 'Arrival: ${DateFormat('MMM dd, yyyy').format(controller.flightArrivalDate.value!)}',
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime(2030),
-                    );
-                    if (picked != null) {
-                      controller.flightArrivalDate.value = picked;
-                    }
-                  },
-                ),
-              ),
-              SizedBox(height: 20.h),
-              CustomElevatedButton(
-                width: double.infinity,
-                title: 'Add Flight',
-                onPressed: () => controller.addFlight(),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -811,7 +919,11 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                 ),
               ),
             ),
-            Image.asset(AppImages.kCalendarIcon, scale: 5, color: Colors.black54),
+            Image.asset(
+              AppImages.kCalendarIcon,
+              scale: 5,
+              color: Colors.black54,
+            ),
           ],
         ),
       ),
@@ -857,100 +969,114 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
     }
 
     return Column(
-      children: settlements.map((s) {
-        final isCurrentUserPaying = s.fromUserId == currentUid;
-        return Container(
-          margin: EdgeInsets.only(bottom: 10.h),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: isCurrentUserPaying
-                ? const Color(0xFFFFEBEB)
-                : AppColors.kLightGreyColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Text(
-                      nameFor(s.fromUserId),
-                      style: AppStyles.labelTextStyle().copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: AppStyles.fontSize13,
-                        color: isCurrentUserPaying
-                            ? const Color(0xFFD9534F)
-                            : const Color(0xFF1F1F1F),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6),
-                      child: Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
-                    ),
-                    Text(
-                      nameFor(s.toUserId),
-                      style: AppStyles.labelTextStyle().copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: AppStyles.fontSize13,
-                      ),
-                    ),
-                  ],
-                ),
+      children:
+          settlements.map((s) {
+            final isCurrentUserPaying = s.fromUserId == currentUid;
+            return Container(
+              margin: EdgeInsets.only(bottom: 10.h),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color:
+                    isCurrentUserPaying
+                        ? const Color(0xFFFFEBEB)
+                        : AppColors.kLightGreyColor,
+                borderRadius: BorderRadius.circular(12),
               ),
-              Text(
-                '\$${s.amount.toStringAsFixed(2)}',
-                style: AppStyles.labelTextStyle().copyWith(
-                  color: const Color(0xFF1D7FC2),
-                  fontWeight: FontWeight.w700,
-                  fontSize: AppStyles.fontSize13,
-                ),
-              ),
-              if (isCurrentUserPaying) ...[
-                SizedBox(width: 8.w),
-                GestureDetector(
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Mark as Paid'),
-                      content: Text(
-                        'Confirm you have paid ${nameFor(s.toUserId)} \$${s.amount.toStringAsFixed(2)}?',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: Get.back,
-                          child: const Text('Cancel'),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          nameFor(s.fromUserId),
+                          style: AppStyles.labelTextStyle().copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: AppStyles.fontSize13,
+                            color:
+                                isCurrentUserPaying
+                                    ? const Color(0xFFD9534F)
+                                    : const Color(0xFF1F1F1F),
+                          ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Get.back();
-                            controller.markSettlementPaid(s.fromUserId);
-                          },
-                          child: const Text('Confirm'),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: Icon(
+                            Icons.arrow_forward,
+                            size: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          nameFor(s.toUserId),
+                          style: AppStyles.labelTextStyle().copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: AppStyles.fontSize13,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
+                  Text(
+                    '\$${s.amount.toStringAsFixed(2)}',
+                    style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF1D7FC2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Mark Paid',
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color: Colors.white,
-                        fontSize: AppStyles.fontSize12,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      fontWeight: FontWeight.w700,
+                      fontSize: AppStyles.fontSize13,
                     ),
                   ),
-                ),
-              ],
-            ],
-          ),
-        );
-      }).toList(),
+                  if (isCurrentUserPaying) ...[
+                    SizedBox(width: 8.w),
+                    GestureDetector(
+                      onTap:
+                          () => showDialog(
+                            context: context,
+                            builder:
+                                (_) => AlertDialog(
+                                  title: const Text('Mark as Paid'),
+                                  content: Text(
+                                    'Confirm you have paid ${nameFor(s.toUserId)} \$${s.amount.toStringAsFixed(2)}?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: Get.back,
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                        controller.markSettlementPaid(
+                                          s.fromUserId,
+                                        );
+                                      },
+                                      child: const Text('Confirm'),
+                                    ),
+                                  ],
+                                ),
+                          ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1D7FC2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          'Mark Paid',
+                          style: AppStyles.labelTextStyle().copyWith(
+                            color: Colors.white,
+                            fontSize: AppStyles.fontSize12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }).toList(),
     );
   }
 }

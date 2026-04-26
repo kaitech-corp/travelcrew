@@ -26,7 +26,7 @@ class DateRangePickerScreen extends StatefulWidget {
   final Function(DateTime? selectedDate, DateTime? endDate) onRangeChanged;
 
   @override
-  _DateRangePickerScreenState createState() => _DateRangePickerScreenState();
+  State<DateRangePickerScreen> createState() => _DateRangePickerScreenState();
 }
 
 class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
@@ -98,7 +98,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
                 ),
                 Text(
                   DateFormat('MMMM yyyy').format(_focusedDay),
-                  style:  TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: AppStyles.fontSize18,
                     fontWeight: FontWeight.bold,
@@ -137,8 +137,7 @@ class _DateRangePickerScreenState extends State<DateRangePickerScreen> {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: TableCalendar(
               firstDay:
-                  widget.initialDate ??
-                  DateTime.utc(DateTime.now().year - 6),
+                  widget.initialDate ?? DateTime.utc(DateTime.now().year - 6),
               lastDay:
                   widget.lastDate ??
                   DateTime.utc(DateTime.now().year + 6, 12, 31),

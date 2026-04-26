@@ -12,8 +12,8 @@ import '../../models/trip_model.dart';
 import '../custom_widgets/custom_scaffold.dart';
 
 class CreateTripScreen extends GetView<CreateTripController> {
-  CreateTripScreen({super.key});
-  bool isFirstTime = true;
+  const CreateTripScreen({super.key});
+  final bool isFirstTime = true;
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -28,7 +28,8 @@ class CreateTripScreen extends GetView<CreateTripController> {
       });
     }
     return CustomScaffold(
-      screenName: Get.arguments is TripModel ? l10n.updateTrip : l10n.createTrip,
+      screenName:
+          Get.arguments is TripModel ? l10n.updateTrip : l10n.createTrip,
       onWillPop: () {
         GlobalVariables.showLoader.value = false;
         controller.previousStep();
@@ -65,9 +66,7 @@ class CreateTripScreen extends GetView<CreateTripController> {
                 return;
               }
               if (controller.selectedImages.isEmpty) {
-                showCustomSnackBar(
-                  content: 'Please select at least one image',
-                );
+                showCustomSnackBar(content: 'Please select at least one image');
                 return;
               }
               if (Get.arguments is! TripModel) {

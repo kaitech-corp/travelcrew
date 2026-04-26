@@ -24,39 +24,43 @@ class MyTripsController extends GetxController {
       isLoading.value = true;
       trips.value = await FirebaseTripService.getMyTrips(isAll: true);
       _filterTripsByTab();
-    } catch (e) {}
-    isLoading.value = false;
+    } catch (e) {
+      debugPrint('Failed to load trips: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void _filterTripsByTab() {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    filteredTrips.value = trips.where((trip) {
-      final start = trip.tripStartDate ?? trip.startDate;
-      final end = trip.tripEndDate ?? start;
+    filteredTrips.value =
+        trips.where((trip) {
+          final start = trip.tripStartDate ?? trip.startDate;
+          final end = trip.tripEndDate ?? start;
 
-      if (selectedTabIndex.value == 0) {
-        // Upcoming: trip start date is in the future
-        return start.isAfter(now);
-      } else if (selectedTabIndex.value == 1) {
-        // Active: trip is currently in progress (today is between start and end date)
-        return (start.isBefore(now) || isSameDay(start, now)) &&
-               (end.isAfter(now) || isSameDay(end, now));
-      } else if (selectedTabIndex.value == 2) {
-        // Past: trip end date has passed
-        return end.isBefore(today);
-      }
-      return false;
-    }).toList();
-    
+          if (selectedTabIndex.value == 0) {
+            // Upcoming: trip start date is in the future
+            return start.isAfter(now);
+          } else if (selectedTabIndex.value == 1) {
+            // Active: trip is currently in progress (today is between start and end date)
+            return (start.isBefore(now) || isSameDay(start, now)) &&
+                (end.isAfter(now) || isSameDay(end, now));
+          } else if (selectedTabIndex.value == 2) {
+            // Past: trip end date has passed
+            return end.isBefore(today);
+          }
+          return false;
+        }).toList();
+
     applyFilter();
   }
 
   bool isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
-           date1.month == date2.month &&
-           date1.day == date2.day;
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   void applyFilter() {
@@ -64,9 +68,11 @@ class MyTripsController extends GetxController {
       filteredTrips.value =
           filteredTrips.where((trip) {
             return (trip.title?.toLowerCase() ?? '').contains(
-                searchController.text.toLowerCase()) ||
+                  searchController.text.toLowerCase(),
+                ) ||
                 (trip.destination.toLowerCase()).contains(
-                searchController.text.toLowerCase());
+                  searchController.text.toLowerCase(),
+                );
           }).toList();
     }
   }

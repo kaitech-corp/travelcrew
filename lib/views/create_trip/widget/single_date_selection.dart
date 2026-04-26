@@ -7,7 +7,6 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 
 class SingleDatePickerScreen extends StatefulWidget {
-
   const SingleDatePickerScreen({
     super.key,
     this.onDateSelected,
@@ -23,7 +22,7 @@ class SingleDatePickerScreen extends StatefulWidget {
   final Function(DateTime? selectedDate) onDateChanged;
 
   @override
-  _SingleDatePickerScreenState createState() => _SingleDatePickerScreenState();
+  State<SingleDatePickerScreen> createState() => _SingleDatePickerScreenState();
 }
 
 class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
@@ -92,7 +91,7 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                 ),
                 Text(
                   DateFormat('MMMM yyyy').format(_focusedDay),
-                  style:  TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: AppStyles.fontSize18,
                     fontWeight: FontWeight.bold,
@@ -131,8 +130,7 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: TableCalendar(
               firstDay:
-                  widget.initialDate ??
-                  DateTime.utc(DateTime.now().year - 6),
+                  widget.initialDate ?? DateTime.utc(DateTime.now().year - 6),
               lastDay:
                   widget.lastDate ??
                   DateTime.utc(DateTime.now().year + 6, 12, 31),
@@ -162,16 +160,16 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
                 ),
                 cellMargin: const EdgeInsets.all(1.5),
                 defaultDecoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 outsideDecoration: BoxDecoration(
                   color: Colors.transparent,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
                 ),
                 weekendDecoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 selectedDecoration: const BoxDecoration(
@@ -189,7 +187,7 @@ class _SingleDatePickerScreenState extends State<SingleDatePickerScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Divider(
-              color: AppColors.kBlackColor.withOpacity(0.5),
+              color: AppColors.kBlackColor.withValues(alpha: 0.5),
               thickness: .61,
             ),
           ),

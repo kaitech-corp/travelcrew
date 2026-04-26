@@ -1,5 +1,4 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -315,7 +314,7 @@ class CreateTripController extends GetxController {
         id: tripModel.value!.id,
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
-        joinedUsers: [],
+        joinedUsers: tripModel.value!.joinedUsers ?? [],
         tripBudget: double.parse(
           expensePerNightController.text.isEmpty
               ? '0'
@@ -325,7 +324,7 @@ class CreateTripController extends GetxController {
         arrivalAirport: airportArrivalController.text,
         departureDate: departureDate.value ?? DateTime.now(),
         arrivalDate: arrivalDate.value ?? DateTime.now(),
-        departureAirport: airportArrivalController.text,
+        departureAirport: airportDepartureController.text,
         checkInDate: checkInStartTime.value ?? DateTime.now(),
         checkOutDate: checkInEndTime.value ?? DateTime.now(),
         country: destinationController.text.split(',').lastOrNull ?? '',
@@ -370,12 +369,13 @@ class CreateTripController extends GetxController {
               await FirebaseTripService.addActivity(activity: activityList[i]);
             }
           }
-          tripModel.value!.activities = activityList;
-          updateTripOverAll(tripModel.value!);
-          Get.offAllNamed(
-            kSpecificTripViewScreenRoute,
-            arguments: tripModel.value,
-          );
+          final updatedTrip = trip.copyWith(activities: activityList);
+          updatedTrip.expenses = tripModel.value!.expenses;
+          updatedTrip.joindUsersList = tripModel.value!.joindUsersList;
+          updatedTrip.createdByUser = tripModel.value!.createdByUser;
+          tripModel.value = updatedTrip;
+          updateTripOverAll(updatedTrip);
+          Get.offAllNamed(kSpecificTripViewScreenRoute, arguments: updatedTrip);
         } else {
           showCustomSnackBar(content: 'Failed to update trip');
         }
@@ -484,19 +484,6 @@ class CreateTripController extends GetxController {
         uplaodedImages = await Future.wait(futures);
         tripModel.images = uplaodedImages;
       }
-      if (invitedUsersList.isNotEmpty) {
-        // Trigger email invitations via Firebase Extension
-        for (final String email in invitedUsersList) {
-          FirebaseFirestore.instance.collection('mail').add({
-            'to': [email],
-            'message': {
-              'subject': 'You have been invited to a trip!',
-              'text':
-                  'You have been invited to join the trip: ${tripModel.title}. Open the Travel Crew app to accept.',
-            },
-          });
-        }
-      }
       final ExpenseModel exp = ExpenseModel(
         paidByUsers: [],
         date: expanseDate.value ?? DateTime.now(),
@@ -522,6 +509,11 @@ class CreateTripController extends GetxController {
       ) async {
         if (isSuccess) {
           showCustomSnackBar(content: 'Trip created successfully');
+          await FirebaseTripService.sendTripInvites(
+            tripId: tripModel.id,
+            tripTitle: tripModel.title ?? tripModel.destination,
+            emails: invitedUsersList,
+          );
           await FirebaseTripService.addExpenses(expense: exp).then((
             isSuccess,
           ) async {
