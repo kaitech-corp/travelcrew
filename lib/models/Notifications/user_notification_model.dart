@@ -54,21 +54,31 @@ class UserNotificationModel {
       notificationMessage: (map['notificationMessage'] as String?) ?? '',
       notificationTitle: (map['notificationTitle'] as String?) ?? '',
       notificationType: (map['notificationType'] as String?) ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch((map['createdAt'] as int?) ?? 0),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+        (map['createdAt'] as int?) ?? 0,
+      ),
       releaseDate: map['releaseDate'] as String?,
       createdBy: (map['createdBy'] as String?) ?? '',
       notificationForId: (map['notificationForId'] as String?) ?? '',
-      updateAt: DateTime.fromMillisecondsSinceEpoch((map['updateAt'] as int?) ?? 0),
+      updateAt: DateTime.fromMillisecondsSinceEpoch(
+        (map['updateAt'] as int?) ?? 0,
+      ),
       updateBy: (map['updateBy'] as String?) ?? '',
-      sentTo: List<String>.from((map['sentTo'] as List<dynamic>?) ?? <dynamic>[]),
+      sentTo: List<String>.from(
+        (map['sentTo'] as List<dynamic>?) ?? <dynamic>[],
+      ),
       isTopic: (map['isTopic'] as bool?) ?? false,
-      notificationTopic: List<dynamic>.from((map['notificationTopic'] as List<dynamic>?) ?? <dynamic>[]),
+      notificationTopic: List<dynamic>.from(
+        (map['notificationTopic'] as List<dynamic>?) ?? <dynamic>[],
+      ),
       isActive: (map['isActive'] as bool?) ?? false,
     );
   }
 
   factory UserNotificationModel.fromJson(String source) =>
-      UserNotificationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      UserNotificationModel.fromMap(
+        json.decode(source) as Map<String, dynamic>,
+      );
 
   UserNotificationModel copyWith({
     String? notificationId,

@@ -16,7 +16,9 @@ class ActivityModel {
   factory ActivityModel.fromMap(Map<String, dynamic> map) {
     return ActivityModel(
       likesCount: (map['likesCount'] as int?) ?? 0,
-      likedBy: List<String>.from((map['likedBy'] as List<dynamic>?) ?? <dynamic>[]),
+      likedBy: List<String>.from(
+        (map['likedBy'] as List<dynamic>?) ?? <dynamic>[],
+      ),
       title: (map['title'] as String?) ?? '',
       id: map['id'] as String?,
       tripId: (map['tripId'] as String?) ?? '',

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class PublicUserModel {
-
   PublicUserModel({
     required this.displayName,
     this.email,
@@ -32,23 +31,28 @@ class PublicUserModel {
       hometown: map['hometown'] as String?,
       instagramLink: map['instagramLink'] as String?,
       lastName: map['lastName'] as String?,
-      blockedList: (map['blockedList'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      followers: (map['followers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      following: (map['following'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      topDestinations: (map['topDestinations'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      blockedList:
+          (map['blockedList'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      followers:
+          (map['followers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      following:
+          (map['following'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      topDestinations:
+          (map['topDestinations'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
       tripsCreated: map['tripsCreated'] as int?,
       tripsJoined: map['tripsJoined'] as int?,
       uid: map['uid'] as String? ?? '',
       profileImage: map['profileImage'] as String?,
-      favouriteTrips: (map['favouriteTrips'] as List<dynamic>?)
+      favouriteTrips:
+          (map['favouriteTrips'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],

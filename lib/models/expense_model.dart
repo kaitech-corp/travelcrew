@@ -16,18 +16,25 @@ class ExpenseModel {
 
   factory ExpenseModel.fromMap(Map<String, dynamic> map) {
     return ExpenseModel(
-      paidByUsers: List<String>.from(map['paidByUsers'] as List<dynamic>? ?? []),
+      paidByUsers: List<String>.from(
+        map['paidByUsers'] as List<dynamic>? ?? [],
+      ),
       createdBy: map['createdBy'] as String? ?? '',
       id: map['id'] as String?,
       tripId: map['tripId'] as String? ?? '',
       name: map['name'] as String? ?? '',
       amount: (map['amount'] as num?)?.toDouble() ?? 0.0,
-      date: map['date'] != null
-          ? DateTime.parse(map['date'] as String)
-          : DateTime.now(),
+      date:
+          map['date'] != null
+              ? DateTime.parse(map['date'] as String)
+              : DateTime.now(),
       splitType: map['splitType'] as String? ?? 'equally',
-      owedTo: Map<String, double>.from(map['owedTo'] as Map<String, dynamic>? ?? {}),
-      owners: Map<String, double>.from(map['owners'] as Map<String, dynamic>? ?? {}),
+      owedTo: Map<String, double>.from(
+        map['owedTo'] as Map<String, dynamic>? ?? {},
+      ),
+      owners: Map<String, double>.from(
+        map['owners'] as Map<String, dynamic>? ?? {},
+      ),
     );
   }
 

@@ -4,16 +4,15 @@ import '../user_model.dart';
 import 'chatroom.dart';
 
 class ChatRoomUsers {
-  ChatRoomUsers({
-    required this.userModel,
-    this.chatRoom,
-  });
+  ChatRoomUsers({required this.userModel, this.chatRoom});
 
   factory ChatRoomUsers.fromMap(Map<String, dynamic> map) {
     return ChatRoomUsers(
       userModel: UserModel.fromMap(map['userModel'] as Map<String, dynamic>),
       chatRoom:
-          map['chatRoom'] != null ? ChatRoom.fromMap(map['chatRoom'] as Map<String, dynamic>) : null,
+          map['chatRoom'] != null
+              ? ChatRoom.fromMap(map['chatRoom'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -22,10 +21,7 @@ class ChatRoomUsers {
   UserModel userModel;
   ChatRoom? chatRoom;
 
-  ChatRoomUsers copyWith({
-    UserModel? userModel,
-    ChatRoom? chatRoom,
-  }) {
+  ChatRoomUsers copyWith({UserModel? userModel, ChatRoom? chatRoom}) {
     return ChatRoomUsers(
       userModel: userModel ?? this.userModel,
       chatRoom: chatRoom ?? this.chatRoom,

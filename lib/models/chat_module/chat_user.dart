@@ -19,7 +19,8 @@ class ChatUser {
       unreadedMessages: map['unreadedMessages']?.toInt() as int? ?? 0,
       name: map['name'] as String? ?? '',
       profileImage: map['profileImage'] as String? ?? '',
-      lastActive: map['lastActive'] != null ? (map['lastActive'] as Timestamp?) : null,
+      lastActive:
+          map['lastActive'] != null ? (map['lastActive'] as Timestamp?) : null,
       isOnline: map['isOnline'] as bool? ?? false,
       isTyping: map['isTyping'] as bool? ?? false,
     );

@@ -1,5 +1,4 @@
 class ContinentBox {
-
   ContinentBox(this.name, this.minLat, this.maxLat, this.minLng, this.maxLng);
   final String name;
   final double minLat;

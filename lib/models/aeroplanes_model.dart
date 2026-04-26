@@ -1,5 +1,4 @@
 class AeroplanesModel {
-
   const AeroplanesModel({
     this.flightDate,
     this.flightStatus,
@@ -12,10 +11,22 @@ class AeroplanesModel {
   AeroplanesModel.fromJson(Map<String, dynamic> json)
     : flightDate = json['flight_date'] as String?,
       flightStatus = json['flight_status'] as String?,
-      departure = json['departure'] != null ? Departure.fromJson(json['departure'] as Map<String, dynamic>) : null,
-      arrival = json['arrival'] != null ? Arrival.fromJson(json['arrival'] as Map<String, dynamic>) : null,
-      airline = json['airline'] != null ? Airline.fromJson(json['airline'] as Map<String, dynamic>) : null,
-      flight = json['flight'] != null ? Flight.fromJson(json['flight'] as Map<String, dynamic>) : null;
+      departure =
+          json['departure'] != null
+              ? Departure.fromJson(json['departure'] as Map<String, dynamic>)
+              : null,
+      arrival =
+          json['arrival'] != null
+              ? Arrival.fromJson(json['arrival'] as Map<String, dynamic>)
+              : null,
+      airline =
+          json['airline'] != null
+              ? Airline.fromJson(json['airline'] as Map<String, dynamic>)
+              : null,
+      flight =
+          json['flight'] != null
+              ? Flight.fromJson(json['flight'] as Map<String, dynamic>)
+              : null;
   final String? flightDate;
   final String? flightStatus;
   final Departure? departure;
@@ -25,7 +36,6 @@ class AeroplanesModel {
 }
 
 class Departure {
-
   const Departure({
     this.airport,
     this.timezone,
@@ -53,7 +63,6 @@ class Departure {
 }
 
 class Arrival {
-
   const Arrival({
     this.airport,
     this.timezone,
@@ -75,7 +84,6 @@ class Arrival {
 }
 
 class Airline {
-
   const Airline({this.name, this.iata, this.icao});
 
   Airline.fromJson(Map<String, dynamic> json)
@@ -88,7 +96,6 @@ class Airline {
 }
 
 class Flight {
-
   const Flight({this.number, this.iata, this.icao});
 
   Flight.fromJson(Map<String, dynamic> json)

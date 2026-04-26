@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/models/trip_model.dart';
 
-
 class ChatRoom {
   ChatRoom({
     required this.roomId,
@@ -18,9 +17,15 @@ class ChatRoom {
   factory ChatRoom.fromMap(Map<String, dynamic> map) {
     return ChatRoom(
       roomId: (map['roomId'] as String?) ?? '',
-      usersIds: List<String>.from((map['usersIds'] as List<dynamic>?) ?? <dynamic>[]),
-      updatedAt: (map['updatedAt'] as Timestamp?) ?? Timestamp.fromDate(DateTime(1999)),
-      users: List<ChatUser>.from(map['users']?.map((x) => ChatUser.fromMap(x)) ?? []),
+      usersIds: List<String>.from(
+        (map['usersIds'] as List<dynamic>?) ?? <dynamic>[],
+      ),
+      updatedAt:
+          (map['updatedAt'] as Timestamp?) ??
+          Timestamp.fromDate(DateTime(1999)),
+      users: List<ChatUser>.from(
+        map['users']?.map((x) => ChatUser.fromMap(x)) ?? [],
+      ),
     );
   }
 
@@ -79,9 +84,7 @@ class ChatRoom {
 
   @override
   int get hashCode {
-    return roomId.hashCode ^
-        updatedAt.hashCode ^
-        users.hashCode;
+    return roomId.hashCode ^ updatedAt.hashCode ^ users.hashCode;
   }
 
   /// Check if a user is already in the chatroom
@@ -94,7 +97,7 @@ class ChatRoom {
     if (containsUser(user.id)) {
       return false; // User already exists
     }
-    
+
     users.add(user);
     usersIds.add(user.id);
     return true; // User was added successfully

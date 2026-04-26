@@ -24,12 +24,14 @@ class UserFlightModel {
       flightNumber: map['flightNumber'] as String?,
       departureAirport: map['departureAirport'] as String?,
       arrivalAirport: map['arrivalAirport'] as String?,
-      departureDate: map['departureDate'] != null
-          ? DateTime.tryParse(map['departureDate'] as String)
-          : null,
-      arrivalDate: map['arrivalDate'] != null
-          ? DateTime.tryParse(map['arrivalDate'] as String)
-          : null,
+      departureDate:
+          map['departureDate'] != null
+              ? DateTime.tryParse(map['departureDate'] as String)
+              : null,
+      arrivalDate:
+          map['arrivalDate'] != null
+              ? DateTime.tryParse(map['arrivalDate'] as String)
+              : null,
     );
   }
 
@@ -57,7 +59,8 @@ class UserFlightModel {
       if (flightNumber != null) 'flightNumber': flightNumber,
       if (departureAirport != null) 'departureAirport': departureAirport,
       if (arrivalAirport != null) 'arrivalAirport': arrivalAirport,
-      if (departureDate != null) 'departureDate': departureDate!.toIso8601String(),
+      if (departureDate != null)
+        'departureDate': departureDate!.toIso8601String(),
       if (arrivalDate != null) 'arrivalDate': arrivalDate!.toIso8601String(),
     };
   }

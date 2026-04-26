@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
-
   UserModel({
     this.displayName,
     this.isDeleted = false,
@@ -29,7 +28,8 @@ class UserModel {
       emailConfirmed: map['emailConfirmed'] as bool?,
       createdAt: map['createdAt'] as Timestamp?,
       updatedAt: map['updatedAt'] as Timestamp?,
-      favouriteTrips: (map['favouriteTrips'] as List<dynamic>?)
+      favouriteTrips:
+          (map['favouriteTrips'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
