@@ -246,6 +246,7 @@ class MessagesScreen extends GetView<UsersController> {
                                       CommonCode().removeTextFieldFocus(),
                               controller: controller.tecMessage,
                               focusNode: controller.fnMessage,
+                              textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
                                 hintText: 'Say something',
                                 hintStyle: AppStyles.labelTextStyle().copyWith(
@@ -273,6 +274,7 @@ class MessagesScreen extends GetView<UsersController> {
                                             messageStatus:
                                                 MessageStatus.sent.status,
                                             createdAt: Timestamp.now(),
+                                            
                                             createdBy:
                                                 GlobalVariables
                                                     .loggedInUser

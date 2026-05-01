@@ -22,7 +22,7 @@ class HomePageScreen extends GetView<HomePageController> {
     return CustomScaffold(
       screenName: '',
       isBackIcon: false,
-      leadingWidth: 70,
+      leadingWidth: 80,
       padding: EdgeInsets.zero,
       showNotificationBell: true,
       leadingWidget: Padding(

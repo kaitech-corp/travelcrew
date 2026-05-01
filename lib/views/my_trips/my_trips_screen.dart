@@ -30,13 +30,13 @@ class MyTripsScreen extends GetView<MyTripsController> {
       screenName: l10n.myTrips,
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
-      showNotificationBell: true,
+      showNotificationBell: false,
       className: runtimeType.toString(),
       actions: [
         GestureDetector(
           onTap: () => Get.toNamed(kImportTripScreenRoute),
           child: Padding(
-            padding: EdgeInsets.only(right: 8.w),
+            padding: EdgeInsets.only(right: 12.w),
             child: const Icon(
               Icons.auto_awesome_rounded,
               size: 22,

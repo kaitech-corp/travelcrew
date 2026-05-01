@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/create_trip/components/steps_one.dart';
 import 'package:travel_crew/views/create_trip/controller/create_trip_controller.dart';
@@ -39,6 +40,19 @@ class CreateTripScreen extends GetView<CreateTripController> {
       onBackButtonPressed: () => controller.previousStep(),
       className: runtimeType.toString(),
       centerTitle: true,
+      actions: [
+                GestureDetector(
+          onTap: () => Get.toNamed(kImportTripScreenRoute),
+          child: Padding(
+            padding: EdgeInsets.only(right: 24.w),
+            child: const Icon(
+              Icons.auto_awesome_rounded,
+              size: 22,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
