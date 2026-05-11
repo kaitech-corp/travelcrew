@@ -35,11 +35,18 @@ const kImportTripScreenRoute = '/ImportTripScreen';
 /// Tables
 
 const kTripTable = 'trips';
+const kTripDiscoveryTable = 'tripDiscovery';
 const kExpenseTable = 'expense';
 const kTripChatCollection = 'chat';
 const kTripChatMessagesCollection = 'messages';
 const kActivityTable = 'activity';
 const kFlightTable = 'flights';
+const kTripMembersSubCollection = 'members';
+const kTripJoinRequestsSubCollection = 'joinRequests';
+const kTripActivitiesSubCollection = 'activities';
+const kTripFlightsSubCollection = 'flights';
+const kTripExpensesSubCollection = 'expenses';
+const kUserTripMembershipsSubCollection = 'tripMemberships';
 const kUsersCollection = 'users';
 const kUsersPublicProfileCollection = 'publicProfile';
 const kOtpCollection = 'otps';

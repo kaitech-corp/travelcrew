@@ -78,7 +78,7 @@ class AppImages {
   static const String kTripImage = '$basePath/img_trip.png';
 
   //PROFILE WIDGET IMAGES
-  static const String kProfileImage = '$basePath/img_dummy_profile.png';
+  static const String kProfileImage = '$basePath/img_onboarding1.png';
   static const String kHelpAndSupportImage =
       '$basePath/img_help_and_support.png';
   static const String kChangePasswordImage =
