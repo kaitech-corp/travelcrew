@@ -15,7 +15,6 @@ import '../../../../utils/app_strings.dart';
 import '../../../../utils/custom_snackbar.dart';
 
 class LoginController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final rememberMe = false.obs;
@@ -252,5 +251,12 @@ class LoginController extends GetxController {
 
   void onForgotPassword() {
     Get.toNamed(kForgotPasswordScreenRoute);
+  }
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.onClose();
   }
 }

@@ -11,8 +11,16 @@ import 'package:travel_crew/views/custom_widgets/text_widget.dart';
 import 'controller/all_expense_cont.dart';
 import 'widgets/expense_card_shimmer.dart';
 
-class AllExpensesScreen extends GetView<AllExpensesController> {
+class AllExpensesScreen extends StatefulWidget {
   const AllExpensesScreen({super.key});
+
+  @override
+  State<AllExpensesScreen> createState() => _AllExpensesScreenState();
+}
+
+class _AllExpensesScreenState extends State<AllExpensesScreen> {
+  final AllExpensesController controller = Get.find<AllExpensesController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +28,8 @@ class AllExpensesScreen extends GetView<AllExpensesController> {
       screenName: 'Expenses',
       isBackIcon: false,
       centerTitle: true,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

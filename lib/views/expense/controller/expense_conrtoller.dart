@@ -10,8 +10,6 @@ import 'package:travel_crew/utils/custom_snackbar.dart';
 
 class ExpenseController extends GetxController {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<ScaffoldState> expenseSettleScaffoldKey =
-      GlobalKey<ScaffoldState>();
   Rxn<TripModel> tripModel = Rxn<TripModel>();
 
   @override
@@ -63,6 +61,13 @@ class ExpenseController extends GetxController {
         print('Error settling up expense: $e');
       }
     }
+  }
+
+  @override
+  void onClose() {
+    expenseNameController.dispose();
+    amountOwedController.dispose();
+    super.onClose();
   }
 }
 

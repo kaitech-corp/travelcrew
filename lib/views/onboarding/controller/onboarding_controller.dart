@@ -6,7 +6,6 @@ import 'package:travel_crew/views/auth/login/login_screen.dart';
 import '../../../models/onboarding_page_model.dart';
 
 class OnboardingController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final pageController = PageController();
   final currentPage = 0.obs;
   final List<OnboardingPage> pages = [

@@ -6,7 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/auth_service.dart';
+import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
@@ -24,16 +25,25 @@ import '../../../onboarding/widgets/page_indicator.dart';
 import 'components/activities_tab.dart';
 import 'components/lodging_tab.dart';
 
-class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
+class SpecificTripViewScreen extends StatefulWidget {
   const SpecificTripViewScreen({super.key});
+
+  @override
+  State<SpecificTripViewScreen> createState() => _SpecificTripViewScreenState();
+}
+
+class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
+  final SpecificTripViewController controller =
+      Get.find<SpecificTripViewController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.initializeFromArgument(Get.arguments);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future.microtask(() {
-      controller.tripModel.value =
-          Get.arguments is TripModel
-              ? Get.arguments as TripModel
-              : Get.arguments['trip'] as TripModel;
-    });
     return CustomScaffold(
       onWillPop: () {
         if (Navigator.canPop(context)) {
@@ -50,11 +60,14 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
       appBarSize: 0,
       padding: EdgeInsets.zero,
       scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       body: Obx(
         () =>
-            controller.tripModel.value == null
+            controller.tripModel.value == null &&
+                    controller.discoveryModel.value == null
                 ? const SizedBox()
+                : controller.isPublicPreview
+                ? _buildPublicPreview(context)
                 : Stack(
                   children: [
                     SingleChildScrollView(
@@ -130,7 +143,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                               controller
                                                   .tripModel
                                                   .value
-                                                  ?.joinedUsers ??
+                                                  ?.joindUsersList ??
                                               [],
                                           'onAdd': (expense) {
                                             controller
@@ -182,9 +195,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                             usersController = Get.find<UsersController>();
                           }
                           usersController.currentTrip.value =
-                              Get.arguments is TripModel
-                                  ? Get.arguments as TripModel
-                                  : Get.arguments['trip'] as TripModel;
+                              controller.tripModel.value;
 
                           usersController.listenToChat();
 
@@ -199,6 +210,150 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                   ],
                 ),
       ),
+    );
+  }
+
+  Widget _buildPublicPreview(BuildContext context) {
+    final trip = controller.discoveryModel.value!;
+    final requestStatus = controller.joinRequestStatus.value;
+    final hasPendingRequest = requestStatus == 'pending';
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: Get.height * 0.45,
+            child: Stack(
+              children: [
+                Container(
+                  width: Get.width,
+                  height: Get.height * 0.45,
+                  color: Colors.black,
+                ),
+                AnyImageView(
+                  width: Get.width,
+                  height: Get.height * 0.45,
+                  url: trip.images.isNotEmpty ? trip.images.first : '',
+                ),
+                Positioned(
+                  top: 40.h,
+                  left: 10.w,
+                  child: GestureDetector(
+                    onTap: () => Get.back(),
+                    child: BlurryContainer(
+                      padding: EdgeInsets.all(10.sp),
+                      blur: 7,
+                      height: 51.14.h,
+                      width: 51.14.w,
+                      color: Colors.black.withValues(alpha: .15),
+                      borderRadius: BorderRadius.circular(50),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.kWhiteColor,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 20.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  trip.title ?? trip.destination,
+                  style: AppStyles.labelTextStyle().copyWith(
+                    color: const Color(0xFF0F0F0F),
+                    fontSize: AppStyles.fontSize22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_outlined,
+                      color: Color(0xFF1D7FC2),
+                    ),
+                    SizedBox(width: 5.w),
+                    Expanded(
+                      child: Text(
+                        '${trip.destination}, ${trip.country}',
+                        style: AppStyles.labelTextStyle().copyWith(
+                          color: const Color(0xFF1D7FC2),
+                          fontSize: AppStyles.fontSize15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _buildPreviewInfoRow(
+                  icon: LucideIcons.calendar,
+                  label:
+                      '${DateFormat('MMM d, yyyy').format(trip.effectiveStartDate)}'
+                      '${trip.tripEndDate == null ? '' : ' - ${DateFormat('MMM d, yyyy').format(trip.tripEndDate!)}'}',
+                ),
+                SizedBox(height: 10.h),
+                _buildPreviewInfoRow(
+                  icon: LucideIcons.users,
+                  label: '${trip.memberCount} people going',
+                ),
+                SizedBox(height: 24.h),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16.sp),
+                  decoration: BoxDecoration(
+                    color: AppColors.kLightGreyColor,
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  child: Text(
+                    'Request to join this trip to see the itinerary, lodging, flights, crew, expenses, and chat.',
+                    style: AppStyles.labelTextStyle().copyWith(
+                      color: const Color(0xFF77818D),
+                      fontSize: AppStyles.fontSize14,
+                      height: 1.35,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24.h),
+                CustomElevatedButton(
+                  width: double.infinity,
+                  title:
+                      hasPendingRequest ? 'Cancel Request' : 'Request to Join',
+                  onPressed:
+                      hasPendingRequest
+                          ? controller.cancelPublicJoinRequest
+                          : controller.requestToJoinPublicPreview,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreviewInfoRow({required IconData icon, required String label}) {
+    return Row(
+      children: [
+        Icon(icon, size: 18.r, color: Colors.black54),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: Text(
+            label,
+            style: AppStyles.labelTextStyle().copyWith(
+              color: const Color(0xFF0F0F0F),
+              fontSize: AppStyles.fontSize14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -327,7 +482,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                                                             ) ??
                                                         false))
                                                   MoreVertDialogueWidget(
-                                                    title: 'Join Trip',
+                                                    title: 'Request to Join',
                                                     onTap: () {
                                                       Get.back();
                                                       controller.joinTrip();
@@ -610,7 +765,7 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
         Row(
           children: [
             Text(
-              controller.tripModel.value?.joinedUsers?.length.toString() ?? '0',
+              '${controller.tripModel.value?.joindUsersList?.length ?? 0}',
               style: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFF0F0F0F),
                 fontSize: AppStyles.fontSize22,
@@ -656,7 +811,92 @@ class SpecificTripViewScreen extends GetView<SpecificTripViewController> {
                     ),
                   ),
         ),
+        if (GlobalVariables.isLoggedInUser(
+          controller.tripModel.value?.createdBy ?? '',
+        ))
+          _buildJoinRequestsSection(),
       ],
+    );
+  }
+
+  Widget _buildJoinRequestsSection() {
+    final tripId = controller.tripModel.value?.id;
+    if (tripId == null) return const SizedBox.shrink();
+    return StreamBuilder(
+      stream: FirebaseTripService.watchJoinRequests(tripId),
+      builder: (context, snapshot) {
+        final requests = snapshot.data ?? [];
+        if (requests.isEmpty) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 18.h),
+            Text(
+              'Join Requests',
+              style: AppStyles.labelTextStyle().copyWith(
+                color: const Color(0xFF0F0F0F),
+                fontSize: AppStyles.fontSize16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 10.h),
+            ...requests.map((request) {
+              return FutureBuilder<PublicUserModel?>(
+                future: AuthService.getUserPublicProfile(
+                  userId: request.userId,
+                ),
+                builder: (context, userSnapshot) {
+                  final user = userSnapshot.data;
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10.h),
+                    padding: EdgeInsets.all(12.sp),
+                    decoration: BoxDecoration(
+                      color: AppColors.kLightGreyColor,
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              user?.profileImage?.isNotEmpty == true
+                                  ? NetworkImage(user!.profileImage!)
+                                  : null,
+                          child:
+                              user?.profileImage?.isNotEmpty == true
+                                  ? null
+                                  : const Icon(Icons.person),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: Text(
+                            user?.displayName ?? 'Pending traveler',
+                            style: AppStyles.labelTextStyle().copyWith(
+                              fontSize: AppStyles.fontSize14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed:
+                              () =>
+                                  controller.rejectJoinRequest(request.userId),
+                          child: const Text('Reject'),
+                        ),
+                        TextButton(
+                          onPressed:
+                              () =>
+                                  controller.acceptJoinRequest(request.userId),
+                          child: const Text('Accept'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }),
+          ],
+        );
+      },
     );
   }
 

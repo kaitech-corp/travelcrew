@@ -15,8 +15,18 @@ import '../../custom_widgets/custom_scaffold.dart';
 import 'controller/forgot_password_controller.dart';
 import 'widgets/reset_option_tile.dart';
 
-class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final ForgotPasswordController controller =
+      Get.find<ForgotPasswordController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -25,8 +35,8 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
       isBackIcon: false,
       appBarSize: 0,
       isFullBody: true,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(left: 18.w, right: 18.w, bottom: 18.w),
         child: CustomElevatedButton(

@@ -12,18 +12,27 @@ import '../../custom_widgets/any_image_view.dart';
 import '../../custom_widgets/custom_scaffold.dart';
 import '../../custom_widgets/text_widget.dart';
 
-class GroupDetailScreen extends GetView<UsersController> {
+class GroupDetailScreen extends StatefulWidget {
   const GroupDetailScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Future.microtask(() {
-      controller.currentTrip.value = Get.arguments;
-      controller.getUsersDetail();
-    });
+  State<GroupDetailScreen> createState() => _GroupDetailScreenState();
+}
 
+class _GroupDetailScreenState extends State<GroupDetailScreen> {
+  final UsersController controller = Get.find<UsersController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.currentTrip.value = Get.arguments;
+    controller.getUsersDetail();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return CustomScaffold(
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       screenName: '',
       appBarSize: 70.h,
       title: Obx(

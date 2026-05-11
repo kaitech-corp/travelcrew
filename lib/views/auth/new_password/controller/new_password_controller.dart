@@ -9,7 +9,6 @@ import 'package:travel_crew/utils/custom_snackbar.dart';
 import '../../../custom_widgets/dialogs/well_done_dialog.dart';
 
 class NewPasswordController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final passwordFocusNode = FocusNode();
@@ -96,5 +95,14 @@ class NewPasswordController extends GetxController {
     } finally {
       GlobalVariables.showLoader.value = F;
     }
+  }
+
+  @override
+  void onClose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    passwordFocusNode.dispose();
+    confirmPasswordFocusNode.dispose();
+    super.onClose();
   }
 }

@@ -7,7 +7,6 @@ import 'package:travel_crew/utils/app_strings.dart';
 import '../../../../utils/custom_snackbar.dart';
 
 class ForgotPasswordController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final selectedOption = 0.obs;
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -49,5 +48,13 @@ class ForgotPasswordController extends GetxController {
     } finally {
       GlobalVariables.showLoader.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    phoneController.dispose();
+    emailFocusNode.dispose();
+    super.onClose();
   }
 }

@@ -16,8 +16,15 @@ import 'package:travel_crew/views/messages/users/controller/users_controller.dar
 import 'package:travel_crew/views/messages/users/widget/users_widget.dart';
 import 'package:travel_crew/views/notification/controller/notification_controller.dart';
 
-class InboxScreen extends StatelessWidget {
+class InboxScreen extends StatefulWidget {
   const InboxScreen({super.key});
+
+  @override
+  State<InboxScreen> createState() => _InboxScreenState();
+}
+
+class _InboxScreenState extends State<InboxScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class InboxScreen extends StatelessWidget {
         screenName: 'Inbox',
         centerTitle: true,
         isBackIcon: false,
-        scaffoldKey: GlobalKey<ScaffoldState>(),
+        scaffoldKey: _scaffoldKey,
         className: 'InboxScreen',
         body: Column(
           children: [

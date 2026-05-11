@@ -12,17 +12,28 @@ import 'package:travel_crew/views/expense/widgets/expense_details_widget.dart';
 import '../../utils/app_styles.dart';
 import '../custom_widgets/custom_scaffold.dart';
 
-class ExpenseScreen extends GetView<ExpenseController> {
+class ExpenseScreen extends StatefulWidget {
   const ExpenseScreen({super.key, this.fromMainView = false});
   final bool fromMainView;
+
+  @override
+  State<ExpenseScreen> createState() => _ExpenseScreenState();
+}
+
+class _ExpenseScreenState extends State<ExpenseScreen> {
+  final ExpenseController controller = Get.find<ExpenseController>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (Get.arguments != null) {
+      controller.tripModel.value = Get.arguments;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    Future.microtask(() {
-      if (Get.arguments != null) {
-        controller.tripModel.value = Get.arguments;
-      }
-    });
     return CustomScaffold(
       screenName: l10n.expenses,
       isBackIcon: false,
@@ -32,11 +43,19 @@ class ExpenseScreen extends GetView<ExpenseController> {
           children: [
             GestureDetector(
               onTap: () {
+                final trip = controller.tripModel.value;
+                if (trip == null) {
+                  return;
+                }
+
                 Get.toNamed(
                   kAddExpenseScreenRoute,
                   arguments: {
-                    'tripId': Get.arguments.id,
+                    'tripId': trip.id,
+                    'trip': trip,
+                    'tripMembers': trip.joindUsersList ?? [],
                     'onAdd': (ExpenseModel expense) {
+                      controller.tripModel.value?.expenses ??= [];
                       controller.tripModel.value?.expenses?.add(expense);
                       controller.tripModel.refresh();
                     },
@@ -52,7 +71,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
         ),
       ],
       scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +244,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       ),
             ),
 
-            SizedBox(height: fromMainView ? 120.h : 30.h),
+            SizedBox(height: widget.fromMainView ? 120.h : 30.h),
           ],
         ),
       ),

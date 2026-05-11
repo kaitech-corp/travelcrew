@@ -10,15 +10,25 @@ import 'package:travel_crew/views/profile/components/change_password/controller/
 import '../../../../utils/app_styles.dart';
 import '../../../custom_widgets/custom_scaffold.dart';
 
-class ChangePasswordScreen extends GetView<ChangePasswordController> {
+class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
+
+  @override
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+}
+
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  final ChangePasswordController controller =
+      Get.find<ChangePasswordController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: l10n.changePassword,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       centerTitle: true,
       body: Form(
         key: controller.formKey,

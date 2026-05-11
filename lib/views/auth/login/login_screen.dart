@@ -14,8 +14,17 @@ import '../../custom_widgets/custom_scaffold.dart';
 import '../../custom_widgets/custom_text_field.dart';
 import 'controller/login_controller.dart';
 
-class LoginScreen extends GetView<LoginController> {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final LoginController controller = Get.find<LoginController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -25,7 +34,7 @@ class LoginScreen extends GetView<LoginController> {
       isFullBody: true,
       leadingWidth: 0,
       centerTitle: true,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       className: 'Profile',
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 18.w),

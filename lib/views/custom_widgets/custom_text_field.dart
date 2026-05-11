@@ -51,20 +51,40 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   FocusNode? focusNode;
+  bool _ownsFocusNode = false;
   Color? fillColor;
 
   @override
   void initState() {
     super.initState();
     fillColor = widget.fillColor ?? AppColors.kLightGreyColor;
-    focusNode = widget.focusNode ?? FocusNode();
+    _setFocusNode(widget.focusNode);
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusNode != widget.focusNode) {
+      focusNode?.removeListener(onFocus);
+      if (_ownsFocusNode) {
+        focusNode?.dispose();
+      }
+      _setFocusNode(widget.focusNode);
+    }
+  }
+
+  void _setFocusNode(FocusNode? externalFocusNode) {
+    _ownsFocusNode = externalFocusNode == null;
+    focusNode = externalFocusNode ?? FocusNode();
     focusNode!.addListener(onFocus);
   }
 
   @override
   void dispose() {
     focusNode?.removeListener(onFocus);
-
+    if (_ownsFocusNode) {
+      focusNode?.dispose();
+    }
     super.dispose();
   }
 
@@ -100,6 +120,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           fontSize: AppStyles.fontSize16,
           color: Colors.black87,
         ),
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           hintText: widget.hintText,
           errorMaxLines: 2,

@@ -174,4 +174,18 @@ class SignUpController extends GetxController {
 
     GlobalVariables.showLoader.value = F;
   }
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    phoneController.dispose();
+    userNameController.dispose();
+    passwordController.dispose();
+    emailFocus.dispose();
+    phoneFocus.dispose();
+    userNameFocus.dispose();
+    passwordFocus.dispose();
+    confirmPasswordFocus.dispose();
+    super.onClose();
+  }
 }

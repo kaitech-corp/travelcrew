@@ -12,15 +12,24 @@ import 'package:travel_crew/views/expense/controller/expense_conrtoller.dart';
 import '../../../../utils/app_styles.dart';
 import '../../../custom_widgets/custom_scaffold.dart';
 
-class SettleUpScreen extends GetView<ExpenseController> {
+class SettleUpScreen extends StatefulWidget {
   const SettleUpScreen({super.key});
+
+  @override
+  State<SettleUpScreen> createState() => _SettleUpScreenState();
+}
+
+class _SettleUpScreenState extends State<SettleUpScreen> {
+  final ExpenseController controller = Get.find<ExpenseController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: l10n.settleUp,
-      scaffoldKey: controller.expenseSettleScaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       centerTitle: true,
       body: SingleChildScrollView(
         child: Column(

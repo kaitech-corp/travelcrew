@@ -12,8 +12,17 @@ import '../../custom_widgets/custom_elevated_button.dart';
 import '../../custom_widgets/custom_scaffold.dart';
 import 'controller/new_password_controller.dart';
 
-class NewPasswordScreen extends GetView<NewPasswordController> {
+class NewPasswordScreen extends StatefulWidget {
   const NewPasswordScreen({super.key});
+
+  @override
+  State<NewPasswordScreen> createState() => _NewPasswordScreenState();
+}
+
+class _NewPasswordScreenState extends State<NewPasswordScreen> {
+  final NewPasswordController controller = Get.find<NewPasswordController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -22,8 +31,8 @@ class NewPasswordScreen extends GetView<NewPasswordController> {
       isBackIcon: false,
       appBarSize: 0,
       isFullBody: true,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       body: Stack(
         children: [
           Form(

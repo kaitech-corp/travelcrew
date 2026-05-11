@@ -81,4 +81,10 @@ class MyTripsController extends GetxController {
     selectedTabIndex.value = index;
     _filterTripsByTab();
   }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
+  }
 }

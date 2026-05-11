@@ -12,37 +12,61 @@ import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
 import '../../models/trip_model.dart';
 import '../custom_widgets/custom_scaffold.dart';
 
-class CreateTripScreen extends GetView<CreateTripController> {
+class CreateTripScreen extends StatefulWidget {
   const CreateTripScreen({super.key});
-  final bool isFirstTime = true;
+
+  @override
+  State<CreateTripScreen> createState() => _CreateTripScreenState();
+}
+
+class _CreateTripScreenState extends State<CreateTripScreen> {
+  final CreateTripController controller = Get.find<CreateTripController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formStep1Key = GlobalKey<FormState>();
+  late final Object? _routeArguments;
+
+  bool get _isEditing => _routeArguments is TripModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _routeArguments = Get.arguments;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final arguments = _routeArguments;
+      if (arguments is TripModel) {
+        controller.tripModel.value = arguments;
+        controller.setAllValuesToEdit();
+      } else if (arguments is Map<String, dynamic>) {
+        controller.setFromImport(arguments);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (Get.arguments is TripModel && isFirstTime) {
-      Future.microtask(() {
-        controller.tripModel.value = Get.arguments as TripModel;
-        controller.setAllValuesToEdit();
-      });
-    } else if (Get.arguments is Map<String, dynamic> && isFirstTime) {
-      Future.microtask(() {
-        controller.setFromImport(Get.arguments as Map<String, dynamic>);
-      });
-    }
     return CustomScaffold(
-      screenName:
-          Get.arguments is TripModel ? l10n.updateTrip : l10n.createTrip,
+      screenName: _isEditing ? l10n.updateTrip : l10n.createTrip,
       onWillPop: () {
         GlobalVariables.showLoader.value = false;
         controller.previousStep();
       },
       // onBackPressed: controller.previousStep,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       onBackButtonPressed: () => controller.previousStep(),
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       centerTitle: true,
       actions: [
-                GestureDetector(
-          onTap: () => Get.toNamed(kImportTripScreenRoute),
+        GestureDetector(
+          onTap: () async {
+            final importedData = await Get.toNamed(
+              kImportTripScreenRoute,
+              arguments: {'returnToCreate': true},
+            );
+            if (importedData is Map<String, dynamic>) {
+              controller.setFromImport(importedData);
+            }
+          },
           child: Padding(
             padding: EdgeInsets.only(right: 24.w),
             child: const Icon(
@@ -67,9 +91,9 @@ class CreateTripScreen extends GetView<CreateTripController> {
         padding: EdgeInsets.all(20.r),
         child: CustomElevatedButton(
           width: Get.width,
-          title: Get.arguments is TripModel ? l10n.updateTrip : l10n.createTrip,
-          onPressed: () {
-            if (controller.formStep1.currentState!.validate()) {
+          title: _isEditing ? l10n.updateTrip : l10n.createTrip,
+          onPressed: () async {
+            if (_formStep1Key.currentState!.validate()) {
               if (controller.selectedPlaceId.isEmpty) {
                 showCustomSnackBar(content: 'Please select a location');
                 return;
@@ -79,11 +103,12 @@ class CreateTripScreen extends GetView<CreateTripController> {
                 showCustomSnackBar(content: 'Please select a date');
                 return;
               }
+              await controller.usePlacePhotoAsCoverIfNeeded();
               if (controller.selectedImages.isEmpty) {
                 showCustomSnackBar(content: 'Please select at least one image');
                 return;
               }
-              if (Get.arguments is! TripModel) {
+              if (!_isEditing) {
                 controller.submitTrip();
               } else {
                 controller.updateTrip();
@@ -97,6 +122,6 @@ class CreateTripScreen extends GetView<CreateTripController> {
   }
 
   Widget _buildCurrentStep() {
-    return StepsOne(controller: controller);
+    return StepsOne(controller: controller, formKey: _formStep1Key);
   }
 }

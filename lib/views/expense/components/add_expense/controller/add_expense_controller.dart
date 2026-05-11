@@ -13,8 +13,6 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import '../../../../../services/session_services.dart';
 
 class AddExpenseController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController expenseNameController = TextEditingController(),
@@ -29,15 +27,37 @@ class AddExpenseController extends GetxController {
 
   final ExpenseService _expenseService = ExpenseService();
   TripModel? _currentTrip;
+  String? _tripId;
+  void Function(ExpenseModel expense)? _onAdd;
 
   @override
   void onInit() {
     super.onInit();
-    if (Get.arguments['tripMembers'] != null) {
-      tripMembers.value = Get.arguments['tripMembers'];
+
+    final args = Get.arguments;
+    if (args is! Map) {
+      return;
     }
-    if (Get.arguments['trip'] != null) {
-      _currentTrip = Get.arguments['trip'];
+
+    final members = args['tripMembers'];
+    if (members is List<PublicUserModel>) {
+      tripMembers.assignAll(members);
+    }
+
+    final trip = args['trip'];
+    if (trip is TripModel) {
+      _currentTrip = trip;
+      _tripId ??= trip.id;
+    }
+
+    final tripId = args['tripId'];
+    if (tripId is String && tripId.isNotEmpty) {
+      _tripId = tripId;
+    }
+
+    final onAdd = args['onAdd'];
+    if (onAdd is Function) {
+      _onAdd = (expense) => onAdd(expense);
     }
   }
 
@@ -94,13 +114,21 @@ class AddExpenseController extends GetxController {
       finalOwedTo = Map<String, double>.from(owedTo);
     }
 
+    if (_tripId == null || _tripId!.isEmpty) {
+      showCustomSnackBar(
+        content: 'Missing trip information',
+        contentType: ContentType.failure,
+      );
+      return;
+    }
+
     final ExpenseModel expenseModel = ExpenseModel(
       paidByUsers: [GlobalVariables.loggedInUser.value?.uid ?? ''],
       name: expenseNameController.text.trim(),
       amount: expenseAmount,
       date: expenceDate.value ?? DateTime.now(),
       id: const Uuid().v6(),
-      tripId: Get.arguments['tripId'],
+      tripId: _tripId!,
       createdBy: GlobalVariables.loggedInUser.value?.uid ?? '',
       splitType: splitType.value,
       owedTo: finalOwedTo,
@@ -113,7 +141,7 @@ class AddExpenseController extends GetxController {
         value,
       ) {
         if (value) {
-          Get.arguments['onAdd']?.call(expenseModel);
+          _onAdd?.call(expenseModel);
           Get.back();
           showCustomSnackBar(content: 'Expense added successfully');
         } else {
@@ -131,8 +159,9 @@ class AddExpenseController extends GetxController {
         content: 'Error adding expense: ${e.toString()}',
         contentType: ContentType.failure,
       );
+    } finally {
+      GlobalVariables.showLoader.value = false;
     }
-    GlobalVariables.showLoader.value = false;
   }
 
   /// Updates the owedTo amount for a specific user in custom split
@@ -159,5 +188,12 @@ class AddExpenseController extends GetxController {
     final expenseAmount = double.tryParse(amountController.text) ?? 0.0;
     final totalOwed = owedTo.values.fold(0.0, (sum, amount) => sum + amount);
     return expenseAmount - totalOwed;
+  }
+
+  @override
+  void onClose() {
+    expenseNameController.dispose();
+    amountController.dispose();
+    super.onClose();
   }
 }

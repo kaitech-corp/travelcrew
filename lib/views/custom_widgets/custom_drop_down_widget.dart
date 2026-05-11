@@ -25,6 +25,22 @@ class SimpleDropdown<T> extends StatefulWidget {
 
 class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
   bool _isDropdownOpen = false;
+  T? value;
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(covariant SimpleDropdown<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value) {
+      value = widget.value;
+    }
+  }
+
   void _toggleDropdown() {
     setState(() {
       _isDropdownOpen = !_isDropdownOpen;
@@ -39,7 +55,6 @@ class _SimpleDropdownState<T> extends State<SimpleDropdown<T>> {
     });
   }
 
-  T? value;
   @override
   Widget build(BuildContext context) {
     return Container(

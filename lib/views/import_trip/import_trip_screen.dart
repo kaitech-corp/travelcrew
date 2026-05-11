@@ -7,16 +7,24 @@ import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
 import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
 import 'package:travel_crew/views/import_trip/import_trip_controller.dart';
 
-class ImportTripScreen extends GetView<ImportTripController> {
+class ImportTripScreen extends StatefulWidget {
   const ImportTripScreen({super.key});
+
+  @override
+  State<ImportTripScreen> createState() => _ImportTripScreenState();
+}
+
+class _ImportTripScreenState extends State<ImportTripScreen> {
+  final ImportTripController controller = Get.find<ImportTripController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       screenName: 'Import from AI',
       centerTitle: true,
-      scaffoldKey: GlobalKey<ScaffoldState>(),
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../models/public_user_model.dart';
 import '../../../../../services/auth_service.dart';
 
 class ConnectionsController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final RxList<PublicUserModel> followers = <PublicUserModel>[].obs;
   final RxList<PublicUserModel> following = <PublicUserModel>[].obs;
   final RxBool isLoading = true.obs;

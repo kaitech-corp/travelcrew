@@ -47,6 +47,21 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
     widget.focusNode.addListener(checkIfFocus);
   }
 
+  @override
+  void didUpdateWidget(covariant LocationDropdownWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusNode != widget.focusNode) {
+      oldWidget.focusNode.removeListener(checkIfFocus);
+      widget.focusNode.addListener(checkIfFocus);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(checkIfFocus);
+    super.dispose();
+  }
+
   void checkIfFocus() {
     if (widget.focusNode.hasFocus) {
       GlobalVariables.showDropdown.value = true;
@@ -69,6 +84,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
             textInputAction: widget.textInputAction,
             textCapitalization: TextCapitalization.sentences,
             validator: widget.validator,
+            onChanged: widget.onChanged,
             onTapUpOutside: (event) => CommonCode().removeTextFieldFocus(),
 
             onEditingComplete:
@@ -115,11 +131,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
               ),
               hintText: widget.hintText,
             ),
-            controller:
-                widget.textEditingController
-                  ..selection = TextSelection.collapsed(
-                    offset: widget.selectedText.length,
-                  ),
+            controller: widget.textEditingController,
           ),
 
           // Dropdown List

@@ -9,37 +9,41 @@ import 'package:travel_crew/utils/common_code.dart';
 import 'package:travel_crew/views/custom_widgets/custom_drop_down_widget.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
 import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
+import 'package:travel_crew/views/custom_widgets/custom_text_field.dart';
 import 'package:travel_crew/views/custom_widgets/date_range_picker/range_picker_dialogue.dart';
 import 'package:travel_crew/views/create_trip/components/steps_one.dart'
     show pickTime;
 import 'package:travel_crew/views/custom_widgets/location_dropdown.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
 
-// ignore: must_be_immutable
-class AddLodgingScreen extends GetView<SpecificTripViewController> {
-  AddLodgingScreen({super.key});
-  bool _firstTime = true;
+class AddLodgingScreen extends StatefulWidget {
+  const AddLodgingScreen({super.key});
+
+  @override
+  State<AddLodgingScreen> createState() => _AddLodgingScreenState();
+}
+
+class _AddLodgingScreenState extends State<AddLodgingScreen> {
+  final controller = Get.find<SpecificTripViewController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    final args = Get.arguments;
+    if (args is TripModel) {
+      controller.tripModel.value = args;
+    }
+    controller.initLodgingFromTrip();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (_firstTime) {
-      _firstTime = false;
-      final args = Get.arguments;
-      if (args is TripModel) {
-        Future.microtask(() {
-          controller.tripModel.value = args;
-          controller.initLodgingFromTrip();
-        });
-      } else {
-        Future.microtask(() => controller.initLodgingFromTrip());
-      }
-    }
-
     return CustomScaffold(
       className: runtimeType.toString(),
       screenName: 'Lodging',
       centerTitle: true,
-      scaffoldKey: GlobalKey<ScaffoldState>(),
+      scaffoldKey: _scaffoldKey,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,20 +58,36 @@ class AddLodgingScreen extends GetView<SpecificTripViewController> {
               ),
             ),
             SizedBox(height: 12.h),
-            Obx(() {
-              final current = controller.lodgingTypeController.text;
-              return SimpleDropdown<String>(
-                items: const ['Hotel', 'Home'],
-                value: ['Hotel', 'Home'].contains(current) ? current : null,
-                hintText: 'Hotel',
-                onChanged: (v) {
-                  controller.lodgingTypeController.text = v ?? '';
-                },
-              );
-            }),
+            SimpleDropdown<String>(
+              items: const [
+                'Airbnb',
+                'Vrbo',
+                'Hotel',
+                'Home',
+                'Hostel',
+                'Resort',
+                'Other',
+              ],
+              value:
+                  [
+                        'Airbnb',
+                        'Vrbo',
+                        'Hotel',
+                        'Home',
+                        'Hostel',
+                        'Resort',
+                        'Other',
+                      ].contains(controller.lodgingTypeController.text)
+                      ? controller.lodgingTypeController.text
+                      : null,
+              hintText: 'Hotel',
+              onChanged: (v) {
+                controller.lodgingTypeController.text = v ?? '';
+              },
+            ),
             SizedBox(height: 27.h),
             Text(
-              'Hotel Name',
+              'Name',
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: AppStyles.fontSize20,
@@ -75,20 +95,18 @@ class AddLodgingScreen extends GetView<SpecificTripViewController> {
               ),
             ),
             SizedBox(height: 12.h),
-            Obx(
-              () => LocationDropdownWidget(
-                selectedText: controller.lodgingHotelSearchText.value,
-                hintText: 'Search Hotel',
-                items: controller.hotelLocations,
-                textEditingController: controller.lodgingHotelNameController,
-                focusNode: controller.hotelNameFocusNode,
-                onChanged: (value) => controller.fetchHotelLocations(value),
-                onTap: (placeId, searchText) {
-                  controller.lodgingHotelNameController.text =
-                      searchText.searchText;
-                  controller.lodgingHotelSearchText.value =
-                      searchText.searchText;
-                },
+            CustomTextField(
+              controller: controller.lodgingHotelNameController,
+              focusNode: controller.hotelNameFocusNode,
+              hintText: 'Name',
+              prefixIcon: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 20.r,
+                child: Icon(
+                  Icons.home_work_outlined,
+                  color: AppColors.kBlackColor,
+                  size: AppStyles.fontSize24,
+                ),
               ),
             ),
             SizedBox(height: 27.h),

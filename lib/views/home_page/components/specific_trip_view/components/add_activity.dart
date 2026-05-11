@@ -16,34 +16,44 @@ import '../../../../create_trip/components/steps_one.dart';
 import '../../../../custom_widgets/custom_text_field.dart';
 import '../../../../custom_widgets/date_range_picker/range_picker_dialogue.dart';
 
-// ignore: must_be_immutable
-class AddActivity extends GetView<SpecificTripViewController> {
-  AddActivity({super.key});
-  bool firstTime = true;
+class AddActivity extends StatefulWidget {
+  const AddActivity({super.key});
+
   @override
-  Widget build(BuildContext context) {
+  State<AddActivity> createState() => _AddActivityState();
+}
+
+class _AddActivityState extends State<AddActivity> {
+  final controller = Get.find<SpecificTripViewController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
     final args = Get.arguments as Map<String, dynamic>? ?? {};
     final bool toAdd = args['toAdd'] as bool? ?? true;
     final ActivityModel? activity =
         toAdd ? null : args['activity'] as ActivityModel?;
 
-    if (firstTime) {
-      firstTime = false;
-      if (!toAdd && activity != null) {
-        Future.microtask(() {
-          controller.activityNameController.text = activity.title;
-          controller.locationController.text = activity.location ?? '';
-          controller.activityNoteController.text = activity.description;
-          controller.activityStartTime.value = activity.startDateTime;
-          controller.activityEndTime.value = activity.endDateTime;
-        });
-      }
+    if (!toAdd && activity != null) {
+      controller.activityNameController.text = activity.title;
+      controller.locationController.text = activity.location ?? '';
+      controller.activityNoteController.text = activity.description;
+      controller.activityStartTime.value = activity.startDateTime;
+      controller.activityEndTime.value = activity.endDateTime;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final args = Get.arguments as Map<String, dynamic>? ?? {};
+    final bool toAdd = args['toAdd'] as bool? ?? true;
+
     return CustomScaffold(
       className: runtimeType.toString(),
       screenName: '${toAdd ? 'Add' : 'Update'} Activity',
       centerTitle: true,
-      scaffoldKey: controller.addActivityScaffoldKey,
+      scaffoldKey: _scaffoldKey,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,8 +74,6 @@ class AddActivity extends GetView<SpecificTripViewController> {
                   (p0) =>
                       p0?.isBlank == true ? 'Please enter activity name' : null,
               hintText: 'Enter Activity Name',
-
-              // focusNode: controller.activityNameFocusNode,
               controller: controller.activityNameController,
               prefixIcon: Image.asset(AppImages.kSearchIcon, scale: 4),
             ),
@@ -84,7 +92,6 @@ class AddActivity extends GetView<SpecificTripViewController> {
                 items: controller.locations,
                 hintText: 'Location',
                 selectedText: controller.searchText.value,
-                // : Image.asset(AppImages.kLocationIcon, scale: 4),
                 textEditingController: controller.locationController,
                 onTap: (placeId, searchText) {
                   controller.searchText.value = searchText.searchText;
@@ -105,7 +112,6 @@ class AddActivity extends GetView<SpecificTripViewController> {
               style: AppStyles.labelTextStyle().copyWith(
                 color: Colors.black,
                 fontSize: AppStyles.fontSize20,
-
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -178,12 +184,10 @@ class AddActivity extends GetView<SpecificTripViewController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        // 'June 10 - June 18, 2025',
                         controller.activityStartTime.value == null ||
                                 controller.activityEndTime.value == null
                             ? 'Select activity start & end date'
                             : '${DateFormat('MMM dd yyyy').format(controller.activityStartTime.value!)} - ${DateFormat('MMM dd yyyy').format(controller.activityEndTime.value!)}',
-
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: Colors.black,
@@ -203,7 +207,6 @@ class AddActivity extends GetView<SpecificTripViewController> {
                 ),
               ),
             ),
-
             SizedBox(height: 27.h),
             Text(
               'Activity Notes',
@@ -217,9 +220,7 @@ class AddActivity extends GetView<SpecificTripViewController> {
             CustomTextField(
               focusNode: controller.activityNoteFocusNode,
               hintText: 'Includes professional guide & lunch.',
-
               controller: controller.activityNoteController,
-              // prefixIcon: Image.asset(AppImages.kSearchIcon, scale: 4),
             ),
             SizedBox(height: 20.h),
             CustomElevatedButton(

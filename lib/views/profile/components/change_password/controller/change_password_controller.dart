@@ -7,7 +7,6 @@ import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 
 class ChangePasswordController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final currentPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -42,5 +41,16 @@ class ChangePasswordController extends GetxController {
     } finally {
       GlobalVariables.showLoader.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    currentPasswordFocus.dispose();
+    newPasswordFocus.dispose();
+    confirmPasswordFocus.dispose();
+    super.onClose();
   }
 }

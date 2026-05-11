@@ -8,8 +8,16 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/app_styles.dart';
 import 'controller/connections_controller.dart';
 
-class ConnectionsScreen extends GetView<ConnectionsController> {
+class ConnectionsScreen extends StatefulWidget {
   const ConnectionsScreen({super.key});
+
+  @override
+  State<ConnectionsScreen> createState() => _ConnectionsScreenState();
+}
+
+class _ConnectionsScreenState extends State<ConnectionsScreen> {
+  final ConnectionsController controller = Get.find<ConnectionsController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +28,8 @@ class ConnectionsScreen extends GetView<ConnectionsController> {
       child: CustomScaffold(
         screenName: l10n.social, // Use a generic title or dynamic one
         centerTitle: true,
-        scaffoldKey: controller.scaffoldKey,
-        className: runtimeType.toString(),
+        scaffoldKey: _scaffoldKey,
+        className: widget.runtimeType.toString(),
         body: Column(
           children: [
             TabBar(

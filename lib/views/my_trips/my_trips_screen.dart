@@ -15,14 +15,25 @@ import '../../utils/app_styles.dart';
 import '../../utils/common_code.dart';
 import '../custom_widgets/custom_scaffold.dart';
 
-class MyTripsScreen extends GetView<MyTripsController> {
+class MyTripsScreen extends StatefulWidget {
   const MyTripsScreen({super.key});
+
+  @override
+  State<MyTripsScreen> createState() => _MyTripsScreenState();
+}
+
+class _MyTripsScreenState extends State<MyTripsScreen> {
+  final MyTripsController controller = Get.find<MyTripsController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.getTrips();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    Future.microtask(() {
-      controller.getTrips();
-    });
     return CustomScaffold(
       onWillPop: () {
         mainViewController?.selectedIndex.value = 0;
@@ -31,7 +42,7 @@ class MyTripsScreen extends GetView<MyTripsController> {
       scaffoldKey: controller.scaffoldKey,
       centerTitle: true,
       showNotificationBell: false,
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       actions: [
         GestureDetector(
           onTap: () => Get.toNamed(kImportTripScreenRoute),

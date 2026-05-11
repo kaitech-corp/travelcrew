@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/secure_storage_service.dart';
@@ -7,16 +6,6 @@ import 'package:travel_crew/services/secure_storage_service.dart';
 import '../../../utils/app_strings.dart';
 
 class SplashController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-  @override
-  void onInit() {
-    super.onInit();
-    Future.microtask(() async {
-      setUser();
-    });
-  }
-
   Future<void> setUser() async {
     if (FirebaseAuth.instance.currentUser == null) {
       if ((await SecureStorageService.readByKey(key: 'haveSeenOnboarding')) ==

@@ -14,15 +14,24 @@ import '../../../../utils/common_code.dart';
 import '../../../custom_widgets/custom_scaffold.dart';
 import '../../../custom_widgets/date_range_picker/range_picker_dialogue.dart';
 
-class AddExpenseScreen extends GetView<AddExpenseController> {
+class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
+
+  @override
+  State<AddExpenseScreen> createState() => _AddExpenseScreenState();
+}
+
+class _AddExpenseScreenState extends State<AddExpenseScreen> {
+  final AddExpenseController controller = Get.find<AddExpenseController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: l10n.addExpense,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       centerTitle: true,
       body: Form(
         key: controller.formKey,
