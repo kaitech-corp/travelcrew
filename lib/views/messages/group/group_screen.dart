@@ -10,15 +10,23 @@ import 'package:travel_crew/views/messages/users/controller/users_controller.dar
 
 import '../../custom_widgets/custom_scaffold.dart';
 
-class GroupScreen extends StatelessWidget {
+class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
+
+  @override
+  State<GroupScreen> createState() => _GroupScreenState();
+}
+
+class _GroupScreenState extends State<GroupScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final GroupController controller = Get.put(GroupController());
     return CustomScaffold(
       screenName: 'Messages',
       isBackIcon: false,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       centerTitle: true,
       className: 'Group',
       body: Obx(() {

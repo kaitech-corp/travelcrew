@@ -9,8 +9,17 @@ import '../custom_widgets/custom_bottom_bar.dart';
 import '../custom_widgets/custom_scaffold.dart';
 import 'controller/main_view_controller.dart';
 
-class MainViewScreen extends GetView<MainViewController> {
+class MainViewScreen extends StatefulWidget {
   const MainViewScreen({super.key});
+
+  @override
+  State<MainViewScreen> createState() => _MainViewScreenState();
+}
+
+class _MainViewScreenState extends State<MainViewScreen> {
+  final MainViewController controller = Get.find<MainViewController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
@@ -26,7 +35,7 @@ class MainViewScreen extends GetView<MainViewController> {
           controller.changeIndex(0);
         }
       },
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       leadingWidth: 0,
       isFullBody: true,
       appBarSize: 0,

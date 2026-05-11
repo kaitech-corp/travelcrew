@@ -4,8 +4,6 @@ import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 
 class MyTripsController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
   // Track which tab is selected: 0 = Upcoming, 1 = Active, 2 = Past
   final RxInt selectedTabIndex = 0.obs;
   RxList<TripModel> trips = <TripModel>[].obs;

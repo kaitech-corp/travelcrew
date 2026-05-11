@@ -13,17 +13,25 @@ import '../custom_widgets/custom_scaffold.dart';
 import '../custom_widgets/read_more_text.dart';
 import 'controller/notification_controller.dart';
 
-class NotificationsScreen extends GetView<NotificationController> {
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  final NotificationController controller = Get.find<NotificationController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       centerTitle: true,
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       screenName: l10n.notifications,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       body: Obx(() {
         if (controller.isLoading.value) {
           return ListView.builder(

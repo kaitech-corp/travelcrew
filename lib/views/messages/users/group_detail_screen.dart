@@ -21,6 +21,7 @@ class GroupDetailScreen extends StatefulWidget {
 
 class _GroupDetailScreenState extends State<GroupDetailScreen> {
   final UsersController controller = Get.find<UsersController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -89,7 +90,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         ),
       ),
       padding: EdgeInsets.zero,
-      scaffoldKey: controller.groupDetailKey,
+      scaffoldKey: _scaffoldKey,
       body: Column(
         children: [
           Padding(

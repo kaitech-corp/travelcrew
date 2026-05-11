@@ -9,8 +9,17 @@ import '../../../utils/app_styles.dart';
 import '../../custom_widgets/custom_scaffold.dart';
 import 'controller/users_controller.dart';
 
-class UsersScreen extends GetView<UsersController> {
+class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
+
+  @override
+  State<UsersScreen> createState() => _UsersScreenState();
+}
+
+class _UsersScreenState extends State<UsersScreen> {
+  final UsersController controller = Get.find<UsersController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -22,9 +31,9 @@ class UsersScreen extends GetView<UsersController> {
     // });
     return CustomScaffold(
       screenName: l10n.messages,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       centerTitle: true,
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       body: Column(
         children: [
           SizedBox(height: 20.h),

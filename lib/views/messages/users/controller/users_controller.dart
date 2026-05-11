@@ -23,9 +23,6 @@ import 'package:travel_crew/utils/logger.dart';
 import '../../../../services/chat_firebase_service.dart';
 
 class UsersController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
-  final GlobalKey<ScaffoldState> groupDetailKey = GlobalKey<ScaffoldState>();
   Rxn<TripModel?> currentTrip = Rxn<TripModel>();
   RxList<ChatRoom> chatRooms = <ChatRoom>[].obs;
   RxBool isLoadingChats = false.obs;
@@ -157,6 +154,10 @@ class UsersController extends GetxController {
     AppLogger.debug('Cleaned up existing chat listeners');
   }
 
+  Future<void> stopListeningToChat() async {
+    await _cleanupListeners();
+  }
+
   Future<void> joinRoom() async {
     try {
       if (chatRoom.value == null || roomId == null) {
@@ -173,9 +174,19 @@ class UsersController extends GetxController {
         return;
       }
 
-      // Check if user is already in the chatroom
+      final trip = currentTrip.value;
+      if (trip == null) {
+        AppLogger.error('Cannot join room: trip not found');
+        return;
+      }
+
       final isUserAlreadyInTrip =
-          currentTrip.value?.joinedUsers?.contains(currentUser.uid) ?? false;
+          trip.createdBy == currentUser.uid ||
+          (trip.joinedUsers?.contains(currentUser.uid) ?? false);
+      if (!isUserAlreadyInTrip) {
+        showCustomSnackBar(content: 'Request to join before opening chat');
+        return;
+      }
 
       if (chatRoom.value!.containsUser(currentUser.uid) &&
           isUserAlreadyInTrip) {
@@ -203,12 +214,6 @@ class UsersController extends GetxController {
         AppLogger.debug('Added user to chat room successfully');
       } else {
         AppLogger.debug('User was already in chat room');
-      }
-
-      // Add user to trip joinedUsers only if not already present
-      if (!isUserAlreadyInTrip) {
-        currentTrip.value?.joinedUsers?.add(currentUser.uid);
-        AppLogger.debug('Added user to trip joinedUsers list');
       }
 
       if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
@@ -362,22 +367,35 @@ class UsersController extends GetxController {
 
   RxBool showTextField = false.obs;
   Future<void> scrollToEnd() async {
-    await scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
+    final controller = _messageScrollController;
+    if (controller == null || !controller.hasClients) return;
+    await controller.animateTo(
+      controller.position.maxScrollExtent,
       duration: const Duration(milliseconds: 500),
       curve: Curves.ease,
     );
   }
 
-  ScrollController scrollController = ScrollController();
+  ScrollController? _messageScrollController;
   RxList<ChatMessage> messages = <ChatMessage>[].obs;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? messageListener;
+
+  void attachMessageScrollController(ScrollController scrollController) {
+    _messageScrollController = scrollController;
+  }
+
+  void detachMessageScrollController(ScrollController scrollController) {
+    if (_messageScrollController == scrollController) {
+      _messageScrollController = null;
+    }
+  }
 
   @override
   void onClose() {
     roomListner?.cancel();
     messageListener?.cancel();
-    scrollController.dispose();
+    tecMessage.dispose();
+    fnMessage.dispose();
     super.onClose();
   }
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/notifications/notifications_firebase_service.dart';
 
@@ -6,7 +5,6 @@ import '../../../models/Notifications/notification_model.dart';
 import '../../../utils/error_handler.dart';
 
 class NotificationController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   RxList<NotificationModel> notifications = <NotificationModel>[].obs;
   RxBool isLoading = false.obs;
 

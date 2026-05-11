@@ -24,6 +24,7 @@ class MyTripsScreen extends StatefulWidget {
 
 class _MyTripsScreenState extends State<MyTripsScreen> {
   final MyTripsController controller = Get.find<MyTripsController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
         mainViewController?.selectedIndex.value = 0;
       },
       screenName: l10n.myTrips,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       centerTitle: true,
       showNotificationBell: false,
       className: widget.runtimeType.toString(),

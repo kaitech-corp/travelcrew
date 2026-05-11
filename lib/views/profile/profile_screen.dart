@@ -13,8 +13,17 @@ import '../../../utils/app_images.dart';
 import '../../utils/app_styles.dart';
 import '../custom_widgets/custom_scaffold.dart';
 
-class ProfileScreen extends GetView<ProfileController> {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileController controller = Get.find<ProfileController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -22,8 +31,8 @@ class ProfileScreen extends GetView<ProfileController> {
       screenName: l10n.profile,
       centerTitle: true,
       showNotificationBell: true,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       body: SingleChildScrollView(
         child: Column(
           children: [

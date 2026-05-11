@@ -43,10 +43,7 @@ class UsersWidget extends StatelessWidget {
         usersController.listenToChat();
 
         await Get.toNamed(kMessagesScreenRoute);
-        if (usersController.roomListner != null) {
-          await usersController.roomListner!.cancel();
-          usersController.roomListner = null;
-        }
+        await usersController.stopListeningToChat();
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8.w),

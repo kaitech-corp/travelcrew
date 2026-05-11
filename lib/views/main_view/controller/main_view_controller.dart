@@ -15,7 +15,6 @@ class MainViewController extends GetxController {
     const InboxScreen(),
     const ProfileScreen(),
   ];
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   void changeIndex(int index) {
     selectedIndex.value = index;
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,13 +23,36 @@ import '../../custom_widgets/text_widget.dart';
 import 'controller/users_controller.dart';
 import 'message_widget.dart';
 
-class MessagesScreen extends GetView<UsersController> {
+class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
+
+  @override
+  State<MessagesScreen> createState() => _MessagesScreenState();
+}
+
+class _MessagesScreenState extends State<MessagesScreen> {
+  final UsersController controller = Get.find<UsersController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.attachMessageScrollController(_scrollController);
+  }
+
+  @override
+  void dispose() {
+    controller.detachMessageScrollController(_scrollController);
+    unawaited(controller.stopListeningToChat());
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      className: runtimeType.toString(),
+      className: widget.runtimeType.toString(),
       screenName: '',
       appBarSize: 70.h,
       title: GestureDetector(
@@ -93,7 +118,7 @@ class MessagesScreen extends GetView<UsersController> {
         ),
       ),
       padding: EdgeInsets.zero,
-      scaffoldKey: controller.scaffoldState,
+      scaffoldKey: _scaffoldKey,
       body: Container(
         width: context.width,
         height: context.height,
@@ -131,7 +156,7 @@ class MessagesScreen extends GetView<UsersController> {
                 }
 
                 return ListView.separated(
-                  controller: controller.scrollController,
+                  controller: _scrollController,
                   padding: EdgeInsets.only(top: 50.h),
                   shrinkWrap: true,
                   itemBuilder: (c, index) {
@@ -274,7 +299,7 @@ class MessagesScreen extends GetView<UsersController> {
                                             messageStatus:
                                                 MessageStatus.sent.status,
                                             createdAt: Timestamp.now(),
-                                            
+
                                             createdBy:
                                                 GlobalVariables
                                                     .loggedInUser
