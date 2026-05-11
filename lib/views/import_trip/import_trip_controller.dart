@@ -116,7 +116,14 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
         }
       }
 
-      Get.toNamed(kCreateTripScreenRoute, arguments: data);
+      final arguments = Get.arguments;
+      final shouldReturnToCreate =
+          arguments is Map && arguments['returnToCreate'] == true;
+      if (shouldReturnToCreate) {
+        Get.back(result: data);
+      } else {
+        Get.toNamed(kCreateTripScreenRoute, arguments: data);
+      }
     } on FormatException catch (e, stack) {
       ErrorHandler.handleError(
         e,

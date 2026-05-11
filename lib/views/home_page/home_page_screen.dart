@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
-import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
@@ -14,8 +14,17 @@ import '../../utils/app_styles.dart';
 import '../custom_widgets/custom_scaffold.dart';
 import 'widgets/filter_trips_widget.dart';
 
-class HomePageScreen extends GetView<HomePageController> {
+class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
+
+  @override
+  State<HomePageScreen> createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends State<HomePageScreen> {
+  final HomePageController controller = Get.find<HomePageController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -40,8 +49,8 @@ class HomePageScreen extends GetView<HomePageController> {
           ),
         ),
       ),
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       body: Padding(
         padding: EdgeInsets.only(left: 20.w),
         child: Column(
@@ -248,7 +257,7 @@ class HomePageScreen extends GetView<HomePageController> {
     );
   }
 
-  Widget _buildTripsTab(String tabName, List<TripModel> tripss) {
+  Widget _buildTripsTab(String tabName, List<TripDiscoveryModel> tripss) {
     return tripss.isEmpty
         ? const Center(child: Text('No trips found.'))
         : ListView.separated(

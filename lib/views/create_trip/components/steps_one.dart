@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:travel_crew/models/search_model.dart';
+import 'package:travel_crew/services/geo_services.dart';
 import 'package:travel_crew/services/session_services.dart';
-import 'package:travel_crew/utils/app_strings_keys.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/utils/common_code.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
@@ -21,12 +21,14 @@ import '../../custom_widgets/location_dropdown.dart';
 import '../controller/create_trip_controller.dart';
 
 class StepsOne extends StatelessWidget {
-  const StepsOne({super.key, required this.controller});
+  const StepsOne({super.key, required this.controller, this.formKey});
   final CreateTripController controller;
+  final GlobalKey<FormState>? formKey;
+
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: controller.formStep1,
+      key: formKey ?? controller.formStep1,
       child: Obx(
         () => SingleChildScrollView(
           child: Column(
@@ -97,8 +99,9 @@ class StepsOne extends StatelessWidget {
                                 if (snap.hasData) {
                                   return AnyImageView(
                                     borderRadius: BorderRadius.circular(25.r),
-                                    url:
-                                        'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${snap.data.toString()}&key=$kGoogleMapKey',
+                                    url: GeoServices.getPhotoUrl(
+                                      snap.data.toString(),
+                                    ),
                                     height: 199.h,
                                     width: context.width,
                                   );

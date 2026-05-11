@@ -35,11 +35,38 @@ class SpecificTripViewScreen extends StatefulWidget {
 class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
   final SpecificTripViewController controller =
       Get.find<SpecificTripViewController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+  final Map<String, GlobalKey> _sectionKeys = {
+    'Overview': GlobalKey(),
+    'Crew': GlobalKey(),
+    'Activities': GlobalKey(),
+    'Flights': GlobalKey(),
+    'Lodging': GlobalKey(),
+    'Expenses': GlobalKey(),
+  };
 
   @override
   void initState() {
     super.initState();
     controller.initializeFromArgument(Get.arguments);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSection(String section) {
+    final key = _sectionKeys[section];
+    if (key?.currentContext != null) {
+      Scrollable.ensureVisible(
+        key!.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -59,7 +86,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
       isFullBody: true,
       appBarSize: 0,
       padding: EdgeInsets.zero,
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),
       body: Obx(
         () =>
@@ -71,7 +98,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                 : Stack(
                   children: [
                     SingleChildScrollView(
-                      controller: controller.scrollController,
+                      controller: _scrollController,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -200,10 +227,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                           usersController.listenToChat();
 
                           await Get.toNamed(kMessagesScreenRoute);
-                          if (usersController.roomListner != null) {
-                            await usersController.roomListner!.cancel();
-                            usersController.roomListner = null;
-                          }
+                          await usersController.stopListeningToChat();
                         },
                       ),
                     ),
@@ -606,12 +630,12 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
       child: Row(
         children:
-            controller.sectionKeys.keys.map((section) {
+            _sectionKeys.keys.map((section) {
               return Padding(
                 padding: EdgeInsets.only(right: 8.w),
                 child: ActionChip(
                   label: Text(section),
-                  onPressed: () => controller.scrollToSection(section),
+                  onPressed: () => _scrollToSection(section),
                   backgroundColor: AppColors.kLightGreyColor,
                   labelStyle: AppStyles.labelTextStyle().copyWith(
                     fontSize: AppStyles.fontSize12,
@@ -626,7 +650,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
 
   Widget _buildSectionHeader(String title, {VoidCallback? onAdd}) {
     return Column(
-      key: controller.sectionKeys[title],
+      key: _sectionKeys[title],
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 20.h),

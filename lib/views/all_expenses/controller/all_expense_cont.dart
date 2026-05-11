@@ -6,7 +6,6 @@ import 'package:travel_crew/utils/debugging.dart';
 
 class AllExpensesController extends GetxController {
   var trips = <TripModel>[].obs;
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   var isLoading = false.obs;
   @override
   void onInit() {

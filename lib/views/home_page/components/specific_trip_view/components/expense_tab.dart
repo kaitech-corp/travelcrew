@@ -314,8 +314,11 @@ class ExpenseTab extends StatelessWidget {
                     kAddExpenseScreenRoute,
                     arguments: {
                       'tripId': controller.tripModel.value?.id,
-                      'tripMembers': controller.tripModel.value?.joindUsersList,
+                      'trip': controller.tripModel.value,
+                      'tripMembers':
+                          controller.tripModel.value?.joindUsersList ?? [],
                       'onAdd': (ExpenseModel expense) {
+                        controller.tripModel.value?.expenses ??= [];
                         controller.tripModel.value?.expenses?.add(expense);
                         controller.tripModel.refresh();
                       },

@@ -170,62 +170,68 @@ class ActivityWidget extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title ?? 'Cincerella’s Roy',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black,
-                      fontSize: AppStyles.fontSize17,
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title ?? 'Brunch at The Spot',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppStyles.labelTextStyle().copyWith(
+                        color: Colors.black,
+                        fontSize: AppStyles.fontSize17,
 
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 5.0),
-                  Text(
-                    description ?? '1180 Seven Seas Drive, Lak...',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black.withValues(alpha: 140),
-                      fontSize: AppStyles.fontSize12,
-
-                      fontWeight: FontWeight.w500,
-                      height: 1.23,
-                    ),
-                  ),
-                  const SizedBox(height: 5.0),
-                  Container(
-                    padding: const EdgeInsets.all(7.12),
-                    decoration: ShapeDecoration(
-                      color: AppColors.kGreyColor.withValues(alpha: .4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(19.57.r),
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          AppImages.kClockIcon,
-                          scale: 4,
-                          color: AppColors.kBlackColor,
-                        ),
-                        SizedBox(width: 5.w),
-                        Text(
-                          timing,
-                          style: AppStyles.labelTextStyle().copyWith(
-                            color: Colors.black,
-                            fontSize: AppStyles.fontSize12,
+                    const SizedBox(height: 5.0),
+                    Text(
+                      description ?? '1180 Seven Seas Drive, Lak...',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppStyles.labelTextStyle().copyWith(
+                        color: Colors.black.withValues(alpha: 140),
+                        fontSize: AppStyles.fontSize12,
 
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                        fontWeight: FontWeight.w500,
+                        height: 1.23,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 5.0),
+                    Container(
+                      padding: const EdgeInsets.all(7.12),
+                      decoration: ShapeDecoration(
+                        color: AppColors.kGreyColor.withValues(alpha: .4),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(19.57.r),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            AppImages.kClockIcon,
+                            scale: 4,
+                            color: AppColors.kBlackColor,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            timing,
+                            style: AppStyles.labelTextStyle().copyWith(
+                              color: Colors.black,
+                              fontSize: AppStyles.fontSize12,
+
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               if (controller != null)
                 Row(

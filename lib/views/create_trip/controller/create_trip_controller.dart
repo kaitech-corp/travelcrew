@@ -19,11 +19,9 @@ import 'package:uuid/uuid.dart';
 
 import '../../../models/expense_model.dart';
 import '../../../utils/app_strings.dart';
-import '../../../utils/app_strings_keys.dart';
 import '../../../utils/app_utils.dart';
 
 class CreateTripController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   RxBool isLocked = false.obs;
   RxString country = ''.obs;
   RxString selectedPlaceId = ''.obs;
@@ -37,6 +35,25 @@ class CreateTripController extends GetxController {
       formStep7 = GlobalKey<FormState>();
 
   RxList<SelectedImage> selectedImages = <SelectedImage>[].obs;
+
+  Future<void> usePlacePhotoAsCoverIfNeeded() async {
+    if (selectedImages.isNotEmpty ||
+        selectedPlaceId.value.isEmpty ||
+        selectedPlaceId.value == 'existing_location') {
+      return;
+    }
+
+    final photoName = await getLocationDetails(selectedPlaceId.value);
+    if (photoName != null) {
+      selectedImages.add(
+        SelectedImage(
+          imageUrl: GeoServices.getPhotoUrl(photoName),
+          isNetworkImage: true,
+        ),
+      );
+    }
+  }
+
   // Track the current step (1-6)
   final RxInt currentStep = 1.obs;
   RxList<ActivityModel> activityList = <ActivityModel>[].obs;
@@ -231,12 +248,9 @@ class CreateTripController extends GetxController {
       if (currentStep.value == 1 && selectedImages.isEmpty) {
         String? imageUrl;
         if (selectedPlaceId.value.isNotEmpty) {
-          final photoReference = await getLocationDetails(
-            selectedPlaceId.value,
-          );
-          if (photoReference != null) {
-            imageUrl =
-                'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=$kGoogleMapKey';
+          final photoName = await getLocationDetails(selectedPlaceId.value);
+          if (photoName != null) {
+            imageUrl = GeoServices.getPhotoUrl(photoName);
           }
         }
         imageUrl ??=
@@ -451,18 +465,7 @@ class CreateTripController extends GetxController {
         images: [],
       );
       GlobalVariables.showLoader.value = true;
-      if (selectedImages.isEmpty && selectedPlaceId.value.isNotEmpty) {
-        final photoReference = await getLocationDetails(selectedPlaceId.value);
-        if (photoReference != null) {
-          selectedImages.add(
-            SelectedImage(
-              imageUrl:
-                  'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=$kGoogleMapKey',
-              isNetworkImage: true,
-            ),
-          );
-        }
-      }
+      await usePlacePhotoAsCoverIfNeeded();
       List<String> uplaodedImages = [];
       if (selectedImages.isNotEmpty) {
         int i = 0;
@@ -635,7 +638,12 @@ class CreateTripController extends GetxController {
       return await GeoServices.getLocationDetailsFromPlaceId(value).then((
         location,
       ) {
-        return location['result']['photos'][0]['photo_reference'];
+        if (location != null &&
+            location['photos'] != null &&
+            (location['photos'] as List).isNotEmpty) {
+          return location['photos'][0]['name'];
+        }
+        return null;
       });
     } catch (e) {
       if (kDebugMode) {
@@ -680,7 +688,10 @@ class CreateTripController extends GetxController {
         activityList.removeAt(index);
         activityList.refresh();
       } else {
-        await FirebaseTripService.deleteActivity(id: id).then((isSuccess) {
+        await FirebaseTripService.deleteActivity(
+          id: id,
+          tripId: tripModel.value?.id,
+        ).then((isSuccess) {
           if (isSuccess) {
             activityList.removeAt(index);
           }
@@ -723,6 +734,46 @@ class CreateTripController extends GetxController {
       }
       showCustomSnackBar(content: 'Failed to fetch friends');
     }
+  }
+
+  @override
+  void onClose() {
+    tripNameController.dispose();
+    destinationController.dispose();
+    airLineNameController.dispose();
+    flightNumberController.dispose();
+    hotelNameController.dispose();
+    addressController.dispose();
+    expensePerNightController.dispose();
+    activityNameController.dispose();
+    locationController.dispose();
+    activityNoteController.dispose();
+    searchFriendController.dispose();
+    sendInviteEmailController.dispose();
+    expenseNameController.dispose();
+    amountPaidController.dispose();
+    lodgingTypeController.dispose();
+    airportArrivalController.dispose();
+    airportDepartureController.dispose();
+
+    destinationFocusNode.dispose();
+    lodgingTypeFocusNode.dispose();
+    airLineNameFocusNode.dispose();
+    flightNumberFocusNode.dispose();
+    hotelNameFocusNode.dispose();
+    addressFocusNode.dispose();
+    expensePerNightFocusNode.dispose();
+    activityNameFocusNode.dispose();
+    locationFocusNode.dispose();
+    activityNoteFocusNode.dispose();
+    searchFriendFocusNode.dispose();
+    sendInviteEmailFocusNode.dispose();
+    expenseNameFocusNode.dispose();
+    amountPaidFocusNode.dispose();
+    tripNameFocusNode.dispose();
+    airportArrivalFocusNode.dispose();
+    airportDepartureFocusNode.dispose();
+    super.onClose();
   }
 }
 

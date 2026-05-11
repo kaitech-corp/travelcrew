@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/utils/error_handler.dart';
@@ -11,10 +11,9 @@ import '../../../services/geo_services.dart';
 
 class HomePageController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
   // Initialize with a default value to avoid late initialization error
   TabController? _tabController;
+  VoidCallback? _tabListener;
   TabController get tabController => _tabController!;
 
   final List<String> tabs = ['All', 'Popular', 'Nearby', 'Recommended'];
@@ -28,9 +27,10 @@ class HomePageController extends GetxController
     // Initialize in the next frame to ensure vsync is properly set up
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabController = TabController(length: tabs.length, vsync: this);
-      _tabController?.addListener(() {
+      _tabListener = () {
         selectedTabIndex.value = _tabController?.index ?? 0;
-      });
+      };
+      _tabController?.addListener(_tabListener!);
       isTabsReady.value = true;
       AppLogger.debug('TabController initialized with ${tabs.length} tabs');
     });
@@ -40,16 +40,19 @@ class HomePageController extends GetxController
   @override
   void onClose() {
     AppLogger.debug('HomePageController disposing resources');
-    _tabController?.removeListener(() {});
+    final listener = _tabListener;
+    if (listener != null) {
+      _tabController?.removeListener(listener);
+    }
     _tabController?.dispose();
     super.onClose();
   }
 
   RxBool isLoadingOtherTrips = true.obs;
-  RxList<TripModel> otherTrips = <TripModel>[].obs;
-  RxList<TripModel> otherFilteredTrips = <TripModel>[].obs;
-  RxList<TripModel> nearbyTrips = <TripModel>[].obs;
-  RxList<TripModel> recommendedTrips = <TripModel>[].obs;
+  RxList<TripDiscoveryModel> otherTrips = <TripDiscoveryModel>[].obs;
+  RxList<TripDiscoveryModel> otherFilteredTrips = <TripDiscoveryModel>[].obs;
+  RxList<TripDiscoveryModel> nearbyTrips = <TripDiscoveryModel>[].obs;
+  RxList<TripDiscoveryModel> recommendedTrips = <TripDiscoveryModel>[].obs;
   Future<void> getTrips() async {
     try {
       AppLogger.debug('Starting to fetch trips');
@@ -79,7 +82,9 @@ class HomePageController extends GetxController
         continents: continents,
       );
       otherTrips.value = value;
-      otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      otherTrips.sort(
+        (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
+      );
       otherFilteredTrips.value = value.toList();
     } catch (e) {
       if (kDebugMode) {
@@ -95,7 +100,9 @@ class HomePageController extends GetxController
       isLoadingOtherTrips.value = true;
       final value = await FirebaseTripService.getOtherTrips();
       otherTrips.value = value;
-      otherTrips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      otherTrips.sort(
+        (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
+      );
       otherFilteredTrips.value = value;
     } catch (e) {
       if (kDebugMode) {
@@ -116,7 +123,9 @@ class HomePageController extends GetxController
         longitude: position.longitude,
         radius: 100,
       );
-      trips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      trips.sort(
+        (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
+      );
       nearbyTrips.value = trips;
     } catch (e) {
       if (kDebugMode) {
@@ -132,8 +141,9 @@ class HomePageController extends GetxController
     otherFilteredTrips.value =
         otherTrips
             .where(
-              (trip) =>
-                  trip.title!.toLowerCase().contains(filter.toLowerCase()),
+              (trip) => (trip.title ?? '').toLowerCase().contains(
+                filter.toLowerCase(),
+              ),
             )
             .toList();
   }
@@ -158,7 +168,9 @@ class HomePageController extends GetxController
       recommendedTrips.clear();
       isLoadingOtherTrips.value = true;
       final trips = await FirebaseTripService.getRecommendedTrips();
-      trips.sort((a, b) => a.startDate.compareTo(b.startDate));
+      trips.sort(
+        (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
+      );
       recommendedTrips.value = trips;
     } catch (e) {
       if (kDebugMode) {

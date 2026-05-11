@@ -9,7 +9,6 @@ import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 
 class ExpenseController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   Rxn<TripModel> tripModel = Rxn<TripModel>();
 
   @override

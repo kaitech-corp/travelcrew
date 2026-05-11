@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
-import 'package:travel_crew/views/custom_widgets/custom_text_field.dart';
 
 class FilterTripsWidget extends StatelessWidget {
   const FilterTripsWidget({super.key, this.onPriceRangeChanged});
@@ -19,93 +18,6 @@ class FilterTripsWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Price Range',
-            style: AppStyles.labelTextStyle().copyWith(
-              fontSize: AppStyles.fontSize18,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Minimum',
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color: Colors.white,
-                        fontSize: AppStyles.fontSize14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.25,
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    CustomTextField(
-                      controller: _minPriceController,
-                      prefixIcon: Icon(
-                        Icons.attach_money,
-                        size: AppStyles.fontSize22,
-                        color: AppColors.kBlackColor.withValues(alpha: .5),
-                      ),
-                      prefixIconConstraints: BoxConstraints(maxWidth: 30.w),
-                      hintText: '1,500',
-                      fillColor: Colors.white.withValues(alpha: .2),
-                      height: 50.h,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 30.h),
-                child: Text(
-                  '-',
-                  style: TextStyle(
-                    fontSize: AppStyles.fontSize20,
-                    color: Colors.black.withValues(alpha: .5),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Maximum',
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color: Colors.white,
-                        fontSize: AppStyles.fontSize14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.25,
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-
-                    CustomTextField(
-                      controller: _maxPriceController,
-                      hintText: '2,500',
-                      fillColor: Colors.white.withValues(alpha: .2),
-                      prefixIcon: Icon(
-                        Icons.attach_money,
-                        size: AppStyles.fontSize22,
-                        color: AppColors.kBlackColor.withValues(alpha: .5),
-                      ),
-                      prefixIconConstraints: BoxConstraints(maxWidth: 30.w),
-                      height: 50.h,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 25.h),
           Text(
             'Continent',
             style: TextStyle(
@@ -195,9 +107,7 @@ class FilterTripsWidget extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    if (_selectedContinents.isEmpty &&
-                        _minPriceController.text.isEmpty &&
-                        _maxPriceController.text.isEmpty) {
+                    if (_selectedContinents.isEmpty) {
                       Get.snackbar(
                         'Error',
                         'Please select at least one filter',
@@ -206,13 +116,9 @@ class FilterTripsWidget extends StatelessWidget {
                       );
                       return;
                     }
-                    final double minPrice =
-                        double.tryParse(_minPriceController.text) ?? 0;
-                    final double maxPrice =
-                        double.tryParse(_maxPriceController.text) ?? 10000000;
                     onPriceRangeChanged?.call(
-                      minPrice,
-                      maxPrice,
+                      0,
+                      10000000,
                       _selectedContinents.toList(),
                     );
                   },
@@ -263,6 +169,4 @@ Widget continentChip(
   );
 }
 
-final TextEditingController _minPriceController = TextEditingController();
-final TextEditingController _maxPriceController = TextEditingController();
 RxList<String> _selectedContinents = <String>[].obs;

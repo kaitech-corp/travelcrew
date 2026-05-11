@@ -22,6 +22,7 @@ class ExpenseScreen extends StatefulWidget {
 
 class _ExpenseScreenState extends State<ExpenseScreen> {
   final ExpenseController controller = Get.find<ExpenseController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -70,7 +71,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           ],
         ),
       ],
-      scaffoldKey: controller.scaffoldKey,
+      scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),
       body: SingleChildScrollView(
         child: Column(

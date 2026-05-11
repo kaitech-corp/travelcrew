@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_crew/models/trip_model.dart';
+import 'package:intl/intl.dart';
+import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
@@ -15,7 +16,7 @@ import '../../../utils/app_styles.dart';
 
 class LocationWidget extends StatelessWidget {
   const LocationWidget({super.key, required this.tripModel});
-  final TripModel tripModel;
+  final TripDiscoveryModel tripModel;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -80,6 +81,22 @@ class LocationWidget extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 6.w),
+                        Icon(
+                          Icons.group_outlined,
+                          size: AppStyles.fontSize15,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '${tripModel.memberCount}',
+                          style: AppStyles.labelTextStyle().copyWith(
+                            color: Colors.white,
+                            fontSize: AppStyles.fontSize12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.29,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -101,6 +118,15 @@ class LocationWidget extends StatelessWidget {
                           ],
                         ),
                       ],
+                    ),
+                    SizedBox(height: 6.h),
+                    Text(
+                      DateFormat('MMM d').format(tripModel.effectiveStartDate),
+                      style: AppStyles.labelTextStyle().copyWith(
+                        color: Colors.white,
+                        fontSize: AppStyles.fontSize12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

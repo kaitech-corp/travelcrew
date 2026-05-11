@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
+import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/models/user_flight_model.dart';
-import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/expense_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
@@ -16,15 +16,15 @@ import '../../../../../models/search_model.dart';
 
 class SpecificTripViewController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> addActivityScaffoldKey =
-      GlobalKey<ScaffoldState>();
 
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
   Rxn<DateTime> activityEndTime = Rxn<DateTime>();
   RxBool isLiked = false.obs;
   Rxn<TripModel> tripModel = Rxn<TripModel>();
+  Rxn<TripDiscoveryModel> discoveryModel = Rxn<TripDiscoveryModel>();
+  RxString joinRequestStatus = ''.obs;
+  String? _initializedArgumentKey;
   RxBool isLocked = true.obs;
   final List<String> tripTabs = [
     'Transport',
@@ -33,16 +33,6 @@ class SpecificTripViewController extends GetxController
     'Activities',
   ];
   final selectedTabIndex = 0.obs;
-
-  final ScrollController scrollController = ScrollController();
-  final Map<String, GlobalKey> sectionKeys = {
-    'Overview': GlobalKey(),
-    'Crew': GlobalKey(),
-    'Activities': GlobalKey(),
-    'Flights': GlobalKey(),
-    'Lodging': GlobalKey(),
-    'Expenses': GlobalKey(),
-  };
 
   // Flight form state
   final TextEditingController flightAirlineController = TextEditingController();
@@ -78,17 +68,6 @@ class SpecificTripViewController extends GetxController
     }
   }
 
-  void scrollToSection(String section) {
-    final key = sectionKeys[section];
-    if (key?.currentContext != null) {
-      Scrollable.ensureVisible(
-        key!.currentContext!,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
   @override
   void onInit() {
     super.onInit();
@@ -99,9 +78,143 @@ class SpecificTripViewController extends GetxController
     });
   }
 
+  Future<void> initializeFromArgument(dynamic argument) async {
+    final argumentKey = _argumentKey(argument);
+    if (_initializedArgumentKey == argumentKey) return;
+    _initializedArgumentKey = argumentKey;
+    tripModel.value = null;
+    discoveryModel.value = null;
+    joinRequestStatus.value = '';
+    if (argument is TripModel) {
+      tripModel.value = argument;
+      return;
+    }
+    if (argument is TripDiscoveryModel) {
+      discoveryModel.value = argument;
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return;
+      final isCreator = argument.createdBy == uid;
+      final isMember = await FirebaseTripService.isTripMember(
+        tripId: argument.id,
+        userId: uid,
+      );
+      if (isCreator || isMember) {
+        tripModel.value = await FirebaseTripService.getTripById(
+          tripId: argument.id,
+        );
+      } else {
+        final request = await FirebaseTripService.getJoinRequest(
+          tripId: argument.id,
+          userId: uid,
+        );
+        joinRequestStatus.value = request?.status ?? '';
+      }
+      return;
+    }
+    if (argument is Map && argument['trip'] is TripModel) {
+      tripModel.value = argument['trip'] as TripModel;
+    }
+  }
+
+  String _argumentKey(dynamic argument) {
+    if (argument is TripModel) return 'trip:${argument.id}';
+    if (argument is TripDiscoveryModel) return 'discovery:${argument.id}';
+    if (argument is Map && argument['trip'] is TripModel) {
+      return 'trip:${(argument['trip'] as TripModel).id}';
+    }
+    return 'unknown:${identityHashCode(argument)}';
+  }
+
+  bool get isPublicPreview =>
+      tripModel.value == null && discoveryModel.value != null;
+
+  Future<void> requestToJoinPublicPreview() async {
+    final trip = discoveryModel.value;
+    final uid = GlobalVariables.loggedInUser.value?.uid;
+    if (trip == null || uid == null) {
+      showCustomSnackBar(content: 'Please log in to request to join');
+      return;
+    }
+    try {
+      GlobalVariables.showLoader.value = true;
+      final success = await FirebaseTripService.requestToJoinTrip(
+        trip.id,
+        userId: uid,
+      );
+      if (success) {
+        joinRequestStatus.value = 'pending';
+        showCustomSnackBar(content: 'Request sent to the trip creator');
+      } else {
+        showCustomSnackBar(content: 'Failed to send request');
+      }
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  Future<void> cancelPublicJoinRequest() async {
+    final trip = discoveryModel.value;
+    final uid = GlobalVariables.loggedInUser.value?.uid;
+    if (trip == null || uid == null) return;
+    try {
+      GlobalVariables.showLoader.value = true;
+      final success = await FirebaseTripService.cancelJoinRequest(trip.id, uid);
+      if (success) {
+        joinRequestStatus.value = 'cancelled';
+        showCustomSnackBar(content: 'Join request cancelled');
+      }
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  Future<void> acceptJoinRequest(String userId) async {
+    final trip = tripModel.value;
+    if (trip == null) return;
+    try {
+      GlobalVariables.showLoader.value = true;
+      final success = await FirebaseTripService.acceptJoinRequest(
+        trip.id,
+        userId,
+      );
+      if (success) {
+        final refreshed = await FirebaseTripService.getTripById(
+          tripId: trip.id,
+        );
+        if (refreshed != null) {
+          tripModel.value = refreshed;
+          updateTripOverAll(refreshed);
+        }
+        showCustomSnackBar(content: 'Join request accepted');
+      } else {
+        showCustomSnackBar(content: 'Failed to accept request');
+      }
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  Future<void> rejectJoinRequest(String userId) async {
+    final trip = tripModel.value;
+    if (trip == null) return;
+    try {
+      GlobalVariables.showLoader.value = true;
+      final success = await FirebaseTripService.rejectJoinRequest(
+        trip.id,
+        userId,
+      );
+      if (success) {
+        showCustomSnackBar(content: 'Join request rejected');
+      } else {
+        showCustomSnackBar(content: 'Failed to reject request');
+      }
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
   @override
   void onClose() {
-    scrollController.dispose();
     flightAirlineController.dispose();
     flightNumberController.dispose();
     flightDepartureAirportController.dispose();
@@ -109,8 +222,14 @@ class SpecificTripViewController extends GetxController
     lodgingTypeController.dispose();
     lodgingHotelNameController.dispose();
     lodgingAddressController.dispose();
+    activityNoteController.dispose();
+    activityNameController.dispose();
+    locationController.dispose();
     hotelNameFocusNode.dispose();
     lodgingAddressFocusNode.dispose();
+    activityNameFocusNode.dispose();
+    activityNoteFocusNode.dispose();
+    locationFocusNode.dispose();
     super.onClose();
   }
 
@@ -181,7 +300,10 @@ class SpecificTripViewController extends GetxController
   Future<void> deleteFlight(String id) async {
     try {
       GlobalVariables.showLoader.value = true;
-      final success = await FirebaseTripService.deleteFlight(id: id);
+      final success = await FirebaseTripService.deleteFlight(
+        id: id,
+        tripId: tripModel.value?.id,
+      );
       if (success) {
         tripModel.value?.flights?.removeWhere((f) => f.id == id);
         tripModel.refresh();
@@ -337,6 +459,7 @@ class SpecificTripViewController extends GetxController
         activityId: activityId,
         isLiked: isLiked,
         userId: GlobalVariables.loggedInUser.value?.uid ?? '',
+        tripId: tripModel.value?.id,
       ).then((value) {
         if (value) {
           if (isLiked) {
@@ -477,7 +600,6 @@ class SpecificTripViewController extends GetxController
         return;
       }
 
-      // Check if user is already in the trip
       if (tripModel.value!.joinedUsers?.contains(currentUserId) == true) {
         showCustomSnackBar(content: 'You are already part of this trip');
         return;
@@ -491,23 +613,11 @@ class SpecificTripViewController extends GetxController
       );
 
       if (success) {
-        // Update local trip model
-        tripModel.value!.joinedUsers ??= [];
-        tripModel.value!.joinedUsers!.add(currentUserId);
-
-        // Refresh the joined users list
-        if (tripModel.value!.joinedUsers!.isNotEmpty) {
-          tripModel.value!.joindUsersList = await AuthService.getTripUsers(
-            userIds: tripModel.value!.joinedUsers!,
-          );
-        }
-
-        tripModel.refresh();
-        updateTripOverAll(tripModel.value!);
-
-        showCustomSnackBar(content: 'Successfully joined the trip!');
+        showCustomSnackBar(content: 'Request sent to the trip creator');
       } else {
-        showCustomSnackBar(content: 'Failed to join trip. Please try again.');
+        showCustomSnackBar(
+          content: 'Failed to request access. Please try again.',
+        );
       }
     } catch (e) {
       showCustomSnackBar(content: 'An error occurred while joining the trip');
