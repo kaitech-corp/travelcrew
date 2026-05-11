@@ -478,17 +478,20 @@ class AuthService {
     required List<String> userIds,
   }) async {
     try {
-      final tripUsers =
-          await _firestore
-              .collection(kUsersCollection)
-              .where(FieldPath.documentId, whereIn: userIds)
-              .get();
-
-      if (tripUsers.docs.isNotEmpty) {
-        return tripUsers.docs
-            .map((user) => PublicUserModel.fromMap(user.data()))
-            .toList();
+      final uniqueIds = userIds.toSet().where((id) => id.isNotEmpty).toList();
+      final users = <PublicUserModel>[];
+      for (var i = 0; i < uniqueIds.length; i += 10) {
+        final chunk = uniqueIds.skip(i).take(10).toList();
+        final tripUsers =
+            await _firestore
+                .collection(kUsersPublicProfileCollection)
+                .where(FieldPath.documentId, whereIn: chunk)
+                .get();
+        users.addAll(
+          tripUsers.docs.map((user) => PublicUserModel.fromMap(user.data())),
+        );
       }
+      return users;
     } catch (e) {
       if (kDebugMode) {
         print('Error in getTripUsers: $e');

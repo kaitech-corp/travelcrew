@@ -9,6 +9,19 @@ import 'package:http/http.dart' as http;
 import '../utils/app_strings_keys.dart';
 
 class GeoServices {
+  static const String _newBaseUrl = 'https://places.googleapis.com/v1';
+
+  static Map<String, String> _getHeaders({String? fieldMask}) {
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': kGoogleMapKey,
+    };
+    if (fieldMask != null) {
+      headers['X-Goog-FieldMask'] = fieldMask;
+    }
+    return headers;
+  }
+
   static Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -63,22 +76,31 @@ class GeoServices {
     final List<Map<String, String>> suggestions = [];
     try {
       if (input.isEmpty) return [];
-      final String request =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$kGoogleMapKey';
-      final response = await http.get(Uri.parse(request));
+
+      final response = await http.post(
+        Uri.parse('$_newBaseUrl/places:autocomplete'),
+        headers: _getHeaders(),
+        body: jsonEncode({'input': input}),
+      );
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        for (final element in json['predictions']) {
-          suggestions.add({
-            'place_id': element['place_id'] as String,
-            'description': element['description'] as String,
-          });
+        if (json['suggestions'] != null) {
+          for (final element in json['suggestions']) {
+            final prediction = element['placePrediction'];
+            if (prediction != null) {
+              suggestions.add({
+                'place_id': prediction['placeId'] as String,
+                'description': prediction['text']['text'] as String,
+              });
+            }
+          }
         }
         return suggestions;
       }
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        print('Error in fetchSuggestions: $e');
       }
     }
     return suggestions;
@@ -91,25 +113,36 @@ class GeoServices {
     final List<Map<String, String>> suggestions = [];
     try {
       if (input.isEmpty) return [];
-      String request =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$kGoogleMapKey';
+
+      final Map<String, dynamic> body = {'input': input};
       if (type != null) {
-        request += '&types=$type';
+        body['includedPrimaryTypes'] = [type];
       }
-      final response = await http.get(Uri.parse(request));
+
+      final response = await http.post(
+        Uri.parse('$_newBaseUrl/places:autocomplete'),
+        headers: _getHeaders(),
+        body: jsonEncode(body),
+      );
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        for (final element in json['predictions']) {
-          suggestions.add({
-            'place_id': element['place_id'] as String,
-            'description': element['description'] as String,
-          });
+        if (json['suggestions'] != null) {
+          for (final element in json['suggestions']) {
+            final prediction = element['placePrediction'];
+            if (prediction != null) {
+              suggestions.add({
+                'place_id': prediction['placeId'] as String,
+                'description': prediction['text']['text'] as String,
+              });
+            }
+          }
         }
         return suggestions;
       }
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        print('Error in fetchPlaceSuggestions: $e');
       }
     }
     return suggestions;
@@ -139,19 +172,33 @@ class GeoServices {
     return placemarks[0].locality!;
   }
 
-  static Future getLocationDetailsFromPlaceId(String placeId) async {
+  /// Returns the place details from the New Places API.
+  /// The response format follows the New Places API structure.
+  static Future<Map<String, dynamic>?> getLocationDetailsFromPlaceId(
+    String placeId,
+  ) async {
     try {
-      final String request =
-          'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$kGoogleMapKey';
-      final response = await http.get(Uri.parse(request));
+      final response = await http.get(
+        Uri.parse('$_newBaseUrl/places/$placeId'),
+        headers: _getHeaders(
+          fieldMask: 'id,displayName,location,photos,formattedAddress',
+        ),
+      );
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-
-        return json;
+        return jsonDecode(response.body);
       }
-    } catch (_) {
-      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in getLocationDetailsFromPlaceId: $e');
+      }
     }
     return null;
+  }
+
+  /// Generates a photo URL for the New Places API.
+  /// [photoName] is the resource name returned in the 'photos' array (e.g., 'places/PLACE_ID/photos/PHOTO_ID').
+  static String getPhotoUrl(String? photoName, {int maxWidth = 800}) {
+    if (photoName == null || photoName.isEmpty) return '';
+    return '$_newBaseUrl/$photoName/media?key=$kGoogleMapKey&maxWidthPx=$maxWidth';
   }
 }
