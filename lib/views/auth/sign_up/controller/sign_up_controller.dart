@@ -14,12 +14,10 @@ import '../../../../services/auth_service.dart';
 import '../../../../services/session_services.dart';
 
 class SignUpController extends GetxController {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   Rxn<Country?> selectedCountry = Rxn();
   GlobalKey<FormState> profileSetupFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   RxString selectedImage = ''.obs;
-  GlobalKey<ScaffoldState> profileSetupKey = GlobalKey<ScaffoldState>();
   TextEditingController emailController = TextEditingController(),
       phoneController = TextEditingController(),
       userNameController = TextEditingController(

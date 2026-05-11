@@ -15,8 +15,17 @@ import '../../custom_widgets/custom_elevated_button.dart';
 import '../../custom_widgets/custom_scaffold.dart';
 import '../../custom_widgets/custom_text_field.dart';
 
-class SignUpScreen extends GetView<SignUpController> {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final SignUpController controller = Get.find<SignUpController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -24,8 +33,8 @@ class SignUpScreen extends GetView<SignUpController> {
       screenName: '',
       // leadingWidth: ,
       centerTitle: true,
-      scaffoldKey: controller.scaffoldKey,
-      className: runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
+      className: widget.runtimeType.toString(),
       body: Form(
         key: controller.formKey,
         child: SingleChildScrollView(

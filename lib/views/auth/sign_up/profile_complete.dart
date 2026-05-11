@@ -13,14 +13,22 @@ import '../../custom_widgets/bottom_sheets/custom_image_bottomsheet.dart';
 import '../../custom_widgets/custom_text_field.dart';
 import 'controller/sign_up_controller.dart';
 
-class ProfileSetupPage extends GetView<SignUpController> {
+class ProfileSetupPage extends StatefulWidget {
   const ProfileSetupPage({super.key});
+
+  @override
+  State<ProfileSetupPage> createState() => _ProfileSetupPageState();
+}
+
+class _ProfileSetupPageState extends State<ProfileSetupPage> {
+  final SignUpController controller = Get.find<SignUpController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      className: runtimeType.toString(),
-      scaffoldKey: controller.profileSetupKey,
+      className: widget.runtimeType.toString(),
+      scaffoldKey: _scaffoldKey,
       screenName: Get.arguments == 'fromProfile' ? 'Personal information' : '',
       backgroundColor: Colors.white,
       body: SafeArea(
