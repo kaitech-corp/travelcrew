@@ -55,6 +55,7 @@ class StepsFive extends StatelessWidget {
                               title: controller.activityList[index].title,
                               description:
                                   controller.activityList[index].description,
+                              location: controller.activityList[index].location,
                             ),
                         separatorBuilder: (c, index) => SizedBox(width: 10.w),
                         itemCount: controller.activityList.length,

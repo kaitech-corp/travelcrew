@@ -66,6 +66,8 @@ class ActivitiesTab extends StatelessWidget {
                           .value
                           ?.activities?[index]
                           .description,
+                  location:
+                      controller.tripModel.value?.activities?[index].location,
                 ),
               ),
           separatorBuilder: (c, index) => SizedBox(height: 10.h),
@@ -138,6 +140,7 @@ class ActivityWidget extends StatelessWidget {
     this.controller,
     this.title,
     this.description,
+    this.location,
   });
   final Function()? onLiked;
   final SpecificTripViewController? controller;
@@ -145,6 +148,7 @@ class ActivityWidget extends StatelessWidget {
   final bool isLiked;
   final int index;
   final String? description;
+  final String? location;
   final int likesCount;
   final String timing;
   final Function()? onDelete;
@@ -200,6 +204,33 @@ class ActivityWidget extends StatelessWidget {
                         height: 1.23,
                       ),
                     ),
+                    if (location?.trim().isNotEmpty == true) ...[
+                      const SizedBox(height: 5.0),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: AppStyles.fontSize14,
+                            color: Colors.black.withValues(alpha: 140),
+                          ),
+                          SizedBox(width: 4.w),
+                          Expanded(
+                            child: Text(
+                              location!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppStyles.labelTextStyle().copyWith(
+                                color: Colors.black.withValues(alpha: 140),
+                                fontSize: AppStyles.fontSize12,
+                                fontWeight: FontWeight.w500,
+                                height: 1.23,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 5.0),
                     Container(
                       padding: const EdgeInsets.all(7.12),

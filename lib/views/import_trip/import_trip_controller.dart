@@ -12,7 +12,7 @@ class ImportTripController extends GetxController {
   final RxBool isParsing = false.obs;
 
   static const String aiPrompt = '''
-You are helping plan a trip for TravelCrew, a group travel app. Based on our conversation, output a JSON object matching the structure below. Only include fields you have information for — omit anything unknown. Output ONLY the JSON, no explanation or markdown.
+You are helping plan a trip for TravelCrew, a group travel app. Based on our conversation, output a JSON object matching the structure below. Only include fields you have information for — omit anything unknown. Include exact street addresses for lodging and activities when you can confidently supply them. If you only know the venue/place name, include that as location and omit address. Output ONLY the JSON, no explanation or markdown.
 
 {
   "title": "Short trip name",
@@ -32,7 +32,7 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
   "lodging": {
     "type": "Hotel",
     "name": "Property name",
-    "address": "Full address",
+    "address": "Full street address",
     "check_in": "YYYY-MM-DD",
     "check_out": "YYYY-MM-DD",
     "cost_per_night": 0.00
@@ -41,7 +41,8 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
     {
       "title": "Activity name",
       "description": "Brief description",
-      "location": "Location or address",
+      "location": "Venue/place name",
+      "address": "Full street address",
       "start_datetime": "YYYY-MM-DDTHH:MM:SS",
       "end_datetime": "YYYY-MM-DDTHH:MM:SS"
     }
