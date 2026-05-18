@@ -55,6 +55,64 @@ void main() {
         expect(ExpenseService().computeOptimalSettlements(trip), isEmpty);
       },
     );
+
+    test('getTripExpenseSummary remainingBudget is negative when over budget', () {
+      final trip = _trip(
+        createdBy: 'owner',
+        joinedUsers: [],
+        expenses: [
+          ExpenseModel(
+            createdBy: 'owner',
+            tripId: 'trip-1',
+            name: 'All in',
+            paidByUsers: [],
+            amount: 1200,
+            date: DateTime.utc(2026),
+          ),
+        ],
+      );
+      final summary = ExpenseService().getTripExpenseSummary(trip);
+      expect(summary['remainingBudget'], lessThan(0));
+    });
+
+    test('getTripExpenseSummary remainingBudget is 0 when no budget set', () {
+      final trip = _trip(
+        createdBy: 'owner',
+        joinedUsers: [],
+        expenses: [
+          ExpenseModel(
+            createdBy: 'owner',
+            tripId: 'trip-1',
+            name: 'Coffee',
+            paidByUsers: [],
+            amount: 50,
+            date: DateTime.utc(2026),
+          ),
+        ],
+        tripBudget: 0,
+      );
+      final summary = ExpenseService().getTripExpenseSummary(trip);
+      expect(summary['remainingBudget'], equals(0.0));
+    });
+
+    test('getTripExpenseSummary remainingBudget is positive when under budget', () {
+      final trip = _trip(
+        createdBy: 'owner',
+        joinedUsers: [],
+        expenses: [
+          ExpenseModel(
+            createdBy: 'owner',
+            tripId: 'trip-1',
+            name: 'Dinner',
+            paidByUsers: [],
+            amount: 300,
+            date: DateTime.utc(2026),
+          ),
+        ],
+      );
+      final summary = ExpenseService().getTripExpenseSummary(trip);
+      expect(summary['remainingBudget'], equals(700.0)); // 1000 - 300
+    });
   });
 }
 
@@ -62,12 +120,13 @@ TripModel _trip({
   required String createdBy,
   required List<String> joinedUsers,
   required List<ExpenseModel> expenses,
+  double tripBudget = 1000,
 }) {
   return TripModel(
     id: 'trip-1',
     destination: 'Tokyo',
     createdBy: createdBy,
-    tripBudget: 1000,
+    tripBudget: tripBudget,
     country: 'Japan',
     startDate: DateTime.utc(2026),
     endDate: '',
