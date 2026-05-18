@@ -279,12 +279,6 @@ class ExpenseService {
     }
   }
 
-  /// Validates if an expense can be added (e.g., budget constraints)
-  bool canAddExpense(TripModel trip, double expenseAmount) {
-    final currentTotal = calculateTotalTripExpenses(trip);
-    return (currentTotal + expenseAmount) <= trip.tripBudget;
-  }
-
   /// Computes the minimum set of transfers to clear all outstanding debts for a trip.
   ///
   /// Uses a greedy creditor/debtor matching algorithm: repeatedly pair the
@@ -380,7 +374,8 @@ class ExpenseService {
     final userShare = calculateUserShare(trip);
     final userSpent = calculateUserTotalSpent(trip);
     final netBalance = calculateNetBalance(trip);
-    final remainingBudget = trip.tripBudget - totalExpenses;
+    final remainingBudget =
+        trip.tripBudget <= 0 ? 0.0 : trip.tripBudget - totalExpenses;
 
     return {
       'totalExpenses': totalExpenses,
@@ -388,7 +383,8 @@ class ExpenseService {
       'userSpent': userSpent,
       'netBalance': netBalance,
       'remainingBudget': remainingBudget,
-      'budgetUtilization': (totalExpenses / trip.tripBudget) * 100,
+      'budgetUtilization':
+          trip.tripBudget <= 0 ? 0.0 : (totalExpenses / trip.tripBudget) * 100,
       'expenseCount': trip.expenses?.length ?? 0,
     };
   }

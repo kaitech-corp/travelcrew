@@ -74,6 +74,7 @@ class CreateTripController extends GetxController {
       hotelNameController = TextEditingController(),
       addressController = TextEditingController(),
       expensePerNightController = TextEditingController(),
+      tripBudgetController = TextEditingController(),
       activityNameController = TextEditingController(),
       locationController = TextEditingController(),
       activityNoteController = TextEditingController(),
@@ -92,6 +93,7 @@ class CreateTripController extends GetxController {
       hotelNameFocusNode = FocusNode(),
       addressFocusNode = FocusNode(),
       expensePerNightFocusNode = FocusNode(),
+      tripBudgetFocusNode = FocusNode(),
       activityNameFocusNode = FocusNode(),
       locationFocusNode = FocusNode(),
       activityNoteFocusNode = FocusNode(),
@@ -176,7 +178,10 @@ class CreateTripController extends GetxController {
               (act) => ActivityModel(
                 title: (act['title'] as String?) ?? '',
                 description: (act['description'] as String?) ?? '',
-                location: act['location'] as String?,
+                location:
+                    ((act['address'] as String?)?.trim().isNotEmpty ?? false)
+                        ? act['address'] as String
+                        : act['location'] as String?,
                 startDateTime:
                     act['start_datetime'] != null
                         ? DateTime.tryParse(act['start_datetime'] as String)
@@ -227,6 +232,9 @@ class CreateTripController extends GetxController {
     addressController.text = tripModel.value!.hotelAddress ?? '';
     lodgingTypeController.text = tripModel.value!.lodgingType ?? '';
     invitedUsersList.value = tripModel.value!.invitedUsers ?? [];
+    tripBudgetController.text = tripModel.value!.tripBudget > 0
+        ? tripModel.value!.tripBudget.toString()
+        : '';
   }
 
   // Move to the next step
@@ -329,11 +337,7 @@ class CreateTripController extends GetxController {
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
         joinedUsers: tripModel.value!.joinedUsers ?? [],
-        tripBudget: double.parse(
-          expensePerNightController.text.isEmpty
-              ? '0'
-              : expensePerNightController.text,
-        ),
+        tripBudget: double.tryParse(tripBudgetController.text) ?? 0.0,
         isPrivate: isLocked.value,
         arrivalAirport: airportArrivalController.text,
         departureDate: departureDate.value ?? DateTime.now(),
@@ -431,11 +435,7 @@ class CreateTripController extends GetxController {
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
         joinedUsers: [],
-        tripBudget: double.parse(
-          expensePerNightController.text.isEmpty
-              ? '0'
-              : expensePerNightController.text,
-        ),
+        tripBudget: double.tryParse(tripBudgetController.text) ?? 0.0,
         isPrivate: isLocked.value,
         arrivalAirport: airportArrivalController.text,
         departureAirport: airportDepartureController.text,
@@ -745,6 +745,7 @@ class CreateTripController extends GetxController {
     hotelNameController.dispose();
     addressController.dispose();
     expensePerNightController.dispose();
+    tripBudgetController.dispose();
     activityNameController.dispose();
     locationController.dispose();
     activityNoteController.dispose();
@@ -763,6 +764,7 @@ class CreateTripController extends GetxController {
     hotelNameFocusNode.dispose();
     addressFocusNode.dispose();
     expensePerNightFocusNode.dispose();
+    tripBudgetFocusNode.dispose();
     activityNameFocusNode.dispose();
     locationFocusNode.dispose();
     activityNoteFocusNode.dispose();

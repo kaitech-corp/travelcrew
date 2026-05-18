@@ -26,6 +26,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    super.initState();
+    controller.initializeFromArguments(Get.arguments);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(

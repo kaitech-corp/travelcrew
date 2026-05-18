@@ -67,17 +67,24 @@ class ExpenseTab extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 2.h),
-                    Text(
-                      'Budget: \$${trip.tripBudget.toStringAsFixed(2)} • Remaining: \$${expenseSummary['remainingBudget'].toStringAsFixed(2)}',
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color:
-                            expenseSummary['remainingBudget'] < 0
-                                ? Colors.red
-                                : Colors.green,
-                        fontSize: AppStyles.fontSize12,
-                        fontWeight: FontWeight.w400,
+                    if (trip.tripBudget > 0) ...[
+                      Builder(
+                        builder: (context) {
+                          final remaining = expenseSummary['remainingBudget'] as double;
+                          final isOver = remaining < 0;
+                          return Text(
+                            isOver
+                                ? 'Budget: \$${trip.tripBudget.toStringAsFixed(2)} • Over by \$${remaining.abs().toStringAsFixed(2)}'
+                                : 'Budget: \$${trip.tripBudget.toStringAsFixed(2)} • Remaining: \$${remaining.toStringAsFixed(2)}',
+                            style: AppStyles.labelTextStyle().copyWith(
+                              color: isOver ? Colors.orange : Colors.green,
+                              fontSize: AppStyles.fontSize12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          );
+                        },
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),

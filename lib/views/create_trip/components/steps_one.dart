@@ -310,6 +310,24 @@ class StepsOne extends StatelessWidget {
               ),
               SizedBox(height: 27.h),
               Text(
+                'Trip Budget (optional)',
+                style: AppStyles.labelTextStyle().copyWith(
+                  color: Colors.black,
+                  fontSize: AppStyles.fontSize20,
+                  fontWeight: FontWeight.w600,
+                  height: 1.33,
+                ),
+              ),
+              SizedBox(height: 12.h),
+              CustomTextField(
+                hintText: 'e.g. 2000',
+                controller: controller.tripBudgetController,
+                focusNode: controller.tripBudgetFocusNode,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                prefixIcon: Image.asset(AppImages.kDollarIcon, scale: 4),
+              ),
+              SizedBox(height: 27.h),
+              Text(
                 'Trip Cover Image',
                 style: AppStyles.labelTextStyle().copyWith(
                   color: Colors.black,

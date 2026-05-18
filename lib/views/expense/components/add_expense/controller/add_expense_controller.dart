@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/services/expense_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:uuid/uuid.dart';
@@ -25,7 +24,6 @@ class AddExpenseController extends GetxController {
   RxList<PublicUserModel> tripMembers = <PublicUserModel>[].obs;
   RxList<String> selectedMembers = <String>[].obs;
 
-  final ExpenseService _expenseService = ExpenseService();
   TripModel? _currentTrip;
   String? _tripId;
   void Function(ExpenseModel expense)? _onAdd;
@@ -33,8 +31,12 @@ class AddExpenseController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    initializeFromArguments(Get.arguments);
+  }
 
-    final args = Get.arguments;
+  void initializeFromArguments(dynamic args) {
+    _resetFormState();
+
     if (args is! Map) {
       return;
     }
@@ -61,6 +63,20 @@ class AddExpenseController extends GetxController {
     }
   }
 
+  void _resetFormState() {
+    expenseNameController.clear();
+    amountController.clear();
+    expenceDate.value = null;
+    splitType.value = 'equally';
+    owedTo.clear();
+    owners.clear();
+    selectedMembers.clear();
+    tripMembers.clear();
+    _currentTrip = null;
+    _tripId = null;
+    _onAdd = null;
+  }
+
   void toggleMemberSelection(String uid) {
     if (selectedMembers.contains(uid)) {
       selectedMembers.remove(uid);
@@ -79,20 +95,6 @@ class AddExpenseController extends GetxController {
     // Validate expense amount
     if (expenseAmount <= 0) {
       showCustomSnackBar(content: 'Please enter a valid expense amount');
-      return;
-    }
-
-    // Check budget constraints if trip is available
-    if (_currentTrip != null &&
-        !_expenseService.canAddExpense(_currentTrip!, expenseAmount)) {
-      final remainingBudget =
-          _currentTrip!.tripBudget -
-          _expenseService.calculateTotalTripExpenses(_currentTrip!);
-      showCustomSnackBar(
-        content:
-            'Expense exceeds remaining budget of \$${remainingBudget.toStringAsFixed(2)}',
-        contentType: ContentType.failure,
-      );
       return;
     }
 
