@@ -17,7 +17,7 @@ class SplashController extends GetxController {
         );
         Get.offNamed(kOnboardingScreenRoute);
       } else {
-        Get.toNamed(kLoginScreenRoute);
+        Get.offNamed(kLoginScreenRoute);
       }
     } else {
       // await AuthService.getUser().then((user) {

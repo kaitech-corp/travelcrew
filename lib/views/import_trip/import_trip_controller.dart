@@ -14,6 +14,13 @@ class ImportTripController extends GetxController {
   static const String aiPrompt = '''
 You are helping plan a trip for TravelCrew, a group travel app. Based on our conversation, output a JSON object matching the structure below. Only include fields you have information for — omit anything unknown. Include exact street addresses for lodging and activities when you can confidently supply them. If you only know the venue/place name, include that as location and omit address. Output ONLY the JSON, no explanation or markdown.
 
+Strict JSON formatting requirements:
+- Use only standard ASCII straight double quotes (") around every JSON key and string value.
+- Do not use curly/smart quotes (“ ”), single quotes ('), or backticks (`) for JSON syntax.
+- Do not wrap the response in ```json fences.
+- Do not include comments, trailing commas, or any text before or after the JSON object.
+- Ensure the output can be parsed by JSON.parse/jsonDecode without cleanup.
+
 {
   "title": "Short trip name",
   "destination": "City, Region (e.g. Tokyo, Japan)",
@@ -45,6 +52,14 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
       "address": "Full street address",
       "start_datetime": "YYYY-MM-DDTHH:MM:SS",
       "end_datetime": "YYYY-MM-DDTHH:MM:SS"
+    }
+  ],
+  "expenses": [
+    {
+      "name": "Expense name",
+      "amount": 25.00,
+      "date": "YYYY-MM-DD",
+      "split_type": "equally"
     }
   ]
 }''';
@@ -107,6 +122,26 @@ You are helping plan a trip for TravelCrew, a group travel app. Based on our con
       if (activities is List && activities.length > 50) {
         showCustomSnackBar(content: 'Import is limited to 50 activities');
         return;
+      }
+      final expenses = data['expenses'];
+      if (expenses is List && expenses.length > 50) {
+        showCustomSnackBar(content: 'Import is limited to 50 expenses');
+        return;
+      }
+      if (expenses is List) {
+        for (final expense in expenses) {
+          if (expense is! Map) continue;
+          final amount = expense['amount'];
+          if (amount == null || amount is! num || amount <= 0) {
+            showCustomSnackBar(content: 'Expense amounts must be positive');
+            return;
+          }
+          final date = expense['date'];
+          if (date is String && DateTime.tryParse(date) == null) {
+            showCustomSnackBar(content: 'Expense dates are invalid');
+            return;
+          }
+        }
       }
       final lodging = data['lodging'];
       if (lodging is Map && lodging['cost_per_night'] != null) {

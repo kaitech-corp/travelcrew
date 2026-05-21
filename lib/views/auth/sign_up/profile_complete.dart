@@ -231,9 +231,6 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                       vertical: 16.h,
                     ),
                   ),
-                  onChanged: (phone) {
-                    debugPrint(phone.completeNumber);
-                  },
                 ),
 
                 const SizedBox(height: 30),
