@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
+import '../../utils/app_strings.dart';
 import '../session_services.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
@@ -197,9 +198,9 @@ class FirebasePushNotificationApi {
     final currentToken = token ?? await _firebaseMessaging.getToken();
     if (currentToken == null || currentToken.isEmpty) return;
     await firestore
-        .collection('tokens')
+        .collection(kFcmTokensCollection)
         .doc(uid)
-        .collection('tokens')
+        .collection(kFcmTokensCollection)
         .doc(currentToken)
         .set({
           'token': currentToken,

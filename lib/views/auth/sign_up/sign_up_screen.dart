@@ -88,9 +88,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 focusNode: controller.emailFocus,
                 hintText: 'Enter your email',
                 validator: (p0) {
-                  if (p0 == null || p0.isEmpty) {
+                  final email = p0?.trim() ?? '';
+                  if (email.isEmpty) {
                     return 'Please enter your email';
-                  } else if (!p0.isEmail) {
+                  } else if (!email.isEmail) {
                     return 'Please enter a valid email address';
                   }
                   return null;
@@ -123,8 +124,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 validator: (p0) {
                   if (p0 == null || p0.isEmpty) {
                     return 'Please enter your password';
-                  } else if (p0.length < 6) {
-                    return 'Password must be at least 6 characters';
+                  } else if (p0.length < 8 || !RegExp(r'[\d\W]').hasMatch(p0)) {
+                    return 'Password must be at least 8 characters and include a number or symbol';
                   }
                   return null;
                 },
@@ -161,21 +162,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               SizedBox(height: 10.h),
               GestureDetector(
-                onTap: controller.isRememberMe.toggle,
+                onTap: controller.agreedToTerms.toggle,
                 child: Row(
                   children: [
                     Obx(
                       () => DottedBorder(
                         options: CircularDottedBorderOptions(
                           color:
-                              controller.isRememberMe.isTrue
+                              controller.agreedToTerms.isTrue
                                   ? AppColors.kPrimaryColor
                                   : const Color(0xFF666666),
                         ),
                         child: Icon(
                           Icons.check_circle,
                           color:
-                              controller.isRememberMe.isTrue
+                              controller.agreedToTerms.isTrue
                                   ? AppColors.kPrimaryColor
                                   : const Color(0xFF666666),
                           size: AppStyles.fontSize18,
@@ -201,7 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 title: l10n.signup,
                 backgroundColor: AppColors.kPrimaryColor,
                 onPressed: () {
-                  if (controller.isRememberMe.isTrue) {
+                  if (controller.agreedToTerms.isTrue) {
                     if (controller.formKey.currentState!.validate()) {
                       controller.createAccount();
                     }

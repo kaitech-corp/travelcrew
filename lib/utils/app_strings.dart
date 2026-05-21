@@ -52,9 +52,9 @@ const kUsersPublicProfileCollection = 'publicProfile';
 const kOtpCollection = 'otps';
 const kNotificationsCollection = 'notifications';
 const kNotificationsSubCollection = 'notification';
+const kFcmTokensCollection = 'tokens';
 
 /// functions
-const kResetUserPasswordFunction = 'resetUserPassword';
 const kNearByTripsFunction = 'nearByTrips';
 const kFilterTripsFunction = 'filterTrips';
 const kSearchUsersFunction = 'searchUsers';

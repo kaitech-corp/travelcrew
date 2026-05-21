@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:travel_crew/services/notifications/notfication_services.dart';
 import 'package:travel_crew/services/secure_storage_service.dart';
+import 'package:travel_crew/utils/logger.dart';
 
 import '../../../../services/auth_service.dart';
 import '../../../../services/session_services.dart';
@@ -36,39 +39,24 @@ class LoginController extends GetxController {
   Future<void> login() async {
     try {
       GlobalVariables.showLoader.value = true;
-      // Login logic
+      final email = emailController.text.trim().toLowerCase();
       final bool loginSuccess = await AuthService.login(
-        email: emailController.text,
+        email: email,
         password: passwordController.text,
       );
 
       if (loginSuccess) {
-        if (!AuthService.isCurrentUserEmailVerified()) {
-          GlobalVariables.showLoader.value = false;
-          showCustomSnackBar(
-            contentType: ContentType.warning,
-            title: 'Email Verification Required',
-            content:
-                'Please verify your email to continue. Check your inbox for a verification link.',
-          );
-          return;
-        }
-
-        GlobalVariables.showLoader.value = false;
         if (rememberMe.isTrue) {
           await SecureStorageService.saveInStorage(
             key: 'rememberMeEmail',
-            data: jsonEncode({'email': emailController.text}),
+            data: jsonEncode({'email': email}),
           );
         } else {
           await SecureStorageService.deleteKey(key: 'rememberMeEmail');
         }
         Get.offAllNamed(kMainViewScreenRoute);
-      } else {
-        GlobalVariables.showLoader.value = false;
       }
     } catch (e) {
-      GlobalVariables.showLoader.value = false;
       String message;
       if (e is FirebaseAuthException) {
         message = e.message ?? 'An unknown authentication error occurred.';
@@ -80,45 +68,8 @@ class LoginController extends GetxController {
         title: 'Error',
         content: message,
       );
-      // Consider if validateError logic needs to be adapted for Firebase
-      // validateError(message, email: emailController.text);
-    }
-    GlobalVariables.showLoader.value = false;
-  }
-
-  static Future<void> validateError(String message, {String? email}) async {
-    if (message == 'Email not confirmed') {
-      // This was Supabase specific. For Firebase, you might trigger
-      // FirebaseAuth.instance.currentUser?.sendEmailVerification()
-      // or navigate to a screen that prompts the user to verify their email.
-      // The exact implementation depends on your app's flow.
-      // try {
-      //   // Example: If you want to resend verification email
-      //   // User? user = FirebaseAuth.instance.currentUser;
-      //   // if (user != null && !user.emailVerified && user.email == email) {
-      //   //   await user.sendEmailVerification();
-      //   //   showCustomSnackBar(content: 'Verification email sent.');
-      //   // }
-      //   GlobalVariables.toVerify = email;
-      //   GlobalVariables.isEmail = true;
-      //   // Potentially update user model or navigate
-      //   Get.toNamed(kOtpScreenRoute, arguments: 'fromSignUp');
-      // } catch (e) {
-      //   showCustomSnackBar(
-      //     contentType: ContentType.failure,
-      //     title: 'Error',
-      //     content: e.toString(),
-      //   );
-      // }
-      debugPrint(
-        'Email not confirmed. Original email: $email. Implement Firebase email verification resend if needed.',
-      );
-      // For now, just showing a snackbar
-      showCustomSnackBar(
-        contentType: ContentType.warning,
-        title: 'Email Verification',
-        content: 'Please verify your email address.',
-      );
+    } finally {
+      GlobalVariables.showLoader.value = false;
     }
   }
 
@@ -127,10 +78,7 @@ class LoginController extends GetxController {
       GlobalVariables.showLoader.value = true;
       final UserCredential? response = await _googleSignIn();
       if (response != null) {
-        await AuthService.getUser();
-        await FirebasePushNotificationApi().saveTokenForCurrentUser();
-        showCustomSnackBar(content: 'Login Successful');
-        Get.offAllNamed(kMainViewScreenRoute);
+        await _completeSocialSignIn();
       }
     } on FirebaseAuthException catch (e) {
       showCustomSnackBar(
@@ -154,9 +102,18 @@ class LoginController extends GetxController {
       final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
 
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final authz =
+          await googleUser.authorizationClient.authorizationForScopes([
+            'email',
+            'profile',
+          ]) ??
+          await googleUser.authorizationClient.authorizeScopes([
+            'email',
+            'profile',
+          ]);
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.idToken,
+        accessToken: authz.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -165,74 +122,43 @@ class LoginController extends GetxController {
 
       return userCredential;
     } catch (e) {
-      debugPrint('Google sign-in failed: $e');
+      AppLogger.error('Google sign-in failed: $e');
     }
     return null;
   }
-
-  Future<void> continueAsGuest() async {
-    try {
-      GlobalVariables.showLoader.value = true;
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInAnonymously();
-      if (userCredential.user != null) {
-        await AuthService.getUser();
-        await FirebasePushNotificationApi().saveTokenForCurrentUser();
-        GlobalVariables.showLoader.value = false;
-        Get.toNamed(kMainViewScreenRoute);
-      } else {
-        GlobalVariables.showLoader.value = false;
-        showCustomSnackBar(
-          title: 'Error',
-          contentType: ContentType.failure,
-          content: 'Could not sign in as guest.',
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      GlobalVariables.showLoader.value = false;
-      showCustomSnackBar(
-        title: 'Error',
-        contentType: ContentType.failure,
-        content: e.message ?? 'Anonymous sign-in error.',
-      );
-    } catch (e) {
-      showCustomSnackBar(
-        title: 'Error',
-        contentType: ContentType.failure,
-        content: 'An unexpected error occurred',
-      );
-    }
-    GlobalVariables.showLoader.value = false;
-  }
-
-  RxBool isRememberMe = false.obs;
 
   RxBool isPasswordVisible = true.obs;
 
   Future<void> loginWithApple() async {
     try {
       GlobalVariables.showLoader.value = true;
+      final rawNonce = _generateNonce();
+      final nonce = _sha256ofString(rawNonce);
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        nonce: nonce,
       );
 
-      final oAuthCredential = OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
-      );
+      final oAuthCredential = OAuthProvider(
+        'apple.com',
+      ).credential(idToken: appleCredential.identityToken, rawNonce: rawNonce);
 
       final userCredential = await FirebaseAuth.instance.signInWithCredential(
         oAuthCredential,
       );
 
       if (userCredential.user != null) {
-        await AuthService.getUser();
-        await FirebasePushNotificationApi().saveTokenForCurrentUser();
-        showCustomSnackBar(content: 'Login Successful');
-        Get.offAllNamed(kMainViewScreenRoute);
+        final displayName = [
+          appleCredential.givenName,
+          appleCredential.familyName,
+        ].whereType<String>().where((part) => part.trim().isNotEmpty).join(' ');
+        if (displayName.isNotEmpty) {
+          await userCredential.user!.updateDisplayName(displayName);
+        }
+        await _completeSocialSignIn(displayName: displayName);
       }
     } catch (e) {
       showCustomSnackBar(
@@ -247,6 +173,40 @@ class LoginController extends GetxController {
 
   void toggleRememberMe() {
     rememberMe.value = !rememberMe.value;
+  }
+
+  Future<void> _completeSocialSignIn({String? displayName}) async {
+    final appUser = await AuthService.getUser();
+    var publicProfileUser = appUser;
+    final name = displayName?.trim() ?? '';
+    final currentName = appUser?.displayName?.trim() ?? '';
+    if (appUser != null &&
+        name.isNotEmpty &&
+        (currentName.isEmpty || currentName.startsWith('User'))) {
+      await AuthService.updateUserAttributes(attributes: {'displayName': name});
+      publicProfileUser = appUser.copyWith(displayName: name);
+      GlobalVariables.loggedInUser.value = publicProfileUser;
+    }
+    await AuthService.createPublicProfileIfNeeded(publicProfileUser);
+    await FirebasePushNotificationApi().saveTokenForCurrentUser();
+    showCustomSnackBar(content: 'Login Successful');
+    Get.offAllNamed(kMainViewScreenRoute);
+  }
+
+  String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(
+      length,
+      (_) => charset[random.nextInt(charset.length)],
+    ).join();
+  }
+
+  String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   void onForgotPassword() {

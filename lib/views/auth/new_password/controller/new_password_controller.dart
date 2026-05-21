@@ -1,12 +1,10 @@
-import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
-
-import '../../../custom_widgets/dialogs/well_done_dialog.dart';
+import 'package:travel_crew/utils/logger.dart';
 
 class NewPasswordController extends GetxController {
   final passwordController = TextEditingController();
@@ -30,7 +28,7 @@ class NewPasswordController extends GetxController {
     // Listen to password changes
     passwordController.addListener(() {
       final password = passwordController.text;
-      isPasswordValid.value = password.length >= 8;
+      isPasswordValid.value = _isValidPassword(password);
       _checkPasswordsMatch();
       _updateSubmitStatus();
     });
@@ -70,31 +68,35 @@ class NewPasswordController extends GetxController {
   Future<void> resetPassword() async {
     try {
       GlobalVariables.showLoader.value = true;
-
-      /// use firebase cloud function to reset password
-      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
-        kResetUserPasswordFunction,
-      );
-      final result = await callable.call({
-        'email': GlobalVariables.loggedInUser.value?.email ?? '',
-        'newPassword': passwordController.text,
-      });
-      // To check the result:
-      if (result.data['success'] == true) {
-        Get.dialog(
-          const Center(child: WellDoneDialog()),
-          barrierColor: Colors.grey,
+      final email =
+          GlobalVariables.loggedInUser.value?.email.trim().toLowerCase() ??
+          FirebaseAuth.instance.currentUser?.email?.trim().toLowerCase();
+      if (email == null || email.isEmpty) {
+        showCustomSnackBar(
+          content:
+              'Use the forgot password screen to send a password reset email.',
         );
-      } else {
-        // Password reset failed
-        showCustomSnackBar(content: 'Password reset failed');
+        Get.offNamed(kForgotPasswordScreenRoute);
+        return;
       }
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.signOut();
+      GlobalVariables.loggedInUser.value = null;
+      GlobalVariables.userProfile.value = null;
+      showCustomSnackBar(
+        content: 'Password reset email sent. Please check your inbox.',
+      );
+      Get.offAllNamed(kLoginScreenRoute);
     } catch (e) {
-      debugPrint('Password reset failed: $e');
-      showCustomSnackBar(content: 'Password reset failed');
+      AppLogger.error('Password reset failed: $e');
+      showCustomSnackBar(content: 'Password reset email failed');
     } finally {
-      GlobalVariables.showLoader.value = F;
+      GlobalVariables.showLoader.value = false;
     }
+  }
+
+  bool _isValidPassword(String password) {
+    return password.length >= 8 && RegExp(r'[\d\W]').hasMatch(password);
   }
 
   @override

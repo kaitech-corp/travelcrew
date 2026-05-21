@@ -105,8 +105,9 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                             if (p0 == null || p0.isEmpty) {
                               return 'Please enter a password';
                             }
-                            if (p0.length < 6) {
-                              return 'Password must be at least 6 characters';
+                            if (p0.length < 8 ||
+                                !RegExp(r'[\d\W]').hasMatch(p0)) {
+                              return 'Password must be at least 8 characters and include a number or symbol';
                             }
                             return null;
                           },

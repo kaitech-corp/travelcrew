@@ -37,7 +37,7 @@ class ForgotPasswordController extends GetxController {
     try {
       GlobalVariables.showLoader.value = true;
       await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: emailController.text,
+        email: emailController.text.trim().toLowerCase(),
       );
       showCustomSnackBar(
         content: 'Password reset email sent. Please check your inbox.',

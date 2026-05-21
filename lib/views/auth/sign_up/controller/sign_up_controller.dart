@@ -2,16 +2,17 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_utils.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
+import 'package:travel_crew/utils/logger.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/user_model.dart';
 import '../../../../services/auth_service.dart';
 import '../../../../services/session_services.dart';
+import '../../login/controller/login_controller.dart';
 
 class SignUpController extends GetxController {
   Rxn<Country?> selectedCountry = Rxn();
@@ -29,11 +30,12 @@ class SignUpController extends GetxController {
       userNameFocus = FocusNode(),
       passwordFocus = FocusNode(),
       confirmPasswordFocus = FocusNode();
-  RxBool isRememberMe = false.obs;
+  RxBool agreedToTerms = false.obs;
 
   @override
   void onInit() {
     super.onInit();
+    if (GlobalVariables.loggedInUser.value == null) return;
     GlobalVariables.loggedInUser.value?.phone =
         GlobalVariables.loggedInUser.value?.phone?.replaceAll('+', '') ?? '';
     if (GlobalVariables.loggedInUser.value?.phone != null &&
@@ -42,39 +44,29 @@ class SignUpController extends GetxController {
     }
   }
 
-  void onSignIn() {
-    // Implement sign in logic
-  }
-
   Future<void> createAccount() async {
     try {
       GlobalVariables.showLoader.value = true;
-      await AuthService.checkEmailExistence(emailController.text).then((
-        v,
-      ) async {
-        GlobalVariables.showLoader.value = false;
-        // if (!v) {
-        final newUser = UserModel(
-          displayName: userNameController.text,
-          email: emailController.text,
-          uid: const Uuid().v4(),
-          emailConfirmed: false,
-          // profileImage: '',
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-          phone: '',
-        );
-        GlobalVariables.loggedInUser.value = newUser;
-        await AuthService.signUp(
-          user: newUser,
-          password: passwordController.text,
-        );
-        emailController.clear();
-        passwordController.clear();
-        phoneController.clear();
-        userNameController.clear();
-      });
+      final newUser = UserModel(
+        displayName: userNameController.text.trim(),
+        email: emailController.text.trim().toLowerCase(),
+        uid: const Uuid().v4(),
+        emailConfirmed: false,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        phone: '',
+      );
+      GlobalVariables.loggedInUser.value = newUser;
+      await AuthService.signUp(
+        user: newUser,
+        password: passwordController.text,
+      );
+      emailController.clear();
+      passwordController.clear();
+      phoneController.clear();
+      userNameController.clear();
     } catch (e) {
+      AppLogger.error('Error during account creation: $e');
       GlobalVariables.showLoader.value = false;
       showCustomSnackBar(
         contentType: ContentType.failure,
@@ -96,18 +88,19 @@ class SignUpController extends GetxController {
     }
   }
 
-  void onForgotPassword() {}
   void onGoogleSignIn() {
-    // Implement Google sign in
+    Get.find<LoginController>().loginWithGoogle();
   }
+
   void onFacebookSignIn() {
-    // Implement Facebook sign in
+    showCustomSnackBar(
+      contentType: ContentType.warning,
+      content: 'Facebook sign-in is not available yet.',
+    );
   }
+
   void onAppleSignIn() {
-    // Implement Apple sign in
-  }
-  void onSignUp() {
-    // Navigate to sign up screen
+    Get.find<LoginController>().loginWithApple();
   }
 
   Future<void> updateProfile() async {
@@ -133,7 +126,7 @@ class SignUpController extends GetxController {
           'displayName': userNameController.text,
         },
       ).then((v) {
-        GlobalVariables.showLoader.value = F;
+        GlobalVariables.showLoader.value = false;
         if (v) {
           selectedImage.value = '';
           GlobalVariables
@@ -170,7 +163,7 @@ class SignUpController extends GetxController {
       );
     }
 
-    GlobalVariables.showLoader.value = F;
+    GlobalVariables.showLoader.value = false;
   }
 
   @override

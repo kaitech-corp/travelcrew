@@ -1,7 +1,6 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/public_user_model.dart';
@@ -23,15 +22,19 @@ class AuthService {
     if (user != null) {
       GlobalVariables.loggedInUser.value = await AuthService.getUser();
       if (GlobalVariables.loggedInUser.value == null) {
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
         Get.offAllNamed(kOnboardingScreenRoute);
         return;
       }
 
       // Check for public profile and create if it doesn't exist
-      await _createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+      await createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
 
       await _syncEmailVerification(user);
       if (!_canAccessApp(user)) {
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
         if (!fromSplash) {
           showCustomSnackBar(
             contentType: ContentType.warning,
@@ -91,7 +94,7 @@ class AuthService {
                 _auth.currentUser?.displayName ??
                 'User${userid.substring(0, 5)}',
             phone: _auth.currentUser?.phoneNumber ?? '',
-            emailConfirmed: false, // Default to false
+            emailConfirmed: _auth.currentUser?.emailVerified ?? false,
           );
           await _firestore
               .collection(kUsersCollection)
@@ -172,9 +175,11 @@ class AuthService {
       }
 
       // Check for public profile and create if it doesn't exist
-      await _createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+      await createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
       await _syncEmailVerification(credential.user);
       if (!_canAccessApp(credential.user)) {
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
         showCustomSnackBar(
           contentType: ContentType.warning,
           title: 'Email Verification Required',
@@ -229,24 +234,33 @@ class AuthService {
   }) async {
     try {
       GlobalVariables.showLoader.value = true;
+      final normalizedEmail = user.email.trim().toLowerCase();
 
       final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: user.email,
+        email: normalizedEmail,
         password: password,
       );
       user.uid = userCredential.user!.uid;
+      user.email = normalizedEmail;
+      user.emailConfirmed = userCredential.user!.emailVerified;
+
       await _firestore
           .collection(kUsersCollection)
           .doc(userCredential.user!.uid)
           .set(user.toMap());
 
+      await createPublicProfileIfNeeded(user);
       await userCredential.user!.sendEmailVerification();
       showCustomSnackBar(
         title: 'Success',
         content: 'Account created successfully. Please verify your email.',
       );
+      await _auth.signOut();
+      GlobalVariables.loggedInUser.value = null;
       Get.offAllNamed(kLoginScreenRoute);
     } catch (error, stackTrace) {
+      AppLogger.error('Error in signUp: $error');
+      GlobalVariables.loggedInUser.value = null;
       ErrorHandler.handleFirebaseError(
         error,
         stackTrace: stackTrace,
@@ -281,90 +295,38 @@ class AuthService {
     }
   }
 
-  static Future<bool> checkEmailExistence(String email) async {
-    final result =
-        await _firestore
-            .collection('users')
-            .where('email', isEqualTo: email)
-            .get();
-    return result.docs.isNotEmpty;
-  }
-
-  static Future<Map<String, dynamic>> checkUserExistence(
-    String email,
-    String phone,
-  ) async {
-    final emailCheck =
-        await _firestore
-            .collection('users')
-            .where('email', isEqualTo: email)
-            .get();
-
-    final phoneCheck =
-        await _firestore
-            .collection('users')
-            .where('phone', isEqualTo: phone)
-            .get();
-
-    return {
-      'email_exists': emailCheck.docs.isNotEmpty,
-      'phone_exists': phoneCheck.docs.isNotEmpty,
-    };
-  }
-
-  static Future<bool> validateUserExistance({
-    required String email,
-    required String phone,
-  }) async {
-    try {
-      final result = await checkUserExistence(email, phone);
-
-      if (result['email_exists'] && result['phone_exists']) {
-        showCustomSnackBar(
-          title: 'Error',
-          content: 'Both email and phone are already in use.',
-        );
-        return false;
-      } else if (result['email_exists']) {
-        showCustomSnackBar(
-          title: 'Error',
-          content: 'This email is already registered.',
-        );
-        return false;
-      } else if (result['phone_exists']) {
-        showCustomSnackBar(
-          title: 'Error',
-          content: 'This phone number is already registered.',
-        );
-        return false;
-      }
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error in validateUserExistance: $e');
-      }
-      showCustomSnackBar(
-        contentType: ContentType.failure,
-        title: 'Error',
-        content: e.toString(),
-      );
-      return false;
-    }
-  }
-
   static Future<bool> updateUserAttributes({
     required Map<String, dynamic> attributes,
   }) async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        await _firestore.collection('users').doc(user.uid).update(attributes);
+        await _firestore
+            .collection(kUsersCollection)
+            .doc(user.uid)
+            .update(attributes);
+        final publicProfileAttributes = Map<String, dynamic>.fromEntries(
+          attributes.entries.where(
+            (entry) => {
+              'displayName',
+              'profileImage',
+              'email',
+              'following',
+            }.contains(entry.key),
+          ),
+        );
+        if (publicProfileAttributes.isNotEmpty) {
+          final publicProfileRef = _firestore
+              .collection(kUsersPublicProfileCollection)
+              .doc(user.uid);
+          if ((await publicProfileRef.get()).exists) {
+            await publicProfileRef.update(publicProfileAttributes);
+          }
+        }
         return true;
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error in updateUserAttributes: $e');
-      }
+      AppLogger.error('Error in updateUserAttributes: $e');
     }
     return false;
   }
@@ -373,11 +335,11 @@ class AuthService {
     try {
       GlobalVariables.showLoader.value = true;
       await _auth.signOut();
+      GlobalVariables.loggedInUser.value = null;
+      GlobalVariables.userProfile.value = null;
       Get.offAllNamed(kLoginScreenRoute);
     } catch (e) {
-      if (kDebugMode) {
-        print('Error in signOut: $e');
-      }
+      AppLogger.error('Error in signOut: $e');
       showCustomSnackBar(
         contentType: ContentType.failure,
         title: 'Error',
@@ -408,6 +370,9 @@ class AuthService {
         );
         await user.reauthenticateWithCredential(credential);
         await user.updatePassword(newPassword);
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
+        GlobalVariables.userProfile.value = null;
         GlobalVariables.showLoader.value = false;
         showCustomSnackBar(
           title: 'Success',
@@ -417,9 +382,7 @@ class AuthService {
         return true;
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error in updatePasword: $e');
-      }
+      AppLogger.error('Error in updatePasword: $e');
       GlobalVariables.showLoader.value = false;
       if (e is FirebaseAuthException) {
         if (e.code == 'weak-password') {
@@ -449,12 +412,11 @@ class AuthService {
 
   static bool isCurrentUserEmailVerified() {
     final user = _auth.currentUser;
-    return user == null || _canAccessApp(user);
+    return user != null && _canAccessApp(user);
   }
 
   static bool _canAccessApp(User? user) {
     if (user == null) return false;
-    if (user.isAnonymous) return true;
     final providerIds = user.providerData.map((p) => p.providerId).toSet();
     if (!providerIds.contains(EmailAuthProvider.PROVIDER_ID)) return true;
     return user.emailVerified;
@@ -493,9 +455,7 @@ class AuthService {
       }
       return users;
     } catch (e) {
-      if (kDebugMode) {
-        print('Error in getTripUsers: $e');
-      }
+      AppLogger.error('Error in getTripUsers: $e');
     }
     return [];
   }
@@ -518,9 +478,7 @@ class AuthService {
         }
       });
     } catch (e) {
-      if (kDebugMode) {
-        print('Error in deleteAccount: $e');
-      }
+      AppLogger.error('Error in deleteAccount: $e');
     }
     GlobalVariables.showLoader.value = false;
   }
@@ -633,7 +591,7 @@ class AuthService {
     return [];
   }
 
-  static Future<void> _createPublicProfileIfNeeded(UserModel? user) async {
+  static Future<void> createPublicProfileIfNeeded(UserModel? user) async {
     if (user == null) return;
 
     final publicProfileRef = _firestore

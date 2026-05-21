@@ -79,9 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: controller.emailController,
                   hintText: l10n.email,
                   validator: (p0) {
-                    if (p0 == null || p0.isEmpty) {
+                    final email = p0?.trim() ?? '';
+                    if (email.isEmpty) {
                       return 'Please enter your email';
-                    } else if (!p0.isEmail) {
+                    } else if (!email.isEmail) {
                       return 'Please enter a valid email address';
                     }
                     return null;
@@ -136,21 +137,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: controller.isRememberMe.toggle,
+                      onTap: controller.toggleRememberMe,
                       child: Row(
                         children: [
                           Obx(
                             () => DottedBorder(
                               options: CircularDottedBorderOptions(
                                 color:
-                                    controller.isRememberMe.isTrue
+                                    controller.rememberMe.isTrue
                                         ? AppColors.kPrimaryColor
                                         : const Color(0xFF666666),
                               ),
                               child: Icon(
                                 Icons.check_circle,
                                 color:
-                                    controller.isRememberMe.isTrue
+                                    controller.rememberMe.isTrue
                                         ? AppColors.kPrimaryColor
                                         : const Color(0xFF666666),
                                 size: AppStyles.fontSize18,

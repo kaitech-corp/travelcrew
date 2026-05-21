@@ -85,8 +85,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 validator: (p0) {
                   if (p0!.isEmpty) {
                     return 'Please enter password';
-                  } else if (p0.length < 6) {
-                    return 'Password must be at least 6 characters';
+                  } else if (p0.length < 8 || !RegExp(r'[\d\W]').hasMatch(p0)) {
+                    return 'Password must be at least 8 characters and include a number or symbol';
                   }
                   return null;
                 },
