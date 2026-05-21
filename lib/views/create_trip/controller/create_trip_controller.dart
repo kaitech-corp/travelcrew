@@ -74,7 +74,6 @@ class CreateTripController extends GetxController {
       hotelNameController = TextEditingController(),
       addressController = TextEditingController(),
       expensePerNightController = TextEditingController(),
-      tripBudgetController = TextEditingController(),
       activityNameController = TextEditingController(),
       locationController = TextEditingController(),
       activityNoteController = TextEditingController(),
@@ -93,7 +92,6 @@ class CreateTripController extends GetxController {
       hotelNameFocusNode = FocusNode(),
       addressFocusNode = FocusNode(),
       expensePerNightFocusNode = FocusNode(),
-      tripBudgetFocusNode = FocusNode(),
       activityNameFocusNode = FocusNode(),
       locationFocusNode = FocusNode(),
       activityNoteFocusNode = FocusNode(),
@@ -109,6 +107,8 @@ class CreateTripController extends GetxController {
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
   Rxn<DateTime> activityEndTime = Rxn<DateTime>();
   Rxn<TripModel> tripModel = Rxn<TripModel>();
+  RxList<ExpenseModel> importedExpenses = <ExpenseModel>[].obs;
+
   void setFromImport(Map<String, dynamic> data) {
     try {
       tripNameController.text = (data['title'] as String?) ?? '';
@@ -128,6 +128,7 @@ class CreateTripController extends GetxController {
       _applyAirlineImport(data['airline']);
       _applyLodgingImport(data['lodging']);
       _applyActivitiesImport(data['activities']);
+      _applyExpensesImport(data['expenses']);
     } catch (e, stack) {
       kLogging('setFromImport error: $e\n$stack');
       showCustomSnackBar(
@@ -197,6 +198,41 @@ class CreateTripController extends GetxController {
             .toList();
   }
 
+  void _applyExpensesImport(dynamic raw) {
+    importedExpenses.clear();
+    if (raw is! List) return;
+
+    importedExpenses.value =
+        raw
+            .whereType<Map<String, dynamic>>()
+            .map((expense) {
+              final amount = expense['amount'];
+              final date = expense['date'];
+              return ExpenseModel(
+                paidByUsers: [],
+                createdBy: GlobalVariables.currentUid,
+                tripId: '',
+                name: (expense['name'] as String?) ?? '',
+                amount: amount is num ? amount.toDouble() : 0.0,
+                date:
+                    date is String
+                        ? DateTime.tryParse(date) ?? DateTime.now()
+                        : DateTime.now(),
+                splitType: (expense['split_type'] as String?) ?? 'equally',
+              );
+            })
+            .where((expense) => expense.name.trim().isNotEmpty)
+            .where((expense) => expense.amount > 0)
+            .toList();
+
+    if (importedExpenses.isNotEmpty) {
+      final firstExpense = importedExpenses.first;
+      expenseNameController.text = firstExpense.name;
+      amountPaidController.text = firstExpense.amount.toString();
+      expanseDate.value = firstExpense.date;
+    }
+  }
+
   void setAllValuesToEdit() {
     tripNameController.text = tripModel.value!.title ?? '';
     country.value = tripModel.value!.country;
@@ -232,9 +268,6 @@ class CreateTripController extends GetxController {
     addressController.text = tripModel.value!.hotelAddress ?? '';
     lodgingTypeController.text = tripModel.value!.lodgingType ?? '';
     invitedUsersList.value = tripModel.value!.invitedUsers ?? [];
-    tripBudgetController.text = tripModel.value!.tripBudget > 0
-        ? tripModel.value!.tripBudget.toString()
-        : '';
   }
 
   // Move to the next step
@@ -337,7 +370,6 @@ class CreateTripController extends GetxController {
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
         joinedUsers: tripModel.value!.joinedUsers ?? [],
-        tripBudget: double.tryParse(tripBudgetController.text) ?? 0.0,
         isPrivate: isLocked.value,
         arrivalAirport: airportArrivalController.text,
         departureDate: departureDate.value ?? DateTime.now(),
@@ -435,7 +467,6 @@ class CreateTripController extends GetxController {
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
         joinedUsers: [],
-        tripBudget: double.tryParse(tripBudgetController.text) ?? 0.0,
         isPrivate: isLocked.value,
         arrivalAirport: airportArrivalController.text,
         departureAirport: airportDepartureController.text,
@@ -487,17 +518,7 @@ class CreateTripController extends GetxController {
         uplaodedImages = await Future.wait(futures);
         tripModel.images = uplaodedImages;
       }
-      final ExpenseModel exp = ExpenseModel(
-        paidByUsers: [],
-        date: expanseDate.value ?? DateTime.now(),
-        id: const Uuid().v6(),
-        createdBy: GlobalVariables.currentUid,
-        tripId: tripModel.id,
-        name: expenseNameController.text,
-        amount: double.parse(
-          amountPaidController.text.isEmpty ? '0' : amountPaidController.text,
-        ),
-      );
+      final expensesToSave = _buildExpensesForTrip(tripModel.id);
       final LatLng latln = await GeoServices.getLatLngFromPlace(
         tripModel.tripLocation ?? '',
       );
@@ -517,11 +538,15 @@ class CreateTripController extends GetxController {
             tripTitle: tripModel.title ?? tripModel.destination,
             emails: invitedUsersList,
           );
-          await FirebaseTripService.addExpenses(expense: exp).then((
-            isSuccess,
-          ) async {
+          var expensesSaved = true;
+          for (final expense in expensesToSave) {
+            expensesSaved =
+                await FirebaseTripService.addExpenses(expense: expense) &&
+                expensesSaved;
+          }
+          {
             GlobalVariables.showLoader.value = false;
-            if (isSuccess) {
+            if (expensesSaved) {
               for (var i = 0; i < activityList.length; i++) {
                 activityList[i].tripId = tripModel.id;
                 activityList[i].id = const Uuid().v6();
@@ -530,7 +555,7 @@ class CreateTripController extends GetxController {
                 );
               }
               tripModel.activities = activityList;
-              tripModel.expenses = [exp];
+              tripModel.expenses = expensesToSave;
               addTripOverAll(tripModel);
               Get.offAndToNamed(
                 kSpecificTripViewScreenRoute,
@@ -539,7 +564,7 @@ class CreateTripController extends GetxController {
             } else {
               showCustomSnackBar(content: 'Failed to add expense');
             }
-          });
+          }
         } else {
           showCustomSnackBar(content: 'Failed to create trip');
         }
@@ -558,6 +583,37 @@ class CreateTripController extends GetxController {
     //   kSpecificTripViewScreenRoute,
     //   arguments: {'isOpenChat': true},
     // );
+  }
+
+  List<ExpenseModel> _buildExpensesForTrip(String tripId) {
+    if (importedExpenses.isNotEmpty) {
+      return importedExpenses
+          .map(
+            (expense) => expense.copyWith(
+              id: expense.id ?? const Uuid().v6(),
+              tripId: tripId,
+              createdBy: GlobalVariables.currentUid,
+            ),
+          )
+          .toList();
+    }
+
+    final amount = double.tryParse(amountPaidController.text) ?? 0.0;
+    if (expenseNameController.text.trim().isEmpty && amount <= 0) {
+      return [];
+    }
+
+    return [
+      ExpenseModel(
+        paidByUsers: [],
+        date: expanseDate.value ?? DateTime.now(),
+        id: const Uuid().v6(),
+        createdBy: GlobalVariables.currentUid,
+        tripId: tripId,
+        name: expenseNameController.text.trim(),
+        amount: amount,
+      ),
+    ];
   }
 
   // Get button text based on current step
@@ -745,7 +801,6 @@ class CreateTripController extends GetxController {
     hotelNameController.dispose();
     addressController.dispose();
     expensePerNightController.dispose();
-    tripBudgetController.dispose();
     activityNameController.dispose();
     locationController.dispose();
     activityNoteController.dispose();
@@ -764,7 +819,6 @@ class CreateTripController extends GetxController {
     hotelNameFocusNode.dispose();
     addressFocusNode.dispose();
     expensePerNightFocusNode.dispose();
-    tripBudgetFocusNode.dispose();
     activityNameFocusNode.dispose();
     locationFocusNode.dispose();
     activityNoteFocusNode.dispose();

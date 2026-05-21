@@ -1011,7 +1011,6 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
   }
 
   Widget _buildExpenseSummary() {
-    final totalBudget = controller.tripModel.value?.tripBudget ?? 0.0;
     final totalSpent =
         controller.tripModel.value?.expenses?.fold(
           0.0,
@@ -1030,21 +1029,8 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total Budget'),
-              Text('\$${totalBudget.toStringAsFixed(2)}'),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
               const Text('Total Spent'),
-              Text(
-                '\$${totalSpent.toStringAsFixed(2)}',
-                style: TextStyle(
-                  color: totalSpent > totalBudget ? Colors.red : Colors.green,
-                ),
-              ),
+              Text('\$${totalSpent.toStringAsFixed(2)}'),
             ],
           ),
         ],

@@ -140,7 +140,6 @@ class TripDiscoveryModel {
       id: id,
       destination: destination,
       createdBy: createdBy,
-      tripBudget: 0,
       country: country,
       startDate: startDate,
       endDate: endDate,

@@ -70,15 +70,11 @@ class HomePageController extends GetxController
   }
 
   Future<void> getFilterdTrips({
-    double minimum = 0,
-    double maximum = 10000000,
     List<String> continents = const ['Europe', 'Asia'],
   }) async {
     try {
       isLoadingOtherTrips.value = true;
       final value = await FirebaseTripService.getFilteredTrips(
-        minBudget: minimum.toString(),
-        maxBudget: maximum.toString(),
         continents: continents,
       );
       otherTrips.value = value;

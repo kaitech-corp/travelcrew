@@ -21,7 +21,7 @@ class TripModel {
     this.tripEndDate,
     this.tripLocation,
     this.favouriteCount = 0,
-    required this.tripBudget,
+    this.tripBudget = 0.0,
     required this.country,
     required this.startDate,
     this.joinedUsers,
@@ -267,7 +267,6 @@ class TripModel {
       'tripStartDate': tripStartDate?.toIso8601String(),
       'tripEndDate': tripEndDate?.toIso8601String(),
       'tripLocation': tripLocation,
-      'tripBudget': tripBudget,
       'country': country,
       'startDate': startDate.toIso8601String(),
       'joinedUsers': joinedUsers,
@@ -298,7 +297,7 @@ class TripModel {
 
   @override
   String toString() {
-    return 'TripModel(id: $id, destination: $destination, title: $title, createdBy: $createdBy, tripStartDate: $tripStartDate, tripEndDate: $tripEndDate, tripLocation: $tripLocation, tripBudget: $tripBudget, country: $country, startDate: $startDate, joinedUsers: $joinedUsers, invitedUsers: $invitedUsers, isPrivate: $isPrivate, airlineName: $airlineName, flightNumber: $flightNumber, departureDate: $departureDate, arrivalDate: $arrivalDate, departureAirport: $departureAirport, arrivalAirport: $arrivalAirport, lodgingType: $lodgingType, hotelName: $hotelName, hotelAddress: $hotelAddress, checkInDate: $checkInDate, checkOutDate: $checkOutDate, expensePerNight: $expensePerNight, activities: $activities, expenses: $expenses, endDate: $endDate, daysToGo: $daysToGo, images: $images)';
+    return 'TripModel(id: $id, destination: $destination, title: $title, createdBy: $createdBy, tripStartDate: $tripStartDate, tripEndDate: $tripEndDate, tripLocation: $tripLocation, country: $country, startDate: $startDate, joinedUsers: $joinedUsers, invitedUsers: $invitedUsers, isPrivate: $isPrivate, airlineName: $airlineName, flightNumber: $flightNumber, departureDate: $departureDate, arrivalDate: $arrivalDate, departureAirport: $departureAirport, arrivalAirport: $arrivalAirport, lodgingType: $lodgingType, hotelName: $hotelName, hotelAddress: $hotelAddress, checkInDate: $checkInDate, checkOutDate: $checkOutDate, expensePerNight: $expensePerNight, activities: $activities, expenses: $expenses, endDate: $endDate, daysToGo: $daysToGo, images: $images)';
   }
 
   @override
@@ -313,7 +312,6 @@ class TripModel {
         other.tripStartDate == tripStartDate &&
         other.tripEndDate == tripEndDate &&
         other.tripLocation == tripLocation &&
-        other.tripBudget == tripBudget &&
         other.country == country &&
         other.startDate == startDate &&
         listEquals(other.joinedUsers, joinedUsers) &&
@@ -347,7 +345,6 @@ class TripModel {
         tripStartDate.hashCode ^
         tripEndDate.hashCode ^
         tripLocation.hashCode ^
-        tripBudget.hashCode ^
         country.hashCode ^
         startDate.hashCode ^
         joinedUsers.hashCode ^
@@ -377,7 +374,6 @@ List<TripModel> trips = [
   TripModel(
     createdBy: '',
     id: '12',
-    tripBudget: 2000,
     destination: 'Bali',
     images: [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVnR8_RnoC8pqERqM61YAmCfw7tXZhD3jQEg&s',
@@ -392,7 +388,6 @@ List<TripModel> trips = [
   TripModel(
     createdBy: '',
     id: '13',
-    tripBudget: 2000,
     destination: 'Paris',
     images: [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmpDy7ztjkfg6K87mapZDmFs72F4pVAo2dR41bw2qHudo86HF2gv0T-TTuAtymJo4GCAc&usqp=CAU',
@@ -406,7 +401,6 @@ List<TripModel> trips = [
   TripModel(
     createdBy: '',
     id: '14',
-    tripBudget: 2000,
     destination: 'Tokyo',
     images: [
       'https://t3.ftcdn.net/jpg/02/65/23/70/360_F_265237090_Muthvb72m2POYFjyx7F5UCQLh9JdBtKN.jpg',

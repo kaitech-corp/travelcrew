@@ -24,7 +24,6 @@ class AddExpenseController extends GetxController {
   RxList<PublicUserModel> tripMembers = <PublicUserModel>[].obs;
   RxList<String> selectedMembers = <String>[].obs;
 
-  TripModel? _currentTrip;
   String? _tripId;
   void Function(ExpenseModel expense)? _onAdd;
 
@@ -48,7 +47,6 @@ class AddExpenseController extends GetxController {
 
     final trip = args['trip'];
     if (trip is TripModel) {
-      _currentTrip = trip;
       _tripId ??= trip.id;
     }
 
@@ -72,7 +70,6 @@ class AddExpenseController extends GetxController {
     owners.clear();
     selectedMembers.clear();
     tripMembers.clear();
-    _currentTrip = null;
     _tripId = null;
     _onAdd = null;
   }

@@ -5,9 +5,8 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 
 class FilterTripsWidget extends StatelessWidget {
-  const FilterTripsWidget({super.key, this.onPriceRangeChanged});
-  final Function(double minimum, double maximum, List<String> continents)?
-  onPriceRangeChanged;
+  const FilterTripsWidget({super.key, this.onFiltersChanged});
+  final Function(List<String> continents)? onFiltersChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -116,11 +115,7 @@ class FilterTripsWidget extends StatelessWidget {
                       );
                       return;
                     }
-                    onPriceRangeChanged?.call(
-                      0,
-                      10000000,
-                      _selectedContinents.toList(),
-                    );
+                    onFiltersChanged?.call(_selectedContinents.toList());
                   },
                   child: Text(
                     'Ok',

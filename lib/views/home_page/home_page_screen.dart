@@ -116,15 +116,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         context: context,
                         builder: (_) {
                           return FilterTripsWidget(
-                            onPriceRangeChanged: (
-                              minimum,
-                              maximum,
-                              continents,
-                            ) {
+                            onFiltersChanged: (continents) {
                               Get.back();
                               controller.getFilterdTrips(
-                                minimum: minimum,
-                                maximum: maximum,
                                 continents: continents,
                               );
                             },

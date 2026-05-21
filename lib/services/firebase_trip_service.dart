@@ -923,13 +923,10 @@ class FirebaseTripService {
     return [];
   }
 
-  /// get trips by filterTrips
-  /// [filterTrips] is the minBudget, maxBudget, continents
+  /// get trips by selected continents
   /// [return] list of trips
   /// [logs] logs if there is an error
   static Future<List<TripDiscoveryModel>> getFilteredTrips({
-    String? minBudget,
-    String? maxBudget,
     List<String>? continents,
   }) async {
     try {

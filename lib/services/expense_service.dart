@@ -374,17 +374,12 @@ class ExpenseService {
     final userShare = calculateUserShare(trip);
     final userSpent = calculateUserTotalSpent(trip);
     final netBalance = calculateNetBalance(trip);
-    final remainingBudget =
-        trip.tripBudget <= 0 ? 0.0 : trip.tripBudget - totalExpenses;
 
     return {
       'totalExpenses': totalExpenses,
       'userShare': userShare,
       'userSpent': userSpent,
       'netBalance': netBalance,
-      'remainingBudget': remainingBudget,
-      'budgetUtilization':
-          trip.tripBudget <= 0 ? 0.0 : (totalExpenses / trip.tripBudget) * 100,
       'expenseCount': trip.expenses?.length ?? 0,
     };
   }
