@@ -63,7 +63,7 @@ class MessageWidget extends StatelessWidget {
                               : userModel.name,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: AppColors.kBlackColor,
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.30,
                       ),
@@ -101,7 +101,7 @@ class MessageWidget extends StatelessWidget {
                   labelText: message.data,
                   style: AppStyles.labelTextStyle().copyWith(
                     color: AppColors.kBlackColor,
-                    fontSize: AppStyles.fontSize12,
+                    fontSize: AppStyles.fontSize14,
 
                     fontWeight: FontWeight.w400,
                   ),
@@ -129,7 +129,7 @@ class MessageWidget extends StatelessWidget {
                       ).format(message.createdAt.toDate()),
                       style: AppStyles.labelTextStyle().copyWith(
                         color: const Color(0xFFA1A4C1),
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.30,

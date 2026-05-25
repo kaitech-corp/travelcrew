@@ -305,7 +305,7 @@ class TransportTab extends StatelessWidget {
                         Text(
                           flight.departureAirport ?? '—',
                           style: AppStyles.labelTextStyle().copyWith(
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
                             color: Colors.black54,
                           ),
                         ),
@@ -320,7 +320,7 @@ class TransportTab extends StatelessWidget {
                         Text(
                           flight.arrivalAirport ?? '—',
                           style: AppStyles.labelTextStyle().copyWith(
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
                             color: Colors.black54,
                           ),
                         ),
@@ -333,7 +333,7 @@ class TransportTab extends StatelessWidget {
                     child: Text(
                       DateFormat('MMM dd, yyyy').format(flight.departureDate!),
                       style: AppStyles.labelTextStyle().copyWith(
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         color: Colors.black54,
                       ),
                     ),

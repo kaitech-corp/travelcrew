@@ -102,7 +102,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color(0xFF666666),
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
 
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.30,
@@ -216,7 +216,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           textAlign: TextAlign.center,
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.white,
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
                             fontWeight: FontWeight.w400,
                             letterSpacing: 0.30,
                           ),
@@ -276,7 +276,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 hintText: 'Say something',
                                 hintStyle: AppStyles.labelTextStyle().copyWith(
                                   color: const Color(0xFF6B7280),
-                                  fontSize: AppStyles.fontSize12,
+                                  fontSize: AppStyles.fontSize14,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 0.36,
                                 ),

@@ -90,7 +90,7 @@ class ExpenseTab extends StatelessWidget {
                       'You Spent',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -111,7 +111,7 @@ class ExpenseTab extends StatelessWidget {
                       'Your Share',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -132,7 +132,7 @@ class ExpenseTab extends StatelessWidget {
                       'Net Balance',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),

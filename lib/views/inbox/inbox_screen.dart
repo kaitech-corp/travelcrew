@@ -179,7 +179,7 @@ class _NotificationsTab extends StatelessWidget {
                 child: Text(
                   DateFormat('dd MMM, yyyy').format(group.date),
                   style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: AppStyles.fontSize12,
+                    fontSize: AppStyles.fontSize14,
                     color: Colors.grey,
                     fontWeight: FontWeight.w500,
                   ),
@@ -204,7 +204,7 @@ class _NotificationsTab extends StatelessWidget {
                     subtitle: ReadMoreTextWidget(
                       textStyle: AppStyles.labelTextStyle().copyWith(
                         color: AppColors.kBlackColor.withValues(alpha: .5),
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                       ),
                       text: n.notificationMessage,
                     ),

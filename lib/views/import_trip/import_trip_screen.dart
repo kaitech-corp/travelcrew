@@ -149,7 +149,7 @@ class _PromptCard extends StatelessWidget {
             ImportTripController.aiPrompt,
             style: TextStyle(
               fontFamily: 'monospace',
-              fontSize: AppStyles.fontSize12,
+              fontSize: AppStyles.fontSize14,
               color: Color(0xFF333333),
               height: 1.5,
             ),

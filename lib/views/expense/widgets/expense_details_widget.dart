@@ -60,7 +60,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppStyles.labelTextStyle().copyWith(
                       color: const Color(0xFF6B7280),
-                      fontSize: AppStyles.fontSize12,
+                      fontSize: AppStyles.fontSize14,
 
                       fontWeight: FontWeight.w400,
                       letterSpacing: 0.10,
@@ -100,7 +100,7 @@ class ExpenseDetailsWidget extends StatelessWidget {
                               isPending
                                   ? const Color(0xFFC7AA01)
                                   : const Color(0xFF4AD10B),
-                          fontSize: AppStyles.fontSize12,
+                          fontSize: AppStyles.fontSize14,
 
                           fontWeight: FontWeight.w500,
                         ),

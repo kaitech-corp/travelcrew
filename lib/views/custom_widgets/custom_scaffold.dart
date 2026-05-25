@@ -139,7 +139,7 @@ class CustomScaffoldState extends State<CustomScaffold> {
                       unread > 99 ? '99+' : '$unread',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,

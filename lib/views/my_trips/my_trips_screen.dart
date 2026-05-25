@@ -162,6 +162,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                         : controller.filteredTrips.isEmpty
                         ? Center(child: Text(l10n.noTripsFound))
                         : ListView.builder(
+                          padding: EdgeInsets.only(bottom: 60.h),
                           shrinkWrap: true,
                           itemCount: controller.filteredTrips.length,
                           itemBuilder:
@@ -258,7 +259,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
           label,
           style: AppStyles.labelTextStyle().copyWith(
             color: Colors.black,
-            fontSize: AppStyles.fontSize12,
+            fontSize: AppStyles.fontSize14,
             fontWeight: FontWeight.w500,
           ),
         ),

@@ -198,7 +198,7 @@ class ActivityWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black.withValues(alpha: 140),
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
 
                         fontWeight: FontWeight.w500,
                         height: 1.23,
@@ -222,7 +222,7 @@ class ActivityWidget extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: AppStyles.labelTextStyle().copyWith(
                                 color: Colors.black.withValues(alpha: 140),
-                                fontSize: AppStyles.fontSize12,
+                                fontSize: AppStyles.fontSize14,
                                 fontWeight: FontWeight.w500,
                                 height: 1.23,
                               ),
@@ -253,7 +253,7 @@ class ActivityWidget extends StatelessWidget {
                             timing,
                             style: AppStyles.labelTextStyle().copyWith(
                               color: Colors.black,
-                              fontSize: AppStyles.fontSize12,
+                              fontSize: AppStyles.fontSize14,
 
                               fontWeight: FontWeight.w600,
                             ),

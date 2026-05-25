@@ -75,7 +75,7 @@ class LocationWidget extends StatelessWidget {
                           tripModel.country,
                           style: GoogleFonts.urbanist().copyWith(
                             color: Colors.white,
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
                             fontWeight: FontWeight.w500,
                             height: 1.29,
                           ),
@@ -91,7 +91,7 @@ class LocationWidget extends StatelessWidget {
                           '${tripModel.memberCount}',
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.white,
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
                             fontWeight: FontWeight.w500,
                             height: 1.29,
                           ),
@@ -110,7 +110,7 @@ class LocationWidget extends StatelessWidget {
                               '4.8',
                               style: AppStyles.labelTextStyle().copyWith(
                                 color: Colors.white,
-                                fontSize: AppStyles.fontSize12,
+                                fontSize: AppStyles.fontSize14,
                                 fontWeight: FontWeight.w500,
                                 height: 1.29,
                               ),
@@ -124,7 +124,7 @@ class LocationWidget extends StatelessWidget {
                       DateFormat('MMM d').format(tripModel.effectiveStartDate),
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.white,
-                        fontSize: AppStyles.fontSize12,
+                        fontSize: AppStyles.fontSize14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

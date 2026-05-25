@@ -88,7 +88,7 @@ class UsersWidget extends StatelessWidget {
                                           style: AppStyles.labelTextStyle()
                                               .copyWith(
                                                 color: Colors.white,
-                                                fontSize: AppStyles.fontSize12,
+                                                fontSize: AppStyles.fontSize14,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                         ),

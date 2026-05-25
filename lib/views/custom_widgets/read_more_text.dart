@@ -33,7 +33,7 @@ class ReadMoreTextWidget extends StatelessWidget {
       trimExpandedText: readLessText ?? 'Show less',
       style:
           textStyle ??
-          AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize12),
+          AppStyles.labelTextStyle().copyWith(fontSize: AppStyles.fontSize14),
       lessStyle:
           readLessTextStyle ??
           AppStyles.labelTextStyle().copyWith(

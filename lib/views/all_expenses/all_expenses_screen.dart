@@ -99,7 +99,7 @@ class _AllExpensesScreenState extends State<AllExpensesScreen> {
                       TextWidget(
                         labelText: 'Total Expense',
                         style: AppStyles.labelTextStyle().copyWith(
-                          fontSize: AppStyles.fontSize12,
+                          fontSize: AppStyles.fontSize14,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -127,7 +127,7 @@ class _AllExpensesScreenState extends State<AllExpensesScreen> {
                           TextWidget(
                             labelText: 'No participants',
                             style: AppStyles.labelTextStyle().copyWith(
-                              fontSize: AppStyles.fontSize12,
+                              fontSize: AppStyles.fontSize14,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -156,7 +156,7 @@ class _AllExpensesScreenState extends State<AllExpensesScreen> {
                               child: Text(
                                 '+${trip.joindUsersList!.length - 4}',
                                 style: AppStyles.labelTextStyle().copyWith(
-                                  fontSize: AppStyles.fontSize12,
+                                  fontSize: AppStyles.fontSize14,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),

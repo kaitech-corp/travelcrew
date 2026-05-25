@@ -75,7 +75,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                         textAlign: TextAlign.center,
                         style: AppStyles.labelTextStyle().copyWith(
                           color: const Color(0xFF666666),
-                          fontSize: AppStyles.fontSize12,
+                          fontSize: AppStyles.fontSize14,
 
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0.30,
@@ -173,7 +173,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                           child: Text(
                                             'Admin',
                                             style: TextStyle(
-                                              fontSize: AppStyles.fontSize12,
+                                              fontSize: AppStyles.fontSize14,
                                             ),
                                           ),
                                         )

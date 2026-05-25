@@ -73,7 +73,7 @@ class CustomTripTabs extends StatelessWidget {
           tabs[index],
           style: AppStyles.labelTextStyle().copyWith(
             color: isSelected ? selectedTextColor : unselectedTextColor,
-            fontSize: AppStyles.fontSize12,
+            fontSize: AppStyles.fontSize14,
 
             fontWeight: FontWeight.w500,
             height: 1.25,

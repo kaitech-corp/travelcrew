@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20.h),
+            SizedBox(height: 30.h),
             Obx(
               () => ProfileWidget(
                 isNetworkImage: true,

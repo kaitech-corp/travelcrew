@@ -216,7 +216,7 @@ class _LocationDropdownWidgetState extends State<LocationDropdownWidget> {
                                           '${widget.items[index].views} views',
                                           style: AppStyles.labelTextStyle()
                                               .copyWith(
-                                                fontSize: AppStyles.fontSize12,
+                                                fontSize: AppStyles.fontSize14,
                                                 color:
                                                     isSelected
                                                         ? Colors.blue

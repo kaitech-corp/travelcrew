@@ -67,7 +67,7 @@ class ResetOptionTile extends StatelessWidget {
                   Text(
                     subtitle,
                     style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: AppStyles.fontSize12,
+                      fontSize: AppStyles.fontSize14,
                       color: Colors.grey[600],
                     ),
                   ),

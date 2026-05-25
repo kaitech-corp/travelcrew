@@ -71,7 +71,7 @@ class CustomTextButton extends StatelessWidget {
                       Icon(
                         weight: 20,
                         Icons.arrow_forward_ios,
-                        size: AppStyles.fontSize12,
+                        size: AppStyles.fontSize14,
                       ),
                 ],
               )

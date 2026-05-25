@@ -638,7 +638,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                   onPressed: () => _scrollToSection(section),
                   backgroundColor: AppColors.kLightGreyColor,
                   labelStyle: AppStyles.labelTextStyle().copyWith(
-                    fontSize: AppStyles.fontSize12,
+                    fontSize: AppStyles.fontSize14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -774,7 +774,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
               DateFormat('dd MMM yyyy').format(date ?? DateTime.now()),
               style: AppStyles.labelTextStyle().copyWith(
                 color: const Color(0xFFA4ABB3),
-                fontSize: AppStyles.fontSize12,
+                fontSize: AppStyles.fontSize14,
               ),
             ),
           ],
@@ -1316,7 +1316,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                           'Mark Paid',
                           style: AppStyles.labelTextStyle().copyWith(
                             color: Colors.white,
-                            fontSize: AppStyles.fontSize12,
+                            fontSize: AppStyles.fontSize14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

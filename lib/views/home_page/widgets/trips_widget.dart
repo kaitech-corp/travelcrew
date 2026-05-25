@@ -99,7 +99,7 @@ class TripsWidget extends StatelessWidget {
                 child: Text(
                   country,
                   style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: AppStyles.fontSize12,
+                    fontSize: AppStyles.fontSize14,
                     fontWeight: FontWeight.w500,
                     height: 1.29,
                   ),
@@ -136,7 +136,7 @@ class TripsWidget extends StatelessWidget {
               Text(
                 tripTimingLabel ?? 'in ${daysToGo}d.',
                 style: AppStyles.labelTextStyle().copyWith(
-                  fontSize: AppStyles.fontSize12,
+                  fontSize: AppStyles.fontSize14,
                   fontWeight: FontWeight.w500,
                   height: 1.23,
                 ),
@@ -158,7 +158,7 @@ class TripsWidget extends StatelessWidget {
                   Text(
                     '$startDate - $endDate',
                     style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: AppStyles.fontSize12,
+                      fontSize: AppStyles.fontSize14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -226,7 +226,7 @@ Widget buildMemberAvatars({
                   '+$additionalMembers',
                   style: AppStyles.labelTextStyle().copyWith(
                     color: Colors.white,
-                    fontSize: AppStyles.fontSize12,
+                    fontSize: AppStyles.fontSize14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
