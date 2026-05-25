@@ -13,9 +13,25 @@ import '../utils/app_strings.dart';
 import '../utils/custom_snackbar.dart';
 import 'session_services.dart';
 
+enum LoginResult { success, failed, emailUnverified }
+
+enum ResendVerificationResult {
+  sent,
+  limitReached,
+  alreadyVerified,
+  notSignedIn,
+  failed,
+}
+
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = firestore;
+
+  static const int _maxVerificationResendsPerEmail = 3;
+  static final Map<String, int> _verificationResendCounts = {};
+
+  static int get maxVerificationResendsPerEmail =>
+      _maxVerificationResendsPerEmail;
 
   static Future<void> validateUser({bool fromSplash = false}) async {
     final user = _auth.currentUser;
@@ -39,7 +55,7 @@ class AuthService {
           showCustomSnackBar(
             contentType: ContentType.warning,
             title: 'Email Verification Required',
-            content: 'Please verify your email to continue. Check your inbox.',
+            content: 'Please verify your email to continue. Check your inbox. Messages may be in spam.',
           );
         }
         Get.offAllNamed(kLoginScreenRoute);
@@ -156,7 +172,7 @@ class AuthService {
     return null;
   }
 
-  static Future<bool> login({
+  static Future<LoginResult> login({
     required String email,
     required String password,
   }) async {
@@ -171,28 +187,23 @@ class AuthService {
       );
       if (GlobalVariables.loggedInUser.value == null) {
         showCustomSnackBar(content: 'Credentials not valid or account deleted');
-        return false;
+        await _auth.signOut();
+        return LoginResult.failed;
       }
 
       // Check for public profile and create if it doesn't exist
       await createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
       await _syncEmailVerification(credential.user);
       if (!_canAccessApp(credential.user)) {
-        await _auth.signOut();
-        GlobalVariables.loggedInUser.value = null;
-        showCustomSnackBar(
-          contentType: ContentType.warning,
-          title: 'Email Verification Required',
-          content: 'Please verify your email to continue. Check your inbox.',
-        );
+        // Stay signed in so the caller can offer Resend / I verified.
         GlobalVariables.showLoader.value = false;
-        return false;
+        return LoginResult.emailUnverified;
       }
       await FirebasePushNotificationApi().saveTokenForCurrentUser();
 
       GlobalVariables.showLoader.value = false;
       // await FirebaseMessaging.instance.subscribeToTopic(_auth.currentUser!.uid);
-      return true;
+      return LoginResult.success;
     } on FirebaseAuthException catch (e) {
       GlobalVariables.showLoader.value = false;
       if (e.code == 'user-not-found') {
@@ -216,7 +227,7 @@ class AuthService {
           content: e.message ?? 'An unknown error occurred.',
         );
       }
-      return false;
+      return LoginResult.failed;
     } catch (error, stackTrace) {
       ErrorHandler.handleFirebaseError(
         error,
@@ -224,11 +235,99 @@ class AuthService {
         operation: 'login',
       );
       GlobalVariables.showLoader.value = false;
-      return false;
+      return LoginResult.failed;
     }
   }
 
-  static Future<void> signUp({
+  static int verificationResendsRemaining() {
+    final user = _auth.currentUser;
+    if (user == null) return 0;
+    final key = user.email ?? user.uid;
+    final used = _verificationResendCounts[key] ?? 0;
+    final remaining = _maxVerificationResendsPerEmail - used;
+    return remaining < 0 ? 0 : remaining;
+  }
+
+  static Future<ResendVerificationResult> resendVerificationEmail() async {
+    final user = _auth.currentUser;
+    if (user == null) return ResendVerificationResult.notSignedIn;
+    await user.reload();
+    final refreshed = _auth.currentUser ?? user;
+    if (refreshed.emailVerified) {
+      return ResendVerificationResult.alreadyVerified;
+    }
+    final key = refreshed.email ?? refreshed.uid;
+    final used = _verificationResendCounts[key] ?? 0;
+    if (used >= _maxVerificationResendsPerEmail) {
+      return ResendVerificationResult.limitReached;
+    }
+    try {
+      await refreshed.sendEmailVerification();
+      _verificationResendCounts[key] = used + 1;
+      return ResendVerificationResult.sent;
+    } catch (error, stackTrace) {
+      AppLogger.error('Error in resendVerificationEmail: $error');
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'resendVerificationEmail',
+      );
+      return ResendVerificationResult.failed;
+    }
+  }
+
+  static Future<bool> confirmEmailVerificationAndUpdate() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    try {
+      await user.reload();
+    } catch (error, stackTrace) {
+      AppLogger.error('Error reloading user during verification check: $error');
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'confirmEmailVerificationAndUpdate',
+      );
+      return false;
+    }
+    final refreshed = _auth.currentUser ?? user;
+    if (!refreshed.emailVerified) return false;
+    if (GlobalVariables.loggedInUser.value?.emailConfirmed != true) {
+      GlobalVariables.loggedInUser.value = GlobalVariables.loggedInUser.value
+          ?.copyWith(emailConfirmed: true);
+      try {
+        await _firestore
+            .collection(kUsersCollection)
+            .doc(refreshed.uid)
+            .update({'emailConfirmed': true});
+      } catch (error, stackTrace) {
+        AppLogger.error('Failed to mirror emailConfirmed to Firestore: $error');
+        ErrorHandler.handleFirebaseError(
+          error,
+          stackTrace: stackTrace,
+          operation: 'confirmEmailVerificationAndUpdate',
+        );
+      }
+    }
+    return true;
+  }
+
+  static Future<void> cancelEmailVerification() async {
+    try {
+      await _auth.signOut();
+    } catch (error, stackTrace) {
+      AppLogger.error('Error during cancelEmailVerification: $error');
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'cancelEmailVerification',
+      );
+    }
+    GlobalVariables.loggedInUser.value = null;
+    GlobalVariables.userProfile.value = null;
+  }
+
+  static Future<bool> signUp({
     required UserModel user,
     required String password,
   }) async {
@@ -251,13 +350,9 @@ class AuthService {
 
       await createPublicProfileIfNeeded(user);
       await userCredential.user!.sendEmailVerification();
-      showCustomSnackBar(
-        title: 'Success',
-        content: 'Account created successfully. Please verify your email.',
-      );
       await _auth.signOut();
       GlobalVariables.loggedInUser.value = null;
-      Get.offAllNamed(kLoginScreenRoute);
+      return true;
     } catch (error, stackTrace) {
       AppLogger.error('Error in signUp: $error');
       GlobalVariables.loggedInUser.value = null;
@@ -290,6 +385,7 @@ class AuthService {
       } else {
         showCustomSnackBar(content: error.toString());
       }
+      return false;
     } finally {
       GlobalVariables.showLoader.value = false;
     }

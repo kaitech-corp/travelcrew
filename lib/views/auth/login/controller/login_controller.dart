@@ -16,6 +16,7 @@ import '../../../../services/auth_service.dart';
 import '../../../../services/session_services.dart';
 import '../../../../utils/app_strings.dart';
 import '../../../../utils/custom_snackbar.dart';
+import '../widgets/email_verification_dialog.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -40,21 +41,31 @@ class LoginController extends GetxController {
     try {
       GlobalVariables.showLoader.value = true;
       final email = emailController.text.trim().toLowerCase();
-      final bool loginSuccess = await AuthService.login(
+      final result = await AuthService.login(
         email: email,
         password: passwordController.text,
       );
 
-      if (loginSuccess) {
-        if (rememberMe.isTrue) {
-          await SecureStorageService.saveInStorage(
-            key: 'rememberMeEmail',
-            data: jsonEncode({'email': email}),
+      switch (result) {
+        case LoginResult.success:
+          if (rememberMe.isTrue) {
+            await SecureStorageService.saveInStorage(
+              key: 'rememberMeEmail',
+              data: jsonEncode({'email': email}),
+            );
+          } else {
+            await SecureStorageService.deleteKey(key: 'rememberMeEmail');
+          }
+          Get.offAllNamed(kMainViewScreenRoute);
+        case LoginResult.emailUnverified:
+          GlobalVariables.showLoader.value = false;
+          FocusManager.instance.primaryFocus?.unfocus();
+          await Get.dialog<void>(
+            const EmailVerificationDialog(),
+            barrierDismissible: false,
           );
-        } else {
-          await SecureStorageService.deleteKey(key: 'rememberMeEmail');
-        }
-        Get.offAllNamed(kMainViewScreenRoute);
+        case LoginResult.failed:
+          break;
       }
     } catch (e) {
       String message;

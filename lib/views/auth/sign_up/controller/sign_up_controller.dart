@@ -47,6 +47,7 @@ class SignUpController extends GetxController {
   Future<void> createAccount() async {
     try {
       GlobalVariables.showLoader.value = true;
+      FocusManager.instance.primaryFocus?.unfocus();
       final newUser = UserModel(
         displayName: userNameController.text.trim(),
         email: emailController.text.trim().toLowerCase(),
@@ -57,21 +58,24 @@ class SignUpController extends GetxController {
         phone: '',
       );
       GlobalVariables.loggedInUser.value = newUser;
-      await AuthService.signUp(
+      final success = await AuthService.signUp(
         user: newUser,
         password: passwordController.text,
       );
-      emailController.clear();
-      passwordController.clear();
-      phoneController.clear();
-      userNameController.clear();
+      if (!success) return;
+      showCustomSnackBar(
+        title: 'Success',
+        content: 'Account created successfully. Please verify your email. Messages may be in spam.',
+      );
+      Get.offAllNamed(kLoginScreenRoute);
     } catch (e) {
       AppLogger.error('Error during account creation: $e');
-      GlobalVariables.showLoader.value = false;
       showCustomSnackBar(
         contentType: ContentType.failure,
         content: 'Failed to create account. Please try again.',
       );
+    } finally {
+      GlobalVariables.showLoader.value = false;
     }
   }
 
