@@ -66,14 +66,19 @@ class ErrorHandler {
 
     // Provide more specific error messages for common Firebase errors
     final String userMessage = _getFirebaseErrorMessage(error);
+    final bool isFirestoreError = _isFirestoreError(error);
 
     handleError(
       error,
       stackTrace: stackTrace,
       context: context,
       userMessage: userMessage,
-      showToUser: true,
+      showToUser: !isFirestoreError,
     );
+  }
+
+  static bool _isFirestoreError(Object error) {
+    return error is FirebaseException && error.plugin == 'cloud_firestore';
   }
 
   /// Handle network-related errors

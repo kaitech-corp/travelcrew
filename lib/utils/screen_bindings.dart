@@ -5,8 +5,8 @@ import 'package:travel_crew/views/auth/forgot_password/controller/forgot_passwor
 import 'package:travel_crew/views/auth/new_password/controller/new_password_controller.dart';
 import 'package:travel_crew/views/auth/sign_up/controller/sign_up_controller.dart';
 import 'package:travel_crew/views/create_trip/controller/create_trip_controller.dart';
-import 'package:travel_crew/views/expense/components/add_expense/controller/add_expense_controller.dart';
-import 'package:travel_crew/views/expense/components/settle_up/controller/settle_up_controller.dart';
+import 'package:travel_crew/views/expense/controller/components/add_expense/controller/add_expense_controller.dart';
+import 'package:travel_crew/views/expense/controller/components/settle_up/controller/settle_up_controller.dart';
 import 'package:travel_crew/views/expense/controller/expense_conrtoller.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
 import 'package:travel_crew/views/home_page/controller/home_page_controller.dart';
