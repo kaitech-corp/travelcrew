@@ -522,4 +522,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailVerificationActionRetry => 'I verified';
+
+  @override
+  String get leaveTrip => 'Leave Trip';
+
+  @override
+  String get leaveTripConfirm => 'Are you sure you want to leave this trip?';
+
+  @override
+  String get leave => 'Leave';
 }

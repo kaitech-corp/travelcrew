@@ -1065,6 +1065,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I verified'**
   String get emailVerificationActionRetry;
+
+  /// No description provided for @leaveTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave Trip'**
+  String get leaveTrip;
+
+  /// No description provided for @leaveTripConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to leave this trip?'**
+  String get leaveTripConfirm;
+
+  /// No description provided for @leave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get leave;
 }
 
 class _AppLocalizationsDelegate

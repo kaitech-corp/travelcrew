@@ -507,4 +507,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get emailVerificationActionRetry => '我已验证';
+
+  @override
+  String get leaveTrip => '退出旅程';
+
+  @override
+  String get leaveTripConfirm => '您确定要退出此旅程吗？';
+
+  @override
+  String get leave => '退出';
 }

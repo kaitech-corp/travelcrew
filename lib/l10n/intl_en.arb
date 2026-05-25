@@ -162,5 +162,8 @@
   "emailVerificationStatusFailed": "Could not send. Please try again in a moment.",
   "emailVerificationStatusStillUnverified": "Email still not verified. Open the link in the email, then try again.",
   "emailVerificationActionResend": "Resend email",
-  "emailVerificationActionRetry": "I verified"
+  "emailVerificationActionRetry": "I verified",
+  "leaveTrip": "Leave Trip",
+  "leaveTripConfirm": "Are you sure you want to leave this trip?",
+  "leave": "Leave"
 }

@@ -525,4 +525,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get emailVerificationActionRetry => 'Ya lo verifiqué';
+
+  @override
+  String get leaveTrip => 'Salir del viaje';
+
+  @override
+  String get leaveTripConfirm =>
+      '¿Estás seguro de que quieres salir de este viaje?';
+
+  @override
+  String get leave => 'Salir';
 }

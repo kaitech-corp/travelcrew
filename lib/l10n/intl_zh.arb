@@ -162,5 +162,8 @@
   "emailVerificationStatusFailed": "发送失败。请稍后再试。",
   "emailVerificationStatusStillUnverified": "邮箱仍未验证。请打开邮件中的链接，然后重试。",
   "emailVerificationActionResend": "重发邮件",
-  "emailVerificationActionRetry": "我已验证"
+  "emailVerificationActionRetry": "我已验证",
+  "leaveTrip": "退出旅程",
+  "leaveTripConfirm": "您确定要退出此旅程吗？",
+  "leave": "退出"
 }

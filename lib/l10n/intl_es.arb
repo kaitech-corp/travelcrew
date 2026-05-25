@@ -162,5 +162,8 @@
   "emailVerificationStatusFailed": "No se pudo enviar. Inténtalo de nuevo en un momento.",
   "emailVerificationStatusStillUnverified": "El correo aún no está verificado. Abre el enlace del correo y vuelve a intentarlo.",
   "emailVerificationActionResend": "Reenviar correo",
-  "emailVerificationActionRetry": "Ya lo verifiqué"
+  "emailVerificationActionRetry": "Ya lo verifiqué",
+  "leaveTrip": "Salir del viaje",
+  "leaveTripConfirm": "¿Estás seguro de que quieres salir de este viaje?",
+  "leave": "Salir"
 }
