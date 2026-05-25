@@ -466,4 +466,45 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noFollowingFound => '未找到关注的人。';
+
+  @override
+  String get emailVerificationTitle => '验证您的邮箱';
+
+  @override
+  String get emailVerificationBody =>
+      '我们已向您的邮箱发送了验证链接。请打开链接，然后返回此处并点击\"我已验证\"。';
+
+  @override
+  String get emailVerificationSpamHint => '如果一分钟内未收到，请检查您的垃圾邮件文件夹。';
+
+  @override
+  String emailVerificationResendsRemaining(Object max, Object remaining) {
+    return '剩余重发次数：$remaining/$max';
+  }
+
+  @override
+  String get emailVerificationStatusSent => '验证邮件已发送。请检查您的收件箱以及垃圾邮件文件夹。';
+
+  @override
+  String emailVerificationStatusLimitReached(Object max) {
+    return '您已用完全部 $max 次重发机会。请稍后再试。';
+  }
+
+  @override
+  String get emailVerificationStatusAlreadyVerified => '您的邮箱已验证。点击\"我已验证\"继续。';
+
+  @override
+  String get emailVerificationStatusSessionExpired => '会话已过期。请重新登录。';
+
+  @override
+  String get emailVerificationStatusFailed => '发送失败。请稍后再试。';
+
+  @override
+  String get emailVerificationStatusStillUnverified => '邮箱仍未验证。请打开邮件中的链接，然后重试。';
+
+  @override
+  String get emailVerificationActionResend => '重发邮件';
+
+  @override
+  String get emailVerificationActionRetry => '我已验证';
 }

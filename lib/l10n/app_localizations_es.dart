@@ -478,4 +478,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noFollowingFound => 'No se encontró a nadie siguiendo.';
+
+  @override
+  String get emailVerificationTitle => 'Verifica tu correo';
+
+  @override
+  String get emailVerificationBody =>
+      'Te enviamos un enlace de verificación a tu correo. Ábrelo y vuelve aquí, luego pulsa \"Ya lo verifiqué\".';
+
+  @override
+  String get emailVerificationSpamHint =>
+      'Si no lo ves en un minuto, revisa tu carpeta de spam o correo no deseado.';
+
+  @override
+  String emailVerificationResendsRemaining(Object max, Object remaining) {
+    return 'Reenvíos restantes: $remaining de $max';
+  }
+
+  @override
+  String get emailVerificationStatusSent =>
+      'Correo de verificación enviado. Revisa tu bandeja de entrada y tu carpeta de spam.';
+
+  @override
+  String emailVerificationStatusLimitReached(Object max) {
+    return 'Has usado los $max reenvíos. Inténtalo de nuevo más tarde.';
+  }
+
+  @override
+  String get emailVerificationStatusAlreadyVerified =>
+      'Tu correo ya está verificado. Pulsa \"Ya lo verifiqué\" para continuar.';
+
+  @override
+  String get emailVerificationStatusSessionExpired =>
+      'La sesión ha expirado. Inicia sesión de nuevo.';
+
+  @override
+  String get emailVerificationStatusFailed =>
+      'No se pudo enviar. Inténtalo de nuevo en un momento.';
+
+  @override
+  String get emailVerificationStatusStillUnverified =>
+      'El correo aún no está verificado. Abre el enlace del correo y vuelve a intentarlo.';
+
+  @override
+  String get emailVerificationActionResend => 'Reenviar correo';
+
+  @override
+  String get emailVerificationActionRetry => 'Ya lo verifiqué';
 }

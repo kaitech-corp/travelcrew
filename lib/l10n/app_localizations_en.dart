@@ -475,4 +475,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noFollowingFound => 'No following found.';
+
+  @override
+  String get emailVerificationTitle => 'Verify your email';
+
+  @override
+  String get emailVerificationBody =>
+      'We sent a verification link to your email. Open the link, then return here and tap \"I verified\".';
+
+  @override
+  String get emailVerificationSpamHint =>
+      'If you don\'t see it within a minute, check your spam or junk folder.';
+
+  @override
+  String emailVerificationResendsRemaining(Object max, Object remaining) {
+    return 'Resends remaining: $remaining of $max';
+  }
+
+  @override
+  String get emailVerificationStatusSent =>
+      'Verification email sent. Check your inbox — and your spam folder.';
+
+  @override
+  String emailVerificationStatusLimitReached(Object max) {
+    return 'You\'ve used all $max resends. Please try again later.';
+  }
+
+  @override
+  String get emailVerificationStatusAlreadyVerified =>
+      'Your email is already verified. Tap \"I verified\" to continue.';
+
+  @override
+  String get emailVerificationStatusSessionExpired =>
+      'Session expired. Please log in again.';
+
+  @override
+  String get emailVerificationStatusFailed =>
+      'Could not send. Please try again in a moment.';
+
+  @override
+  String get emailVerificationStatusStillUnverified =>
+      'Email still not verified. Open the link in the email, then try again.';
+
+  @override
+  String get emailVerificationActionResend => 'Resend email';
+
+  @override
+  String get emailVerificationActionRetry => 'I verified';
 }

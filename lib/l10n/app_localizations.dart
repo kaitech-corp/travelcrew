@@ -993,6 +993,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No following found.'**
   String get noFollowingFound;
+
+  /// No description provided for @emailVerificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email'**
+  String get emailVerificationTitle;
+
+  /// No description provided for @emailVerificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a verification link to your email. Open the link, then return here and tap \"I verified\".'**
+  String get emailVerificationBody;
+
+  /// No description provided for @emailVerificationSpamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t see it within a minute, check your spam or junk folder.'**
+  String get emailVerificationSpamHint;
+
+  /// No description provided for @emailVerificationResendsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Resends remaining: {remaining} of {max}'**
+  String emailVerificationResendsRemaining(Object max, Object remaining);
+
+  /// No description provided for @emailVerificationStatusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent. Check your inbox — and your spam folder.'**
+  String get emailVerificationStatusSent;
+
+  /// No description provided for @emailVerificationStatusLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used all {max} resends. Please try again later.'**
+  String emailVerificationStatusLimitReached(Object max);
+
+  /// No description provided for @emailVerificationStatusAlreadyVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email is already verified. Tap \"I verified\" to continue.'**
+  String get emailVerificationStatusAlreadyVerified;
+
+  /// No description provided for @emailVerificationStatusSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired. Please log in again.'**
+  String get emailVerificationStatusSessionExpired;
+
+  /// No description provided for @emailVerificationStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send. Please try again in a moment.'**
+  String get emailVerificationStatusFailed;
+
+  /// No description provided for @emailVerificationStatusStillUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email still not verified. Open the link in the email, then try again.'**
+  String get emailVerificationStatusStillUnverified;
+
+  /// No description provided for @emailVerificationActionResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend email'**
+  String get emailVerificationActionResend;
+
+  /// No description provided for @emailVerificationActionRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'I verified'**
+  String get emailVerificationActionRetry;
 }
 
 class _AppLocalizationsDelegate

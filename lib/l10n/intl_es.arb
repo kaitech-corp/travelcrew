@@ -150,5 +150,17 @@
   "followers": "Seguidores",
   "following": "Siguiendo",
   "noFollowersFound": "No se encontraron seguidores.",
-  "noFollowingFound": "No se encontró a nadie siguiendo."
+  "noFollowingFound": "No se encontró a nadie siguiendo.",
+  "emailVerificationTitle": "Verifica tu correo",
+  "emailVerificationBody": "Te enviamos un enlace de verificación a tu correo. Ábrelo y vuelve aquí, luego pulsa \"Ya lo verifiqué\".",
+  "emailVerificationSpamHint": "Si no lo ves en un minuto, revisa tu carpeta de spam o correo no deseado.",
+  "emailVerificationResendsRemaining": "Reenvíos restantes: {remaining} de {max}",
+  "emailVerificationStatusSent": "Correo de verificación enviado. Revisa tu bandeja de entrada y tu carpeta de spam.",
+  "emailVerificationStatusLimitReached": "Has usado los {max} reenvíos. Inténtalo de nuevo más tarde.",
+  "emailVerificationStatusAlreadyVerified": "Tu correo ya está verificado. Pulsa \"Ya lo verifiqué\" para continuar.",
+  "emailVerificationStatusSessionExpired": "La sesión ha expirado. Inicia sesión de nuevo.",
+  "emailVerificationStatusFailed": "No se pudo enviar. Inténtalo de nuevo en un momento.",
+  "emailVerificationStatusStillUnverified": "El correo aún no está verificado. Abre el enlace del correo y vuelve a intentarlo.",
+  "emailVerificationActionResend": "Reenviar correo",
+  "emailVerificationActionRetry": "Ya lo verifiqué"
 }
