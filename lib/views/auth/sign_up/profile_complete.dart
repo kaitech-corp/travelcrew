@@ -60,13 +60,13 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
-                    SizedBox(height: 120.h, width: context.width),
+                    SizedBox(height: 150.h, width: context.width),
                     Positioned(
                       top: 0,
                       child: Obx(
                         () => AnyImageView(
-                          height: 100.h,
-                          width: 100.w,
+                          height: 130.h,
+                          width: 130.w,
                           fileType:
                               Get.arguments == 'fromProfile' &&
                                       controller.selectedImage.isEmpty
@@ -118,7 +118,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                     ),
                     SizedBox(width: 10.w),
                     Text(
-                      'Name',
+                      'Display Name',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.black,
                         fontSize: AppStyles.fontSize14,
@@ -155,7 +155,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                     ),
                     SizedBox(width: 10.w),
                     Text(
-                      'Nationality & Phone Number',
+                      'Phone Number',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: Colors.grey,
                         fontSize: AppStyles.fontSize14,
