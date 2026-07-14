@@ -47,10 +47,17 @@ class UserNotificationModel {
   List<dynamic> notificationTopic;
   bool isActive;
 
+  bool get isRead => notificationStatus == NotificationStatus.read.name;
+  bool get isUnread =>
+      notificationStatus.isEmpty ||
+      notificationStatus == NotificationStatus.unread.name;
+
   factory UserNotificationModel.fromMap(Map<String, dynamic> map) {
     return UserNotificationModel(
       notificationId: (map['notificationId'] as String?) ?? '',
-      notificationStatus: (map['notificationStatus'] as String?) ?? '',
+      notificationStatus:
+          (map['notificationStatus'] as String?) ??
+          NotificationStatus.unread.name,
       notificationMessage: (map['notificationMessage'] as String?) ?? '',
       notificationTitle: (map['notificationTitle'] as String?) ?? '',
       notificationType: (map['notificationType'] as String?) ?? '',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/views/my_trips/my_trips_screen.dart';
+import 'package:travel_crew/views/notification/controller/notification_controller.dart';
 
 import '../../../utils/app_images.dart';
 import '../../main.dart';
@@ -83,11 +84,52 @@ class _MainViewScreenState extends State<MainViewScreen> {
                         label: '',
                       ),
                       BottomNavigationBarItem(
-                        icon: ImageIcon(
-                          AssetImage(
-                            controller.selectedIndex.value == 3
-                                ? AppImages.kChatFilledIcon
-                                : AppImages.kChatIcon,
+                        icon: Obx(
+                          () => Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              ImageIcon(
+                                AssetImage(
+                                  controller.selectedIndex.value == 3
+                                      ? AppImages.kChatFilledIcon
+                                      : AppImages.kChatIcon,
+                                ),
+                              ),
+                              if (Get.isRegistered<NotificationController>() &&
+                                  Get.find<NotificationController>()
+                                          .unreadCount
+                                          .value >
+                                      0)
+                                Positioned(
+                                  right: -8,
+                                  top: -8,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 16,
+                                      minHeight: 16,
+                                    ),
+                                    child: Text(
+                                      Get.find<NotificationController>()
+                                                  .unreadCount
+                                                  .value >
+                                              99
+                                          ? '99+'
+                                          : '${Get.find<NotificationController>().unreadCount.value}',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                         label: 'Inbox',

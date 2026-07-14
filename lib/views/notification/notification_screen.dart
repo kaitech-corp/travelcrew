@@ -25,6 +25,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotificationsAndClearBadge();
+    });
+  }
+
+  Future<void> _loadNotificationsAndClearBadge() async {
+    await controller.getNotification();
+    await controller.markAllAsRead();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
@@ -83,7 +96,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           final UserNotificationModel notification =
                               notificationModel.notifications[index];
                           return ListTile(
-                            title: Text(notification.notificationTitle),
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(notification.notificationTitle),
+                                ),
+                                if (notification.isUnread)
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: const EdgeInsets.only(left: 8),
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.kPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                              ],
+                            ),
                             leading: getImageUrl(notification),
                             subtitle: ReadMoreTextWidget(
                               textStyle: AppStyles.labelTextStyle().copyWith(

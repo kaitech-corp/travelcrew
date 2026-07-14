@@ -100,6 +100,7 @@ class FirebaseNotificationsService {
         notificationMessage: message,
         notificationTitle: title,
         notificationType: notificationType,
+        notificationStatus: NotificationStatus.unread.name,
         notificationForId: notificationForId,
         createdAt: DateTime.now(),
         createdBy: uid,
@@ -151,6 +152,39 @@ class FirebaseNotificationsService {
           .collection(kNotificationsSubCollection)
           .doc(notificationId)
           .update(data);
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return false;
+  }
+
+  static Future<bool> markNotificationAsRead({
+    required String notificationId,
+  }) {
+    return updateNotification(
+      notificationId: notificationId,
+      data: {'notificationStatus': NotificationStatus.read.name},
+    );
+  }
+
+  static Future<bool> markAllNotificationsAsRead({
+    required List<UserNotificationModel> notifications,
+  }) async {
+    try {
+      final unreadNotifications =
+          notifications.where((item) => item.isUnread).toList();
+      if (unreadNotifications.isEmpty) return true;
+      await Future.wait(
+        unreadNotifications.map(
+          (notification) => updateNotification(
+            notificationId: notification.notificationId,
+            data: {'notificationStatus': NotificationStatus.read.name},
+          ),
+        ),
+      );
       return true;
     } catch (e) {
       if (kDebugMode) {

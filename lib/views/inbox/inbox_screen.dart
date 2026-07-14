@@ -194,12 +194,28 @@ class _NotificationsTab extends StatelessWidget {
                   final UserNotificationModel n = group.notifications[j];
                   return ListTile(
                     leading: _notificationImage(n),
-                    title: Text(
-                      n.notificationTitle,
-                      style: AppStyles.labelTextStyle().copyWith(
-                        fontSize: AppStyles.fontSize13,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            n.notificationTitle,
+                            style: AppStyles.labelTextStyle().copyWith(
+                              fontSize: AppStyles.fontSize13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        if (n.isUnread)
+                          Container(
+                            width: 10,
+                            height: 10,
+                            margin: const EdgeInsets.only(left: 8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.kPrimaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                      ],
                     ),
                     subtitle: ReadMoreTextWidget(
                       textStyle: AppStyles.labelTextStyle().copyWith(
@@ -208,7 +224,10 @@ class _NotificationsTab extends StatelessWidget {
                       ),
                       text: n.notificationMessage,
                     ),
-                    onTap: () {
+                    onTap: () async {
+                      await controller.markNotificationAsRead(
+                        n.notificationId,
+                      );
                       if (n.trip != null) {
                         Get.toNamed(
                           kSpecificTripViewScreenRoute,
