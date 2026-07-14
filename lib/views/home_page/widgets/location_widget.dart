@@ -11,6 +11,7 @@ import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_images.dart';
 import '../../../utils/app_strings.dart';
 import '../../../utils/app_styles.dart';
 
@@ -30,6 +31,7 @@ class LocationWidget extends StatelessWidget {
             height: Get.height * 0.35,
             borderRadius: BorderRadius.circular(36.39.r),
             url: tripModel.images.lastOrNull ?? '',
+            errorImage: AppImages.kDefaultTripImage,
           ),
           Positioned(
             bottom: 0,

@@ -199,6 +199,13 @@ class GeoServices {
   /// [photoName] is the resource name returned in the 'photos' array (e.g., 'places/PLACE_ID/photos/PHOTO_ID').
   static String getPhotoUrl(String? photoName, {int maxWidth = 800}) {
     if (photoName == null || photoName.isEmpty) return '';
-    return '$_newBaseUrl/$photoName/media?key=$kGoogleMapKey&maxWidthPx=$maxWidth';
+    final params =
+        Uri(
+          queryParameters: {
+            'name': photoName,
+            'maxWidthPx': maxWidth.toString(),
+          },
+        ).query;
+    return '$kTravelCrewWebBaseUrl/api/place-photo?$params';
   }
 }

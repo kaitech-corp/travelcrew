@@ -328,11 +328,7 @@ class StepsOne extends StatelessWidget {
                             final List<String> images =
                                 await ImagePickerBottomSheet()
                                     .getImageFromCameraOrGallery(context);
-                            if (images.where((e) => e.isNotEmpty).isNotEmpty) {
-                              controller.selectedImages.addAll(
-                                images.map((e) => SelectedImage(imageUrl: e)),
-                              );
-                            }
+                            controller.addPickedTripImages(images);
                           },
                           child: DottedBorder(
                             options: CircularDottedBorderOptions(
@@ -386,15 +382,7 @@ class StepsOne extends StatelessWidget {
                                 final List<String> images =
                                     await ImagePickerBottomSheet()
                                         .getImageFromCameraOrGallery(context);
-                                if (images
-                                    .where((e) => e.isNotEmpty)
-                                    .isNotEmpty) {
-                                  controller.selectedImages.addAll(
-                                    images.map(
-                                      (e) => SelectedImage(imageUrl: e),
-                                    ),
-                                  );
-                                }
+                                controller.addPickedTripImages(images);
                               },
                               child: Image.asset(
                                 AppImages.kUploadIcon,

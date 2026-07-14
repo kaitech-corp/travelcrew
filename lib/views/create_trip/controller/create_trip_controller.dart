@@ -36,6 +36,27 @@ class CreateTripController extends GetxController {
 
   RxList<SelectedImage> selectedImages = <SelectedImage>[].obs;
 
+  bool get isEditingTrip => Get.arguments is TripModel;
+
+  void addPickedTripImages(List<String> imagePaths) {
+    final images =
+        imagePaths
+            .where((path) => path.trim().isNotEmpty)
+            .map((path) => SelectedImage(imageUrl: path))
+            .toList();
+    if (images.isEmpty) return;
+
+    if (isEditingTrip && selectedImages.isNotEmpty) {
+      selectedImages[0] = images.first;
+      if (images.length > 1) {
+        selectedImages.addAll(images.skip(1));
+      }
+    } else {
+      selectedImages.addAll(images);
+    }
+    selectedImages.refresh();
+  }
+
   Future<void> usePlacePhotoAsCoverIfNeeded() async {
     if (selectedImages.isNotEmpty ||
         selectedPlaceId.value.isEmpty ||
@@ -358,6 +379,9 @@ class CreateTripController extends GetxController {
               imageName:
                   '${tripModel.value!.id}${const Uuid().v6()}_trip_image$i',
             );
+            if (imageUrl.isEmpty) {
+              throw Exception('Trip image upload returned an empty URL');
+            }
             return imageUrl;
           }
         });
@@ -370,6 +394,7 @@ class CreateTripController extends GetxController {
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
         joinedUsers: tripModel.value!.joinedUsers ?? [],
+        isShared: tripModel.value!.isShared,
         isPrivate: isLocked.value,
         arrivalAirport: airportArrivalController.text,
         departureDate: departureDate.value ?? DateTime.now(),
@@ -512,6 +537,9 @@ class CreateTripController extends GetxController {
               subtitle: 'Uploading trip image',
               imageName: '${'$id${const Uuid().v6()}'}_trip_image$i',
             );
+            if (imageUrl.isEmpty) {
+              throw Exception('Trip image upload returned an empty URL');
+            }
             return imageUrl;
           }
         });

@@ -95,7 +95,7 @@ Future<String> uploadImageToFirebaseStorage({
     if (kDebugMode) {
       print('Error uploading image to Firebase Storage: $e');
     }
-    showCustomSnackBar(content: 'Failed to upload image');
-    return '';
+    showCustomSnackBar(content: 'Failed to upload image: $e');
+    throw Exception('Failed to upload image: $e');
   }
 }

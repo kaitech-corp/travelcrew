@@ -76,11 +76,19 @@ class TripsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.r),
         width: 135.w,
         height: 101.h,
+        errorImage: AppImages.kDefaultTripImage,
       ),
     );
   }
 
   Widget _buildTripDetails() {
+    final joinedMemberAvatars =
+        (tripModel?.joindUsersList?.map((e) => e.profileImage ?? '').toList() ??
+                [])
+            .take(4)
+            .toList();
+    final additionalMemberCount = (tripModel?.joindUsersList?.length ?? 0) - 4;
+
     return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -143,10 +151,9 @@ class TripsWidget extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Date range
               Row(
                 children: [
                   Image.asset(
@@ -164,15 +171,10 @@ class TripsWidget extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: 4.h),
               buildMemberAvatars(
-                memberAvatars:
-                    (tripModel?.joindUsersList
-                                ?.map((e) => e.profileImage ?? '')
-                                .toList() ??
-                            [])
-                        .take(4)
-                        .toList(),
-                additionalMembers: (tripModel?.joindUsersList?.length ?? 0) - 4,
+                memberAvatars: joinedMemberAvatars,
+                additionalMembers: additionalMemberCount,
               ),
             ],
           ),
