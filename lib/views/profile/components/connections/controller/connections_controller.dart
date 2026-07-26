@@ -7,14 +7,15 @@ class ConnectionsController extends GetxController {
   final RxList<PublicUserModel> following = <PublicUserModel>[].obs;
   final RxBool isLoading = true.obs;
   final RxInt initialIndex = 0.obs;
+  String? userId;
 
   @override
   void onInit() {
     super.onInit();
     if (Get.arguments is Map<String, dynamic>) {
       initialIndex.value = Get.arguments['initialIndex'] ?? 0;
-      final String userId = Get.arguments['userId'];
-      loadConnections(userId);
+      userId = Get.arguments['userId'];
+      loadConnections(userId!);
     }
   }
 

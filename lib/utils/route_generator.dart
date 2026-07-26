@@ -29,6 +29,7 @@ import '../views/profile/components/about/about_screen.dart';
 import '../views/profile/components/change_password/change_password_screen.dart';
 import '../views/profile/components/help_n_support/help_n_support_screen.dart';
 import '../views/profile/components/privacy_policy/privacy_policy_screen.dart';
+import '../views/profile/public_profile_screen.dart';
 import '../views/splash_view/view/splash_screen.dart';
 import 'app_strings.dart';
 import 'screen_bindings.dart';
@@ -175,6 +176,11 @@ class RouteGenerator {
       GetPage(
         name: kConnectionsScreenRoute,
         page: () => const ConnectionsScreen(),
+        binding: ScreenBindings(),
+      ),
+      GetPage(
+        name: kPublicProfileScreenRoute,
+        page: () => const PublicProfileScreen(),
         binding: ScreenBindings(),
       ),
       GetPage(

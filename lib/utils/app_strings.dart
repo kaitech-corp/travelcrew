@@ -29,6 +29,7 @@ const kAddActivityScreenRoute = '/AddActivityScreen';
 const kAddLodgingScreenRoute = '/AddLodgingScreen';
 const kNotificationScreenRoute = '/NotificationScreen';
 const kConnectionsScreenRoute = '/ConnectionsScreen';
+const kPublicProfileScreenRoute = '/PublicProfileScreen';
 const kAllExpensesScreenRoute = '/AllExpensesScreen';
 const kImportTripScreenRoute = '/ImportTripScreen';
 
@@ -58,3 +59,7 @@ const kFcmTokensCollection = 'tokens';
 const kNearByTripsFunction = 'nearByTrips';
 const kFilterTripsFunction = 'filterTrips';
 const kSearchUsersFunction = 'searchUsers';
+
+/// external legal URLs
+const kPrivacyPolicyUrl = 'https://travelcrew.app/privacypolicy';
+const kTermsAndConditionsUrl = 'https://travelcrew.app/terms&conditions';

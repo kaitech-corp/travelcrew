@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/public_user_model.dart';
+import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
 import '../../../../../l10n/app_localizations.dart';
@@ -82,9 +83,11 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          onTap: () {
-            // Navigate to public profile of this user
-            // Get.toNamed(kPublicProfileScreenRoute, arguments: user.uid);
+          onTap: () async {
+            await Get.toNamed(kPublicProfileScreenRoute, arguments: user);
+            if (controller.userId != null) {
+              await controller.loadConnections(controller.userId!);
+            }
           },
         );
       },
