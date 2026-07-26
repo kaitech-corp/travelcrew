@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_crew/firebase_options.dart';
 import 'package:travel_crew/utils/app_colors.dart';
@@ -28,6 +29,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
+  await initializeGoogleSignIn();
   await dotenv.load(isOptional: true);
 
   if (!kDebugMode) {
@@ -42,6 +44,15 @@ void main() async {
   userDeviceToken = await FirebasePushNotificationApi().initNotifications();
 
   runApp(const MyApp());
+}
+
+Future<void> initializeGoogleSignIn() async {
+  await GoogleSignIn.instance.initialize(
+    clientId:
+        defaultTargetPlatform == TargetPlatform.iOS
+            ? DefaultFirebaseOptions.ios.iosClientId
+            : null,
+  );
 }
 
 Future<void> initializeFirebase() async {
