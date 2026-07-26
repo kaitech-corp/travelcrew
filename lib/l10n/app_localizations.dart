@@ -703,32 +703,188 @@ abstract class AppLocalizations {
   /// No description provided for @aboutTitle.
   ///
   /// In en, this message translates to:
-  /// **'About'**
+  /// **'About Travel Crew'**
   String get aboutTitle;
 
   /// No description provided for @aboutContent1.
   ///
   /// In en, this message translates to:
-  /// **'At TravelCrew, we are a passionate and driven team committed to delivering innovative solutions and exceptional experiences. Our company was founded with the goal of making travel planning with friends and family easier and more enjoyable, and we work tirelessly to build trust and lasting relationships with our clients, partners, and community.'**
+  /// **'Travel Crew is a mobile app for friends to plan, organize, and experience trips together. Create full itineraries, coordinate with your crew, vote on lodging and activities, split expenses, and stay connected through group chat — all in one place.'**
   String get aboutContent1;
 
   /// No description provided for @aboutContent2.
   ///
   /// In en, this message translates to:
-  /// **'We believe in integrity, collaboration, excellence, innovation, and strive to create a positive impact in everything we do. Whether it\'s through our travel planning tools, we are dedicated to making a difference and empowering individuals and groups to reach their fullest potential.'**
+  /// **'TravelCrew doesn\'t try to replace AI trip planning — it bridges the gap between AI-generated itineraries and real group coordination. Plan a trip in ChatGPT, Claude, Gemini, or any AI assistant, then import directly into TravelCrew with a single paste.'**
   String get aboutContent2;
 
   /// No description provided for @aboutContent3.
   ///
   /// In en, this message translates to:
-  /// **'Our team is made up of diverse, talented professionals from various backgrounds who share a common vision of achieving greatness. Together, we work towards our collective goals with a sense of purpose, creativity, and enthusiasm.'**
+  /// **'Features:\n• Trip Management\n• Crew Collaboration\n• Activities\n• Flights & Lodging\n• Expense Splitting\n• Group Chat\n• Notifications\n• Import from AI'**
   String get aboutContent3;
 
   /// No description provided for @aboutContent4.
   ///
   /// In en, this message translates to:
-  /// **'Join us as we continue to push the boundaries of what\'s possible and shape the future of travel planning.'**
+  /// **'© 2023 Kai Technologies Corp. <Randy@kaitechcorp.com>'**
   String get aboutContent4;
+
+  /// No description provided for @aboutWhatIsTravelCrew.
+  ///
+  /// In en, this message translates to:
+  /// **'What is Travel Crew'**
+  String get aboutWhatIsTravelCrew;
+
+  /// No description provided for @aboutImportAiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from AI'**
+  String get aboutImportAiTitle;
+
+  /// No description provided for @aboutImportAiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'TravelCrew doesn\'t try to replace AI trip planning — it bridges the gap between AI-generated itineraries and real group coordination.'**
+  String get aboutImportAiDesc;
+
+  /// No description provided for @aboutImportAiHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works:'**
+  String get aboutImportAiHowItWorks;
+
+  /// No description provided for @aboutImportAiStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open My Trips and tap the ✨ icon'**
+  String get aboutImportAiStep1;
+
+  /// No description provided for @aboutImportAiStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the TravelCrew prompt and paste it into any AI assistant'**
+  String get aboutImportAiStep2;
+
+  /// No description provided for @aboutImportAiStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your trip in the chat, then ask the AI to format the output'**
+  String get aboutImportAiStep3;
+
+  /// No description provided for @aboutImportAiStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the JSON response back into TravelCrew'**
+  String get aboutImportAiStep4;
+
+  /// No description provided for @aboutImportAiStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the pre-filled trip details and tap Create'**
+  String get aboutImportAiStep5;
+
+  /// No description provided for @aboutFeaturesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Features'**
+  String get aboutFeaturesTitle;
+
+  /// No description provided for @aboutFeatureTripManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Management'**
+  String get aboutFeatureTripManagement;
+
+  /// No description provided for @aboutFeatureTripManagementSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and manage trips with destination, dates, privacy settings, and cover photos'**
+  String get aboutFeatureTripManagementSub;
+
+  /// No description provided for @aboutFeatureCrewCollab.
+  ///
+  /// In en, this message translates to:
+  /// **'Crew Collaboration'**
+  String get aboutFeatureCrewCollab;
+
+  /// No description provided for @aboutFeatureCrewCollabSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends, follow other travelers, and coordinate details together'**
+  String get aboutFeatureCrewCollabSub;
+
+  /// No description provided for @aboutFeatureActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get aboutFeatureActivities;
+
+  /// No description provided for @aboutFeatureActivitiesSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and vote on activities for the trip'**
+  String get aboutFeatureActivitiesSub;
+
+  /// No description provided for @aboutFeatureFlightsLodging.
+  ///
+  /// In en, this message translates to:
+  /// **'Flights & Lodging'**
+  String get aboutFeatureFlightsLodging;
+
+  /// No description provided for @aboutFeatureFlightsLodgingSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Track airline info, flight numbers, hotels, and check-in/out dates'**
+  String get aboutFeatureFlightsLodgingSub;
+
+  /// No description provided for @aboutFeatureExpenseSplitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Splitting'**
+  String get aboutFeatureExpenseSplitting;
+
+  /// No description provided for @aboutFeatureExpenseSplittingSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Log shared expenses and compute optimal settlements with minimum transfers'**
+  String get aboutFeatureExpenseSplittingSub;
+
+  /// No description provided for @aboutFeatureGroupChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Chat'**
+  String get aboutFeatureGroupChat;
+
+  /// No description provided for @aboutFeatureGroupChatSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Per-trip chat rooms for real-time coordination'**
+  String get aboutFeatureGroupChatSub;
+
+  /// No description provided for @aboutFeatureNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get aboutFeatureNotifications;
+
+  /// No description provided for @aboutFeatureNotificationsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated on trip activity across your crew'**
+  String get aboutFeatureNotificationsSub;
+
+  /// No description provided for @aboutFeatureImportFromAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from AI'**
+  String get aboutFeatureImportFromAi;
+
+  /// No description provided for @aboutFeatureImportFromAiSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan a trip in ChatGPT, Claude, Gemini, or any AI assistant, then import directly into TravelCrew with a single paste'**
+  String get aboutFeatureImportFromAiSub;
 
   /// No description provided for @oldPassword.
   ///

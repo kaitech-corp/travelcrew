@@ -316,22 +316,103 @@ class AppLocalizationsZh extends AppLocalizations {
       'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
 
   @override
-  String get aboutTitle => '关于';
+  String get aboutTitle => '关于 Travel Crew';
 
   @override
   String get aboutContent1 =>
-      '在TravelCrew，我们是一支充满激情和干劲的团队，致力于提供创新的解决方案和卓越的体验。我们公司的成立旨在让与朋友和家人的旅行计划变得更轻松、更愉快，我们不懈地努力与客户、合作伙伴和社区建立信任和持久的关系。';
+      'Travel Crew 是一款专为好友打造的移动应用，用于共同规划、组织和体验旅行。创建完整行程、与队友协调、针对住宿和活动投票、分摊费用并保持实时群聊连接 — 一站式搞定。';
 
   @override
   String get aboutContent2 =>
-      '我们信奉诚信、协作、卓越、创新，并努力在我们所做的每一件事中创造积极的影响。无论是通过我们的旅行计划工具，我们都致力于有所作为，并赋予个人和团体充分发挥其潜力的能力。';
+      'TravelCrew 不会试图取代 AI 旅行规划 — 而是弥合 AI 行程与真实团队协作之间的鸿沟。在 ChatGPT、Claude、Gemini 或任何 AI 助手里规划行程，只需一次粘贴即可直接导入 TravelCrew。';
 
   @override
   String get aboutContent3 =>
-      '我们的团队由来自不同背景的多元化、才华横溢的专业人士组成，他们拥有实现卓越的共同愿景。我们共同以目标感、创造力和热情努力实现我们的集体目标。';
+      '核心功能：\n• 行程管理\n• 团队协作\n• 活动投票\n• 航班与住宿\n• 费用分摊\n• 团队群聊\n• 实时通知\n• AI 智能导入';
 
   @override
-  String get aboutContent4 => '加入我们，我们将继续挑战可能性的极限，塑造旅行计划的未来。';
+  String get aboutContent4 =>
+      '© 2023 Kai Technologies Corp. <Randy@kaitechcorp.com>';
+
+  @override
+  String get aboutWhatIsTravelCrew => '什么是 Travel Crew';
+
+  @override
+  String get aboutImportAiTitle => 'AI 智能导入';
+
+  @override
+  String get aboutImportAiDesc =>
+      'TravelCrew 不会试图取代 AI 旅行规划 — 而是弥合 AI 行程与真实团队协作之间的鸿沟。';
+
+  @override
+  String get aboutImportAiHowItWorks => '操作步骤：';
+
+  @override
+  String get aboutImportAiStep1 => '打开“我的行程”并点击 ✨ 图标';
+
+  @override
+  String get aboutImportAiStep2 => '复制 TravelCrew 提示词并粘贴到任意 AI 助手';
+
+  @override
+  String get aboutImportAiStep3 => '在聊天中描述您的旅行，并要求 AI 格式化输出';
+
+  @override
+  String get aboutImportAiStep4 => '将 JSON 响应粘贴回 TravelCrew';
+
+  @override
+  String get aboutImportAiStep5 => '查看预填好的行程详情并点击创建';
+
+  @override
+  String get aboutFeaturesTitle => '主要功能';
+
+  @override
+  String get aboutFeatureTripManagement => '行程管理';
+
+  @override
+  String get aboutFeatureTripManagementSub => '创建和管理包含目的地、日期、隐私设置及封面照片的行程';
+
+  @override
+  String get aboutFeatureCrewCollab => '团队协作';
+
+  @override
+  String get aboutFeatureCrewCollabSub => '邀请好友，关注其他旅行者，共同协调行程细节';
+
+  @override
+  String get aboutFeatureActivities => '活动投票';
+
+  @override
+  String get aboutFeatureActivitiesSub => '添加并对旅行中的各项活动进行投票';
+
+  @override
+  String get aboutFeatureFlightsLodging => '航班与住宿';
+
+  @override
+  String get aboutFeatureFlightsLodgingSub => '记录航空公司信息、航班号、酒店及入住/退房日期';
+
+  @override
+  String get aboutFeatureExpenseSplitting => '费用分摊';
+
+  @override
+  String get aboutFeatureExpenseSplittingSub => '记录共享费用，用最少转账次数计算最佳结算方案';
+
+  @override
+  String get aboutFeatureGroupChat => '团队群聊';
+
+  @override
+  String get aboutFeatureGroupChatSub => '每个行程专属群聊，实现实时沟通协调';
+
+  @override
+  String get aboutFeatureNotifications => '通知提醒';
+
+  @override
+  String get aboutFeatureNotificationsSub => '随时掌握全队旅行动态';
+
+  @override
+  String get aboutFeatureImportFromAi => 'AI 智能导入';
+
+  @override
+  String get aboutFeatureImportFromAiSub =>
+      '在 ChatGPT、Claude、Gemini 等 AI 助手中规划行程，一键粘贴即可直接导入 TravelCrew';
 
   @override
   String get oldPassword => '旧密码';

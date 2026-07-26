@@ -324,23 +324,113 @@ class AppLocalizationsEs extends AppLocalizations {
       'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
 
   @override
-  String get aboutTitle => 'Acerca de';
+  String get aboutTitle => 'Acerca de Travel Crew';
 
   @override
   String get aboutContent1 =>
-      'En TravelCrew, somos un equipo apasionado e impulsado comprometido con la entrega de soluciones innovadoras y experiencias excepcionales. Nuestra empresa fue fundada con el objetivo de hacer que la planificación de viajes con amigos y familiares sea más fácil y agradable, y trabajamos incansablemente para generar confianza y relaciones duraderas con nuestros clientes, socios y comunidad.';
+      'Travel Crew es una aplicación móvil para que amigos planifiquen, organicen y disfruten de viajes juntos. Crea itinerarios completos, coordina con tu grupo, vota sobre alojamiento y actividades, divide gastos y mantente conectado mediante el chat grupal, todo en un solo lugar.';
 
   @override
   String get aboutContent2 =>
-      'Creemos en la integridad, la colaboración, la excelencia, la innovación y nos esforzamos por crear un impacto positivo en todo lo que hacemos. Ya sea a través de nuestras herramientas de planificación de viajes, estamos dedicados a marcar la diferencia y a empoderar a individuos y grupos para que alcancen su máximo potencial.';
+      'TravelCrew no busca reemplazar la planificación de viajes con IA, sino conectar los itinerarios generados por IA con la coordinación grupal real. Planifica un viaje en ChatGPT, Claude, Gemini o cualquier asistente de IA, luego impórtalo directamente en TravelCrew pegándolo una sola vez.';
 
   @override
   String get aboutContent3 =>
-      'Nuestro equipo está formado por profesionales diversos y talentosos de diversos orígenes que comparten una visión común de alcanzar la grandeza. Juntos, trabajamos hacia nuestros objetivos colectivos con un sentido de propósito, creatividad y entusiasmo.';
+      'Características:\n• Gestión de viajes\n• Colaboración de grupo\n• Actividades\n• Vuelos y alojamiento\n• División de gastos\n• Chat grupal\n• Notificaciones\n• Importación desde IA';
 
   @override
   String get aboutContent4 =>
-      'Únase a nosotros mientras continuamos superando los límites de lo posible y dando forma al futuro de la planificación de viajes.';
+      '© 2023 Kai Technologies Corp. <Randy@kaitechcorp.com>';
+
+  @override
+  String get aboutWhatIsTravelCrew => '¿Qué es Travel Crew?';
+
+  @override
+  String get aboutImportAiTitle => 'Importar desde IA';
+
+  @override
+  String get aboutImportAiDesc =>
+      'TravelCrew no busca reemplazar la planificación de viajes con IA, sino conectar los itinerarios generados por IA con la coordinación grupal real.';
+
+  @override
+  String get aboutImportAiHowItWorks => 'Cómo funciona:';
+
+  @override
+  String get aboutImportAiStep1 => 'Abre Mis viajes y toca el icono ✨';
+
+  @override
+  String get aboutImportAiStep2 =>
+      'Copia la instrucción de TravelCrew y pégala en cualquier asistente de IA';
+
+  @override
+  String get aboutImportAiStep3 =>
+      'Describe tu viaje en el chat y pide a la IA que dé formato al resultado';
+
+  @override
+  String get aboutImportAiStep4 =>
+      'Pega la respuesta JSON de nuevo en TravelCrew';
+
+  @override
+  String get aboutImportAiStep5 => 'Revisa los detalles del viaje y toca Crear';
+
+  @override
+  String get aboutFeaturesTitle => 'Características';
+
+  @override
+  String get aboutFeatureTripManagement => 'Gestión de Viajes';
+
+  @override
+  String get aboutFeatureTripManagementSub =>
+      'Crea y gestiona viajes con destino, fechas, privacidad y fotos de portada';
+
+  @override
+  String get aboutFeatureCrewCollab => 'Colaboración en Equipo';
+
+  @override
+  String get aboutFeatureCrewCollabSub =>
+      'Invita a amigos, sigue a otros viajeros y coordina detalles juntos';
+
+  @override
+  String get aboutFeatureActivities => 'Actividades';
+
+  @override
+  String get aboutFeatureActivitiesSub =>
+      'Añade y vota actividades para el viaje';
+
+  @override
+  String get aboutFeatureFlightsLodging => 'Vuelos y Alojamiento';
+
+  @override
+  String get aboutFeatureFlightsLodgingSub =>
+      'Registra información de aerolíneas, números de vuelo, hoteles y fechas de entrada/salida';
+
+  @override
+  String get aboutFeatureExpenseSplitting => 'División de Gastos';
+
+  @override
+  String get aboutFeatureExpenseSplittingSub =>
+      'Registra gastos compartidos y calcula liquidaciones óptimas con transferencias mínimas';
+
+  @override
+  String get aboutFeatureGroupChat => 'Chat de Grupo';
+
+  @override
+  String get aboutFeatureGroupChatSub =>
+      'Salas de chat por viaje para coordinación en tiempo real';
+
+  @override
+  String get aboutFeatureNotifications => 'Notificaciones';
+
+  @override
+  String get aboutFeatureNotificationsSub =>
+      'Mantente al día sobre la actividad del viaje de tu grupo';
+
+  @override
+  String get aboutFeatureImportFromAi => 'Importar desde IA';
+
+  @override
+  String get aboutFeatureImportFromAiSub =>
+      'Planifica un viaje en ChatGPT, Claude, Gemini o cualquier asistente de IA e impórtalo directamente en TravelCrew pegándolo una sola vez';
 
   @override
   String get oldPassword => 'Contraseña Antigua';
