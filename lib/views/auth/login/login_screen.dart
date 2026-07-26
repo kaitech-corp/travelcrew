@@ -235,12 +235,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SocialButton(icon: AppImages.kFaceBookIcon, onTap: () {}),
-                    SizedBox(width: 24.w),
                     SocialButton(
                       icon: AppImages.kGoogleIcon,
                       onTap: controller.loginWithGoogle,
@@ -252,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -113,18 +113,18 @@ class LoginController extends GetxController {
       final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
 
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-      final authz =
-          await googleUser.authorizationClient.authorizationForScopes([
-            'email',
-            'profile',
-          ]) ??
-          await googleUser.authorizationClient.authorizeScopes([
-            'email',
-            'profile',
-          ]);
+      // final authz =
+      //     await googleUser.authorizationClient.authorizationForScopes([
+      //       'email',
+      //       'profile',
+      //     ]) ??
+      //     await googleUser.authorizationClient.authorizeScopes([
+      //       'email',
+      //       'profile',
+      //     ]);
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: authz.accessToken,
+        // accessToken: authz.accessToken,
         idToken: googleAuth.idToken,
       );
 

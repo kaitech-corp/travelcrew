@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/utils/app_colors.dart';
+import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
+import 'package:travel_crew/utils/url_launcher_helper.dart';
 import 'package:travel_crew/views/auth/login/widgets/social_button.dart';
 import 'package:travel_crew/views/auth/sign_up/controller/sign_up_controller.dart';
 
@@ -184,14 +186,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     SizedBox(width: 5.w),
-                    Text(
-                      l10n.agreeToTerms,
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color: const Color(0xFF666666),
-                        fontSize: AppStyles.fontSize14,
+                    Expanded(
+                      child: Text(
+                        l10n.agreeToTerms,
+                        style: AppStyles.labelTextStyle().copyWith(
+                          color: const Color(0xFF666666),
+                          fontSize: AppStyles.fontSize14,
 
-                        fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Padding(
+                padding: EdgeInsets.only(left: 28.w),
+                child: Wrap(
+                  spacing: 16.w,
+                  runSpacing: 4.h,
+                  children: [
+                    _legalLink(
+                      l10n.termsAndConditions,
+                      () => openExternalUrl(kTermsAndConditionsUrl),
+                    ),
+                    _legalLink(
+                      l10n.privacyPolicy,
+                      () => openExternalUrl(kPrivacyPolicyUrl),
                     ),
                   ],
                 ),
@@ -218,11 +240,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SocialButton(
-                    icon: AppImages.kFaceBookIcon,
-                    onTap: controller.onFacebookSignIn,
-                  ),
-                  SizedBox(width: 24.w),
                   SocialButton(
                     icon: AppImages.kGoogleIcon,
                     onTap: controller.onGoogleSignIn,
@@ -269,6 +286,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _legalLink(String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        label,
+        style: AppStyles.labelTextStyle().copyWith(
+          color: AppColors.kPrimaryColor,
+          fontSize: AppStyles.fontSize14,
+          fontWeight: FontWeight.w600,
+          decoration: TextDecoration.underline,
+          decorationColor: AppColors.kPrimaryColor,
         ),
       ),
     );

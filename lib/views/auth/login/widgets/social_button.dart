@@ -17,7 +17,10 @@ class SocialButton extends StatelessWidget {
           shape: BoxShape.circle,
           // color: Colors.grey[100],
         ),
-        child: Center(child: Image.asset(icon, width: 24.w, height: 24.w)),
+        child: Padding(
+          padding: EdgeInsets.all(9.w),
+          child: Image.asset(icon, fit: BoxFit.contain),
+        ),
       ),
     );
   }
