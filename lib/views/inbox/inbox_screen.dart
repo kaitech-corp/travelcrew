@@ -129,7 +129,8 @@ class _MessagesTab extends StatelessWidget {
                               room.users
                                   .map((e) => e.profileImage.toString())
                                   .toList(),
-                          extraMembers: 4,
+                          extraMembers:
+                              room.users.length > 3 ? room.users.length - 3 : 0,
                         );
                       },
                     ),
@@ -225,9 +226,7 @@ class _NotificationsTab extends StatelessWidget {
                       text: n.notificationMessage,
                     ),
                     onTap: () async {
-                      await controller.markNotificationAsRead(
-                        n.notificationId,
-                      );
+                      await controller.markNotificationAsRead(n.notificationId);
                       if (n.trip != null) {
                         Get.toNamed(
                           kSpecificTripViewScreenRoute,

@@ -129,6 +129,9 @@ class UsersController extends GetxController {
           AppLogger.error('Failed to create chat room');
           return;
         }
+      } else {
+        chatRoom.value = res;
+        await _ensureCurrentUserInChatRoom();
       }
 
       listenToMessages(roomId!);
@@ -197,17 +200,10 @@ class UsersController extends GetxController {
         return;
       }
 
+      final currentChatUser = await _buildCurrentChatUser();
       // Safely add user to chatroom using the helper method
       final userAddedToChat = chatRoom.value!.addUserSafely(
-        ChatUser(
-          id: currentUser.uid,
-          unreadedMessages: 0,
-          lastActive: Timestamp.now(),
-          name: currentUser.displayName ?? '',
-          profileImage: GlobalVariables.userProfile.value?.profileImage ?? '',
-          isOnline: true,
-          isTyping: false,
-        ),
+        currentChatUser,
       );
 
       if (userAddedToChat) {
@@ -299,24 +295,32 @@ class UsersController extends GetxController {
 
       AppLogger.info('Creating new chat room: $roomId');
 
+      // Seed with every current trip member so later joiners (and other
+      // existing members) pass the `uid() in usersIds` rule. Whoever opens
+      // the chat first MUST NOT lock everyone else out by only listing
+      // themselves.
+      final trip = currentTrip.value;
+      final memberIds = <String>{
+        currentUser.uid,
+        if (trip?.createdBy != null && trip!.createdBy.isNotEmpty)
+          trip.createdBy,
+        ...?trip?.joinedUsers,
+      }.where((id) => id.isNotEmpty).toList();
+
+      final users = await _buildChatUsersForTrip(
+        trip: trip,
+        currentUserId: currentUser.uid,
+      );
+
       chatRoom.value = ChatRoom(
-        usersIds: [currentUser.uid],
+        usersIds: memberIds,
         updatedAt: Timestamp.now(),
         roomId: roomId!,
-        users: [
-          ChatUser(
-            id: currentUser.uid,
-            unreadedMessages: 0,
-            lastActive: Timestamp.now(),
-            name: currentUser.displayName ?? '',
-            profileImage: GlobalVariables.userProfile.value?.profileImage ?? '',
-            isOnline: true,
-            isTyping: false,
-          ),
-        ],
+        users: users,
       );
 
       await ChatFirebaseService.createChatRoom(chatroom: chatRoom.value!);
+      await _ensureCurrentUserInChatRoom();
       AppLogger.info('Successfully created chat room: $roomId');
       return true;
     } catch (error, stackTrace) {
@@ -337,6 +341,8 @@ class UsersController extends GetxController {
       }
 
       AppLogger.debug('Saving message in room: $roomId');
+
+      await _ensureCurrentUserInChatRoom();
 
       // Add message to local list for immediate UI update
       messages.add(chatToSave);
@@ -359,6 +365,127 @@ class UsersController extends GetxController {
         operation: 'saveMessage',
       );
     }
+  }
+
+  ChatUser _buildChatUserFromPublicProfile({
+    required PublicUserModel profile,
+    required Timestamp lastActive,
+    bool isOnline = false,
+    bool isTyping = false,
+  }) {
+    return ChatUser(
+      id: profile.uid,
+      unreadedMessages: 0,
+      lastActive: lastActive,
+      name: profile.displayName,
+      profileImage: profile.profileImage ?? '',
+      isOnline: isOnline,
+      isTyping: isTyping,
+    );
+  }
+
+  Future<ChatUser> _buildCurrentChatUser() async {
+    final currentUser = GlobalVariables.loggedInUser.value;
+    if (currentUser == null) {
+      throw StateError('Cannot resolve current chat user without a session');
+    }
+
+    final publicProfile =
+        GlobalVariables.userProfile.value ??
+        await AuthService.getUserPublicProfile(userId: currentUser.uid);
+    if (publicProfile != null) {
+      GlobalVariables.userProfile.value = publicProfile;
+      return _buildChatUserFromPublicProfile(
+        profile: publicProfile,
+        lastActive: Timestamp.now(),
+        isOnline: true,
+        isTyping: false,
+      );
+    }
+
+    return ChatUser(
+      id: currentUser.uid,
+      unreadedMessages: 0,
+      lastActive: Timestamp.now(),
+      name: currentUser.displayName ?? 'You',
+      profileImage: '',
+      isOnline: true,
+      isTyping: false,
+    );
+  }
+
+  Future<List<ChatUser>> _buildChatUsersForTrip({
+    required TripModel? trip,
+    required String currentUserId,
+  }) async {
+    final resolvedUsers = <String, ChatUser>{};
+    final currentChatUser = await _buildCurrentChatUser();
+    resolvedUsers[currentChatUser.id] = currentChatUser;
+
+    if (trip == null) {
+      return resolvedUsers.values.toList();
+    }
+
+    if (trip.createdByUser != null && trip.createdByUser!.uid.isNotEmpty) {
+      resolvedUsers[trip.createdByUser!.uid] = _buildChatUserFromPublicProfile(
+        profile: trip.createdByUser!,
+        lastActive: Timestamp.now(),
+        isOnline: currentUserId == trip.createdByUser!.uid,
+      );
+    } else if (trip.createdBy.isNotEmpty) {
+      final creator = await AuthService.getUserPublicProfile(
+        userId: trip.createdBy,
+      );
+      if (creator != null) {
+        resolvedUsers[creator.uid] = _buildChatUserFromPublicProfile(
+          profile: creator,
+          lastActive: Timestamp.now(),
+          isOnline: currentUserId == creator.uid,
+        );
+      }
+    }
+
+    final joinedUsers = await AuthService.getTripUsers(
+      userIds: trip.joinedUsers?.toList() ?? const <String>[],
+    );
+    for (final profile in joinedUsers) {
+      if (profile.uid.isEmpty) continue;
+      resolvedUsers[profile.uid] = _buildChatUserFromPublicProfile(
+        profile: profile,
+        lastActive: Timestamp.now(),
+        isOnline: currentUserId == profile.uid,
+      );
+    }
+
+    return resolvedUsers.values.toList();
+  }
+
+  Future<void> _ensureCurrentUserInChatRoom() async {
+    if (roomId == null || chatRoom.value == null) return;
+
+    final currentUser = await _buildCurrentChatUser();
+    final existingUsers = [...chatRoom.value!.users];
+    final index = existingUsers.indexWhere(
+      (user) => user.id == currentUser.id,
+    );
+    if (index >= 0) {
+      existingUsers[index] = currentUser;
+    } else {
+      existingUsers.add(currentUser);
+    }
+
+    final existingIds = {...chatRoom.value!.usersIds, currentUser.id}.toList();
+    final updatedRoom = chatRoom.value!.copyWith(
+      users: existingUsers,
+      usersIds: existingIds,
+      updatedAt: Timestamp.now(),
+    );
+
+    chatRoom.value = updatedRoom;
+    await ChatFirebaseService.updateChatRoom(
+      roomId: roomId!,
+      chatToSave: updatedRoom,
+    );
   }
 
   TextEditingController tecMessage = TextEditingController();
