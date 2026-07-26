@@ -104,6 +104,7 @@ class StepsOne extends StatelessWidget {
                                     ),
                                     height: 199.h,
                                     width: context.width,
+                                    errorImage: AppImages.kDefaultTripImage,
                                   );
                                 }
                                 // No Google Places photo — show first uploaded

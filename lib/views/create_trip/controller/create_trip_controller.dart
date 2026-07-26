@@ -146,6 +146,16 @@ class CreateTripController extends GetxController {
         endDate.value = DateTime.tryParse(data['end_date'] as String);
       }
 
+      if (data['image_url'] != null &&
+          (data['image_url'] as String).trim().isNotEmpty) {
+        selectedImages.add(
+          SelectedImage(
+            imageUrl: data['image_url'] as String,
+            isNetworkImage: true,
+          ),
+        );
+      }
+
       _applyAirlineImport(data['airline']);
       _applyLodgingImport(data['lodging']);
       _applyActivitiesImport(data['activities']);

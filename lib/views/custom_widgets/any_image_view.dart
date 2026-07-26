@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:travel_crew/utils/app_images.dart';
 
 class AnyImageView extends StatelessWidget {
   const AnyImageView({
@@ -20,7 +21,7 @@ class AnyImageView extends StatelessWidget {
     this.errorWidget,
     this.height,
     this.width,
-    this.errorImage = 'assets/icons/ic_user.png',
+    this.errorImage = AppImages.kDefaultTripImage,
     required this.url,
   });
   final String url;
