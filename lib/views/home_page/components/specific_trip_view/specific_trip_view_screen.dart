@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
@@ -258,6 +259,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                   width: Get.width,
                   height: Get.height * 0.45,
                   url: trip.images.isNotEmpty ? trip.images.first : '',
+                  errorImage: AppImages.kDefaultTripImage,
                 ),
                 Positioned(
                   top: 40.h,
@@ -398,6 +400,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                   width: Get.width,
                   height: Get.height * 0.45,
                   url: controller.tripModel.value?.images[index] ?? '',
+                  errorImage: AppImages.kDefaultTripImage,
                 ),
                 Align(
                   alignment: Alignment.topCenter,
@@ -513,16 +516,92 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                                                     },
                                                     iconData: LucideIcons.plus,
                                                   ),
+                                                if (!GlobalVariables.isLoggedInUser(
+                                                      controller
+                                                              .tripModel
+                                                              .value
+                                                              ?.createdBy ??
+                                                          '',
+                                                    ) &&
+                                                    (controller
+                                                            .tripModel
+                                                            .value
+                                                            ?.joinedUsers
+                                                            ?.contains(
+                                                              GlobalVariables
+                                                                  .loggedInUser
+                                                                  .value
+                                                                  ?.uid,
+                                                            ) ??
+                                                        false))
+                                                  MoreVertDialogueWidget(
+                                                    title:
+                                                        AppLocalizations.of(
+                                                          context,
+                                                        )!.leaveTrip,
+                                                    onTap: () {
+                                                      Get.back();
+                                                      final l10n =
+                                                          AppLocalizations.of(
+                                                            context,
+                                                          )!;
+                                                      showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (c) => AlertDialog(
+                                                              title: Text(
+                                                                l10n.leaveTrip,
+                                                              ),
+                                                              content: Text(
+                                                                l10n.leaveTripConfirm,
+                                                              ),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () =>
+                                                                          Get.back(),
+                                                                  child: Text(
+                                                                    l10n.cancel,
+                                                                  ),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed: () {
+                                                                    Get.back();
+                                                                    controller
+                                                                        .leaveTrip();
+                                                                  },
+                                                                  child: Text(
+                                                                    l10n.leave,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                      );
+                                                    },
+                                                    iconData:
+                                                        LucideIcons.logOut,
+                                                  ),
                                                 MoreVertDialogueWidget(
                                                   imagePath:
                                                       AppImages.kIcShareTrip,
                                                   title: 'Share Trip',
                                                   onTap: () async {
                                                     Get.back();
+                                                    final shareLink =
+                                                        await controller
+                                                            .createShareLink();
+                                                    if (shareLink == null) {
+                                                      return;
+                                                    }
+                                                    final tripTitle =
+                                                        controller
+                                                            .tripModel
+                                                            .value
+                                                            ?.title;
                                                     await SharePlus.instance.share(
                                                       ShareParams(
                                                         text:
-                                                            'Check out this trip I found on Travel Crew!',
+                                                            'Check out ${tripTitle?.isNotEmpty == true ? tripTitle : 'this trip'} on Travel Crew: $shareLink',
                                                         subject:
                                                             'Travel Crew Trip',
                                                       ),

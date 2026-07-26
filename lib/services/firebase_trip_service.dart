@@ -20,6 +20,21 @@ import 'session_services.dart';
 final functions = FirebaseFunctions.instance;
 
 class FirebaseTripService {
+  static void _handleTripError(Object error, {String? operation}) {
+    final prefix =
+        operation == null
+            ? 'FirebaseTripService'
+            : 'FirebaseTripService.$operation';
+    if (error is FirebaseException && error.plugin == 'cloud_firestore') {
+      kLogging(
+        '$prefix Firestore error: ${error.code} ${error.message ?? error}',
+      );
+      return;
+    }
+    kLogging('$prefix error: $error');
+    showCustomSnackBar(content: error.toString());
+  }
+
   static CollectionReference<Map<String, dynamic>> _tripActivitiesRef(
     String tripId,
   ) {
@@ -74,6 +89,37 @@ class FirebaseTripService {
         .doc(userId)
         .collection(kUserTripMembershipsSubCollection)
         .doc(tripId);
+  }
+
+  static bool _isCurrentOrFutureDiscoveryTrip(Map<String, dynamic> data) {
+    final status = data['tripStatus'] as String?;
+    if (status == TripStatus.deleted.name ||
+        status == TripStatus.cancelled.name ||
+        status == TripStatus.completed.name) {
+      return false;
+    }
+
+    final comparisonDate =
+        _dateFromDiscoveryValue(data['tripEndDate']) ??
+        _dateFromDiscoveryValue(data['tripStartDate']) ??
+        _dateFromDiscoveryValue(data['startDate']);
+    if (comparisonDate == null) return true;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tripDate = DateTime(
+      comparisonDate.year,
+      comparisonDate.month,
+      comparisonDate.day,
+    );
+    return !tripDate.isBefore(today);
+  }
+
+  static DateTime? _dateFromDiscoveryValue(dynamic value) {
+    if (value == null) return null;
+    if (value is Timestamp) return value.toDate();
+    if (value is String && value.isNotEmpty) return DateTime.tryParse(value);
+    return null;
   }
 
   static Future<void> _hydrateMemberOnlyTrip(TripModel trip) async {
@@ -263,7 +309,7 @@ class FirebaseTripService {
           .toList();
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return [];
   }
@@ -306,7 +352,7 @@ class FirebaseTripService {
       await batch.commit();
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -318,7 +364,7 @@ class FirebaseTripService {
       ).doc(expense.id).set(expense.toMap());
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
       return false;
     }
   }
@@ -330,7 +376,7 @@ class FirebaseTripService {
       ).doc(activity.id).set(activity.toMap());
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
       return false;
     }
   }
@@ -392,7 +438,7 @@ class FirebaseTripService {
       await batch.commit();
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -416,10 +462,11 @@ class FirebaseTripService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
       await batch.commit();
+      await _removeChatMemberForTrip(groupId, userId);
       return true;
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -506,11 +553,56 @@ class FirebaseTripService {
           'updatedAt': FieldValue.serverTimestamp(),
         });
       });
+      await _syncChatMembersForTrip(tripId);
       return true;
     } catch (e) {
       kLogging('error $e');
     }
     return false;
+  }
+
+  /// Best-effort: drop a departed user from `chat/{tripId}.usersIds`.
+  /// If the chat doc doesn't exist there's nothing to do; if the caller
+  /// isn't in `usersIds` the rule will reject the update. Both are logged
+  /// and swallowed because membership writes are the source of truth.
+  static Future<void> _removeChatMemberForTrip(
+    String tripId,
+    String userId,
+  ) async {
+    try {
+      await firestore.collection(kTripChatCollection).doc(tripId).update({
+        'usersIds': FieldValue.arrayRemove([userId]),
+        'updatedAt': Timestamp.now(),
+      });
+    } catch (e) {
+      kLogging('chat membership remove failed for $userId in $tripId: $e');
+    }
+  }
+
+  /// Best-effort: keep `chat/{tripId}.usersIds` aligned with the trip's
+  /// current membership. Non-fatal — membership writes are the source of truth.
+  /// The chat doc may not exist yet (it's lazily created on first open); if so,
+  /// this creates it with the full member list so subsequent opens by any
+  /// member pass the `uid() in resource.data.usersIds` rule.
+  static Future<void> _syncChatMembersForTrip(String tripId) async {
+    try {
+      final tripDoc = await firestore.collection(kTripTable).doc(tripId).get();
+      if (!tripDoc.exists) return;
+      final trip = TripModel.fromMap(tripDoc.data()!);
+      final memberIds =
+          <String>{
+            trip.createdBy,
+            ...?trip.joinedUsers,
+          }.where((id) => id.isNotEmpty).toList();
+      if (memberIds.isEmpty) return;
+      await firestore.collection(kTripChatCollection).doc(tripId).set({
+        'roomId': tripId,
+        'usersIds': memberIds,
+        'updatedAt': Timestamp.now(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      kLogging('chat membership sync failed for $tripId: $e');
+    }
   }
 
   static Future<bool> rejectJoinRequest(String tripId, String userId) async {
@@ -565,49 +657,40 @@ class FirebaseTripService {
       final discoveryRef = firestore
           .collection(kTripDiscoveryTable)
           .doc(tripId);
+      final delta = isFavorite ? -1 : 1;
 
-      await firestore.runTransaction((transaction) async {
-        final tripSnapshot = await transaction.get(tripRef);
-        final discoverySnapshot = await transaction.get(discoveryRef);
-        final currentCount =
-            (tripSnapshot.data()?['favouriteCount'] as num?)?.toInt() ?? 0;
-        if (isFavorite) {
-          transaction.update(userRef, {
-            'favouriteTrips': FieldValue.arrayRemove([tripId]),
-          });
-          transaction.update(tripRef, {
-            'favouriteCount': currentCount > 0 ? currentCount - 1 : 0,
-          });
-          if (discoverySnapshot.exists) {
-            transaction.update(discoveryRef, {
-              'favouriteCount': currentCount > 0 ? currentCount - 1 : 0,
-            });
-          }
-          GlobalVariables.loggedInUser.value?.favouriteTrips.remove(tripId);
-        } else {
-          transaction.update(userRef, {
-            'favouriteTrips': FieldValue.arrayUnion([tripId]),
-          });
-          transaction.update(tripRef, {'favouriteCount': currentCount + 1});
-          if (discoverySnapshot.exists) {
-            transaction.update(discoveryRef, {
-              'favouriteCount': currentCount + 1,
-            });
-          }
-          if (GlobalVariables.loggedInUser.value?.favouriteTrips.contains(
-                tripId,
-              ) !=
-              true) {
-            GlobalVariables.loggedInUser.value?.favouriteTrips.add(tripId);
-          }
-        }
+      final batch = firestore.batch();
+      batch.update(userRef, {
+        'favouriteTrips':
+            isFavorite
+                ? FieldValue.arrayRemove([tripId])
+                : FieldValue.arrayUnion([tripId]),
       });
+      batch.update(tripRef, {'favouriteCount': FieldValue.increment(delta)});
+      await batch.commit();
+
+      try {
+        await discoveryRef.update({
+          'favouriteCount': FieldValue.increment(delta),
+        });
+      } catch (e) {
+        kLogging('tripDiscovery favourite sync failed for $tripId: $e');
+      }
+
+      if (isFavorite) {
+        GlobalVariables.loggedInUser.value?.favouriteTrips.remove(tripId);
+      } else {
+        if (GlobalVariables.loggedInUser.value?.favouriteTrips.contains(
+              tripId,
+            ) !=
+            true) {
+          GlobalVariables.loggedInUser.value?.favouriteTrips.add(tripId);
+        }
+      }
       GlobalVariables.loggedInUser.refresh();
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        print('Error toggling favorite: $e');
-      }
+      _handleTripError(e, operation: 'toggleTripFavorite');
     }
     return false;
   }
@@ -654,7 +737,7 @@ class FirebaseTripService {
       return true;
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -667,7 +750,7 @@ class FirebaseTripService {
       return true;
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -716,7 +799,7 @@ class FirebaseTripService {
       await batch.commit();
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -734,7 +817,7 @@ class FirebaseTripService {
       return true;
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -744,7 +827,7 @@ class FirebaseTripService {
       await _tripFlightsRef(flight.tripId).doc(flight.id).set(flight.toMap());
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
       return false;
     }
   }
@@ -759,7 +842,7 @@ class FirebaseTripService {
       return true;
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }
@@ -817,11 +900,10 @@ class FirebaseTripService {
           snapshot.docs.where((doc) {
             final data = doc.data();
             final lng = (data['longitude'] as num?)?.toDouble() ?? 0.0;
-            final status = data['tripStatus'] as String?;
             final createdBy = data['createdBy'] as String?;
             return lng >= minLng &&
                 lng <= maxLng &&
-                status != TripStatus.deleted.name &&
+                _isCurrentOrFutureDiscoveryTrip(data) &&
                 createdBy != GlobalVariables.loggedInUser.value?.uid;
           }).toList();
 
@@ -830,7 +912,7 @@ class FirebaseTripService {
           .toList();
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return [];
   }
@@ -896,7 +978,12 @@ class FirebaseTripService {
       }
 
       // No history — fall back to popular trips
-      if (continents.isEmpty) return getPopularTrips();
+      if (continents.isEmpty) {
+        final popularTrips = await getPopularTrips();
+        return popularTrips
+            .where((trip) => _isCurrentOrFutureDiscoveryTrip(trip.toMap()))
+            .toList();
+      }
 
       final snap =
           await firestore
@@ -910,7 +997,7 @@ class FirebaseTripService {
           snap.docs.where((doc) {
             final data = doc.data();
             return data['createdBy'] != uid &&
-                data['tripStatus'] != TripStatus.deleted.name;
+                _isCurrentOrFutureDiscoveryTrip(data);
           }).toList();
 
       return filteredDocs
@@ -918,7 +1005,7 @@ class FirebaseTripService {
           .toList();
     } catch (e) {
       kLogging('error $e');
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return [];
   }
@@ -942,7 +1029,7 @@ class FirebaseTripService {
           .map((doc) => TripDiscoveryModel.fromMap(doc.data()))
           .toList();
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return [];
   }
@@ -988,7 +1075,7 @@ class FirebaseTripService {
       kLogging('searchUser: found ${results.length} results for "$trimmed"');
       return results.values.toList();
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return [];
   }
@@ -1007,7 +1094,7 @@ class FirebaseTripService {
       });
       return true;
     } catch (e) {
-      showCustomSnackBar(content: e.toString());
+      _handleTripError(e);
     }
     return false;
   }

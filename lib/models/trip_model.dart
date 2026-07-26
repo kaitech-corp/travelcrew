@@ -26,6 +26,7 @@ class TripModel {
     required this.startDate,
     this.joinedUsers,
     this.invitedUsers,
+    this.isShared = false,
     this.isPrivate,
     this.airlineName,
     this.flightNumber,
@@ -80,6 +81,7 @@ class TripModel {
           (map['invitedUsers'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(),
+      isShared: map['isShared'] as bool? ?? false,
       isPrivate: map['isPrivate'] as bool?,
       airlineName: map['airlineName'] as String?,
       flightNumber: map['flightNumber'] as String?,
@@ -143,6 +145,7 @@ class TripModel {
   final DateTime startDate;
   List<String>? joinedUsers;
   List<String>? invitedUsers;
+  bool isShared;
   final bool? isPrivate;
   final String? airlineName;
   final String? flightNumber;
@@ -195,6 +198,7 @@ class TripModel {
     DateTime? startDate,
     List<String>? joinedUsers,
     List<String>? invitedUsers,
+    bool? isShared,
     bool? isPrivate,
     String? airlineName,
     String? flightNumber,
@@ -232,6 +236,7 @@ class TripModel {
       startDate: startDate ?? this.startDate,
       joinedUsers: joinedUsers ?? this.joinedUsers,
       invitedUsers: invitedUsers ?? this.invitedUsers,
+      isShared: isShared ?? this.isShared,
       isPrivate: isPrivate ?? this.isPrivate,
       airlineName: airlineName ?? this.airlineName,
       flightNumber: flightNumber ?? this.flightNumber,
@@ -271,6 +276,7 @@ class TripModel {
       'startDate': startDate.toIso8601String(),
       'joinedUsers': joinedUsers,
       'invitedUsers': invitedUsers,
+      'isShared': isShared,
       'isPrivate': isPrivate,
       'airlineName': airlineName,
       'flightNumber': flightNumber,
@@ -297,7 +303,7 @@ class TripModel {
 
   @override
   String toString() {
-    return 'TripModel(id: $id, destination: $destination, title: $title, createdBy: $createdBy, tripStartDate: $tripStartDate, tripEndDate: $tripEndDate, tripLocation: $tripLocation, country: $country, startDate: $startDate, joinedUsers: $joinedUsers, invitedUsers: $invitedUsers, isPrivate: $isPrivate, airlineName: $airlineName, flightNumber: $flightNumber, departureDate: $departureDate, arrivalDate: $arrivalDate, departureAirport: $departureAirport, arrivalAirport: $arrivalAirport, lodgingType: $lodgingType, hotelName: $hotelName, hotelAddress: $hotelAddress, checkInDate: $checkInDate, checkOutDate: $checkOutDate, expensePerNight: $expensePerNight, activities: $activities, expenses: $expenses, endDate: $endDate, daysToGo: $daysToGo, images: $images)';
+    return 'TripModel(id: $id, destination: $destination, title: $title, createdBy: $createdBy, tripStartDate: $tripStartDate, tripEndDate: $tripEndDate, tripLocation: $tripLocation, country: $country, startDate: $startDate, joinedUsers: $joinedUsers, invitedUsers: $invitedUsers, isShared: $isShared, isPrivate: $isPrivate, airlineName: $airlineName, flightNumber: $flightNumber, departureDate: $departureDate, arrivalDate: $arrivalDate, departureAirport: $departureAirport, arrivalAirport: $arrivalAirport, lodgingType: $lodgingType, hotelName: $hotelName, hotelAddress: $hotelAddress, checkInDate: $checkInDate, checkOutDate: $checkOutDate, expensePerNight: $expensePerNight, activities: $activities, expenses: $expenses, endDate: $endDate, daysToGo: $daysToGo, images: $images)';
   }
 
   @override
@@ -316,6 +322,7 @@ class TripModel {
         other.startDate == startDate &&
         listEquals(other.joinedUsers, joinedUsers) &&
         listEquals(other.invitedUsers, invitedUsers) &&
+        other.isShared == isShared &&
         other.isPrivate == isPrivate &&
         other.airlineName == airlineName &&
         other.flightNumber == flightNumber &&
@@ -349,6 +356,7 @@ class TripModel {
         startDate.hashCode ^
         joinedUsers.hashCode ^
         invitedUsers.hashCode ^
+        isShared.hashCode ^
         isPrivate.hashCode ^
         airlineName.hashCode ^
         flightNumber.hashCode ^

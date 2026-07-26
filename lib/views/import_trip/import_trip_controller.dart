@@ -12,7 +12,19 @@ class ImportTripController extends GetxController {
   final RxBool isParsing = false.obs;
 
   static const String aiPrompt = '''
-You are helping plan a trip for TravelCrew, a group travel app. Based on our conversation, output a JSON object matching the structure below. Only include fields you have information for — omit anything unknown. Include exact street addresses for lodging and activities when you can confidently supply them. If you only know the venue/place name, include that as location and omit address. Output ONLY the JSON, no explanation or markdown.
+You are helping plan a trip for TravelCrew, a group travel app. Based on our conversation, output a single JSON object matching the structure below so the app can create the trip. Output ONLY the JSON — no explanation, no markdown.
+
+Required fields (always include these):
+- "destination", "start_date", and "end_date" — the import is rejected without them. "end_date" must not be before "start_date".
+- "title" and "country" — always provide these; the trip is incomplete without them.
+
+Optional sections — include a section ONLY if you have real information for it, otherwise OMIT the whole key. Do not output empty objects, empty arrays, null, or placeholder values.
+
+Field rules:
+- Trip, flight, lodging, and expense dates use "YYYY-MM-DD". Activity times use "YYYY-MM-DDTHH:MM:SS" (24-hour clock).
+- Every activity must have a "title". "description", "location", "address", "start_datetime", and "end_datetime" are each optional. Prefer a full street "address" when you can confidently supply it; otherwise use "location" for the venue/place name.
+- Every expense must have a non-empty "name" and a positive "amount". "split_type" must be exactly "equally" (the only value supported on import).
+- Numbers ("amount", "cost_per_night") must be plain JSON numbers with no currency symbol or quotes.
 
 Strict JSON formatting requirements:
 - Use only standard ASCII straight double quotes (") around every JSON key and string value.
@@ -28,6 +40,7 @@ Strict JSON formatting requirements:
   "start_date": "YYYY-MM-DD",
   "end_date": "YYYY-MM-DD",
   "is_private": false,
+  "image_url": "https://example.com/photo.jpg",
   "airline": {
     "name": "Airline name",
     "flight_number": "XX123",

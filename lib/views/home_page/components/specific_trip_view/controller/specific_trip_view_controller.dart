@@ -9,13 +9,18 @@ import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/services/trips_changes.dart';
+import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
+import 'package:travel_crew/utils/logger.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../models/search_model.dart';
 
 class SpecificTripViewController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  static const String tripShareBaseUrl =
+      'https://travel-crew-web-101337609697.us-central1.run.app';
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
@@ -450,6 +455,32 @@ class SpecificTripViewController extends GetxController
     }
   }
 
+  Future<void> leaveTrip() async {
+    final trip = tripModel.value;
+    if (trip == null) return;
+    final uid = GlobalVariables.currentUid;
+    if (uid.isEmpty) return;
+    GlobalVariables.showLoader.value = true;
+    try {
+      final ok = await FirebaseTripService.leaveGroup(
+        groupId: trip.id,
+        userId: uid,
+      );
+      if (ok) {
+        removeTripOverAll(trip);
+        Get.offAllNamed(kMainViewScreenRoute);
+        showCustomSnackBar(content: 'You have left the trip');
+      } else {
+        showCustomSnackBar(content: 'Failed to leave trip');
+      }
+    } catch (e) {
+      AppLogger.error('Failed to leave trip: $e');
+      showCustomSnackBar(content: 'Failed to leave trip');
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
   Future<void> likeActivity({
     required String activityId,
     bool isLiked = false,
@@ -624,6 +655,34 @@ class SpecificTripViewController extends GetxController
     } finally {
       GlobalVariables.showLoader.value = false;
     }
+  }
+
+  Future<String?> createShareLink() async {
+    final trip = tripModel.value;
+    if (trip == null || trip.id.isEmpty) {
+      showCustomSnackBar(content: 'Trip not found');
+      return null;
+    }
+
+    if (!trip.isShared) {
+      GlobalVariables.showLoader.value = true;
+      try {
+        final updated = await FirebaseTripService.updateTrip(
+          tripId: trip.id,
+          data: {'isShared': true},
+        );
+        if (!updated) {
+          showCustomSnackBar(content: 'Unable to share this trip');
+          return null;
+        }
+        trip.isShared = true;
+        tripModel.refresh();
+      } finally {
+        GlobalVariables.showLoader.value = false;
+      }
+    }
+
+    return '$tripShareBaseUrl/trip/${Uri.encodeComponent(trip.id)}';
   }
 
   Future<void> inviteToTrip() async {

@@ -17,6 +17,44 @@ class ImportTripScreen extends StatefulWidget {
 class _ImportTripScreenState extends State<ImportTripScreen> {
   final ImportTripController controller = Get.find<ImportTripController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _pasteFocusNode = FocusNode();
+  bool _showJumpToPaste = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    _pasteFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    // Hide the button once the user is near the paste field at the bottom.
+    final nearBottom =
+        _scrollController.offset >=
+        _scrollController.position.maxScrollExtent - 120;
+    if (nearBottom == _showJumpToPaste) {
+      setState(() => _showJumpToPaste = !nearBottom);
+    }
+  }
+
+  Future<void> _jumpToPaste() async {
+    if (!_scrollController.hasClients) return;
+    await _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOut,
+    );
+    _pasteFocusNode.requestFocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +63,24 @@ class _ImportTripScreenState extends State<ImportTripScreen> {
       centerTitle: true,
       scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),
+      floatingActionButton:
+          _showJumpToPaste
+              ? FloatingActionButton.extended(
+                onPressed: _jumpToPaste,
+                backgroundColor: AppColors.kPrimaryColor,
+                foregroundColor: Colors.white,
+                icon: const Icon(Icons.arrow_downward_rounded, size: 18),
+                label: Text(
+                  'Jump to paste',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: AppStyles.fontSize13,
+                  ),
+                ),
+              )
+              : null,
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,7 +100,10 @@ class _ImportTripScreenState extends State<ImportTripScreen> {
             _buildStep(
               number: '3',
               title: 'Paste the response below',
-              child: _PasteField(controller: controller),
+              child: _PasteField(
+                controller: controller,
+                focusNode: _pasteFocusNode,
+              ),
             ),
             SizedBox(height: 32.h),
             Obx(
@@ -145,6 +203,11 @@ class _PromptCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: _CopyPromptButton(controller: controller),
+          ),
+          SizedBox(height: 8.h),
           Text(
             ImportTripController.aiPrompt,
             style: TextStyle(
@@ -157,18 +220,7 @@ class _PromptCard extends StatelessWidget {
           SizedBox(height: 12.h),
           Align(
             alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              onPressed: controller.copyPrompt,
-              icon: const Icon(Icons.copy_rounded, size: 16),
-              label: const Text('Copy Prompt'),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.kPrimaryColor,
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: AppStyles.fontSize13,
-                ),
-              ),
-            ),
+            child: _CopyPromptButton(controller: controller),
           ),
         ],
       ),
@@ -176,14 +228,37 @@ class _PromptCard extends StatelessWidget {
   }
 }
 
-class _PasteField extends StatelessWidget {
-  const _PasteField({required this.controller});
+class _CopyPromptButton extends StatelessWidget {
+  const _CopyPromptButton({required this.controller});
   final ImportTripController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: controller.copyPrompt,
+      icon: const Icon(Icons.copy_rounded, size: 16),
+      label: const Text('Copy Prompt'),
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.kPrimaryColor,
+        textStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: AppStyles.fontSize13,
+        ),
+      ),
+    );
+  }
+}
+
+class _PasteField extends StatelessWidget {
+  const _PasteField({required this.controller, this.focusNode});
+  final ImportTripController controller;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller.pasteController,
+      focusNode: focusNode,
       maxLines: 12,
       style: AppStyles.labelTextStyle().copyWith(
         fontSize: AppStyles.fontSize13,
