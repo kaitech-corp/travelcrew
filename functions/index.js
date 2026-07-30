@@ -1,5 +1,5 @@
 const {onDocumentCreated} = require("firebase-functions/v2/firestore");
-const {HttpsError, onCall} = require("firebase-functions/v2/https");
+const {onRequest, HttpsError, onCall} = require("firebase-functions/v2/https");
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
 const {getMessaging} = require("firebase-admin/messaging");
@@ -144,6 +144,45 @@ exports.sendTripInvites = onCall(async (request) => {
 
   await batch.commit();
   return {sent: uniqueEmails.length};
+});
+
+exports.placePhoto = onRequest({cors: true}, async (req, res) => {
+  try {
+    const photoName = req.query.name;
+    const maxWidth = req.query.maxWidthPx || "800";
+    if (!photoName) {
+      return res.status(400).send("Missing photo name");
+    }
+
+    const apiKey =
+      process.env.GOOGLE_MAPS_SERVER_KEY ||
+      process.env.GOOGLE_MAPS_API_KEY ||
+      "";
+
+    const googleUrl = `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=${maxWidth}`;
+
+    const response = await fetch(googleUrl, {
+      headers: {
+        "X-Goog-Api-Key": apiKey,
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).send("Failed to fetch place photo");
+    }
+
+    const contentType = response.headers.get("content-type") || "image/jpeg";
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    res.set("Content-Type", contentType);
+    res.set("Cache-Control", "public, max-age=86400, s-maxage=86400");
+    res.set("Access-Control-Allow-Origin", "*");
+    return res.status(200).send(buffer);
+  } catch (error) {
+    console.error("Error fetching place photo:", error);
+    return res.status(500).send("Internal server error");
+  }
 });
 
 /**
