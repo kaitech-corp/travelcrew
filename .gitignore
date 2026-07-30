@@ -49,6 +49,7 @@ lib/generated_plugin_registrant.dart
 ios/Flutter/
 ios/Pods
 ios/Pods/Target Support Files
+ios/Runner/
 assets/travelcrew_auth.json
 ios/Flutter/Generated.xcconfig
 lib/firebase_options.dart
@@ -68,3 +69,4 @@ CLAUDE.md
 # Local files
 lib/utils/app_strings_keys.dart
 
+android/app/google-services.json

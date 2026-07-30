@@ -226,7 +226,7 @@ packages:
     source: hosted
     version: "0.3.5+2"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
@@ -478,6 +478,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_app_badge:
+    dependency: "direct main"
+    description:
+      name: flutter_app_badge
+      sha256: "561451b670106f227bbf85e7c57fd384db6ef3cbb8edfcbb27ff54efe3e989d7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -1747,7 +1755,7 @@ packages:
     source: hosted
     version: "2.3.1"
   url_launcher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: url_launcher
       sha256: f6a7e5c4835bb4e3026a04793a4199ca2d14c739ec378fdfe23fc8075d0439f8

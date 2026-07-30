@@ -30,6 +30,7 @@ dependencies:
   google_sign_in: ^7.2.0
   sign_in_with_apple: ^7.0.1
   googleapis_auth: ^2.0.0
+  crypto: ^3.0.6
 
   # Device & System Features
   image_picker: ^1.2.1
@@ -83,6 +84,8 @@ dependencies:
   uuid: ^4.5.3
   http: ^1.6.0
   collection: ^1.19.1
+  flutter_app_badge: ^2.0.2
+  url_launcher: ^6.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

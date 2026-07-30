@@ -181,6 +181,8 @@ PODS:
     - GoogleUtilities/Environment (~> 8.1)
     - GTMSessionFetcher/Core (< 6.0, >= 3.4)
   - Flutter (1.0.0)
+  - flutter_app_badge (2.0.0):
+    - Flutter
   - flutter_keyboard_visibility_temp_fork (0.0.1):
     - Flutter
   - flutter_local_notifications (0.0.1):
@@ -293,6 +295,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `12.12.0`)
   - Flutter (from `Flutter`)
+  - flutter_app_badge (from `.symlinks/plugins/flutter_app_badge/ios`)
   - flutter_keyboard_visibility_temp_fork (from `.symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage_darwin (from `.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
@@ -375,6 +378,8 @@ EXTERNAL SOURCES:
     :tag: 12.12.0
   Flutter:
     :path: Flutter
+  flutter_app_badge:
+    :path: ".symlinks/plugins/flutter_app_badge/ios"
   flutter_keyboard_visibility_temp_fork:
     :path: ".symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios"
   flutter_local_notifications:
@@ -450,6 +455,7 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: bccaff90721d14bafc14be34f28b77fdd7c91dc9
   FirebaseStorage: b3682c96ae7016420c1f6eb43d45057a0e909c9f
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_app_badge: edb873d09e1d7eb6a146c12f9a8db260f6465c8d
   flutter_keyboard_visibility_temp_fork: 8a8809c4129e31d25fca77446e0f3fd548122ced
   flutter_local_notifications: eda81afddbf18f8589f6ec069ce593c4c6378769
   flutter_secure_storage_darwin: 557817588b80e60213cbecb573c45c76b788018d
