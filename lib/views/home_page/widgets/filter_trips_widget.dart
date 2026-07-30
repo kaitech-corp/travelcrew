@@ -82,7 +82,10 @@ class FilterTripsWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(40),
                     ),
                   ),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    _selectedContinents.clear();
+                    Navigator.pop(context);
+                  },
                   child: Text(
                     'Reset',
                     style: AppStyles.labelTextStyle().copyWith(

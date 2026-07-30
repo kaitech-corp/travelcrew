@@ -103,10 +103,7 @@ class CustomScaffoldState extends State<CustomScaffold> {
     }
     final notifController = Get.find<NotificationController>();
     return Obx(() {
-      final unread = notifController.notifications.fold<int>(
-        0,
-        (sum, group) => sum + group.notifications.length,
-      );
+      final unread = notifController.unreadCount.value;
       return GestureDetector(
         onTap: () {
           if (Get.isRegistered<MainViewController>()) {

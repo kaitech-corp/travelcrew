@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
@@ -127,7 +128,11 @@ class HomePageController extends GetxController
       if (kDebugMode) {
         print('Error getting trips by location: $e');
       }
-      showCustomSnackBar(content: e.toString());
+      if (e is FirebaseException && e.plugin == 'cloud_firestore') {
+        ErrorHandler.handleFirebaseError(e, operation: 'getByLocation');
+      } else {
+        showCustomSnackBar(content: e.toString());
+      }
     } finally {
       isLoadingOtherTrips.value = false;
     }
