@@ -278,7 +278,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get safetyAndSecurityDescription =>
-      'Protegemos tus datos con encriptación SSL, asegurando transacciones seguras en Afriva.com. Estás cubierto por el uso no autorizado de tarjetas de crédito.';
+      'Protegemos tus datos y privacidad. Contáctanos en support@kaitechcorp.com para cualquier preocupación.';
 
   @override
   String get returnsAndRefunds => 'Devoluciones y Reembolsos';

@@ -625,7 +625,7 @@ abstract class AppLocalizations {
   /// No description provided for @safetyAndSecurityDescription.
   ///
   /// In en, this message translates to:
-  /// **'We protect your data with SSL encryption, ensuring secure transactions at Afriva.com. You\'re covered for unauthorized credit card use.'**
+  /// **'We protect your data. Contact us at support@kaitechcorp.com for any concerns.'**
   String get safetyAndSecurityDescription;
 
   /// No description provided for @returnsAndRefunds.

@@ -271,7 +271,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get safetyAndSecurityDescription =>
-      '我们使用SSL加密保护您的数据，确保在Afriva.com上的安全交易。您受到未经授权的信用卡使用的保护。';
+      '我们保护您的数据。如有任何疑虑，请通过support@kaitechcorp.com联系我们。';
 
   @override
   String get returnsAndRefunds => '退货与退款';
