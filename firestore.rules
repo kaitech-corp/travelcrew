@@ -22,6 +22,14 @@ service cloud.firestore {
       return /databases/$(database)/documents/trips/$(tripId);
     }
 
+    function tripMemberRef(tripId, userId) {
+      return /databases/$(database)/documents/trips/$(tripId)/members/$(userId);
+    }
+
+    function tripMemberData(tripId, userId) {
+      return get(tripMemberRef(tripId, userId)).data;
+    }
+
     function tripData(tripId) {
       return get(tripRef(tripId)).data;
     }
@@ -36,14 +44,100 @@ service cloud.firestore {
          uid() in (data.joinedUsers == null ? [] : data.joinedUsers));
     }
 
+    function isTripMember(tripId) {
+      return signedIn() &&
+        ((exists(tripMemberRef(tripId, uid())) &&
+          tripMemberData(tripId, uid()).status == 'active') ||
+         (exists(tripRef(tripId)) && isTripMemberForData(tripData(tripId))));
+    }
+
+    function isTripOwner(tripId) {
+      return signedIn() &&
+        exists(tripRef(tripId)) &&
+        tripData(tripId).createdBy == uid();
+    }
+
+    function isSharedTrip(tripId) {
+      return exists(tripRef(tripId)) &&
+        tripData(tripId).isShared == true;
+    }
+
     function canReadTripData(data) {
-      return isAdmin() ||
-        (signedIn() &&
-         (data.isPrivate != true || isTripMemberForData(data)));
+      return isAdmin() || data.isShared == true || isTripMemberForData(data);
     }
 
     function canWriteTripData(data) {
       return isAdmin() || isTripOwnerForData(data);
+    }
+
+    function onlyFavouriteCountChanged() {
+      return signedIn() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['favouriteCount']);
+    }
+
+    function onlyDiscoveryMemberCountDecremented() {
+      return signedIn() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'memberCount',
+          'updatedAt'
+        ]) &&
+        request.resource.data.memberCount == resource.data.memberCount - 1 &&
+        request.resource.data.memberCount >= 0;
+    }
+
+    function onlySelfRemovedFromJoinedUsers() {
+      return signedIn() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['joinedUsers']) &&
+        request.resource.data.createdBy == resource.data.createdBy &&
+        uid() in (resource.data.joinedUsers == null ? [] : resource.data.joinedUsers) &&
+        !(uid() in (request.resource.data.joinedUsers == null ? [] : request.resource.data.joinedUsers)) &&
+        (request.resource.data.joinedUsers == null ? [] : request.resource.data.joinedUsers).toSet()
+          .difference((resource.data.joinedUsers == null ? [] : resource.data.joinedUsers).toSet()) == [].toSet() &&
+        (resource.data.joinedUsers == null ? [] : resource.data.joinedUsers).toSet()
+          .difference((request.resource.data.joinedUsers == null ? [] : request.resource.data.joinedUsers).toSet()) == [uid()].toSet();
+    }
+
+    function onlyChatMembershipChanged() {
+      return signedIn() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'usersIds',
+          'updatedAt'
+        ]);
+    }
+
+    function publicProfileOwnerFieldsOnly() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'displayName',
+        'profileImage',
+        'email',
+        'following'
+      ]);
+    }
+
+    function publicProfileCreateFieldsValid(userId) {
+      return request.resource.data.uid == userId &&
+        request.resource.data.keys().hasOnly([
+          'displayName',
+          'email',
+          'facebookLink',
+          'firstName',
+          'hometown',
+          'instagramLink',
+          'lastName',
+          'blockedList',
+          'followers',
+          'following',
+          'topDestinations',
+          'tripsCreated',
+          'tripsJoined',
+          'uid',
+          'profileImage',
+          'favouriteTrips'
+        ]) &&
+        request.resource.data.followers.size() == 0 &&
+        request.resource.data.following.size() == 0 &&
+        request.resource.data.tripsCreated == 0 &&
+        request.resource.data.tripsJoined == 0;
     }
 
     function canReadTripId(tripId) {
@@ -57,6 +151,11 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, update, delete: if belongsTo(userId) || isAdmin();
       allow create: if belongsTo(userId) || isAdmin();
+
+      match /tripMemberships/{tripId} {
+        allow read: if belongsTo(userId) || isAdmin();
+        allow create, update, delete: if isAdmin() || isTripOwner(tripId) || belongsTo(userId);
+      }
     }
 
     match /settings/{userId} {
@@ -65,14 +164,48 @@ service cloud.firestore {
 
     match /publicProfile/{userId} {
       allow read: if signedIn();
-      allow create: if belongsTo(userId) || isAdmin();
+      allow create: if isAdmin() ||
+        (belongsTo(userId) && publicProfileCreateFieldsValid(userId));
       allow delete: if belongsTo(userId) || isAdmin();
-      allow update: if belongsTo(userId) ||
-        isAdmin() ||
+      allow update: if isAdmin() ||
+        (belongsTo(userId) && publicProfileOwnerFieldsOnly()) ||
         (signedIn() &&
          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followers']) &&
          (request.resource.data.followers.toSet().difference(resource.data.followers.toSet()) == [uid()].toSet() ||
           resource.data.followers.toSet().difference(request.resource.data.followers.toSet()) == [uid()].toSet()));
+    }
+
+    match /tripDiscovery/{tripId} {
+      allow read: if signedIn() && resource.data.isDiscoverable == true;
+      allow create, update: if signedIn() &&
+        request.resource.data.createdBy == uid() &&
+        request.resource.data.id == tripId &&
+        request.resource.data.keys().hasOnly([
+          'id',
+          'title',
+          'destination',
+          'country',
+          'continent',
+          'latitude',
+          'longitude',
+          'tripStartDate',
+          'tripEndDate',
+          'startDate',
+          'endDate',
+          'images',
+          'memberCount',
+          'favouriteCount',
+          'createdBy',
+          'creatorDisplayName',
+          'creatorProfileImage',
+          'tripStatus',
+          'isDiscoverable',
+          'updatedAt'
+        ]);
+      allow update: if onlyFavouriteCountChanged();
+      allow update: if isTripMember(tripId) && onlyDiscoveryMemberCountDecremented();
+      // Authorize cleanup even when the discovery document is already absent.
+      allow delete: if isTripOwner(tripId);
     }
 
     match /trips/{tripId} {
@@ -82,42 +215,84 @@ service cloud.firestore {
         request.resource.data.id == tripId;
       allow update: if canWriteTripData(resource.data) &&
         request.resource.data.createdBy == resource.data.createdBy;
+      allow update: if onlySelfRemovedFromJoinedUsers();
+      allow update: if onlyFavouriteCountChanged();
       allow delete: if canWriteTripData(resource.data);
 
       match /Members/{memberId} {
         allow read: if canReadTripId(tripId);
         allow create, update, delete: if canWriteTripId(tripId) || belongsTo(memberId);
       }
+
+      match /members/{memberId} {
+        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+        allow create: if isAdmin() ||
+          (isTripOwner(tripId) && request.resource.data.userId == memberId) ||
+          (belongsTo(memberId) && request.resource.data.role == 'creator');
+        allow update, delete: if isAdmin() || isTripOwner(tripId) || belongsTo(memberId);
+      }
+
+      match /joinRequests/{userId} {
+        allow read: if isAdmin() || isTripOwner(tripId) || belongsTo(userId);
+        allow create: if belongsTo(userId) &&
+          request.resource.data.userId == userId &&
+          request.resource.data.tripId == tripId &&
+          request.resource.data.status == 'pending';
+        allow update, delete: if isAdmin() || isTripOwner(tripId) || belongsTo(userId);
+      }
+
+      match /activities/{activityId} {
+        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+        allow create, update: if isAdmin() || isTripMember(tripId);
+        allow delete: if isAdmin() || isTripOwner(tripId) || resource.data.createdBy == uid();
+      }
+
+      match /expenses/{expenseId} {
+        allow read: if isAdmin() || isTripMember(tripId);
+        allow create: if signedIn() &&
+          request.resource.data.createdBy == uid() &&
+          isTripMember(tripId);
+        allow update, delete: if isAdmin() || isTripOwner(tripId) || resource.data.createdBy == uid();
+      }
+
+      match /flights/{flightId} {
+        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+        allow create: if signedIn() &&
+          request.resource.data.userId == uid() &&
+          isTripMember(tripId);
+        allow update, delete: if isAdmin() || isTripOwner(tripId) || resource.data.userId == uid();
+      }
     }
 
     match /expense/{expenseId} {
-      allow read: if canReadTripId(resource.data.tripId);
+      allow read: if isAdmin() || isTripMember(resource.data.tripId);
       allow create: if signedIn() &&
         request.resource.data.createdBy == uid() &&
-        canReadTripId(request.resource.data.tripId);
+        isTripMember(request.resource.data.tripId);
       allow update, delete: if signedIn() &&
-        (resource.data.createdBy == uid() || canWriteTripId(resource.data.tripId));
+        (resource.data.createdBy == uid() || isTripOwner(resource.data.tripId));
     }
 
     match /activity/{activityId} {
-      allow read: if canReadTripId(resource.data.tripId);
+      allow read: if isAdmin() || isSharedTrip(resource.data.tripId) || isTripMember(resource.data.tripId);
       allow create: if signedIn() &&
         request.resource.data.tripId is string &&
-        canReadTripId(request.resource.data.tripId);
-      allow update: if signedIn() && canReadTripId(resource.data.tripId);
+        isTripMember(request.resource.data.tripId);
+      allow update: if signedIn() && isTripMember(resource.data.tripId);
       allow delete: if signedIn() &&
-        (canWriteTripId(resource.data.tripId) || resource.data.createdBy == uid());
+        (isTripOwner(resource.data.tripId) || resource.data.createdBy == uid());
     }
 
     match /flights/{flightId} {
-      allow read: if canReadTripId(resource.data.tripId);
-      allow create: if signedIn() && canReadTripId(request.resource.data.tripId);
+      allow read: if isAdmin() || isSharedTrip(resource.data.tripId) || isTripMember(resource.data.tripId);
+      allow create: if signedIn() && isTripMember(request.resource.data.tripId);
       allow update, delete: if signedIn() &&
-        (resource.data.createdBy == uid() || canWriteTripId(resource.data.tripId));
+        (resource.data.userId == uid() || isTripOwner(resource.data.tripId));
     }
 
     match /chat/{roomId} {
       allow read, update, delete: if signedIn() && uid() in resource.data.usersIds;
+      allow update: if isTripOwner(roomId) && onlyChatMembershipChanged();
       allow create: if signedIn() && uid() in request.resource.data.usersIds;
 
       match /messages/{messageId} {
@@ -131,8 +306,12 @@ service cloud.firestore {
 
     match /notifications/{userId}/notification/{notificationId} {
       allow read, update, delete: if belongsTo(userId) || isAdmin();
-      allow create: if signedIn() &&
-        (request.resource.data.createdBy == uid() || belongsTo(userId) || isAdmin());
+      // Clients submit their own trip events; only the server forwards them.
+      allow create: if isAdmin() || (belongsTo(userId) &&
+        request.resource.data.createdBy == uid() &&
+        !request.resource.data.keys().hasAny(['serverForwarded']) &&
+        request.resource.data.notificationType == 'Trip' &&
+        isTripMember(request.resource.data.notificationForId));
     }
 
     match /tokens/{userId}/tokens/{tokenId} {
