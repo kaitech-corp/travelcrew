@@ -105,36 +105,45 @@ class _MessagesTab extends StatelessWidget {
         ),
         SizedBox(height: 10.h),
         Expanded(
-          child: Obx(
-            () =>
-                controller.isLoadingChats.isTrue
-                    ? const Center(child: CircularProgressIndicator())
-                    : controller.chatRooms.isEmpty
-                    ? Center(child: Text(l10n.noChatsFound))
-                    : ListView.separated(
-                      itemCount: controller.chatRooms.length,
-                      separatorBuilder: (_, _) => const Divider(),
-                      itemBuilder: (context, index) {
-                        final room = controller.chatRooms[index];
-                        return UsersWidget(
-                          imageUrl: room.trip?.images.first ?? '',
-                          tripModel: room.trip!,
-                          title: room.trip?.title ?? '',
-                          subtitle:
-                              '${DateFormat('dd MMM').format(room.trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(room.trip?.tripEndDate ?? DateTime.now())}',
-                          timestamp: DateFormat(
-                            'dd MMM, hh:mma',
-                          ).format(room.updatedAt.toDate()),
-                          memberImages:
-                              room.users
-                                  .map((e) => e.profileImage.toString())
-                                  .toList(),
-                          extraMembers:
-                              room.users.length > 3 ? room.users.length - 3 : 0,
-                        );
-                      },
-                    ),
-          ),
+          child: Obx(() {
+            final rooms =
+                controller.chatRooms
+                    .where(
+                      (room) =>
+                          room.trip != null &&
+                          room.trip?.tripStatus != 'deleted',
+                    )
+                    .toList();
+            return controller.isLoadingChats.isTrue
+                ? const Center(child: CircularProgressIndicator())
+                : rooms.isEmpty
+                ? Center(child: Text(l10n.noChatsFound))
+                : ListView.separated(
+                  itemCount: rooms.length,
+                  separatorBuilder: (_, _) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final room = rooms[index];
+                    final trip = room.trip;
+                    if (trip == null) return const SizedBox.shrink();
+                    return UsersWidget(
+                      imageUrl: trip.images.firstOrNull ?? '',
+                      tripModel: trip,
+                      title: room.trip?.title ?? '',
+                      subtitle:
+                          '${DateFormat('dd MMM').format(room.trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(room.trip?.tripEndDate ?? DateTime.now())}',
+                      timestamp: DateFormat(
+                        'dd MMM, hh:mma',
+                      ).format(room.updatedAt.toDate()),
+                      memberImages:
+                          room.users
+                              .map((e) => e.profileImage.toString())
+                              .toList(),
+                      extraMembers:
+                          room.users.length > 3 ? room.users.length - 3 : 0,
+                    );
+                  },
+                );
+          }),
         ),
       ],
     );

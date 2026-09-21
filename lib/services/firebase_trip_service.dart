@@ -199,7 +199,6 @@ class FirebaseTripService {
                           ? [
                             TripStatus.upcoming.name,
                             TripStatus.completed.name,
-                            TripStatus.deleted.name,
                             TripStatus.cancelled.name,
                           ]
                           : [
@@ -245,11 +244,12 @@ class FirebaseTripService {
         for (final doc in membershipTrips.docs) {
           final status = doc.data()['tripStatus'] as String?;
           final include =
-              tripStatus == null
+              status != TripStatus.deleted.name &&
+              (tripStatus == null
                   ? isAll ||
                       status == TripStatus.upcoming.name ||
                       status == TripStatus.completed.name
-                  : status == tripStatus;
+                  : status == tripStatus);
           if (include) docsById[doc.id] = doc;
         }
       }
@@ -279,6 +279,7 @@ class FirebaseTripService {
       final snapshot = await firestore.collection(kTripTable).doc(tripId).get();
       if (snapshot.exists) {
         final TripModel trip = TripModel.fromMap(snapshot.data()!);
+        if (trip.tripStatus == TripStatus.deleted.name) return null;
         await _hydrateMemberOnlyTrip(trip);
         return trip;
       }
@@ -1087,7 +1088,7 @@ class FirebaseTripService {
   }) async {
     try {
       if (emails.isEmpty) return true;
-      await functions.httpsCallable('sendTripInvites').call({
+      await functions.httpsCallable('sendTripInvitesV3').call({
         'tripId': tripId,
         'tripTitle': tripTitle,
         'emails': emails,

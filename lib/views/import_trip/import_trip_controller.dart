@@ -29,6 +29,7 @@ Field rules:
 Strict JSON formatting requirements:
 - Use only standard ASCII straight double quotes (") around every JSON key and string value.
 - Do not use curly/smart quotes (“ ”), single quotes ('), or backticks (`) for JSON syntax.
+- Do not include quoted text or double quotation marks inside any field value; rephrase without quotes. Keep the required straight double quotes around JSON keys and string values.
 - Do not wrap the response in ```json fences.
 - Do not include comments, trailing commas, or any text before or after the JSON object.
 - Ensure the output can be parsed by JSON.parse/jsonDecode without cleanup.
@@ -102,11 +103,12 @@ Strict JSON formatting requirements:
 
     isParsing.value = true;
     try {
-      // Strip markdown code fences if the AI wrapped the JSON
+      // Strip markdown fences and normalize all smart double quotes.
       final cleaned =
           raw
               .replaceAll(RegExp(r'^```json\s*', multiLine: true), '')
               .replaceAll(RegExp(r'^```\s*', multiLine: true), '')
+              .replaceAll(RegExp('[“”]'), '"')
               .trim();
 
       final data = json.decode(cleaned) as Map<String, dynamic>;

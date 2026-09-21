@@ -64,10 +64,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF7FAFD),
-              Color(0xFFF8F8F8),
-            ],
+            colors: [Color(0xFFF7FAFD), Color(0xFFF8F8F8)],
           ),
         ),
         child: Stack(
@@ -100,19 +97,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
                   return ListView.builder(
                     controller: _scrollController,
-                    padding: EdgeInsets.only(
-                      top: 8.h,
-                      bottom: 150.h,
-                    ),
+                    padding: EdgeInsets.only(top: 8.h, bottom: 150.h),
                     itemCount: controller.messages.length + 1,
                     itemBuilder: (context, index) {
                       if (index == controller.messages.length) {
                         return controller.isFetchingMore
                             ? const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                              child: Center(child: CircularProgressIndicator()),
                             )
                             : const SizedBox.shrink();
                       }
@@ -127,18 +119,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             message.createdAt.toDate(),
                           );
 
-                      final sender = controller.chatRoom.value!.users.firstWhere(
-                        (u) => u.id == message.createdBy,
-                        orElse:
-                            () => ChatUser(
-                              id: message.createdBy,
-                              unreadedMessages: 0,
-                              name: 'Unknown',
-                              profileImage: '',
-                              isOnline: false,
-                              isTyping: false,
-                            ),
-                      );
+                      final sender = controller.chatRoom.value!.users
+                          .firstWhere(
+                            (u) => u.id == message.createdBy,
+                            orElse:
+                                () => ChatUser(
+                                  id: message.createdBy,
+                                  unreadedMessages: 0,
+                                  name: 'Unknown',
+                                  profileImage: '',
+                                  isOnline: false,
+                                  isTyping: false,
+                                ),
+                          );
 
                       return Column(
                         children: [
@@ -158,54 +151,50 @@ class _MessagesScreenState extends State<MessagesScreen> {
               bottom: 12.h,
               child: SafeArea(
                 top: false,
-                child: Obx(
-                  () {
-                    final trip = controller.currentTrip.value;
-                    final isMember =
-                        trip != null &&
-                        (trip.createdBy == GlobalVariables.currentUid ||
-                            (trip.joinedUsers?.contains(
-                                  GlobalVariables.currentUid,
-                                ) ??
-                                false));
+                child: Obx(() {
+                  final trip = controller.currentTrip.value;
+                  final isMember =
+                      trip != null &&
+                      (trip.createdBy == GlobalVariables.currentUid ||
+                          (trip.joinedUsers?.contains(
+                                GlobalVariables.currentUid,
+                              ) ??
+                              false));
 
-                    if (controller.isLoadingChats.isTrue) {
-                      return const SizedBox.shrink();
-                    }
+                  if (controller.isLoadingChats.isTrue) {
+                    return const SizedBox.shrink();
+                  }
 
-                    if (trip == null) {
-                      return const SizedBox.shrink();
-                    }
+                  if (trip == null) {
+                    return const SizedBox.shrink();
+                  }
 
-                    if (!isMember) {
-                      return _JoinPanel(
-                        onJoin: controller.joinRoom,
+                  if (!isMember) {
+                    return _JoinPanel(onJoin: controller.joinRoom);
+                  }
+
+                  return _ComposerBar(
+                    controller: controller,
+                    onSend: () {
+                      final text = controller.tecMessage.text.trim();
+                      if (text.isEmpty) return;
+                      CommonCode().removeTextFieldFocus();
+                      controller.saveMessage(
+                        chatToSave: ChatMessage(
+                          chateId: const Uuid().v6(),
+                          messageStatus: MessageStatus.sent.status,
+                          createdAt: Timestamp.now(),
+                          createdBy: GlobalVariables.loggedInUser.value!.uid,
+                          sentTo: controller.currentTrip.value!.id,
+                          messageType: MessageType.Text.name,
+                          data: text,
+                        ),
                       );
-                    }
-
-                    return _ComposerBar(
-                      controller: controller,
-                      onSend: () {
-                        final text = controller.tecMessage.text.trim();
-                        if (text.isEmpty) return;
-                        CommonCode().removeTextFieldFocus();
-                        controller.saveMessage(
-                          chatToSave: ChatMessage(
-                            chateId: const Uuid().v6(),
-                            messageStatus: MessageStatus.sent.status,
-                            createdAt: Timestamp.now(),
-                            createdBy: GlobalVariables.loggedInUser.value!.uid,
-                            sentTo: controller.currentTrip.value!.id,
-                            messageType: MessageType.Text.name,
-                            data: text,
-                          ),
-                        );
-                        AppLogger.debug('Message sent: $text');
-                        controller.tecMessage.clear();
-                      },
-                    );
-                  },
-                ),
+                      AppLogger.debug('Message sent: $text');
+                      controller.tecMessage.clear();
+                    },
+                  );
+                }),
               ),
             ),
           ],
@@ -226,102 +215,100 @@ class _ChatHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        final trip = controller.currentTrip.value;
-        final memberCount = trip?.joinedUsers?.length ?? 0;
-        return Row(
-          children: [
-            AnyImageView(
-              url: trip?.images.first ?? '',
-              height: 50.h,
-              width: 50.w,
-              isCircle: true,
-              containerBackgroundColor: AppColors.kGreyColor.withValues(
-                alpha: .12,
-              ),
+    return Obx(() {
+      final trip = controller.currentTrip.value;
+      final memberCount = trip?.joinedUsers?.length ?? 0;
+      return Row(
+        children: [
+          AnyImageView(
+            url: trip?.images.firstOrNull ?? '',
+            height: 50.h,
+            width: 50.w,
+            isCircle: true,
+            containerBackgroundColor: AppColors.kGreyColor.withValues(
+              alpha: .12,
             ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextWidget(
-                          labelText: trip?.title ?? 'Trip Chat',
-                          textAlign: TextAlign.start,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.labelTextStyle().copyWith(
-                            color: AppColors.kBlackColor,
-                            fontSize: AppStyles.fontSize16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                          vertical: 4.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.kLightBlueColor,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          'Group',
-                          style: AppStyles.labelTextStyle().copyWith(
-                            color: AppColors.kPrimaryColor,
-                            fontSize: AppStyles.fontSize12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4.h),
-                  Row(
-                    children: [
-                      Image.asset(
-                        AppImages.kCalendarIcon,
-                        color: AppColors.kGreyyColor,
-                        scale: 7,
-                      ),
-                      SizedBox(width: 4.w),
-                      Expanded(
-                        child: TextWidget(
-                          labelText:
-                              '${DateFormat('dd MMM').format(controller.currentTrip.value?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.currentTrip.value?.tripEndDate ?? DateTime.now())}',
-                          textAlign: TextAlign.start,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.labelTextStyle().copyWith(
-                            color: AppColors.kGreyyColor,
-                            fontSize: AppStyles.fontSize13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '$memberCount members',
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextWidget(
+                        labelText: trip?.title ?? 'Trip Chat',
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: AppStyles.labelTextStyle().copyWith(
-                          color: AppColors.kGreyyColor,
+                          color: AppColors.kBlackColor,
+                          fontSize: AppStyles.fontSize16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.kLightBlueColor,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        'Group',
+                        style: AppStyles.labelTextStyle().copyWith(
+                          color: AppColors.kPrimaryColor,
                           fontSize: AppStyles.fontSize12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    Image.asset(
+                      AppImages.kCalendarIcon,
+                      color: AppColors.kGreyyColor,
+                      scale: 7,
+                    ),
+                    SizedBox(width: 4.w),
+                    Expanded(
+                      child: TextWidget(
+                        labelText:
+                            '${DateFormat('dd MMM').format(controller.currentTrip.value?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.currentTrip.value?.tripEndDate ?? DateTime.now())}',
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppStyles.labelTextStyle().copyWith(
+                          color: AppColors.kGreyyColor,
+                          fontSize: AppStyles.fontSize13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '$memberCount members',
+                      style: AppStyles.labelTextStyle().copyWith(
+                        color: AppColors.kGreyyColor,
+                        fontSize: AppStyles.fontSize12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        );
-      },
-    );
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -427,10 +414,7 @@ class _JoinPanel extends StatelessWidget {
 }
 
 class _ComposerBar extends StatelessWidget {
-  const _ComposerBar({
-    required this.controller,
-    required this.onSend,
-  });
+  const _ComposerBar({required this.controller, required this.onSend});
 
   final UsersController controller;
   final VoidCallback onSend;
@@ -501,10 +485,7 @@ class _ComposerBar extends StatelessWidget {
 }
 
 class _EmptyChatState extends StatelessWidget {
-  const _EmptyChatState({
-    required this.title,
-    required this.subtitle,
-  });
+  const _EmptyChatState({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;

@@ -101,6 +101,10 @@ class _UsersScreenState extends State<UsersScreen> {
                         shrinkWrap: true,
                         separatorBuilder: (context, index) => const Divider(),
                         itemBuilder: (context, index) {
+                          final trip = controller.chatRooms[index].trip;
+                          if (trip == null || trip.tripStatus == 'deleted') {
+                            return const SizedBox.shrink();
+                          }
                           return Padding(
                             padding: EdgeInsets.only(
                               bottom: index == 9 ? 120.h : 0,
@@ -111,9 +115,9 @@ class _UsersScreenState extends State<UsersScreen> {
                                       .chatRooms[index]
                                       .trip
                                       ?.images
-                                      .first ??
+                                      .firstOrNull ??
                                   '',
-                              tripModel: controller.chatRooms[index].trip!,
+                              tripModel: trip,
                               title:
                                   controller.chatRooms[index].trip?.title ?? '',
                               subtitle:

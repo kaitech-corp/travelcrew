@@ -21,6 +21,7 @@ void removeTripOverAll(TripModel trip) {
 }
 
 void addTripOverAll(TripModel trip) {
+  if (trip.tripStatus == TripStatus.deleted.name) return;
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
     if (trip.createdBy != GlobalVariables.currentUid &&
@@ -39,6 +40,10 @@ void addTripOverAll(TripModel trip) {
 }
 
 void updateTripOverAll(TripModel trip) {
+  if (trip.tripStatus == TripStatus.deleted.name) {
+    removeTripOverAll(trip);
+    return;
+  }
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
     final int index = controller.otherTrips.indexWhere(
@@ -71,7 +76,7 @@ void updateTripOverAll(TripModel trip) {
     );
     if (index != -1) {
       controller.trips[index] = trip;
-      controller.filteredTrips[index] = trip;
+      controller.changeTab(controller.selectedTabIndex.value);
     }
   }
 }

@@ -41,7 +41,8 @@ class ChatFirebaseService {
           );
           return chatRoom;
         });
-        return Future.wait(futures);
+        final rooms = await Future.wait(futures);
+        return rooms.where((room) => room.trip != null).toList();
       }
     } catch (e) {
       if (kDebugMode) {

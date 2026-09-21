@@ -35,6 +35,7 @@ class MyTripsController extends GetxController {
 
     filteredTrips.value =
         trips.where((trip) {
+          if (trip.tripStatus == TripStatus.deleted.name) return false;
           final start = trip.tripStartDate ?? trip.startDate;
           final end = trip.tripEndDate ?? start;
 

@@ -61,53 +61,53 @@ class _HomePageScreenState extends State<HomePageScreen> {
               padding: const EdgeInsets.only(right: 20),
               child: Row(
                 children: [
-                  Container(
-                    width: Get.width * 0.75,
-                    height: 43,
-                    padding: const EdgeInsets.only(
-                      top: 12,
-                      left: 10,
-                      right: 17,
-                      bottom: 12,
-                    ),
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                          width: 0.52,
-                          color: Color(0xFFD2D5D9),
-                        ),
-                        borderRadius: BorderRadius.circular(42.4),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                        top: 12,
+                        left: 10,
+                        right: 17,
+                        bottom: 12,
                       ),
-                    ),
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
-                      onChanged: (value) {
-                        controller.applyOtherTripsFilter(value);
-                      },
-                      decoration: InputDecoration(
-                        hintText: l10n.search,
-                        hintStyle: AppStyles.labelTextStyle().copyWith(
-                          fontSize: AppStyles.fontSize13,
-                          fontWeight: FontWeight.w400,
-                          height: 1.40,
-                          color: const Color(0xFF9C9FA3),
-                          letterSpacing: -0.01,
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            width: 0.52,
+                            color: Color(0xFFD2D5D9),
+                          ),
+                          borderRadius: BorderRadius.circular(42.4),
                         ),
-                        border: InputBorder.none,
-                        isDense: true,
-                        prefixIconConstraints: BoxConstraints(maxWidth: 30.w),
-                        prefixIcon: const ImageIcon(
-                          AssetImage(AppImages.kSearchIcon),
-                          color: AppColors.kGreyColor,
-                        ),
-                        contentPadding: EdgeInsets.zero,
                       ),
-                      style: AppStyles.labelTextStyle().copyWith(
-                        fontSize: AppStyles.fontSize14,
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        onChanged: (value) {
+                          controller.applyOtherTripsFilter(value);
+                        },
+                        decoration: InputDecoration(
+                          hintText: l10n.search,
+                          hintStyle: AppStyles.labelTextStyle().copyWith(
+                            fontSize: AppStyles.fontSize13,
+                            fontWeight: FontWeight.w400,
+                            height: 1.40,
+                            color: const Color(0xFF9C9FA3),
+                            letterSpacing: -0.01,
+                          ),
+                          border: InputBorder.none,
+                          isDense: true,
+                          prefixIconConstraints: BoxConstraints(maxWidth: 30.w),
+                          prefixIcon: const ImageIcon(
+                            AssetImage(AppImages.kSearchIcon),
+                            color: AppColors.kGreyColor,
+                          ),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        style: AppStyles.labelTextStyle().copyWith(
+                          fontSize: AppStyles.fontSize14,
+                        ),
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 12),
                   GestureDetector(
                     onTap: () async {
                       await showModalBottomSheet(
@@ -148,7 +148,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
               () =>
                   controller.isTabsReady.value
                       ? SizedBox(
-                        height: 25.h,
+                        height: 48 * MediaQuery.textScalerOf(context).scale(1),
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemBuilder:
@@ -252,6 +252,26 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   Widget _buildTripsTab(String tabName, List<TripDiscoveryModel> tripss) {
+    if (tripss.isNotEmpty && MediaQuery.sizeOf(context).width >= 600) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final columns = constraints.maxWidth >= 720 ? 2 : 1;
+          final textScale = MediaQuery.textScalerOf(context).scale(1);
+          return GridView.builder(
+            padding: const EdgeInsets.only(right: 18, bottom: 140),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              mainAxisExtent: 300 * textScale.clamp(1.0, 2.0),
+            ),
+            itemCount: tripss.length,
+            itemBuilder:
+                (context, index) => LocationWidget(tripModel: tripss[index]),
+          );
+        },
+      );
+    }
     return tripss.isEmpty
         ? const Center(child: Text('No trips found.'))
         : ListView.separated(

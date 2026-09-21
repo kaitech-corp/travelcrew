@@ -60,6 +60,7 @@ class _ImportTripScreenState extends State<ImportTripScreen> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       screenName: 'Import from AI',
+      maxContentWidth: 720,
       centerTitle: true,
       scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),

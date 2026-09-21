@@ -399,7 +399,7 @@ class CreateTripController extends GetxController {
       }
       final TripModel trip = TripModel(
         images: uploadedImages,
-        tripStatus: TripStatus.upcoming.name,
+        tripStatus: tripModel.value!.tripStatus ?? TripStatus.upcoming.name,
         id: tripModel.value!.id,
         tripLocation: destinationController.text,
         invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
@@ -460,7 +460,7 @@ class CreateTripController extends GetxController {
           updatedTrip.createdByUser = tripModel.value!.createdByUser;
           tripModel.value = updatedTrip;
           updateTripOverAll(updatedTrip);
-          Get.offAllNamed(kSpecificTripViewScreenRoute, arguments: updatedTrip);
+          Get.offNamed(kSpecificTripViewScreenRoute, arguments: updatedTrip);
         } else {
           showCustomSnackBar(content: 'Failed to update trip');
         }
@@ -571,6 +571,21 @@ class CreateTripController extends GetxController {
       ) async {
         if (isSuccess) {
           showCustomSnackBar(content: 'Trip created successfully');
+
+          // The trip itself is ready to display now. Do not make the user wait
+          // for invites, expenses, and activity writes before navigating.
+          for (final activity in activityList) {
+            activity.tripId = tripModel.id;
+            if (activity.id == null || activity.id!.isEmpty) {
+              activity.id = const Uuid().v6();
+            }
+          }
+          tripModel.activities = activityList.toList();
+          tripModel.expenses = expensesToSave;
+          addTripOverAll(tripModel);
+          GlobalVariables.showLoader.value = false;
+          Get.offNamed(kSpecificTripViewScreenRoute, arguments: tripModel);
+
           await FirebaseTripService.sendTripInvites(
             tripId: tripModel.id,
             tripTitle: tripModel.title ?? tripModel.destination,
@@ -582,26 +597,12 @@ class CreateTripController extends GetxController {
                 await FirebaseTripService.addExpenses(expense: expense) &&
                 expensesSaved;
           }
-          {
-            GlobalVariables.showLoader.value = false;
-            if (expensesSaved) {
-              for (var i = 0; i < activityList.length; i++) {
-                activityList[i].tripId = tripModel.id;
-                activityList[i].id = const Uuid().v6();
-                await FirebaseTripService.addActivity(
-                  activity: activityList[i],
-                );
-              }
-              tripModel.activities = activityList;
-              tripModel.expenses = expensesToSave;
-              addTripOverAll(tripModel);
-              Get.offAndToNamed(
-                kSpecificTripViewScreenRoute,
-                arguments: tripModel,
-              );
-            } else {
-              showCustomSnackBar(content: 'Failed to add expense');
+          if (expensesSaved) {
+            for (final activity in activityList) {
+              await FirebaseTripService.addActivity(activity: activity);
             }
+          } else {
+            showCustomSnackBar(content: 'Failed to add expense');
           }
         } else {
           showCustomSnackBar(content: 'Failed to create trip');

@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
+import 'package:travel_crew/views/main_view/controller/main_view_controller.dart';
+import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
@@ -31,6 +33,229 @@ class SpecificTripViewScreen extends StatefulWidget {
 
   @override
   State<SpecificTripViewScreen> createState() => _SpecificTripViewScreenState();
+}
+
+class _ExpenseListTile extends StatelessWidget {
+  const _ExpenseListTile({required this.expense, required this.onTap});
+
+  final ExpenseModel expense;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12.r),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 4.w),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(9.w),
+                decoration: BoxDecoration(
+                  color: AppColors.kPrimaryColor.withValues(alpha: .12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.receipt_long_rounded,
+                  color: AppColors.kPrimaryColor,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      expense.name.isEmpty ? 'Expense' : expense.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppStyles.labelTextStyle().copyWith(
+                        fontSize: AppStyles.fontSize15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      DateFormat('MMM d, yyyy').format(expense.date),
+                      style: AppStyles.labelTextStyle().copyWith(
+                        color: AppColors.kGreyTextColor,
+                        fontSize: AppStyles.fontSize12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '\$${expense.amount.toStringAsFixed(2)}',
+                style: AppStyles.labelTextStyle().copyWith(
+                  fontSize: AppStyles.fontSize15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(width: 4.w),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.kGreyTextColor,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpenseDetailsSheet extends StatelessWidget {
+  const _ExpenseDetailsSheet({required this.expense, required this.onEdit});
+
+  final ExpenseModel expense;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * .78,
+        ),
+        padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 20.h),
+        decoration: BoxDecoration(
+          color: AppColors.kBackgroundColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 42.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.kGreyColor.withValues(alpha: .55),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      expense.name.isEmpty ? 'Expense details' : expense.name,
+                      style: AppStyles.labelTextStyle().copyWith(
+                        fontSize: AppStyles.fontSize22,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              _ExpenseDetailRow(
+                icon: Icons.payments_outlined,
+                label: 'Total amount',
+                value: '\$${expense.amount.toStringAsFixed(2)}',
+              ),
+              SizedBox(height: 14.h),
+              _ExpenseDetailRow(
+                icon: Icons.calendar_today_outlined,
+                label: 'Date',
+                value: DateFormat('EEE, MMM d, yyyy').format(expense.date),
+              ),
+              SizedBox(height: 14.h),
+              _ExpenseDetailRow(
+                icon: Icons.call_split_rounded,
+                label: 'Split',
+                value:
+                    expense.splitType == 'custom'
+                        ? 'Custom split'
+                        : 'Split equally',
+              ),
+              SizedBox(height: 14.h),
+              _ExpenseDetailRow(
+                icon: Icons.people_outline_rounded,
+                label: 'Participants',
+                value:
+                    expense.owedTo.isEmpty
+                        ? 'No outstanding balances'
+                        : '${expense.owedTo.length} participant${expense.owedTo.length == 1 ? '' : 's'}',
+              ),
+              SizedBox(height: 22.h),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit_rounded),
+                  label: const Text('Edit expense'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.kPrimaryColor,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpenseDetailRow extends StatelessWidget {
+  const _ExpenseDetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColors.kPrimaryColor, size: 22),
+        SizedBox(width: 12.w),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: AppStyles.labelTextStyle().copyWith(
+                color: AppColors.kGreyTextColor,
+                fontSize: AppStyles.fontSize12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              value,
+              style: AppStyles.labelTextStyle().copyWith(
+                fontSize: AppStyles.fontSize15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
@@ -70,17 +295,21 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
     }
   }
 
+  void _goBack() {
+    if (Navigator.canPop(context)) {
+      Get.back();
+      return;
+    }
+    if (Get.isRegistered<MainViewController>()) {
+      Get.find<MainViewController>().changeIndex(0);
+    }
+    Get.offAllNamed(kMainViewScreenRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      onWillPop: () {
-        if (Navigator.canPop(context)) {
-          Get.back();
-        } else {
-          Get.offAllNamed(kMainViewScreenRoute);
-          // Get.close(1);
-        }
-      },
+      onWillPop: _goBack,
       screenName: '',
       isBackIcon: false,
       leadingWidth: 0,
@@ -265,7 +494,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                   top: 40.h,
                   left: 10.w,
                   child: GestureDetector(
-                    onTap: () => Get.back(),
+                    onTap: _goBack,
                     child: BlurryContainer(
                       padding: EdgeInsets.all(10.sp),
                       blur: 7,
@@ -410,7 +639,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                       children: [
                         SizedBox(width: 10.w),
                         GestureDetector(
-                          onTap: () => Get.back(),
+                          onTap: _goBack,
                           child: BlurryContainer(
                             padding: EdgeInsets.all(10.sp),
                             blur: 7,
@@ -1090,12 +1319,8 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
   }
 
   Widget _buildExpenseSummary() {
-    final totalSpent =
-        controller.tripModel.value?.expenses?.fold(
-          0.0,
-          (sum, e) => sum + e.amount,
-        ) ??
-        0.0;
+    final expenses = controller.tripModel.value?.expenses ?? <ExpenseModel>[];
+    final totalSpent = expenses.fold(0.0, (sum, e) => sum + e.amount);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -1112,8 +1337,57 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
               Text('\$${totalSpent.toStringAsFixed(2)}'),
             ],
           ),
+          if (expenses.isNotEmpty) ...[
+            SizedBox(height: 16.h),
+            const Divider(height: 1),
+            SizedBox(height: 8.h),
+            ...expenses.map(
+              (expense) => Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: _ExpenseListTile(
+                  expense: expense,
+                  onTap: () => _showExpenseDetails(context, expense),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  void _showExpenseDetails(BuildContext context, ExpenseModel expense) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (_) => _ExpenseDetailsSheet(
+            expense: expense,
+            onEdit: () {
+              Navigator.of(context).pop();
+              Get.toNamed(
+                kAddExpenseScreenRoute,
+                arguments: {
+                  'expense': expense,
+                  'tripId': controller.tripModel.value?.id,
+                  'trip': controller.tripModel.value,
+                  'tripMembers':
+                      controller.tripModel.value?.joindUsersList ?? [],
+                  'onSaved': (ExpenseModel updatedExpense) {
+                    final expenses = controller.tripModel.value?.expenses;
+                    final index = expenses?.indexWhere(
+                      (item) => item.id == updatedExpense.id,
+                    );
+                    if (expenses != null && index != null && index >= 0) {
+                      expenses[index] = updatedExpense;
+                      controller.tripModel.refresh();
+                    }
+                  },
+                },
+              );
+            },
+          ),
     );
   }
 

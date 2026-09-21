@@ -28,20 +28,24 @@ class LocationWidget extends StatelessWidget {
         children: [
           AnyImageView(
             width: Get.width,
-            height: Get.height * 0.35,
+            height:
+                MediaQuery.sizeOf(context).width >= 600
+                    ? 300
+                    : Get.height * 0.35,
             borderRadius: BorderRadius.circular(36.39.r),
             url: tripModel.images.lastOrNull ?? '',
             errorImage: AppImages.kDefaultTripImage,
           ),
           Positioned(
             bottom: 0,
+            left: 0,
+            right: 0,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(36.39.r),
                 bottomRight: Radius.circular(36.39.r),
               ),
               child: BlurryContainer(
-                width: context.width * .9,
                 padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 18.w),
                 blur: 10,
                 borderRadius: BorderRadius.only(
@@ -55,6 +59,8 @@ class LocationWidget extends StatelessWidget {
                   children: [
                     Text(
                       tripModel.title ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.urbanist().copyWith(
                         color: Colors.white,
                         fontSize: AppStyles.fontSize24,

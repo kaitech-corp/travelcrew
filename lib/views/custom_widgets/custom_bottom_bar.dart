@@ -26,83 +26,100 @@ class CustomBottomBar extends StatelessWidget {
   final Color unselectedLabelColor;
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(30.0),
-      child: Container(
-        height: 90.h,
-        margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        padding: EdgeInsets.only(
-          left: 15.w,
-          right: 15.w,
-          bottom: 19.h,
-          top: 10.h,
-        ),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(26.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(38),
-              blurRadius: 10.0,
-              offset: const Offset(0, 5),
+    return SafeArea(
+      top: false,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: EdgeInsets.only(
+              left: 15.w,
+              right: 15.w,
+              bottom: 19.h,
+              top: 10.h,
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(navItems.length, (index) {
-            final isSelected = selectedIndex == index;
-            final item = navItems[index];
-            if (index == 2) {
-              return GestureDetector(
-                onTap: () => onTap(index),
-                child: Container(
-                  width: 50.w,
-                  height: 50.h,
-                  margin: EdgeInsets.only(bottom: 10.h),
-                  decoration: const BoxDecoration(
-                    color: AppColors.kPrimaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.add, color: Colors.white, size: 25.sp),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(26.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(38),
+                  blurRadius: 10.0,
+                  offset: const Offset(0, 5),
                 ),
-              );
-            }
-            return GestureDetector(
-              onTap: () => onTap(index),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: 10.h),
-                  IconTheme(
-                    data: IconThemeData(
-                      color:
-                          isSelected
-                              ? Colors.white
-                              : Colors.white.withAlpha(179),
-                      size: AppStyles.fontSize24,
-                    ),
-                    child: item.icon,
-                  ),
-                  SizedBox(height: 4.h),
-                  if (item.label != null)
-                    Text(
-                      item.label!,
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color:
-                            isSelected
-                                ? Colors.white
-                                : Colors.white.withAlpha(179),
-                        fontSize: AppStyles.fontSize14,
-
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w400,
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(navItems.length, (index) {
+                final isSelected = selectedIndex == index;
+                final item = navItems[index];
+                if (index == 2) {
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTap(index),
+                      child: Container(
+                        width: 50,
+                        height: 50.h,
+                        margin: EdgeInsets.only(bottom: 10.h),
+                        decoration: const BoxDecoration(
+                          color: AppColors.kPrimaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 25.sp,
+                        ),
                       ),
                     ),
-                ],
-              ),
-            );
-          }),
+                  );
+                }
+                return Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => onTap(index),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 10.h),
+                        IconTheme(
+                          data: IconThemeData(
+                            color:
+                                isSelected
+                                    ? Colors.white
+                                    : Colors.white.withAlpha(179),
+                            size: AppStyles.fontSize24,
+                          ),
+                          child: item.icon,
+                        ),
+                        SizedBox(height: 4.h),
+                        if (item.label != null)
+                          Text(
+                            item.label!,
+                            textAlign: TextAlign.center,
+                            style: AppStyles.labelTextStyle().copyWith(
+                              color:
+                                  isSelected
+                                      ? Colors.white
+                                      : Colors.white.withAlpha(179),
+                              fontSize: AppStyles.fontSize14,
+
+                              fontWeight:
+                                  isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
         ),
       ),
     );

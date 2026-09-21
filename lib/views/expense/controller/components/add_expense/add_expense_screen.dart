@@ -35,7 +35,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      screenName: l10n.addExpense,
+      screenName: controller.isEditing ? 'Edit Expense' : l10n.addExpense,
+      maxContentWidth: 720,
       scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),
       centerTitle: true,
@@ -214,7 +215,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         child: CustomElevatedButton(
           width: Get.width,
           height: Get.height * 0.06,
-          title: l10n.saveExpense,
+          title: controller.isEditing ? 'Update Expense' : l10n.saveExpense,
           onPressed: () {
             if (controller.formKey.currentState!.validate()) {
               controller.addExpense();

@@ -47,6 +47,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
       screenName: _isEditing ? l10n.updateTrip : l10n.createTrip,
+      maxContentWidth: 720,
       onWillPop: () {
         GlobalVariables.showLoader.value = false;
         controller.previousStep();

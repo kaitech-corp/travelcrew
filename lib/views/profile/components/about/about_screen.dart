@@ -185,7 +185,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Text(
-                      'v1.0.0',
+                      'v4.0.0',
                       style: AppStyles.labelTextStyle().copyWith(
                         color: AppColors.kPrimaryColor,
                         fontSize: AppStyles.fontSize12,

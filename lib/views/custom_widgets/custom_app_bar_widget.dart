@@ -22,8 +22,10 @@ class CustomAppBar extends StatelessWidget {
     this.leadingWidget,
     this.backIconColor,
     this.title,
+    this.toolbarHeight = 60,
   });
   final String screenTitle;
+  final double toolbarHeight;
   final String className;
   final VoidCallback? onBackButtonTap;
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -39,6 +41,7 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     kLogging('=============class name$className ${leadingWidth == 0.0}');
     return AppBar(
+      toolbarHeight: toolbarHeight,
       scrolledUnderElevation: 0,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -73,12 +76,14 @@ class CustomAppBar extends StatelessWidget {
           title ??
           Text(
             screenTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: AppStyles.labelTextStyle().copyWith(
               color: Colors.black,
               fontSize: AppStyles.fontSize28,
               fontWeight: FontWeight.w600,
-              height: 1.25.h,
+              height: 1.25,
             ),
           ),
       centerTitle: centerTitle ?? false,

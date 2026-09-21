@@ -26,6 +26,10 @@ class AddExpenseController extends GetxController {
 
   String? _tripId;
   void Function(ExpenseModel expense)? _onAdd;
+  void Function(ExpenseModel expense)? _onSaved;
+  ExpenseModel? _expenseToEdit;
+
+  bool get isEditing => _expenseToEdit != null;
 
   @override
   void onInit() {
@@ -59,6 +63,23 @@ class AddExpenseController extends GetxController {
     if (onAdd is Function) {
       _onAdd = (expense) => onAdd(expense);
     }
+
+    final onSaved = args['onSaved'];
+    if (onSaved is Function) {
+      _onSaved = (expense) => onSaved(expense);
+    }
+
+    final expense = args['expense'];
+    if (expense is ExpenseModel) {
+      _expenseToEdit = expense;
+      expenseNameController.text = expense.name;
+      amountController.text = expense.amount.toStringAsFixed(2);
+      expenceDate.value = expense.date;
+      splitType.value = expense.splitType;
+      owedTo.assignAll(expense.owedTo);
+      owners.assignAll(expense.owners);
+      selectedMembers.assignAll(expense.owedTo.keys);
+    }
   }
 
   void _resetFormState() {
@@ -72,6 +93,8 @@ class AddExpenseController extends GetxController {
     tripMembers.clear();
     _tripId = null;
     _onAdd = null;
+    _onSaved = null;
+    _expenseToEdit = null;
   }
 
   void toggleMemberSelection(String uid) {
@@ -122,13 +145,18 @@ class AddExpenseController extends GetxController {
     }
 
     final ExpenseModel expenseModel = ExpenseModel(
-      paidByUsers: [GlobalVariables.loggedInUser.value?.uid ?? ''],
+      paidByUsers:
+          _expenseToEdit?.paidByUsers ??
+          [GlobalVariables.loggedInUser.value?.uid ?? ''],
       name: expenseNameController.text.trim(),
       amount: expenseAmount,
       date: expenceDate.value ?? DateTime.now(),
-      id: const Uuid().v6(),
+      id: _expenseToEdit?.id ?? const Uuid().v6(),
       tripId: _tripId!,
-      createdBy: GlobalVariables.loggedInUser.value?.uid ?? '',
+      createdBy:
+          _expenseToEdit?.createdBy ??
+          GlobalVariables.loggedInUser.value?.uid ??
+          '',
       splitType: splitType.value,
       owedTo: finalOwedTo,
       owners: owners,
@@ -136,20 +164,30 @@ class AddExpenseController extends GetxController {
 
     try {
       GlobalVariables.showLoader.value = true;
-      await FirebaseTripService.addExpenses(expense: expenseModel).then((
-        value,
-      ) {
-        if (value) {
-          _onAdd?.call(expenseModel);
-          Get.back();
-          showCustomSnackBar(content: 'Expense added successfully');
+      final value =
+          isEditing
+              ? await FirebaseTripService.updateExpense(expenseModel)
+              : await FirebaseTripService.addExpenses(expense: expenseModel);
+      if (value) {
+        if (isEditing) {
+          _onSaved?.call(expenseModel);
         } else {
-          showCustomSnackBar(
-            content: 'Failed to add expense',
-            contentType: ContentType.failure,
-          );
+          _onAdd?.call(expenseModel);
         }
-      });
+        Get.back();
+        showCustomSnackBar(
+          content:
+              isEditing
+                  ? 'Expense updated successfully'
+                  : 'Expense added successfully',
+        );
+      } else {
+        showCustomSnackBar(
+          content:
+              isEditing ? 'Failed to update expense' : 'Failed to add expense',
+          contentType: ContentType.failure,
+        );
+      }
     } catch (e) {
       if (kDebugMode) {
         print('Error adding expense: $e');

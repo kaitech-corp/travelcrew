@@ -48,8 +48,10 @@ class CustomScaffold extends StatefulWidget {
     this.openDrawerCallback,
     this.backgroundColor,
     this.showNotificationBell = false,
+    this.maxContentWidth = 960,
   });
   final Widget body;
+  final double maxContentWidth;
   final String className;
   final String screenName;
   final int bottomBarIndex;
@@ -159,6 +161,9 @@ class CustomScaffoldState extends State<CustomScaffold> {
       if (widget.showNotificationBell) _buildNotificationBell(),
       ...?widget.actions,
     ];
+    final toolbarHeight =
+        (widget.appBarSize ?? 60) *
+        MediaQuery.textScalerOf(context).scale(1).clamp(1.0, double.infinity);
     return PopScope(
       canPop: widget.onWillPop == null,
       onPopInvokedWithResult: (didPop, result) async {
@@ -197,8 +202,9 @@ class CustomScaffoldState extends State<CustomScaffold> {
                 key: widget.scaffoldKey,
                 drawer: widget.drawer,
                 appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(widget.appBarSize ?? 60),
+                  preferredSize: Size.fromHeight(toolbarHeight),
                   child: CustomAppBar(
+                    toolbarHeight: toolbarHeight,
                     onBackButtonTap: widget.onBackButtonPressed,
                     title: widget.title,
                     leadingWidth: widget.leadingWidth,
@@ -217,25 +223,34 @@ class CustomScaffoldState extends State<CustomScaffold> {
                 body:
                     widget.isFullBody
                         ? Container(child: widget.body)
-                        : Container(
-                          // width: Get.width,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          padding: widget.padding,
-                          decoration: BoxDecoration(
-                            color:
-                                widget.backgroundColor ??
-                                Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                          child: SafeArea(
-                            child: Column(
-                              children: [
-                                Flexible(child: Container(child: widget.body)),
-                              ],
+                        : Center(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: widget.maxContentWidth,
+                            ),
+                            child: Container(
+                              // width: Get.width,
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              padding: widget.padding,
+                              decoration: BoxDecoration(
+                                color:
+                                    widget.backgroundColor ??
+                                    Theme.of(context).scaffoldBackgroundColor,
+                              ),
+                              child: SafeArea(
+                                child: Column(
+                                  children: [
+                                    Flexible(
+                                      child: Container(child: widget.body),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                extendBodyBehindAppBar: true,
+                extendBodyBehindAppBar: widget.isFullBody,
                 bottomNavigationBar:
                     widget.bottomNavigationBar ??
                     const SizedBox(width: 0, height: 0),

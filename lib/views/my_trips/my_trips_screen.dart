@@ -64,153 +64,143 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
           ),
         ),
       ],
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            SizedBox(height: 10.h),
-            Obx(
-              () => Row(
-                children: [
-                  _buildTab(context, 0, l10n.upcoming),
-                  SizedBox(width: 10.w),
-                  _buildTab(context, 1, 'Active'),
-                  SizedBox(width: 10.w),
-                  _buildTab(context, 2, 'Past'),
-                ],
-              ),
+      body: Column(
+        children: [
+          SizedBox(height: 10.h),
+          Obx(
+            () => Row(
+              children: [
+                _buildTab(context, 0, l10n.upcoming),
+                SizedBox(width: 10.w),
+                _buildTab(context, 1, 'Active'),
+                SizedBox(width: 10.w),
+                _buildTab(context, 2, 'Past'),
+              ],
             ),
-            Obx(
-              () =>
-                  controller.selectedTabIndex.value !=
-                          -1 // Show search for all tabs if needed, but the original only showed for "Complete"
-                      ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: 20.h),
-                          TextFormField(
-                            textCapitalization: TextCapitalization.sentences,
-                            onTapUpOutside:
-                                (event) => CommonCode().removeTextFieldFocus(),
-                            onChanged: (v) {
-                              controller.applyFilter();
-                            },
+          ),
+          Obx(
+            () =>
+                controller.selectedTabIndex.value !=
+                        -1 // Show search for all tabs if needed, but the original only showed for "Complete"
+                    ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 20.h),
+                        TextFormField(
+                          textCapitalization: TextCapitalization.sentences,
+                          onTapUpOutside:
+                              (event) => CommonCode().removeTextFieldFocus(),
+                          onChanged: (v) {
+                            controller.applyFilter();
+                          },
 
-                            focusNode: FocusNode(),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide.none,
-                              ),
-                              // suffixIcon: widget.suffixIcon,
-                              // fillColor:
-                              //     widget.controller.showDropdown.isTrue
-                              //         ? AppColors.kPrimaryColor.withValues(
-                              //           alpha: .1,
-                              //         )
-                              //         : AppColors.kLightGreyColor,
-                              filled: true,
-                              fillColor: AppColors.kLightGreyColor,
-                              hintStyle: AppStyles.labelTextStyle().copyWith(
-                                fontSize: AppStyles.fontSize16,
-                                color: Colors.grey[600],
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 15.h,
-                              ),
-                              prefixIconConstraints: BoxConstraints(
-                                maxWidth: 60.w,
-                              ),
-                              suffixIcon: Image.asset(
-                                AppImages.kFilterIcon,
-                                scale: 5,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: const BorderSide(
-                                  color: AppColors.kPrimaryColor,
-                                ),
-                              ),
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(left: 7.w),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 20.r,
-                                  child: Icon(
-                                    Icons.search,
-                                    color: AppColors.kBlackColor,
-                                    size: AppStyles.fontSize24,
-                                  ),
-                                ),
-                              ),
-                              hintText: l10n.cityCountryZone,
+                          focusNode: FocusNode(),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.r),
+                              borderSide: BorderSide.none,
                             ),
-                            controller: controller.searchController,
-                          ),
-                        ],
-                      )
-                      : const SizedBox.shrink(),
-            ),
-            SizedBox(height: 20.h),
-            Obx(
-              () => SizedBox(
-                height: Get.height * 0.65,
-                child:
-                    controller.isLoading.isTrue
-                        ? const Center(child: CircularProgressIndicator())
-                        : controller.filteredTrips.isEmpty
-                        ? Center(child: Text(l10n.noTripsFound))
-                        : ListView.builder(
-                          padding: EdgeInsets.only(bottom: 60.h),
-                          shrinkWrap: true,
-                          itemCount: controller.filteredTrips.length,
-                          itemBuilder:
-                              (context, index) => Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: TripsWidget(
-                                  tripModel: controller.filteredTrips[index],
-                                  onTap: () {
-                                    Get.toNamed(
-                                      kSpecificTripViewScreenRoute,
-                                      arguments:
-                                          controller.filteredTrips[index],
-                                    );
-                                  },
-                                  images:
-                                      controller.filteredTrips[index].images,
-                                  daysToGo:
-                                      controller
-                                          .filteredTrips[index]
-                                          .computedDaysToGo,
-                                  tripTimingLabel: _tripTimingLabel(
-                                    controller.filteredTrips[index],
-                                  ),
-                                  destination:
-                                      controller
-                                          .filteredTrips[index]
-                                          .destination,
-                                  country:
-                                      controller.filteredTrips[index].country,
-                                  startDate: DateFormat('dd MMM').format(
-                                    controller
-                                            .filteredTrips[index]
-                                            .tripStartDate ??
-                                        DateTime.now(),
-                                  ),
-                                  endDate: DateFormat('dd MMM').format(
-                                    controller
-                                            .filteredTrips[index]
-                                            .tripEndDate ??
-                                        DateTime.now(),
-                                  ),
+                            // suffixIcon: widget.suffixIcon,
+                            // fillColor:
+                            //     widget.controller.showDropdown.isTrue
+                            //         ? AppColors.kPrimaryColor.withValues(
+                            //           alpha: .1,
+                            //         )
+                            //         : AppColors.kLightGreyColor,
+                            filled: true,
+                            fillColor: AppColors.kLightGreyColor,
+                            hintStyle: AppStyles.labelTextStyle().copyWith(
+                              fontSize: AppStyles.fontSize16,
+                              color: Colors.grey[600],
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 15.h,
+                            ),
+                            prefixIconConstraints: BoxConstraints(
+                              maxWidth: 60.w,
+                            ),
+                            suffixIcon: Image.asset(
+                              AppImages.kFilterIcon,
+                              scale: 5,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.r),
+                              borderSide: const BorderSide(
+                                color: AppColors.kPrimaryColor,
+                              ),
+                            ),
+                            prefixIcon: Padding(
+                              padding: EdgeInsets.only(left: 7.w),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                radius: 20.r,
+                                child: Icon(
+                                  Icons.search,
+                                  color: AppColors.kBlackColor,
+                                  size: AppStyles.fontSize24,
                                 ),
                               ),
+                            ),
+                            hintText: l10n.cityCountryZone,
+                          ),
+                          controller: controller.searchController,
                         ),
-              ),
+                      ],
+                    )
+                    : const SizedBox.shrink(),
+          ),
+          SizedBox(height: 20.h),
+          Expanded(
+            child: Obx(
+              () =>
+                  controller.isLoading.isTrue
+                      ? const Center(child: CircularProgressIndicator())
+                      : controller.filteredTrips.isEmpty
+                      ? Center(child: Text(l10n.noTripsFound))
+                      : ListView.builder(
+                        padding: EdgeInsets.only(bottom: 140.h),
+                        shrinkWrap: true,
+                        itemCount: controller.filteredTrips.length,
+                        itemBuilder:
+                            (context, index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: TripsWidget(
+                                tripModel: controller.filteredTrips[index],
+                                onTap: () {
+                                  Get.toNamed(
+                                    kSpecificTripViewScreenRoute,
+                                    arguments: controller.filteredTrips[index],
+                                  );
+                                },
+                                images: controller.filteredTrips[index].images,
+                                daysToGo:
+                                    controller
+                                        .filteredTrips[index]
+                                        .computedDaysToGo,
+                                tripTimingLabel: _tripTimingLabel(
+                                  controller.filteredTrips[index],
+                                ),
+                                destination:
+                                    controller.filteredTrips[index].destination,
+                                country:
+                                    controller.filteredTrips[index].country,
+                                startDate: DateFormat('dd MMM').format(
+                                  controller
+                                          .filteredTrips[index]
+                                          .tripStartDate ??
+                                      DateTime.now(),
+                                ),
+                                endDate: DateFormat('dd MMM').format(
+                                  controller.filteredTrips[index].tripEndDate ??
+                                      DateTime.now(),
+                                ),
+                              ),
+                            ),
+                      ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

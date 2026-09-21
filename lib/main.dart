@@ -80,6 +80,9 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
+      // Larger windows need more content space, not magnified phone controls.
+      enableScaleWH: () => ScreenUtil().screenWidth < 600,
+      enableScaleText: () => ScreenUtil().screenWidth < 600,
       builder: (context, child) {
         return GetMaterialApp(
           title: kAppName,
@@ -115,9 +118,9 @@ class MyApp extends StatelessWidget {
       colorScheme: baseTheme.colorScheme.copyWith(
         primary: AppColors.kPrimaryColor,
       ),
-      // bottomSheetTheme: BottomSheetThemeData(
-      //   backgroundColor: AppColors.kSecondaryColor.withValues(alpha: 0.6),
-      // ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        constraints: BoxConstraints(maxWidth: 640),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.kPrimaryColor,
