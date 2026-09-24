@@ -13,9 +13,49 @@ initializeApp();
 const DATABASE_ID = process.env.FIRESTORE_DATABASE_ID || "travel-crew-db-2";
 const getDb = () => getFirestore(DATABASE_ID);
 
+const {getAuth} = require("firebase-admin/auth");
+const {onSchedule} = require("firebase-functions/v2/scheduler");
+const {createSafetyHandlers, isBlocked, assertActive} = require("./safety");
+const {cleanBlockedPair, queueReportAlert, maintainReports, cleanSafetyData} = require("./safety-triggers");
+const safety = createSafetyHandlers(getDb());
+exports.submitReportV3 = onCall(safety.submitReport);
+exports.blockUserV3 = onCall(safety.blockUser);
+exports.unblockUserV3 = onCall(safety.unblockUser);
+exports.followUserV3 = onCall(safety.followUser);
+exports.acceptJoinRequestV3 = onCall(safety.acceptJoinRequest);
+exports.reviewReportV3 = onCall(safety.reviewReport);
+exports.cleanBlockedPairV3 = onDocumentCreated(
+    {database: DATABASE_ID, document: "users/{uid}/blockedUsers/{target}", retry: true},
+    (event) => cleanBlockedPair(getDb(), event.params.uid, event.params.target),
+);
+exports.alertReportV3 = onDocumentCreated(
+    {database: DATABASE_ID, document: "reports/{reportId}", retry: true},
+    async (event) => {
+      if (!await queueReportAlert(getDb(), event.params.reportId)) {
+        logger.error("Moderation alert destination is not configured", {reportId: event.params.reportId});
+      }
+    },
+);
+exports.maintainReportsV3 = onSchedule("every 60 minutes", () => maintainReports(getDb()));
+exports.cleanDeletedUserSafetyV3 = onDocumentWritten(
+    {database: DATABASE_ID, document: "users/{uid}", retry: true},
+    async (event) => {
+      if (!event.data.after.exists || event.data.after.data().isDeleted === true) {
+        await cleanSafetyData(getDb(), event.params.uid);
+      }
+    },
+);
+
 // Text moderation triggers (V3 export names avoid trigger type conversion errors with 1st gen functions)
 const {createModerator, profileFields, tripFields, discoveryFields} =
   require("./moderation");
+exports.moderateChatTextV3 = onDocumentWritten(
+    {database: DATABASE_ID, document: "chat/{roomId}/messages/{messageId}", retry: true},
+    async (event) => {
+      if (event.data?.after?.data()?.messageType !== "Text") return;
+      await createModerator(getDb(), ["data"])(event);
+    },
+);
 exports.moderatePublicProfileTextV3 = onDocumentWritten(
     {database: DATABASE_ID, document: "publicProfile/{userId}", retry: true},
     createModerator(getDb(), profileFields, ["topDestinations"]),
@@ -61,6 +101,87 @@ for (const [name, [document, fields, arrays]] of Object.entries(imageTargets)) {
   );
 }
 
+// Welcome notification for newly registered users when publicProfile is created.
+exports.sendWelcomeNotificationV3 = onDocumentCreated(
+    {
+      database: DATABASE_ID,
+      document: "publicProfile/{userId}",
+    },
+    async (event) => {
+      if (!event.data) return;
+      const {userId} = event.params;
+      const data = event.data.data();
+      const name = data?.displayName || data?.firstName || "Traveler";
+      const db = getDb();
+
+      const target = db
+          .collection("notifications")
+          .doc(userId)
+          .collection("notification")
+          .doc(`welcome_${userId}`);
+
+      const title = "Welcome to Travel Crew!";
+      const message = `Yo! Hey ${name}, welcome to Travel Crew! Let's
+          get you started with your first trip.`;
+
+      try {
+        await target.create({
+          notificationId: target.id,
+          notificationTitle: title,
+          notificationMessage: message,
+          notificationType: "Welcome",
+          notificationForId: userId,
+          notificationStatus: "unread",
+          createdBy: "system",
+          sentTo: [userId],
+          createdAt: Date.now(),
+          updateAt: Date.now(),
+          updateBy: "system",
+          isActive: true,
+          isTopic: false,
+          notificationTopic: [],
+          serverForwarded: true,
+        });
+      } catch (error) {
+        if (error.code !== 6 && error.code !== "already-exists") throw error;
+        return;
+      }
+
+      try {
+        const tokenDocs = await db.collection("tokens").doc(userId)
+            .collection("tokens").get();
+        if (tokenDocs.empty) return;
+
+        for (const docs of chunks(tokenDocs.docs)) {
+          const result = await getMessaging().sendEachForMulticast({
+            tokens: docs.map((doc) => doc.id),
+            notification: {
+              title,
+              body: message,
+            },
+            data: {
+              click_action: "FLUTTER_NOTIFICATION_CLICK",
+              notificationId: target.id,
+              notificationForId: userId,
+              type: "Welcome",
+            },
+          });
+          await Promise.all(result.responses.map(async (response, index) => {
+            const code = response.error?.code;
+            if (code === "messaging/invalid-registration-token" ||
+                code === "messaging/registration-token-not-registered") {
+              await docs[index].ref.delete();
+            } else if (code) {
+              console.error("Welcome push delivery failed", {userId, code});
+            }
+          }));
+        }
+      } catch (error) {
+        console.error("Welcome notification push failed", {userId, error: error.message});
+      }
+    },
+);
+
 // Existing clients submit Trip Joined events under the sender's UID.
 // A server-created recipient document triggers the push, without fan-out loops.
 exports.sendPushNotificationV3 = onDocumentCreated(
@@ -79,6 +200,8 @@ exports.sendPushNotificationV3 = onDocumentCreated(
       const tripDoc = await tripRef.get();
       if (!tripDoc.exists || tripDoc.data().tripStatus === "deleted") return;
       const trip = tripDoc.data();
+      if (await isBlocked(db, data.createdBy, trip.createdBy)) return;
+      if ((await db.collection("safetyAccounts").doc(data.createdBy).get()).data()?.restricted) return;
       if (data.serverForwarded !== true) {
         if (userId !== data.createdBy || userId === trip.createdBy ||
             !Array.isArray(data.sentTo) ||
@@ -158,6 +281,7 @@ exports.sendTripInvitesV3 = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "Supply 1 to 20 valid emails.");
   }
   const db = getDb();
+  await assertActive(db, request.auth.uid);
   const tripDoc = await db.collection("trips").doc(tripId).get();
   if (!tripDoc.exists || tripDoc.data().createdBy !== request.auth.uid) {
     throw new HttpsError("permission-denied", "Trip owner access required.");
@@ -169,6 +293,12 @@ exports.sendTripInvitesV3 = onCall(async (request) => {
   const title = trip.title || trip.destination || "your trip";
   const batch = db.batch();
   for (const email of uniqueEmails) {
+    try {
+      const recipient = await getAuth().getUserByEmail(email);
+      if (await isBlocked(db, request.auth.uid, recipient.uid)) continue;
+    } catch (error) {
+      if (error.code !== "auth/user-not-found") throw error;
+    }
     batch.set(db.collection("mail").doc(), {
       to: [email],
       message: {
@@ -182,7 +312,8 @@ exports.sendTripInvitesV3 = onCall(async (request) => {
     });
   }
   await batch.commit();
-  // Compatible with existing callers; delivery needs the mail extension.
+  // Acknowledge submitted addresses without revealing registered or blocked recipients.
+  // Delivery needs the mail extension.
   return {sent: uniqueEmails.length, queued: uniqueEmails.length};
 });
 

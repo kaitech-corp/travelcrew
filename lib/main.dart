@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/safety_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -29,6 +30,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
+  SafetyService.initialize();
   await initializeGoogleSignIn();
   await dotenv.load(isOptional: true);
 

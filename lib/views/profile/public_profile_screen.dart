@@ -1,3 +1,5 @@
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -90,6 +92,14 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       screenName: 'Profile',
+      actions: [
+        if (_user != null)
+          SafetyMenu(
+            targetType: 'user',
+            targetId: _user!.uid,
+            authorId: _user!.uid,
+          ),
+      ],
       centerTitle: true,
       scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),
@@ -98,7 +108,15 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
               ? const Center(child: CircularProgressIndicator())
               : _user == null
               ? const Center(child: Text('Profile not found'))
-              : _buildProfile(_user!),
+              : Obx(() {
+                if (!SafetyService.ready.value) {
+                  return const SafetyLoadingView();
+                }
+                if (SafetyService.isBlocked(_user!.uid)) {
+                  return SafetyBlockedView(userId: _user!.uid);
+                }
+                return _buildProfile(_user!);
+              }),
     );
   }
 

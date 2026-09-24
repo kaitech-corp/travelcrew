@@ -1,3 +1,5 @@
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +11,6 @@ import 'package:travel_crew/models/chat_module/chat_message.dart';
 import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_styles.dart';
-import 'package:travel_crew/utils/logger.dart';
 import 'package:travel_crew/views/custom_widgets/custom_text_button.dart';
 import 'package:uuid/uuid.dart';
 
@@ -73,9 +74,20 @@ class _MessagesScreenState extends State<MessagesScreen> {
               child: Padding(
                 padding: EdgeInsets.only(top: 10.h),
                 child: Obx(() {
+                  if (!SafetyService.ready.value) {
+                    return const SafetyLoadingView();
+                  }
+                  final visibleMessages =
+                      controller.messages
+                          .where(
+                            (m) =>
+                                !m.moderationRemoved &&
+                                !SafetyService.hides(m.createdBy),
+                          )
+                          .toList();
                   if (controller.isLoadingChats.isTrue &&
                       (controller.chatRoom.value == null ||
-                          controller.messages.isEmpty)) {
+                          visibleMessages.isEmpty)) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
@@ -87,7 +99,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     );
                   }
 
-                  if (controller.messages.isEmpty) {
+                  if (visibleMessages.isEmpty) {
                     return _EmptyChatState(
                       title: 'No messages yet',
                       subtitle:
@@ -98,9 +110,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   return ListView.builder(
                     controller: _scrollController,
                     padding: EdgeInsets.only(top: 8.h, bottom: 150.h),
-                    itemCount: controller.messages.length + 1,
+                    itemCount: visibleMessages.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == controller.messages.length) {
+                      if (index == visibleMessages.length) {
                         return controller.isFetchingMore
                             ? const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
@@ -109,9 +121,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             : const SizedBox.shrink();
                       }
 
-                      final message = controller.messages[index];
+                      final message = visibleMessages[index];
                       final previousMessage =
-                          index > 0 ? controller.messages[index - 1] : null;
+                          index > 0 ? visibleMessages[index - 1] : null;
                       final showDateSeparator =
                           previousMessage == null ||
                           !_isSameDay(
@@ -137,7 +149,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         children: [
                           if (showDateSeparator)
                             _DateSeparator(date: message.createdAt.toDate()),
-                          MessageWidget(userModel: sender, message: message),
+                          MessageWidget(
+                            userModel: sender,
+                            message: message,
+                            roomId: controller.chatRoom.value!.roomId,
+                          ),
                         ],
                       );
                     },
@@ -190,7 +206,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           data: text,
                         ),
                       );
-                      AppLogger.debug('Message sent: $text');
+
                       controller.tecMessage.clear();
                     },
                   );

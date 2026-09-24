@@ -202,9 +202,7 @@ class UsersController extends GetxController {
 
       final currentChatUser = await _buildCurrentChatUser();
       // Safely add user to chatroom using the helper method
-      final userAddedToChat = chatRoom.value!.addUserSafely(
-        currentChatUser,
-      );
+      final userAddedToChat = chatRoom.value!.addUserSafely(currentChatUser);
 
       if (userAddedToChat) {
         AppLogger.debug('Added user to chat room successfully');
@@ -300,12 +298,13 @@ class UsersController extends GetxController {
       // the chat first MUST NOT lock everyone else out by only listing
       // themselves.
       final trip = currentTrip.value;
-      final memberIds = <String>{
-        currentUser.uid,
-        if (trip?.createdBy != null && trip!.createdBy.isNotEmpty)
-          trip.createdBy,
-        ...?trip?.joinedUsers,
-      }.where((id) => id.isNotEmpty).toList();
+      final memberIds =
+          <String>{
+            currentUser.uid,
+            if (trip?.createdBy != null && trip!.createdBy.isNotEmpty)
+              trip.createdBy,
+            ...?trip?.joinedUsers,
+          }.where((id) => id.isNotEmpty).toList();
 
       final users = await _buildChatUsersForTrip(
         trip: trip,
@@ -358,6 +357,7 @@ class UsersController extends GetxController {
     } catch (error, stackTrace) {
       // Remove message from local list if sending failed
       messages.removeWhere((msg) => msg.chateId == chatToSave.chateId);
+      if (tecMessage.text.isEmpty) tecMessage.text = chatToSave.data;
 
       ErrorHandler.handleFirebaseError(
         error,
@@ -465,9 +465,7 @@ class UsersController extends GetxController {
 
     final currentUser = await _buildCurrentChatUser();
     final existingUsers = [...chatRoom.value!.users];
-    final index = existingUsers.indexWhere(
-      (user) => user.id == currentUser.id,
-    );
+    final index = existingUsers.indexWhere((user) => user.id == currentUser.id);
     if (index >= 0) {
       existingUsers[index] = currentUser;
     } else {
@@ -539,7 +537,7 @@ class UsersController extends GetxController {
           .listen(
             (event) {
               try {
-                if (event.docs.isNotEmpty) {
+                {
                   final newMessages =
                       event.docs
                           .map((e) => ChatMessage.fromMap(e.data()))

@@ -63,3 +63,5 @@ const kSearchUsersFunction = 'searchUsers';
 /// external legal URLs
 const kPrivacyPolicyUrl = 'https://travelcrew.app/privacypolicy';
 const kTermsAndConditionsUrl = 'https://travelcrew.app/terms&conditions';
+
+const kBlockedUsersScreenRoute = '/BlockedUsersScreen';

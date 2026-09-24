@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/safety_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -58,7 +59,9 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
     );
   }
 
-  Widget _buildUserList(List<PublicUserModel> users, String emptyMessage) {
+  Widget _buildUserList(List<PublicUserModel> allUsers, String emptyMessage) {
+    final users =
+        allUsers.where((user) => !SafetyService.hides(user.uid)).toList();
     if (users.isEmpty) {
       return Center(child: Text(emptyMessage));
     }

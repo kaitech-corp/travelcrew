@@ -1,3 +1,6 @@
+import 'package:travel_crew/services/firebase_trip_service.dart';
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -251,7 +254,39 @@ class _HomePageScreenState extends State<HomePageScreen> {
     );
   }
 
-  Widget _buildTripsTab(String tabName, List<TripDiscoveryModel> tripss) {
+  Widget _buildTripsTab(String tabName, List<TripDiscoveryModel> trips) =>
+      Obx(() {
+        if (!SafetyService.ready.value) return const SafetyLoadingView();
+        return Column(
+          children: [
+            Expanded(
+              child: _buildVisibleTripsTab(
+                tabName,
+                trips
+                    .where((trip) => !SafetyService.hides(trip.createdBy))
+                    .toList(),
+              ),
+            ),
+            if (FirebaseTripService.discoveryHasMore[controller.discoveryKey] ==
+                true)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 90),
+                child: TextButton(
+                  onPressed:
+                      controller.isLoadingOtherTrips.value
+                          ? null
+                          : controller.loadMoreTrips,
+                  child: Text(AppLocalizations.of(context)!.safetyLoadMore),
+                ),
+              ),
+          ],
+        );
+      });
+
+  Widget _buildVisibleTripsTab(
+    String tabName,
+    List<TripDiscoveryModel> tripss,
+  ) {
     if (tripss.isNotEmpty && MediaQuery.sizeOf(context).width >= 600) {
       return LayoutBuilder(
         builder: (context, constraints) {

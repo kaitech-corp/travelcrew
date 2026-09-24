@@ -8,6 +8,7 @@ class ChatMessage {
     required this.messageStatus,
     required this.createdAt,
     this.isLoading = false,
+    this.moderationRemoved = false,
     required this.createdBy,
     required this.sentTo,
     required this.messageType,
@@ -25,6 +26,7 @@ class ChatMessage {
       messageType: map['messageType'] as String? ?? '',
       callTimeTaken: map['callTimeTaken']?.toInt() as int?,
       data: map['data'] as String? ?? '',
+      moderationRemoved: map['moderationRemoved'] == true,
     );
   }
 
@@ -37,6 +39,7 @@ class ChatMessage {
   String sentTo;
   String messageType;
   bool isLoading;
+  final bool moderationRemoved;
   int? callTimeTaken;
   String data;
 

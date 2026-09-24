@@ -4,7 +4,7 @@ const {isDeepStrictEqual} = require("node:util");
 const filter = new Filter();
 const profileFields = ["displayName", "firstName", "lastName", "hometown"];
 const tripFields = [
-  "title", "destination", "tripLocation", "country", "hotelName",
+  "title", "description", "destination", "tripLocation", "country", "hotelName",
   // Older clients used these fields; absent fields are never added.
   "location", "travelType", "comment", "tripName",
 ];

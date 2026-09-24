@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import 'package:travel_crew/services/safety_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +22,53 @@ import 'session_services.dart';
 final functions = FirebaseFunctions.instance;
 
 class FirebaseTripService {
+  static final discoveryHasMore = <String, bool>{}.obs;
+  static final Map<String, List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+  _discoveryDocs = {};
+  static String? _discoveryUid;
+
+  static Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+  _discoveryPage(
+    Query<Map<String, dynamic>> query,
+    String key,
+    bool append,
+  ) async {
+    final uid = GlobalVariables.currentUid;
+    if (_discoveryUid != uid) {
+      _discoveryUid = uid;
+      _discoveryDocs.clear();
+      discoveryHasMore.clear();
+    }
+    final docs =
+        append
+            ? List<QueryDocumentSnapshot<Map<String, dynamic>>>.from(
+              _discoveryDocs[key] ?? [],
+            )
+            : <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+    var visible = 0;
+    for (var page = 0; page < 5; page++) {
+      final snapshot =
+          await (docs.isEmpty ? query : query.startAfterDocument(docs.last))
+              .limit(50)
+              .get();
+      if (uid != GlobalVariables.currentUid) return [];
+      docs.addAll(snapshot.docs);
+      visible +=
+          snapshot.docs
+              .where(
+                (doc) =>
+                    !SafetyService.hides(
+                      doc.data()['createdBy'] as String? ?? '',
+                    ),
+              )
+              .length;
+      discoveryHasMore[key] = snapshot.docs.length == 50;
+      if (snapshot.docs.length < 50 || visible >= 50) break;
+    }
+    _discoveryDocs[key] = docs;
+    return docs;
+  }
+
   static void _handleTripError(Object error, {String? operation}) {
     final prefix =
         operation == null
@@ -289,17 +338,20 @@ class FirebaseTripService {
     return null;
   }
 
-  static Future<List<TripDiscoveryModel>> getOtherTrips() async {
+  static Future<List<TripDiscoveryModel>> getOtherTrips({
+    bool loadMore = false,
+  }) async {
     try {
-      final snapshot =
-          await firestore
-              .collection(kTripDiscoveryTable)
-              .where('isDiscoverable', isEqualTo: true)
-              .limit(50)
-              .get();
+      final snapshot = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true),
+        'all',
+        loadMore,
+      );
 
       final filteredDocs =
-          snapshot.docs.where((doc) {
+          snapshot.where((doc) {
             final data = doc.data();
             return data['tripStatus'] != TripStatus.deleted.name &&
                 data['createdBy'] != GlobalVariables.loggedInUser.value?.uid;
@@ -519,41 +571,9 @@ class FirebaseTripService {
 
   static Future<bool> acceptJoinRequest(String tripId, String userId) async {
     try {
-      await firestore.runTransaction((transaction) async {
-        final tripRef = firestore.collection(kTripTable).doc(tripId);
-        final requestRef = _tripJoinRequestsRef(tripId).doc(userId);
-        final memberRef = _tripMembersRef(tripId).doc(userId);
-        final membershipRef = _userTripMembershipRef(
-          userId: userId,
-          tripId: tripId,
-        );
-        final discoveryRef = firestore
-            .collection(kTripDiscoveryTable)
-            .doc(tripId);
-        transaction.update(tripRef, {
-          'joinedUsers': FieldValue.arrayUnion([userId]),
-        });
-        transaction.set(
-          memberRef,
-          TripMemberModel(userId: userId, role: 'member').toMap(),
-        );
-        transaction.set(membershipRef, {
-          'tripId': tripId,
-          'role': 'member',
-          'status': 'active',
-          'joinedAt': FieldValue.serverTimestamp(),
-        });
-        transaction.update(requestRef, {
-          'status': 'accepted',
-          'reviewedBy': GlobalVariables.currentUid,
-          'reviewedAt': FieldValue.serverTimestamp(),
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
-        transaction.update(discoveryRef, {
-          'memberCount': FieldValue.increment(1),
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
-      });
+      await FirebaseFunctions.instance
+          .httpsCallable('acceptJoinRequestV3')
+          .call({'tripId': tripId, 'userId': userId});
       await _syncChatMembersForTrip(tripId);
       return true;
     } catch (e) {
@@ -876,6 +896,7 @@ class FirebaseTripService {
   /// [return] list of trips
   /// [logs] logs if there is an error
   static Future<List<TripDiscoveryModel>> getNearbyTrips({
+    bool loadMore = false,
     required double latitude,
     required double longitude,
     required int radius,
@@ -888,17 +909,18 @@ class FirebaseTripService {
       final double minLng = longitude - delta;
       final double maxLng = longitude + delta;
 
-      final snapshot =
-          await firestore
-              .collection(kTripDiscoveryTable)
-              .where('isDiscoverable', isEqualTo: true)
-              .where('latitude', isGreaterThan: minLat)
-              .where('latitude', isLessThan: maxLat)
-              .limit(50)
-              .get();
+      final snapshot = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true)
+            .where('latitude', isGreaterThan: minLat)
+            .where('latitude', isLessThan: maxLat),
+        'nearby',
+        loadMore,
+      );
 
       final filteredDocs =
-          snapshot.docs.where((doc) {
+          snapshot.where((doc) {
             final data = doc.data();
             final lng = (data['longitude'] as num?)?.toDouble() ?? 0.0;
             final createdBy = data['createdBy'] as String?;
@@ -918,17 +940,20 @@ class FirebaseTripService {
     return [];
   }
 
-  static Future<List<TripDiscoveryModel>> getPopularTrips() async {
+  static Future<List<TripDiscoveryModel>> getPopularTrips({
+    bool loadMore = false,
+  }) async {
     try {
-      final res =
-          await firestore
-              .collection(kTripDiscoveryTable)
-              .where('isDiscoverable', isEqualTo: true)
-              .orderBy('favouriteCount', descending: true)
-              .limit(50)
-              .get();
-      kLogging(res.docs.length.toString());
-      return res.docs
+      final res = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true)
+            .orderBy('favouriteCount', descending: true),
+        'popular',
+        loadMore,
+      );
+      kLogging(res.length.toString());
+      return res
           .where((doc) => doc.data()['createdBy'] != GlobalVariables.currentUid)
           .map((e) => TripDiscoveryModel.fromMap(e.data()))
           .toList();
@@ -938,7 +963,9 @@ class FirebaseTripService {
     return [];
   }
 
-  static Future<List<TripDiscoveryModel>> getRecommendedTrips() async {
+  static Future<List<TripDiscoveryModel>> getRecommendedTrips({
+    bool loadMore = false,
+  }) async {
     try {
       final uid = GlobalVariables.loggedInUser.value?.uid;
       if (uid == null) return [];
@@ -980,22 +1007,24 @@ class FirebaseTripService {
 
       // No history — fall back to popular trips
       if (continents.isEmpty) {
-        final popularTrips = await getPopularTrips();
+        final popularTrips = await getPopularTrips(loadMore: loadMore);
+        discoveryHasMore['recommended'] = discoveryHasMore['popular'] ?? false;
         return popularTrips
             .where((trip) => _isCurrentOrFutureDiscoveryTrip(trip.toMap()))
             .toList();
       }
 
-      final snap =
-          await firestore
-              .collection(kTripDiscoveryTable)
-              .where('isDiscoverable', isEqualTo: true)
-              .where('continent', whereIn: continents.toList())
-              .limit(50)
-              .get();
+      final snap = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true)
+            .where('continent', whereIn: continents.toList()),
+        'recommended',
+        loadMore,
+      );
 
       final filteredDocs =
-          snap.docs.where((doc) {
+          snap.where((doc) {
             final data = doc.data();
             return data['createdBy'] != uid &&
                 _isCurrentOrFutureDiscoveryTrip(data);
@@ -1016,6 +1045,7 @@ class FirebaseTripService {
   /// [logs] logs if there is an error
   static Future<List<TripDiscoveryModel>> getFilteredTrips({
     List<String>? continents,
+    bool loadMore = false,
   }) async {
     try {
       Query<Map<String, dynamic>> query = firestore
@@ -1024,8 +1054,8 @@ class FirebaseTripService {
       if (continents != null && continents.isNotEmpty) {
         query = query.where('continent', whereIn: continents.take(10).toList());
       }
-      final snapshot = await query.limit(50).get();
-      return snapshot.docs
+      final snapshot = await _discoveryPage(query, 'filtered', loadMore);
+      return snapshot
           .where((doc) => doc.data()['createdBy'] != GlobalVariables.currentUid)
           .map((doc) => TripDiscoveryModel.fromMap(doc.data()))
           .toList();

@@ -1,3 +1,4 @@
+import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/context_extensions.dart';
@@ -16,8 +17,10 @@ class MessageWidget extends StatelessWidget {
     super.key,
     required this.message,
     required this.userModel,
+    required this.roomId,
   });
 
+  final String roomId;
   final ChatMessage message;
   final ChatUser userModel;
 
@@ -34,6 +37,13 @@ class MessageWidget extends StatelessWidget {
             _isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (!_isMine)
+            SafetyMenu(
+              targetType: 'message',
+              targetId: message.chateId,
+              authorId: message.createdBy,
+              roomId: roomId,
+            ),
           if (!_isMine) ...[
             _Avatar(url: userModel.profileImage),
             SizedBox(width: 10.w),
@@ -54,7 +64,9 @@ class MessageWidget extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment:
-                          _isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                          _isMine
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
                       children: [
                         if (_isMine) ...[
                           Container(
@@ -127,9 +139,10 @@ class MessageWidget extends StatelessWidget {
                         bottomRight: Radius.circular(16.r),
                       ),
                       border: Border.all(
-                        color: _isMine
-                            ? AppColors.kPrimaryColor.withValues(alpha: .12)
-                            : AppColors.kLightGreyColor,
+                        color:
+                            _isMine
+                                ? AppColors.kPrimaryColor.withValues(alpha: .12)
+                                : AppColors.kLightGreyColor,
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -156,7 +169,9 @@ class MessageWidget extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment:
-                        _isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        _isMine
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
                     children: [
                       if (_isMine) ...[
                         ImageIcon(
@@ -167,9 +182,9 @@ class MessageWidget extends StatelessWidget {
                         SizedBox(width: 4.w),
                       ],
                       TextWidget(
-                        labelText: DateFormat('hh:mm a').format(
-                          message.createdAt.toDate(),
-                        ),
+                        labelText: DateFormat(
+                          'hh:mm a',
+                        ).format(message.createdAt.toDate()),
                         style: AppStyles.labelTextStyle().copyWith(
                           color: AppColors.kGreyyColor,
                           fontSize: AppStyles.fontSize12,

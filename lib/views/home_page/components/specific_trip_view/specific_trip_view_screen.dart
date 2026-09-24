@@ -1,3 +1,6 @@
+import 'package:travel_crew/l10n/app_localizations.dart';
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/views/main_view/controller/main_view_controller.dart';
 import 'package:travel_crew/models/expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
@@ -318,152 +320,173 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
       padding: EdgeInsets.zero,
       scaffoldKey: _scaffoldKey,
       className: widget.runtimeType.toString(),
-      body: Obx(
-        () =>
-            controller.tripModel.value == null &&
-                    controller.discoveryModel.value == null
-                ? const SizedBox()
-                : controller.isPublicPreview
-                ? _buildPublicPreview(context)
-                : Stack(
-                  children: [
-                    SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildHeaderImage(context),
-                          _buildJumpNav(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0,
+      body: Obx(() {
+        final trip = controller.tripModel.value;
+        final author =
+            trip?.createdBy ?? controller.discoveryModel.value?.createdBy ?? '';
+        if (!SafetyService.ready.value) return const SafetyLoadingView();
+        final member =
+            trip != null &&
+            (trip.createdBy == GlobalVariables.currentUid ||
+                (trip.joinedUsers?.contains(GlobalVariables.currentUid) ??
+                    false));
+        if (SafetyService.isBlocked(author) && !member) {
+          return SafeArea(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    onPressed: _goBack,
+                    icon: const Icon(Icons.arrow_back_ios_new),
+                  ),
+                ),
+                Expanded(child: SafetyBlockedView(userId: author)),
+              ],
+            ),
+          );
+        }
+        return controller.tripModel.value == null &&
+                controller.discoveryModel.value == null
+            ? const SizedBox()
+            : controller.isPublicPreview
+            ? _buildPublicPreview(context)
+            : Stack(
+              children: [
+                SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeaderImage(context),
+                      if (SafetyService.isBlocked(author))
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            AppLocalizations.of(context)!.safetySharedTrip,
+                            style: AppStyles.labelTextStyle(),
+                          ),
+                        ),
+                      _buildJumpNav(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildSectionHeader('Overview'),
+                            _buildOverviewSection(),
+
+                            _buildSectionHeader('Crew'),
+                            _buildCrewSection(),
+
+                            _buildSectionHeader(
+                              'Activities',
+                              onAdd: () {
+                                Get.toNamed(
+                                  kAddActivityScreenRoute,
+                                  arguments: {
+                                    'tripId': controller.tripModel.value?.id,
+                                    'toAdd': true,
+                                    'onAdded': (activity) {
+                                      controller.tripModel.value?.activities ??=
+                                          [];
+                                      controller.tripModel.value?.activities
+                                          ?.add(activity);
+                                      controller.tripModel.refresh();
+                                    },
+                                  },
+                                );
+                              },
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildSectionHeader('Overview'),
-                                _buildOverviewSection(),
+                            ActivitiesTab(controller: controller),
 
-                                _buildSectionHeader('Crew'),
-                                _buildCrewSection(),
+                            _buildSectionHeader(
+                              'Flights',
+                              onAdd: () => _showAddFlightSheet(context),
+                            ),
+                            TransportTab(controller: controller),
 
-                                _buildSectionHeader(
-                                  'Activities',
-                                  onAdd: () {
-                                    Get.toNamed(
-                                      kAddActivityScreenRoute,
-                                      arguments: {
-                                        'tripId':
-                                            controller.tripModel.value?.id,
-                                        'toAdd': true,
-                                        'onAdded': (activity) {
+                            _buildSectionHeader(
+                              'Lodging',
+                              onAdd:
+                                  () => Get.toNamed(
+                                    kAddLodgingScreenRoute,
+                                    arguments: controller.tripModel.value,
+                                  ),
+                            ),
+                            LodgingTab(controller: controller),
+
+                            _buildSectionHeader(
+                              'Expenses',
+                              onAdd:
+                                  () => Get.toNamed(
+                                    kAddExpenseScreenRoute,
+                                    arguments: {
+                                      'tripId': controller.tripModel.value?.id,
+                                      'trip': controller.tripModel.value,
+                                      'tripMembers':
                                           controller
                                               .tripModel
                                               .value
-                                              ?.activities ??= [];
-                                          controller.tripModel.value?.activities
-                                              ?.add(activity);
-                                          controller.tripModel.refresh();
-                                        },
+                                              ?.joindUsersList ??
+                                          [],
+                                      'onAdd': (expense) {
+                                        controller.tripModel.value?.expenses ??=
+                                            [];
+                                        controller.tripModel.value?.expenses
+                                            ?.add(expense);
+                                        controller.tripModel.refresh();
                                       },
-                                    );
-                                  },
-                                ),
-                                ActivitiesTab(controller: controller),
-
-                                _buildSectionHeader(
-                                  'Flights',
-                                  onAdd: () => _showAddFlightSheet(context),
-                                ),
-                                TransportTab(controller: controller),
-
-                                _buildSectionHeader(
-                                  'Lodging',
-                                  onAdd:
-                                      () => Get.toNamed(
-                                        kAddLodgingScreenRoute,
-                                        arguments: controller.tripModel.value,
-                                      ),
-                                ),
-                                LodgingTab(controller: controller),
-
-                                _buildSectionHeader(
-                                  'Expenses',
-                                  onAdd:
-                                      () => Get.toNamed(
-                                        kAddExpenseScreenRoute,
-                                        arguments: {
-                                          'tripId':
-                                              controller.tripModel.value?.id,
-                                          'trip': controller.tripModel.value,
-                                          'tripMembers':
-                                              controller
-                                                  .tripModel
-                                                  .value
-                                                  ?.joindUsersList ??
-                                              [],
-                                          'onAdd': (expense) {
-                                            controller
-                                                .tripModel
-                                                .value
-                                                ?.expenses ??= [];
-                                            controller.tripModel.value?.expenses
-                                                ?.add(expense);
-                                            controller.tripModel.refresh();
-                                          },
-                                        },
-                                      ),
-                                ),
-                                _buildExpenseSummary(),
-                                SizedBox(height: 12.h),
-                                Obx(() => _buildSettlementCard(context)),
-
-                                SizedBox(height: 100.h),
-                              ],
+                                    },
+                                  ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 10.h,
-                      left: 18.w,
-                      right: 18.w,
-                      child: CustomElevatedButton(
-                        width: Get.width,
-                        height: Get.height * 0.06,
-                        title:
-                            controller.tripModel.value?.joinedUsers?.any(
-                                      (element) =>
-                                          element ==
-                                          GlobalVariables
-                                              .loggedInUser
-                                              .value!
-                                              .uid,
-                                    ) ??
-                                    false
-                                ? 'Open Chat'
-                                : 'Send Message',
-                        onPressed: () async {
-                          late UsersController usersController;
-                          if (!Get.isRegistered<UsersController>()) {
-                            usersController = Get.put(UsersController());
-                          } else {
-                            usersController = Get.find<UsersController>();
-                          }
-                          usersController.currentTrip.value =
-                              controller.tripModel.value;
+                            _buildExpenseSummary(),
+                            SizedBox(height: 12.h),
+                            Obx(() => _buildSettlementCard(context)),
 
-                          usersController.listenToChat();
-
-                          await Get.toNamed(kMessagesScreenRoute);
-                          await usersController.stopListeningToChat();
-                        },
+                            SizedBox(height: 100.h),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-      ),
+                Positioned(
+                  bottom: 10.h,
+                  left: 18.w,
+                  right: 18.w,
+                  child: CustomElevatedButton(
+                    width: Get.width,
+                    height: Get.height * 0.06,
+                    title:
+                        controller.tripModel.value?.joinedUsers?.any(
+                                  (element) =>
+                                      element ==
+                                      GlobalVariables.loggedInUser.value!.uid,
+                                ) ??
+                                false
+                            ? 'Open Chat'
+                            : 'Send Message',
+                    onPressed: () async {
+                      late UsersController usersController;
+                      if (!Get.isRegistered<UsersController>()) {
+                        usersController = Get.put(UsersController());
+                      } else {
+                        usersController = Get.find<UsersController>();
+                      }
+                      usersController.currentTrip.value =
+                          controller.tripModel.value;
+
+                      usersController.listenToChat();
+
+                      await Get.toNamed(kMessagesScreenRoute);
+                      await usersController.stopListeningToChat();
+                    },
+                  ),
+                ),
+              ],
+            );
+      }),
     );
   }
 
@@ -489,6 +512,16 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                   height: Get.height * 0.45,
                   url: trip.images.isNotEmpty ? trip.images.first : '',
                   errorImage: AppImages.kDefaultTripImage,
+                ),
+                Positioned(
+                  top: 40.h,
+                  right: 10.w,
+                  child: SafetyMenu(
+                    targetType: 'trip',
+                    targetId: trip.id,
+                    authorId: trip.createdBy,
+                    color: AppColors.kWhiteColor,
+                  ),
                 ),
                 Positioned(
                   top: 40.h,
@@ -616,7 +649,10 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
     return SizedBox(
       height: Get.height * 0.45,
       child: PageView.builder(
-        itemCount: controller.tripModel.value?.images.length ?? 0,
+        itemCount:
+            (controller.tripModel.value?.images.isEmpty ?? true)
+                ? 1
+                : controller.tripModel.value!.images.length,
         itemBuilder:
             (c, index) => Stack(
               children: [
@@ -628,7 +664,10 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                 AnyImageView(
                   width: Get.width,
                   height: Get.height * 0.45,
-                  url: controller.tripModel.value?.images[index] ?? '',
+                  url:
+                      (controller.tripModel.value?.images.isEmpty ?? true)
+                          ? ''
+                          : controller.tripModel.value!.images[index],
                   errorImage: AppImages.kDefaultTripImage,
                 ),
                 Align(
@@ -681,6 +720,65 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                                               spacing: 7.h,
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
+                                                if (!GlobalVariables.isLoggedInUser(
+                                                  controller
+                                                      .tripModel
+                                                      .value!
+                                                      .createdBy,
+                                                )) ...[
+                                                  MoreVertDialogueWidget(
+                                                    title:
+                                                        AppLocalizations.of(
+                                                          context,
+                                                        )!.safetyReportTrip,
+                                                    iconData:
+                                                        Icons.flag_outlined,
+                                                    onTap: () {
+                                                      Navigator.pop(c);
+                                                      showReportSheet(
+                                                        context,
+                                                        targetType: 'trip',
+                                                        targetId:
+                                                            controller
+                                                                .tripModel
+                                                                .value!
+                                                                .id,
+                                                        authorId:
+                                                            controller
+                                                                .tripModel
+                                                                .value!
+                                                                .createdBy,
+                                                      );
+                                                    },
+                                                  ),
+                                                  MoreVertDialogueWidget(
+                                                    title:
+                                                        SafetyService.isBlocked(
+                                                              controller
+                                                                  .tripModel
+                                                                  .value!
+                                                                  .createdBy,
+                                                            )
+                                                            ? AppLocalizations.of(
+                                                              context,
+                                                            )!.safetyUnblock
+                                                            : AppLocalizations.of(
+                                                              context,
+                                                            )!.safetyBlock,
+                                                    iconData:
+                                                        Icons.block_outlined,
+                                                    onTap: () {
+                                                      Navigator.pop(c);
+                                                      confirmBlock(
+                                                        context,
+                                                        controller
+                                                            .tripModel
+                                                            .value!
+                                                            .createdBy,
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
                                                 if (GlobalVariables.isLoggedInUser(
                                                   controller
                                                           .tripModel

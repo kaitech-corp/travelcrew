@@ -1,3 +1,4 @@
+import 'package:travel_crew/views/safety/blocked_users_screen.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/views/all_expenses/all_expenses_screen.dart';
 import 'package:travel_crew/views/import_trip/import_trip_screen.dart';
@@ -37,6 +38,7 @@ import 'screen_bindings.dart';
 class RouteGenerator {
   static List<GetPage> getPages() {
     return [
+      GetPage(name: kBlockedUsersScreenRoute, page: () => BlockedUsersScreen()),
       GetPage(
         name: kSplashScreenRoute,
         page: () => const SplashScreen(),

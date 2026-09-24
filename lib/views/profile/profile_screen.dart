@@ -147,6 +147,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 20.h),
             ProfileWidget(
+              title: l10n.safetyBlockedUsers,
+              leadingImage: AppImages.kProfileInfoIcon,
+              onTap: () => Get.toNamed(kBlockedUsersScreenRoute),
+            ),
+            SizedBox(height: 20.h),
+            ProfileWidget(
               title: l10n.helpAndSupport,
               leadingImage: AppImages.kProfileInfoIcon,
               onTap: () => Get.toNamed(kHelpNSupportScreenRoute),

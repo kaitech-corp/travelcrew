@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/safety_service.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -808,7 +809,7 @@ class CreateTripController extends GetxController {
         query: searchFriendController.text,
       ).then((users) {
         searchedFriends.clear();
-        for (final e in users) {
+        for (final e in users.where((user) => !SafetyService.hides(user.uid))) {
           searchedFriends.add(
             SearchModel(
               searchText: e.displayName,

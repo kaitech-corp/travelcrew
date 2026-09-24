@@ -124,7 +124,6 @@ class PublicUserModel {
       'hometown': hometown,
       'instagramLink': instagramLink,
       'lastName': lastName,
-      'blockedList': blockedList,
       'followers': followers,
       'following': following,
       'topDestinations': topDestinations,
