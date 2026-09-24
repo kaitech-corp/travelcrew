@@ -148,19 +148,19 @@ class ChatFirebaseService {
       print('Saving message in room: $roomId');
     }
     try {
-      await firestore
-          .collection(kTripChatCollection)
-          .doc(roomId)
-          .collection(kTripChatMessagesCollection)
-          .doc(chatToSave.chateId)
-          .set(chatToSave.copyWith(createdAt: Timestamp.now()).toMap());
-      await firestore.collection(kTripChatCollection).doc(roomId).update({
-        'updatedAt': Timestamp.now(),
-      });
+      final room = firestore.collection(kTripChatCollection).doc(roomId);
+      final batch = firestore.batch();
+      batch.set(
+        room.collection(kTripChatMessagesCollection).doc(chatToSave.chateId),
+        chatToSave.copyWith(createdAt: Timestamp.now()).toMap(),
+      );
+      batch.update(room, {'updatedAt': Timestamp.now()});
+      await batch.commit();
     } catch (e) {
       if (kDebugMode) {
         print('Error in sendMessage for roomId: $roomId. Error: $e');
       }
+      rethrow;
     }
   }
 

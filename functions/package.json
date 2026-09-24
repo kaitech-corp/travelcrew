@@ -9,7 +9,8 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "test:rules": "node --test test-rules/*.test.js"
   },
   "dependencies": {
     "bad-words": "^4.1.5",
@@ -18,7 +19,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "eslint": "^9.39.5",
+    "firebase": "^12.19.0",
     "globals": "^17.12.0"
   }
 }

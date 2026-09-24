@@ -49,6 +49,33 @@ class HomePageController extends GetxController
     super.onClose();
   }
 
+  List<String>? _filterContinents;
+  String get discoveryKey =>
+      selectedTabIndex.value == 0
+          ? (_filterContinents == null ? 'all' : 'filtered')
+          : tabs[selectedTabIndex.value].toLowerCase();
+  Future<void> loadMoreTrips() async {
+    if (isLoadingOtherTrips.value) return;
+    switch (selectedTabIndex.value) {
+      case 0:
+        if (_filterContinents != null) {
+          await getFilterdTrips(continents: _filterContinents!, loadMore: true);
+        } else {
+          await getOtherTrips(loadMore: true);
+        }
+        break;
+      case 1:
+        await getPopularTrips(loadMore: true);
+        break;
+      case 2:
+        await getByLocation(loadMore: true);
+        break;
+      case 3:
+        await getRecommendedTrips(loadMore: true);
+        break;
+    }
+  }
+
   RxBool isLoadingOtherTrips = true.obs;
   RxList<TripDiscoveryModel> otherTrips = <TripDiscoveryModel>[].obs;
   RxList<TripDiscoveryModel> otherFilteredTrips = <TripDiscoveryModel>[].obs;
@@ -72,10 +99,13 @@ class HomePageController extends GetxController
 
   Future<void> getFilterdTrips({
     List<String> continents = const ['Europe', 'Asia'],
+    bool loadMore = false,
   }) async {
     try {
       isLoadingOtherTrips.value = true;
+      _filterContinents = continents;
       final value = await FirebaseTripService.getFilteredTrips(
+        loadMore: loadMore,
         continents: continents,
       );
       otherTrips.value = value;
@@ -92,10 +122,11 @@ class HomePageController extends GetxController
     }
   }
 
-  Future<void> getOtherTrips() async {
+  Future<void> getOtherTrips({bool loadMore = false}) async {
+    _filterContinents = null;
     try {
       isLoadingOtherTrips.value = true;
-      final value = await FirebaseTripService.getOtherTrips();
+      final value = await FirebaseTripService.getOtherTrips(loadMore: loadMore);
       otherTrips.value = value;
       otherTrips.sort(
         (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
@@ -110,12 +141,13 @@ class HomePageController extends GetxController
     }
   }
 
-  Future<void> getByLocation() async {
+  Future<void> getByLocation({bool loadMore = false}) async {
     try {
       nearbyTrips.clear();
       isLoadingOtherTrips.value = true;
       final position = await GeoServices.determinePosition();
       final trips = await FirebaseTripService.getNearbyTrips(
+        loadMore: loadMore,
         latitude: position.latitude,
         longitude: position.longitude,
         radius: 100,
@@ -149,10 +181,12 @@ class HomePageController extends GetxController
             .toList();
   }
 
-  Future<void> getPopularTrips() async {
+  Future<void> getPopularTrips({bool loadMore = false}) async {
     try {
       isLoadingOtherTrips.value = true;
-      final value = await FirebaseTripService.getPopularTrips();
+      final value = await FirebaseTripService.getPopularTrips(
+        loadMore: loadMore,
+      );
       otherTrips.value = value;
       otherFilteredTrips.value = value.toList();
     } catch (e) {
@@ -164,11 +198,13 @@ class HomePageController extends GetxController
     }
   }
 
-  Future<void> getRecommendedTrips() async {
+  Future<void> getRecommendedTrips({bool loadMore = false}) async {
     try {
       recommendedTrips.clear();
       isLoadingOtherTrips.value = true;
-      final trips = await FirebaseTripService.getRecommendedTrips();
+      final trips = await FirebaseTripService.getRecommendedTrips(
+        loadMore: loadMore,
+      );
       trips.sort(
         (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
       );

@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -413,7 +414,6 @@ class AuthService {
               'displayName',
               'profileImage',
               'email',
-              'following',
             }.contains(entry.key),
           ),
         );
@@ -579,7 +579,7 @@ class AuthService {
       ) async {
         if (value) {
           showCustomSnackBar(content: 'Account deleted successfully');
-          Get.offAllNamed(kLoginScreenRoute);
+          await signOut();
         } else {
           showCustomSnackBar(
             contentType: ContentType.failure,
@@ -599,22 +599,10 @@ class AuthService {
       final String? currentUserId = _auth.currentUser?.uid;
       if (currentUserId == null) return false;
 
-      // Add targetUserId to currentUser's 'following' list
-      await _firestore
-          .collection(kUsersPublicProfileCollection)
-          .doc(currentUserId)
-          .update({
-            'following': FieldValue.arrayUnion([targetUserId]),
-          });
-
-      // Add currentUserId to targetUser's 'followers' list
-      await _firestore
-          .collection(kUsersPublicProfileCollection)
-          .doc(targetUserId)
-          .update({
-            'followers': FieldValue.arrayUnion([currentUserId]),
-          });
-
+      await FirebaseFunctions.instance.httpsCallable('followUserV3').call({
+        'targetUserId': targetUserId,
+        'following': true,
+      });
       return true;
     } catch (e) {
       AppLogger.error('Error in followUser: $e');
@@ -627,22 +615,10 @@ class AuthService {
       final String? currentUserId = _auth.currentUser?.uid;
       if (currentUserId == null) return false;
 
-      // Remove targetUserId from currentUser's 'following' list
-      await _firestore
-          .collection(kUsersPublicProfileCollection)
-          .doc(currentUserId)
-          .update({
-            'following': FieldValue.arrayRemove([targetUserId]),
-          });
-
-      // Remove currentUserId from targetUser's 'followers' list
-      await _firestore
-          .collection(kUsersPublicProfileCollection)
-          .doc(targetUserId)
-          .update({
-            'followers': FieldValue.arrayRemove([currentUserId]),
-          });
-
+      await FirebaseFunctions.instance.httpsCallable('followUserV3').call({
+        'targetUserId': targetUserId,
+        'following': false,
+      });
       return true;
     } catch (e) {
       AppLogger.error('Error in unfollowUser: $e');

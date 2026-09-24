@@ -52,6 +52,12 @@ function fixture() {
     }})},
     "firebase-admin/storage": {getStorage: () => ({bucket: () => ({name: "app.appspot.com"})})},
     "google-auth-library": {GoogleAuth: class { async getAccessToken() { return "mock-token"; } }},
+    "firebase-admin/auth": {getAuth: () => ({getUserByEmail: async () => {
+      throw Object.assign(new Error("missing"), {code: "auth/user-not-found"});
+    }})},
+    "firebase-functions/v2/scheduler": {onSchedule: (_, fn) => fn},
+    "./safety": require("../safety"),
+    "./safety-triggers": require("../safety-triggers"),
     "./validation": validation,
     "./moderation": require("../moderation"),
     "./image-moderation": require("../image-moderation"),
@@ -151,6 +157,20 @@ test("photo handler rejects bad requests and reports missing configuration", asy
   }
 });
 
+test("welcome notification creates inbox item for new profile document", async () => {
+  const f = fixture();
+  await f.handlers.sendWelcomeNotificationV3({
+    data: {data: () => ({displayName: "Alice"})},
+    params: {userId: "alice"},
+  });
+  const key = "notifications/alice/notification/welcome_alice";
+  const data = f.records.get(key);
+  assert.equal(data.notificationTitle, "Welcome to Travel Crew!");
+  assert.match(data.notificationMessage, /Hey Alice/);
+  assert.equal(data.createdBy, "system");
+  assert.equal(data.sentTo[0], "alice");
+});
+
 test("index exports all required text moderation, image moderation, and service functions", () => {
   const {handlers} = fixture();
   const expected = [
@@ -164,6 +184,7 @@ test("index exports all required text moderation, image moderation, and service 
     "moderateTripImagesV3",
     "moderateDiscoveryImagesV3",
     "sendPushNotificationV3",
+    "sendWelcomeNotificationV3",
     "sendTripInvitesV3",
     "placePhotoV3",
   ];
@@ -172,3 +193,17 @@ test("index exports all required text moderation, image moderation, and service 
   }
 });
 
+
+
+test("blocks suppress both notification forwarding and queued push delivery", async () => {
+  const f = fixture();
+  await f.handlers.sendPushNotificationV3(event(joined));
+  const forwarded = f.records.get("notifications/owner/notification/member_event");
+  f.records.set("tokens/owner/tokens/valid", {});
+  f.records.set("users/owner/blockedUsers/member", {});
+  await f.handlers.sendPushNotificationV3(event(forwarded, "owner", "member_event"));
+  assert.equal(f.sends.length, 0);
+  f.records.delete("notifications/owner/notification/member_event");
+  await f.handlers.sendPushNotificationV3(event(joined));
+  assert.equal(f.records.has("notifications/owner/notification/member_event"), false);
+});
