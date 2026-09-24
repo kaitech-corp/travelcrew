@@ -14,8 +14,12 @@ Use Node 22 (`nvm use`), then `npm ci`, `npm run lint`, and `npm test`.
 - `sendTripInvitesV3` keeps the existing callable payload. Only the owner
   can invite to a non-deleted trip. Emails are normalized before deduplication;
   more than 20 unique valid emails are rejected rather than silently discarded.
-  `sent` is retained for compatibility and means queued; `queued` is also returned.
+  `sent` and `queued` acknowledge submitted addresses for compatibility;
+  blocked registered recipients are silently omitted to avoid revealing relationships.
   This does not accept join requests or change membership automatically.
+- `sendWelcomeNotificationV3` fires when a user profile is created under `publicProfile/{userId}`.
+  It generates a welcome notification in the user's inbox (`notifications/{userId}/notification/welcome_{userId}`)
+  and sends an FCM push notification to any registered device tokens.
 - `placePhotoV3` remains public for image clients. It accepts only a Places photo
   resource name and a width of 1–4800, with a 15-second upstream timeout and a
   maximum of 10 function instances. It does not change trip data. Public access
@@ -136,3 +140,13 @@ the table are not rewritten. No app or rules changes are included. In particular
 some current app screens use `images.first` without checking for an empty list;
 removing the last image can expose that existing issue. Local tests use mocked
 Vision/Firestore and do not validate live API access, billing, or IAM permissions.
+
+## Reporting and blocking
+
+See [implementation and operations runbook](../resources/reporting_and_blocking_implementation.md) for callable contracts, private collections, moderator actions, block migration, retention, and rollout requirements.
+
+`functions/.env.example` includes the moderation alert setting. Local configuration uses `Support@kaitechcorp.com`. Deploy the Trigger Email extension against `travel-crew-db-2` and verify delivery. The report alert and hourly overdue check queue mail without report contents.
+
+Follow mutations and join acceptance now use callables. Coordinate the updated app and restrictive rules rollout: old builds cannot continue writing follow/member relationships directly. The general notification deployment note above applies to the notification-only feature; follow the runbook sequence for this safety release.
+
+Run `npm run test:rules` through `firebase emulators:exec --only firestore --project demo-travelcrew-safety` with Java 21. This includes rules assertions and a named-database integration flow. Unit tests remain `npm test`.
