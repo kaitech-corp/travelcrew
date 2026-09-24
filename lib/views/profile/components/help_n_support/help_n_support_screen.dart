@@ -1,3 +1,5 @@
+import 'package:url_launcher/url_launcher.dart';
+import 'package:travel_crew/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
@@ -27,6 +29,17 @@ class _HelpNSupportScreenState extends State<HelpNSupportScreen> {
         spacing: 5.h,
         children: [
           SizedBox(height: 20.h),
+          TextButton.icon(
+            onPressed:
+                () => launchUrl(
+                  Uri(scheme: 'mailto', path: 'Support@kaitechcorp.com'),
+                ),
+            icon: const Icon(
+              Icons.mail_outline,
+              color: AppColors.kPrimaryColor,
+            ),
+            label: const Text('Support@kaitechcorp.com'),
+          ),
           HelpSupportExpansionTile(
             title: l10n.safetyAndSecurity,
             description: l10n.safetyAndSecurityDescription,
