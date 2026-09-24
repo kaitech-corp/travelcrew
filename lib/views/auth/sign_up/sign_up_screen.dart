@@ -10,6 +10,7 @@ import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/utils/url_launcher_helper.dart';
 import 'package:travel_crew/views/auth/login/widgets/social_button.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:travel_crew/views/auth/sign_up/controller/sign_up_controller.dart';
 
 import '../../../utils/app_images.dart';
@@ -237,17 +238,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 },
               ),
               SizedBox(height: 24.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
                 children: [
-                  SocialButton(
-                    icon: AppImages.kGoogleIcon,
-                    onTap: controller.onGoogleSignIn,
-                  ),
-                  SizedBox(width: 24.w),
-                  SocialButton(
-                    icon: AppImages.kAppleIcon,
-                    onTap: controller.onAppleSignIn,
+                  GoogleSignInButton(onPressed: controller.onGoogleSignIn),
+                  SizedBox(height: 12.h),
+                  SizedBox(
+                    width: 188.w,
+                    height: 44.h,
+                    child: SignInWithAppleButton(
+                      onPressed: controller.onAppleSignIn,
+                      text: 'Sign up with Apple',
+                      height: 44,
+                      style: SignInWithAppleButtonStyle.black,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ],
               ),

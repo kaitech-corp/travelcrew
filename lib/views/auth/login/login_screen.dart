@@ -7,6 +7,7 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/auth/login/widgets/social_button.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../utils/app_images.dart';
 import '../../custom_widgets/custom_elevated_button.dart';
@@ -236,17 +237,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
                   children: [
-                    SocialButton(
-                      icon: AppImages.kGoogleIcon,
-                      onTap: controller.loginWithGoogle,
-                    ),
-                    SizedBox(width: 24.w),
-                    SocialButton(
-                      icon: AppImages.kAppleIcon,
-                      onTap: controller.loginWithApple,
+                    GoogleSignInButton(onPressed: controller.loginWithGoogle),
+                    SizedBox(height: 12.h),
+                    SizedBox(
+                      width: 188.w,
+                      height: 44.h,
+                      child: SignInWithAppleButton(
+                        onPressed: controller.loginWithApple,
+                        height: 44,
+                        style: SignInWithAppleButtonStyle.black,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ],
                 ),

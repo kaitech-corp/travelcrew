@@ -8,8 +8,10 @@ class AppImages {
   static const String kBackIcon = '$basePathIcons/ic_back.png';
   static const String kForwardIcon = '$basePathIcons/arrow-forward.png';
   static const String kFaceBookIcon = '$basePathIcons/ic_face_book.png';
-  static const String kGoogleIcon = '$basePathIcons/ic_google.png';
-  static const String kAppleIcon = '$basePathIcons/ic_apple.png';
+  static const String kGoogleSignInButtonIos =
+      '$basePathIcons/google_sign_in_button_ios.png';
+  static const String kGoogleSignInButtonAndroid =
+      '$basePathIcons/google_sign_in_button_android.png';
   static const String kCheckIcon = '$basePathIcons/check-icon.png';
   static const String kLogOutIcon = '$basePathIcons/ic_log_out.png';
   static const String kLockIcon = '$basePathIcons/ic_lock.png';
