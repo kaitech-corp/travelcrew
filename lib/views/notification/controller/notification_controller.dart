@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/safety_service.dart';
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,9 +13,46 @@ import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/error_handler.dart';
 
 class NotificationController extends GetxController {
-  final RxList<NotificationModel> notifications = <NotificationModel>[].obs;
+  final RxList<NotificationModel> _allNotifications = <NotificationModel>[].obs;
   final RxBool isLoading = false.obs;
   final RxInt unreadCount = 0.obs;
+
+  List<NotificationModel> get notifications =>
+      _allNotifications
+          .map(
+            (group) => NotificationModel(
+              date: group.date,
+              notifications:
+                  group.notifications
+                      .where(
+                        (n) =>
+                            n.createdBy == 'system' ||
+                            !SafetyService.hides(n.createdBy),
+                      )
+                      .toList(),
+            ),
+          )
+          .where((group) => group.notifications.isNotEmpty)
+          .toList();
+
+  Worker? _safetyWorker;
+  Worker? _readyWorker;
+  List<UserNotificationModel> _badgeItems = [];
+  void _updateSafetyBadge() {
+    final createdAt = GlobalVariables.loggedInUser.value?.createdAt?.toDate();
+    final count =
+        _badgeItems
+            .where(
+              (n) =>
+                  n.isUnread &&
+                  (createdAt == null || !n.createdAt.isBefore(createdAt)) &&
+                  (n.createdBy == 'system' ||
+                      !SafetyService.hides(n.createdBy)),
+            )
+            .length;
+    unreadCount.value = count;
+    unawaited(NotificationBadgeService.setCount(count));
+  }
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _badgeSubscription;
   Worker? _userWorker;
@@ -23,6 +61,8 @@ class NotificationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _safetyWorker = ever(SafetyService.blockedIds, (_) => _updateSafetyBadge());
+    _readyWorker = ever(SafetyService.ready, (_) => _updateSafetyBadge());
     _userWorker = ever(GlobalVariables.loggedInUser, (_) {
       _bindBadgeListener();
       unawaited(getNotification());
@@ -35,6 +75,8 @@ class NotificationController extends GetxController {
 
   @override
   void onClose() {
+    _safetyWorker?.dispose();
+    _readyWorker?.dispose();
     _userWorker?.dispose();
     _badgeSubscription?.cancel();
     super.onClose();
@@ -44,14 +86,17 @@ class NotificationController extends GetxController {
     try {
       final user = GlobalVariables.loggedInUser.value;
       if (user == null) {
-        notifications.clear();
+        _allNotifications.clear();
         isLoading.value = false;
         return;
       }
 
       isLoading.value = true;
-      notifications.value =
-          await FirebaseNotificationsService.getUserNotifications(type: '');
+      final loaded = await FirebaseNotificationsService.getUserNotifications(
+        type: '',
+      );
+      if (GlobalVariables.currentUid != user.uid) return;
+      _allNotifications.value = loaded;
     } catch (e, stackTrace) {
       ErrorHandler.handleError(
         e,
@@ -75,9 +120,10 @@ class NotificationController extends GetxController {
   Future<void> markAllAsRead() async {
     final flatNotifications =
         notifications.expand((group) => group.notifications).toList();
-    final updated = await FirebaseNotificationsService.markAllNotificationsAsRead(
-      notifications: flatNotifications,
-    );
+    final updated =
+        await FirebaseNotificationsService.markAllNotificationsAsRead(
+          notifications: flatNotifications,
+        );
     if (updated) {
       await getNotification();
     }
@@ -90,6 +136,9 @@ class NotificationController extends GetxController {
     }
 
     _listeningUid = uid;
+    _badgeItems = [];
+    _allNotifications.clear();
+    _updateSafetyBadge();
     unawaited(_badgeSubscription?.cancel());
     _badgeSubscription = null;
 
@@ -99,36 +148,28 @@ class NotificationController extends GetxController {
       return;
     }
 
-    _badgeSubscription =
-        firestore
-            .collection(kNotificationsCollection)
-            .doc(uid)
-            .collection(kNotificationsSubCollection)
-            .snapshots()
-            .listen(
-              (snapshot) async {
-                final userCreatedAt =
-                    GlobalVariables.loggedInUser.value?.createdAt?.toDate();
-                final count = snapshot.docs
+    _badgeSubscription = firestore
+        .collection(kNotificationsCollection)
+        .doc(uid)
+        .collection(kNotificationsSubCollection)
+        .snapshots()
+        .listen(
+          (snapshot) async {
+            if (_listeningUid != uid) return;
+            _badgeItems =
+                snapshot.docs
                     .map((doc) => UserNotificationModel.fromMap(doc.data()))
-                    .where((notification) {
-                      if (userCreatedAt != null &&
-                          notification.createdAt.isBefore(userCreatedAt)) {
-                        return false;
-                      }
-                      return notification.isUnread;
-                    })
-                    .length;
-                unreadCount.value = count;
-                await NotificationBadgeService.setCount(count);
-              },
-              onError: (error, stackTrace) {
-                ErrorHandler.handleError(
-                  error,
-                  stackTrace: stackTrace,
-                  context: 'notificationBadgeListener',
-                );
-              },
+                    .toList();
+            _updateSafetyBadge();
+            unawaited(getNotification());
+          },
+          onError: (error, stackTrace) {
+            ErrorHandler.handleError(
+              error,
+              stackTrace: stackTrace,
+              context: 'notificationBadgeListener',
             );
+          },
+        );
   }
 }
