@@ -262,7 +262,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedbackRequest =>
-      'Please send any feedback or bug reports to\nRoamAI@asistant.com';
+      'Please send any feedback or bug reports to\nSupport@kaitechcorp.com';
 
   @override
   String get personalInformation => 'Personal Information';
@@ -622,4 +622,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leave => 'Leave';
+
+  @override
+  String get safetyActions => 'Safety options';
+
+  @override
+  String get safetyReportUser => 'Report user';
+
+  @override
+  String get safetyReportTrip => 'Report trip';
+
+  @override
+  String get safetyReportMessage => 'Report message';
+
+  @override
+  String get safetyReportContent => 'Report content';
+
+  @override
+  String get safetyBlock => 'Block user';
+
+  @override
+  String get safetyUnblock => 'Unblock user';
+
+  @override
+  String get safetyBlockedUsers => 'Blocked users';
+
+  @override
+  String get safetyNoBlockedUsers => 'You haven’t blocked anyone.';
+
+  @override
+  String get safetyUnavailableUser => 'Unavailable user';
+
+  @override
+  String get safetyBlocked => 'User blocked';
+
+  @override
+  String get safetyUnblocked => 'User unblocked';
+
+  @override
+  String get safetyBlockExplanation =>
+      'Their trips and messages will be hidden from you. New follows, trip requests and invitations between you will be stopped. Shared trips and expenses stay accessible. Other members can still see both of you.';
+
+  @override
+  String get safetyUnblockExplanation =>
+      'Their content will be visible again. Previous follows and invitations will not be restored.';
+
+  @override
+  String get safetyReportExplanation =>
+      'Tell us what is wrong. Our moderation team will review your report. Your identity will not be shared with the reported user.';
+
+  @override
+  String get safetyReportSent => 'Report received';
+
+  @override
+  String get safetyReportThanks =>
+      'Thank you. Your report has been submitted for review. You can also block this user.';
+
+  @override
+  String get safetyReason => 'Reason';
+
+  @override
+  String get safetyDetails => 'Details (optional)';
+
+  @override
+  String get safetyHarassment => 'Harassment or bullying';
+
+  @override
+  String get safetyHate => 'Hate or discrimination';
+
+  @override
+  String get safetySexual => 'Sexual content';
+
+  @override
+  String get safetyViolence => 'Violence or threats';
+
+  @override
+  String get safetySpam => 'Spam or scam';
+
+  @override
+  String get safetyOther => 'Other';
+
+  @override
+  String get safetySubmit => 'Submit report';
+
+  @override
+  String get safetyCancel => 'Cancel';
+
+  @override
+  String get safetyDone => 'Done';
+
+  @override
+  String get safetyRetry => 'Could not load safety settings. Tap to retry.';
+
+  @override
+  String get safetyTryAgain =>
+      'Could not save your changes. Check your connection and try again.';
+
+  @override
+  String get safetyAccessError =>
+      'This action is unavailable. Check that you are signed in and still have access.';
+
+  @override
+  String get safetyRateLimit => 'Too many reports. Please try again later.';
+
+  @override
+  String get safetyUnavailable => 'This content is no longer available.';
+
+  @override
+  String get safetySharedTrip =>
+      'You share this trip with a blocked user. Their messages are hidden; shared plans and expenses remain accessible. You can leave from the trip menu.';
+
+  @override
+  String get safetyLoadMore => 'Load more trips';
 }

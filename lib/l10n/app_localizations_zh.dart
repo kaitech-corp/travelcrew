@@ -258,7 +258,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get needHelp => '需要帮助？';
 
   @override
-  String get feedbackRequest => '请将任何反馈或错误报告发送至\nRoamAI@asistant.com';
+  String get feedbackRequest => '请将任何反馈或错误报告发送至\nSupport@kaitechcorp.com';
 
   @override
   String get personalInformation => '个人信息';
@@ -597,4 +597,111 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get leave => '退出';
+
+  @override
+  String get safetyActions => '安全选项';
+
+  @override
+  String get safetyReportUser => '举报用户';
+
+  @override
+  String get safetyReportTrip => '举报行程';
+
+  @override
+  String get safetyReportMessage => '举报消息';
+
+  @override
+  String get safetyReportContent => '举报内容';
+
+  @override
+  String get safetyBlock => '屏蔽用户';
+
+  @override
+  String get safetyUnblock => '取消屏蔽';
+
+  @override
+  String get safetyBlockedUsers => '已屏蔽用户';
+
+  @override
+  String get safetyNoBlockedUsers => '你还没有屏蔽任何人。';
+
+  @override
+  String get safetyUnavailableUser => '用户不可用';
+
+  @override
+  String get safetyBlocked => '已屏蔽用户';
+
+  @override
+  String get safetyUnblocked => '已取消屏蔽';
+
+  @override
+  String get safetyBlockExplanation =>
+      '你将看不到对方的行程和消息。双方无法新增关注、行程申请或邀请。共享行程和费用仍可访问，其他成员仍能看到双方。';
+
+  @override
+  String get safetyUnblockExplanation => '对方的内容将重新显示。之前的关注和邀请不会恢复。';
+
+  @override
+  String get safetyReportExplanation => '请说明问题。审核团队将处理你的举报，且不会向被举报用户透露你的身份。';
+
+  @override
+  String get safetyReportSent => '举报已收到';
+
+  @override
+  String get safetyReportThanks => '谢谢。你的举报已提交审核。你也可以屏蔽此用户。';
+
+  @override
+  String get safetyReason => '原因';
+
+  @override
+  String get safetyDetails => '详情（可选）';
+
+  @override
+  String get safetyHarassment => '骚扰或欺凌';
+
+  @override
+  String get safetyHate => '仇恨或歧视';
+
+  @override
+  String get safetySexual => '色情内容';
+
+  @override
+  String get safetyViolence => '暴力或威胁';
+
+  @override
+  String get safetySpam => '垃圾信息或诈骗';
+
+  @override
+  String get safetyOther => '其他';
+
+  @override
+  String get safetySubmit => '提交举报';
+
+  @override
+  String get safetyCancel => '取消';
+
+  @override
+  String get safetyDone => '完成';
+
+  @override
+  String get safetyRetry => '无法加载安全设置。点击重试。';
+
+  @override
+  String get safetyTryAgain => '无法保存更改。请检查网络连接后重试。';
+
+  @override
+  String get safetyAccessError => '此操作不可用。请确认已登录且仍有访问权限。';
+
+  @override
+  String get safetyRateLimit => '举报次数过多，请稍后重试。';
+
+  @override
+  String get safetyUnavailable => '此内容已不可用。';
+
+  @override
+  String get safetySharedTrip =>
+      '此行程中有你屏蔽的用户。对方的消息已隐藏，共享计划和费用仍可访问。你可以通过行程菜单退出。';
+
+  @override
+  String get safetyLoadMore => '加载更多行程';
 }

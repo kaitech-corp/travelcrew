@@ -601,7 +601,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackRequest.
   ///
   /// In en, this message translates to:
-  /// **'Please send any feedback or bug reports to\nRoamAI@asistant.com'**
+  /// **'Please send any feedback or bug reports to\nSupport@kaitechcorp.com'**
   String get feedbackRequest;
 
   /// No description provided for @personalInformation.
@@ -1239,6 +1239,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave'**
   String get leave;
+
+  /// No description provided for @safetyActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety options'**
+  String get safetyActions;
+
+  /// No description provided for @safetyReportUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Report user'**
+  String get safetyReportUser;
+
+  /// No description provided for @safetyReportTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Report trip'**
+  String get safetyReportTrip;
+
+  /// No description provided for @safetyReportMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Report message'**
+  String get safetyReportMessage;
+
+  /// No description provided for @safetyReportContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Report content'**
+  String get safetyReportContent;
+
+  /// No description provided for @safetyBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block user'**
+  String get safetyBlock;
+
+  /// No description provided for @safetyUnblock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock user'**
+  String get safetyUnblock;
+
+  /// No description provided for @safetyBlockedUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked users'**
+  String get safetyBlockedUsers;
+
+  /// No description provided for @safetyNoBlockedUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven’t blocked anyone.'**
+  String get safetyNoBlockedUsers;
+
+  /// No description provided for @safetyUnavailableUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable user'**
+  String get safetyUnavailableUser;
+
+  /// No description provided for @safetyBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'User blocked'**
+  String get safetyBlocked;
+
+  /// No description provided for @safetyUnblocked.
+  ///
+  /// In en, this message translates to:
+  /// **'User unblocked'**
+  String get safetyUnblocked;
+
+  /// No description provided for @safetyBlockExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Their trips and messages will be hidden from you. New follows, trip requests and invitations between you will be stopped. Shared trips and expenses stay accessible. Other members can still see both of you.'**
+  String get safetyBlockExplanation;
+
+  /// No description provided for @safetyUnblockExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Their content will be visible again. Previous follows and invitations will not be restored.'**
+  String get safetyUnblockExplanation;
+
+  /// No description provided for @safetyReportExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what is wrong. Our moderation team will review your report. Your identity will not be shared with the reported user.'**
+  String get safetyReportExplanation;
+
+  /// No description provided for @safetyReportSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Report received'**
+  String get safetyReportSent;
+
+  /// No description provided for @safetyReportThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. Your report has been submitted for review. You can also block this user.'**
+  String get safetyReportThanks;
+
+  /// No description provided for @safetyReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get safetyReason;
+
+  /// No description provided for @safetyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details (optional)'**
+  String get safetyDetails;
+
+  /// No description provided for @safetyHarassment.
+  ///
+  /// In en, this message translates to:
+  /// **'Harassment or bullying'**
+  String get safetyHarassment;
+
+  /// No description provided for @safetyHate.
+  ///
+  /// In en, this message translates to:
+  /// **'Hate or discrimination'**
+  String get safetyHate;
+
+  /// No description provided for @safetySexual.
+  ///
+  /// In en, this message translates to:
+  /// **'Sexual content'**
+  String get safetySexual;
+
+  /// No description provided for @safetyViolence.
+  ///
+  /// In en, this message translates to:
+  /// **'Violence or threats'**
+  String get safetyViolence;
+
+  /// No description provided for @safetySpam.
+  ///
+  /// In en, this message translates to:
+  /// **'Spam or scam'**
+  String get safetySpam;
+
+  /// No description provided for @safetyOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get safetyOther;
+
+  /// No description provided for @safetySubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit report'**
+  String get safetySubmit;
+
+  /// No description provided for @safetyCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get safetyCancel;
+
+  /// No description provided for @safetyDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get safetyDone;
+
+  /// No description provided for @safetyRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load safety settings. Tap to retry.'**
+  String get safetyRetry;
+
+  /// No description provided for @safetyTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save your changes. Check your connection and try again.'**
+  String get safetyTryAgain;
+
+  /// No description provided for @safetyAccessError.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is unavailable. Check that you are signed in and still have access.'**
+  String get safetyAccessError;
+
+  /// No description provided for @safetyRateLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many reports. Please try again later.'**
+  String get safetyRateLimit;
+
+  /// No description provided for @safetyUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This content is no longer available.'**
+  String get safetyUnavailable;
+
+  /// No description provided for @safetySharedTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'You share this trip with a blocked user. Their messages are hidden; shared plans and expenses remain accessible. You can leave from the trip menu.'**
+  String get safetySharedTrip;
+
+  /// No description provided for @safetyLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more trips'**
+  String get safetyLoadMore;
 }
 
 class _AppLocalizationsDelegate

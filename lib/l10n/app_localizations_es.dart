@@ -265,7 +265,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedbackRequest =>
-      'Por favor, envía cualquier comentario o informe de error a\nRoamAI@asistant.com';
+      'Por favor, envía cualquier comentario o informe de error a\nSupport@kaitechcorp.com';
 
   @override
   String get personalInformation => 'Información Personal';
@@ -625,4 +625,117 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get leave => 'Salir';
+
+  @override
+  String get safetyActions => 'Opciones de seguridad';
+
+  @override
+  String get safetyReportUser => 'Denunciar usuario';
+
+  @override
+  String get safetyReportTrip => 'Denunciar viaje';
+
+  @override
+  String get safetyReportMessage => 'Denunciar mensaje';
+
+  @override
+  String get safetyReportContent => 'Denunciar contenido';
+
+  @override
+  String get safetyBlock => 'Bloquear usuario';
+
+  @override
+  String get safetyUnblock => 'Desbloquear usuario';
+
+  @override
+  String get safetyBlockedUsers => 'Usuarios bloqueados';
+
+  @override
+  String get safetyNoBlockedUsers => 'No has bloqueado a nadie.';
+
+  @override
+  String get safetyUnavailableUser => 'Usuario no disponible';
+
+  @override
+  String get safetyBlocked => 'Usuario bloqueado';
+
+  @override
+  String get safetyUnblocked => 'Usuario desbloqueado';
+
+  @override
+  String get safetyBlockExplanation =>
+      'Sus viajes y mensajes se ocultarán. Se impedirán nuevos seguimientos, solicitudes e invitaciones entre ustedes. Los viajes y gastos compartidos seguirán disponibles. Los demás miembros podrán verlos a ambos.';
+
+  @override
+  String get safetyUnblockExplanation =>
+      'Su contenido volverá a ser visible. No se restaurarán los seguimientos ni las invitaciones anteriores.';
+
+  @override
+  String get safetyReportExplanation =>
+      'Cuéntanos qué sucede. Nuestro equipo de moderación revisará la denuncia. No compartiremos tu identidad con el usuario denunciado.';
+
+  @override
+  String get safetyReportSent => 'Denuncia recibida';
+
+  @override
+  String get safetyReportThanks =>
+      'Gracias. Tu denuncia se ha enviado para revisión. También puedes bloquear a este usuario.';
+
+  @override
+  String get safetyReason => 'Motivo';
+
+  @override
+  String get safetyDetails => 'Detalles (opcional)';
+
+  @override
+  String get safetyHarassment => 'Acoso o intimidación';
+
+  @override
+  String get safetyHate => 'Odio o discriminación';
+
+  @override
+  String get safetySexual => 'Contenido sexual';
+
+  @override
+  String get safetyViolence => 'Violencia o amenazas';
+
+  @override
+  String get safetySpam => 'Spam o estafa';
+
+  @override
+  String get safetyOther => 'Otro';
+
+  @override
+  String get safetySubmit => 'Enviar denuncia';
+
+  @override
+  String get safetyCancel => 'Cancelar';
+
+  @override
+  String get safetyDone => 'Listo';
+
+  @override
+  String get safetyRetry =>
+      'No se pudo cargar la configuración de seguridad. Toca para reintentar.';
+
+  @override
+  String get safetyTryAgain =>
+      'No se pudieron guardar los cambios. Comprueba tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get safetyAccessError =>
+      'Esta acción no está disponible. Comprueba que hayas iniciado sesión y aún tengas acceso.';
+
+  @override
+  String get safetyRateLimit => 'Demasiadas denuncias. Inténtalo más tarde.';
+
+  @override
+  String get safetyUnavailable => 'Este contenido ya no está disponible.';
+
+  @override
+  String get safetySharedTrip =>
+      'Compartes este viaje con un usuario bloqueado. Sus mensajes están ocultos; los planes y gastos compartidos siguen disponibles. Puedes salir desde el menú del viaje.';
+
+  @override
+  String get safetyLoadMore => 'Cargar más viajes';
 }
