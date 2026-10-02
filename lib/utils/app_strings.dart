@@ -60,8 +60,9 @@ const kNearByTripsFunction = 'nearByTrips';
 const kFilterTripsFunction = 'filterTrips';
 const kSearchUsersFunction = 'searchUsers';
 
-/// external legal URLs
-const kPrivacyPolicyUrl = 'https://travelcrew.app/privacypolicy';
-const kTermsAndConditionsUrl = 'https://travelcrew.app/terms&conditions';
+/// Public website URLs used by mobile links and trip sharing.
+const kWebsiteBaseUrl = 'https://travelcrew.app';
+const kPrivacyPolicyUrl = '$kWebsiteBaseUrl/privacypolicy';
+const kTermsAndConditionsUrl = '$kWebsiteBaseUrl/terms&conditions';
 
 const kBlockedUsersScreenRoute = '/BlockedUsersScreen';

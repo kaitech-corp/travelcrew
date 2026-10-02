@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travel_crew/services/notifications/chat_activity_service.dart';
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:travel_crew/services/notifications/notification_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,7 +11,6 @@ import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/models/Notifications/notification_model.dart';
 import 'package:travel_crew/models/Notifications/user_notification_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
-import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
@@ -125,21 +128,51 @@ class _MessagesTab extends StatelessWidget {
                     final room = rooms[index];
                     final trip = room.trip;
                     if (trip == null) return const SizedBox.shrink();
-                    return UsersWidget(
-                      imageUrl: trip.images.firstOrNull ?? '',
-                      tripModel: trip,
-                      title: room.trip?.title ?? '',
-                      subtitle:
-                          '${DateFormat('dd MMM').format(room.trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(room.trip?.tripEndDate ?? DateTime.now())}',
-                      timestamp: DateFormat(
-                        'dd MMM, hh:mma',
-                      ).format(room.updatedAt.toDate()),
-                      memberImages:
-                          room.users
-                              .map((e) => e.profileImage.toString())
-                              .toList(),
-                      extraMembers:
-                          room.users.length > 3 ? room.users.length - 3 : 0,
+                    return StreamBuilder<
+                      DocumentSnapshot<Map<String, dynamic>>
+                    >(
+                      stream: ChatActivityService.watch(room.roomId),
+                      builder: (context, snapshot) {
+                        final data = snapshot.data?.data();
+                        final unread =
+                            (data?['lastMessageAt'] as num? ?? 0) >
+                            ((data?['readAt'] as Timestamp?)
+                                    ?.millisecondsSinceEpoch ??
+                                0);
+                        final sender = data?['lastSenderId'] as String? ?? '';
+                        return Stack(
+                          children: [
+                            UsersWidget(
+                              imageUrl: trip.images.firstOrNull ?? '',
+                              tripModel: trip,
+                              title: room.trip?.title ?? '',
+                              subtitle:
+                                  '${DateFormat('dd MMM').format(room.trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(room.trip?.tripEndDate ?? DateTime.now())}',
+                              timestamp: DateFormat(
+                                'dd MMM, hh:mma',
+                              ).format(room.updatedAt.toDate()),
+                              memberImages:
+                                  room.users
+                                      .map((e) => e.profileImage.toString())
+                                      .toList(),
+                              extraMembers:
+                                  room.users.length > 3
+                                      ? room.users.length - 3
+                                      : 0,
+                            ),
+                            if (unread && !SafetyService.hides(sender))
+                              const Positioned(
+                                right: 4,
+                                top: 4,
+                                child: Icon(
+                                  Icons.circle,
+                                  size: 10,
+                                  color: AppColors.kPrimaryColor,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
                     );
                   },
                 );
@@ -203,6 +236,11 @@ class _NotificationsTab extends StatelessWidget {
                 itemBuilder: (context, j) {
                   final UserNotificationModel n = group.notifications[j];
                   return ListTile(
+                    trailing: IconButton(
+                      tooltip: 'Dismiss notification',
+                      icon: const Icon(Icons.close, size: 18),
+                      onPressed: () => controller.dismiss(n.notificationId),
+                    ),
                     leading: _notificationImage(n),
                     title: Row(
                       children: [
@@ -234,15 +272,10 @@ class _NotificationsTab extends StatelessWidget {
                       ),
                       text: n.notificationMessage,
                     ),
-                    onTap: () async {
-                      await controller.markNotificationAsRead(n.notificationId);
-                      if (n.trip != null) {
-                        Get.toNamed(
-                          kSpecificTripViewScreenRoute,
-                          arguments: n.trip,
-                        );
-                      }
-                    },
+                    onTap:
+                        () => NotificationNavigation.open({
+                          'notificationId': n.notificationId,
+                        }),
                   );
                 },
               ),
@@ -256,7 +289,7 @@ class _NotificationsTab extends StatelessWidget {
   Widget _notificationImage(UserNotificationModel n) {
     final url =
         n.notificationType == NotificationType.trip.status
-            ? n.trip?.images.first ?? ''
+            ? n.trip?.images.firstOrNull ?? ''
             : n.addedBy?.profileImage ?? '';
     return AnyImageView(url: url, height: 44, width: 44, isCircle: true);
   }

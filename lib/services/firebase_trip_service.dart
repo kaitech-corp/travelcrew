@@ -1,3 +1,4 @@
+import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,8 @@ import 'session_services.dart';
 final functions = FirebaseFunctions.instance;
 
 class FirebaseTripService {
+  static final Map<String, String> _joinAttempts = {};
+  static final Map<String, String> _leaveAttempts = {};
   static final discoveryHasMore = <String, bool>{}.obs;
   static final Map<String, List<QueryDocumentSnapshot<Map<String, dynamic>>>>
   _discoveryDocs = {};
@@ -276,6 +279,7 @@ class FirebaseTripService {
               .doc(uid)
               .collection(kUserTripMembershipsSubCollection)
               .where('status', isEqualTo: 'active')
+              .orderBy('joinedAt', descending: true)
               .limit(50)
               .get();
       final membershipTripIds =
@@ -501,23 +505,23 @@ class FirebaseTripService {
     required String userId,
   }) async {
     try {
-      final batch = firestore.batch();
-      batch.update(firestore.collection(kTripTable).doc(groupId), {
-        'joinedUsers': FieldValue.arrayRemove([userId]),
+      if (userId != GlobalVariables.currentUid) return false;
+      final key = '$userId:$groupId';
+      if (!_leaveAttempts.containsKey(key)) {
+        final member = await _tripMembersRef(groupId).doc(userId).get();
+        _leaveAttempts[key] =
+            member.data()?['attemptId'] as String? ?? 'legacy';
+      }
+      await FirebaseFunctions.instance.httpsCallable('leaveTripV3').call({
+        'tripId': groupId,
+        'membershipAttemptId': _leaveAttempts[key],
       });
-      batch.update(_tripMembersRef(groupId).doc(userId), {
-        'status': 'left',
-        'removedAt': FieldValue.serverTimestamp(),
-      });
-      batch.delete(_userTripMembershipRef(userId: userId, tripId: groupId));
-      batch.update(firestore.collection(kTripDiscoveryTable).doc(groupId), {
-        'memberCount': FieldValue.increment(-1),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-      await batch.commit();
-      await _removeChatMemberForTrip(groupId, userId);
+      _leaveAttempts.remove(key);
       return true;
     } catch (e) {
+      if (e is FirebaseFunctionsException && e.code == 'failed-precondition') {
+        _leaveAttempts.remove('$userId:$groupId');
+      }
       kLogging('error $e');
       _handleTripError(e);
     }
@@ -536,110 +540,67 @@ class FirebaseTripService {
     required String userId,
     String? message,
   }) async {
+    if (userId != GlobalVariables.currentUid) return false;
+    final key = '$userId:$tripId';
+    final attemptId = _joinAttempts.putIfAbsent(key, () => const Uuid().v4());
     try {
-      await _tripJoinRequestsRef(tripId)
-          .doc(userId)
-          .set(
-            JoinRequestModel(
-              userId: userId,
-              tripId: tripId,
-              message: message,
-            ).toMap(),
-            SetOptions(merge: true),
-          );
-      return true;
+      final response = await FirebaseFunctions.instance
+          .httpsCallable('requestToJoinTripV3')
+          .call({'tripId': tripId, 'attemptId': attemptId, 'message': message});
+      _joinAttempts.remove(key);
+      return (response.data as Map)['status'] == 'pending';
     } catch (e) {
-      if (kDebugMode) {
-        print('Error requesting to join trip: $e');
-      }
+      kLogging('Join request failed: $e');
+      return false;
     }
-    return false;
   }
 
-  static Future<bool> cancelJoinRequest(String tripId, String userId) async {
-    try {
-      await _tripJoinRequestsRef(tripId).doc(userId).update({
-        'status': 'cancelled',
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-      return true;
-    } catch (e) {
-      kLogging('error $e');
-    }
-    return false;
+  static Future<bool> cancelJoinRequest(
+    String tripId,
+    String userId, {
+    required String attemptId,
+  }) async {
+    if (userId != GlobalVariables.currentUid) return false;
+    return _transitionJoinRequest(
+      'cancelJoinRequestV3',
+      tripId,
+      userId,
+      attemptId,
+    );
   }
 
-  static Future<bool> acceptJoinRequest(String tripId, String userId) async {
-    try {
-      await FirebaseFunctions.instance
-          .httpsCallable('acceptJoinRequestV3')
-          .call({'tripId': tripId, 'userId': userId});
-      await _syncChatMembersForTrip(tripId);
-      return true;
-    } catch (e) {
-      kLogging('error $e');
-    }
-    return false;
-  }
+  static Future<bool> acceptJoinRequest(
+    String tripId,
+    String userId, {
+    required String attemptId,
+  }) =>
+      _transitionJoinRequest('acceptJoinRequestV3', tripId, userId, attemptId);
 
-  /// Best-effort: drop a departed user from `chat/{tripId}.usersIds`.
-  /// If the chat doc doesn't exist there's nothing to do; if the caller
-  /// isn't in `usersIds` the rule will reject the update. Both are logged
-  /// and swallowed because membership writes are the source of truth.
-  static Future<void> _removeChatMemberForTrip(
+  static Future<bool> _transitionJoinRequest(
+    String callable,
     String tripId,
     String userId,
+    String attemptId,
   ) async {
     try {
-      await firestore.collection(kTripChatCollection).doc(tripId).update({
-        'usersIds': FieldValue.arrayRemove([userId]),
-        'updatedAt': Timestamp.now(),
-      });
-    } catch (e) {
-      kLogging('chat membership remove failed for $userId in $tripId: $e');
-    }
-  }
-
-  /// Best-effort: keep `chat/{tripId}.usersIds` aligned with the trip's
-  /// current membership. Non-fatal — membership writes are the source of truth.
-  /// The chat doc may not exist yet (it's lazily created on first open); if so,
-  /// this creates it with the full member list so subsequent opens by any
-  /// member pass the `uid() in resource.data.usersIds` rule.
-  static Future<void> _syncChatMembersForTrip(String tripId) async {
-    try {
-      final tripDoc = await firestore.collection(kTripTable).doc(tripId).get();
-      if (!tripDoc.exists) return;
-      final trip = TripModel.fromMap(tripDoc.data()!);
-      final memberIds =
-          <String>{
-            trip.createdBy,
-            ...?trip.joinedUsers,
-          }.where((id) => id.isNotEmpty).toList();
-      if (memberIds.isEmpty) return;
-      await firestore.collection(kTripChatCollection).doc(tripId).set({
-        'roomId': tripId,
-        'usersIds': memberIds,
-        'updatedAt': Timestamp.now(),
-      }, SetOptions(merge: true));
-    } catch (e) {
-      kLogging('chat membership sync failed for $tripId: $e');
-    }
-  }
-
-  static Future<bool> rejectJoinRequest(String tripId, String userId) async {
-    try {
-      await _tripJoinRequestsRef(tripId).doc(userId).update({
-        'status': 'rejected',
-        'reviewedBy': GlobalVariables.currentUid,
-        'reviewedAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
+      await FirebaseFunctions.instance.httpsCallable(callable).call({
+        'tripId': tripId,
+        'userId': userId,
+        'attemptId': attemptId,
       });
       return true;
     } catch (e) {
-      kLogging('error $e');
+      kLogging('Join request transition failed: $e');
+      return false;
     }
-    return false;
   }
+
+  static Future<bool> rejectJoinRequest(
+    String tripId,
+    String userId, {
+    required String attemptId,
+  }) =>
+      _transitionJoinRequest('rejectJoinRequestV3', tripId, userId, attemptId);
 
   static Stream<List<JoinRequestModel>> watchJoinRequests(String tripId) {
     return _tripJoinRequestsRef(tripId)
@@ -652,6 +613,14 @@ class FirebaseTripService {
                   .toList(),
         );
   }
+
+  static Stream<JoinRequestModel?> watchJoinRequest({
+    required String tripId,
+    required String userId,
+  }) => _tripJoinRequestsRef(tripId)
+      .doc(userId)
+      .snapshots()
+      .map((doc) => doc.exists ? JoinRequestModel.fromMap(doc.data()!) : null);
 
   static Future<JoinRequestModel?> getJoinRequest({
     required String tripId,

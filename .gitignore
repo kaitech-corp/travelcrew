@@ -67,9 +67,9 @@ android/key.properties
 .clinerules
 
 # Firebase related
-firebase.json
+!firebase.json
 firestore.rules
-firestore.indexes.json
+!firestore.indexes.json
 
 # Docs
 resources/
@@ -83,3 +83,6 @@ android/app/google-services.json
 # Reporting and blocking deployment configuration and maintenance tools
 functions/scripts/
 functions/scripts/*.js
+
+# Security rules must ship with the notification lifecycle.
+!firestore.rules

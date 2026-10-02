@@ -1,0 +1,52 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "tripMemberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "status", "order": "ASCENDING"},
+        {"fieldPath": "joinedAt", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "trips",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "createdBy", "order": "ASCENDING"},
+        {"fieldPath": "tripStatus", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "tripDiscovery",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "isDiscoverable", "order": "ASCENDING"},
+        {"fieldPath": "favouriteCount", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "tripDiscovery",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "isDiscoverable", "order": "ASCENDING"},
+        {"fieldPath": "latitude", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "tripDiscovery",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "isDiscoverable", "order": "ASCENDING"},
+        {"fieldPath": "continent", "order": "ASCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {"collectionGroup": "assistantOAuthRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "assistantOAuthCodes", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "assistantOAuthTokens", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "assistantOAuthGrants", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "assistantOAuthClients", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "assistantQuotas", "fieldPath": "expiresAt", "ttl": true, "indexes": []}
+  ]
+}

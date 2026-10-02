@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:travel_crew/models/join_request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
@@ -18,9 +20,6 @@ import '../../../../../models/search_model.dart';
 
 class SpecificTripViewController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  static const String tripShareBaseUrl =
-      'https://travel-crew-web-101337609697.us-central1.run.app';
-
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
@@ -29,6 +28,8 @@ class SpecificTripViewController extends GetxController
   Rxn<TripModel> tripModel = Rxn<TripModel>();
   Rxn<TripDiscoveryModel> discoveryModel = Rxn<TripDiscoveryModel>();
   RxString joinRequestStatus = ''.obs;
+  String joinAttemptId = 'legacy';
+  StreamSubscription<JoinRequestModel?>? _joinRequestSubscription;
   String? _initializedArgumentKey;
   RxBool isLocked = true.obs;
   final List<String> tripTabs = [
@@ -65,7 +66,7 @@ class SpecificTripViewController extends GetxController
         }
       }
       tripModel.refresh();
-      showCustomSnackBar(content: 'Settlement marked as paid');
+      // showCustomSnackBar(content: 'Settlement marked as paid');
     } catch (e) {
       showCustomSnackBar(content: 'Failed to mark settlement');
     } finally {
@@ -85,8 +86,9 @@ class SpecificTripViewController extends GetxController
 
   Future<void> initializeFromArgument(dynamic argument) async {
     final argumentKey = _argumentKey(argument);
-    if (_initializedArgumentKey == argumentKey) return;
     _initializedArgumentKey = argumentKey;
+    await _joinRequestSubscription?.cancel();
+    _joinRequestSubscription = null;
     tripModel.value = null;
     discoveryModel.value = null;
     joinRequestStatus.value = '';
@@ -113,6 +115,36 @@ class SpecificTripViewController extends GetxController
           userId: uid,
         );
         joinRequestStatus.value = request?.status ?? '';
+        joinAttemptId = request?.attemptId ?? 'legacy';
+        _joinRequestSubscription = FirebaseTripService.watchJoinRequest(
+          tripId: argument.id,
+          userId: uid,
+        ).listen(
+          (current) async {
+            if (_initializedArgumentKey != argumentKey ||
+                GlobalVariables.currentUid != uid) {
+              return;
+            }
+            joinRequestStatus.value = current?.status ?? '';
+            joinAttemptId = current?.attemptId ?? 'legacy';
+            if (current?.status == 'accepted' &&
+                await FirebaseTripService.isTripMember(
+                  tripId: argument.id,
+                  userId: uid,
+                )) {
+              final joined = await FirebaseTripService.getTripById(
+                tripId: argument.id,
+              );
+              if (_initializedArgumentKey == argumentKey &&
+                  GlobalVariables.currentUid == uid) {
+                tripModel.value = joined;
+              }
+            }
+          },
+          onError: (Object error) {
+            AppLogger.warning('Unable to refresh join request: $error');
+          },
+        );
       }
       return;
     }
@@ -147,7 +179,12 @@ class SpecificTripViewController extends GetxController
         userId: uid,
       );
       if (success) {
-        joinRequestStatus.value = 'pending';
+        final request = await FirebaseTripService.getJoinRequest(
+          tripId: trip.id,
+          userId: uid,
+        );
+        joinRequestStatus.value = request?.status ?? '';
+        joinAttemptId = request?.attemptId ?? 'legacy';
         showCustomSnackBar(content: 'Request sent to the trip creator');
       } else {
         showCustomSnackBar(content: 'Failed to send request');
@@ -163,17 +200,25 @@ class SpecificTripViewController extends GetxController
     if (trip == null || uid == null) return;
     try {
       GlobalVariables.showLoader.value = true;
-      final success = await FirebaseTripService.cancelJoinRequest(trip.id, uid);
+      final success = await FirebaseTripService.cancelJoinRequest(
+        trip.id,
+        uid,
+        attemptId: joinAttemptId,
+      );
       if (success) {
         joinRequestStatus.value = 'cancelled';
         showCustomSnackBar(content: 'Join request cancelled');
+      } else {
+        showCustomSnackBar(
+          content: 'This request changed. Reopen the trip to refresh.',
+        );
       }
     } finally {
       GlobalVariables.showLoader.value = false;
     }
   }
 
-  Future<void> acceptJoinRequest(String userId) async {
+  Future<void> acceptJoinRequest(String userId, String attemptId) async {
     final trip = tripModel.value;
     if (trip == null) return;
     try {
@@ -181,6 +226,7 @@ class SpecificTripViewController extends GetxController
       final success = await FirebaseTripService.acceptJoinRequest(
         trip.id,
         userId,
+        attemptId: attemptId,
       );
       if (success) {
         final refreshed = await FirebaseTripService.getTripById(
@@ -199,7 +245,7 @@ class SpecificTripViewController extends GetxController
     }
   }
 
-  Future<void> rejectJoinRequest(String userId) async {
+  Future<void> rejectJoinRequest(String userId, String attemptId) async {
     final trip = tripModel.value;
     if (trip == null) return;
     try {
@@ -207,6 +253,7 @@ class SpecificTripViewController extends GetxController
       final success = await FirebaseTripService.rejectJoinRequest(
         trip.id,
         userId,
+        attemptId: attemptId,
       );
       if (success) {
         showCustomSnackBar(content: 'Join request rejected');
@@ -220,6 +267,7 @@ class SpecificTripViewController extends GetxController
 
   @override
   void onClose() {
+    _joinRequestSubscription?.cancel();
     flightAirlineController.dispose();
     flightNumberController.dispose();
     flightDepartureAirportController.dispose();
@@ -293,7 +341,7 @@ class SpecificTripViewController extends GetxController
         tripModel.value?.flights?.add(flight);
         tripModel.refresh();
         Get.back();
-        showCustomSnackBar(content: 'Flight added');
+        // showCustomSnackBar(content: 'Flight added');
       }
     } catch (e) {
       showCustomSnackBar(content: 'Failed to add flight');
@@ -420,7 +468,7 @@ class SpecificTripViewController extends GetxController
           );
           updateTripOverAll(tripModel.value!);
           Get.back();
-          showCustomSnackBar(content: 'Lodging updated successfully');
+          // showCustomSnackBar(content: 'Lodging updated successfully');
         } else {
           showCustomSnackBar(content: 'Failed to update lodging');
         }
@@ -443,7 +491,7 @@ class SpecificTripViewController extends GetxController
         if (value) {
           removeTripOverAll(tripModel.value!);
           Get.back();
-          showCustomSnackBar(content: 'Trip removed successfully');
+          // showCustomSnackBar(content: 'Trip removed successfully');
         } else {
           showCustomSnackBar(content: 'Failed to remove trip');
         }
@@ -469,7 +517,7 @@ class SpecificTripViewController extends GetxController
       if (ok) {
         removeTripOverAll(trip);
         Get.offAllNamed(kMainViewScreenRoute);
-        showCustomSnackBar(content: 'You have left the trip');
+        // showCustomSnackBar(content: 'You have left the trip');
       } else {
         showCustomSnackBar(content: 'Failed to leave trip');
       }
@@ -562,7 +610,7 @@ class SpecificTripViewController extends GetxController
           if (value) {
             (args['onAdded'] as Function?)?.call(activityModel);
             Get.back();
-            showCustomSnackBar(content: 'Activity added successfully');
+            // showCustomSnackBar(content: 'Activity added successfully');
           } else {
             showCustomSnackBar(content: 'Failed to add activity');
           }
@@ -575,7 +623,7 @@ class SpecificTripViewController extends GetxController
           if (value) {
             (args['onAdded'] as Function?)?.call(activityModel);
             Get.back();
-            showCustomSnackBar(content: 'Activity updated successfully');
+            // showCustomSnackBar(content: 'Activity updated successfully');
           } else {
             showCustomSnackBar(content: 'Failed to update activity');
           }
@@ -682,7 +730,7 @@ class SpecificTripViewController extends GetxController
       }
     }
 
-    return '$tripShareBaseUrl/trip/${Uri.encodeComponent(trip.id)}';
+    return '$kWebsiteBaseUrl/trip/${Uri.encodeComponent(trip.id)}';
   }
 
   Future<void> inviteToTrip() async {

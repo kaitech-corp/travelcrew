@@ -1,6 +1,7 @@
 const {createHash} = require("node:crypto");
 const {HttpsError} = require("firebase-functions/v2/https");
 const {FieldValue} = require("firebase-admin/firestore");
+const {notification, inboxRef} = require("./notification-data");
 const {validId} = require("./validation");
 
 const reasons = new Set(["harassment", "hate", "sexual", "violence", "spam", "other"]);
@@ -136,6 +137,7 @@ function createSafetyHandlers(db) {
       const uid = requireUser(request); const target = requireId(request.data?.targetUserId);
       if (uid === target || typeof request.data?.following !== "boolean") throw new HttpsError("invalid-argument", "Invalid follow request.");
       await assertActive(db, uid);
+      const followId = db.collection("notifications").doc().id;
       await db.runTransaction(async (tx) => {
         const a = db.collection("publicProfile").doc(uid); const b = db.collection("publicProfile").doc(target);
         const docs = await Promise.all([tx.get(a), tx.get(b), tx.get(statusRef(db, target))]);
@@ -143,26 +145,10 @@ function createSafetyHandlers(db) {
         if (request.data.following) await assertInteraction(db, uid, target, tx);
         const op = request.data.following ? FieldValue.arrayUnion : FieldValue.arrayRemove;
         tx.update(a, {following: op(target)}); tx.update(b, {followers: op(uid)});
-      });
-      return {ok: true};
-    },
-    async acceptJoinRequest(request) {
-      const uid = requireUser(request); const tripId = requireId(request.data?.tripId);
-      const target = requireId(request.data?.userId); await assertActive(db, uid); await assertActive(db, target);
-      const tripRef = db.collection("trips").doc(tripId);
-      await db.runTransaction(async (tx) => {
-        const req = tripRef.collection("joinRequests").doc(target);
-        const discovery = db.collection("tripDiscovery").doc(tripId);
-        const [trip, join, card] = await Promise.all([tx.get(tripRef), tx.get(req), tx.get(discovery)]);
-        if (!trip.exists || trip.data().createdBy !== uid || trip.data().tripStatus === "deleted") throw new HttpsError("permission-denied", "Trip owner access required.");
-        if (join.data()?.status === "accepted") return;
-        if (join.data()?.status !== "pending") throw new HttpsError("failed-precondition", "No pending request.");
-        await assertInteraction(db, uid, target, tx);
-        tx.update(tripRef, {joinedUsers: FieldValue.arrayUnion(target)});
-        tx.set(tripRef.collection("members").doc(target), {userId: target, role: "member", status: "active", joinedAt: stamp()});
-        tx.set(db.collection("users").doc(target).collection("tripMemberships").doc(tripId), {tripId, role: "member", status: "active", joinedAt: stamp()});
-        tx.update(req, {status: "accepted", reviewedBy: uid, reviewedAt: stamp(), updatedAt: stamp()});
-        if (card.exists && !(trip.data().joinedUsers || []).includes(target)) tx.update(discovery, {memberCount: FieldValue.increment(1), updatedAt: stamp()});
+        if (request.data.following && !(docs[0].data().following || []).includes(target)) {
+          tx.create(inboxRef(db, target, followId), notification(followId, uid, target, "follow", uid,
+            "New follower", `${docs[0].data().displayName || "A traveler"} started following you.`));
+        }
       });
       return {ok: true};
     },

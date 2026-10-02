@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/notifications/notification_navigation.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -72,7 +73,7 @@ class AuthService {
       // User is verified and logged in successfully
       Get.offAllNamed(kMainViewScreenRoute);
       if (!fromSplash) {
-        showCustomSnackBar(title: 'Success', content: 'Logged in successfully');
+        // showCustomSnackBar(title: 'Success', content: 'Logged in successfully');
       }
     } else {
       Get.offAllNamed(kOnboardingScreenRoute);
@@ -318,7 +319,9 @@ class AuthService {
 
   static Future<void> cancelEmailVerification() async {
     try {
+      NotificationNavigation.clearSession();
       await NotificationBadgeService.clear();
+      await FirebasePushNotificationApi().removeTokenForCurrentUser();
       await _auth.signOut();
     } catch (error, stackTrace) {
       AppLogger.error('Error during cancelEmailVerification: $error');
@@ -410,11 +413,8 @@ class AuthService {
             .update(attributes);
         final publicProfileAttributes = Map<String, dynamic>.fromEntries(
           attributes.entries.where(
-            (entry) => {
-              'displayName',
-              'profileImage',
-              'email',
-            }.contains(entry.key),
+            (entry) =>
+                {'displayName', 'profileImage', 'email'}.contains(entry.key),
           ),
         );
         if (publicProfileAttributes.isNotEmpty) {
@@ -436,7 +436,9 @@ class AuthService {
   static Future<void> signOut() async {
     try {
       GlobalVariables.showLoader.value = true;
+      NotificationNavigation.clearSession();
       await NotificationBadgeService.clear();
+      await FirebasePushNotificationApi().removeTokenForCurrentUser();
       await _auth.signOut();
       GlobalVariables.loggedInUser.value = null;
       GlobalVariables.userProfile.value = null;
@@ -473,6 +475,7 @@ class AuthService {
         );
         await user.reauthenticateWithCredential(credential);
         await user.updatePassword(newPassword);
+        NotificationNavigation.clearSession();
         await NotificationBadgeService.clear();
         await _auth.signOut();
         GlobalVariables.loggedInUser.value = null;
@@ -573,6 +576,7 @@ class AuthService {
   static Future<void> deleteAccount() async {
     try {
       GlobalVariables.showLoader.value = true;
+      NotificationNavigation.clearSession();
       await NotificationBadgeService.clear();
       await updateUserAttributes(attributes: {'isDeleted': true}).then((
         value,

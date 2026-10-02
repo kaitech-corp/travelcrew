@@ -6,12 +6,27 @@ const {getMessaging} = require("firebase-admin/messaging");
 const {getStorage} = require("firebase-admin/storage");
 const {GoogleAuth} = require("google-auth-library");
 const logger = require("firebase-functions/logger");
-const {validId, normalizeEmails, chunks, validPhoto} = require("./validation");
+const {validId, normalizeEmails, validPhoto} = require("./validation");
 
 initializeApp();
 
 const DATABASE_ID = process.env.FIRESTORE_DATABASE_ID || "travel-crew-db-2";
 const getDb = () => getFirestore(DATABASE_ID);
+
+// Hosting routes /assistant/** and OAuth discovery to this single service.
+// Lazy construction keeps deployment inspection independent of runtime config.
+let assistantApp;
+exports.assistantV1 = onRequest({maxInstances: 10, timeoutSeconds: 60, memory: "256MiB", invoker: "public"}, (req, res) => {
+  if (!process.env.ASSISTANT_BASE_URL || !process.env.ASSISTANT_FIREBASE_CONFIG) {
+    return res.status(503).json({error: "not_configured", error_description: "Assistant connections are not configured yet"});
+  }
+  if (!assistantApp) {
+    const {createAssistantApp} = require("./assistant-api");
+    assistantApp = createAssistantApp({db: getDb(), auth: getAuth(), baseUrl: process.env.ASSISTANT_BASE_URL,
+      firebaseConfig: JSON.parse(process.env.ASSISTANT_FIREBASE_CONFIG), logger});
+  }
+  return assistantApp(req, res);
+});
 
 const {getAuth} = require("firebase-admin/auth");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
@@ -22,7 +37,15 @@ exports.submitReportV3 = onCall(safety.submitReport);
 exports.blockUserV3 = onCall(safety.blockUser);
 exports.unblockUserV3 = onCall(safety.unblockUser);
 exports.followUserV3 = onCall(safety.followUser);
-exports.acceptJoinRequestV3 = onCall(safety.acceptJoinRequest);
+const {createTripActions} = require("./trip-actions");
+const {notification} = require("./notification-data");
+const {sendInboxPush, sendChatPush} = require("./notification-delivery");
+const tripActions = createTripActions(getDb());
+exports.requestToJoinTripV3 = onCall(tripActions.requestJoin);
+exports.cancelJoinRequestV3 = onCall((request) => tripActions.transition(request, "cancelled"));
+exports.acceptJoinRequestV3 = onCall((request) => tripActions.transition(request, "accepted"));
+exports.rejectJoinRequestV3 = onCall((request) => tripActions.transition(request, "rejected"));
+exports.leaveTripV3 = onCall(tripActions.leave);
 exports.reviewReportV3 = onCall(safety.reviewReport);
 exports.cleanBlockedPairV3 = onDocumentCreated(
     {database: DATABASE_ID, document: "users/{uid}/blockedUsers/{target}", retry: true},
@@ -37,6 +60,14 @@ exports.alertReportV3 = onDocumentCreated(
     },
 );
 exports.maintainReportsV3 = onSchedule("every 60 minutes", () => maintainReports(getDb()));
+exports.maintainNotificationReceiptsV3 = onSchedule("every 24 hours", async () => {
+  // Keep receipts beyond Eventarc's retry window. Bound each cleanup run.
+  const stale = await getDb().collection("pushDeliveries")
+      .where("createdAt", "<", new Date(Date.now() - 30 * 86400000)).limit(500).get();
+  const batch = getDb().batch();
+  for (const doc of stale.docs) batch.delete(doc.ref);
+  if (stale.size) await batch.commit();
+});
 exports.cleanDeletedUserSafetyV3 = onDocumentWritten(
     {database: DATABASE_ID, document: "users/{uid}", retry: true},
     async (event) => {
@@ -101,171 +132,29 @@ for (const [name, [document, fields, arrays]] of Object.entries(imageTargets)) {
   );
 }
 
-// Welcome notification for newly registered users when publicProfile is created.
+// Inbox creation and delivery are separate: push failure cannot lose the inbox row.
 exports.sendWelcomeNotificationV3 = onDocumentCreated(
-    {
-      database: DATABASE_ID,
-      document: "publicProfile/{userId}",
-    },
+    {database: DATABASE_ID, document: "publicProfile/{userId}", retry: true},
     async (event) => {
       if (!event.data) return;
       const {userId} = event.params;
-      const data = event.data.data();
-      const name = data?.displayName || data?.firstName || "Traveler";
-      const db = getDb();
-
-      const target = db
-          .collection("notifications")
-          .doc(userId)
-          .collection("notification")
-          .doc(`welcome_${userId}`);
-
-      const title = "Welcome to Travel Crew!";
-      const message = `Yo! Hey ${name}, welcome to Travel Crew! Let's
-          get you started with your first trip.`;
-
+      const name = event.data.data()?.displayName || "Traveler";
+      const target = getDb().collection("notifications").doc(userId).collection("notification").doc(`welcome_${userId}`);
       try {
-        await target.create({
-          notificationId: target.id,
-          notificationTitle: title,
-          notificationMessage: message,
-          notificationType: "Welcome",
-          notificationForId: userId,
-          notificationStatus: "unread",
-          createdBy: "system",
-          sentTo: [userId],
-          createdAt: Date.now(),
-          updateAt: Date.now(),
-          updateBy: "system",
-          isActive: true,
-          isTopic: false,
-          notificationTopic: [],
-          serverForwarded: true,
-        });
+        await target.create(notification(target.id, "system", userId, "welcome", userId,
+            "Welcome to Travel Crew!", `Hey ${name}, welcome to Travel Crew! Get started with your first trip.`, true));
       } catch (error) {
         if (error.code !== 6 && error.code !== "already-exists") throw error;
-        return;
-      }
-
-      try {
-        const tokenDocs = await db.collection("tokens").doc(userId)
-            .collection("tokens").get();
-        if (tokenDocs.empty) return;
-
-        for (const docs of chunks(tokenDocs.docs)) {
-          const result = await getMessaging().sendEachForMulticast({
-            tokens: docs.map((doc) => doc.id),
-            notification: {
-              title,
-              body: message,
-            },
-            data: {
-              click_action: "FLUTTER_NOTIFICATION_CLICK",
-              notificationId: target.id,
-              notificationForId: userId,
-              type: "Welcome",
-            },
-          });
-          await Promise.all(result.responses.map(async (response, index) => {
-            const code = response.error?.code;
-            if (code === "messaging/invalid-registration-token" ||
-                code === "messaging/registration-token-not-registered") {
-              await docs[index].ref.delete();
-            } else if (code) {
-              console.error("Welcome push delivery failed", {userId, code});
-            }
-          }));
-        }
-      } catch (error) {
-        console.error("Welcome notification push failed", {userId, error: error.message});
       }
     },
 );
-
-// Existing clients submit Trip Joined events under the sender's UID.
-// A server-created recipient document triggers the push, without fan-out loops.
 exports.sendPushNotificationV3 = onDocumentCreated(
-    {
-      database: DATABASE_ID,
-      document: "notifications/{userId}/notification/{notificationId}",
-    },
-    async (event) => {
-      if (!event.data) return;
-      const data = event.data.data();
-      const {userId, notificationId} = event.params;
-      if (data.notificationType !== "Trip" ||
-          !validId(data.notificationForId) || !validId(data.createdBy)) return;
-      const db = getDb();
-      const tripRef = db.collection("trips").doc(data.notificationForId);
-      const tripDoc = await tripRef.get();
-      if (!tripDoc.exists || tripDoc.data().tripStatus === "deleted") return;
-      const trip = tripDoc.data();
-      if (await isBlocked(db, data.createdBy, trip.createdBy)) return;
-      if ((await db.collection("safetyAccounts").doc(data.createdBy).get()).data()?.restricted) return;
-      if (data.serverForwarded !== true) {
-        if (userId !== data.createdBy || userId === trip.createdBy ||
-            !Array.isArray(data.sentTo) ||
-            !data.sentTo.includes(trip.createdBy)) return;
-        const member = await tripRef.collection("members").doc(userId).get();
-        const isMember = member.exists ? member.data().status === "active" :
-          Array.isArray(trip.joinedUsers) && trip.joinedUsers.includes(userId);
-        if (!isMember) return;
-        const profile = await db.collection("publicProfile").doc(userId).get();
-        const name = profile.data()?.displayName || "A traveler";
-        const target = db.collection("notifications").doc(trip.createdBy)
-            .collection("notification").doc(`${userId}_${notificationId}`);
-        try {
-          await target.create({
-            notificationId: target.id,
-            notificationTitle: "Trip Joined",
-            notificationMessage: `${name} joined your trip.`,
-            notificationType: "Trip",
-            notificationForId: data.notificationForId,
-            notificationStatus: "unread",
-            createdBy: userId,
-            sentTo: [trip.createdBy],
-            createdAt: Date.now(),
-            updateAt: Date.now(),
-            updateBy: userId,
-            isActive: true,
-            isTopic: false,
-            notificationTopic: [],
-            serverForwarded: true,
-          });
-        } catch (error) {
-          // Re-delivery must not reset read state or create another inbox row.
-          if (error.code !== 6 && error.code !== "already-exists") throw error;
-        }
-        return;
-      }
-      if (userId !== trip.createdBy) return;
-      const tokenDocs = await db.collection("tokens").doc(userId)
-          .collection("tokens").get();
-      for (const docs of chunks(tokenDocs.docs)) {
-        const result = await getMessaging().sendEachForMulticast({
-          tokens: docs.map((doc) => doc.id),
-          notification: {
-            title: data.notificationTitle,
-            body: data.notificationMessage,
-          },
-          data: {
-            click_action: "FLUTTER_NOTIFICATION_CLICK",
-            notificationId,
-            notificationForId: data.notificationForId,
-            type: "Trip",
-          },
-        });
-        await Promise.all(result.responses.map(async (response, index) => {
-          const code = response.error?.code;
-          if (code === "messaging/invalid-registration-token" ||
-              code === "messaging/registration-token-not-registered") {
-            await docs[index].ref.delete();
-          } else if (code) {
-            console.error("Push delivery failed", {notificationId, code});
-          }
-        }));
-      }
-    },
+    {database: DATABASE_ID, document: "notifications/{userId}/notification/{notificationId}", retry: true},
+    (event) => sendInboxPush(getDb(), getMessaging(), event),
+);
+exports.sendChatPushV3 = onDocumentCreated(
+    {database: DATABASE_ID, document: "chat/{roomId}/messages/{messageId}", retry: true},
+    (event) => sendChatPush(getDb(), getMessaging(), event),
 );
 
 exports.sendTripInvitesV3 = onCall(async (request) => {

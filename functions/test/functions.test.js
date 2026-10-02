@@ -14,6 +14,8 @@ function fixture() {
   const sends = [];
   let nextId = 0;
   const ref = (key) => ({
+    path: key,
+    set: async (data) => records.set(key, data),
     id: key.split("/").at(-1),
     collection: (name) => collection(`${key}/${name}`),
     get: async () => ({exists: records.has(key), data: () => records.get(key)}),
@@ -30,7 +32,9 @@ function fixture() {
         .map((k) => ({id: ref(k).id, ref: ref(k)}))}),
   });
   const mail = [];
-  const db = {collection, batch: () => ({
+  const db = {collection, runTransaction: async (fn) => fn({
+    get: (r) => r.get(), set: (r, data) => r.set(data),
+  }), batch: () => ({
     set: (ref, data) => mail.push(data), commit: async () => {},
   })};
   class HttpsError extends Error {
@@ -56,6 +60,9 @@ function fixture() {
       throw Object.assign(new Error("missing"), {code: "auth/user-not-found"});
     }})},
     "firebase-functions/v2/scheduler": {onSchedule: (_, fn) => fn},
+    "./notification-data": require("../notification-data"),
+    "./notification-delivery": require("../notification-delivery"),
+    "./trip-actions": require("../trip-actions"),
     "./safety": require("../safety"),
     "./safety-triggers": require("../safety-triggers"),
     "./validation": validation,
@@ -71,38 +78,23 @@ function fixture() {
 const event = (data, userId = "member", notificationId = "event") => ({
   data: {data: () => data}, params: {userId, notificationId},
 });
-const joined = {createdBy: "member", notificationType: "Trip",
-  notificationForId: "trip", sentTo: ["owner", "stranger"]};
-
-test("join notification goes only to the owner and replay preserves read state", async () => {
+const joined = {createdBy: "member", notificationType: "Trip", schemaVersion: 2, isActive: true,
+  eventType: "join_accepted", pushEnabled: true, notificationStatus: "unread",
+  notificationForId: "trip", sentTo: ["owner"], notificationTitle: "Accepted", notificationMessage: "Accepted"};
+function seed(f) { f.records.set("notifications/owner/notification/event", {...joined}); }
+test("legacy client source events no longer forward into inboxes", async () => {
   const f = fixture();
-  await f.handlers.sendPushNotificationV3(event(joined));
-  const key = "notifications/owner/notification/member_event";
-  const data = f.records.get(key);
-  assert.equal(data.notificationMessage, "Sam joined your trip.");
-  assert.equal(data.sentTo.join(), "owner");
-  assert.equal(f.sends.length, 0);
-  data.notificationStatus = "read";
-  await f.handlers.sendPushNotificationV3(event(joined));
-  assert.equal(f.records.get(key).notificationStatus, "read");
+  await f.handlers.sendPushNotificationV3(event({notificationType: "Trip", createdBy: "member"}));
+  assert.equal([...f.records.keys()].some((k) => k.startsWith("notifications/")), false);
 });
-test("unrelated senders, inactive members and deleted trips cannot forward", async () => {
-  for (const kind of ["stranger", "inactive", "deleted"]) {
-    const f = fixture();
-    if (kind === "inactive") f.records.set("trips/trip/members/member", {status: "left"});
-    if (kind === "deleted") f.records.get("trips/trip").tripStatus = "deleted";
-    await f.handlers.sendPushNotificationV3(event(joined, kind === "stranger" ? "stranger" : "member"));
-    assert.equal([...f.records.keys()].some((k) => k.startsWith("notifications/")), false);
-  }
-});
-test("recipient pushes split 501 tokens and do not forward again", async () => {
-  const f = fixture();
-  await f.handlers.sendPushNotificationV3(event(joined));
+test("push retries preserve inbox and do not repeat successful token sends", async () => {
+  const f = fixture(); seed(f);
   for (let i = 0; i < 501; i++) f.records.set(`tokens/owner/tokens/t${i}`, {});
-  await f.handlers.sendPushNotificationV3(event(f.records.get("notifications/owner/notification/member_event"), "owner", "member_event"));
-  assert.equal(f.sends.length, 2);
-  assert.equal(f.sends[0].tokens.length, 500);
-  assert.equal(f.sends[1].tokens.length, 1);
+  await f.handlers.sendPushNotificationV3(event(joined, "owner"));
+  assert.equal(f.sends.length, 501);
+  await f.handlers.sendPushNotificationV3(event(joined, "owner"));
+  assert.equal(f.sends.length, 501);
+  assert.equal(f.records.get("notifications/owner/notification/event").notificationStatus, "unread");
 });
 test("invites normalize before deduplication and use the stored title", async () => {
   const f = fixture();
@@ -135,10 +127,10 @@ test("photo input rejects URLs, query injection, arrays and excessive dimensions
 
 test("invalid device tokens are removed without removing valid tokens", async () => {
   const f = fixture();
-  await f.handlers.sendPushNotificationV3(event(joined));
+  seed(f);
   f.records.set("tokens/owner/tokens/expired", {});
   f.records.set("tokens/owner/tokens/valid", {});
-  await f.handlers.sendPushNotificationV3(event(f.records.get("notifications/owner/notification/member_event"), "owner", "member_event"));
+  await f.handlers.sendPushNotificationV3(event(joined, "owner"));
   assert.equal(f.records.has("tokens/owner/tokens/expired"), false);
   assert.equal(f.records.has("tokens/owner/tokens/valid"), true);
 });
@@ -195,15 +187,16 @@ test("index exports all required text moderation, image moderation, and service 
 
 
 
-test("blocks suppress both notification forwarding and queued push delivery", async () => {
-  const f = fixture();
-  await f.handlers.sendPushNotificationV3(event(joined));
-  const forwarded = f.records.get("notifications/owner/notification/member_event");
-  f.records.set("tokens/owner/tokens/valid", {});
-  f.records.set("users/owner/blockedUsers/member", {});
-  await f.handlers.sendPushNotificationV3(event(forwarded, "owner", "member_event"));
-  assert.equal(f.sends.length, 0);
-  f.records.delete("notifications/owner/notification/member_event");
-  await f.handlers.sendPushNotificationV3(event(joined));
-  assert.equal(f.records.has("notifications/owner/notification/member_event"), false);
+test("blocks, read state, disabled pushes and removed trips suppress delivery", async () => {
+  for (const reason of ["block", "read", "disabled", "deleted", "restricted"]) {
+    const f = fixture(); seed(f); f.records.set("tokens/owner/tokens/valid", {});
+    const note = f.records.get("notifications/owner/notification/event");
+    if (reason === "block") f.records.set("users/owner/blockedUsers/member", {});
+    if (reason === "read") note.notificationStatus = "read";
+    if (reason === "disabled") note.pushEnabled = false;
+    if (reason === "deleted") f.records.get("trips/trip").tripStatus = "deleted";
+    if (reason === "restricted") f.records.set("safetyAccounts/owner", {restricted: true});
+    await f.handlers.sendPushNotificationV3(event(joined, "owner"));
+    assert.equal(f.sends.length, 0);
+  }
 });

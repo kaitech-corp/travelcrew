@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/notifications/notification_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -20,6 +21,12 @@ class MainViewScreen extends StatefulWidget {
 class _MainViewScreenState extends State<MainViewScreen> {
   final MainViewController controller = Get.find<MainViewController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationNavigation.sessionReady();
+  }
 
   @override
   Widget build(BuildContext context) {

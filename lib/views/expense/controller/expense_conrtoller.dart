@@ -50,7 +50,7 @@ class ExpenseController extends GetxController {
           }
           tripModel.refresh();
           Get.back();
-          showCustomSnackBar(content: 'Expense settled successfully');
+          // showCustomSnackBar(content: 'Expense settled successfully');
         });
       } else {
         showCustomSnackBar(content: 'Please select a user');

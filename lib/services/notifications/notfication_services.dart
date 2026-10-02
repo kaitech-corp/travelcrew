@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+import 'package:travel_crew/views/messages/users/controller/users_controller.dart';
+import 'package:travel_crew/utils/logger.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -9,7 +12,9 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../main.dart';
 import '../../utils/app_strings.dart';
 import '../session_services.dart';
+import 'notification_navigation.dart';
 
+@pragma('vm:entry-point')
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   if (kDebugMode) {
     print('===========Title ${message.notification?.title}');
@@ -43,7 +48,7 @@ class FirebasePushNotificationApi {
     }
     if (message == null) return;
 
-    // Get.toNamed(kSplashScreenRoute, arguments: message);
+    NotificationNavigation.receive(message.data);
   }
 
   Future<void> requestNotificationPermission() async {
@@ -109,9 +114,9 @@ class FirebasePushNotificationApi {
   Future<void> initPushNotifications() async {
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-          alert: true,
-          badge: true,
-          sound: true,
+          alert: false,
+          badge: false,
+          sound: false,
         );
 
     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
@@ -119,6 +124,17 @@ class FirebasePushNotificationApi {
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
 
     FirebaseMessaging.onMessage.listen((message) async {
+      if (message.data['recipientUid'] != null &&
+          message.data['recipientUid'] != GlobalVariables.currentUid) {
+        return;
+      }
+      if (message.data['type'] == 'Chat' &&
+          Get.currentRoute == kMessagesScreenRoute &&
+          Get.isRegistered<UsersController>() &&
+          Get.find<UsersController>().roomId ==
+              message.data['notificationForId']) {
+        return;
+      }
       final notification = message.notification;
       if (notification == null) return;
 
@@ -145,7 +161,7 @@ class FirebasePushNotificationApi {
             importance: Importance.high,
             channelDescription: androidChannel.description,
             icon: '@drawable/tc_logo',
-            showProgress: true,
+            showProgress: false,
           ),
         ),
         payload: jsonEncode(message.toMap()),
@@ -165,13 +181,29 @@ class FirebasePushNotificationApi {
       settings: settings,
       onDidReceiveBackgroundNotificationResponse: backGroundResponse,
       onDidReceiveNotificationResponse: (response) {
-        final message = RemoteMessage.fromMap(
-          jsonDecode(response.payload ?? '') as Map<String, dynamic>,
-        );
-
-        handleMessage(message);
+        if (response.payload?.isNotEmpty != true) return;
+        try {
+          handleMessage(
+            RemoteMessage.fromMap(
+              jsonDecode(response.payload!) as Map<String, dynamic>,
+            ),
+          );
+        } catch (_) {
+          /* Upload progress alerts have no navigation payload. */
+        }
       },
     );
+    final launch =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    final payload = launch?.notificationResponse?.payload;
+    if (launch?.didNotificationLaunchApp == true &&
+        payload?.isNotEmpty == true) {
+      try {
+        handleMessage(
+          RemoteMessage.fromMap(jsonDecode(payload!) as Map<String, dynamic>),
+        );
+      } catch (_) {}
+    }
     final platfrom =
         flutterLocalNotificationsPlugin
             .resolvePlatformSpecificImplementation<
@@ -198,6 +230,25 @@ class FirebasePushNotificationApi {
     return fcmToken ?? '';
   }
 
+  Future<void> removeTokenForCurrentUser() async {
+    final uid = GlobalVariables.currentUid;
+    if (uid.isEmpty) return;
+    try {
+      final token = await _firebaseMessaging.getToken();
+      if (token != null) {
+        await firestore
+            .collection(kFcmTokensCollection)
+            .doc(uid)
+            .collection(kFcmTokensCollection)
+            .doc(token)
+            .delete();
+      }
+      await _firebaseMessaging.deleteToken();
+    } catch (error) {
+      AppLogger.warning('Unable to remove push token: $error');
+    }
+  }
+
   Future<void> saveTokenForCurrentUser([String? token]) async {
     final uid = GlobalVariables.loggedInUser.value?.uid;
     if (uid == null || uid.isEmpty) return;
@@ -216,7 +267,7 @@ class FirebasePushNotificationApi {
   }
 }
 
+@pragma('vm:entry-point')
 void backGroundResponse(NotificationResponse response) {
-  // final message =
-  RemoteMessage.fromMap(jsonDecode(response.payload ?? ''));
+  // Navigation is handled in the main isolate by the launch-details callback.
 }

@@ -175,12 +175,12 @@ class AddExpenseController extends GetxController {
           _onAdd?.call(expenseModel);
         }
         Get.back();
-        showCustomSnackBar(
-          content:
-              isEditing
-                  ? 'Expense updated successfully'
-                  : 'Expense added successfully',
-        );
+        // showCustomSnackBar(
+        //   content:
+        //       isEditing
+        //           ? 'Expense updated successfully'
+        //           : 'Expense added successfully',
+        // );
       } else {
         showCustomSnackBar(
           content:

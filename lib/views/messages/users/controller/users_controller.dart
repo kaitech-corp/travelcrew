@@ -1,10 +1,10 @@
+import 'package:travel_crew/services/notifications/chat_activity_service.dart';
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
-import 'package:travel_crew/models/Notifications/user_notification_model.dart';
 import 'package:travel_crew/models/chat_module/chat_message.dart';
 import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/models/chat_module/chatroom.dart';
@@ -12,7 +12,6 @@ import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
-import 'package:travel_crew/services/notifications/notifications_firebase_service.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/services/trips_changes.dart';
 import 'package:travel_crew/utils/app_strings.dart';
@@ -134,6 +133,7 @@ class UsersController extends GetxController {
         await _ensureCurrentUserInChatRoom();
       }
 
+      await ChatActivityService.markRead(roomId!);
       listenToMessages(roomId!);
       listenToCollection(roomId: roomId!);
       AppLogger.info('Successfully started listening to chat room: $roomId');
@@ -212,15 +212,6 @@ class UsersController extends GetxController {
 
       if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
       chatRoom.refresh();
-
-      // Send notification
-      FirebaseNotificationsService.saveNotifications(
-        message: '${currentUser.displayName} joined your trip.',
-        title: 'Trip Joined',
-        sentTo: [currentTrip.value!.createdBy],
-        notificationForId: currentTrip.value!.id,
-        notificationType: NotificationType.trip.status,
-      );
 
       await ChatFirebaseService.updateChatRoom(
         roomId: roomId!,
@@ -546,6 +537,11 @@ class UsersController extends GetxController {
                           .toList();
 
                   messages.value = newMessages;
+                  if (Get.currentRoute == kMessagesScreenRoute &&
+                      WidgetsBinding.instance.lifecycleState ==
+                          AppLifecycleState.resumed) {
+                    unawaited(ChatActivityService.markRead(roomId));
+                  }
                   scrollToEnd();
                   AppLogger.debug(
                     'Updated ${newMessages.length} messages from listener',
@@ -599,12 +595,12 @@ class UsersController extends GetxController {
       );
 
       if (success) {
-        showCustomSnackBar(
-          content:
-              userId != null
-                  ? 'Removed successfully!'
-                  : 'You have left the group',
-        );
+        // showCustomSnackBar(
+        //   content:
+        //       userId != null
+        //           ? 'Removed successfully!'
+        //           : 'You have left the group',
+        // );
 
         currentTrip.value?.joinedUsers?.remove(targetUserId);
         if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);

@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/notifications/notification_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -96,6 +97,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           final UserNotificationModel notification =
                               notificationModel.notifications[index];
                           return ListTile(
+                            trailing: IconButton(
+                              tooltip: 'Dismiss notification',
+                              icon: const Icon(Icons.close, size: 18),
+                              onPressed:
+                                  () => controller.dismiss(
+                                    notification.notificationId,
+                                  ),
+                            ),
+                            onTap:
+                                () => NotificationNavigation.open({
+                                  'notificationId': notification.notificationId,
+                                }),
                             title: Row(
                               children: [
                                 Expanded(
@@ -137,7 +150,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget getImageUrl(UserNotificationModel notification) {
     if (notification.notificationType == NotificationType.trip.status) {
       return AnyImageView(
-        url: notification.trip?.images.first ?? '',
+        url: notification.trip?.images.firstOrNull ?? '',
         height: 80,
         width: 80,
       );

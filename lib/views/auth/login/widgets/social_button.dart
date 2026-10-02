@@ -8,15 +8,16 @@ import '../../../../utils/app_images.dart';
 ///
 /// The image includes the required boundary, colored G, label, and spacing.
 class GoogleSignInButton extends StatelessWidget {
-  const GoogleSignInButton({super.key, required this.onPressed});
+  const GoogleSignInButton({super.key, required this.onPressed, required this.label});
   final VoidCallback onPressed;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final isIos = defaultTargetPlatform == TargetPlatform.iOS;
     return Semantics(
       button: true,
-      label: 'Sign in with Google',
+      label: label,
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(22.r),

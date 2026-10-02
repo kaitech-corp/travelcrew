@@ -200,7 +200,7 @@ class LoginController extends GetxController {
     }
     await AuthService.createPublicProfileIfNeeded(publicProfileUser);
     await FirebasePushNotificationApi().saveTokenForCurrentUser();
-    showCustomSnackBar(content: 'Login Successful');
+    // showCustomSnackBar(content: 'Login Successful');
     Get.offAllNamed(kMainViewScreenRoute);
   }
 

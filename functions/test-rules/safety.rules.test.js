@@ -1,7 +1,7 @@
 const {before, beforeEach, after, test} = require("node:test");
 const fs = require("node:fs");
 const {initializeTestEnvironment, assertFails, assertSucceeds} = require("@firebase/rules-unit-testing");
-const {doc, setDoc, getDoc, updateDoc, deleteDoc, writeBatch, arrayUnion} = require("firebase/firestore");
+const {doc, setDoc, getDoc, updateDoc, deleteDoc, writeBatch, arrayUnion, serverTimestamp} = require("firebase/firestore");
 let env;
 before(async () => {
   env = await initializeTestEnvironment({projectId: "demo-travelcrew-safety", firestore: {
@@ -29,6 +29,15 @@ beforeEach(async () => {
 });
 const dbFor = (uid) => env.authenticatedContext(uid).firestore();
 
+test("assistant credentials and idempotency receipts are inaccessible to ordinary clients", async () => {
+  for (const collection of ["assistantOAuthRequests", "assistantOAuthCodes", "assistantOAuthTokens", "assistantOAuthGrants", "assistantOAuthClients", "assistantRequests", "assistantQuotas"]) {
+    const path = `${collection}/test`;
+    await env.withSecurityRulesDisabled((context) => setDoc(doc(context.firestore(), path), {uid: "alice"}));
+    await assertFails(getDoc(doc(dbFor("alice"), path)));
+    await assertFails(setDoc(doc(dbFor("alice"), path), {uid: "alice", revoked: false}));
+  }
+});
+
 test("reports and block relationships stay private and cannot be forged directly", async () => {
   const alice = dbFor("alice"); const bob = dbFor("bob");
   await assertSucceeds(getDoc(doc(alice, "users/alice/blockedUsers/bob")));
@@ -50,7 +59,7 @@ test("blocked users cannot add follows or send join requests in either direction
   await assertFails(setDoc(doc(alice, "trips/trip/joinRequests/alice"), {tripId: "trip", userId: "alice", status: "pending"}));
   await env.withSecurityRulesDisabled((context) => setDoc(doc(context.firestore(), "trips/other"), {createdBy: "alice", joinedUsers: [], isShared: true}));
   await assertFails(setDoc(doc(bob, "trips/other/joinRequests/bob"), {tripId: "other", userId: "bob", status: "pending"}));
-  await assertSucceeds(setDoc(doc(dbFor("dave"), "trips/trip/joinRequests/dave"), {tripId: "trip", userId: "dave", status: "pending"}));
+  await assertFails(setDoc(doc(dbFor("dave"), "trips/trip/joinRequests/dave"), {tripId: "trip", userId: "dave", status: "pending"}));
 });
 test("legacy, member, trip-array and chat paths cannot bypass server admission", async () => {
   const bob = dbFor("bob"); const dave = dbFor("dave");
@@ -85,4 +94,38 @@ test("new trip creation still supports the creator membership batch", async () =
   batch.set(doc(alice, "trips/new/members/alice"), {userId: "alice", role: "creator", status: "active"});
   batch.set(doc(alice, "users/alice/tripMemberships/new"), {role: "creator", status: "active"});
   await assertSucceeds(batch.commit());
+});
+
+test("inbox content is server-owned; only the recipient can read, mark read or dismiss", async () => {
+  await env.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), "notifications/alice/notification/n"), {
+      createdBy: "bob", notificationStatus: "unread", isActive: true, sentTo: ["alice"], notificationMessage: "Hello",
+    });
+    await setDoc(doc(context.firestore(), "trips/trip/joinRequests/alice"), {status: "accepted", attemptId: "one"});
+  });
+  const alice = dbFor("alice"); const bob = dbFor("bob");
+  const note = doc(alice, "notifications/alice/notification/n");
+  await assertSucceeds(getDoc(note));
+  await assertFails(getDoc(doc(bob, note.path)));
+  await assertSucceeds(updateDoc(note, {notificationStatus: "read"}));
+  await assertSucceeds(updateDoc(note, {isActive: false}));
+  for (const data of [{notificationMessage: "forged"}, {createdBy: "alice"}, {sentTo: ["bob"]}, {pushEnabled: true}, {notificationStatus: "accepted"}]) {
+    await assertFails(updateDoc(note, data));
+  }
+  await assertFails(setDoc(doc(alice, "notifications/alice/notification/fake"), {createdBy: "alice"}));
+  await assertFails(setDoc(doc(alice, "notifications/bob/notification/fake"), {createdBy: "alice"}));
+  await assertFails(deleteDoc(note));
+  await assertFails(updateDoc(doc(alice, "trips/trip/joinRequests/alice"), {status: "cancelled"}));
+  await assertFails(updateDoc(doc(bob, "trips/trip/joinRequests/alice"), {status: "rejected"}));
+  await assertFails(setDoc(doc(alice, "joinAttempts/fake"), {}));
+  await assertFails(setDoc(doc(alice, "pushDeliveries/fake"), {done: true}));
+});
+test("chat read cursor is private, server-timed and cannot forge unread activity", async () => {
+  const alice = dbFor("alice"); const ref = doc(alice, "users/alice/chatActivity/trip");
+  await assertSucceeds(setDoc(ref, {readAt: serverTimestamp()}));
+  await assertSucceeds(updateDoc(ref, {readAt: serverTimestamp()}));
+  await assertFails(updateDoc(ref, {readAt: new Date(0)}));
+  await assertFails(updateDoc(ref, {lastMessageAt: 123, lastSenderId: "bob"}));
+  await assertFails(getDoc(doc(dbFor("bob"), ref.path)));
+  await assertFails(setDoc(doc(dbFor("dave"), "users/dave/chatActivity/trip"), {readAt: serverTimestamp()}));
 });

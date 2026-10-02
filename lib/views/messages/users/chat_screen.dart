@@ -1,3 +1,4 @@
+import 'package:travel_crew/services/notifications/chat_activity_service.dart';
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'dart:async';
@@ -30,7 +31,8 @@ class MessagesScreen extends StatefulWidget {
   State<MessagesScreen> createState() => _MessagesScreenState();
 }
 
-class _MessagesScreenState extends State<MessagesScreen> {
+class _MessagesScreenState extends State<MessagesScreen>
+    with WidgetsBindingObserver {
   final UsersController controller = Get.find<UsersController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
@@ -39,10 +41,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
   void initState() {
     super.initState();
     controller.attachMessageScrollController(_scrollController);
+    WidgetsBinding.instance.addObserver(this);
+    if (controller.roomId != null) {
+      unawaited(ChatActivityService.markRead(controller.roomId!));
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        controller.roomId != null &&
+        mounted) {
+      unawaited(ChatActivityService.markRead(controller.roomId!));
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.detachMessageScrollController(_scrollController);
     unawaited(controller.stopListeningToChat());
     _scrollController.dispose();

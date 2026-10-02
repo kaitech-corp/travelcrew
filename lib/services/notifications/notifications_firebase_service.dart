@@ -4,7 +4,6 @@ import 'package:travel_crew/main.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../models/Notifications/notification_model.dart';
 import '../../models/Notifications/user_notification_model.dart';
@@ -66,77 +65,25 @@ class FirebaseNotificationsService {
           final UserNotificationModel us = UserNotificationModel.fromMap(
             e.data(),
           );
-          if (us.notificationType == NotificationType.trip.status) {
-            us.trip = await FirebaseTripService.getTripById(
-              tripId: us.notificationForId,
-            );
+          try {
+            if (us.notificationType == NotificationType.trip.status) {
+              us.trip = await FirebaseTripService.getTripById(
+                tripId: us.notificationForId,
+              );
+            }
+            if (us.createdBy != 'system') {
+              us.addedBy = await AuthService.getUserPublicProfile(
+                userId: us.createdBy,
+              );
+            }
+          } catch (_) {
+            // Keep the notification even when its target is unavailable.
           }
-          us.addedBy = await AuthService.getUserPublicProfile(
-            userId: us.createdBy,
-          );
           return us;
         }).toList();
-    final res = await Future.wait(futures);
+    final res = (await Future.wait(futures)).where((n) => n.isActive).toList();
     res.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return res;
-  }
-
-  static Future<void> saveNotifications({
-    required String message,
-    required String title,
-    bool? isLookBook,
-    required List<String> sentTo,
-    String? releaseDate,
-    required String notificationForId,
-    required String notificationType,
-    bool isTopic = false,
-    List<String> notificationTopic = const ['User loggedIn'],
-  }) async {
-    try {
-      final uid = GlobalVariables.loggedInUser.value?.uid;
-      if (uid == null) return;
-      final UserNotificationModel userNotificationModel = UserNotificationModel(
-        notificationId: const Uuid().v4(),
-        notificationMessage: message,
-        notificationTitle: title,
-        notificationType: notificationType,
-        notificationStatus: NotificationStatus.unread.name,
-        notificationForId: notificationForId,
-        createdAt: DateTime.now(),
-        createdBy: uid,
-        updateAt: DateTime.now(),
-        updateBy: uid,
-        sentTo: sentTo,
-        isTopic: isTopic,
-        releaseDate: releaseDate,
-        notificationTopic: notificationTopic,
-        isActive: true,
-      );
-      await _saveNotification(userNotificationModel);
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  static Future<void> _saveNotification(
-    UserNotificationModel notification,
-  ) async {
-    try {
-      final uid = GlobalVariables.loggedInUser.value?.uid;
-      if (uid == null) return;
-      await firestore
-          .collection(kNotificationsCollection)
-          .doc(uid)
-          .collection(kNotificationsSubCollection)
-          .add(notification.toMap())
-          .then((value) => value.update({'notificationId': value.id}));
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
   }
 
   static Future<bool> updateNotification({
@@ -161,9 +108,7 @@ class FirebaseNotificationsService {
     return false;
   }
 
-  static Future<bool> markNotificationAsRead({
-    required String notificationId,
-  }) {
+  static Future<bool> markNotificationAsRead({required String notificationId}) {
     return updateNotification(
       notificationId: notificationId,
       data: {'notificationStatus': NotificationStatus.read.name},
@@ -177,7 +122,7 @@ class FirebaseNotificationsService {
       final unreadNotifications =
           notifications.where((item) => item.isUnread).toList();
       if (unreadNotifications.isEmpty) return true;
-      await Future.wait(
+      final results = await Future.wait(
         unreadNotifications.map(
           (notification) => updateNotification(
             notificationId: notification.notificationId,
@@ -185,7 +130,7 @@ class FirebaseNotificationsService {
           ),
         ),
       );
-      return true;
+      return results.every((saved) => saved);
     } catch (e) {
       if (kDebugMode) {
         print(e);

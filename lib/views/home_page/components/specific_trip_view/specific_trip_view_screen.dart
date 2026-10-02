@@ -277,7 +277,14 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
   @override
   void initState() {
     super.initState();
-    controller.initializeFromArgument(Get.arguments);
+    final argument = Get.arguments;
+    controller.initializeFromArgument(argument).then((_) {
+      if (argument is Map && argument['section'] == 'Crew') {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _scrollToSection('Crew');
+        });
+      }
+    });
   }
 
   @override
@@ -1308,14 +1315,18 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                         ),
                         TextButton(
                           onPressed:
-                              () =>
-                                  controller.rejectJoinRequest(request.userId),
+                              () => controller.rejectJoinRequest(
+                                request.userId,
+                                request.attemptId,
+                              ),
                           child: const Text('Reject'),
                         ),
                         TextButton(
                           onPressed:
-                              () =>
-                                  controller.acceptJoinRequest(request.userId),
+                              () => controller.acceptJoinRequest(
+                                request.userId,
+                                request.attemptId,
+                              ),
                           child: const Text('Accept'),
                         ),
                       ],

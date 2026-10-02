@@ -5,6 +5,7 @@ class JoinRequestModel {
     required this.userId,
     required this.tripId,
     this.status = 'pending',
+    this.attemptId = 'legacy',
     this.createdAt,
     this.updatedAt,
     this.message,
@@ -16,6 +17,7 @@ class JoinRequestModel {
     return JoinRequestModel(
       userId: map['userId'] as String? ?? '',
       tripId: map['tripId'] as String? ?? '',
+      attemptId: map['attemptId'] as String? ?? 'legacy',
       status: map['status'] as String? ?? 'pending',
       createdAt: _dateFromValue(map['createdAt']),
       updatedAt: _dateFromValue(map['updatedAt']),
@@ -28,6 +30,7 @@ class JoinRequestModel {
   final String userId;
   final String tripId;
   final String status;
+  final String attemptId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? message;
@@ -39,6 +42,7 @@ class JoinRequestModel {
       'userId': userId,
       'tripId': tripId,
       'status': status,
+      'attemptId': attemptId,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       'message': message,

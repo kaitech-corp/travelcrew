@@ -44,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30.h),
+              SizedBox(height: 10.h),
               Text(
                 l10n.signup,
                 textAlign: TextAlign.center,
@@ -238,53 +238,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 },
               ),
               SizedBox(height: 24.h),
+
               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GoogleSignInButton(onPressed: controller.onGoogleSignIn),
+                                Column(
+                children: [
+                  GoogleSignInButton(onPressed: controller.onGoogleSignIn, label: 'Sign up with Google'),
                   SizedBox(height: 12.h),
                   SizedBox(
-                    width: 188.w,
-                    height: 44.h,
+                    width: ScreenUtil().screenWidth > 600 ? 280.w : 210.w,
+                    // height: 44.h,
                     child: SignInWithAppleButton(
                       onPressed: controller.onAppleSignIn,
-                      text: 'Sign up with Apple',
-                      height: 44,
-                      style: SignInWithAppleButtonStyle.black,
-                      borderRadius: BorderRadius.circular(8),
+                      // text: 'Sign up with Apple',
+                      // // height: 44,
+                      // style: SignInWithAppleButtonStyle.black,
+                      // borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 24.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account?',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      color: const Color(0xFF333333),
-                      fontSize: AppStyles.fontSize14,
-
-                      fontWeight: FontWeight.w500,
-                      height: 1.29,
-                    ),
-                  ),
-                  const SizedBox(width: 4), // spacing
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Text(
-                      'Sign In',
-                      style: AppStyles.labelTextStyle().copyWith(
-                        color: AppColors.kPrimaryColor,
-                        fontSize: AppStyles.fontSize14,
-
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                        decorationColor: AppColors.kPrimaryColor,
+              SizedBox(height: 12.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Already have an account?',
+                        style: AppStyles.labelTextStyle().copyWith(
+                          color: const Color(0xFF333333),
+                          fontSize: AppStyles.fontSize14,
+                  
+                          fontWeight: FontWeight.w500,
+                          height: 1.29,
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 4), // spacing
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Text(
+                          'Sign In',
+                          style: AppStyles.labelTextStyle().copyWith(
+                            color: AppColors.kPrimaryColor,
+                            fontSize: AppStyles.fontSize14,
+                  
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

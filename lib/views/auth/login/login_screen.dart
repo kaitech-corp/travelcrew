@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 50.h),
+                SizedBox(height: 30.h),
                 Image.asset(AppImages.kAppLogo, height: 206.h, width: 206.w),
                 SizedBox(height: 20.h),
                 Row(
@@ -239,16 +239,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 10.h),
                 Column(
                   children: [
-                    GoogleSignInButton(onPressed: controller.loginWithGoogle),
+                    GoogleSignInButton(onPressed: controller.loginWithGoogle, 
+                    label: 'Sign in with Google'),
                     SizedBox(height: 12.h),
                     SizedBox(
-                      width: 188.w,
-                      height: 44.h,
+                      width: ScreenUtil().screenWidth > 600 ? 260.w : 210.w,
+                      // height: 44.h,
                       child: SignInWithAppleButton(
                         onPressed: controller.loginWithApple,
-                        height: 44,
-                        style: SignInWithAppleButtonStyle.black,
-                        borderRadius: BorderRadius.circular(8),
+                        // height: 44,
+                        // style: SignInWithAppleButtonStyle.black,
+                        // borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                   ],

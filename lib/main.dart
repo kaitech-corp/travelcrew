@@ -18,6 +18,7 @@ import 'package:travel_crew/views/main_view/controller/main_view_controller.dart
 
 import 'l10n/app_localizations.dart';
 import 'services/notifications/notfication_services.dart';
+import 'services/trip_link_service.dart';
 import 'utils/app_strings.dart';
 import 'utils/route_generator.dart';
 import 'utils/screen_bindings.dart';
@@ -29,6 +30,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await TripLinkService.initialize();
   await initializeFirebase();
   SafetyService.initialize();
   await initializeGoogleSignIn();

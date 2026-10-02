@@ -1,9 +1,16 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travel_crew/main.dart';
+import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 
 class MyTripsController extends GetxController {
+  StreamSubscription<dynamic>? _membershipSubscription;
+  Worker? _sessionWorker;
+  Timer? _refreshTimer;
+  int _loadVersion = 0;
   // Track which tab is selected: 0 = Upcoming, 1 = Active, 2 = Past
   final RxInt selectedTabIndex = 0.obs;
   RxList<TripModel> trips = <TripModel>[].obs;
@@ -13,19 +20,55 @@ class MyTripsController extends GetxController {
   void onInit() {
     super.onInit();
     getTrips();
+    _watchMemberships();
+    _sessionWorker = ever(GlobalVariables.loggedInUser, (_) {
+      _loadVersion++;
+      trips.clear();
+      filteredTrips.clear();
+      _watchMemberships();
+    });
+  }
+
+  void _watchMemberships() {
+    _membershipSubscription?.cancel();
+    _refreshTimer?.cancel();
+    final uid = GlobalVariables.currentUid;
+    if (uid.isEmpty) return;
+    _membershipSubscription = firestore
+        .collection('users')
+        .doc(uid)
+        .collection('tripMemberships')
+        .orderBy('joinedAt', descending: true)
+        .limit(50)
+        .snapshots()
+        .listen(
+          (_) {
+            _refreshTimer?.cancel();
+            _refreshTimer = Timer(const Duration(milliseconds: 200), getTrips);
+          },
+          onError: (Object error) {
+            debugPrint(
+              'Unable to refresh trip memberships: ${error.runtimeType}',
+            );
+          },
+        );
   }
 
   RxBool isLoading = true.obs;
 
   Future<void> getTrips() async {
+    final version = ++_loadVersion;
+    final uid = GlobalVariables.currentUid;
     try {
       isLoading.value = true;
-      trips.value = await FirebaseTripService.getMyTrips(isAll: true);
+      final loaded = await FirebaseTripService.getMyTrips(isAll: true);
+      if (version != _loadVersion || uid != GlobalVariables.currentUid) return;
+      trips.value = loaded;
       _filterTripsByTab();
     } catch (e) {
       debugPrint('Failed to load trips: $e');
     } finally {
-      isLoading.value = false;
+      if (version == _loadVersion) isLoading.value = false;
     }
   }
 
@@ -83,6 +126,10 @@ class MyTripsController extends GetxController {
 
   @override
   void onClose() {
+    _loadVersion++;
+    _membershipSubscription?.cancel();
+    _sessionWorker?.dispose();
+    _refreshTimer?.cancel();
     searchController.dispose();
     super.onClose();
   }

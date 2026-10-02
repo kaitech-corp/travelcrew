@@ -44,6 +44,9 @@ class NotificationController extends GetxController {
         _badgeItems
             .where(
               (n) =>
+                  n.isActive &&
+                  (n.sentTo.contains(GlobalVariables.currentUid) ||
+                      n.sentTo.contains('All')) &&
                   n.isUnread &&
                   (createdAt == null || !n.createdAt.isBefore(createdAt)) &&
                   (n.createdBy == 'system' ||
@@ -115,6 +118,14 @@ class NotificationController extends GetxController {
     if (updated) {
       await getNotification();
     }
+  }
+
+  Future<void> dismiss(String notificationId) async {
+    final saved = await FirebaseNotificationsService.updateNotification(
+      notificationId: notificationId,
+      data: {'isActive': false},
+    );
+    if (saved) await getNotification();
   }
 
   Future<void> markAllAsRead() async {

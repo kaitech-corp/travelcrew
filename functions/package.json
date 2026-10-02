@@ -10,18 +10,24 @@
   "scripts": {
     "lint": "eslint .",
     "test": "node --test test/*.test.js",
-    "test:rules": "node --test test-rules/*.test.js"
+    "test:rules": "node --test test-rules/*.test.js",
+    "test:assistant": "node --test test/assistant-validation.test.js test-rules/assistant.integration.test.js",
+    "test:assistant:browser": "node test-browser/assistant.browser.cjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "bad-words": "^4.1.5",
+    "express": "^5.2.1",
     "firebase-admin": "^14.4.0",
-    "firebase-functions": "^7.4.0"
+    "firebase-functions": "^7.4.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@firebase/rules-unit-testing": "^5.0.2",
     "eslint": "^9.39.5",
     "firebase": "^12.19.0",
-    "globals": "^17.12.0"
+    "globals": "^17.12.0",
+    "playwright": "^1.63.0"
   }
 }

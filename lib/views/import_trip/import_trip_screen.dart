@@ -6,6 +6,7 @@ import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
 import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
 import 'package:travel_crew/views/import_trip/import_trip_controller.dart';
+import 'assistant_connection_card.dart';
 
 class ImportTripScreen extends StatefulWidget {
   const ImportTripScreen({super.key});
@@ -86,6 +87,8 @@ class _ImportTripScreenState extends State<ImportTripScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20.h),
+            const AssistantConnectionCard(),
+            SizedBox(height: 24.h),
             _buildStep(
               number: '1',
               title: 'Copy this prompt',

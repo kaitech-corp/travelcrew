@@ -1,16 +1,30 @@
 # Travel Crew functions
 
+## Assistant trip creation
+
+`assistantV1` serves the authenticated trip API, MCP `create_trip` tool, OAuth
+account linking and connection management. See [configuration, contracts and release instructions](ASSISTANT.md).
+Assistant integration tests require **both Auth and Firestore emulators**.
+
 Use Node 22 (`nvm use`), then `npm ci`, `npm run lint`, and `npm test`.
 
 ## App contracts
 
-- `sendPushNotificationV3` accepts the existing client Trip Joined event under
-  `notifications/{sender}/notification/{id}`. It verifies active membership and
-  forwards a server-authored event only to the trip owner. Recipient copies use
-  the app's existing millisecond dates, unread status, and notification fields.
-  A deterministic ID prevents repeated source events from duplicating inbox rows.
-  Recipient copies trigger push delivery in batches of at most 500 tokens.
-  FCM/Eventarc delivery is not exactly-once; duplicate pushes remain possible.
+- Notifications are server-owned inbox documents under `notifications/{recipient}/notification/{id}`.
+  `requestToJoinTripV3`, `cancelJoinRequestV3`, `acceptJoinRequestV3`, `rejectJoinRequestV3`,
+  and `leaveTripV3` atomically commit membership/request changes and their inbox events.
+  Each request attempt has an ID; retries reuse it, and a later request uses a new ID.
+- `sendPushNotificationV3` sends eligible schema-version-2 inbox notifications, rechecking
+  read/dismissal state, blocks, restrictions and trip/request availability. It no longer
+  forwards client-authored Trip Joined events. Per-token delivery receipts prevent
+  ordinary retries from resending successful tokens. FCM is still at-least-once.
+- `sendChatPushV3` sends generic trip-message pushes and maintains private conversation
+  activity. It skips the sender, blocked/restricted users, departed members and messages
+  already read. It creates no general inbox rows.
+- `followUserV3` creates an in-app-only notification on an actual follow transition.
+  Unfollow, block and unblock are silent. Reports keep their private form confirmation.
+- `maintainNotificationReceiptsV3` removes up to 500 push receipts older than 30 days daily.
+  Monitor backlog at higher volumes. Join-attempt receipts are retained for replay safety.
 - `sendTripInvitesV3` keeps the existing callable payload. Only the owner
   can invite to a non-deleted trip. Emails are normalized before deduplication;
   more than 20 unique valid emails are rejected rather than silently discarded.
@@ -27,9 +41,14 @@ Use Node 22 (`nvm use`), then `npm ci`, `npm run lint`, and `npm test`.
 
 ## Deployment requirements
 
-Deploy the notification rules in the repository before the functions. The rules
-disallow clients from forging `serverForwarded` recipient copies. These changes
-do not alter trip deletion rules. Older app builds keep submitting the same events.
+Deploy the new functions, coordinated rules, and updated Flutter app together in staging
+before production. Older clients that write join requests/inbox events directly or call
+acceptance without an attempt ID are incompatible with the new contract. The rules let
+recipients read, mark read/unread, and dismiss inbox rows; they prohibit client creation,
+hard deletion, and content/identity changes. These rules target `travel-crew-db-2`.
+
+See [notification lifecycle documentation](../resources/notification_lifecycle_implementation.md)
+for the event matrix, callable contracts, validation, rollout and delivery limitations.
 
 Email delivery requires a configured Firebase Trigger Email extension (or other
 mail processor) watching `mail`, with working SMTP credentials. Writing a mail
@@ -149,4 +168,4 @@ See [implementation and operations runbook](../resources/reporting_and_blocking_
 
 Follow mutations and join acceptance now use callables. Coordinate the updated app and restrictive rules rollout: old builds cannot continue writing follow/member relationships directly. The general notification deployment note above applies to the notification-only feature; follow the runbook sequence for this safety release.
 
-Run `npm run test:rules` through `firebase emulators:exec --only firestore --project demo-travelcrew-safety` with Java 21. This includes rules assertions and a named-database integration flow. Unit tests remain `npm test`.
+Run `npm run test:rules` through `firebase emulators:exec --only firestore,auth --project demo-travelcrew-safety` with Java 21. This includes rules assertions and named-database integration flows. Unit tests remain `npm test`.

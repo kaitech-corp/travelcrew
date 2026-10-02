@@ -447,7 +447,7 @@ class CreateTripController extends GetxController {
         data: trip.toMap(),
       ).then((isSuccess) async {
         if (isSuccess) {
-          showCustomSnackBar(content: 'Trip updated successfully');
+          // showCustomSnackBar(content: 'Trip updated successfully');
           for (var i = 0; i < activityList.length; i++) {
             if (activityList[i].id == null) {
               activityList[i].id = const Uuid().v6();
@@ -571,7 +571,7 @@ class CreateTripController extends GetxController {
         isSuccess,
       ) async {
         if (isSuccess) {
-          showCustomSnackBar(content: 'Trip created successfully');
+          // showCustomSnackBar(content: 'Trip created successfully');
 
           // The trip itself is ready to display now. Do not make the user wait
           // for invites, expenses, and activity writes before navigating.

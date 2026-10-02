@@ -81,9 +81,9 @@ Strict JSON formatting requirements:
   Future<void> copyPrompt() async {
     try {
       await Clipboard.setData(const ClipboardData(text: aiPrompt));
-      showCustomSnackBar(
-        content: 'Prompt copied — paste it into your AI assistant',
-      );
+      // showCustomSnackBar(
+      //   content: 'Prompt copied — paste it into your AI assistant',
+      // );
     } catch (e, stack) {
       ErrorHandler.handleError(
         e,
@@ -97,7 +97,7 @@ Strict JSON formatting requirements:
   void importTrip() {
     final raw = pasteController.text.trim();
     if (raw.isEmpty) {
-      showCustomSnackBar(content: 'Paste your AI response first');
+      // showCustomSnackBar(content: 'Paste your AI response first');
       return;
     }
 
