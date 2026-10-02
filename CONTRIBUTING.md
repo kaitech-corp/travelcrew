@@ -17,7 +17,7 @@ It really helps us efficiently process your contribution!
 
 ## <a id='bug-reports'></a>Report a bug
 
-Found a bug? Tell us all about it!
+Found a bug? Tell us all about it.
 
 - If you notice something odd happening, try to make it happen again (reproduce it).
 - If you can reproduce it, try to figure out if it's caused by the video format that you use or by Travel Crew.

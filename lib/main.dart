@@ -1,129 +1,149 @@
-import 'dart:io';
-
-import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:travel_crew/firebase_options.dart';
+import 'package:travel_crew/utils/app_colors.dart';
+import 'package:travel_crew/views/main_view/controller/main_view_controller.dart';
 
-import '../blocs/authentication_bloc/authentication_bloc.dart';
-import '../blocs/authentication_bloc/authentication_event.dart';
-import '../blocs/authentication_bloc/authentication_state.dart';
-import '../screens/complete_profile/complete_profile_page.dart';
-import '../screens/login/login_screen.dart';
-import '../services/constants/constants.dart';
-import '../services/database.dart';
-import '../services/firebase_messaging.dart';
-import '../services/initializer/project_initializer.dart';
-import '../services/locator.dart';
-import '../services/navigation/navigation_service.dart';
-import '../services/navigation/router.dart';
-import '../services/responsive/responsive_wrapper.dart';
-import '../services/theme/theme_data.dart';
-import '../services/widgets/launch_icon_badger.dart';
-import '../services/widgets/loading.dart';
-import '../size_config/size_config.dart';
-import 'repositories/user_repository.dart';
-import 'services/l10n.dart';
+import 'l10n/app_localizations.dart';
+import 'services/notifications/notfication_services.dart';
+import 'services/trip_link_service.dart';
+import 'utils/app_strings.dart';
+import 'utils/route_generator.dart';
+import 'utils/screen_bindings.dart';
 
+late FirebaseFirestore firestore;
+MainViewController? mainViewController;
+String userDeviceToken = '';
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 void main() async {
-  await projectInitializer();
+  WidgetsFlutterBinding.ensureInitialized();
+  await TripLinkService.initialize();
+  await initializeFirebase();
+  SafetyService.initialize();
+  await initializeGoogleSignIn();
+  await dotenv.load(isOptional: true);
 
-  final UserRepository userRepository = UserRepository();
-
-  runApp(BlocProvider<AuthenticationBloc>(
-      create: (BuildContext context) =>
-          AuthenticationBloc(userRepository: userRepository)
-            ..add(AuthenticationLoggedOut()),
-      child: TravelCrew(
-        userRepository: userRepository,
-      )));
-}
-
-class TravelCrew extends StatefulWidget {
-  const TravelCrew({Key? key, this.userRepository}) : super(key: key);
-  final UserRepository? userRepository;
-
-  @override
-  State<TravelCrew> createState() => _TravelCrewState();
-}
-
-class _TravelCrewState extends State<TravelCrew> {
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
-  @override
-  void initState() {
-    if (Platform.isIOS) {
-      FBMessaging().requestPermissions();
-    } else {
-      try {
-        FBMessaging().androidFCMSetting();
-      } on Exception catch (e) {
-        if (kDebugMode) {
-          print(e.toString());
-        }
-      }
-    }
-    super.initState();
+  if (!kDebugMode) {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
   }
 
+  // initAppsflyer();
+  userDeviceToken = await FirebasePushNotificationApi().initNotifications();
+
+  runApp(const MyApp());
+}
+
+Future<void> initializeGoogleSignIn() async {
+  await GoogleSignIn.instance.initialize(
+    clientId:
+        defaultTargetPlatform == TargetPlatform.iOS
+            ? DefaultFirebaseOptions.ios.iosClientId
+            : null,
+  );
+}
+
+Future<void> initializeFirebase() async {
+  FirebaseApp app;
+  if (Firebase.apps.isEmpty) {
+    app = await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    app = Firebase.app();
+  }
+
+  firestore = FirebaseFirestore.instanceFor(
+    app: app,
+    databaseId: 'travel-crew-db-2',
+  );
+  firestore.settings = const Settings(persistenceEnabled: true);
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return Sizer(builder:
-        (BuildContext context, Orientation orientation, DeviceType deviceType) {
-      return MaterialApp(
-        builder: (BuildContext context, Widget? widget) {
-          return responsiveWrapperBuilder(context, widget!);
-        },
-        home: AnimatedSplashScreen(
-          splash: splashScreenLogo,
-          animationDuration: const Duration(milliseconds: 1000),
-          splashIconSize: double.maxFinite,
-          nextScreen: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (BuildContext context, AuthenticationState state) {
-            SizeConfig().init(context);
-            if (state is AuthenticationFailure) {
-              return LoginScreen();
-            }
-            if (state is AuthenticationSuccess) {
-              return FutureBuilder<bool>(
-                builder: (BuildContext context, AsyncSnapshot<Object?> data) {
-                  if (data.data == true) {
-                    return const LaunchIconBadger();
-                  } else if (data.data == false) {
-                    return CompleteProfile(
-                      userRepository: widget.userRepository,
-                    );
-                  }
-                  return const Loading();
-                },
-                future: DatabaseService(uid: state.firebaseUser!.uid)
-                    .checkUserHasProfile(),
-              );
-            } else {
-              return LoginScreen();
-            }
-          }),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      // Larger windows need more content space, not magnified phone controls.
+      enableScaleWH: () => ScreenUtil().screenWidth < 600,
+      enableScaleText: () => ScreenUtil().screenWidth < 600,
+      builder: (context, child) {
+        return GetMaterialApp(
+          title: kAppName,
+          theme: _buildTheme(Brightness.light),
+          debugShowCheckedModeBanner: false,
+          initialBinding: ScreenBindings(),
+          initialRoute: kSplashScreenRoute,
+          supportedLocales: const <Locale>[
+            Locale('en', 'US'),
+            Locale('es', ''),
+            Locale('zh', ''),
+          ],
+          locale: const Locale('en', 'US'),
+          fallbackLocale: const Locale('en', 'US'),
+          getPages: RouteGenerator.getPages(),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            FlutterQuillLocalizations.delegate,
+          ],
+        );
+      },
+    );
+  }
+
+  ThemeData _buildTheme(Brightness brightness) {
+    final baseTheme = ThemeData(brightness: brightness);
+    return baseTheme.copyWith(
+      textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme),
+      scaffoldBackgroundColor: AppColors.kScaffoldBgColor,
+      colorScheme: baseTheme.colorScheme.copyWith(
+        primary: AppColors.kPrimaryColor,
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        constraints: BoxConstraints(maxWidth: 640),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.kPrimaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.r),
+          ),
         ),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: L10n.all,
-        debugShowCheckedModeBanner: false,
-        theme: themeDataBuilder(),
-        navigatorKey: locator<NavigationService>().navigationKey,
-        onGenerateRoute: generateRoute,
-        navigatorObservers: <NavigatorObserver>[
-          FirebaseAnalyticsObserver(analytics: analytics),
-        ],
-      );
-    });
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.all(AppColors.kWhiteColor),
+        trackOutlineColor: WidgetStateProperty.all(AppColors.transparent),
+      ),
+      cardTheme: CardThemeData(
+        surfaceTintColor: AppColors.kWhiteColor,
+        color: AppColors.kWhiteColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+      ),
+    );
   }
 }

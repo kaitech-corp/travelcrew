@@ -1,0 +1,99 @@
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/models/public_user_model.dart';
+import 'package:travel_crew/utils/app_strings.dart';
+import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
+import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/app_styles.dart';
+import 'controller/connections_controller.dart';
+
+class ConnectionsScreen extends StatefulWidget {
+  const ConnectionsScreen({super.key});
+
+  @override
+  State<ConnectionsScreen> createState() => _ConnectionsScreenState();
+}
+
+class _ConnectionsScreenState extends State<ConnectionsScreen> {
+  final ConnectionsController controller = Get.find<ConnectionsController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return DefaultTabController(
+      length: 2,
+      initialIndex: controller.initialIndex.value,
+      child: CustomScaffold(
+        screenName: l10n.social, // Use a generic title or dynamic one
+        centerTitle: true,
+        scaffoldKey: _scaffoldKey,
+        className: widget.runtimeType.toString(),
+        body: Column(
+          children: [
+            TabBar(
+              labelColor: Theme.of(context).primaryColor,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Theme.of(context).primaryColor,
+              tabs: [Tab(text: l10n.followers), Tab(text: l10n.following)],
+            ),
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return TabBarView(
+                  children: [
+                    _buildUserList(controller.followers, l10n.noFollowersFound),
+                    _buildUserList(controller.following, l10n.noFollowingFound),
+                  ],
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserList(List<PublicUserModel> allUsers, String emptyMessage) {
+    final users =
+        allUsers.where((user) => !SafetyService.hides(user.uid)).toList();
+    if (users.isEmpty) {
+      return Center(child: Text(emptyMessage));
+    }
+    return ListView.separated(
+      padding: EdgeInsets.all(20.r),
+      itemCount: users.length,
+      separatorBuilder: (context, index) => SizedBox(height: 15.h),
+      itemBuilder: (context, index) {
+        final user = users[index];
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: AnyImageView(
+            url: user.profileImage ?? '',
+            height: 50.r,
+            width: 50.r,
+            isCircle: true,
+          ),
+          title: Text(
+            user.displayName,
+            style: AppStyles.labelTextStyle().copyWith(
+              fontSize: AppStyles.fontSize16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          onTap: () async {
+            await Get.toNamed(kPublicProfileScreenRoute, arguments: user);
+            if (controller.userId != null) {
+              await controller.loadConnections(controller.userId!);
+            }
+          },
+        );
+      },
+    );
+  }
+}

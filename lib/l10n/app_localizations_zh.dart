@@ -1,0 +1,707 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Chinese (`zh`).
+class AppLocalizationsZh extends AppLocalizations {
+  AppLocalizationsZh([String locale = 'zh']) : super(locale);
+
+  @override
+  String get appTitle => 'TravelCrew';
+
+  @override
+  String get home => '首页';
+
+  @override
+  String get myTrips => '我的旅行';
+
+  @override
+  String get messages => '消息';
+
+  @override
+  String get notifications => '通知';
+
+  @override
+  String get profile => '个人资料';
+
+  @override
+  String get login => '登录';
+
+  @override
+  String get logout => '登出';
+
+  @override
+  String get signup => '注册';
+
+  @override
+  String get email => '电子邮件';
+
+  @override
+  String get password => '密码';
+
+  @override
+  String get forgotPassword => '忘记密码？';
+
+  @override
+  String get createTrip => '创建旅行';
+
+  @override
+  String get tripName => '旅行名称';
+
+  @override
+  String get destination => '目的地';
+
+  @override
+  String get startDate => '开始日期';
+
+  @override
+  String get endDate => '结束日期';
+
+  @override
+  String get save => '保存';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get edit => '编辑';
+
+  @override
+  String get add => '添加';
+
+  @override
+  String get next => '下一步';
+
+  @override
+  String get previous => '上一步';
+
+  @override
+  String get finish => '完成';
+
+  @override
+  String get search => '搜索';
+
+  @override
+  String get noResultsFound => '未找到结果。';
+
+  @override
+  String get error => '发生错误。';
+
+  @override
+  String get requiredField => '此字段为必填项。';
+
+  @override
+  String get invalidEmail => '请输入有效的电子邮件地址。';
+
+  @override
+  String get passwordTooShort => '密码长度至少为6个字符。';
+
+  @override
+  String get passwordsDoNotMatch => '密码不匹配。';
+
+  @override
+  String get confirmPassword => '确认密码';
+
+  @override
+  String get newPassword => '新密码';
+
+  @override
+  String get resetPassword => '重置密码';
+
+  @override
+  String get sendResetLink => '发送重置链接';
+
+  @override
+  String get otpVerification => 'OTP 验证';
+
+  @override
+  String get enterOtp => '请输入发送到您电子邮件的OTP。';
+
+  @override
+  String get verify => '验证';
+
+  @override
+  String get resendOtp => '重新发送OTP';
+
+  @override
+  String get completeProfile => '完善个人资料';
+
+  @override
+  String get firstName => '名';
+
+  @override
+  String get lastName => '姓';
+
+  @override
+  String get phoneNumber => '电话号码';
+
+  @override
+  String get submit => '提交';
+
+  @override
+  String get expenses => '费用';
+
+  @override
+  String get addExpense => '添加费用';
+
+  @override
+  String get noExpenses => '尚未添加任何费用。';
+
+  @override
+  String get settleUp => '结算';
+
+  @override
+  String get activities => '活动';
+
+  @override
+  String get addActivity => '添加活动';
+
+  @override
+  String get lodging => '住宿';
+
+  @override
+  String get transport => '交通';
+
+  @override
+  String get settings => '设置';
+
+  @override
+  String get changePassword => '更改密码';
+
+  @override
+  String get privacyPolicy => '隐私政策';
+
+  @override
+  String get termsAndConditions => '条款和条件';
+
+  @override
+  String get about => '关于';
+
+  @override
+  String get helpAndSupport => '帮助与支持';
+
+  @override
+  String get deleteAccount => '删除帐户';
+
+  @override
+  String get confirmDeleteAccount => '您确定要删除您的帐户吗？此操作无法撤销。';
+
+  @override
+  String get noTripsFound => '未找到任何旅行。';
+
+  @override
+  String get noChatsFound => '未找到任何聊天。';
+
+  @override
+  String get noNotificationsFound => '未找到任何通知。';
+
+  @override
+  String get confirmExit => '确认退出';
+
+  @override
+  String get confirmExitMessage => '您确定要退出吗？';
+
+  @override
+  String get exit => '退出';
+
+  @override
+  String get wellDone => '做得好！';
+
+  @override
+  String get congratulations => '恭喜！';
+
+  @override
+  String get camera => '相机';
+
+  @override
+  String get gallery => '相册';
+
+  @override
+  String get rememberMe => '记住我';
+
+  @override
+  String get orSignInWith => '或使用以下方式登录';
+
+  @override
+  String get dontHaveAnAccount => '还没有帐户？';
+
+  @override
+  String get agreeToTerms => '我同意服务条款';
+
+  @override
+  String get continueText => '继续';
+
+  @override
+  String get forgotPasswordTitle => '忘记密码？';
+
+  @override
+  String get forgotPasswordSubtitle => '为了帮助您选择我们必须用来重置密码的联系信息';
+
+  @override
+  String get sendToEmail => '发送到您的电子邮件';
+
+  @override
+  String get resetLinkViaEmail => '通过电子邮件获取密码重置链接';
+
+  @override
+  String get createNewPassword => '创建新密码';
+
+  @override
+  String get newPasswordSubtitle => '请输入您的新密码。请记住，您的新密码必须与以前使用的密码不同';
+
+  @override
+  String get needHelp => '需要帮助？';
+
+  @override
+  String get feedbackRequest => '请将任何反馈或错误报告发送至\nSupport@kaitechcorp.com';
+
+  @override
+  String get personalInformation => '个人信息';
+
+  @override
+  String get privacyPolicyAndTerms => '隐私政策和条款';
+
+  @override
+  String get safetyAndSecurity => '安全与保障';
+
+  @override
+  String get safetyAndSecurityDescription =>
+      '我们保护您的数据。如有任何疑虑，请通过support@kaitechcorp.com联系我们。';
+
+  @override
+  String get returnsAndRefunds => '退货与退款';
+
+  @override
+  String get returnsAndRefundsDescription1 => '请遵循我们的退货政策以便快速处理。请联系保修提供商...';
+
+  @override
+  String get returnsAndRefundsDescription2 =>
+      '请遵循我们的退货政策以便快速处理。对于有缺陷的产品，请首先联系保修提供商。对于其他退货，需要退货授权（RMA＃）。';
+
+  @override
+  String get terms => '1. 条款';
+
+  @override
+  String get termsContent =>
+      'Tellus at sit ante rutrum suspendisse pretium, vitae vel dignissim. Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus. Sapien felis ultrices fringilla nisi sit nibh. Etiam volutpat nisl ornare lorem mus at a, et pulvinar.';
+
+  @override
+  String get useLicense => '2. 使用许可';
+
+  @override
+  String get useLicenseContent =>
+      'Fermentum erat nisl duis varius risus. Augue ac facilisi porta metus enim. Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
+
+  @override
+  String get bullet1 => 'Fermentum erat nisl duis varius risus.';
+
+  @override
+  String get bullet2 => 'Augue ac facilisi porta metus enim.';
+
+  @override
+  String get bullet3 =>
+      'Ullamcorper lacus praesent rhoncus, sapien rutrum nulla mattis vitae ultrices.';
+
+  @override
+  String get bullet4 =>
+      'Nunc, scelerisque adipiscing condimentum massa dignissim tortor leo lacus.';
+
+  @override
+  String get additionalParagraph =>
+      'Aliquam eget purus sit malesuada tempor euismod. Eget commodo ultricies ut elit hendrerit risus. Elementum tellus nisl lectus bibendum malesuada orci dui. Nunc pharetra.';
+
+  @override
+  String get aboutTitle => '关于 Travel Crew';
+
+  @override
+  String get aboutContent1 =>
+      'Travel Crew 是一款专为好友打造的移动应用，用于共同规划、组织和体验旅行。创建完整行程、与队友协调、针对住宿和活动投票、分摊费用并保持实时群聊连接 — 一站式搞定。';
+
+  @override
+  String get aboutContent2 =>
+      'TravelCrew 不会试图取代 AI 旅行规划 — 而是弥合 AI 行程与真实团队协作之间的鸿沟。在 ChatGPT、Claude、Gemini 或任何 AI 助手里规划行程，只需一次粘贴即可直接导入 TravelCrew。';
+
+  @override
+  String get aboutContent3 =>
+      '核心功能：\n• 行程管理\n• 团队协作\n• 活动投票\n• 航班与住宿\n• 费用分摊\n• 团队群聊\n• 实时通知\n• AI 智能导入';
+
+  @override
+  String get aboutContent4 =>
+      '© 2023 Kai Technologies Corp. <Randy@kaitechcorp.com>';
+
+  @override
+  String get aboutWhatIsTravelCrew => '什么是 Travel Crew';
+
+  @override
+  String get aboutImportAiTitle => 'AI 智能导入';
+
+  @override
+  String get aboutImportAiDesc =>
+      'TravelCrew 不会试图取代 AI 旅行规划 — 而是弥合 AI 行程与真实团队协作之间的鸿沟。';
+
+  @override
+  String get aboutImportAiHowItWorks => '操作步骤：';
+
+  @override
+  String get aboutImportAiStep1 => '打开“我的行程”并点击 ✨ 图标';
+
+  @override
+  String get aboutImportAiStep2 => '复制 TravelCrew 提示词并粘贴到任意 AI 助手';
+
+  @override
+  String get aboutImportAiStep3 => '在聊天中描述您的旅行，并要求 AI 格式化输出';
+
+  @override
+  String get aboutImportAiStep4 => '将 JSON 响应粘贴回 TravelCrew';
+
+  @override
+  String get aboutImportAiStep5 => '查看预填好的行程详情并点击创建';
+
+  @override
+  String get aboutFeaturesTitle => '主要功能';
+
+  @override
+  String get aboutFeatureTripManagement => '行程管理';
+
+  @override
+  String get aboutFeatureTripManagementSub => '创建和管理包含目的地、日期、隐私设置及封面照片的行程';
+
+  @override
+  String get aboutFeatureCrewCollab => '团队协作';
+
+  @override
+  String get aboutFeatureCrewCollabSub => '邀请好友，关注其他旅行者，共同协调行程细节';
+
+  @override
+  String get aboutFeatureActivities => '活动投票';
+
+  @override
+  String get aboutFeatureActivitiesSub => '添加并对旅行中的各项活动进行投票';
+
+  @override
+  String get aboutFeatureFlightsLodging => '航班与住宿';
+
+  @override
+  String get aboutFeatureFlightsLodgingSub => '记录航空公司信息、航班号、酒店及入住/退房日期';
+
+  @override
+  String get aboutFeatureExpenseSplitting => '费用分摊';
+
+  @override
+  String get aboutFeatureExpenseSplittingSub => '记录共享费用，用最少转账次数计算最佳结算方案';
+
+  @override
+  String get aboutFeatureGroupChat => '团队群聊';
+
+  @override
+  String get aboutFeatureGroupChatSub => '每个行程专属群聊，实现实时沟通协调';
+
+  @override
+  String get aboutFeatureNotifications => '通知提醒';
+
+  @override
+  String get aboutFeatureNotificationsSub => '随时掌握全队旅行动态';
+
+  @override
+  String get aboutFeatureImportFromAi => 'AI 智能导入';
+
+  @override
+  String get aboutFeatureImportFromAiSub =>
+      '在 ChatGPT、Claude、Gemini 等 AI 助手中规划行程，一键粘贴即可直接导入 TravelCrew';
+
+  @override
+  String get oldPassword => '旧密码';
+
+  @override
+  String get enterOldPassword => '输入旧密码';
+
+  @override
+  String get enterNewPassword => '输入新密码';
+
+  @override
+  String get confirmPasswordHint => '确认密码';
+
+  @override
+  String get onboardingTitle1 => '一起计划您的梦想之旅';
+
+  @override
+  String get onboardingSubtitle1 => '只需轻点几下，即可与朋友创建和分享旅行行程。';
+
+  @override
+  String get onboardingTitle2 => '与您的旅行团队保持联系';
+
+  @override
+  String get onboardingSubtitle2 => '聊天、分享最新动态，让每个人都了解情况。';
+
+  @override
+  String get onboardingTitle3 => '探索并加入激动人心的旅行';
+
+  @override
+  String get onboardingSubtitle3 => '发现公共旅行或创建您自己的私人冒险。';
+
+  @override
+  String get updateTrip => '更新旅行';
+
+  @override
+  String get upcoming => '即将开始';
+
+  @override
+  String get active => '进行中';
+
+  @override
+  String get past => '过去';
+
+  @override
+  String get complete => '已完成';
+
+  @override
+  String get cityCountryZone => '城市, 国家, 地区...';
+
+  @override
+  String get viewAll => '查看全部';
+
+  @override
+  String get all => '全部';
+
+  @override
+  String get popular => '热门';
+
+  @override
+  String get nearby => '附近';
+
+  @override
+  String get recommended => '推荐';
+
+  @override
+  String get totalCost => '总成本';
+
+  @override
+  String get whoOwesWhat => '谁欠了什么？';
+
+  @override
+  String get owesYou => '欠你';
+
+  @override
+  String get expenseDetails => '费用明细';
+
+  @override
+  String get expenseName => '费用名称';
+
+  @override
+  String get enterExpenseName => '输入费用名称';
+
+  @override
+  String get amountPaid => '已付金额';
+
+  @override
+  String get enterTotalCost => '输入总费用';
+
+  @override
+  String get date => '日期';
+
+  @override
+  String get selectDate => '选择日期';
+
+  @override
+  String get saveExpense => '保存费用';
+
+  @override
+  String get amountOwed => '欠款金额';
+
+  @override
+  String get enterCostReceived => '输入收到的费用';
+
+  @override
+  String get paidBy => '付款人';
+
+  @override
+  String get select => '选择';
+
+  @override
+  String get confirmAndSettle => '确认并结算';
+
+  @override
+  String confirmSettleUp(Object userName) {
+    return '您确定要与 $userName 结算吗？';
+  }
+
+  @override
+  String get confirm => '确认';
+
+  @override
+  String get social => '社交';
+
+  @override
+  String get followers => '粉丝';
+
+  @override
+  String get following => '关注中';
+
+  @override
+  String get noFollowersFound => '未找到粉丝。';
+
+  @override
+  String get noFollowingFound => '未找到关注的人。';
+
+  @override
+  String get emailVerificationTitle => '验证您的邮箱';
+
+  @override
+  String get emailVerificationBody =>
+      '我们已向您的邮箱发送了验证链接。请打开链接，然后返回此处并点击\"我已验证\"。';
+
+  @override
+  String get emailVerificationSpamHint => '如果一分钟内未收到，请检查您的垃圾邮件文件夹。';
+
+  @override
+  String emailVerificationResendsRemaining(Object max, Object remaining) {
+    return '剩余重发次数：$remaining/$max';
+  }
+
+  @override
+  String get emailVerificationStatusSent => '验证邮件已发送。请检查您的收件箱以及垃圾邮件文件夹。';
+
+  @override
+  String emailVerificationStatusLimitReached(Object max) {
+    return '您已用完全部 $max 次重发机会。请稍后再试。';
+  }
+
+  @override
+  String get emailVerificationStatusAlreadyVerified => '您的邮箱已验证。点击\"我已验证\"继续。';
+
+  @override
+  String get emailVerificationStatusSessionExpired => '会话已过期。请重新登录。';
+
+  @override
+  String get emailVerificationStatusFailed => '发送失败。请稍后再试。';
+
+  @override
+  String get emailVerificationStatusStillUnverified => '邮箱仍未验证。请打开邮件中的链接，然后重试。';
+
+  @override
+  String get emailVerificationActionResend => '重发邮件';
+
+  @override
+  String get emailVerificationActionRetry => '我已验证';
+
+  @override
+  String get leaveTrip => '退出旅程';
+
+  @override
+  String get leaveTripConfirm => '您确定要退出此旅程吗？';
+
+  @override
+  String get leave => '退出';
+
+  @override
+  String get safetyActions => '安全选项';
+
+  @override
+  String get safetyReportUser => '举报用户';
+
+  @override
+  String get safetyReportTrip => '举报行程';
+
+  @override
+  String get safetyReportMessage => '举报消息';
+
+  @override
+  String get safetyReportContent => '举报内容';
+
+  @override
+  String get safetyBlock => '屏蔽用户';
+
+  @override
+  String get safetyUnblock => '取消屏蔽';
+
+  @override
+  String get safetyBlockedUsers => '已屏蔽用户';
+
+  @override
+  String get safetyNoBlockedUsers => '你还没有屏蔽任何人。';
+
+  @override
+  String get safetyUnavailableUser => '用户不可用';
+
+  @override
+  String get safetyBlocked => '已屏蔽用户';
+
+  @override
+  String get safetyUnblocked => '已取消屏蔽';
+
+  @override
+  String get safetyBlockExplanation =>
+      '你将看不到对方的行程和消息。双方无法新增关注、行程申请或邀请。共享行程和费用仍可访问，其他成员仍能看到双方。';
+
+  @override
+  String get safetyUnblockExplanation => '对方的内容将重新显示。之前的关注和邀请不会恢复。';
+
+  @override
+  String get safetyReportExplanation => '请说明问题。审核团队将处理你的举报，且不会向被举报用户透露你的身份。';
+
+  @override
+  String get safetyReportSent => '举报已收到';
+
+  @override
+  String get safetyReportThanks => '谢谢。你的举报已提交审核。你也可以屏蔽此用户。';
+
+  @override
+  String get safetyReason => '原因';
+
+  @override
+  String get safetyDetails => '详情（可选）';
+
+  @override
+  String get safetyHarassment => '骚扰或欺凌';
+
+  @override
+  String get safetyHate => '仇恨或歧视';
+
+  @override
+  String get safetySexual => '色情内容';
+
+  @override
+  String get safetyViolence => '暴力或威胁';
+
+  @override
+  String get safetySpam => '垃圾信息或诈骗';
+
+  @override
+  String get safetyOther => '其他';
+
+  @override
+  String get safetySubmit => '提交举报';
+
+  @override
+  String get safetyCancel => '取消';
+
+  @override
+  String get safetyDone => '完成';
+
+  @override
+  String get safetyRetry => '无法加载安全设置。点击重试。';
+
+  @override
+  String get safetyTryAgain => '无法保存更改。请检查网络连接后重试。';
+
+  @override
+  String get safetyAccessError => '此操作不可用。请确认已登录且仍有访问权限。';
+
+  @override
+  String get safetyRateLimit => '举报次数过多，请稍后重试。';
+
+  @override
+  String get safetyUnavailable => '此内容已不可用。';
+
+  @override
+  String get safetySharedTrip =>
+      '此行程中有你屏蔽的用户。对方的消息已隐藏，共享计划和费用仍可访问。你可以通过行程菜单退出。';
+
+  @override
+  String get safetyLoadMore => '加载更多行程';
+}

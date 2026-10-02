@@ -1,0 +1,136 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/main.dart';
+import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/firebase_trip_service.dart';
+
+class MyTripsController extends GetxController {
+  StreamSubscription<dynamic>? _membershipSubscription;
+  Worker? _sessionWorker;
+  Timer? _refreshTimer;
+  int _loadVersion = 0;
+  // Track which tab is selected: 0 = Upcoming, 1 = Active, 2 = Past
+  final RxInt selectedTabIndex = 0.obs;
+  RxList<TripModel> trips = <TripModel>[].obs;
+  TextEditingController searchController = TextEditingController();
+  RxList<TripModel> filteredTrips = <TripModel>[].obs;
+  @override
+  void onInit() {
+    super.onInit();
+    getTrips();
+    _watchMemberships();
+    _sessionWorker = ever(GlobalVariables.loggedInUser, (_) {
+      _loadVersion++;
+      trips.clear();
+      filteredTrips.clear();
+      _watchMemberships();
+    });
+  }
+
+  void _watchMemberships() {
+    _membershipSubscription?.cancel();
+    _refreshTimer?.cancel();
+    final uid = GlobalVariables.currentUid;
+    if (uid.isEmpty) return;
+    _membershipSubscription = firestore
+        .collection('users')
+        .doc(uid)
+        .collection('tripMemberships')
+        .orderBy('joinedAt', descending: true)
+        .limit(50)
+        .snapshots()
+        .listen(
+          (_) {
+            _refreshTimer?.cancel();
+            _refreshTimer = Timer(const Duration(milliseconds: 200), getTrips);
+          },
+          onError: (Object error) {
+            debugPrint(
+              'Unable to refresh trip memberships: ${error.runtimeType}',
+            );
+          },
+        );
+  }
+
+  RxBool isLoading = true.obs;
+
+  Future<void> getTrips() async {
+    final version = ++_loadVersion;
+    final uid = GlobalVariables.currentUid;
+    try {
+      isLoading.value = true;
+      final loaded = await FirebaseTripService.getMyTrips(isAll: true);
+      if (version != _loadVersion || uid != GlobalVariables.currentUid) return;
+      trips.value = loaded;
+      _filterTripsByTab();
+    } catch (e) {
+      debugPrint('Failed to load trips: $e');
+    } finally {
+      if (version == _loadVersion) isLoading.value = false;
+    }
+  }
+
+  void _filterTripsByTab() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    filteredTrips.value =
+        trips.where((trip) {
+          if (trip.tripStatus == TripStatus.deleted.name) return false;
+          final start = trip.tripStartDate ?? trip.startDate;
+          final end = trip.tripEndDate ?? start;
+
+          if (selectedTabIndex.value == 0) {
+            // Upcoming: trip start date is in the future
+            return start.isAfter(now);
+          } else if (selectedTabIndex.value == 1) {
+            // Active: trip is currently in progress (today is between start and end date)
+            return (start.isBefore(now) || isSameDay(start, now)) &&
+                (end.isAfter(now) || isSameDay(end, now));
+          } else if (selectedTabIndex.value == 2) {
+            // Past: trip end date has passed
+            return end.isBefore(today);
+          }
+          return false;
+        }).toList();
+
+    applyFilter();
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  void applyFilter() {
+    if (searchController.text.isNotEmpty) {
+      filteredTrips.value =
+          filteredTrips.where((trip) {
+            return (trip.title?.toLowerCase() ?? '').contains(
+                  searchController.text.toLowerCase(),
+                ) ||
+                (trip.destination.toLowerCase()).contains(
+                  searchController.text.toLowerCase(),
+                );
+          }).toList();
+    }
+  }
+
+  void changeTab(int index) {
+    selectedTabIndex.value = index;
+    _filterTripsByTab();
+  }
+
+  @override
+  void onClose() {
+    _loadVersion++;
+    _membershipSubscription?.cancel();
+    _sessionWorker?.dispose();
+    _refreshTimer?.cancel();
+    searchController.dispose();
+    super.onClose();
+  }
+}

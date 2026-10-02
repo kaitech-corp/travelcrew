@@ -1,0 +1,1101 @@
+import 'package:uuid/uuid.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/services/safety_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
+import 'package:travel_crew/main.dart';
+import 'package:travel_crew/models/join_request_model.dart';
+import 'package:travel_crew/models/public_user_model.dart';
+import 'package:travel_crew/models/trip_discovery_model.dart';
+import 'package:travel_crew/models/trip_member_model.dart';
+import 'package:travel_crew/services/auth_service.dart';
+import 'package:travel_crew/utils/app_strings.dart';
+import 'package:travel_crew/utils/custom_snackbar.dart';
+import 'package:travel_crew/utils/debugging.dart';
+
+import '../models/activity_model.dart';
+import '../models/expense_model.dart';
+import '../models/trip_model.dart';
+import '../models/user_flight_model.dart';
+import 'session_services.dart';
+
+final functions = FirebaseFunctions.instance;
+
+class FirebaseTripService {
+  static final Map<String, String> _joinAttempts = {};
+  static final Map<String, String> _leaveAttempts = {};
+  static final discoveryHasMore = <String, bool>{}.obs;
+  static final Map<String, List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+  _discoveryDocs = {};
+  static String? _discoveryUid;
+
+  static Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+  _discoveryPage(
+    Query<Map<String, dynamic>> query,
+    String key,
+    bool append,
+  ) async {
+    final uid = GlobalVariables.currentUid;
+    if (_discoveryUid != uid) {
+      _discoveryUid = uid;
+      _discoveryDocs.clear();
+      discoveryHasMore.clear();
+    }
+    final docs =
+        append
+            ? List<QueryDocumentSnapshot<Map<String, dynamic>>>.from(
+              _discoveryDocs[key] ?? [],
+            )
+            : <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+    var visible = 0;
+    for (var page = 0; page < 5; page++) {
+      final snapshot =
+          await (docs.isEmpty ? query : query.startAfterDocument(docs.last))
+              .limit(50)
+              .get();
+      if (uid != GlobalVariables.currentUid) return [];
+      docs.addAll(snapshot.docs);
+      visible +=
+          snapshot.docs
+              .where(
+                (doc) =>
+                    !SafetyService.hides(
+                      doc.data()['createdBy'] as String? ?? '',
+                    ),
+              )
+              .length;
+      discoveryHasMore[key] = snapshot.docs.length == 50;
+      if (snapshot.docs.length < 50 || visible >= 50) break;
+    }
+    _discoveryDocs[key] = docs;
+    return docs;
+  }
+
+  static void _handleTripError(Object error, {String? operation}) {
+    final prefix =
+        operation == null
+            ? 'FirebaseTripService'
+            : 'FirebaseTripService.$operation';
+    if (error is FirebaseException && error.plugin == 'cloud_firestore') {
+      kLogging(
+        '$prefix Firestore error: ${error.code} ${error.message ?? error}',
+      );
+      return;
+    }
+    kLogging('$prefix error: $error');
+    showCustomSnackBar(content: error.toString());
+  }
+
+  static CollectionReference<Map<String, dynamic>> _tripActivitiesRef(
+    String tripId,
+  ) {
+    return firestore
+        .collection(kTripTable)
+        .doc(tripId)
+        .collection(kTripActivitiesSubCollection);
+  }
+
+  static CollectionReference<Map<String, dynamic>> _tripExpensesRef(
+    String tripId,
+  ) {
+    return firestore
+        .collection(kTripTable)
+        .doc(tripId)
+        .collection(kTripExpensesSubCollection);
+  }
+
+  static CollectionReference<Map<String, dynamic>> _tripFlightsRef(
+    String tripId,
+  ) {
+    return firestore
+        .collection(kTripTable)
+        .doc(tripId)
+        .collection(kTripFlightsSubCollection);
+  }
+
+  static CollectionReference<Map<String, dynamic>> _tripMembersRef(
+    String tripId,
+  ) {
+    return firestore
+        .collection(kTripTable)
+        .doc(tripId)
+        .collection(kTripMembersSubCollection);
+  }
+
+  static CollectionReference<Map<String, dynamic>> _tripJoinRequestsRef(
+    String tripId,
+  ) {
+    return firestore
+        .collection(kTripTable)
+        .doc(tripId)
+        .collection(kTripJoinRequestsSubCollection);
+  }
+
+  static DocumentReference<Map<String, dynamic>> _userTripMembershipRef({
+    required String userId,
+    required String tripId,
+  }) {
+    return firestore
+        .collection(kUsersCollection)
+        .doc(userId)
+        .collection(kUserTripMembershipsSubCollection)
+        .doc(tripId);
+  }
+
+  static bool _isCurrentOrFutureDiscoveryTrip(Map<String, dynamic> data) {
+    final status = data['tripStatus'] as String?;
+    if (status == TripStatus.deleted.name ||
+        status == TripStatus.cancelled.name ||
+        status == TripStatus.completed.name) {
+      return false;
+    }
+
+    final comparisonDate =
+        _dateFromDiscoveryValue(data['tripEndDate']) ??
+        _dateFromDiscoveryValue(data['tripStartDate']) ??
+        _dateFromDiscoveryValue(data['startDate']);
+    if (comparisonDate == null) return true;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tripDate = DateTime(
+      comparisonDate.year,
+      comparisonDate.month,
+      comparisonDate.day,
+    );
+    return !tripDate.isBefore(today);
+  }
+
+  static DateTime? _dateFromDiscoveryValue(dynamic value) {
+    if (value == null) return null;
+    if (value is Timestamp) return value.toDate();
+    if (value is String && value.isNotEmpty) return DateTime.tryParse(value);
+    return null;
+  }
+
+  static Future<void> _hydrateMemberOnlyTrip(TripModel trip) async {
+    trip.expenses = await getTripExpenses(tripId: trip.id);
+    trip.activities = await getTripActivities(tripId: trip.id);
+    trip.flights = await getTripFlights(tripId: trip.id);
+    final memberIds = await getTripMemberIds(tripId: trip.id);
+    if (memberIds.isNotEmpty) {
+      trip.joinedUsers =
+          memberIds.where((uid) => uid != trip.createdBy).toList();
+      trip.joindUsersList = await AuthService.getTripUsers(userIds: memberIds);
+    } else if (trip.joinedUsers != null && trip.joinedUsers!.isNotEmpty) {
+      final legacyIds = <String>{trip.createdBy, ...trip.joinedUsers!}.toList();
+      trip.joindUsersList = await AuthService.getTripUsers(userIds: legacyIds);
+    } else {
+      trip.joindUsersList = [];
+    }
+    trip.createdByUser = await AuthService.getUserPublicProfile(
+      userId: trip.createdBy,
+    );
+  }
+
+  static Future<List<String>> getTripMemberIds({required String tripId}) async {
+    try {
+      final snapshot =
+          await _tripMembersRef(
+            tripId,
+          ).where('status', isEqualTo: 'active').get();
+      return snapshot.docs
+          .map((doc) => doc.data()['userId'] as String? ?? doc.id)
+          .where((uid) => uid.isNotEmpty)
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+      return [];
+    }
+  }
+
+  static Future<bool> isTripMember({
+    required String tripId,
+    required String userId,
+  }) async {
+    try {
+      final memberDoc = await _tripMembersRef(tripId).doc(userId).get();
+      if (memberDoc.exists && memberDoc.data()?['status'] == 'active') {
+        return true;
+      }
+      final tripDoc = await firestore.collection(kTripTable).doc(tripId).get();
+      final data = tripDoc.data();
+      if (data == null) return false;
+      return data['createdBy'] == userId ||
+          ((data['joinedUsers'] as List<dynamic>?)?.contains(userId) ?? false);
+    } catch (e) {
+      kLogging('error $e');
+      return false;
+    }
+  }
+
+  static Future<List<TripModel>> getMyTrips({
+    String? tripStatus,
+    bool isAll = false,
+  }) async {
+    try {
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return [];
+      final docsById = <String, QueryDocumentSnapshot<Map<String, dynamic>>>{};
+      late QuerySnapshot<Map<String, dynamic>> snapShot;
+      if (tripStatus == null) {
+        snapShot =
+            await firestore
+                .collection(kTripTable)
+                .where('createdBy', isEqualTo: uid)
+                .where(
+                  'tripStatus',
+                  whereIn:
+                      isAll
+                          ? [
+                            TripStatus.upcoming.name,
+                            TripStatus.completed.name,
+                            TripStatus.cancelled.name,
+                          ]
+                          : [
+                            TripStatus.upcoming.name,
+                            TripStatus.completed.name,
+                          ],
+                )
+                .limit(50)
+                .get();
+      } else {
+        snapShot =
+            await firestore
+                .collection(kTripTable)
+                .where('tripStatus', isEqualTo: tripStatus)
+                .where('createdBy', isEqualTo: uid)
+                .limit(50)
+                .get();
+      }
+      for (final doc in snapShot.docs) {
+        docsById[doc.id] = doc;
+      }
+
+      final membershipSnap =
+          await firestore
+              .collection(kUsersCollection)
+              .doc(uid)
+              .collection(kUserTripMembershipsSubCollection)
+              .where('status', isEqualTo: 'active')
+              .orderBy('joinedAt', descending: true)
+              .limit(50)
+              .get();
+      final membershipTripIds =
+          membershipSnap.docs
+              .map((doc) => doc.data()['tripId'] as String? ?? doc.id)
+              .where((id) => id.isNotEmpty && !docsById.containsKey(id))
+              .toList();
+      for (var i = 0; i < membershipTripIds.length; i += 10) {
+        final chunk = membershipTripIds.skip(i).take(10).toList();
+        final membershipTrips =
+            await firestore
+                .collection(kTripTable)
+                .where(FieldPath.documentId, whereIn: chunk)
+                .get();
+        for (final doc in membershipTrips.docs) {
+          final status = doc.data()['tripStatus'] as String?;
+          final include =
+              status != TripStatus.deleted.name &&
+              (tripStatus == null
+                  ? isAll ||
+                      status == TripStatus.upcoming.name ||
+                      status == TripStatus.completed.name
+                  : status == tripStatus);
+          if (include) docsById[doc.id] = doc;
+        }
+      }
+
+      final futures =
+          docsById.values.map((e) async {
+            final TripModel tripModel = TripModel.fromMap(e.data());
+            await _hydrateMemberOnlyTrip(tripModel);
+            return tripModel;
+          }).toList();
+      final list = await Future.wait(futures);
+      kLogging('future Fetched trips: ${list.length}');
+      list.sort((a, b) {
+        return a.startDate.compareTo(b.startDate);
+      });
+      return list;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return [];
+  }
+
+  static Future<TripModel?> getTripById({required String tripId}) async {
+    try {
+      final snapshot = await firestore.collection(kTripTable).doc(tripId).get();
+      if (snapshot.exists) {
+        final TripModel trip = TripModel.fromMap(snapshot.data()!);
+        if (trip.tripStatus == TripStatus.deleted.name) return null;
+        await _hydrateMemberOnlyTrip(trip);
+        return trip;
+      }
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return null;
+  }
+
+  static Future<List<TripDiscoveryModel>> getOtherTrips({
+    bool loadMore = false,
+  }) async {
+    try {
+      final snapshot = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true),
+        'all',
+        loadMore,
+      );
+
+      final filteredDocs =
+          snapshot.where((doc) {
+            final data = doc.data();
+            return data['tripStatus'] != TripStatus.deleted.name &&
+                data['createdBy'] != GlobalVariables.loggedInUser.value?.uid;
+          }).toList();
+
+      return filteredDocs
+          .map((e) => TripDiscoveryModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return [];
+  }
+
+  static Future<bool> addTrip({required TripModel tripModel}) async {
+    try {
+      final tripRef = firestore.collection(kTripTable).doc(tripModel.id);
+      final batch = firestore.batch();
+      batch.set(tripRef, tripModel.toMap());
+      batch.set(
+        _tripMembersRef(tripModel.id).doc(tripModel.createdBy),
+        TripMemberModel(userId: tripModel.createdBy, role: 'creator').toMap(),
+      );
+      batch.set(
+        _userTripMembershipRef(
+          userId: tripModel.createdBy,
+          tripId: tripModel.id,
+        ),
+        {
+          'tripId': tripModel.id,
+          'role': 'creator',
+          'status': 'active',
+          'joinedAt': FieldValue.serverTimestamp(),
+        },
+      );
+      if (tripModel.isPrivate != true &&
+          tripModel.tripStatus != TripStatus.deleted.name) {
+        final creator = await AuthService.getUserPublicProfile(
+          userId: tripModel.createdBy,
+        );
+        batch.set(
+          firestore.collection(kTripDiscoveryTable).doc(tripModel.id),
+          TripDiscoveryModel.fromTrip(
+            tripModel,
+            creatorDisplayName: creator?.displayName,
+            creatorProfileImage: creator?.profileImage,
+          ).toMap(),
+        );
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> addExpenses({required ExpenseModel expense}) async {
+    try {
+      await _tripExpensesRef(
+        expense.tripId,
+      ).doc(expense.id).set(expense.toMap());
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+      return false;
+    }
+  }
+
+  static Future<bool> addActivity({required ActivityModel activity}) async {
+    try {
+      await _tripActivitiesRef(
+        activity.tripId,
+      ).doc(activity.id).set(activity.toMap());
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+      return false;
+    }
+  }
+
+  static Future<List<ExpenseModel>> getTripExpenses({
+    required String tripId,
+  }) async {
+    try {
+      final snapshot = await _tripExpensesRef(tripId).get();
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map((e) => ExpenseModel.fromMap(e.data()))
+            .toList();
+      }
+      final legacySnapshot =
+          await firestore
+              .collection(kExpenseTable)
+              .where('tripId', isEqualTo: tripId)
+              .get();
+      return legacySnapshot.docs
+          .map((e) => ExpenseModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return [];
+  }
+
+  static Future<List<ActivityModel>> getTripActivities({
+    required String tripId,
+  }) async {
+    try {
+      var snapshot = await _tripActivitiesRef(tripId).get();
+      if (snapshot.docs.isEmpty) {
+        snapshot =
+            await firestore
+                .collection(kActivityTable)
+                .where('tripId', isEqualTo: tripId)
+                .get();
+      }
+      return snapshot.docs.map((e) {
+        final ActivityModel activityModel = ActivityModel.fromMap(e.data());
+        activityModel.id = e.id;
+        return activityModel;
+      }).toList();
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return [];
+  }
+
+  static Future<bool> deleteTrip(String id) async {
+    try {
+      final batch = firestore.batch();
+      batch.update(firestore.collection(kTripTable).doc(id), {
+        'tripStatus': TripStatus.deleted.name,
+      });
+      batch.delete(firestore.collection(kTripDiscoveryTable).doc(id));
+      await batch.commit();
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> leaveGroup({
+    required String groupId,
+    required String userId,
+  }) async {
+    try {
+      if (userId != GlobalVariables.currentUid) return false;
+      final key = '$userId:$groupId';
+      if (!_leaveAttempts.containsKey(key)) {
+        final member = await _tripMembersRef(groupId).doc(userId).get();
+        _leaveAttempts[key] =
+            member.data()?['attemptId'] as String? ?? 'legacy';
+      }
+      await FirebaseFunctions.instance.httpsCallable('leaveTripV3').call({
+        'tripId': groupId,
+        'membershipAttemptId': _leaveAttempts[key],
+      });
+      _leaveAttempts.remove(key);
+      return true;
+    } catch (e) {
+      if (e is FirebaseFunctionsException && e.code == 'failed-precondition') {
+        _leaveAttempts.remove('$userId:$groupId');
+      }
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> joinTrip({
+    required String tripId,
+    required String userId,
+  }) async {
+    return requestToJoinTrip(tripId, userId: userId);
+  }
+
+  static Future<bool> requestToJoinTrip(
+    String tripId, {
+    required String userId,
+    String? message,
+  }) async {
+    if (userId != GlobalVariables.currentUid) return false;
+    final key = '$userId:$tripId';
+    final attemptId = _joinAttempts.putIfAbsent(key, () => const Uuid().v4());
+    try {
+      final response = await FirebaseFunctions.instance
+          .httpsCallable('requestToJoinTripV3')
+          .call({'tripId': tripId, 'attemptId': attemptId, 'message': message});
+      _joinAttempts.remove(key);
+      return (response.data as Map)['status'] == 'pending';
+    } catch (e) {
+      kLogging('Join request failed: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> cancelJoinRequest(
+    String tripId,
+    String userId, {
+    required String attemptId,
+  }) async {
+    if (userId != GlobalVariables.currentUid) return false;
+    return _transitionJoinRequest(
+      'cancelJoinRequestV3',
+      tripId,
+      userId,
+      attemptId,
+    );
+  }
+
+  static Future<bool> acceptJoinRequest(
+    String tripId,
+    String userId, {
+    required String attemptId,
+  }) =>
+      _transitionJoinRequest('acceptJoinRequestV3', tripId, userId, attemptId);
+
+  static Future<bool> _transitionJoinRequest(
+    String callable,
+    String tripId,
+    String userId,
+    String attemptId,
+  ) async {
+    try {
+      await FirebaseFunctions.instance.httpsCallable(callable).call({
+        'tripId': tripId,
+        'userId': userId,
+        'attemptId': attemptId,
+      });
+      return true;
+    } catch (e) {
+      kLogging('Join request transition failed: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> rejectJoinRequest(
+    String tripId,
+    String userId, {
+    required String attemptId,
+  }) =>
+      _transitionJoinRequest('rejectJoinRequestV3', tripId, userId, attemptId);
+
+  static Stream<List<JoinRequestModel>> watchJoinRequests(String tripId) {
+    return _tripJoinRequestsRef(tripId)
+        .where('status', isEqualTo: 'pending')
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => JoinRequestModel.fromMap(doc.data()))
+                  .toList(),
+        );
+  }
+
+  static Stream<JoinRequestModel?> watchJoinRequest({
+    required String tripId,
+    required String userId,
+  }) => _tripJoinRequestsRef(tripId)
+      .doc(userId)
+      .snapshots()
+      .map((doc) => doc.exists ? JoinRequestModel.fromMap(doc.data()!) : null);
+
+  static Future<JoinRequestModel?> getJoinRequest({
+    required String tripId,
+    required String userId,
+  }) async {
+    try {
+      final doc = await _tripJoinRequestsRef(tripId).doc(userId).get();
+      if (!doc.exists || doc.data() == null) return null;
+      return JoinRequestModel.fromMap(doc.data()!);
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return null;
+  }
+
+  static Future<bool> toggleTripFavorite({
+    required String tripId,
+    required String userId,
+    required bool isFavorite,
+  }) async {
+    try {
+      final userRef = firestore.collection(kUsersCollection).doc(userId);
+      final tripRef = firestore.collection(kTripTable).doc(tripId);
+      final discoveryRef = firestore
+          .collection(kTripDiscoveryTable)
+          .doc(tripId);
+      final delta = isFavorite ? -1 : 1;
+
+      final batch = firestore.batch();
+      batch.update(userRef, {
+        'favouriteTrips':
+            isFavorite
+                ? FieldValue.arrayRemove([tripId])
+                : FieldValue.arrayUnion([tripId]),
+      });
+      batch.update(tripRef, {'favouriteCount': FieldValue.increment(delta)});
+      await batch.commit();
+
+      try {
+        await discoveryRef.update({
+          'favouriteCount': FieldValue.increment(delta),
+        });
+      } catch (e) {
+        kLogging('tripDiscovery favourite sync failed for $tripId: $e');
+      }
+
+      if (isFavorite) {
+        GlobalVariables.loggedInUser.value?.favouriteTrips.remove(tripId);
+      } else {
+        if (GlobalVariables.loggedInUser.value?.favouriteTrips.contains(
+              tripId,
+            ) !=
+            true) {
+          GlobalVariables.loggedInUser.value?.favouriteTrips.add(tripId);
+        }
+      }
+      GlobalVariables.loggedInUser.refresh();
+      return true;
+    } catch (e) {
+      _handleTripError(e, operation: 'toggleTripFavorite');
+    }
+    return false;
+  }
+
+  static Future<bool> likeActivity({
+    required String activityId,
+    required String userId,
+    bool isLiked = false,
+    String? tripId,
+  }) async {
+    try {
+      final activityRef =
+          tripId != null && tripId.isNotEmpty
+              ? _tripActivitiesRef(tripId).doc(activityId)
+              : firestore.collection(kActivityTable).doc(activityId);
+      await firestore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(activityRef);
+        final currentCount =
+            (snapshot.data()?['likesCount'] as num?)?.toInt() ?? 0;
+        if (isLiked) {
+          transaction.update(activityRef, {
+            'likedBy': FieldValue.arrayRemove([userId]),
+            'likesCount': currentCount > 0 ? currentCount - 1 : 0,
+          });
+        } else {
+          transaction.update(activityRef, {
+            'likedBy': FieldValue.arrayUnion([userId]),
+            'likesCount': currentCount + 1,
+          });
+        }
+      });
+      return true;
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return false;
+  }
+
+  static Future<bool> updateActivity({required ActivityModel activity}) async {
+    try {
+      await _tripActivitiesRef(
+        activity.tripId,
+      ).doc(activity.id).set(activity.toMap(), SetOptions(merge: true));
+      return true;
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> updateExpense(ExpenseModel expenseToSettle) async {
+    try {
+      await _tripExpensesRef(expenseToSettle.tripId)
+          .doc(expenseToSettle.id)
+          .set(expenseToSettle.toMap(), SetOptions(merge: true));
+      return true;
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> updateTrip({
+    required String tripId,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final currentSnapshot =
+          await firestore.collection(kTripTable).doc(tripId).get();
+      final currentData = currentSnapshot.data();
+      if (currentData == null) return false;
+      final mergedData = <String, dynamic>{
+        ...currentData,
+        ...data,
+        'id': tripId,
+      };
+      final mergedTrip = TripModel.fromMap(mergedData);
+      final batch = firestore.batch();
+      final tripRef = firestore.collection(kTripTable).doc(tripId);
+      batch.update(tripRef, data);
+      final bool isPrivate = mergedTrip.isPrivate == true;
+      final String? status = mergedTrip.tripStatus;
+      if (isPrivate || status == TripStatus.deleted.name) {
+        batch.delete(firestore.collection(kTripDiscoveryTable).doc(tripId));
+      } else {
+        final memberIds = await getTripMemberIds(tripId: tripId);
+        if (memberIds.isNotEmpty) {
+          mergedTrip.joinedUsers =
+              memberIds.where((uid) => uid != mergedTrip.createdBy).toList();
+        }
+        final creator = await AuthService.getUserPublicProfile(
+          userId: mergedTrip.createdBy,
+        );
+        batch.set(
+          firestore.collection(kTripDiscoveryTable).doc(tripId),
+          TripDiscoveryModel.fromTrip(
+            mergedTrip,
+            creatorDisplayName: creator?.displayName,
+            creatorProfileImage: creator?.profileImage,
+          ).toMap(),
+          SetOptions(merge: true),
+        );
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> deleteActivity({
+    required String id,
+    String? tripId,
+  }) async {
+    try {
+      if (tripId != null && tripId.isNotEmpty) {
+        await _tripActivitiesRef(tripId).doc(id).delete();
+      } else {
+        await firestore.collection(kActivityTable).doc(id).delete();
+      }
+      return true;
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<bool> addFlight({required UserFlightModel flight}) async {
+    try {
+      await _tripFlightsRef(flight.tripId).doc(flight.id).set(flight.toMap());
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+      return false;
+    }
+  }
+
+  static Future<bool> deleteFlight({required String id, String? tripId}) async {
+    try {
+      if (tripId != null && tripId.isNotEmpty) {
+        await _tripFlightsRef(tripId).doc(id).delete();
+      } else {
+        await firestore.collection(kFlightTable).doc(id).delete();
+      }
+      return true;
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return false;
+  }
+
+  static Future<List<UserFlightModel>> getTripFlights({
+    required String tripId,
+  }) async {
+    try {
+      var snapshot = await _tripFlightsRef(tripId).get();
+      if (snapshot.docs.isEmpty) {
+        snapshot =
+            await firestore
+                .collection(kFlightTable)
+                .where('tripId', isEqualTo: tripId)
+                .get();
+      }
+      return snapshot.docs
+          .map((e) => UserFlightModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return [];
+  }
+
+  /// get nearby trips by latitude and longitude with radius
+  /// radius is in kilometers
+  /// [latitude] and [longitude] are required to get the nearby trips
+  /// [radius] is the radius in kilometers to get the nearby trips
+  /// [return] list of trips
+  /// [logs] logs if there is an error
+  static Future<List<TripDiscoveryModel>> getNearbyTrips({
+    bool loadMore = false,
+    required double latitude,
+    required double longitude,
+    required int radius,
+  }) async {
+    try {
+      // Bounding box: 1 degree ≈ 111km
+      final double delta = radius / 111.0;
+      final double minLat = latitude - delta;
+      final double maxLat = latitude + delta;
+      final double minLng = longitude - delta;
+      final double maxLng = longitude + delta;
+
+      final snapshot = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true)
+            .where('latitude', isGreaterThan: minLat)
+            .where('latitude', isLessThan: maxLat),
+        'nearby',
+        loadMore,
+      );
+
+      final filteredDocs =
+          snapshot.where((doc) {
+            final data = doc.data();
+            final lng = (data['longitude'] as num?)?.toDouble() ?? 0.0;
+            final createdBy = data['createdBy'] as String?;
+            return lng >= minLng &&
+                lng <= maxLng &&
+                _isCurrentOrFutureDiscoveryTrip(data) &&
+                createdBy != GlobalVariables.loggedInUser.value?.uid;
+          }).toList();
+
+      return filteredDocs
+          .map((e) => TripDiscoveryModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return [];
+  }
+
+  static Future<List<TripDiscoveryModel>> getPopularTrips({
+    bool loadMore = false,
+  }) async {
+    try {
+      final res = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true)
+            .orderBy('favouriteCount', descending: true),
+        'popular',
+        loadMore,
+      );
+      kLogging(res.length.toString());
+      return res
+          .where((doc) => doc.data()['createdBy'] != GlobalVariables.currentUid)
+          .map((e) => TripDiscoveryModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+    }
+    return [];
+  }
+
+  static Future<List<TripDiscoveryModel>> getRecommendedTrips({
+    bool loadMore = false,
+  }) async {
+    try {
+      final uid = GlobalVariables.loggedInUser.value?.uid;
+      if (uid == null) return [];
+
+      // Gather continents from trips the user has joined and favourited
+      final Set<String> continents = {};
+
+      final joinedSnap =
+          await firestore
+              .collection(kUsersCollection)
+              .doc(uid)
+              .collection(kUserTripMembershipsSubCollection)
+              .limit(50)
+              .get();
+      for (final doc in joinedSnap.docs) {
+        final tripId = doc.data()['tripId'] as String? ?? doc.id;
+        final tripDoc =
+            await firestore.collection(kTripTable).doc(tripId).get();
+        final c = tripDoc.data()?['continent'] as String?;
+        if (c != null && c.isNotEmpty) continents.add(c);
+      }
+
+      final favouriteIds =
+          GlobalVariables.loggedInUser.value?.favouriteTrips ?? [];
+      if (favouriteIds.isNotEmpty) {
+        final favSnap =
+            await firestore
+                .collection(kTripDiscoveryTable)
+                .where(
+                  FieldPath.documentId,
+                  whereIn: favouriteIds.take(10).toList(),
+                )
+                .get();
+        for (final doc in favSnap.docs) {
+          final c = doc.data()['continent'] as String?;
+          if (c != null && c.isNotEmpty) continents.add(c);
+        }
+      }
+
+      // No history — fall back to popular trips
+      if (continents.isEmpty) {
+        final popularTrips = await getPopularTrips(loadMore: loadMore);
+        discoveryHasMore['recommended'] = discoveryHasMore['popular'] ?? false;
+        return popularTrips
+            .where((trip) => _isCurrentOrFutureDiscoveryTrip(trip.toMap()))
+            .toList();
+      }
+
+      final snap = await _discoveryPage(
+        firestore
+            .collection(kTripDiscoveryTable)
+            .where('isDiscoverable', isEqualTo: true)
+            .where('continent', whereIn: continents.toList()),
+        'recommended',
+        loadMore,
+      );
+
+      final filteredDocs =
+          snap.where((doc) {
+            final data = doc.data();
+            return data['createdBy'] != uid &&
+                _isCurrentOrFutureDiscoveryTrip(data);
+          }).toList();
+
+      return filteredDocs
+          .map((e) => TripDiscoveryModel.fromMap(e.data()))
+          .toList();
+    } catch (e) {
+      kLogging('error $e');
+      _handleTripError(e);
+    }
+    return [];
+  }
+
+  /// get trips by selected continents
+  /// [return] list of trips
+  /// [logs] logs if there is an error
+  static Future<List<TripDiscoveryModel>> getFilteredTrips({
+    List<String>? continents,
+    bool loadMore = false,
+  }) async {
+    try {
+      Query<Map<String, dynamic>> query = firestore
+          .collection(kTripDiscoveryTable)
+          .where('isDiscoverable', isEqualTo: true);
+      if (continents != null && continents.isNotEmpty) {
+        query = query.where('continent', whereIn: continents.take(10).toList());
+      }
+      final snapshot = await _discoveryPage(query, 'filtered', loadMore);
+      return snapshot
+          .where((doc) => doc.data()['createdBy'] != GlobalVariables.currentUid)
+          .map((doc) => TripDiscoveryModel.fromMap(doc.data()))
+          .toList();
+    } catch (e) {
+      _handleTripError(e);
+    }
+    return [];
+  }
+
+  /// Search users in the publicProfile collection by displayName prefix
+  /// or exact email match, directly via Firestore.
+  static Future<List<PublicUserModel>> searchUser({
+    required String query,
+  }) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return [];
+    try {
+      // Build the upper bound for a prefix range query
+      final String end =
+          trimmed.substring(0, trimmed.length - 1) +
+          String.fromCharCode(trimmed.codeUnitAt(trimmed.length - 1) + 1);
+
+      final results = <String, PublicUserModel>{};
+
+      // Prefix search on displayName
+      final nameSnap =
+          await firestore
+              .collection(kUsersPublicProfileCollection)
+              .where('displayName', isGreaterThanOrEqualTo: trimmed)
+              .where('displayName', isLessThan: end)
+              .limit(20)
+              .get();
+      for (final doc in nameSnap.docs) {
+        results[doc.id] = PublicUserModel.fromMap(doc.data());
+      }
+
+      // Exact email match
+      final emailSnap =
+          await firestore
+              .collection(kUsersPublicProfileCollection)
+              .where('email', isEqualTo: trimmed)
+              .limit(10)
+              .get();
+      for (final doc in emailSnap.docs) {
+        results[doc.id] = PublicUserModel.fromMap(doc.data());
+      }
+
+      kLogging('searchUser: found ${results.length} results for "$trimmed"');
+      return results.values.toList();
+    } catch (e) {
+      _handleTripError(e);
+    }
+    return [];
+  }
+
+  static Future<bool> sendTripInvites({
+    required String tripId,
+    required String tripTitle,
+    required List<String> emails,
+  }) async {
+    try {
+      if (emails.isEmpty) return true;
+      await functions.httpsCallable('sendTripInvitesV3').call({
+        'tripId': tripId,
+        'tripTitle': tripTitle,
+        'emails': emails,
+      });
+      return true;
+    } catch (e) {
+      _handleTripError(e);
+    }
+    return false;
+  }
+}

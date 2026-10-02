@@ -26,7 +26,7 @@
 - Updated all Logo images to higher quality.
 - Made UI changes to trip cards.
 - Added travel type to Notification layout.
-- Fixed Google Places
+- Fixed Google Places.
 - Added Env package and file and moved Google API key.
 
 # 2.0.0

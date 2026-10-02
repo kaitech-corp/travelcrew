@@ -1,0 +1,707 @@
+import 'package:travel_crew/services/notifications/notification_navigation.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:travel_crew/main.dart';
+import 'package:travel_crew/models/public_user_model.dart';
+import 'package:travel_crew/services/notifications/notification_badge_service.dart';
+import 'package:travel_crew/services/notifications/notfication_services.dart';
+import 'package:travel_crew/utils/error_handler.dart';
+import 'package:travel_crew/utils/logger.dart';
+
+import '../models/user_model.dart';
+import '../utils/app_strings.dart';
+import '../utils/custom_snackbar.dart';
+import 'session_services.dart';
+
+enum LoginResult { success, failed, emailUnverified }
+
+enum ResendVerificationResult {
+  sent,
+  limitReached,
+  alreadyVerified,
+  notSignedIn,
+  failed,
+}
+
+class AuthService {
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseFirestore _firestore = firestore;
+
+  static const int _maxVerificationResendsPerEmail = 3;
+  static const String _temporaryEmailVerificationBypassUid =
+      '4qZPGS1S5jdBcqUSv2VVfWHxiq73';
+  static final Map<String, int> _verificationResendCounts = {};
+
+  static int get maxVerificationResendsPerEmail =>
+      _maxVerificationResendsPerEmail;
+
+  static Future<void> validateUser({bool fromSplash = false}) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      GlobalVariables.loggedInUser.value = await AuthService.getUser();
+      if (GlobalVariables.loggedInUser.value == null) {
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
+        Get.offAllNamed(kOnboardingScreenRoute);
+        return;
+      }
+
+      // Check for public profile and create if it doesn't exist
+      await createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+
+      await _syncEmailVerification(user);
+      if (!_canAccessApp(user)) {
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
+        if (!fromSplash) {
+          showCustomSnackBar(
+            contentType: ContentType.warning,
+            title: 'Email Verification Required',
+            content:
+                'Please verify your email to continue. Check your inbox. Messages may be in spam.',
+          );
+        }
+        Get.offAllNamed(kLoginScreenRoute);
+        return;
+      }
+
+      await FirebasePushNotificationApi().saveTokenForCurrentUser();
+
+      // User is verified and logged in successfully
+      Get.offAllNamed(kMainViewScreenRoute);
+      if (!fromSplash) {
+        // showCustomSnackBar(title: 'Success', content: 'Logged in successfully');
+      }
+    } else {
+      Get.offAllNamed(kOnboardingScreenRoute);
+    }
+  }
+
+  static Future<UserModel?> getUser({String? userId}) async {
+    try {
+      final String? userid = userId ?? _auth.currentUser?.uid;
+      if (userid != null) {
+        AppLogger.debug('Fetching user with ID: $userid');
+
+        final DocumentSnapshot userDoc =
+            await _firestore.collection(kUsersCollection).doc(userid).get();
+        if (userDoc.exists) {
+          AppLogger.debug('User document exists for ID: $userid');
+
+          final UserModel user = UserModel.fromMap(
+            userDoc.data()! as Map<String, dynamic>,
+          );
+          if (userId == null && user.isDeleted == true) {
+            AppLogger.warning('User account is deleted: $userid');
+            return null;
+          }
+          GlobalVariables.loggedInUser.value = user;
+          AppLogger.info('Successfully retrieved user: $userid');
+          return user;
+        } else {
+          AppLogger.info(
+            'User document does not exist, creating new user: $userid',
+          );
+
+          // Create a new user if the document does not exist
+          final UserModel newUser = UserModel(
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+            uid: userid,
+            email: _auth.currentUser?.email ?? '',
+            displayName:
+                _auth.currentUser?.displayName ??
+                'User${userid.substring(0, 5)}',
+            phone: _auth.currentUser?.phoneNumber ?? '',
+            emailConfirmed: _auth.currentUser?.emailVerified ?? false,
+          );
+          await _firestore
+              .collection(kUsersCollection)
+              .doc(userid)
+              .set(newUser.toMap());
+          GlobalVariables.loggedInUser.value = newUser;
+          AppLogger.info('Successfully created new user: $userid');
+          return newUser;
+        }
+      } else {
+        AppLogger.warning('No user ID available for getUser');
+      }
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'getUser',
+      );
+    }
+    return null;
+  }
+
+  static Future<PublicUserModel?> getUserPublicProfile({String? userId}) async {
+    try {
+      final String? userid = userId ?? _auth.currentUser?.uid;
+      if (userid != null) {
+        AppLogger.debug('Fetching public profile for user ID: $userid');
+
+        final DocumentSnapshot userDoc =
+            await _firestore
+                .collection(kUsersPublicProfileCollection)
+                .doc(userid)
+                .get();
+        if (userDoc.exists) {
+          AppLogger.debug('Public profile document exists for ID: $userid');
+
+          final PublicUserModel user = PublicUserModel.fromMap(
+            userDoc.data()! as Map<String, dynamic>,
+          );
+          AppLogger.info('Successfully retrieved public profile: $userid');
+          return user;
+        } else {
+          AppLogger.warning(
+            'Public profile document not found for ID: $userid',
+          );
+        }
+      } else {
+        AppLogger.warning('No user ID provided for getUserPublicProfile');
+        return null;
+      }
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'getUserPublicProfile',
+      );
+      return null;
+    }
+    return null;
+  }
+
+  static Future<LoginResult> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      final UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      GlobalVariables.loggedInUser.value = await AuthService.getUser(
+        userId: credential.user?.uid,
+      );
+      if (GlobalVariables.loggedInUser.value == null) {
+        showCustomSnackBar(content: 'Credentials not valid or account deleted');
+        await _auth.signOut();
+        return LoginResult.failed;
+      }
+
+      // Check for public profile and create if it doesn't exist
+      await createPublicProfileIfNeeded(GlobalVariables.loggedInUser.value);
+      await _syncEmailVerification(credential.user);
+      if (!_canAccessApp(credential.user)) {
+        // Stay signed in so the caller can offer Resend / I verified.
+        GlobalVariables.showLoader.value = false;
+        return LoginResult.emailUnverified;
+      }
+      await FirebasePushNotificationApi().saveTokenForCurrentUser();
+
+      GlobalVariables.showLoader.value = false;
+      // await FirebaseMessaging.instance.subscribeToTopic(_auth.currentUser!.uid);
+      return LoginResult.success;
+    } on FirebaseAuthException catch (e) {
+      GlobalVariables.showLoader.value = false;
+      if (e.code == 'user-not-found') {
+        showCustomSnackBar(
+          contentType: ContentType.failure,
+          title: 'Error',
+          content: 'No user found for that email.',
+        );
+      } else if (e.code == 'wrong-password') {
+        showCustomSnackBar(
+          contentType: ContentType.failure,
+          title: 'Error',
+          content: 'Wrong password provided for that user.',
+        );
+      } else if (e.code == 'invalid-credential') {
+        showCustomSnackBar(content: e.message.toString());
+      } else {
+        showCustomSnackBar(
+          contentType: ContentType.failure,
+          title: 'Error',
+          content: e.message ?? 'An unknown error occurred.',
+        );
+      }
+      return LoginResult.failed;
+    } catch (error, stackTrace) {
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'login',
+      );
+      GlobalVariables.showLoader.value = false;
+      return LoginResult.failed;
+    }
+  }
+
+  static int verificationResendsRemaining() {
+    final user = _auth.currentUser;
+    if (user == null) return 0;
+    final key = user.email ?? user.uid;
+    final used = _verificationResendCounts[key] ?? 0;
+    final remaining = _maxVerificationResendsPerEmail - used;
+    return remaining < 0 ? 0 : remaining;
+  }
+
+  static Future<ResendVerificationResult> resendVerificationEmail() async {
+    final user = _auth.currentUser;
+    if (user == null) return ResendVerificationResult.notSignedIn;
+    await user.reload();
+    final refreshed = _auth.currentUser ?? user;
+    if (refreshed.emailVerified) {
+      return ResendVerificationResult.alreadyVerified;
+    }
+    final key = refreshed.email ?? refreshed.uid;
+    final used = _verificationResendCounts[key] ?? 0;
+    if (used >= _maxVerificationResendsPerEmail) {
+      return ResendVerificationResult.limitReached;
+    }
+    try {
+      await refreshed.sendEmailVerification();
+      _verificationResendCounts[key] = used + 1;
+      return ResendVerificationResult.sent;
+    } catch (error, stackTrace) {
+      AppLogger.error('Error in resendVerificationEmail: $error');
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'resendVerificationEmail',
+      );
+      return ResendVerificationResult.failed;
+    }
+  }
+
+  static Future<bool> confirmEmailVerificationAndUpdate() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    try {
+      await user.reload();
+    } catch (error, stackTrace) {
+      AppLogger.error('Error reloading user during verification check: $error');
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'confirmEmailVerificationAndUpdate',
+      );
+      return false;
+    }
+    final refreshed = _auth.currentUser ?? user;
+    if (!refreshed.emailVerified) return false;
+    if (GlobalVariables.loggedInUser.value?.emailConfirmed != true) {
+      GlobalVariables.loggedInUser.value = GlobalVariables.loggedInUser.value
+          ?.copyWith(emailConfirmed: true);
+      try {
+        await _firestore.collection(kUsersCollection).doc(refreshed.uid).update(
+          {'emailConfirmed': true},
+        );
+      } catch (error, stackTrace) {
+        AppLogger.error('Failed to mirror emailConfirmed to Firestore: $error');
+        ErrorHandler.handleFirebaseError(
+          error,
+          stackTrace: stackTrace,
+          operation: 'confirmEmailVerificationAndUpdate',
+        );
+      }
+    }
+    return true;
+  }
+
+  static Future<void> cancelEmailVerification() async {
+    try {
+      NotificationNavigation.clearSession();
+      await NotificationBadgeService.clear();
+      await FirebasePushNotificationApi().removeTokenForCurrentUser();
+      await _auth.signOut();
+    } catch (error, stackTrace) {
+      AppLogger.error('Error during cancelEmailVerification: $error');
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'cancelEmailVerification',
+      );
+    }
+    GlobalVariables.loggedInUser.value = null;
+    GlobalVariables.userProfile.value = null;
+  }
+
+  static Future<bool> signUp({
+    required UserModel user,
+    required String password,
+  }) async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      final normalizedEmail = user.email.trim().toLowerCase();
+
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: normalizedEmail,
+        password: password,
+      );
+      user.uid = userCredential.user!.uid;
+      user.email = normalizedEmail;
+      user.emailConfirmed = userCredential.user!.emailVerified;
+
+      await _firestore
+          .collection(kUsersCollection)
+          .doc(userCredential.user!.uid)
+          .set(user.toMap());
+
+      await createPublicProfileIfNeeded(user);
+      await userCredential.user!.sendEmailVerification();
+      await _auth.signOut();
+      GlobalVariables.loggedInUser.value = null;
+      return true;
+    } catch (error, stackTrace) {
+      AppLogger.error('Error in signUp: $error');
+      GlobalVariables.loggedInUser.value = null;
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'signUp',
+      );
+      GlobalVariables.showLoader.value = false;
+      if (error is FirebaseAuthException) {
+        if (error.code == 'email-already-in-use') {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content: 'Email already in use.',
+          );
+        } else if (error.code == 'invalid-email') {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content: 'Invalid email address.',
+          );
+        } else {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content: error.message ?? 'An unknown error occurred.',
+          );
+        }
+      } else {
+        if (error is! FirebaseException || error.plugin != 'cloud_firestore') {
+          showCustomSnackBar(content: error.toString());
+        }
+      }
+      return false;
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  static Future<bool> updateUserAttributes({
+    required Map<String, dynamic> attributes,
+  }) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _firestore
+            .collection(kUsersCollection)
+            .doc(user.uid)
+            .update(attributes);
+        final publicProfileAttributes = Map<String, dynamic>.fromEntries(
+          attributes.entries.where(
+            (entry) =>
+                {'displayName', 'profileImage', 'email'}.contains(entry.key),
+          ),
+        );
+        if (publicProfileAttributes.isNotEmpty) {
+          final publicProfileRef = _firestore
+              .collection(kUsersPublicProfileCollection)
+              .doc(user.uid);
+          if ((await publicProfileRef.get()).exists) {
+            await publicProfileRef.update(publicProfileAttributes);
+          }
+        }
+        return true;
+      }
+    } catch (e) {
+      AppLogger.error('Error in updateUserAttributes: $e');
+    }
+    return false;
+  }
+
+  static Future<void> signOut() async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      NotificationNavigation.clearSession();
+      await NotificationBadgeService.clear();
+      await FirebasePushNotificationApi().removeTokenForCurrentUser();
+      await _auth.signOut();
+      GlobalVariables.loggedInUser.value = null;
+      GlobalVariables.userProfile.value = null;
+      Get.offAllNamed(kLoginScreenRoute);
+    } catch (e) {
+      AppLogger.error('Error in signOut: $e');
+      showCustomSnackBar(
+        contentType: ContentType.failure,
+        title: 'Error',
+        content: e.toString(),
+      );
+    } finally {
+      GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  static Future<bool> updatePasword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final email = user.email;
+        if (email == null || email.isEmpty) {
+          throw FirebaseAuthException(
+            code: 'missing-email',
+            message: 'Current user does not have an email password credential.',
+          );
+        }
+        final credential = EmailAuthProvider.credential(
+          email: email,
+          password: currentPassword,
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        NotificationNavigation.clearSession();
+        await NotificationBadgeService.clear();
+        await _auth.signOut();
+        GlobalVariables.loggedInUser.value = null;
+        GlobalVariables.userProfile.value = null;
+        GlobalVariables.showLoader.value = false;
+        showCustomSnackBar(
+          title: 'Success',
+          content: 'Password updated successfully',
+        );
+        Get.offAllNamed(kLoginScreenRoute);
+        return true;
+      }
+    } catch (e) {
+      AppLogger.error('Error in updatePasword: $e');
+      GlobalVariables.showLoader.value = false;
+      if (e is FirebaseAuthException) {
+        if (e.code == 'weak-password') {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content: 'The password provided is too weak.',
+          );
+        } else if (e.code == 'requires-recent-login') {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content:
+                'Please reauthenticate to update your password. Try logging in again.',
+          );
+        } else {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content: e.message ?? 'An unknown error occurred.',
+          );
+        }
+      }
+    }
+    return false;
+  }
+
+  static bool isCurrentUserEmailVerified() {
+    final user = _auth.currentUser;
+    return user != null && _canAccessApp(user);
+  }
+
+  static bool _canAccessApp(User? user) {
+    if (user == null) return false;
+    if (_canBypassEmailVerification(user)) return true;
+    final providerIds = user.providerData.map((p) => p.providerId).toSet();
+    if (!providerIds.contains(EmailAuthProvider.PROVIDER_ID)) return true;
+    return user.emailVerified;
+  }
+
+  static bool _canBypassEmailVerification(User user) {
+    return _temporaryEmailVerificationBypassUid.isNotEmpty &&
+        user.uid == _temporaryEmailVerificationBypassUid;
+  }
+
+  static Future<void> _syncEmailVerification(User? user) async {
+    if (user == null) return;
+    await user.reload();
+    final refreshed = _auth.currentUser ?? user;
+    if (GlobalVariables.loggedInUser.value?.emailConfirmed !=
+        refreshed.emailVerified) {
+      GlobalVariables.loggedInUser.value = GlobalVariables.loggedInUser.value
+          ?.copyWith(emailConfirmed: refreshed.emailVerified);
+      await _firestore.collection(kUsersCollection).doc(refreshed.uid).update({
+        'emailConfirmed': refreshed.emailVerified,
+      });
+    }
+  }
+
+  static Future<List<PublicUserModel>> getTripUsers({
+    required List<String> userIds,
+  }) async {
+    try {
+      final uniqueIds = userIds.toSet().where((id) => id.isNotEmpty).toList();
+      final users = <PublicUserModel>[];
+      for (var i = 0; i < uniqueIds.length; i += 10) {
+        final chunk = uniqueIds.skip(i).take(10).toList();
+        final tripUsers =
+            await _firestore
+                .collection(kUsersPublicProfileCollection)
+                .where(FieldPath.documentId, whereIn: chunk)
+                .get();
+        users.addAll(
+          tripUsers.docs.map((user) => PublicUserModel.fromMap(user.data())),
+        );
+      }
+      return users;
+    } catch (e) {
+      AppLogger.error('Error in getTripUsers: $e');
+    }
+    return [];
+  }
+
+  static Future<void> deleteAccount() async {
+    try {
+      GlobalVariables.showLoader.value = true;
+      NotificationNavigation.clearSession();
+      await NotificationBadgeService.clear();
+      await updateUserAttributes(attributes: {'isDeleted': true}).then((
+        value,
+      ) async {
+        if (value) {
+          showCustomSnackBar(content: 'Account deleted successfully');
+          await signOut();
+        } else {
+          showCustomSnackBar(
+            contentType: ContentType.failure,
+            title: 'Error',
+            content: 'Failed to delete account. Please try again later.',
+          );
+        }
+      });
+    } catch (e) {
+      AppLogger.error('Error in deleteAccount: $e');
+    }
+    GlobalVariables.showLoader.value = false;
+  }
+
+  static Future<bool> followUser(String targetUserId) async {
+    try {
+      final String? currentUserId = _auth.currentUser?.uid;
+      if (currentUserId == null) return false;
+
+      await FirebaseFunctions.instance.httpsCallable('followUserV3').call({
+        'targetUserId': targetUserId,
+        'following': true,
+      });
+      return true;
+    } catch (e) {
+      AppLogger.error('Error in followUser: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> unfollowUser(String targetUserId) async {
+    try {
+      final String? currentUserId = _auth.currentUser?.uid;
+      if (currentUserId == null) return false;
+
+      await FirebaseFunctions.instance.httpsCallable('followUserV3').call({
+        'targetUserId': targetUserId,
+        'following': false,
+      });
+      return true;
+    } catch (e) {
+      AppLogger.error('Error in unfollowUser: $e');
+      return false;
+    }
+  }
+
+  static Future<List<PublicUserModel>> getFollowers(String userId) async {
+    try {
+      final userDoc =
+          await _firestore
+              .collection(kUsersPublicProfileCollection)
+              .doc(userId)
+              .get();
+      if (userDoc.exists) {
+        final user = PublicUserModel.fromMap(userDoc.data()!);
+        if (user.followers != null && user.followers!.isNotEmpty) {
+          final followersDocs =
+              await _firestore
+                  .collection(kUsersPublicProfileCollection)
+                  .where(FieldPath.documentId, whereIn: user.followers)
+                  .get();
+          return followersDocs.docs
+              .map((doc) => PublicUserModel.fromMap(doc.data()))
+              .toList();
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Error in getFollowers: $e');
+    }
+    return [];
+  }
+
+  static Future<List<PublicUserModel>> getFollowing(String userId) async {
+    try {
+      final userDoc =
+          await _firestore
+              .collection(kUsersPublicProfileCollection)
+              .doc(userId)
+              .get();
+      if (userDoc.exists) {
+        final user = PublicUserModel.fromMap(userDoc.data()!);
+        if (user.following != null && user.following!.isNotEmpty) {
+          final followingDocs =
+              await _firestore
+                  .collection(kUsersPublicProfileCollection)
+                  .where(FieldPath.documentId, whereIn: user.following)
+                  .get();
+          return followingDocs.docs
+              .map((doc) => PublicUserModel.fromMap(doc.data()))
+              .toList();
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Error in getFollowing: $e');
+    }
+    return [];
+  }
+
+  static Future<void> createPublicProfileIfNeeded(UserModel? user) async {
+    if (user == null) return;
+
+    final publicProfileRef = _firestore
+        .collection(kUsersPublicProfileCollection)
+        .doc(user.uid);
+    final publicProfileDoc = await publicProfileRef.get();
+
+    if (!publicProfileDoc.exists) {
+      final publicProfile = PublicUserModel(
+        displayName: user.displayName ?? user.uid.substring(0, 5),
+        email: user.email,
+        uid: user.uid,
+        profileImage: user.profileImage ?? '',
+        followers: [],
+        following: [],
+        tripsCreated: 0,
+        tripsJoined: 0,
+      );
+      await publicProfileRef.set(publicProfile.toMap());
+    }
+  }
+}
