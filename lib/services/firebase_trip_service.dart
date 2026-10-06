@@ -748,45 +748,48 @@ class FirebaseTripService {
   static Future<bool> updateTrip({
     required String tripId,
     required Map<String, dynamic> data,
+    List<String>? expectedImages,
   }) async {
     try {
-      final currentSnapshot =
-          await firestore.collection(kTripTable).doc(tripId).get();
-      final currentData = currentSnapshot.data();
-      if (currentData == null) return false;
-      final mergedData = <String, dynamic>{
-        ...currentData,
-        ...data,
-        'id': tripId,
-      };
-      final mergedTrip = TripModel.fromMap(mergedData);
-      final batch = firestore.batch();
       final tripRef = firestore.collection(kTripTable).doc(tripId);
-      batch.update(tripRef, data);
-      final bool isPrivate = mergedTrip.isPrivate == true;
-      final String? status = mergedTrip.tripStatus;
-      if (isPrivate || status == TripStatus.deleted.name) {
-        batch.delete(firestore.collection(kTripDiscoveryTable).doc(tripId));
-      } else {
-        final memberIds = await getTripMemberIds(tripId: tripId);
-        if (memberIds.isNotEmpty) {
-          mergedTrip.joinedUsers =
-              memberIds.where((uid) => uid != mergedTrip.createdBy).toList();
+      await firestore.runTransaction((transaction) async {
+        final current = (await transaction.get(tripRef)).data();
+        if (current == null) throw StateError('Trip unavailable');
+        if (expectedImages != null &&
+            !listEquals(
+              List<String>.from(current['images'] as List? ?? []),
+              expectedImages,
+            )) {
+          throw StateError(
+            'The cover changed on another device. Reopen the trip before replacing it.',
+          );
         }
-        final creator = await AuthService.getUserPublicProfile(
-          userId: mergedTrip.createdBy,
-        );
-        batch.set(
-          firestore.collection(kTripDiscoveryTable).doc(tripId),
-          TripDiscoveryModel.fromTrip(
-            mergedTrip,
-            creatorDisplayName: creator?.displayName,
-            creatorProfileImage: creator?.profileImage,
-          ).toMap(),
-          SetOptions(merge: true),
-        );
-      }
-      await batch.commit();
+        final merged = TripModel.fromMap({...current, ...data, 'id': tripId});
+        if (data.isNotEmpty) transaction.update(tripRef, data);
+        final discovery = firestore.collection(kTripDiscoveryTable).doc(tripId);
+        if (merged.isPrivate == true ||
+            merged.tripStatus == TripStatus.deleted.name) {
+          transaction.delete(discovery);
+        } else {
+          final memberIds = await getTripMemberIds(tripId: tripId);
+          if (memberIds.isNotEmpty) {
+            merged.joinedUsers =
+                memberIds.where((uid) => uid != merged.createdBy).toList();
+          }
+          final creator = await AuthService.getUserPublicProfile(
+            userId: merged.createdBy,
+          );
+          transaction.set(
+            discovery,
+            TripDiscoveryModel.fromTrip(
+              merged,
+              creatorDisplayName: creator?.displayName,
+              creatorProfileImage: creator?.profileImage,
+            ).toMap(),
+            SetOptions(merge: true),
+          );
+        }
+      });
       return true;
     } catch (e) {
       _handleTripError(e);

@@ -7,7 +7,7 @@ const {ApiError, tripSchema, idempotencySchema, createTripService} = require("./
 const {createOAuth} = require("./assistant-oauth");
 const {accountPage, tripPage} = require("./assistant-pages");
 
-function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger = console, now}) {
+function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger = console, now, preparePhoto}) {
   const base = new URL(baseUrl);
   if (base.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(base.hostname)) throw new Error("ASSISTANT_BASE_URL requires HTTPS");
   if (base.search || base.hash || base.username || base.password) throw new Error("Invalid ASSISTANT_BASE_URL");
@@ -16,7 +16,7 @@ function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger =
   if (resourceUrl.origin !== base.origin || resourceUrl.search || resourceUrl.hash || resourceUrl.username || resourceUrl.password) throw new Error("MCP URL must share the assistant origin and have no query or fragment");
   const app = express(); const router = express.Router();
   const oauth = createOAuth(db, auth, baseUrl, now, resourceUrl.href);
-  const createTrip = createTripService(db, baseUrl, now);
+  const createTrip = createTripService(db, baseUrl, now, preparePhoto);
   const metadataPath = `/.well-known/oauth-protected-resource${resourceUrl.pathname}`;
   const bearer = (req) => /^Bearer ([^\s]+)$/i.exec(req.get("authorization") || "")?.[1];
   app.disable("x-powered-by");
@@ -83,14 +83,14 @@ function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger =
   const handleMcp = async (req, res) => {
     const uid = await oauth.verify(bearer(req));
     const server = new McpServer({name: "travelcrew", title: "Travel Crew", version: "1.1.0", websiteUrl: base.origin}, {
-      instructions: "Create private Travel Crew trips only when the user asks to save an itinerary. Ask for missing destination, country, and dates. Never invent bookings or paid expenses. Return the trip URL after saving; the user can open it in Travel Crew.",
+      instructions: "Create private Travel Crew trips only when the user asks to save an itinerary. Ask for missing destination, country, and dates. Never invent bookings or paid expenses. Cover options are No image (omit image_url) and Suggested destination photo. Only supply a photo when requested, using a verified relevant direct Wikimedia Commons URL with Public domain or CC0 license. If you cannot verify one, omit it. Never generate artwork or invent photo URLs. A cover_status of unavailable means the trip saved without the photo: explain this and return the trip URL. Users can add their own photo in the app.",
     });
     const toolConfig = {
       title: "Create a TravelCrew trip", description: "Save a private trip to the connected user's TravelCrew account when requested. Do not invent bookings or record estimated expenses as paid. Generate a unique idempotency_key for each new trip and reuse it unchanged for retries. Return the trip URL to the user.",
       inputSchema: {idempotency_key: idempotencySchema, trip: tripSchema},
-      outputSchema: {trip_id: z.string(), url: z.string().url(), app_url: z.string(), is_private: z.literal(true), replayed: z.boolean()},
+      outputSchema: {trip_id: z.string(), url: z.string().url(), app_url: z.string(), is_private: z.literal(true), replayed: z.boolean(), cover_status: z.enum(["ready", "unavailable"]).optional()},
       _meta: {securitySchemes: [{type: "oauth2", scopes: ["trips:create"]}]},
-      annotations: {readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false},
+      annotations: {readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true},
     };
     server.registerTool("create_trip", toolConfig, async ({trip, idempotency_key: key}) => {
       try {

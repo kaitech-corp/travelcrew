@@ -101,7 +101,7 @@ class _GroupTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
       child: UsersWidget(
-        imageUrl: trip.images.first,
+        imageUrl: trip.images.firstOrNull ?? '',
         tripModel: trip,
         title: trip.title ?? '',
         subtitle: subtitle,

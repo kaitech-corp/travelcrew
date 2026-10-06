@@ -40,7 +40,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         () => Row(
           children: [
             AnyImageView(
-              url: controller.currentTrip.value?.images.first ?? '',
+              url: controller.currentTrip.value?.images.firstOrNull ?? '',
               height: 52.h,
               width: 52.w,
               isCircle: true,

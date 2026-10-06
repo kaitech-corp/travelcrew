@@ -36,8 +36,10 @@
   "emulators": {
     "auth": {"port": 9099},
     "firestore": {"port": 8080},
+    "storage": {"port": 9199},
     "ui": {"enabled": false}
   },
+  "storage": {"rules": "storage.rules"},
   "hosting": {
     "public": "assistant-hosting",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],

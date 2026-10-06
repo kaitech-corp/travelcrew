@@ -11,6 +11,11 @@ class ImportTripController extends GetxController {
   final pasteController = TextEditingController();
   final RxBool isParsing = false.obs;
 
+  final suggestPhoto = false.obs;
+
+  String get selectedPrompt =>
+      '$aiPrompt\n\nCover choice: ${suggestPhoto.value ? 'Suggested destination photo. If you can verify a relevant Public domain or CC0 photograph on Wikimedia Commons, include its direct HTTPS upload.wikimedia.org image URL as image_url. Otherwise omit image_url and still output the itinerary.' : 'No image. Omit image_url.'}';
+
   static const String aiPrompt = '''
 You are helping plan a trip for TravelCrew, a group travel app. Based on our conversation, output a single JSON object matching the structure below so the app can create the trip. Output ONLY the JSON — no explanation, no markdown.
 
@@ -24,7 +29,7 @@ Field rules:
 - Trip, flight, lodging, and expense dates use "YYYY-MM-DD". Activity times use "YYYY-MM-DDTHH:MM:SS" (24-hour clock).
 - Every activity must have a "title". "description", "location", "address", "start_datetime", and "end_datetime" are each optional. Prefer a full street "address" when you can confidently supply it; otherwise use "location" for the venue/place name.
 - Every expense must have a non-empty "name" and a positive "amount". "split_type" must be exactly "equally" (the only value supported on import).
-- Numbers ("amount", "cost_per_night") must be plain JSON numbers with no currency symbol or quotes.
+- A cover image is optional. Never invent an image URL, use a placeholder, generate artwork, or supply a webpage/local file link. Only include image_url when the cover choice below requests a photo. Supported suggestions are direct Wikimedia Commons JPEG, PNG, or WebP URLs whose source page identifies the license as Public domain or CC0.\n- Numbers ("amount", "cost_per_night") must be plain JSON numbers with no currency symbol or quotes.
 
 Strict JSON formatting requirements:
 - Use only standard ASCII straight double quotes (") around every JSON key and string value.
@@ -41,7 +46,6 @@ Strict JSON formatting requirements:
   "start_date": "YYYY-MM-DD",
   "end_date": "YYYY-MM-DD",
   "is_private": false,
-  "image_url": "https://example.com/photo.jpg",
   "airline": {
     "name": "Airline name",
     "flight_number": "XX123",
@@ -80,7 +84,7 @@ Strict JSON formatting requirements:
 
   Future<void> copyPrompt() async {
     try {
-      await Clipboard.setData(const ClipboardData(text: aiPrompt));
+      await Clipboard.setData(ClipboardData(text: selectedPrompt));
       // showCustomSnackBar(
       //   content: 'Prompt copied — paste it into your AI assistant',
       // );

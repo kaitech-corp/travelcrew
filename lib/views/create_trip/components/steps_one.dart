@@ -165,6 +165,8 @@ class StepsOne extends StatelessWidget {
                             controller.selectedPlaceId.value = placeId;
                             controller.selectedLocation.value =
                                 searchText.searchText;
+                            controller.country.value =
+                                searchText.searchText.split(',').last.trim();
                             GlobalVariables.showDropdown.value = false;
                           },
                           textInputAction: TextInputAction.done,
@@ -253,19 +255,21 @@ class StepsOne extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Obx(
-                          () => Text(
-                            controller.startDate.value == null ||
-                                    controller.endDate.value == null
-                                ? 'Select from and to date'
-                                : '${DateFormat('EEE, d MMM').format(controller.startDate.value!)} - ${DateFormat('EEE, d MMM').format(controller.endDate.value!)}',
-                            textAlign: TextAlign.center,
-                            style: AppStyles.labelTextStyle().copyWith(
-                              color: Colors.black,
-                              fontSize: AppStyles.fontSize13,
+                        Flexible(
+                          child: Obx(
+                            () => Text(
+                              controller.startDate.value == null ||
+                                      controller.endDate.value == null
+                                  ? 'Select from and to date'
+                                  : '${DateFormat('EEE, d MMM').format(controller.startDate.value!)} - ${DateFormat('EEE, d MMM').format(controller.endDate.value!)}',
+                              textAlign: TextAlign.center,
+                              style: AppStyles.labelTextStyle().copyWith(
+                                color: Colors.black,
+                                fontSize: AppStyles.fontSize13,
 
-                              fontWeight: FontWeight.w500,
-                              height: 1.25.h,
+                                fontWeight: FontWeight.w500,
+                                height: 1.25.h,
+                              ),
                             ),
                           ),
                         ),
@@ -393,6 +397,26 @@ class StepsOne extends StatelessWidget {
                           ],
                         ),
               ),
+              Wrap(
+                spacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed:
+                        controller.isSaving.value
+                            ? null
+                            : controller.chooseNoImage,
+                    icon: const Icon(Icons.hide_image_outlined),
+                    label: const Text('No image'),
+                  ),
+                  if (controller.suggestedPhotoUrl.isNotEmpty)
+                    const Text(
+                      'Suggested photo will be checked when you save.',
+                    ),
+                ],
+              ),
+              if (controller.photoNotice.isNotEmpty)
+                Text(controller.photoNotice.value),
               SizedBox(height: 16.h),
             ],
           ),

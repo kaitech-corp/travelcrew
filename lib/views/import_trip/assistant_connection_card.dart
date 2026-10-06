@@ -34,6 +34,10 @@ class AssistantConnectionCard extends StatelessWidget {
               'your itinerary to TravelCrew. Your trip arrives privately in My Trips.',
             ),
             const SizedBox(height: 8),
+            const Text(
+              'Ask for No image or a Suggested destination photo. Suggestions use verified Public domain or CC0 Wikimedia Commons photos; the trip still saves if a photo is unavailable. You can also upload your own cover in the app.',
+            ),
+            const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: [

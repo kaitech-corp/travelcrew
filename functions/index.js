@@ -16,7 +16,7 @@ const getDb = () => getFirestore(DATABASE_ID);
 // Hosting routes /assistant/** and OAuth discovery to this single service.
 // Lazy construction keeps deployment inspection independent of runtime config.
 let assistantApp;
-exports.assistantV1 = onRequest({maxInstances: 10, timeoutSeconds: 60, memory: "256MiB", invoker: "public"}, (req, res) => {
+exports.assistantV1 = onRequest({maxInstances: 10, timeoutSeconds: 120, memory: "512MiB", concurrency: 4, invoker: "public"}, (req, res) => {
   if (!process.env.ASSISTANT_BASE_URL || !process.env.ASSISTANT_FIREBASE_CONFIG) {
     return res.status(503).json({error: "not_configured", error_description: "Assistant connections are not configured yet"});
   }
@@ -24,6 +24,7 @@ exports.assistantV1 = onRequest({maxInstances: 10, timeoutSeconds: 60, memory: "
     const {createAssistantApp} = require("./assistant-api");
     assistantApp = createAssistantApp({db: getDb(), auth: getAuth(), baseUrl: process.env.ASSISTANT_BASE_URL,
       mcpUrl: process.env.ASSISTANT_MCP_URL,
+      preparePhoto: prepareSuggestedPhoto,
       firebaseConfig: JSON.parse(process.env.ASSISTANT_FIREBASE_CONFIG), logger});
   }
   return assistantApp(req, res);
@@ -116,6 +117,9 @@ const {imageTargets, createVisionScanner, createImageModerator} =
   require("./image-moderation");
 const auth = new GoogleAuth({scopes: "https://www.googleapis.com/auth/cloud-platform"});
 const scan = createVisionScanner(async () => ({access_token: await auth.getAccessToken()}));
+const {createPhotoService, createPhotoCallable} = require("./trip-photos");
+const prepareSuggestedPhoto = createPhotoService({db: getDb(), bucket: () => getStorage().bucket(), scan});
+exports.prepareSuggestedTripPhotoV3 = onCall({maxInstances: 5, concurrency: 4, memory: "512MiB", timeoutSeconds: 120}, createPhotoCallable(prepareSuggestedPhoto));
 const getBucketName = () => {
   try {
     return getStorage().bucket().name;

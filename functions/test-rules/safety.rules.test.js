@@ -45,7 +45,7 @@ test("invitations and attempt receipts are server-owned and do not grant private
 });
 
 test("assistant credentials and idempotency receipts are inaccessible to ordinary clients", async () => {
-  for (const collection of ["assistantOAuthRequests", "assistantOAuthCodes", "assistantOAuthTokens", "assistantOAuthGrants", "assistantOAuthClients", "assistantRequests", "assistantQuotas"]) {
+  for (const collection of ["assistantOAuthRequests", "assistantOAuthCodes", "assistantOAuthTokens", "assistantOAuthGrants", "assistantOAuthClients", "assistantRequests", "assistantQuotas", "tripPhotoAssets", "tripPhotoQuotas"]) {
     const path = `${collection}/test`;
     await env.withSecurityRulesDisabled((context) => setDoc(doc(context.firestore(), path), {uid: "alice"}));
     await assertFails(getDoc(doc(dbFor("alice"), path)));

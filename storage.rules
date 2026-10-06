@@ -1,0 +1,47 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Preserve the deployed legacy paths. Exclude validated covers from this
+    // broad legacy grant: overlapping Storage matches are ORed, not denied.
+    match /{folder}/{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null && folder != 'suggested_trip_photos';
+    }
+    // Only the backend's IAM-authorized Admin SDK may create/replace these.
+    // The source photos are public-domain/CC0; no private uploads go here.
+    match /suggested_trip_photos/{allPaths=**} {
+      allow read;
+      allow write: if false;
+    }
+    match /activity/{docs}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /lodging/{docs}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /trips/{docs}/{allPaths=**} {
+      allow read, write;
+    }
+    match /users/{docs}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /web_images/{docs}/{allPaths=**} {
+      allow read;
+    }
+    match /apis/{docs}/{allPaths=**} {
+      allow read: if request.auth != null;
+    }
+    match /travelcrew/{folderName}/{userId}/{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /travelcrew/{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null;
+    }
+    match /travelcrew/trips/{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null;
+    }
+  }
+}

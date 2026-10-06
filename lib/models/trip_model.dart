@@ -45,8 +45,9 @@ class TripModel {
     required this.endDate,
     required this.daysToGo,
     required this.images,
+    Map<String, dynamic>? imageCredits,
     this.continent = '',
-  });
+  }) : imageCredits = Map<String, dynamic>.from(imageCredits ?? {});
 
   factory TripModel.fromMap(Map<String, dynamic> map) {
     return TripModel(
@@ -120,6 +121,9 @@ class TripModel {
       images:
           (map['images'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           [],
+      imageCredits: Map<String, dynamic>.from(
+        map['imageCredits'] as Map? ?? {},
+      ),
       continent: map['continent'] as String? ?? '',
     );
   }
@@ -166,6 +170,7 @@ class TripModel {
   final String endDate;
   final int daysToGo;
   List<String> images;
+  final Map<String, dynamic> imageCredits;
 
   DateTime get effectiveStartDate => tripStartDate ?? startDate;
 
@@ -255,6 +260,7 @@ class TripModel {
       endDate: endDate ?? this.endDate,
       daysToGo: daysToGo ?? this.daysToGo,
       images: images ?? this.images,
+      imageCredits: imageCredits,
       continent: continent ?? this.continent,
     );
   }
@@ -295,6 +301,7 @@ class TripModel {
       'endDate': endDate,
       'daysToGo': daysToGo,
       'images': images,
+      'imageCredits': imageCredits,
       'continent': continent,
     };
   }

@@ -47,7 +47,7 @@ function createVisionScanner(getAccessToken, request = fetch) {
         method: "POST",
         headers: {Authorization: `Bearer ${token}`, "Content-Type": "application/json"},
         body: JSON.stringify({requests: [{
-          image: {source: {imageUri: uri}},
+          image: Buffer.isBuffer(uri) ? {content: uri.toString("base64")} : {source: {imageUri: uri}},
           features: [{type: "SAFE_SEARCH_DETECTION"}],
         }]}),
         signal: AbortSignal.timeout(30000),

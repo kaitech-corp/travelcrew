@@ -207,18 +207,46 @@ class _PromptCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Trip cover'),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    ChoiceChip(
+                      label: const Text('No image'),
+                      selected: !controller.suggestPhoto.value,
+                      onSelected: (_) => controller.suggestPhoto.value = false,
+                    ),
+                    ChoiceChip(
+                      label: const Text('Suggested destination photo'),
+                      selected: controller.suggestPhoto.value,
+                      onSelected: (_) => controller.suggestPhoto.value = true,
+                    ),
+                  ],
+                ),
+                const Text(
+                  'Suggestions use Public domain or CC0 Wikimedia Commons photos. If none is available, you can still save the trip.',
+                ),
+              ],
+            ),
+          ),
           Align(
             alignment: Alignment.centerRight,
             child: _CopyPromptButton(controller: controller),
           ),
           SizedBox(height: 8.h),
-          Text(
-            ImportTripController.aiPrompt,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: AppStyles.fontSize14,
-              color: Color(0xFF333333),
-              height: 1.5,
+          Obx(
+            () => Text(
+              controller.selectedPrompt,
+              style: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: AppStyles.fontSize14,
+                color: Color(0xFF333333),
+                height: 1.5,
+              ),
             ),
           ),
           SizedBox(height: 12.h),

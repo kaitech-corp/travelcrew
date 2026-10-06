@@ -104,15 +104,10 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                 showCustomSnackBar(content: 'Please select a date');
                 return;
               }
-              await controller.usePlacePhotoAsCoverIfNeeded();
-              if (controller.selectedImages.isEmpty) {
-                showCustomSnackBar(content: 'Please select at least one image');
-                return;
-              }
               if (!_isEditing) {
-                controller.submitTrip();
+                await controller.submitTrip();
               } else {
-                controller.updateTrip();
+                await controller.updateTrip();
               }
             }
           },

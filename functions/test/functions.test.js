@@ -45,7 +45,7 @@ function fixture() {
       onDocumentCreated: (_, fn) => fn,
       onDocumentWritten: (_, fn) => fn,
     },
-    "firebase-functions/v2/https": {onCall: (fn) => fn, onRequest: (_, fn) => fn, HttpsError},
+    "firebase-functions/v2/https": {onCall: (...args) => args.at(-1), onRequest: (_, fn) => fn, HttpsError},
     "firebase-admin/app": {initializeApp: () => {}, getApp: () => ({options: {storageBucket: "app.appspot.com"}})},
     "firebase-admin/firestore": {getFirestore: () => db, FieldValue: require("firebase-admin/firestore").FieldValue},
     "firebase-admin/messaging": {getMessaging: () => ({sendEachForMulticast: async (payload) => {
@@ -69,6 +69,7 @@ function fixture() {
     "./validation": validation,
     "./moderation": require("../moderation"),
     "./image-moderation": require("../image-moderation"),
+    "./trip-photos": require("../trip-photos"),
     "firebase-functions/logger": {warn: () => {}, error: () => {}},
   };
   const context = {exports: {}, require: (name) => modules[name], console,

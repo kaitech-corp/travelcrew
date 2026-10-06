@@ -18,7 +18,7 @@ const tripSchema = z.object({
   title: text().optional(), destination: text(), country: text(100),
   start_date: date, end_date: date,
   is_private: z.literal(true).default(true).describe("Assistant-created trips are always private; sharing is managed in the app"),
-  image_url: z.url({protocol: /^https$/}).max(2048).optional(),
+  image_url: z.url({protocol: /^https$/}).max(2048).optional().describe("Optional suggested destination photo: verified direct upload.wikimedia.org Commons raster URL with Public domain or CC0 license. Omit for No image, if not requested, or if you cannot verify a relevant photo. Never invent URLs. Unsupported/unavailable photos do not prevent saving the trip."),
   airline: z.object({
     name: text().optional(), flight_number: text(30).optional(),
     departure_airport: text(100).optional(), arrival_airport: text(100).optional(),
@@ -45,7 +45,7 @@ const canonical = (value) => JSON.stringify(value, function(key, item) {
 });
 const isoDate = (value) => value ? `${value}T00:00:00.000` : null;
 
-function createTripService(db, baseUrl, now = () => Date.now()) {
+function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
   return async function createTrip(uid, input, key) {
     if (!uid || uid.includes("/")) throw new ApiError(401, "unauthorized", "Sign in required");
     if (!idempotencySchema.safeParse(key).success) throw new ApiError(400, "invalid_idempotency_key", "Supply an Idempotency-Key of 16–128 letters, digits, underscores or hyphens");
@@ -58,6 +58,12 @@ function createTripService(db, baseUrl, now = () => Date.now()) {
     const tripRef = db.doc(`trips/${tripId}`);
     const time = now();
     const quotaRef = db.doc(`assistantQuotas/${hash(`${uid}:${Math.floor(time / 86400000)}`)}`);
+    // All external I/O happens before the transaction. A retry uses its original
+    // receipt; preparation never modifies a trip or runs after its creation.
+    let photo;
+    if (data.image_url && !(await receipt.get()).exists) {
+      try { photo = await preparePhoto?.(uid, data.image_url); } catch { /* Cover is optional. */ }
+    }
     return db.runTransaction(async (tx) => {
       const [account, safety, prior, quota] = await Promise.all([
         tx.get(db.doc(`users/${uid}`)), tx.get(db.doc(`safetyAccounts/${uid}`)), tx.get(receipt), tx.get(quotaRef),
@@ -73,7 +79,7 @@ function createTripService(db, baseUrl, now = () => Date.now()) {
         id: tripId, createdBy: uid, title: data.title || data.destination, destination: data.destination, country: data.country,
         tripStartDate: isoDate(data.start_date), tripEndDate: isoDate(data.end_date), startDate: isoDate(data.start_date), endDate: data.end_date,
         tripStatus: "upcoming", daysToGo: Math.ceil((+new Date(`${data.start_date}T00:00:00Z`) - time) / 86400000),
-        isPrivate: true, isShared: false, joinedUsers: [], invitedUsers: [], images: data.image_url ? [data.image_url] : [],
+        isPrivate: true, isShared: false, joinedUsers: [], invitedUsers: [], images: photo?.status === "ready" ? [photo.url] : [],
         latitude: 0, longitude: 0, continent: "", favouriteCount: 0, tripBudget: 0, tripLocation: data.destination,
         airlineName: a.name || null, flightNumber: a.flight_number || null, departureAirport: a.departure_airport || null,
         arrivalAirport: a.arrival_airport || null, departureDate: isoDate(a.departure_date), arrivalDate: isoDate(a.arrival_date),
@@ -81,6 +87,7 @@ function createTripService(db, baseUrl, now = () => Date.now()) {
         checkInDate: isoDate(l.check_in), checkOutDate: isoDate(l.check_out), expensePerNight: l.cost_per_night ?? null,
         source: "assistant", createdAt: FieldValue.serverTimestamp(),
       };
+      if (photo?.status === "ready") trip.imageCredits = {[photo.url]: photo.credit};
       tx.create(tripRef, trip);
       tx.create(tripRef.collection("members").doc(uid), {userId: uid, role: "creator", status: "active", joinedAt: FieldValue.serverTimestamp()});
       tx.create(db.doc(`users/${uid}/tripMemberships/${tripId}`), {tripId, role: "creator", status: "active", joinedAt: FieldValue.serverTimestamp()});
@@ -104,6 +111,7 @@ function createTripService(db, baseUrl, now = () => Date.now()) {
       tx.create(inboxRef(db, uid, noteId), {...notification(noteId, "system", uid, "trip_created", tripId,
         "Your trip is ready", `${trip.title} was added to your private trips.`, true), notificationType: "Trip"});
       const result = {trip_id: tripId, url: `${baseUrl}/trips/${tripId}`, app_url: `travelcrew://trips/${tripId}`, is_private: true};
+      if (data.image_url) result.cover_status = photo?.status === "ready" ? "ready" : "unavailable";
       tx.create(receipt, {uid, fingerprint, result, createdAt: FieldValue.serverTimestamp()});
       tx.set(quotaRef, {count: (quota.data()?.count || 0) + 1, expiresAt: new Date(time + 2 * 86400000)});
       return {...result, replayed: false};

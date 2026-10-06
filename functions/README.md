@@ -8,6 +8,11 @@ Assistant integration tests require **both Auth and Firestore emulators**.
 
 Use Node 22 (`nvm use`), then `npm ci`, `npm run lint`, and `npm test`.
 
+Optional suggested covers use `prepareSuggestedTripPhotoV3` and the same backend
+preparation in MCP. Deploy `storage.rules` **before** these photo-enabled
+functions. The new rules suite also needs the Storage emulator. See the
+[photo security boundary, compatibility review and rollout](../resources/trip_editor_suggested_photos_review.md).
+
 ## App contracts
 
 - Notifications are server-owned inbox documents under `notifications/{recipient}/notification/{id}`.

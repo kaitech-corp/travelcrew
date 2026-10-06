@@ -13,6 +13,7 @@ import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/services/trips_changes.dart';
+import 'package:travel_crew/services/trip_photo_service.dart';
 import 'package:travel_crew/utils/common_code.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/utils/debugging.dart';
@@ -36,6 +37,21 @@ class CreateTripController extends GetxController {
       formStep7 = GlobalKey<FormState>();
 
   RxList<SelectedImage> selectedImages = <SelectedImage>[].obs;
+  final suggestedPhotoUrl = ''.obs;
+  final photoNotice = ''.obs;
+  final isSaving = false.obs;
+  int _photoSelectionVersion = 0;
+  bool _allowDefaultPlacePhoto = true;
+  final Map<String, dynamic> imageCredits = {};
+
+  void chooseNoImage() {
+    _allowDefaultPlacePhoto = false;
+    _photoSelectionVersion++;
+    suggestedPhotoUrl.value = '';
+    selectedImages.clear();
+    imageCredits.clear();
+    photoNotice.value = '';
+  }
 
   bool get isEditingTrip => Get.arguments is TripModel;
 
@@ -46,6 +62,9 @@ class CreateTripController extends GetxController {
             .map((path) => SelectedImage(imageUrl: path))
             .toList();
     if (images.isEmpty) return;
+    _photoSelectionVersion++;
+    suggestedPhotoUrl.value = '';
+    photoNotice.value = '';
 
     if (isEditingTrip && selectedImages.isNotEmpty) {
       selectedImages[0] = images.first;
@@ -58,15 +77,46 @@ class CreateTripController extends GetxController {
     selectedImages.refresh();
   }
 
-  Future<void> usePlacePhotoAsCoverIfNeeded() async {
-    if (selectedImages.isNotEmpty ||
+  Future<void> prepareSuggestedPhoto({
+    Future<Map<String, dynamic>?> Function(String)? prepare,
+  }) async {
+    final url = suggestedPhotoUrl.value;
+    if (url.isEmpty) return;
+    final version = _photoSelectionVersion;
+    final photo = await (prepare ?? TripPhotoService.prepare)(url);
+    if (version != _photoSelectionVersion || suggestedPhotoUrl.value != url) {
+      return;
+    }
+    if (photo == null) {
+      photoNotice.value =
+          'The suggested photo could not be added. Your trip can be saved without it; you can upload a photo or retry later.';
+      return;
+    }
+    selectedImages.assignAll([
+      SelectedImage(imageUrl: photo['url'] as String, isNetworkImage: true),
+    ]);
+    imageCredits[photo['url'] as String] = photo['credit'];
+    suggestedPhotoUrl.value = '';
+    photoNotice.value = '';
+  }
+
+  Future<void> usePlacePhotoAsCoverIfNeeded({
+    Future<String?> Function(String)? loadPhoto,
+  }) async {
+    if (!_allowDefaultPlacePhoto ||
+        tripModel.value != null ||
+        selectedImages.isNotEmpty ||
         selectedPlaceId.value.isEmpty ||
         selectedPlaceId.value == 'existing_location') {
       return;
     }
-
-    final photoName = await getLocationDetails(selectedPlaceId.value);
-    if (photoName != null) {
+    final version = _photoSelectionVersion;
+    final place = selectedPlaceId.value;
+    final photoName = await (loadPhoto ?? getLocationDetails)(place);
+    if (photoName != null &&
+        version == _photoSelectionVersion &&
+        place == selectedPlaceId.value &&
+        selectedImages.isEmpty) {
       selectedImages.add(
         SelectedImage(
           imageUrl: GeoServices.getPhotoUrl(photoName),
@@ -132,6 +182,7 @@ class CreateTripController extends GetxController {
   RxList<ExpenseModel> importedExpenses = <ExpenseModel>[].obs;
 
   void setFromImport(Map<String, dynamic> data) {
+    _allowDefaultPlacePhoto = false;
     try {
       tripNameController.text = (data['title'] as String?) ?? '';
       destinationController.text = (data['destination'] as String?) ?? '';
@@ -147,14 +198,12 @@ class CreateTripController extends GetxController {
         endDate.value = DateTime.tryParse(data['end_date'] as String);
       }
 
-      if (data['image_url'] != null &&
+      // Never render arbitrary model-provided URLs on a user's device.
+      if (data['image_url'] is String &&
           (data['image_url'] as String).trim().isNotEmpty) {
-        selectedImages.add(
-          SelectedImage(
-            imageUrl: data['image_url'] as String,
-            isNetworkImage: true,
-          ),
-        );
+        _photoSelectionVersion++;
+        suggestedPhotoUrl.value = (data['image_url'] as String).trim();
+        photoNotice.value = '';
       }
 
       _applyAirlineImport(data['airline']);
@@ -282,17 +331,21 @@ class CreateTripController extends GetxController {
     arrivalDate.value = tripModel.value?.arrivalDate;
     departureDate.value = tripModel.value?.departureDate;
     expensePerNightController.text =
-        tripModel.value!.expensePerNight.toString().isEmpty
-            ? '0'
-            : tripModel.value!.expensePerNight.toString();
-    startDate.value = tripModel.value!.tripStartDate;
-    endDate.value = tripModel.value!.tripEndDate;
+        tripModel.value!.expensePerNight?.toString() ?? '';
+    startDate.value = tripModel.value!.effectiveStartDate;
+    endDate.value =
+        tripModel.value!.tripEndDate ??
+        DateTime.tryParse(tripModel.value!.endDate);
     checkInStartTime.value = tripModel.value!.checkInDate;
     checkInEndTime.value = tripModel.value!.checkOutDate;
     selectedImages.value =
         (tripModel.value?.images ?? []).map((e) {
           return SelectedImage(imageUrl: e, isNetworkImage: true);
         }).toList();
+    suggestedPhotoUrl.value = '';
+    imageCredits
+      ..clear()
+      ..addAll(tripModel.value!.imageCredits);
     activityList.value = tripModel.value!.activities ?? [];
     // locationController.text = tripModel.value!.tripLocation ?? '';
     isLocked.value = tripModel.value!.isPrivate ?? true;
@@ -317,20 +370,6 @@ class CreateTripController extends GetxController {
       if (startDate.value == null || endDate.value == null) {
         showCustomSnackBar(content: 'Please select trip start and end date');
         return;
-      }
-      if (currentStep.value == 1 && selectedImages.isEmpty) {
-        String? imageUrl;
-        if (selectedPlaceId.value.isNotEmpty) {
-          final photoName = await getLocationDetails(selectedPlaceId.value);
-          if (photoName != null) {
-            imageUrl = GeoServices.getPhotoUrl(photoName);
-          }
-        }
-        imageUrl ??=
-            'https://firebasestorage.googleapis.com/v0/b/universal-code-135522.appspot.com/o/travelcrew%2Fimages%2Ftravelcrew_image.png?alt=media&token=a90c5802-1b9e-44c9-b714-8a1cd3e1174f';
-        selectedImages.add(
-          SelectedImage(imageUrl: imageUrl, isNetworkImage: true),
-        );
       }
       if (currentStep.value == 2 && !formStep2.currentState!.validate()) {
         return;
@@ -372,105 +411,181 @@ class CreateTripController extends GetxController {
     }
   }
 
-  Future<void> updateTrip() async {
-    try {
-      List<String> uploadedImages = [];
-      if (selectedImages.isNotEmpty) {
-        int i = 0;
-        final futures = selectedImages.map((e) async {
-          i++;
-          if (e.isNetworkImage) {
-            return e.imageUrl;
-          } else {
-            final String imageUrl = await uploadImageToFirebaseStorage(
-              imagePath: e.imageUrl,
-              folderName: 'trip_images',
-              title: 'Uploading trip image',
-              subtitle: 'Uploading trip image',
-              imageName:
-                  '${tripModel.value!.id}${const Uuid().v6()}_trip_image$i',
-            );
-            if (imageUrl.isEmpty) {
-              throw Exception('Trip image upload returned an empty URL');
-            }
-            return imageUrl;
-          }
-        });
-        uploadedImages = await Future.wait(futures);
-      }
-      final TripModel trip = TripModel(
-        images: uploadedImages,
-        tripStatus: tripModel.value!.tripStatus ?? TripStatus.upcoming.name,
-        id: tripModel.value!.id,
-        tripLocation: destinationController.text,
-        invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
-        joinedUsers: tripModel.value!.joinedUsers ?? [],
-        isShared: tripModel.value!.isShared,
-        isPrivate: isLocked.value,
-        arrivalAirport: airportArrivalController.text,
-        departureDate: departureDate.value ?? DateTime.now(),
-        arrivalDate: arrivalDate.value ?? DateTime.now(),
-        departureAirport: airportDepartureController.text,
-        checkInDate: checkInStartTime.value ?? DateTime.now(),
-        checkOutDate: checkInEndTime.value ?? DateTime.now(),
-        country: destinationController.text.split(',').lastOrNull ?? '',
-        startDate: startDate.value!,
-        daysToGo: _calendarDaysUntil(startDate.value!),
-        createdBy: GlobalVariables.currentUid,
-        title: tripNameController.text,
-        destination: destinationController.text,
-        tripStartDate: startDate.value!,
-        tripEndDate: endDate.value!,
-        endDate: '',
-        airlineName: airLineNameController.text,
-        flightNumber: flightNumberController.text,
-        hotelName: hotelNameController.text,
-        hotelAddress: addressController.text,
-        expensePerNight: double.parse(
-          expensePerNightController.text.isEmpty
-              ? '0'
-              : expensePerNightController.text,
-        ),
-        lodgingType: lodgingTypeController.text,
+  double? get optionalNightlyCost {
+    final text = expensePerNightController.text.trim();
+    if (text.isEmpty) return null;
+    final value = double.tryParse(text);
+    if (value == null || !value.isFinite || value < 0) {
+      throw const FormatException(
+        'Enter a valid non-negative lodging price, or leave it blank.',
       );
-      GlobalVariables.showLoader.value = true;
-      if (tripModel.value!.tripLocation != destinationController.text) {
-        final LatLng latln = await GeoServices.getLatLngFromPlace(
-          trip.tripLocation ?? '',
-        );
-        trip.latitude = latln.latitude;
-        trip.longitude = latln.longitude;
-      }
+    }
+    return value;
+  }
 
-      await FirebaseTripService.updateTrip(
-        tripId: trip.id,
-        data: trip.toMap(),
-      ).then((isSuccess) async {
-        if (isSuccess) {
-          // showCustomSnackBar(content: 'Trip updated successfully');
-          for (var i = 0; i < activityList.length; i++) {
-            if (activityList[i].id == null) {
-              activityList[i].id = const Uuid().v6();
-              activityList[i].tripId = tripModel.value!.id;
-              await FirebaseTripService.addActivity(activity: activityList[i]);
-            }
-          }
-          final updatedTrip = trip.copyWith(activities: activityList);
-          updatedTrip.expenses = tripModel.value!.expenses;
-          updatedTrip.joindUsersList = tripModel.value!.joindUsersList;
-          updatedTrip.createdByUser = tripModel.value!.createdByUser;
-          tripModel.value = updatedTrip;
-          updateTripOverAll(updatedTrip);
-          Get.offNamed(kSpecificTripViewScreenRoute, arguments: updatedTrip);
-        } else {
-          showCustomSnackBar(content: 'Failed to update trip');
-        }
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error in updateTrip: $e');
+  /// Only changed editor fields are written. Server-owned fields, membership,
+  /// counters and unrelated itinerary data are never rebuilt by this form.
+  Map<String, dynamic> buildTripUpdate(List<String> images) {
+    final original = tripModel.value!;
+    final previous = original.toMap();
+    String? optionalText(String value) =>
+        value.trim().isEmpty ? null : value.trim();
+    final candidate = <String, dynamic>{
+      'title': tripNameController.text.trim(),
+      'destination': destinationController.text.trim(),
+      'tripLocation': destinationController.text.trim(),
+      'country': country.value,
+      'tripStartDate': startDate.value!.toIso8601String(),
+      'tripEndDate': endDate.value!.toIso8601String(),
+      'isPrivate': isLocked.value,
+      'airlineName': optionalText(airLineNameController.text),
+      'flightNumber': optionalText(flightNumberController.text),
+      'arrivalAirport': optionalText(airportArrivalController.text),
+      'departureAirport': optionalText(airportDepartureController.text),
+      'departureDate': departureDate.value?.toIso8601String(),
+      'arrivalDate': arrivalDate.value?.toIso8601String(),
+      'checkInDate': checkInStartTime.value?.toIso8601String(),
+      'checkOutDate': checkInEndTime.value?.toIso8601String(),
+      'hotelName': optionalText(hotelNameController.text),
+      'hotelAddress': optionalText(addressController.text),
+      'lodgingType': optionalText(lodgingTypeController.text),
+      'expensePerNight': optionalNightlyCost,
+    };
+    final patch = <String, dynamic>{};
+    for (final entry in candidate.entries) {
+      if (entry.value != previous[entry.key] &&
+          !(entry.value == null && previous[entry.key] == '')) {
+        patch[entry.key] = entry.value;
       }
+    }
+    if (patch.containsKey('tripStartDate')) {
+      patch['startDate'] = startDate.value!.toIso8601String();
+      patch['daysToGo'] = _calendarDaysUntil(startDate.value!);
+    }
+    if (patch.containsKey('tripEndDate')) {
+      patch['endDate'] = endDate.value!.toIso8601String().split('T').first;
+    }
+    if (!listEquals(images, original.images)) {
+      patch['images'] = images;
+      patch['imageCredits'] = {
+        for (final url in images)
+          if (imageCredits.containsKey(url)) url: imageCredits[url],
+      };
+    }
+    return patch;
+  }
+
+  Future<List<String>> _uploadSelectedImages(String tripId) async {
+    final uploaded = <String>[];
+    // Replace successful uploads in-place, so a failed save can be retried
+    // without uploading the same file again.
+    for (final image in selectedImages.toList()) {
+      if (!image.isNetworkImage) {
+        final url = await uploadImageToFirebaseStorage(
+          imagePath: image.imageUrl,
+          folderName: 'trip_images',
+          title: 'Uploading trip image',
+          subtitle: 'Uploading trip image',
+          imageName: '${tripId}_${const Uuid().v4()}_trip_image',
+        );
+        if (url.isEmpty) throw StateError('Image upload failed');
+        image.imageUrl = url;
+        image.isNetworkImage = true;
+      }
+      uploaded.add(image.imageUrl);
+    }
+    selectedImages.refresh();
+    return uploaded;
+  }
+
+  Future<void> updateTrip() async {
+    if (isSaving.value) return;
+    isSaving.value = true;
+    GlobalVariables.showLoader.value = true;
+    try {
+      // Validate before uploads or other network requests.
+      buildTripUpdate(selectedImages.map((image) => image.imageUrl).toList());
+      final original = tripModel.value!;
+      await prepareSuggestedPhoto();
+      final images = await _uploadSelectedImages(original.id);
+      final patch = buildTripUpdate(images);
+      if (patch.containsKey('tripLocation')) {
+        final location = await GeoServices.getLatLngFromPlace(
+          destinationController.text,
+        );
+        patch['latitude'] = location.latitude;
+        patch['longitude'] = location.longitude;
+        patch['continent'] = CommonCode.getContinentFromLatLng(
+          location.latitude,
+          location.longitude,
+        );
+      }
+      final saved = await FirebaseTripService.updateTrip(
+        tripId: original.id,
+        data: patch,
+        expectedImages: patch.containsKey('images') ? original.images : null,
+      );
+      if (!saved) {
+        showCustomSnackBar(
+          content:
+              'Could not save changes. Your edits are still here. Retry, or reopen the trip if it changed on another device.',
+        );
+        return;
+      }
+      // The core save has committed even if a later activity save fails.
+      // Advance the comparison baseline so a retry does not conflict with
+      // this editor's own newly saved cover.
+      final committed = TripModel.fromMap({
+        ...original.toMap(),
+        'tripBudget': original.tripBudget,
+        ...patch,
+      });
+      committed.expenses = original.expenses;
+      committed.joindUsersList = original.joindUsersList;
+      committed.createdByUser = original.createdByUser;
+      tripModel.value = committed;
+      updateTripOverAll(committed);
+      for (final activity in activityList) {
+        if (activity.id == null) {
+          activity.id = const Uuid().v4();
+          activity.tripId = original.id;
+          if (!await FirebaseTripService.addActivity(activity: activity)) {
+            activity.id = null;
+            showCustomSnackBar(
+              content:
+                  'Trip saved, but an activity could not be saved. Retry to add it.',
+            );
+            return;
+          }
+        }
+      }
+      final updated =
+          await FirebaseTripService.getTripById(tripId: original.id) ??
+          TripModel.fromMap({
+            ...original.toMap(),
+            'tripBudget': original.tripBudget,
+            ...patch,
+          });
+      updated.activities = activityList.toList();
+      updated.expenses ??= original.expenses;
+      updated.joindUsersList ??= original.joindUsersList;
+      updated.createdByUser ??= original.createdByUser;
+      tripModel.value = updated;
+      updateTripOverAll(updated);
+      Get.offNamed(kSpecificTripViewScreenRoute, arguments: updated);
+      if (photoNotice.isNotEmpty) {
+        showCustomSnackBar(content: photoNotice.value);
+      }
+    } on FormatException catch (error) {
+      showCustomSnackBar(content: error.message);
+    } catch (error) {
+      if (kDebugMode) print('Error in updateTrip: $error');
+      showCustomSnackBar(
+        content:
+            'Could not save the trip. Your edits are still here; please retry.',
+      );
     } finally {
+      isSaving.value = false;
       GlobalVariables.showLoader.value = false;
     }
   }
@@ -495,7 +610,10 @@ class CreateTripController extends GetxController {
 
   // Submit the trip
   Future<void> submitTrip() async {
+    if (isSaving.value) return;
+    isSaving.value = true;
     try {
+      final nightlyCost = optionalNightlyCost;
       final String id = const Uuid().v4();
       final TripModel tripModel = TripModel(
         tripStatus: TripStatus.upcoming.name,
@@ -506,11 +624,11 @@ class CreateTripController extends GetxController {
         isPrivate: isLocked.value,
         arrivalAirport: airportArrivalController.text,
         departureAirport: airportDepartureController.text,
-        departureDate: departureDate.value ?? DateTime.now(),
-        arrivalDate: arrivalDate.value ?? DateTime.now(),
-        checkInDate: checkInStartTime.value ?? DateTime.now(),
-        checkOutDate: checkInEndTime.value ?? DateTime.now(),
-        country: destinationController.text.split(',').lastOrNull ?? '',
+        departureDate: departureDate.value,
+        arrivalDate: arrivalDate.value,
+        checkInDate: checkInStartTime.value,
+        checkOutDate: checkInEndTime.value,
+        country: country.value,
         startDate: startDate.value!,
         daysToGo: _calendarDaysUntil(startDate.value!),
         createdBy: GlobalVariables.currentUid,
@@ -523,40 +641,15 @@ class CreateTripController extends GetxController {
         flightNumber: flightNumberController.text,
         hotelName: hotelNameController.text,
         hotelAddress: addressController.text,
-        expensePerNight: double.parse(
-          expensePerNightController.text.isEmpty
-              ? '0'
-              : expensePerNightController.text,
-        ),
+        expensePerNight: nightlyCost,
         lodgingType: lodgingTypeController.text,
         images: [],
       );
       GlobalVariables.showLoader.value = true;
+      await prepareSuggestedPhoto();
       await usePlacePhotoAsCoverIfNeeded();
-      List<String> uplaodedImages = [];
-      if (selectedImages.isNotEmpty) {
-        int i = 0;
-        final futures = selectedImages.map((e) async {
-          i++;
-          if (e.isNetworkImage) {
-            return e.imageUrl;
-          } else {
-            final String imageUrl = await uploadImageToFirebaseStorage(
-              imagePath: e.imageUrl,
-              folderName: 'travelcrew/trips',
-              title: 'Uploading trip image',
-              subtitle: 'Uploading trip image',
-              imageName: '${'$id${const Uuid().v6()}'}_trip_image$i',
-            );
-            if (imageUrl.isEmpty) {
-              throw Exception('Trip image upload returned an empty URL');
-            }
-            return imageUrl;
-          }
-        });
-        uplaodedImages = await Future.wait(futures);
-        tripModel.images = uplaodedImages;
-      }
+      tripModel.images = await _uploadSelectedImages(id);
+      tripModel.imageCredits.addAll(imageCredits);
       final expensesToSave = _buildExpensesForTrip(tripModel.id);
       final LatLng latln = await GeoServices.getLatLngFromPlace(
         tripModel.tripLocation ?? '',
@@ -586,6 +679,9 @@ class CreateTripController extends GetxController {
           addTripOverAll(tripModel);
           GlobalVariables.showLoader.value = false;
           Get.offNamed(kSpecificTripViewScreenRoute, arguments: tripModel);
+          if (photoNotice.isNotEmpty) {
+            showCustomSnackBar(content: photoNotice.value);
+          }
 
           await FirebaseTripService.sendTripInvites(
             tripId: tripModel.id,
@@ -617,8 +713,10 @@ class CreateTripController extends GetxController {
         content: e.toString(),
         contentType: ContentType.failure,
       );
+    } finally {
+      isSaving.value = false;
+      GlobalVariables.showLoader.value = false;
     }
-    GlobalVariables.showLoader.value = false;
     // Get.offAndToNamed(
     //   kSpecificTripViewScreenRoute,
     //   arguments: {'isOpenChat': true},
