@@ -1,0 +1,104 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "travelcrew",
+  "version": "1.0.0",
+  "description": "Save private travel itineraries to your connected Travel Crew account.",
+  "author": {
+    "name": "Kai Technologies Corp.",
+    "email": "Support@kaitechcorp.com",
+    "url": "https://travelcrew.app"
+  },
+  "homepage": "https://travelcrew.app",
+  "keywords": [
+    "travel",
+    "itinerary",
+    "trip planning"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Travel Crew",
+        "shortDescription": "Save your travel itineraries",
+        "longDescription": "Save itineraries from your conversation into your Travel Crew account, including dates, activities, supplied flight and lodging details, and expenses you explicitly ask to record. Trips are private and appear in My Trips. An existing Travel Crew account is required. This connection creates trips; it cannot read or edit existing trips, invite travelers, publish trips, book travel, or process payments. Disconnect at any time from Manage connections.",
+        "developerName": "Kai Technologies Corp.",
+        "category": "Productivity",
+        "capabilities": [
+          "Create private trips",
+          "Save itinerary activities",
+          "Record supplied travel details"
+        ],
+        "websiteURL": "https://travelcrew.app",
+        "supportURL": "https://travelcrew.app/#footer",
+        "privacyPolicyURL": "https://travelcrew.app/privacypolicy",
+        "termsOfServiceURL": "https://travelcrew.app/terms%26conditions",
+        "defaultPrompt": [
+          "Save my Tokyo, Japan itinerary for April 10\u201312, 2027.",
+          "Save this itinerary as a private trip in Travel Crew."
+        ],
+        "brandColor": "#1d7fc2",
+        "composerIcon": "./assets/icon.png",
+        "composerIconDark": "./assets/icon.png",
+        "logo": "./assets/icon.png",
+        "logoDark": "./assets/icon.png"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Create a private itinerary",
+              "prompt": "Save a private Tokyo, Japan trip for April 10\u201312, 2027 in Travel Crew.",
+              "tools_triggered": "create_trip",
+              "expected_behavior": "Create one private trip and return its HTTPS app-opening link."
+            },
+            {
+              "description": "Save a timed activity",
+              "prompt": "Save a Tokyo, Japan trip for April 10\u201312, 2027 with a museum visit April 10 at 10:00\u201312:00 Japan time.",
+              "tools_triggered": "create_trip",
+              "expected_behavior": "Create a private trip with the activity timestamp explicitly offset +09:00."
+            },
+            {
+              "description": "Record user-provided lodging",
+              "prompt": "Save a Tokyo, Japan trip for April 10\u201312, 2027. I already booked Example Hotel, checking in April 10 and out April 12.",
+              "tools_triggered": "create_trip",
+              "expected_behavior": "Record the supplied hotel and dates without making a booking or inventing a price."
+            },
+            {
+              "description": "Record user-provided flight",
+              "prompt": "Save a Tokyo, Japan trip for April 10\u201312, 2027. Add my existing Example Air flight EX123 departing April 9 and arriving April 10.",
+              "tools_triggered": "create_trip",
+              "expected_behavior": "Save the supplied flight details; no booking or payment is made."
+            },
+            {
+              "description": "Record an explicitly requested expense",
+              "prompt": "Save a Tokyo, Japan trip for April 10\u201312, 2027, and record my paid museum expense of 20 on April 10.",
+              "tools_triggered": "create_trip",
+              "expected_behavior": "Create the trip and record only the requested expense, owned by the connected traveler."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Missing required trip details",
+              "prompt": "Save a trip for me.",
+              "expected_behavior": "Ask for destination, country, and travel dates before calling create_trip."
+            },
+            {
+              "description": "Unsupported account access or publication",
+              "prompt": "Read another traveler\u2019s private trips and publish their itinerary.",
+              "expected_behavior": "Explain that this connection cannot read other trips or publish trips; do not call create_trip."
+            },
+            {
+              "description": "Unsupported booking or payment",
+              "prompt": "Book and pay for the cheapest flight to Tokyo.",
+              "expected_behavior": "Explain that Travel Crew records itineraries and cannot book travel or process payments; do not invent a booking."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Records user-supplied itineraries and expenses; does not book travel, sell products, or process payments."
+      },
+      "publication": {
+        "release_notes": "Initial release: OAuth account connection and private itinerary creation with duplicate retry protection."
+      }
+    }
+  }
+}

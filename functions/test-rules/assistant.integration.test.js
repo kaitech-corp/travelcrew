@@ -10,7 +10,7 @@ const {StreamableHTTPClientTransport} = require("@modelcontextprotocol/sdk/clien
 const {createAssistantApp} = require("../assistant-api");
 const {createTripService, hash} = require("../assistant-trip");
 const {sendInboxPush} = require("../notification-delivery");
-let app; let db; let auth; let server; let origin; let base; let ownerToken; let strangerToken;
+let app; let db; let auth; let server; let upstream; let origin; let base; let ownerToken; let strangerToken;
 const owner = "assistant-owner"; const stranger = "assistant-stranger";
 const trip = {title: "Tokyo weekend", destination: "Tokyo", country: "Japan", start_date: "2027-04-10", end_date: "2027-04-12",
   activities: [{title: "Museum", description: "Exhibits", location: "Museum", address: "Tokyo", start_datetime: "2027-04-10T10:00:00+09:00", end_datetime: "2027-04-10T11:00:00+09:00"}],
@@ -27,7 +27,7 @@ async function link({approve = true, token = ownerToken} = {}) {
   const registration = await request("/oauth/register", {method: "POST", body: {client_name: "Test assistant", redirect_uris: ["https://client.example/callback"], token_endpoint_auth_method: "none"}});
   assert.equal(registration.status, 201);
   const clientId = registration.data.client_id; const verifier = "v".repeat(64);
-  const query = new URLSearchParams({client_id: clientId, redirect_uri: "https://client.example/callback", response_type: "code", scope: "trips:create", resource: `${base}/mcp`, state: "state-with-&-characters", code_challenge_method: "S256", code_challenge: createHash("sha256").update(verifier).digest("base64url")});
+  const query = new URLSearchParams({client_id: clientId, redirect_uri: "https://client.example/callback", response_type: "code", scope: "trips:create", resource: `${origin}/mcp`, state: "state-with-&-characters", code_challenge_method: "S256", code_challenge: createHash("sha256").update(verifier).digest("base64url")});
   const authorization = await request(`/oauth/authorize?${query}`);
   assert.equal(authorization.status, 200);
   assert.match(authorization.headers.get("content-security-policy"), /frame-ancestors 'none'/);
@@ -36,12 +36,12 @@ async function link({approve = true, token = ownerToken} = {}) {
   const approved = await request("/oauth/consent", {method: "POST", token, body: {request_id: id, approve}, headers: {Origin: origin, Cookie: cookie}});
   assert.equal(approved.status, 200);
   const redirect = new URL(approved.data.redirect);
-  assert.equal(redirect.origin, "https://client.example"); assert.equal(redirect.searchParams.get("state"), "state-with-&-characters");
+  assert.equal(redirect.origin, "https://client.example"); assert.equal(redirect.searchParams.get("iss"), base); assert.equal(redirect.searchParams.get("state"), "state-with-&-characters");
   return {clientId, verifier, code: redirect.searchParams.get("code"), redirect, id, cookie};
 }
 async function exchange(linked, overrides = {}) {
   return request("/oauth/token", {method: "POST", body: {grant_type: "authorization_code", client_id: linked.clientId,
-    code: linked.code, code_verifier: linked.verifier, redirect_uri: "https://client.example/callback", resource: `${base}/mcp`, ...overrides}});
+    code: linked.code, code_verifier: linked.verifier, redirect_uri: "https://client.example/callback", resource: `${origin}/mcp`, ...overrides}});
 }
 async function signIn(email, password) {
   const response = await fetch(`http://${process.env.FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake-key`, {
@@ -62,22 +62,26 @@ before(async () => {
   strangerToken = await signIn(`${stranger}@example.com`, "test-password-123");
   // Start with an ephemeral port, then build the application using its actual URL.
   const http = require("node:http"); let handler;
-  server = http.createServer((req, res) => handler(req, res));
+  upstream = http.createServer((req, res) => handler(req, res));
+  await new Promise((resolve) => upstream.listen(0, "127.0.0.1", resolve));
+  const {createWebServer} = await import("../../travel_crew_web/server.mjs");
+  server = createWebServer({assistantUpstream: `http://127.0.0.1:${upstream.address().port}`});
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   origin = `http://127.0.0.1:${server.address().port}`; base = `${origin}/assistant`;
-  handler = createAssistantApp({db, auth, baseUrl: base, firebaseConfig: {apiKey: "fake-key", projectId: "demo-travelcrew-safety"}});
+  handler = createAssistantApp({db, auth, baseUrl: base, mcpUrl: `${origin}/mcp`, firebaseConfig: {apiKey: "fake-key", projectId: "demo-travelcrew-safety"}});
 });
 after(async () => {
   if (server) await new Promise((resolve) => server.close(resolve));
+  if (upstream) await new Promise((resolve) => upstream.close(resolve));
   if (db) await db.terminate(); if (app) await deleteApp(app);
 });
 
 test("API rejects anonymous requests and advertises discoverable OAuth metadata", async () => {
   const denied = await request("/v1/trips", {method: "POST", body: trip}); assert.equal(denied.status, 401);
   const metadataUrl = /resource_metadata="([^"]+)"/.exec(denied.headers.get("www-authenticate"))[1];
-  const meta = await (await fetch(metadataUrl)).json(); assert.equal(meta.resource, `${base}/mcp`);
+  const meta = await (await fetch(metadataUrl)).json(); assert.equal(meta.resource, `${origin}/mcp`);
   const issuer = await (await fetch(`${origin}/.well-known/oauth-authorization-server/assistant`)).json();
-  assert.equal(issuer.issuer, base); assert.deepEqual(issuer.code_challenge_methods_supported, ["S256"]);
+  assert.equal(issuer.issuer, base); assert.equal(issuer.authorization_response_iss_parameter_supported, true); assert.deepEqual(issuer.code_challenge_methods_supported, ["S256"]);
   const spec = await request("/openapi.json"); assert.equal(spec.status, 200); assert.ok(spec.data.paths["/v1/trips"].post.requestBody);
   const mcp = await request("/mcp", {method: "POST", body: {}}); assert.equal(mcp.status, 401);
   assert.equal((await request("/v1/trips", {method: "POST", body: trip, token: "forged"})).status, 401);
@@ -138,10 +142,12 @@ test("OAuth requires exact redirect, PKCE, resource and explicit cookie-bound co
 test("official MCP client initializes, discovers create_trip, creates and retries through OAuth", async () => {
   const linked = await link(); const tokens = (await exchange(linked)).data;
   const client = new Client({name: "integration-test", version: "1.0.0"});
-  const transport = new StreamableHTTPClientTransport(new URL(`${base}/mcp`), {requestInit: {headers: {Authorization: `Bearer ${tokens.access_token}`}}});
+  const transport = new StreamableHTTPClientTransport(new URL(`${origin}/mcp`), {requestInit: {headers: {Authorization: `Bearer ${tokens.access_token}`}}});
   try {
     await client.connect(transport);
     const tools = await client.listTools(); assert.deepEqual(tools.tools.map((t) => t.name), ["create_trip"]);
+    assert.deepEqual(tools.tools[0]._meta.securitySchemes, [{type: "oauth2", scopes: ["trips:create"]}]);
+    assert.ok(tools.tools[0].outputSchema);
     const args = {trip, idempotency_key: randomUUID()};
     const result = await client.callTool({name: "create_trip", arguments: args});
     assert.ok(!result.isError, JSON.stringify(result)); assert.equal(result.structuredContent.is_private, true);
@@ -152,7 +158,7 @@ test("official MCP client initializes, discovers create_trip, creates and retrie
 });
 test("refresh rotates tokens, detects reuse, and revokes the entire connection", async () => {
   const linked = await link(); const tokens = (await exchange(linked)).data;
-  const body = {grant_type: "refresh_token", client_id: linked.clientId, refresh_token: tokens.refresh_token, resource: `${base}/mcp`};
+  const body = {grant_type: "refresh_token", client_id: linked.clientId, refresh_token: tokens.refresh_token, resource: `${origin}/mcp`};
   const rotated = await request("/oauth/token", {method: "POST", body}); assert.equal(rotated.status, 200);
   assert.notEqual(rotated.data.refresh_token, tokens.refresh_token);
   assert.equal((await request("/oauth/token", {method: "POST", body})).status, 400);
@@ -170,15 +176,15 @@ test("official SDK discovers OAuth, registers, builds PKCE authorization and exc
     redirectToAuthorization: (value) => { store.redirect = value; },
     saveCodeVerifier: (value) => { store.verifier = value; }, codeVerifier: () => store.verifier,
   };
-  assert.equal(await authorizeClient(provider, {serverUrl: `${base}/mcp`, scope: "trips:create"}), "REDIRECT");
-  assert.equal(store.redirect.searchParams.get("resource"), `${base}/mcp`);
+  assert.equal(await authorizeClient(provider, {serverUrl: `${origin}/mcp`, scope: "trips:create"}), "REDIRECT");
+  assert.equal(store.redirect.searchParams.get("resource"), `${origin}/mcp`);
   const response = await fetch(store.redirect); assert.equal(response.status, 200);
   const html = await response.text(); const cookie = response.headers.get("set-cookie").split(";")[0];
   const id = /"requestId":"([^"]+)"/.exec(html)[1];
   const consent = await request("/oauth/consent", {method: "POST", token: ownerToken, body: {request_id: id, approve: true}, headers: {Origin: origin, Cookie: cookie}});
   assert.equal(consent.status, 200);
   const callback = new URL(consent.data.redirect); assert.equal(callback.searchParams.get("state"), "sdk-state");
-  assert.equal(await authorizeClient(provider, {serverUrl: `${base}/mcp`, authorizationCode: callback.searchParams.get("code"), scope: "trips:create"}), "AUTHORIZED");
+  assert.equal(await authorizeClient(provider, {serverUrl: `${origin}/mcp`, authorizationCode: callback.searchParams.get("code"), scope: "trips:create"}), "AUTHORIZED");
   assert.ok(store.tokens.access_token.startsWith("tc_at_")); assert.equal(store.tokens.issuer, base);
 });
 test("only the account owner can disconnect and revoked tokens stop working immediately", async () => {

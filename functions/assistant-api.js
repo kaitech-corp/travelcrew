@@ -2,19 +2,22 @@ const express = require("express");
 const {z} = require("zod");
 const {McpServer} = require("@modelcontextprotocol/sdk/server/mcp.js");
 const {StreamableHTTPServerTransport} = require("@modelcontextprotocol/sdk/server/streamableHttp.js");
+const {ListToolsRequestSchema} = require("@modelcontextprotocol/sdk/types.js");
 const {ApiError, tripSchema, idempotencySchema, createTripService} = require("./assistant-trip");
 const {createOAuth} = require("./assistant-oauth");
 const {accountPage, tripPage} = require("./assistant-pages");
 
-function createAssistantApp({db, auth, baseUrl, firebaseConfig, logger = console, now}) {
+function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger = console, now}) {
   const base = new URL(baseUrl);
   if (base.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(base.hostname)) throw new Error("ASSISTANT_BASE_URL requires HTTPS");
   if (base.search || base.hash || base.username || base.password) throw new Error("Invalid ASSISTANT_BASE_URL");
   baseUrl = base.href.replace(/\/$/, "");
+  const resourceUrl = new URL(mcpUrl || `${baseUrl}/mcp`);
+  if (resourceUrl.origin !== base.origin || resourceUrl.search || resourceUrl.hash || resourceUrl.username || resourceUrl.password) throw new Error("MCP URL must share the assistant origin and have no query or fragment");
   const app = express(); const router = express.Router();
-  const oauth = createOAuth(db, auth, baseUrl, now);
+  const oauth = createOAuth(db, auth, baseUrl, now, resourceUrl.href);
   const createTrip = createTripService(db, baseUrl, now);
-  const metadataPath = `/.well-known/oauth-protected-resource${base.pathname.replace(/\/$/, "")}/mcp`;
+  const metadataPath = `/.well-known/oauth-protected-resource${resourceUrl.pathname}`;
   const bearer = (req) => /^Bearer ([^\s]+)$/i.exec(req.get("authorization") || "")?.[1];
   app.disable("x-powered-by");
   app.use((req, res, next) => {
@@ -32,9 +35,10 @@ function createAssistantApp({db, auth, baseUrl, firebaseConfig, logger = console
     response_types_supported: ["code"], grant_types_supported: ["authorization_code", "refresh_token"],
     code_challenge_methods_supported: ["S256"], token_endpoint_auth_methods_supported: ["none"],
     revocation_endpoint_auth_methods_supported: ["none"], scopes_supported: ["trips:create"],
+    authorization_response_iss_parameter_supported: true,
   };
   const protectedMetadata = {resource: oauth.resource, authorization_servers: [baseUrl], scopes_supported: ["trips:create"], bearer_methods_supported: ["header"], resource_name: "TravelCrew trip creation"};
-  app.get(metadataPath, (req, res) => res.json(protectedMetadata));
+  app.get([...new Set([metadataPath, "/.well-known/oauth-protected-resource", `/.well-known/oauth-protected-resource${base.pathname.replace(/\/$/, "")}/mcp`])], (req, res) => res.json(protectedMetadata));
   app.get(`/.well-known/oauth-authorization-server${base.pathname.replace(/\/$/, "")}`, (req, res) => res.json(authorizationMetadata));
   router.get("/.well-known/oauth-protected-resource", (req, res) => res.json(protectedMetadata));
   router.get("/.well-known/oauth-authorization-server", (req, res) => res.json(authorizationMetadata));
@@ -76,14 +80,19 @@ function createAssistantApp({db, auth, baseUrl, firebaseConfig, logger = console
     const result = await createTrip(uid, req.body, req.get("idempotency-key"));
     res.status(result.replayed ? 200 : 201).json(result);
   });
-  router.post("/mcp", async (req, res) => {
+  const handleMcp = async (req, res) => {
     const uid = await oauth.verify(bearer(req));
-    const server = new McpServer({name: "travelcrew", version: "1.0.0"});
-    server.registerTool("create_trip", {
+    const server = new McpServer({name: "travelcrew", title: "Travel Crew", version: "1.1.0", websiteUrl: base.origin}, {
+      instructions: "Create private Travel Crew trips only when the user asks to save an itinerary. Ask for missing destination, country, and dates. Never invent bookings or paid expenses. Return the trip URL after saving; the user can open it in Travel Crew.",
+    });
+    const toolConfig = {
       title: "Create a TravelCrew trip", description: "Save a private trip to the connected user's TravelCrew account when requested. Do not invent bookings or record estimated expenses as paid. Generate a unique idempotency_key for each new trip and reuse it unchanged for retries. Return the trip URL to the user.",
       inputSchema: {idempotency_key: idempotencySchema, trip: tripSchema},
+      outputSchema: {trip_id: z.string(), url: z.string().url(), app_url: z.string(), is_private: z.literal(true), replayed: z.boolean()},
+      _meta: {securitySchemes: [{type: "oauth2", scopes: ["trips:create"]}]},
       annotations: {readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false},
-    }, async ({trip, idempotency_key: key}) => {
+    };
+    server.registerTool("create_trip", toolConfig, async ({trip, idempotency_key: key}) => {
       try {
         const result = await createTrip(uid, trip, key);
         return {content: [{type: "text", text: JSON.stringify(result)}], structuredContent: result};
@@ -92,11 +101,21 @@ function createAssistantApp({db, auth, baseUrl, firebaseConfig, logger = console
         return {isError: true, content: [{type: "text", text: JSON.stringify({error: error instanceof ApiError ? error.code : "internal_error", message: error instanceof ApiError ? error.message : "Trip creation failed. Retry with the same idempotency key."})}]};
       }
     });
+    // The SDK version in this project preserves _meta but does not yet expose
+    // top-level securitySchemes. Publish both for OpenAI and generic MCP hosts.
+    server.server.setRequestHandler(ListToolsRequestSchema, () => ({tools: [{
+      ...toolConfig, name: "create_trip", securitySchemes: toolConfig._meta.securitySchemes,
+      inputSchema: z.toJSONSchema(z.object(toolConfig.inputSchema)),
+      outputSchema: z.toJSONSchema(z.object(toolConfig.outputSchema)),
+    }]}));
     const transport = new StreamableHTTPServerTransport({sessionIdGenerator: undefined, enableJsonResponse: true});
     res.on("close", () => { transport.close().catch(() => {}); server.close().catch(() => {}); });
     await server.connect(transport);
     await transport.handleRequest(req, res, req.body);
-  });
+  };
+  app.post(resourceUrl.pathname, handleMcp);
+  app.all(resourceUrl.pathname, (req, res) => res.set("Allow", "POST").status(405).json({error: "method_not_allowed"}));
+  router.post("/mcp", handleMcp);
   router.all("/mcp", (req, res) => res.set("Allow", "POST").status(405).json({error: "method_not_allowed"}));
   app.use(base.pathname.replace(/\/$/, "") || "/", router);
   app.use((req, res) => res.status(404).json({error: "not_found"}));

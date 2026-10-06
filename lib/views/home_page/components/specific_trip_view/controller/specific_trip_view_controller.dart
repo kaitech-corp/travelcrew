@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:travel_crew/services/trip_invitation_service.dart';
+import '../invite_travelers_dialog.dart';
 import 'package:travel_crew/models/join_request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -734,97 +736,29 @@ class SpecificTripViewController extends GetxController
   }
 
   Future<void> inviteToTrip() async {
-    try {
-      if (tripModel.value == null) {
-        showCustomSnackBar(content: 'Trip not found');
-        return;
-      }
-
-      final emailController = TextEditingController();
-      Get.dialog(
-        AlertDialog(
-          title: const Text('Invite to Trip'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Enter email address to invite:'),
-              const SizedBox(height: 16),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  hintText: 'Email address',
-                  border: OutlineInputBorder(),
-                ),
-                onSubmitted: (email) {
-                  if (email.isNotEmpty && email.contains('@')) {
-                    _sendInvite(email);
-                    Get.back();
-                  } else {
-                    showCustomSnackBar(
-                      content: 'Please enter a valid email address',
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final email = emailController.text.trim();
-                if (email.isNotEmpty && email.contains('@')) {
-                  _sendInvite(email);
-                  Get.back();
-                } else {
-                  showCustomSnackBar(
-                    content: 'Please enter a valid email address',
-                  );
-                }
-              },
-              child: const Text('Send Invite'),
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      showCustomSnackBar(content: 'An error occurred while inviting to trip');
+    final trip = tripModel.value;
+    if (trip == null) {
+      showCustomSnackBar(content: 'Trip not found');
+      return;
     }
-  }
-
-  Future<void> _sendInvite(String email) async {
-    try {
-      GlobalVariables.showLoader.value = true;
-
-      // Add email to invited users list
-      tripModel.value!.invitedUsers ??= [];
-      if (!tripModel.value!.invitedUsers!.contains(email)) {
-        tripModel.value!.invitedUsers!.add(email);
-
-        final updated = await FirebaseTripService.updateTrip(
-          tripId: tripModel.value!.id,
-          data: {'invitedUsers': tripModel.value!.invitedUsers},
-        );
-        final sent = await FirebaseTripService.sendTripInvites(
-          tripId: tripModel.value!.id,
-          tripTitle: tripModel.value!.title ?? tripModel.value!.destination,
-          emails: [email],
-        );
-        if (updated && sent) {
-          showCustomSnackBar(content: 'Invitation sent to $email');
-        } else {
-          showCustomSnackBar(content: 'Failed to send invitation');
-        }
-      } else {
-        showCustomSnackBar(content: 'User already invited');
-      }
-    } catch (e) {
-      showCustomSnackBar(content: 'Failed to send invitation');
-    } finally {
-      GlobalVariables.showLoader.value = false;
+    if (!GlobalVariables.isLoggedInUser(trip.createdBy)) {
+      showCustomSnackBar(content: 'Only the trip owner can invite travelers');
+      return;
     }
+    await Get.dialog<void>(
+      InviteTravelersDialog(
+        search: (query) => TripInvitationService.search(trip.id, query),
+        send:
+            (userId, requestId) =>
+                TripInvitationService.send(trip.id, userId, requestId),
+        sendEmail:
+            (email) => FirebaseTripService.sendTripInvites(
+              tripId: trip.id,
+              tripTitle: trip.title ?? trip.destination,
+              emails: [email],
+            ),
+      ),
+      barrierDismissible: false,
+    );
   }
 }

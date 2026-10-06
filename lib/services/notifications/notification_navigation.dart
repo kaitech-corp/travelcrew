@@ -6,6 +6,8 @@ import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/services/trip_invitation_service.dart';
+import 'package:travel_crew/views/notification/trip_invitation_dialog.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/messages/users/controller/users_controller.dart';
@@ -57,6 +59,7 @@ class NotificationNavigation {
     try {
       final uid = GlobalVariables.currentUid;
       var eventType = '';
+      String? invitationId;
       var type = data['type'] as String? ?? '';
       var target = data['notificationForId'] as String? ?? '';
       final id = data['notificationId'] as String?;
@@ -78,11 +81,34 @@ class NotificationNavigation {
         }
         // Read the current server-owned target, rather than trusting an old push.
         eventType = saved['eventType'] as String? ?? '';
+        invitationId = saved['invitationId'] as String?;
         type = saved['notificationType'] as String? ?? '';
         target = saved['notificationForId'] as String? ?? '';
         await FirebaseNotificationsService.markNotificationAsRead(
           notificationId: id,
         );
+      }
+      if (type == 'Invitation') {
+        if (invitationId == null) throw StateError('Invitation unavailable');
+        final preview = await TripInvitationService.preview(
+          target,
+          invitationId,
+        );
+        if (uid != GlobalVariables.currentUid) return;
+        final accepted = await Get.dialog<bool>(
+          TripInvitationDialog(
+            preview: preview,
+            respond:
+                (accept) => TripInvitationService.respond(
+                  target,
+                  invitationId!,
+                  accept,
+                ),
+          ),
+          barrierDismissible: false,
+        );
+        if (accepted != true || uid != GlobalVariables.currentUid) return;
+        type = 'Trip';
       }
       if (type == 'Profile') {
         final profile = await AuthService.getUserPublicProfile(userId: target);

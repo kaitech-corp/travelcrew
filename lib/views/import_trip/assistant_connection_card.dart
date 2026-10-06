@@ -5,7 +5,11 @@ import 'package:travel_crew/utils/custom_snackbar.dart';
 
 const assistantBaseUrl = String.fromEnvironment(
   'ASSISTANT_BASE_URL',
-  defaultValue: 'https://universal-code-135522.web.app/assistant',
+  defaultValue: 'https://travelcrew.app/assistant',
+);
+const assistantMcpUrl = String.fromEnvironment(
+  'ASSISTANT_MCP_URL',
+  defaultValue: 'https://travelcrew.app/mcp',
 );
 
 class AssistantConnectionCard extends StatelessWidget {
@@ -38,7 +42,7 @@ class AssistantConnectionCard extends StatelessWidget {
                   label: const Text('Copy connection URL'),
                   onPressed: () async {
                     await Clipboard.setData(
-                      const ClipboardData(text: '$assistantBaseUrl/mcp'),
+                      const ClipboardData(text: assistantMcpUrl),
                     );
                     showCustomSnackBar(content: 'Connection URL copied');
                   },

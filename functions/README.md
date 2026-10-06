@@ -41,6 +41,29 @@ Use Node 22 (`nvm use`), then `npm ci`, `npm run lint`, and `npm test`.
 
 ## Deployment requirements
 
+### In-app trip invitations
+
+The trip owner's Invite action now offers **Travel Crew users** and **Email**. In-app search uses the existing `publicProfile.displayName` (the app's name/username field), matches prefixes with common casing, and returns at most 20 public results. It does not search private email addresses or expose them. Active means an enabled, non-deleted account with an available profile, not currently online. Blocked, restricted, deleted, disabled, and moderation-removed users are excluded. Current members and pending invitees are labeled in the picker.
+
+| Callable | Payload | Behavior |
+| --- | --- | --- |
+| `searchTripInviteUsersV3` | `tripId`, `query` | Owner-only public-profile search; query is 2–80 characters. |
+| `inviteTripUserV3` | `tripId`, `userId`, `requestId` | Owner-only invitation with an Inbox event and push. Retries reuse the request ID. |
+| `getTripInvitationV3` | `tripId`, `invitationId` | Recipient-only title, destination, inviter name, and current status. |
+| `respondToTripInvitationV3` | `tripId`, `invitationId`, `accept` | Recipient accepts or declines the current invitation. |
+
+Invitation state lives at `trips/{tripId}/invitations/{recipientUid}` and retry receipts at `invitationAttempts/{hash}`. Both are server-only under the current rules; clients cannot forge acceptance. Sending an invitation leaves `isShared` unchanged. Before acceptance, the recipient only sees a summary from the callable. Accepting atomically joins the crew, creates membership records, updates any existing chat/discovery count, resolves a pending join request, and notifies the owner. Declining does not join the trip. Stale responses cannot answer a replacement invitation or rejoin after leaving. Current restrictions, blocks, ownership, and trip availability are rechecked on response. Existing email invitations still use the mail processor, with invite tracking and queued mail committed together.
+
+Deploy these handlers and the updated push handler before distributing the mobile build:
+
+```sh
+firebase deploy --project universal-code-135522 --only functions:searchTripInviteUsersV3,functions:inviteTripUserV3,functions:getTripInvitationV3,functions:respondToTripInvitationV3,functions:sendPushNotificationV3,functions:sendTripInvitesV3
+```
+
+The tests include real Auth/Firestore emulator search and invitation flows, concurrent accept/decline, duplicate delivery, membership/chat consistency, private-preview access, and widget search/retry/response behavior. No new index or data backfill is required. Live FCM and email delivery still require device tokens and the configured mail extension.
+
+### Coordinated release
+
 Deploy the new functions, coordinated rules, and updated Flutter app together in staging
 before production. Older clients that write join requests/inbox events directly or call
 acceptance without an attempt ID are incompatible with the new contract. The rules let

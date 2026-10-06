@@ -42,7 +42,7 @@ void main() {
       await tester.ensureVisible(find.text('Copy connection URL'));
       await tester.tap(find.text('Copy connection URL'));
       await tester.pump();
-      expect(copied, '$assistantBaseUrl/mcp');
+      expect(copied, assistantMcpUrl);
       expect(tester.takeException(), isNull);
     });
   }

@@ -19,8 +19,7 @@ const registrationSchema = z.object({
   response_types: z.array(z.literal("code")).default(["code"]),
 }).strip();
 
-function createOAuth(db, auth, baseUrl, now = () => Date.now()) {
-  const resource = `${baseUrl}/mcp`;
+function createOAuth(db, auth, baseUrl, now = () => Date.now(), resource = `${baseUrl}/mcp`) {
   const ref = (kind, token) => db.doc(`assistantOAuth${kind}/${hash(token)}`);
   async function firebaseIdentity(token) {
     try {
@@ -84,6 +83,7 @@ function createOAuth(db, auth, baseUrl, now = () => Date.now()) {
       const request = (await tx.get(requestRef)).data();
       if (!request || request.expiresAt.toMillis() <= now() || !equal(request.cookieHash, hash(cookie))) throw fail();
       const destination = new URL(request.redirect);
+      destination.searchParams.set("iss", baseUrl);
       if (request.state) destination.searchParams.set("state", request.state);
       tx.delete(requestRef);
       if (approve) {

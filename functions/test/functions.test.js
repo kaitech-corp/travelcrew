@@ -18,7 +18,7 @@ function fixture() {
     set: async (data) => records.set(key, data),
     id: key.split("/").at(-1),
     collection: (name) => collection(`${key}/${name}`),
-    get: async () => ({exists: records.has(key), data: () => records.get(key)}),
+    get: async () => ({ref: ref(key), exists: records.has(key), data: () => records.get(key)}),
     create: async (data) => {
       if (records.has(key)) throw Object.assign(new Error("exists"), {code: 6});
       records.set(key, data);
@@ -35,7 +35,7 @@ function fixture() {
   const db = {collection, runTransaction: async (fn) => fn({
     get: (r) => r.get(), set: (r, data) => r.set(data),
   }), batch: () => ({
-    set: (ref, data) => mail.push(data), commit: async () => {},
+    set: (ref, data) => mail.push(data), update: () => {}, commit: async () => {},
   })};
   class HttpsError extends Error {
     constructor(code, message) { super(message); this.code = code; }
@@ -47,7 +47,7 @@ function fixture() {
     },
     "firebase-functions/v2/https": {onCall: (fn) => fn, onRequest: (_, fn) => fn, HttpsError},
     "firebase-admin/app": {initializeApp: () => {}, getApp: () => ({options: {storageBucket: "app.appspot.com"}})},
-    "firebase-admin/firestore": {getFirestore: () => db},
+    "firebase-admin/firestore": {getFirestore: () => db, FieldValue: require("firebase-admin/firestore").FieldValue},
     "firebase-admin/messaging": {getMessaging: () => ({sendEachForMulticast: async (payload) => {
       sends.push(payload);
       return {responses: payload.tokens.map((token) => token === "expired" ?
@@ -63,6 +63,7 @@ function fixture() {
     "./notification-data": require("../notification-data"),
     "./notification-delivery": require("../notification-delivery"),
     "./trip-actions": require("../trip-actions"),
+    "./trip-invitations": require("../trip-invitations"),
     "./safety": require("../safety"),
     "./safety-triggers": require("../safety-triggers"),
     "./validation": validation,
@@ -178,6 +179,10 @@ test("index exports all required text moderation, image moderation, and service 
     "sendPushNotificationV3",
     "sendWelcomeNotificationV3",
     "sendTripInvitesV3",
+    "searchTripInviteUsersV3",
+    "inviteTripUserV3",
+    "getTripInvitationV3",
+    "respondToTripInvitationV3",
     "placePhotoV3",
   ];
   for (const fn of expected) {

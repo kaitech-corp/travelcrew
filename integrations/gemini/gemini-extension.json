@@ -1,0 +1,10 @@
+{
+  "name": "travelcrew",
+  "version": "1.0.0",
+  "mcpServers": {
+    "travelcrew": {
+      "httpUrl": "https://travelcrew.app/mcp",
+      "trust": false
+    }
+  }
+}

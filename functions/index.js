@@ -1,7 +1,7 @@
 const {onDocumentCreated, onDocumentWritten} = require("firebase-functions/v2/firestore");
 const {onRequest, HttpsError, onCall} = require("firebase-functions/v2/https");
 const {initializeApp, getApp} = require("firebase-admin/app");
-const {getFirestore} = require("firebase-admin/firestore");
+const {getFirestore, FieldValue} = require("firebase-admin/firestore");
 const {getMessaging} = require("firebase-admin/messaging");
 const {getStorage} = require("firebase-admin/storage");
 const {GoogleAuth} = require("google-auth-library");
@@ -23,6 +23,7 @@ exports.assistantV1 = onRequest({maxInstances: 10, timeoutSeconds: 60, memory: "
   if (!assistantApp) {
     const {createAssistantApp} = require("./assistant-api");
     assistantApp = createAssistantApp({db: getDb(), auth: getAuth(), baseUrl: process.env.ASSISTANT_BASE_URL,
+      mcpUrl: process.env.ASSISTANT_MCP_URL,
       firebaseConfig: JSON.parse(process.env.ASSISTANT_FIREBASE_CONFIG), logger});
   }
   return assistantApp(req, res);
@@ -46,6 +47,12 @@ exports.cancelJoinRequestV3 = onCall((request) => tripActions.transition(request
 exports.acceptJoinRequestV3 = onCall((request) => tripActions.transition(request, "accepted"));
 exports.rejectJoinRequestV3 = onCall((request) => tripActions.transition(request, "rejected"));
 exports.leaveTripV3 = onCall(tripActions.leave);
+const {createTripInvitations} = require("./trip-invitations");
+const tripInvitations = createTripInvitations(getDb(), getAuth());
+exports.searchTripInviteUsersV3 = onCall(tripInvitations.search);
+exports.inviteTripUserV3 = onCall(tripInvitations.send);
+exports.getTripInvitationV3 = onCall(tripInvitations.preview);
+exports.respondToTripInvitationV3 = onCall(tripInvitations.respond);
 exports.reviewReportV3 = onCall(safety.reviewReport);
 exports.cleanBlockedPairV3 = onDocumentCreated(
     {database: DATABASE_ID, document: "users/{uid}/blockedUsers/{target}", retry: true},
@@ -200,6 +207,7 @@ exports.sendTripInvitesV3 = onCall(async (request) => {
       createdAt: new Date(),
     });
   }
+  batch.update(tripDoc.ref, {invitedUsers: FieldValue.arrayUnion(...uniqueEmails)});
   await batch.commit();
   // Acknowledge submitted addresses without revealing registered or blocked recipients.
   // Delivery needs the mail extension.

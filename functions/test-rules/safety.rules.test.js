@@ -29,6 +29,21 @@ beforeEach(async () => {
 });
 const dbFor = (uid) => env.authenticatedContext(uid).firestore();
 
+test("invitations and attempt receipts are server-owned and do not grant private trip access", async () => {
+  await env.withSecurityRulesDisabled(async (context) => {
+    const db = context.firestore();
+    await setDoc(doc(db, "trips/private-invite"), {id: "private-invite", createdBy: "bob", joinedUsers: [], isShared: false});
+    await setDoc(doc(db, "trips/private-invite/invitations/alice"), {userId: "alice", invitationId: "invite", status: "pending"});
+    await setDoc(doc(db, "invitationAttempts/receipt"), {userId: "alice"});
+  });
+  const db = dbFor("alice");
+  await assertFails(getDoc(doc(db, "trips/private-invite")));
+  await assertFails(getDoc(doc(db, "trips/private-invite/invitations/alice")));
+  await assertFails(setDoc(doc(db, "trips/private-invite/invitations/alice"), {status: "accepted"}));
+  await assertFails(getDoc(doc(db, "invitationAttempts/receipt")));
+  await assertFails(setDoc(doc(dbFor("bob"), "trips/private-invite/invitations/alice"), {status: "pending"}));
+});
+
 test("assistant credentials and idempotency receipts are inaccessible to ordinary clients", async () => {
   for (const collection of ["assistantOAuthRequests", "assistantOAuthCodes", "assistantOAuthTokens", "assistantOAuthGrants", "assistantOAuthClients", "assistantRequests", "assistantQuotas"]) {
     const path = `${collection}/test`;
