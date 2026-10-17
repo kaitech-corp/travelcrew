@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
@@ -40,7 +39,7 @@ class TripsWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: Get.width * 0.84,
+        width: double.infinity,
         margin: EdgeInsets.only(left: 3.w, right: 5.w, bottom: 10.h, top: 10),
         decoration: ShapeDecoration(
           color: Colors.white,
@@ -62,20 +61,31 @@ class TripsWidget extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24.r),
-          child: Row(children: [_buildTripImage(), _buildTripDetails()]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildTripImage(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: _buildTripDetails(),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildTripImage() {
-    return Padding(
-      padding: const EdgeInsets.all(7),
+    return AspectRatio(
+      aspectRatio: 16 / 9,
       child: AnyImageView(
         url: images.isNotEmpty ? images.first : '',
-        borderRadius: BorderRadius.circular(18.r),
-        width: 135.w,
-        height: 101.h,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        errorFit: BoxFit.cover,
         errorImage: AppImages.kDefaultTripImage,
       ),
     );
@@ -89,97 +99,95 @@ class TripsWidget extends StatelessWidget {
             .toList();
     final additionalMemberCount = (tripModel?.joindUsersList?.length ?? 0) - 4;
 
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 10.h),
-          Row(
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: AppStyles.fontSize18,
-                color: Colors.black54,
-              ),
-              SizedBox(width: 4.w),
-              Expanded(
-                child: Text(
-                  country,
-                  style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: AppStyles.fontSize14,
-                    fontWeight: FontWeight.w500,
-                    height: 1.29,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  tripModel?.title ?? '',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppStyles.labelTextStyle().copyWith(
-                    fontSize: AppStyles.fontSize20,
-                    fontWeight: FontWeight.w600,
-                    height: 1.33,
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                '|',
-                style: AppStyles.labelTextStyle().copyWith(
-                  fontSize: AppStyles.fontSize24,
-                  color: Colors.black26,
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Image.asset(AppImages.kPlaneIcon, scale: 4),
-              SizedBox(width: 4.w),
-              Text(
-                tripTimingLabel ?? 'in ${daysToGo}d.',
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10.h),
+        Row(
+          children: [
+            Icon(
+              Icons.location_on_outlined,
+              size: AppStyles.fontSize18,
+              color: Colors.black54,
+            ),
+            SizedBox(width: 4.w),
+            Expanded(
+              child: Text(
+                country,
                 style: AppStyles.labelTextStyle().copyWith(
                   fontSize: AppStyles.fontSize14,
                   fontWeight: FontWeight.w500,
-                  height: 1.23,
+                  height: 1.29,
                 ),
               ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    AppImages.kCalendarIcon,
-                    scale: 6,
-                    color: AppColors.kBlackColor,
-                  ),
-                  SizedBox(width: 4.w),
-                  Text(
-                    '$startDate - $endDate',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: AppStyles.fontSize14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+            ),
+          ],
+        ),
+        SizedBox(height: 8.h),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                tripModel?.title ?? '',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppStyles.labelTextStyle().copyWith(
+                  fontSize: AppStyles.fontSize20,
+                  fontWeight: FontWeight.w600,
+                  height: 1.33,
+                ),
               ),
-              SizedBox(height: 4.h),
-              buildMemberAvatars(
-                memberAvatars: joinedMemberAvatars,
-                additionalMembers: additionalMemberCount,
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              '|',
+              style: AppStyles.labelTextStyle().copyWith(
+                fontSize: AppStyles.fontSize24,
+                color: Colors.black26,
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            SizedBox(width: 8.w),
+            Image.asset(AppImages.kPlaneIcon, scale: 4),
+            SizedBox(width: 4.w),
+            Text(
+              tripTimingLabel ?? 'in ${daysToGo}d.',
+              style: AppStyles.labelTextStyle().copyWith(
+                fontSize: AppStyles.fontSize14,
+                fontWeight: FontWeight.w500,
+                height: 1.23,
+              ),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Image.asset(
+                  AppImages.kCalendarIcon,
+                  scale: 6,
+                  color: AppColors.kBlackColor,
+                ),
+                SizedBox(width: 4.w),
+                Text(
+                  '$startDate - $endDate',
+                  style: AppStyles.labelTextStyle().copyWith(
+                    fontSize: AppStyles.fontSize14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4.h),
+            buildMemberAvatars(
+              memberAvatars: joinedMemberAvatars,
+              additionalMembers: additionalMemberCount,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

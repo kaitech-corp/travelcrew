@@ -2,8 +2,10 @@
 
 Connect to **https://travelcrew.app/mcp** using Streamable HTTP and OAuth.
 The only tool is `create_trip`, which saves a private itinerary in the connected
-Travel Crew account. It supports activities, supplied flight/lodging details,
-and explicitly requested expenses. It returns an HTTPS link to open the trip.
+Travel Crew account. It supports activities, user-supplied transportation plans (including flights,
+driving, rideshare, trains, buses, and scooters), lodging, and explicitly requested
+expenses. Transportation entries use only mode, optional local departure/arrival
+times, and notes; route, provider, and traveler details go in notes. It returns an HTTPS link to open the trip.
 It does not book travel or read/edit existing trips. Manage or disconnect access
 at **https://travelcrew.app/assistant/connect**.
 

@@ -14,14 +14,13 @@ let app; let db; let auth; let server; let upstream; let origin; let base; let o
 const owner = "assistant-owner"; const stranger = "assistant-stranger";
 const trip = {title: "Tokyo weekend", destination: "Tokyo", country: "Japan", start_date: "2027-04-10", end_date: "2027-04-12",
   transportation: [
-    {mode: "rideshare", provider: "Uber", origin: "Airport", destination: "Hotel", travelers: ["Owner"]},
-    {mode: "train", title: "Train excursion", departure: "2027-04-11T10:00:00+09:00"},
-    {mode: "flight", service_number: "AB456", departure: "2027-04-12T10:00:00+09:00", arrival: "2027-04-12T04:00:00-07:00"},
+    {mode: "rideshare", notes: "Uber, Airport to Hotel, Owner"},
+    {mode: "train", notes: "Train excursion", departure: "2027-04-11T10:00:00"},
+    {mode: "flight", notes: "Airline AB456", departure: "2027-04-12T10:00:00", arrival: "2027-04-12T04:00:00"},
   ],
   activities: [{title: "Museum", description: "Exhibits", location: "Museum", address: "Tokyo", start_datetime: "2027-04-10T10:00:00+09:00", end_datetime: "2027-04-10T11:00:00+09:00"}],
   expenses: [{name: "Booked hotel", amount: 120, date: "2027-04-10"}],
-  lodging: {name: "Hotel", check_in: "2027-04-10", check_out: "2027-04-12", cost_per_night: 60},
-  airline: {name: "Airline", flight_number: "AB123", departure_date: "2027-04-09", arrival_date: "2027-04-10"}};
+  lodging: {name: "Hotel", check_in: "2027-04-10", check_out: "2027-04-12", cost_per_night: 60}};
 async function request(path, {method = "GET", body, token, headers = {}} = {}) {
   const response = await fetch(`${base}${path}`, {method, headers: {...(body ? {"Content-Type": "application/json"} : {}), ...(token ? {Authorization: `Bearer ${token}`} : {}), ...headers}, body: body ? JSON.stringify(body) : undefined, redirect: "manual"});
   const text = await response.text();
@@ -61,7 +60,7 @@ before(async () => {
   for (const uid of [owner, stranger]) {
     try { await auth.deleteUser(uid); } catch (error) { if (error.code !== "auth/user-not-found") throw error; }
     await auth.createUser({uid, email: `${uid}@example.com`, password: "test-password-123", emailVerified: true});
-    await db.doc(`users/${uid}`).set({uid});
+    await db.doc(`users/${uid}`).set({uid, displayName: "Test traveler"});
   }
   ownerToken = await signIn(`${owner}@example.com`, "test-password-123");
   strangerToken = await signIn(`${stranger}@example.com`, "test-password-123");
@@ -103,10 +102,15 @@ test("API atomically persists Flutter-compatible private itinerary, memberships 
   assert.equal((await db.doc(`trips/${id}/members/${owner}`).get()).data().status, "active");
   assert.equal((await db.doc(`trips/${id}/activities/activity_0`).get()).data().startDateTime, trip.activities[0].start_datetime);
   assert.deepEqual((await db.doc(`trips/${id}/expenses/expense_0`).get()).data().owners, {[owner]: 120});
-  assert.equal((await db.doc(`trips/${id}/flights/${owner}`).get()).data().userId, owner);
-  assert.equal((await db.doc(`trips/${id}/transportation/transport_0`).get()).data().provider, "Uber");
-  assert.equal((await db.doc(`trips/${id}/transportation/transport_1`).get()).data().departure, trip.transportation[1].departure);
-  assert.equal((await db.doc(`trips/${id}/flights/transport_2`).get()).data().flightNumber, "AB456");
+  const transports = await db.collection(`trips/${id}/transportation`).get();
+  assert.equal(transports.size, trip.transportation.length);
+  for (const [index, item] of trip.transportation.entries()) {
+    assert.deepEqual((await db.doc(`trips/${id}/transportation/transport_${index}`).get()).data(), {
+      id: `transport_${index}`, tripId: id, userId: owner, displayName: "Test traveler",
+      mode: item.mode, notes: item.notes, departure: item.departure || null, arrival: item.arrival || null,
+    });
+  }
+  assert.equal((await db.collection(`trips/${id}/flights`).get()).empty, true);
 
   const note = (await db.doc(`notifications/${owner}/notification/assistant_${id}`).get()).data(); assert.equal(note.notificationType, "Trip");
   const retry = await request("/v1/trips", {method: "POST", body: trip, token: ownerToken, headers: {"Idempotency-Key": key}});
@@ -157,9 +161,26 @@ test("official MCP client initializes, discovers create_trip, creates and retrie
     const tools = await client.listTools(); assert.deepEqual(tools.tools.map((t) => t.name), ["create_trip"]);
     assert.deepEqual(tools.tools[0]._meta.securitySchemes, [{type: "oauth2", scopes: ["trips:create"]}]);
     assert.ok(tools.tools[0].outputSchema);
+    const tool = tools.tools[0];
+    assert.match(tool.description, /trip.transportation/);
+    assert.match(client.getInstructions(), /local clock/);
+    const properties = tool.inputSchema.properties.trip.properties;
+    assert.equal(Object.hasOwn(properties, "airline"), false);
+    assert.deepEqual(Object.keys(properties.transportation.items.properties).sort(), ["arrival", "departure", "mode", "notes"]);
+    assert.deepEqual(properties.transportation.items.required, ["mode"]);
+    const openapi = (await request("/openapi.json")).data;
+    assert.deepEqual(openapi.paths["/v1/trips"].post.requestBody.content["application/json"].schema.properties, properties);
     const args = {trip, idempotency_key: randomUUID()};
     const result = await client.callTool({name: "create_trip", arguments: args});
     assert.ok(!result.isError, JSON.stringify(result)); assert.equal(result.structuredContent.is_private, true);
+    const savedTransport = await db.doc(`trips/${result.structuredContent.trip_id}/transportation/transport_2`).get();
+    assert.equal(savedTransport.data().mode, "flight");
+    assert.equal(savedTransport.data().arrival, trip.transportation[2].arrival);
+    assert.equal(savedTransport.data().displayName, "Test traveler");
+    for (const invalid of [{...trip, airline: {}}, {...trip, transportation: [{mode: "flight", provider: "Obsolete"}]}]) {
+      const rejected = await client.callTool({name: "create_trip", arguments: {trip: invalid, idempotency_key: randomUUID()}});
+      assert.equal(rejected.isError, true);
+    }
     const retry = await client.callTool({name: "create_trip", arguments: args}); assert.equal(retry.structuredContent.trip_id, result.structuredContent.trip_id);
     const conflict = await client.callTool({name: "create_trip", arguments: {...args, trip: {...trip, title: "Changed"}}}); assert.equal(conflict.isError, true);
     assert.equal((await db.doc(`trips/${result.structuredContent.trip_id}`).get()).data().createdBy, owner);

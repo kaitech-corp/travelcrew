@@ -68,10 +68,10 @@ function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger =
     tripPage(res, req.params.id);
   });
   router.get("/openapi.json", (req, res) => res.json({
-    openapi: "3.1.0", info: {title: "TravelCrew trip creation", version: "1.0.0"}, servers: [{url: baseUrl}],
+    openapi: "3.1.0", info: {title: "TravelCrew trip creation", version: "2.0.0"}, servers: [{url: baseUrl}],
     paths: {"/v1/trips": {post: {operationId: "createTrip", summary: "Create a private trip for the connected user",
       security: [{oauth: ["trips:create"]}], parameters: [{in: "header", name: "Idempotency-Key", required: true, schema: z.toJSONSchema(idempotencySchema)}],
-      requestBody: {required: true, content: {"application/json": {schema: z.toJSONSchema(tripSchema)}}},
+      requestBody: {required: true, content: {"application/json": {schema: z.toJSONSchema(tripSchema, {io: "input"})}}},
       responses: {201: {description: "Trip created"}, 200: {description: "Existing result returned for a retry"}, 400: {description: "Invalid itinerary"}, 401: {description: "Authentication required"}, 403: {description: "Account unavailable"}, 409: {description: "Idempotency key reused with different input"}, 429: {description: "Daily trip quota reached"}},
     }}}, components: {securitySchemes: {oauth: {type: "oauth2", flows: {authorizationCode: {authorizationUrl: authorizationMetadata.authorization_endpoint, tokenUrl: authorizationMetadata.token_endpoint, scopes: {"trips:create": "Create private trips"}}}}}},
   }));
@@ -82,11 +82,11 @@ function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger =
   });
   const handleMcp = async (req, res) => {
     const uid = await oauth.verify(bearer(req));
-    const server = new McpServer({name: "travelcrew", title: "Travel Crew", version: "1.1.0", websiteUrl: base.origin}, {
-      instructions: "Create private Travel Crew trips only when the user asks to save an itinerary. Ask for missing destination, country, and dates. Never invent bookings or paid expenses. Cover options are No image (omit image_url) and Suggested destination photo. Only supply a photo when requested, using a verified relevant direct Wikimedia Commons URL with Public domain or CC0 license. If you cannot verify one, omit it. Never generate artwork or invent photo URLs. A cover_status of unavailable means the trip saved without the photo: explain this and return the trip URL. Users can add their own photo in the app.",
+    const server = new McpServer({name: "travelcrew", title: "Travel Crew", version: "2.0.0", websiteUrl: base.origin}, {
+      instructions: "Create private Travel Crew trips only when the user asks to save an itinerary. Ask for missing destination, country, and dates. Include user-supplied transportation plans in trip.transportation for any mode, including flights, driving, rideshare, train, bus, or scooter. Use only mode, optional departure/arrival, and notes; put routes, providers, drivers, service or flight numbers, and travelers in notes. Keep each endpoint's local clock as provided without requiring UTC offsets or converting to the phone timezone. Omit unknown times. Never invent bookings or paid expenses. Cover options are No image (omit image_url) and Suggested destination photo. Only supply a photo when requested, using a verified relevant direct Wikimedia Commons URL with Public domain or CC0 license. If you cannot verify one, omit it. Never generate artwork or invent photo URLs. A cover_status of unavailable means the trip saved without the photo: explain this and return the trip URL. Users can add their own photo in the app.",
     });
     const toolConfig = {
-      title: "Create a TravelCrew trip", description: "Save a private trip to the connected user's TravelCrew account when requested. Do not invent bookings or record estimated expenses as paid. Generate a unique idempotency_key for each new trip and reuse it unchanged for retries. Return the trip URL to the user.",
+      title: "Create a TravelCrew trip", description: "Save a private trip to the connected user's TravelCrew account when requested. Include user-supplied transportation plans in trip.transportation for any mode, including flights, driving, rideshare, train, bus, or scooter. Use only mode, optional departure/arrival, and notes; put routes, providers, drivers, service or flight numbers, and travelers in notes. Keep each endpoint's local clock as provided without requiring UTC offsets or converting to the phone timezone. Omit unknown times. Do not invent bookings or record estimated expenses as paid. Generate a unique idempotency_key for each new trip and reuse it unchanged for retries. Return the trip URL to the user.",
       inputSchema: {idempotency_key: idempotencySchema, trip: tripSchema},
       outputSchema: {trip_id: z.string(), url: z.string().url(), app_url: z.string(), is_private: z.literal(true), replayed: z.boolean(), cover_status: z.enum(["ready", "unavailable"]).optional()},
       _meta: {securitySchemes: [{type: "oauth2", scopes: ["trips:create"]}]},
@@ -105,7 +105,7 @@ function createAssistantApp({db, auth, baseUrl, mcpUrl, firebaseConfig, logger =
     // top-level securitySchemes. Publish both for OpenAI and generic MCP hosts.
     server.server.setRequestHandler(ListToolsRequestSchema, () => ({tools: [{
       ...toolConfig, name: "create_trip", securitySchemes: toolConfig._meta.securitySchemes,
-      inputSchema: z.toJSONSchema(z.object(toolConfig.inputSchema)),
+      inputSchema: z.toJSONSchema(z.object(toolConfig.inputSchema), {io: "input"}),
       outputSchema: z.toJSONSchema(z.object(toolConfig.outputSchema)),
     }]}));
     const transport = new StreamableHTTPServerTransport({sessionIdGenerator: undefined, enableJsonResponse: true});

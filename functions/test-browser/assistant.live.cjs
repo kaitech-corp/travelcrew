@@ -63,7 +63,7 @@ async function main() {
     const tools = await client.listTools(); assert.deepEqual(tools.tools.map((v) => v.name), ["create_trip"]);
     assert.ok(tools.tools[0].outputSchema); assert.deepEqual(tools.tools[0]._meta.securitySchemes, [{type: "oauth2", scopes: ["trips:create"]}]);
     const trip = {title: "MCP verification — delete after test", destination: "Tokyo", country: "Japan", start_date: "2027-04-10", end_date: "2027-04-12"};
-    const variants = [trip, {...trip, activities: [{title: "Museum", start_datetime: "2027-04-10T10:00:00+09:00"}]}, {...trip, lodging: {name: "User-specified hotel", check_in: "2027-04-10", check_out: "2027-04-12"}}, {...trip, airline: {name: "User-specified airline", flight_number: "TEST123"}}, {...trip, expenses: [{name: "User-requested expense", amount: 20, date: "2027-04-10"}]}];
+    const variants = [trip, {...trip, activities: [{title: "Museum", start_datetime: "2027-04-10T10:00:00+09:00"}]}, {...trip, lodging: {name: "User-specified hotel", check_in: "2027-04-10", check_out: "2027-04-12"}}, {...trip, transportation: [{mode: "flight", notes: "User-specified airline TEST123"}, {mode: "rideshare", notes: "Uber to hotel"}]}, {...trip, expenses: [{name: "User-requested expense", amount: 20, date: "2027-04-10"}]}];
     for (const input of variants) {
       const args = {trip: input, idempotency_key: randomUUID()};
       const saved = await client.callTool({name: "create_trip", arguments: args});

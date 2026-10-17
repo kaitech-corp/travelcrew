@@ -19,7 +19,7 @@
       "interface": {
         "displayName": "Travel Crew",
         "shortDescription": "Save your travel itineraries",
-        "longDescription": "Save itineraries from your conversation into your Travel Crew account, including dates, activities, supplied flight and lodging details, and expenses you explicitly ask to record. Trips are private and appear in My Trips. An existing Travel Crew account is required. This connection creates trips; it cannot read or edit existing trips, invite travelers, publish trips, book travel, or process payments. Disconnect at any time from Manage connections.",
+        "longDescription": "Save itineraries from your conversation into your Travel Crew account, including dates, activities, transportation plans for flights, driving, rideshare, trains, buses, scooters and other modes, lodging details, and expenses you explicitly ask to record. Trips are private and appear in My Trips. An existing Travel Crew account is required. This connection creates trips; it cannot read or edit existing trips, invite travelers, publish trips, book travel, or process payments. Disconnect at any time from Manage connections.",
         "developerName": "Kai Technologies Corp.",
         "category": "Productivity",
         "capabilities": [
@@ -63,10 +63,10 @@
               "expected_behavior": "Record the supplied hotel and dates without making a booking or inventing a price."
             },
             {
-              "description": "Record user-provided flight",
-              "prompt": "Save a Tokyo, Japan trip for April 10\u201312, 2027. Add my existing Example Air flight EX123 departing April 9 and arriving April 10.",
+              "description": "Record user-provided transportation",
+              "prompt": "Save a Tokyo, Japan trip for April 10\u201312, 2027. Add my existing Example Air flight EX123 departing April 9 at 10:00 local time and arriving April 10 at 14:00 local time, an Uber to my hotel, and a scooter rental.",
               "tools_triggered": "create_trip",
-              "expected_behavior": "Save the supplied flight details; no booking or payment is made."
+              "expected_behavior": "Save three transportation entries with modes flight, rideshare, and scooter. Use only mode, optional departure/arrival, and notes. Keep each endpoint local clock as supplied without asking for UTC offsets; omit unspecified times. Put airline, flight number, route, and rental details in notes. Do not use airline or removed structured fields. No booking or payment is made."
             },
             {
               "description": "Record an explicitly requested expense",

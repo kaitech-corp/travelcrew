@@ -27,7 +27,9 @@ class LocationWidget extends StatelessWidget {
       child: Stack(
         children: [
           AnyImageView(
-            width: Get.width,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorFit: BoxFit.cover,
             height:
                 MediaQuery.sizeOf(context).width >= 600
                     ? 300

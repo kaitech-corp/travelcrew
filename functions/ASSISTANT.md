@@ -67,16 +67,11 @@ travel and should not invent bookings or treat estimated costs as paid expenses.
 The existing manual JSON importer also accepts local activity timestamps; the
 external API deliberately requires their timezone to avoid ambiguous imports.
 
-Travel clocks are local to the venue: departure uses the departure airport's
-offset, arrival uses the arrival airport's offset, and lodging and activities use
-their own location's offset on the event date. Flight and lodging fields accept
-either a calendar date or an offset-bearing timestamp. Mobile and web displays
-retain those wall times without UTC offset labels; saving and calendar exports
-retain the instant. Date-only and legacy unzoned values stay unzoned. A `Z` value
-is displayed as UTC because its original venue timezone cannot be recovered
-without additional information. Offsets are not IANA timezone rules: changing an
-event to another date across a daylight-saving boundary requires the correct new
-offset from the itinerary source. Never guess the venue timezone from the phone.
+Activity and lodging clocks use their location's offset on the event date.
+Lodging accepts a calendar date or an offset-bearing timestamp. Displays retain
+those wall times without UTC offset labels. Transportation, including flights,
+uses each endpoint's local clock as supplied without requiring an offset (see
+below). Never guess the venue timezone from the phone.
 
 Send `Authorization: Bearer <token>` and `Idempotency-Key: <unique-request-id>`.
 Keys must contain 16–128 letters, digits, underscores or hyphens. Retries must use
@@ -90,16 +85,17 @@ required on each entry; omit unknown fields, including dates and times. Modes ar
 `flight`, `driving`, `rideshare`, `taxi`, `train`, `bus`, `scooter`, `bicycle`,
 `walking`, `ferry`, `boat`, and `other`. The app uses mode, optional `departure`
 and `arrival`, and `notes`. Put routes, provider, driver, service/flight numbers,
-and traveler names in notes. Older optional structured fields are still accepted
-by the API for compatibility, but are no longer separate app inputs or card fields.
+and traveler names in notes. The only accepted transportation fields are `mode`,
+`departure`, `arrival`, and `notes`. Removed structured fields and the top-level
+`airline` input are rejected; there are no compatibility aliases or migration.
 
 ```json
 {
   "transportation": [
     {
       "mode": "flight",
-      "departure": "2027-04-10T10:00:00-07:00",
-      "arrival": "2027-04-11T14:00:00+09:00",
+      "departure": "2027-04-10T10:00:00",
+      "arrival": "2027-04-11T14:00:00",
       "notes": "Example Air TC123, Los Angeles to Tokyo Narita. Randy and Alex."
     },
     {"mode": "rideshare", "notes": "Uber airport transfer"},
@@ -108,17 +104,19 @@ by the API for compatibility, but are no longer separate app inputs or card fiel
 }
 ```
 
-This is a fragment to add to the required itinerary fields above. Each endpoint
-uses its own location's offset on the travel date, or a date without a time.
+This is a fragment to add to the required itinerary fields above. Transportation
+uses each endpoint's local clock as entered, without requiring a timezone suffix.
+The native editor never applies the phone timezone or asks for an offset. Dates
+without times are also accepted. Unzoned clocks do not identify absolute instants;
+an arrival clock can be earlier than departure when locations differ.
 The server derives ownership; traveler names do not grant trip membership.
 
-The existing optional `airline` input still works. Use either that input or a
-transportation entry for the same flight, to avoid creating it twice. Flights
-continue to use the existing flight storage shape, so older clients retain their
-flight view. Other modes are additive and require the updated app to display.
-The updated mobile app and shared trip page label this section Transportation;
-the manual JSON importer accepts the same optional array. No bulk migration is
-required. Source changes require coordinated Firestore rules, backend, web, and
+Every mode, including `flight`, is stored in `trips/{id}/transportation` using
+mode, optional times, and notes. The server adds the authenticated account's
+user ID and display name; the assistant cannot supply author metadata. No flight
+summary fields or duplicate flight documents are written. The updated mobile app
+and shared trip page read these entries in Transportation. The manual JSON
+importer is a separate input path. Source changes require coordinated backend and
 mobile releases; these documentation changes do not deploy them.
 
 Creation returns 201, or 200 for a replay:

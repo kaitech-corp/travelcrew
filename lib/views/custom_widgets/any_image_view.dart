@@ -10,6 +10,7 @@ class AnyImageView extends StatelessWidget {
     super.key,
     this.ontap,
     this.fit = BoxFit.cover,
+    this.errorFit = BoxFit.contain,
     this.fileType = SourceType.network,
     this.containerBackgroundColor,
     this.borderRadius,
@@ -31,6 +32,7 @@ class AnyImageView extends StatelessWidget {
   final Widget? errorWidget;
   final EdgeInsetsGeometry? padding;
   final BoxFit fit;
+  final BoxFit errorFit;
   final BoxBorder? border;
   final Color? imageColor;
   final double? height;
@@ -156,7 +158,7 @@ class AnyImageView extends StatelessWidget {
           color: imageColor,
           height: height,
           width: width,
-          fit: BoxFit.contain,
+          fit: errorFit,
         );
   }
 }

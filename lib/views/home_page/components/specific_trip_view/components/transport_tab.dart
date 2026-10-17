@@ -1,357 +1,272 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:travel_crew/models/user_flight_model.dart';
+import 'package:travel_crew/models/transportation_model.dart';
+import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/session_services.dart';
-import 'package:travel_crew/utils/app_colors.dart';
-import 'package:travel_crew/utils/app_images.dart';
-import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
+import 'package:travel_crew/services/transportation_service.dart';
+import '../controller/specific_trip_view_controller.dart';
+import '../controller/transportation_editor_controller.dart';
+import 'transportation_editor.dart';
 
-import '../../../../../utils/app_styles.dart';
+Future<void> showTransportationEditor(
+  BuildContext context,
+  TripModel trip, {
+  TransportationModel? existing,
+}) async {
+  final controller = TransportationEditorController(
+    existing: existing,
+    tripId: trip.id,
+    userId: GlobalVariables.currentUid,
+    displayName: GlobalVariables.loggedInUser.value?.displayName ?? '',
+  );
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    isDismissible: false,
+    enableDrag: false,
+    builder:
+        (_) => TransportationEditor(
+          controller: controller,
+          onSave:
+              (entry) =>
+                  TransportationService.save(entry, isNew: existing == null),
+        ),
+  );
+}
 
-class TransportTab extends StatelessWidget {
-  const TransportTab({super.key, required this.controller});
+class TransportTab extends StatefulWidget {
+  const TransportTab({super.key, required this.controller, this.entriesStream});
   final SpecificTripViewController controller;
+  final Stream<List<TransportationModel>>? entriesStream;
+  @override
+  State<TransportTab> createState() => _TransportTabState();
+}
 
-  bool _hasText(String? value) => value?.trim().isNotEmpty ?? false;
+class _TransportTabState extends State<TransportTab> {
+  late Stream<List<TransportationModel>> entries;
+  TransportationMode? filter;
+  String? loadedTripId;
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
-  bool get _hasTripFlightDetails {
-    final trip = controller.tripModel.value;
-    return _hasText(trip?.airlineName) ||
-        _hasText(trip?.flightNumber) ||
-        _hasText(trip?.departureAirport) ||
-        _hasText(trip?.arrivalAirport);
+  void _load() {
+    loadedTripId = widget.controller.tripModel.value!.id;
+    entries =
+        widget.entriesStream ??
+        TransportationService.watch(widget.controller.tripModel.value!.id);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ExpansionTile(
-      tilePadding: EdgeInsets.symmetric(horizontal: 16.w),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
-      collapsedShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.r),
-      ),
-      initiallyExpanded: false,
-      backgroundColor: AppColors.kLightGreyColor,
-      collapsedBackgroundColor: AppColors.kLightGreyColor,
-      title: Text(
-        'Flight Details',
-        style: AppStyles.labelTextStyle().copyWith(
-          color: Colors.black,
-          fontSize: AppStyles.fontSize20,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (_hasTripFlightDetails) ...[
-                if (_hasText(controller.tripModel.value?.airlineName)) ...[
-                  _labelWithValue(
-                    'Airline Name',
-                    controller.tripModel.value!.airlineName!,
-                  ),
-                  SizedBox(height: 30.h),
-                ],
-                if (_hasText(controller.tripModel.value?.flightNumber)) ...[
-                  _labelWithValue(
-                    'Flight Number',
-                    controller.tripModel.value!.flightNumber!,
-                  ),
-                  SizedBox(height: 30.h),
-                ],
-                if (controller.tripModel.value?.departureDate != null) ...[
-                  _labelWithIcon(
-                    'Departure Date & Time',
-                    DateFormat(
-                      'MMMM dd, yyyy - hh:mm a',
-                    ).format(controller.tripModel.value!.departureDate!),
-                    AppImages.kCalendarIcon,
-                  ),
-                  SizedBox(height: 30.h),
-                ],
-                if (controller.tripModel.value?.arrivalDate != null) ...[
-                  _labelWithIcon(
-                    'Arrival Date & Time',
-                    DateFormat(
-                      'MMMM dd, yyyy - hh:mm a',
-                    ).format(controller.tripModel.value!.arrivalDate!),
-                    AppImages.kCalendarIcon,
-                  ),
-                  SizedBox(height: 30.h),
-                ],
-                if (_hasText(controller.tripModel.value?.departureAirport) ||
-                    _hasText(controller.tripModel.value?.arrivalAirport)) ...[
-                  Text(
-                    'Airport/Station Details',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black,
-                      fontSize: AppStyles.fontSize20,
-                      fontWeight: FontWeight.w600,
-                      height: 1.33,
-                    ),
-                  ),
-                  SizedBox(height: 15.h),
-                  _airportDetails(),
-                  SizedBox(height: 24.h),
-                ],
-              ] else
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                  child: Text(
-                    'No flight details added yet',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      color: Colors.black54,
-                      fontSize: AppStyles.fontSize14,
-                    ),
-                  ),
-                ),
-              _crewFlights(),
-            ],
-          ),
-        ),
-      ],
-    );
+  void didUpdateWidget(covariant TransportTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entriesStream != widget.entriesStream ||
+        loadedTripId != widget.controller.tripModel.value?.id) {
+      _load();
+    }
   }
 
-  Widget _labelWithValue(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          style: AppStyles.labelTextStyle().copyWith(
-            color: Colors.black,
-            fontSize: AppStyles.fontSize20,
-            fontWeight: FontWeight.w600,
-            height: 1.33,
-          ),
-        ),
-        SizedBox(height: 5.h),
-        Text(
-          value,
-          style: AppStyles.labelTextStyle().copyWith(
-            color: Colors.black.withValues(alpha: 140),
-            fontSize: AppStyles.fontSize18,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _labelWithIcon(String label, String value, String iconPath) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppStyles.labelTextStyle().copyWith(
-            color: Colors.black,
-            fontSize: AppStyles.fontSize20,
-            fontWeight: FontWeight.w600,
-            height: 1.33,
-          ),
-        ),
-        SizedBox(height: 5.h),
-        Row(
+  @override
+  Widget build(
+    BuildContext context,
+  ) => StreamBuilder<List<TransportationModel>>(
+    stream: entries,
+    builder: (context, snapshot) {
+      if (snapshot.hasError) {
+        return Column(
           children: [
-            Image.asset(iconPath, scale: 5, color: AppColors.kBlackColor),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Text(
-                value,
-                style: AppStyles.labelTextStyle().copyWith(
-                  color: Colors.black.withValues(alpha: 140),
-                  fontSize: AppStyles.fontSize18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+            const Text('Transportation could not be loaded.'),
+            TextButton(
+              onPressed: () => setState(_load),
+              child: const Text('Retry'),
             ),
           ],
-        ),
-      ],
-    );
-  }
-
-  Widget _airportDetails() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 17.44, vertical: 15.70),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(27.91),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+        );
+      }
+      if (!snapshot.hasData) {
+        return const Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
+      final all = snapshot.data!;
+      if (all.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Text(
+            'Add how you’re getting there or getting around. Dates and times are optional.',
+          ),
+        );
+      }
+      final modes = all.map((entry) => entry.mode).toSet();
+      final selected = modes.contains(filter) ? filter : null;
+      final shown = all.where(
+        (entry) => selected == null || entry.mode == selected,
+      );
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            controller.tripModel.value?.departureAirport ?? 'Not Available',
-            textAlign: TextAlign.center,
-            style: AppStyles.labelTextStyle().copyWith(
-              color: Colors.black,
-              fontSize: AppStyles.fontSize13,
-              height: 1.25,
-              fontWeight: FontWeight.w500,
+          if (modes.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  ChoiceChip(
+                    label: const Text('All'),
+                    selected: selected == null,
+                    onSelected: (_) => setState(() => filter = null),
+                  ),
+                  for (final mode in TransportationMode.values.where(
+                    modes.contains,
+                  ))
+                    ChoiceChip(
+                      label: Text(mode.label),
+                      selected: selected == mode,
+                      onSelected: (_) => setState(() => filter = mode),
+                    ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 5.h),
-          const Icon(Icons.arrow_downward, size: 20),
-          SizedBox(height: 5.h),
-          Text(
-            controller.tripModel.value?.arrivalAirport ?? 'Not available',
-            textAlign: TextAlign.center,
-            style: AppStyles.labelTextStyle().copyWith(
-              color: Colors.black,
-              fontSize: AppStyles.fontSize13,
-              fontWeight: FontWeight.w500,
+          for (final entry in shown)
+            TransportationCard(
+              entry: entry,
+              canManage:
+                  GlobalVariables.currentUid.isNotEmpty &&
+                  (entry.userId == GlobalVariables.currentUid ||
+                      widget.controller.tripModel.value!.createdBy ==
+                          GlobalVariables.currentUid),
+              onEdit:
+                  () => showTransportationEditor(
+                    context,
+                    widget.controller.tripModel.value!,
+                    existing: entry,
+                  ),
+              onDelete: () => _delete(entry),
             ),
-          ),
-          SizedBox(height: 20.h),
         ],
-      ),
-    );
-  }
+      );
+    },
+  );
 
-  Widget _crewFlights() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Crew Flights',
-          style: AppStyles.labelTextStyle().copyWith(
-            color: const Color(0xFF0F0F0F),
-            fontSize: AppStyles.fontSize16,
-            fontWeight: FontWeight.w600,
+  Future<void> _delete(TransportationModel entry) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete transportation?'),
+            content: Text('Remove “${entry.mode.label}” from this trip?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-        ),
-        const Divider(color: Colors.black12),
-        SizedBox(height: 8.h),
-        Obx(() {
-          final flights = controller.tripModel.value?.flights ?? [];
-          if (flights.isEmpty) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: Text(
-                'No crew flights added yet',
-                style: AppStyles.labelTextStyle().copyWith(
-                  color: Colors.black54,
-                  fontSize: AppStyles.fontSize14,
+    );
+    if (confirmed != true) return;
+    try {
+      await TransportationService.delete(entry);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Could not delete transportation. Check your connection and trip access.',
+            ),
+          ),
+        );
+      }
+    }
+  }
+}
+
+class TransportationCard extends StatelessWidget {
+  const TransportationCard({
+    super.key,
+    required this.entry,
+    this.canManage = false,
+    this.onEdit,
+    this.onDelete,
+  });
+  final TransportationModel entry;
+  final bool canManage;
+  final VoidCallback? onEdit, onDelete;
+  static IconData icon(TransportationMode mode) => switch (mode) {
+    TransportationMode.flight => Icons.flight,
+    TransportationMode.driving => Icons.directions_car,
+    TransportationMode.rideshare || TransportationMode.taxi => Icons.local_taxi,
+    TransportationMode.train => Icons.train,
+    TransportationMode.bus => Icons.directions_bus,
+    TransportationMode.scooter => Icons.electric_scooter,
+    TransportationMode.bicycle => Icons.pedal_bike,
+    TransportationMode.walking => Icons.directions_walk,
+    TransportationMode.ferry ||
+    TransportationMode.boat => Icons.directions_boat,
+    TransportationMode.other => Icons.route,
+  };
+  @override
+  Widget build(BuildContext context) => Card(
+    margin: const EdgeInsets.only(bottom: 12),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon(entry.mode), color: const Color(0xFF1D7FC2)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  entry.mode.label,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-            );
-          }
-          return Column(
-            children:
-                flights
-                    .map((flight) => _buildCrewFlightCard(flight, controller))
-                    .toList(),
-          );
-        }),
-      ],
-    );
-  }
-
-  Widget _buildCrewFlightCard(
-    UserFlightModel flight,
-    SpecificTripViewController controller,
-  ) {
-    final isOwner = flight.userId == GlobalVariables.currentUid;
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.h),
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: AppColors.kLightGreyColor,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (flight.displayName != null)
-                  Text(
-                    flight.displayName!,
-                    style: AppStyles.labelTextStyle().copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: AppStyles.fontSize14,
-                    ),
-                  ),
-                if (flight.airlineName != null || flight.flightNumber != null)
-                  Text(
-                    [
-                      flight.airlineName,
-                      flight.flightNumber,
-                    ].whereType<String>().join(' · '),
-                    style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: AppStyles.fontSize13,
-                    ),
-                  ),
-                if (flight.departureAirport != null ||
-                    flight.arrivalAirport != null)
-                  Padding(
-                    padding: EdgeInsets.only(top: 4.h),
-                    child: Row(
-                      children: [
-                        Text(
-                          flight.departureAirport ?? '—',
-                          style: AppStyles.labelTextStyle().copyWith(
-                            fontSize: AppStyles.fontSize14,
-                            color: Colors.black54,
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4),
-                          child: Icon(
-                            Icons.arrow_forward,
-                            size: 12,
-                            color: Colors.black45,
-                          ),
-                        ),
-                        Text(
-                          flight.arrivalAirport ?? '—',
-                          style: AppStyles.labelTextStyle().copyWith(
-                            fontSize: AppStyles.fontSize14,
-                            color: Colors.black54,
-                          ),
+              if (canManage)
+                PopupMenuButton<String>(
+                  tooltip: 'Transportation actions',
+                  onSelected: (action) {
+                    if (action == 'edit') {
+                      onEdit?.call();
+                    } else {
+                      onDelete?.call();
+                    }
+                  },
+                  itemBuilder:
+                      (_) => [
+                        const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Delete'),
                         ),
                       ],
-                    ),
-                  ),
-                if (flight.departureDate != null)
-                  Padding(
-                    padding: EdgeInsets.only(top: 4.h),
-                    child: Text(
-                      DateFormat('MMM dd, yyyy').format(flight.departureDate!),
-                      style: AppStyles.labelTextStyle().copyWith(
-                        fontSize: AppStyles.fontSize14,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+                ),
+            ],
           ),
-          if (isOwner)
-            GestureDetector(
-              onTap: () => controller.deleteFlight(flight.id),
-              child: const Icon(
-                Icons.delete_outline,
-                size: 20,
-                color: Colors.redAccent,
-              ),
+          if (entry.displayName.trim().isNotEmpty)
+            _line(entry.displayName.trim()),
+          if (entry.departure != null)
+            _line(
+              'Departure: ${TransportationModel.formatDate(entry.departure)}',
             ),
+          if (entry.arrival != null)
+            _line('Arrival: ${TransportationModel.formatDate(entry.arrival)}'),
+          if (entry.departure == null && entry.arrival == null)
+            _line('Time not set'),
+          if (entry.notes.isNotEmpty) _line(entry.notes),
         ],
       ),
-    );
-  }
+    ),
+  );
+  Widget _line(String value) =>
+      Padding(padding: const EdgeInsets.only(top: 8), child: Text(value));
 }

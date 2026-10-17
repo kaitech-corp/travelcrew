@@ -36,20 +36,11 @@ const tripSchema = z.object({
   image_url: z.url({protocol: /^https$/}).max(2048).optional().describe("Optional suggested destination photo: verified direct upload.wikimedia.org Commons raster URL with Public domain or CC0 license. Omit for No image, if not requested, or if you cannot verify a relevant photo. Never invent URLs. Unsupported/unavailable photos do not prevent saving the trip."),
   transportation: z.array(z.object({
     mode: z.enum(["flight", "driving", "rideshare", "taxi", "train", "bus", "scooter", "bicycle", "walking", "ferry", "boat", "other"]),
-    title: text().optional(), origin: text(500).optional(), destination: text(500).optional(),
     departure: transportationDate.optional().describe("Optional date or local clock at the departure location, e.g. 2027-04-10T10:00:00. No UTC offset is needed; do not convert to the phone timezone"),
     arrival: transportationDate.optional().describe("Optional date or local clock at the arrival location, e.g. 2027-04-10T04:00:00. No UTC offset is needed"),
-    provider: text().optional(), service_number: text(100).optional(), driver: text().optional(),
-    travelers: z.array(text()).max(50).default([]).describe("Optional traveler display names, never account IDs or access grants"),
     notes: z.string().trim().max(4000).default(""),
   }).strict().refine(orderedTransportation, "Arrival must follow departure")).max(50).optional()
-    .describe("Multiple transportation entries, including getting there and getting around. Use mode, optional departure/arrival, and notes. Put route, provider, driver, service or flight number, and travelers in notes instead of separate fields. Do not invent bookings. Do not repeat the same flight in both airline and transportation."),
-  airline: z.object({
-    name: text().optional(), flight_number: text(30).optional(),
-    departure_airport: text(100).optional(), arrival_airport: text(100).optional(),
-    departure_date: travelDate.optional().describe("Calendar date, or departure airport local timestamp with the departure offset"),
-    arrival_date: travelDate.optional().describe("Calendar date, or arrival airport local timestamp with the arrival offset; may differ from departure"),
-  }).strict().refine(orderedTravel("departure_date", "arrival_date"), "Arrival must follow departure").optional(),
+    .describe("Multiple transportation entries, including getting there and getting around. Use mode, optional departure/arrival, and notes. Put route, provider, driver, service or flight number, and travelers in notes instead of separate fields. Include transportation plans supplied by the user; do not invent bookings. Flights use mode flight."),
   lodging: z.object({
     type: text(80).optional(), name: text(), address: text(500).optional(),
     check_in: travelDate.optional().describe("Calendar date, or property-local timestamp with its offset on the check-in date"),
@@ -101,7 +92,7 @@ function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
         return {...prior.data().result, replayed: true};
       }
       if ((quota.data()?.count || 0) >= 30) throw new ApiError(429, "quota_exceeded", "Daily assistant trip limit reached; try again tomorrow");
-      const a = data.airline || {}; const l = data.lodging || {};
+      const l = data.lodging || {};
       const displayName = typeof account.data().displayName === "string" ? account.data().displayName.trim().slice(0, 200) : "";
       const trip = {
         id: tripId, createdBy: uid, title: data.title || data.destination, destination: data.destination, country: data.country,
@@ -109,8 +100,6 @@ function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
         tripStatus: "upcoming", daysToGo: Math.ceil((+new Date(`${data.start_date}T00:00:00Z`) - time) / 86400000),
         isPrivate: true, isShared: false, joinedUsers: [], invitedUsers: [], images: photo?.status === "ready" ? [photo.url] : [],
         latitude: 0, longitude: 0, continent: "", favouriteCount: 0, tripBudget: 0, tripLocation: data.destination,
-        airlineName: a.name || null, flightNumber: a.flight_number || null, departureAirport: a.departure_airport || null,
-        arrivalAirport: a.arrival_airport || null, departureDate: isoDate(a.departure_date), arrivalDate: isoDate(a.arrival_date),
         lodgingType: l.type || null, hotelName: l.name || null, hotelAddress: l.address || null,
         checkInDate: isoDate(l.check_in), checkOutDate: isoDate(l.check_out), expensePerNight: l.cost_per_night ?? null,
         source: "assistant", createdAt: FieldValue.serverTimestamp(),
@@ -131,25 +120,12 @@ function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
         tx.create(tripRef.collection("expenses").doc(id), {id, tripId, createdBy: uid, name: item.name,
           amount: item.amount, date: isoDate(item.date), splitType: "equally", paidByUsers: [uid], owners: {[uid]: item.amount}, owedTo: {}});
       }
-      if (data.airline) tx.create(tripRef.collection("flights").doc(uid), {
-        id: uid, tripId, userId: uid, displayName, airlineName: trip.airlineName, flightNumber: trip.flightNumber,
-        departureAirport: trip.departureAirport, arrivalAirport: trip.arrivalAirport, departureDate: trip.departureDate, arrivalDate: trip.arrivalDate,
-      });
       for (const [index, item] of (data.transportation || []).entries()) {
         const id = `transport_${index}`;
-        const common = {id, tripId, userId: uid, displayName, travelerNames: item.travelers,
-          driver: item.driver || "", notes: item.notes};
-        if (item.mode === "flight") {
-          tx.create(tripRef.collection("flights").doc(id), {...common,
-            transportTitle: item.title || "Flight", airlineName: item.provider || "", flightNumber: item.service_number || "",
-            departureAirport: item.origin || "", arrivalAirport: item.destination || "",
-            departureDate: item.departure || null, arrivalDate: item.arrival || null});
-        } else {
-          tx.create(tripRef.collection("transportation").doc(id), {...common,
-            mode: item.mode, title: item.title || "", origin: item.origin || "", destination: item.destination || "",
-            departure: item.departure || null, arrival: item.arrival || null,
-            provider: item.provider || "", serviceNumber: item.service_number || ""});
-        }
+        tx.create(tripRef.collection("transportation").doc(id), {
+          id, tripId, userId: uid, displayName, mode: item.mode,
+          departure: item.departure || null, arrival: item.arrival || null, notes: item.notes,
+        });
       }
       const noteId = `assistant_${tripId}`;
       tx.create(inboxRef(db, uid, noteId), {...notification(noteId, "system", uid, "trip_created", tripId,

@@ -303,9 +303,11 @@ class TransportationModel {
     }
     // Different locations can have arrival clocks earlier than departure clocks.
     // Compare instants only when both endpoints actually supply zone information.
-    if (departure != null && arrival != null &&
+    if (departure != null &&
+        arrival != null &&
         ((departure!.length == 10 && arrival!.length == 10) ||
-         (TravelTime.offset(departure) != null && TravelTime.offset(arrival) != null))) {
+            (TravelTime.offset(departure) != null &&
+                TravelTime.offset(arrival) != null))) {
       final reversed =
           departure!.length == 10 || arrival!.length == 10
               ? arrival!
