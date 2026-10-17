@@ -1,3 +1,6 @@
+import 'package:travel_crew/services/trip_calendar_service.dart';
+import 'package:travel_crew/utils/custom_snackbar.dart';
+import 'components/trip_identity.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:travel_crew/views/safety/safety_actions.dart';
@@ -20,7 +23,6 @@ import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
-import 'package:travel_crew/views/custom_widgets/custom_text_field.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/components/transport_tab.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
 
@@ -269,7 +271,7 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
     'Overview': GlobalKey(),
     'Crew': GlobalKey(),
     'Activities': GlobalKey(),
-    'Flights': GlobalKey(),
+    'Transportation': GlobalKey(),
     'Lodging': GlobalKey(),
     'Expenses': GlobalKey(),
   };
@@ -408,8 +410,12 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                             ActivitiesTab(controller: controller),
 
                             _buildSectionHeader(
-                              'Flights',
-                              onAdd: () => _showAddFlightSheet(context),
+                              'Transportation',
+                              onAdd:
+                                  () => showTransportationEditor(
+                                    context,
+                                    controller.tripModel.value!,
+                                  ),
                             ),
                             TransportTab(controller: controller),
 
@@ -565,6 +571,11 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                     fontSize: AppStyles.fontSize22,
                     fontWeight: FontWeight.w700,
                   ),
+                ),
+                TripIdentity(
+                  ownerId: trip.createdBy,
+                  ownerName: trip.creatorDisplayName,
+                  isPrivate: false,
                 ),
                 SizedBox(height: 8.h),
                 Row(
@@ -916,6 +927,27 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
                                                         LucideIcons.logOut,
                                                   ),
                                                 MoreVertDialogueWidget(
+                                                  title: 'Add to Calendar',
+                                                  iconData:
+                                                      Icons
+                                                          .event_available_outlined,
+                                                  onTap: () async {
+                                                    Navigator.pop(c);
+                                                    try {
+                                                      await TripCalendarService.addTrip(
+                                                        controller
+                                                            .tripModel
+                                                            .value!,
+                                                      );
+                                                    } catch (_) {
+                                                      showCustomSnackBar(
+                                                        content:
+                                                            'Unable to open Calendar. Check that a calendar app is available and calendar access is enabled.',
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                                MoreVertDialogueWidget(
                                                   imagePath:
                                                       AppImages.kIcShareTrip,
                                                   title: 'Share Trip',
@@ -1102,6 +1134,11 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
             fontSize: AppStyles.fontSize22,
             fontWeight: FontWeight.w700,
           ),
+        ),
+        TripIdentity(
+          ownerId: controller.tripModel.value!.createdBy,
+          ownerName: controller.tripModel.value!.createdByUser?.displayName,
+          isPrivate: controller.tripModel.value!.isPrivate == true,
         ),
         SizedBox(height: 8.h),
         Row(
@@ -1497,148 +1534,6 @@ class _SpecificTripViewScreenState extends State<SpecificTripViewScreen> {
               );
             },
           ),
-    );
-  }
-
-  void _showAddFlightSheet(BuildContext context) {
-    controller.clearFlightForm();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder:
-          (sheetContext) => Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-            ),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40.w,
-                      height: 4.h,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'Add Your Flight',
-                    style: AppStyles.labelTextStyle().copyWith(
-                      fontSize: AppStyles.fontSize18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                  CustomTextField(
-                    controller: controller.flightAirlineController,
-                    hintText: 'Airline name',
-                  ),
-                  SizedBox(height: 12.h),
-                  CustomTextField(
-                    controller: controller.flightNumberController,
-                    hintText: 'Flight number',
-                  ),
-                  SizedBox(height: 12.h),
-                  CustomTextField(
-                    controller: controller.flightDepartureAirportController,
-                    hintText: 'Departure airport',
-                  ),
-                  SizedBox(height: 12.h),
-                  CustomTextField(
-                    controller: controller.flightArrivalAirportController,
-                    hintText: 'Arrival airport',
-                  ),
-                  SizedBox(height: 12.h),
-                  Obx(
-                    () => _buildDateTile(
-                      label:
-                          controller.flightDepartureDate.value == null
-                              ? 'Departure date'
-                              : 'Departure: ${DateFormat('MMM dd, yyyy').format(controller.flightDepartureDate.value!)}',
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime(2030),
-                        );
-                        if (picked != null) {
-                          controller.flightDepartureDate.value = picked;
-                        }
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Obx(
-                    () => _buildDateTile(
-                      label:
-                          controller.flightArrivalDate.value == null
-                              ? 'Arrival date'
-                              : 'Arrival: ${DateFormat('MMM dd, yyyy').format(controller.flightArrivalDate.value!)}',
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime(2030),
-                        );
-                        if (picked != null) {
-                          controller.flightArrivalDate.value = picked;
-                        }
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  CustomElevatedButton(
-                    width: double.infinity,
-                    title: 'Add Flight',
-                    onPressed: () => controller.addFlight(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-    );
-  }
-
-  Widget _buildDateTile({required String label, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        decoration: BoxDecoration(
-          color: AppColors.kLightGreyColor,
-          borderRadius: BorderRadius.circular(27.r),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: AppStyles.labelTextStyle().copyWith(
-                  fontSize: AppStyles.fontSize13,
-                  color: Colors.black54,
-                ),
-              ),
-            ),
-            Image.asset(
-              AppImages.kCalendarIcon,
-              scale: 5,
-              color: Colors.black54,
-            ),
-          ],
-        ),
-      ),
     );
   }
 

@@ -1,4 +1,7 @@
+import 'package:travel_crew/utils/travel_time.dart';
 import 'dart:async';
+import 'package:travel_crew/models/lodging_model.dart';
+import 'package:travel_crew/services/lodging_service.dart';
 import 'package:travel_crew/services/trip_invitation_service.dart';
 import '../invite_travelers_dialog.dart';
 import 'package:travel_crew/models/join_request_model.dart';
@@ -274,6 +277,7 @@ class SpecificTripViewController extends GetxController
     flightNumberController.dispose();
     flightDepartureAirportController.dispose();
     flightArrivalAirportController.dispose();
+    lodgingCostController.dispose();
     lodgingTypeController.dispose();
     lodgingHotelNameController.dispose();
     lodgingAddressController.dispose();
@@ -393,14 +397,19 @@ class SpecificTripViewController extends GetxController
   final FocusNode hotelNameFocusNode = FocusNode();
   final FocusNode lodgingAddressFocusNode = FocusNode();
 
-  void initLodgingFromTrip() {
-    final trip = tripModel.value;
-    if (trip == null) return;
-    lodgingTypeController.text = trip.lodgingType ?? '';
-    lodgingHotelNameController.text = trip.hotelName ?? '';
-    lodgingAddressController.text = trip.hotelAddress ?? '';
-    lodgingCheckIn.value = trip.checkInDate;
-    lodgingCheckOut.value = trip.checkOutDate;
+  LodgingModel? editingLodging;
+  final lodgingCostController = TextEditingController();
+
+  void initLodgingForm([LodgingModel? option]) {
+    editingLodging = option;
+    lodgingTypeController.text = option?.lodgingType ?? '';
+    lodgingHotelNameController.text = option?.hotelName ?? '';
+    lodgingAddressController.text = option?.hotelAddress ?? '';
+    lodgingCheckIn.value = option?.checkInDate;
+    lodgingCheckOut.value = option?.checkOutDate;
+    lodgingCostController.text = option?.expensePerNight?.toString() ?? '';
+    searchText.value = option?.hotelAddress ?? '';
+    locations.clear();
   }
 
   Future<void> fetchHotelLocations(String? value) async {
@@ -443,40 +452,69 @@ class SpecificTripViewController extends GetxController
 
   Future<void> saveLodging() async {
     final trip = tripModel.value;
-    if (trip == null) return;
+    if (trip == null || GlobalVariables.showLoader.value) return;
+    final costText = lodgingCostController.text.trim();
+    final cost = double.tryParse(costText);
+    if (costText.isNotEmpty && (cost == null || !cost.isFinite || cost < 0)) {
+      showCustomSnackBar(content: 'Enter a valid nightly cost');
+      return;
+    }
+    if (lodgingHotelNameController.text.trim().isEmpty &&
+        lodgingAddressController.text.trim().isEmpty) {
+      showCustomSnackBar(content: 'Enter a lodging name or address');
+      return;
+    }
+    if (lodgingCheckIn.value != null &&
+        lodgingCheckOut.value != null &&
+        !TravelTime.instant(
+          lodgingCheckOut.value,
+          editingLodging?.timeOffsets['checkOutDate'],
+        )!.isAfter(
+          TravelTime.instant(
+            lodgingCheckIn.value,
+            editingLodging?.timeOffsets['checkInDate'],
+          )!,
+        )) {
+      showCustomSnackBar(content: 'Check-out must be after check-in');
+      return;
+    }
+    final option = LodgingModel(
+      timeOffsets: editingLodging?.timeOffsets ?? const {},
+      id: editingLodging?.id ?? const Uuid().v4(),
+      createdBy: editingLodging?.createdBy ?? GlobalVariables.currentUid,
+      lodgingType: lodgingTypeController.text,
+      hotelName: lodgingHotelNameController.text,
+      hotelAddress: lodgingAddressController.text,
+      checkInDate: lodgingCheckIn.value,
+      checkOutDate: lodgingCheckOut.value,
+      expensePerNight: cost,
+    );
     try {
       GlobalVariables.showLoader.value = true;
-      await FirebaseTripService.updateTrip(
-        tripId: trip.id,
-        data: {
-          'lodgingType': lodgingTypeController.text,
-          'hotelName': lodgingHotelNameController.text,
-          'hotelAddress': lodgingAddressController.text,
-          'checkInDate':
-              lodgingCheckIn.value?.toIso8601String() ??
-              trip.checkInDate?.toIso8601String(),
-          'checkOutDate':
-              lodgingCheckOut.value?.toIso8601String() ??
-              trip.checkOutDate?.toIso8601String(),
-        },
-      ).then((success) {
-        if (success) {
-          tripModel.value = trip.copyWith(
-            lodgingType: lodgingTypeController.text,
-            hotelName: lodgingHotelNameController.text,
-            hotelAddress: lodgingAddressController.text,
-            checkInDate: lodgingCheckIn.value,
-            checkOutDate: lodgingCheckOut.value,
-          );
-          updateTripOverAll(tripModel.value!);
-          Get.back();
-          // showCustomSnackBar(content: 'Lodging updated successfully');
-        } else {
-          showCustomSnackBar(content: 'Failed to update lodging');
+      if (option.id == 'legacy') {
+        final data = option.toMap()..remove('createdBy');
+        if (!await FirebaseTripService.updateTrip(
+          tripId: trip.id,
+          data: data,
+        )) {
+          throw StateError('Save failed');
         }
-      });
-    } catch (e) {
-      showCustomSnackBar(content: 'An error occurred');
+        final updated = TripModel.fromMap({...trip.toMap(), ...data});
+        updated.createdByUser = trip.createdByUser;
+        updated.joindUsersList = trip.joindUsersList;
+        updated.flights = trip.flights;
+        tripModel.value = updated;
+        updateTripOverAll(updated);
+      } else {
+        await LodgingService.save(
+          trip.id,
+          option,
+          isNew: editingLodging == null,
+        );
+      }
+      Get.back();
+    } catch (_) {
+      showCustomSnackBar(content: 'Unable to save lodging. Please try again.');
     } finally {
       GlobalVariables.showLoader.value = false;
     }
@@ -591,6 +629,8 @@ class SpecificTripViewController extends GetxController
           args['activity'] as ActivityModel?;
       GlobalVariables.showLoader.value = true;
       final ActivityModel activityModel = ActivityModel(
+        timeOffsets:
+            toAdd ? const {} : (existingActivity?.timeOffsets ?? const {}),
         id:
             toAdd
                 ? const Uuid().v6()

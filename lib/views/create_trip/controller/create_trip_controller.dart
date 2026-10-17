@@ -1,3 +1,5 @@
+import 'package:travel_crew/models/transportation_model.dart';
+import 'package:travel_crew/utils/travel_time.dart';
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/foundation.dart';
@@ -179,9 +181,17 @@ class CreateTripController extends GetxController {
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
   Rxn<DateTime> activityEndTime = Rxn<DateTime>();
   Rxn<TripModel> tripModel = Rxn<TripModel>();
+  final importedTransportation = <TransportationModel>[].obs;
+
   RxList<ExpenseModel> importedExpenses = <ExpenseModel>[].obs;
 
+  Map<String, String> _importedTimeOffsets = {};
+
+  String? timeOffsetFor(String field) =>
+      tripModel.value?.timeOffsets[field] ?? _importedTimeOffsets[field];
+
   void setFromImport(Map<String, dynamic> data) {
+    _importedTimeOffsets = {};
     _allowDefaultPlacePhoto = false;
     try {
       tripNameController.text = (data['title'] as String?) ?? '';
@@ -206,6 +216,32 @@ class CreateTripController extends GetxController {
         photoNotice.value = '';
       }
 
+      final transport = data['transportation'] as List? ?? [];
+      if (transport.length > 50) {
+        throw const FormatException(
+          'Import is limited to 50 transportation entries.',
+        );
+      }
+      importedTransportation.assignAll(
+        transport.map((raw) {
+          final values = Map<String, dynamic>.from(raw as Map);
+          if (!TransportationMode.values.any(
+            (mode) => mode.name == values['mode'],
+          )) {
+            throw const FormatException(
+              'Choose a supported transportation mode.',
+            );
+          }
+          final entry = TransportationModel.fromImport(
+            values,
+            id: const Uuid().v4(),
+            tripId: '',
+            userId: GlobalVariables.currentUid,
+          );
+          if (entry.issue != null) throw FormatException(entry.issue!);
+          return entry;
+        }),
+      );
       _applyAirlineImport(data['airline']);
       _applyLodgingImport(data['lodging']);
       _applyActivitiesImport(data['activities']);
@@ -227,10 +263,16 @@ class CreateTripController extends GetxController {
         (raw['departure_airport'] as String?) ?? '';
     airportArrivalController.text = (raw['arrival_airport'] as String?) ?? '';
     if (raw['departure_date'] != null) {
-      departureDate.value = DateTime.tryParse(raw['departure_date'] as String);
+      final zone = TravelTime.offset(raw['departure_date'] as String);
+      if (zone != null) _importedTimeOffsets['departureDate'] = zone;
+      departureDate.value = TravelTime.tryParse(
+        raw['departure_date'] as String,
+      );
     }
     if (raw['arrival_date'] != null) {
-      arrivalDate.value = DateTime.tryParse(raw['arrival_date'] as String);
+      final zone = TravelTime.offset(raw['arrival_date'] as String);
+      if (zone != null) _importedTimeOffsets['arrivalDate'] = zone;
+      arrivalDate.value = TravelTime.tryParse(raw['arrival_date'] as String);
     }
   }
 
@@ -240,10 +282,14 @@ class CreateTripController extends GetxController {
     hotelNameController.text = (raw['name'] as String?) ?? '';
     addressController.text = (raw['address'] as String?) ?? '';
     if (raw['check_in'] != null) {
-      checkInStartTime.value = DateTime.tryParse(raw['check_in'] as String);
+      final zone = TravelTime.offset(raw['check_in'] as String);
+      if (zone != null) _importedTimeOffsets['checkInDate'] = zone;
+      checkInStartTime.value = TravelTime.tryParse(raw['check_in'] as String);
     }
     if (raw['check_out'] != null) {
-      checkInEndTime.value = DateTime.tryParse(raw['check_out'] as String);
+      final zone = TravelTime.offset(raw['check_out'] as String);
+      if (zone != null) _importedTimeOffsets['checkOutDate'] = zone;
+      checkInEndTime.value = TravelTime.tryParse(raw['check_out'] as String);
     }
     if (raw['cost_per_night'] != null) {
       expensePerNightController.text =
@@ -258,6 +304,13 @@ class CreateTripController extends GetxController {
             .whereType<Map<String, dynamic>>()
             .map(
               (act) => ActivityModel(
+                timeOffsets: TravelTime.offsets(
+                  {
+                    'startDateTime': act['start_datetime'],
+                    'endDateTime': act['end_datetime'],
+                  },
+                  ['startDateTime', 'endDateTime'],
+                ),
                 title: (act['title'] as String?) ?? '',
                 description: (act['description'] as String?) ?? '',
                 location:
@@ -266,11 +319,11 @@ class CreateTripController extends GetxController {
                         : act['location'] as String?,
                 startDateTime:
                     act['start_datetime'] != null
-                        ? DateTime.tryParse(act['start_datetime'] as String)
+                        ? TravelTime.tryParse(act['start_datetime'] as String)
                         : null,
                 endDateTime:
                     act['end_datetime'] != null
-                        ? DateTime.tryParse(act['end_datetime'] as String)
+                        ? TravelTime.tryParse(act['end_datetime'] as String)
                         : null,
                 tripId: '',
                 likesCount: 0,
@@ -290,6 +343,8 @@ class CreateTripController extends GetxController {
               final amount = expense['amount'];
               final date = expense['date'];
               return ExpenseModel(
+                dateHasOffset:
+                    date is String && TravelTime.offset(date) != null,
                 paidByUsers: [],
                 createdBy: GlobalVariables.currentUid,
                 tripId: '',
@@ -297,7 +352,7 @@ class CreateTripController extends GetxController {
                 amount: amount is num ? amount.toDouble() : 0.0,
                 date:
                     date is String
-                        ? DateTime.tryParse(date) ?? DateTime.now()
+                        ? DateTime.tryParse(date)?.toLocal() ?? DateTime.now()
                         : DateTime.now(),
                 splitType: (expense['split_type'] as String?) ?? 'equally',
               );
@@ -442,10 +497,22 @@ class CreateTripController extends GetxController {
       'flightNumber': optionalText(flightNumberController.text),
       'arrivalAirport': optionalText(airportArrivalController.text),
       'departureAirport': optionalText(airportDepartureController.text),
-      'departureDate': departureDate.value?.toIso8601String(),
-      'arrivalDate': arrivalDate.value?.toIso8601String(),
-      'checkInDate': checkInStartTime.value?.toIso8601String(),
-      'checkOutDate': checkInEndTime.value?.toIso8601String(),
+      'departureDate': TravelTime.serialize(
+        departureDate.value,
+        original.timeOffsets['departureDate'],
+      ),
+      'arrivalDate': TravelTime.serialize(
+        arrivalDate.value,
+        original.timeOffsets['arrivalDate'],
+      ),
+      'checkInDate': TravelTime.serialize(
+        checkInStartTime.value,
+        original.timeOffsets['checkInDate'],
+      ),
+      'checkOutDate': TravelTime.serialize(
+        checkInEndTime.value,
+        original.timeOffsets['checkOutDate'],
+      ),
       'hotelName': optionalText(hotelNameController.text),
       'hotelAddress': optionalText(addressController.text),
       'lodgingType': optionalText(lodgingTypeController.text),
@@ -616,6 +683,7 @@ class CreateTripController extends GetxController {
       final nightlyCost = optionalNightlyCost;
       final String id = const Uuid().v4();
       final TripModel tripModel = TripModel(
+        timeOffsets: Map.of(_importedTimeOffsets),
         tripStatus: TripStatus.upcoming.name,
         id: id,
         tripLocation: destinationController.text,
@@ -660,9 +728,10 @@ class CreateTripController extends GetxController {
         tripModel.latitude,
         tripModel.longitude,
       );
-      await FirebaseTripService.addTrip(tripModel: tripModel).then((
-        isSuccess,
-      ) async {
+      await FirebaseTripService.addTrip(
+        tripModel: tripModel,
+        transportation: importedTransportation.toList(),
+      ).then((isSuccess) async {
         if (isSuccess) {
           // showCustomSnackBar(content: 'Trip created successfully');
 

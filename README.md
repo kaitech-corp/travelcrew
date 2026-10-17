@@ -13,7 +13,8 @@ Travel Crew is a mobile app for friends to plan, organize, and experience trips 
 - **Trip Management** — Create and manage trips with destination, dates, privacy settings, and cover photos
 - **Crew Collaboration** — Invite friends, follow other travelers, and coordinate details together
 - **Activities** — Add and vote on activities for the trip
-- **Flights & Lodging** — Track airline info, flight numbers, hotels, and check-in/out dates
+- **Flights & Lodging** — Track flights and multiple lodging options, with individual editing, check-in/out dates, nightly costs, and traveler likes
+- **Calendar** — Add the trip dates to your device calendar from the trip menu, or download a calendar event from a shared trip page
 - **Expense Splitting** — Log shared expenses and compute optimal settlements with minimum transfers
 - **Group Chat** — Per-trip chat rooms for real-time coordination
 - **Notifications** — Stay updated on trip activity across your crew
@@ -38,6 +39,14 @@ The AI response populates destination, dates, airline info, lodging, and a full 
 - **Firebase** — Auth, Firestore, Storage, Messaging, Crashlytics, Cloud Functions
 - **GetX** — State management and navigation
 - **Google Maps** — Location search and geo features
+
+## Lodging storage and release notes
+
+New lodging options use `trips/{tripId}/lodgings/{optionId}`. Existing trip-level lodging fields remain the first option, so older trips and the trip editor continue to work without a migration. The reserved option ID `legacy` identifies likes for that original option; it is never used for a new lodging document. Likes use one document per traveler at `trips/{tripId}/lodgings/{optionId}/likes/{userId}`.
+
+Active travelers can add options and like them. The option contributor and trip owner can edit that option; the original trip-level lodging remains editable by the owner. Deploy the updated `firestore.rules` before releasing the app with these controls. Release the shared website to display the additional options and calendar downloads.
+
+Trip calendar actions create an editable all-day event spanning the inclusive trip dates. iOS uses EventKitUI, Android opens the installed calendar editor, and the shared website downloads an `.ics` event. Exports are snapshots, with no automatic sync. Each activity has its own Add to Calendar action in the app and on shared pages. Activity events use their scheduled times; a missing end time defaults to one hour with a visible note, and activities without a start time cannot be exported.
 
 ## Social Media
 

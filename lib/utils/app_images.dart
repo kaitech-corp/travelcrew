@@ -78,7 +78,7 @@ class AppImages {
   static const String kCheckYourPhoneOtpScreen =
       '$basePath/check_your_phone.png';
   static const String kTripImage = '$basePath/img_trip.png';
-  static const String kDefaultTripImage = '$basePath/travelPics.png';
+  static const String kDefaultTripImage = '$basePath/travelPics.PNG';
 
   //PROFILE WIDGET IMAGES
   static const String kProfileImage = '$basePath/img_onboarding1.png';

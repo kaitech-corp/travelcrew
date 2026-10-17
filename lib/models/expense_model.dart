@@ -1,7 +1,11 @@
 import 'dart:convert';
 
+import 'package:travel_crew/utils/travel_time.dart';
+
 class ExpenseModel {
+  final bool dateHasOffset;
   ExpenseModel({
+    this.dateHasOffset = false,
     this.id,
     required this.createdBy,
     required this.tripId,
@@ -16,6 +20,7 @@ class ExpenseModel {
 
   factory ExpenseModel.fromMap(Map<String, dynamic> map) {
     return ExpenseModel(
+      dateHasOffset: TravelTime.offset(map['date'] as String?) != null,
       paidByUsers: List<String>.from(
         map['paidByUsers'] as List<dynamic>? ?? [],
       ),
@@ -26,7 +31,7 @@ class ExpenseModel {
       amount: (map['amount'] as num?)?.toDouble() ?? 0.0,
       date:
           map['date'] != null
-              ? DateTime.parse(map['date'] as String)
+              ? DateTime.parse(map['date'] as String).toLocal()
               : DateTime.now(),
       splitType: map['splitType'] as String? ?? 'equally',
       owedTo: Map<String, double>.from(
@@ -64,6 +69,7 @@ class ExpenseModel {
     Map<String, double>? owners,
   }) {
     return ExpenseModel(
+      dateHasOffset: dateHasOffset,
       paidByUsers: paidByUsers ?? this.paidByUsers,
       id: id ?? this.id,
       createdBy: createdBy ?? this.createdBy,
@@ -85,7 +91,7 @@ class ExpenseModel {
       'tripId': tripId,
       'name': name,
       'amount': amount,
-      'date': date.toIso8601String(),
+      'date': (dateHasOffset ? date.toUtc() : date).toIso8601String(),
       'splitType': splitType,
       'owedTo': owedTo,
       'owners': owners,

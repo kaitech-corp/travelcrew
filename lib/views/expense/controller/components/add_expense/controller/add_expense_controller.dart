@@ -145,6 +145,7 @@ class AddExpenseController extends GetxController {
     }
 
     final ExpenseModel expenseModel = ExpenseModel(
+      dateHasOffset: _expenseToEdit?.dateHasOffset ?? false,
       paidByUsers:
           _expenseToEdit?.paidByUsers ??
           [GlobalVariables.loggedInUser.value?.uid ?? ''],

@@ -1,3 +1,5 @@
+import 'package:travel_crew/services/trip_calendar_service.dart';
+import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -27,6 +29,7 @@ class ActivitiesTab extends StatelessWidget {
                 final activity = controller.tripModel.value?.activities?[index];
                 if (activity == null) return const SizedBox.shrink();
                 return ActivityWidget(
+                  calendarAction: ActivityCalendarButton(activity: activity),
                   controller: controller,
                   isLiked: activity.likedBy.contains(
                     GlobalVariables.loggedInUser.value?.uid,
@@ -109,8 +112,12 @@ class ActivitiesTab extends StatelessWidget {
     final start = activity.startDateTime;
     final end = activity.endDateTime;
     if (start == null && end == null) return 'Time not set';
-    if (start == null) return DateFormat('hh:mm a').format(end!);
-    if (end == null) return DateFormat('hh:mm a').format(start);
+    if (start == null) {
+      return DateFormat('hh:mm a').format(end!);
+    }
+    if (end == null) {
+      return DateFormat('hh:mm a').format(start);
+    }
     return '${DateFormat('hh:mm a').format(start)} - ${DateFormat('hh:mm a').format(end)}';
   }
 
@@ -194,6 +201,8 @@ class ActivityDetailsSheet extends StatelessWidget {
                         ? 'Not set'
                         : '${_formatDateTime(activity.startDateTime)}${activity.endDateTime == null ? '' : '\n${_formatDateTime(activity.endDateTime)}'}',
               ),
+              SizedBox(height: 12.h),
+              ActivityCalendarButton(activity: activity),
               if (hasLocation) ...[
                 SizedBox(height: 14.h),
                 Material(
@@ -348,6 +357,7 @@ class ActivityWidget extends StatelessWidget {
     this.description,
     this.location,
     this.onTap,
+    this.calendarAction,
   });
   final Function()? onLiked;
   final SpecificTripViewController? controller;
@@ -360,6 +370,7 @@ class ActivityWidget extends StatelessWidget {
   final String timing;
   final Function()? onDelete;
   final VoidCallback? onTap;
+  final Widget? calendarAction;
 
   @override
   Widget build(BuildContext context) {
@@ -475,6 +486,7 @@ class ActivityWidget extends StatelessWidget {
                           ],
                         ),
                       ),
+                      if (calendarAction != null) calendarAction!,
                     ],
                   ),
                 ),
@@ -555,6 +567,54 @@ class ActivityWidget extends StatelessWidget {
                 icon: const Icon(Icons.delete),
               ),
             ),
+      ],
+    );
+  }
+}
+
+class ActivityCalendarButton extends StatefulWidget {
+  const ActivityCalendarButton({super.key, required this.activity});
+  final ActivityModel activity;
+
+  @override
+  State<ActivityCalendarButton> createState() => _ActivityCalendarButtonState();
+}
+
+class _ActivityCalendarButtonState extends State<ActivityCalendarButton> {
+  bool _opening = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final issue = TripCalendarService.activityIssue(widget.activity);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextButton.icon(
+          onPressed:
+              _opening || issue != null
+                  ? null
+                  : () async {
+                    setState(() => _opening = true);
+                    try {
+                      await TripCalendarService.addActivity(widget.activity);
+                    } catch (_) {
+                      showCustomSnackBar(
+                        content:
+                            'Unable to open Calendar. Check that a calendar app is available and calendar access is enabled.',
+                      );
+                    } finally {
+                      if (mounted) setState(() => _opening = false);
+                    }
+                  },
+          icon: const Icon(Icons.event_available_outlined),
+          label: const Text('Add to Calendar'),
+        ),
+        if (issue != null || widget.activity.endDateTime == null)
+          Text(
+            issue ?? 'No end time set; calendar event defaults to 1 hour.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
       ],
     );
   }

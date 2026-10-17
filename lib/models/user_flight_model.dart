@@ -1,7 +1,11 @@
 import 'dart:convert';
 
+import 'package:travel_crew/utils/travel_time.dart';
+
 class UserFlightModel {
+  final Map<String, String> timeOffsets;
   UserFlightModel({
+    this.timeOffsets = const {},
     required this.id,
     required this.tripId,
     required this.userId,
@@ -16,6 +20,7 @@ class UserFlightModel {
 
   factory UserFlightModel.fromMap(Map<String, dynamic> map) {
     return UserFlightModel(
+      timeOffsets: TravelTime.offsets(map, ['departureDate', 'arrivalDate']),
       id: map['id'] as String? ?? '',
       tripId: map['tripId'] as String? ?? '',
       userId: map['userId'] as String? ?? '',
@@ -26,11 +31,11 @@ class UserFlightModel {
       arrivalAirport: map['arrivalAirport'] as String?,
       departureDate:
           map['departureDate'] != null
-              ? DateTime.tryParse(map['departureDate'] as String)
+              ? TravelTime.tryParse(map['departureDate'] as String)
               : null,
       arrivalDate:
           map['arrivalDate'] != null
-              ? DateTime.tryParse(map['arrivalDate'] as String)
+              ? TravelTime.tryParse(map['arrivalDate'] as String)
               : null,
     );
   }
@@ -60,8 +65,15 @@ class UserFlightModel {
       if (departureAirport != null) 'departureAirport': departureAirport,
       if (arrivalAirport != null) 'arrivalAirport': arrivalAirport,
       if (departureDate != null)
-        'departureDate': departureDate!.toIso8601String(),
-      if (arrivalDate != null) 'arrivalDate': arrivalDate!.toIso8601String(),
+        'departureDate': TravelTime.serialize(
+          departureDate,
+          timeOffsets['departureDate'],
+        ),
+      if (arrivalDate != null)
+        'arrivalDate': TravelTime.serialize(
+          arrivalDate,
+          timeOffsets['arrivalDate'],
+        ),
     };
   }
 

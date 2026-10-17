@@ -1,3 +1,4 @@
+import 'package:travel_crew/models/transportation_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/safety_service.dart';
@@ -371,11 +372,32 @@ class FirebaseTripService {
     return [];
   }
 
-  static Future<bool> addTrip({required TripModel tripModel}) async {
+  static Future<bool> addTrip({
+    required TripModel tripModel,
+    List<TransportationModel> transportation = const [],
+  }) async {
     try {
+      if (transportation.length > 50) {
+        throw const FormatException('Use up to 50 transportation entries.');
+      }
       final tripRef = firestore.collection(kTripTable).doc(tripModel.id);
       final batch = firestore.batch();
       batch.set(tripRef, tripModel.toMap());
+      for (final entry in transportation) {
+        if (entry.issue != null) throw FormatException(entry.issue!);
+        final flight = entry.mode == TransportationMode.flight;
+        final data = flight ? entry.toFlightMap() : entry.toMap();
+        data['tripId'] = tripModel.id;
+        data['userId'] = tripModel.createdBy;
+        data['displayName'] =
+            GlobalVariables.loggedInUser.value?.displayName ?? '';
+        batch.set(
+          tripRef
+              .collection(flight ? 'flights' : 'transportation')
+              .doc(entry.id),
+          data,
+        );
+      }
       batch.set(
         _tripMembersRef(tripModel.id).doc(tripModel.createdBy),
         TripMemberModel(userId: tripModel.createdBy, role: 'creator').toMap(),
@@ -875,7 +897,7 @@ class FirebaseTripService {
   }) async {
     try {
       // Bounding box: 1 degree ≈ 111km
-      final double delta = radius / 111.0;
+      final double delta = radius / 1110.0;
       final double minLat = latitude - delta;
       final double maxLat = latitude + delta;
       final double minLng = longitude - delta;

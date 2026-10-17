@@ -13,6 +13,11 @@ const {sendInboxPush} = require("../notification-delivery");
 let app; let db; let auth; let server; let upstream; let origin; let base; let ownerToken; let strangerToken;
 const owner = "assistant-owner"; const stranger = "assistant-stranger";
 const trip = {title: "Tokyo weekend", destination: "Tokyo", country: "Japan", start_date: "2027-04-10", end_date: "2027-04-12",
+  transportation: [
+    {mode: "rideshare", provider: "Uber", origin: "Airport", destination: "Hotel", travelers: ["Owner"]},
+    {mode: "train", title: "Train excursion", departure: "2027-04-11T10:00:00+09:00"},
+    {mode: "flight", service_number: "AB456", departure: "2027-04-12T10:00:00+09:00", arrival: "2027-04-12T04:00:00-07:00"},
+  ],
   activities: [{title: "Museum", description: "Exhibits", location: "Museum", address: "Tokyo", start_datetime: "2027-04-10T10:00:00+09:00", end_datetime: "2027-04-10T11:00:00+09:00"}],
   expenses: [{name: "Booked hotel", amount: 120, date: "2027-04-10"}],
   lodging: {name: "Hotel", check_in: "2027-04-10", check_out: "2027-04-12", cost_per_night: 60},
@@ -99,6 +104,10 @@ test("API atomically persists Flutter-compatible private itinerary, memberships 
   assert.equal((await db.doc(`trips/${id}/activities/activity_0`).get()).data().startDateTime, trip.activities[0].start_datetime);
   assert.deepEqual((await db.doc(`trips/${id}/expenses/expense_0`).get()).data().owners, {[owner]: 120});
   assert.equal((await db.doc(`trips/${id}/flights/${owner}`).get()).data().userId, owner);
+  assert.equal((await db.doc(`trips/${id}/transportation/transport_0`).get()).data().provider, "Uber");
+  assert.equal((await db.doc(`trips/${id}/transportation/transport_1`).get()).data().departure, trip.transportation[1].departure);
+  assert.equal((await db.doc(`trips/${id}/flights/transport_2`).get()).data().flightNumber, "AB456");
+
   const note = (await db.doc(`notifications/${owner}/notification/assistant_${id}`).get()).data(); assert.equal(note.notificationType, "Trip");
   const retry = await request("/v1/trips", {method: "POST", body: trip, token: ownerToken, headers: {"Idempotency-Key": key}});
   assert.equal(retry.status, 200); assert.equal(retry.data.trip_id, id);

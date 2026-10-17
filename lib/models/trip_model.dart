@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:travel_crew/utils/travel_time.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/expense_model.dart';
@@ -7,7 +9,9 @@ import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/user_flight_model.dart';
 
 class TripModel {
+  final Map<String, String> timeOffsets;
   TripModel({
+    this.timeOffsets = const {},
     this.createdByUser,
     required this.id,
     this.joindUsersList,
@@ -51,6 +55,12 @@ class TripModel {
 
   factory TripModel.fromMap(Map<String, dynamic> map) {
     return TripModel(
+      timeOffsets: TravelTime.offsets(map, [
+        'departureDate',
+        'arrivalDate',
+        'checkInDate',
+        'checkOutDate',
+      ]),
       id: map['id'] as String? ?? '',
       destination: map['destination'] as String? ?? '',
       latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
@@ -88,11 +98,11 @@ class TripModel {
       flightNumber: map['flightNumber'] as String?,
       departureDate:
           map['departureDate'] != null
-              ? DateTime.parse(map['departureDate'] as String)
+              ? TravelTime.parse(map['departureDate'] as String)
               : null,
       arrivalDate:
           map['arrivalDate'] != null
-              ? DateTime.parse(map['arrivalDate'] as String)
+              ? TravelTime.parse(map['arrivalDate'] as String)
               : null,
       departureAirport: map['departureAirport'] as String?,
       arrivalAirport: map['arrivalAirport'] as String?,
@@ -101,11 +111,11 @@ class TripModel {
       hotelAddress: map['hotelAddress'] as String?,
       checkInDate:
           map['checkInDate'] != null
-              ? DateTime.parse(map['checkInDate'] as String)
+              ? TravelTime.parse(map['checkInDate'] as String)
               : null,
       checkOutDate:
           map['checkOutDate'] != null
-              ? DateTime.parse(map['checkOutDate'] as String)
+              ? TravelTime.parse(map['checkOutDate'] as String)
               : null,
       expensePerNight: (map['expensePerNight'] as num?)?.toDouble(),
       activities:
@@ -225,6 +235,7 @@ class TripModel {
     String? continent,
   }) {
     return TripModel(
+      timeOffsets: timeOffsets,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       tripStatus: tripStatus ?? this.tripStatus,
@@ -286,15 +297,27 @@ class TripModel {
       'isPrivate': isPrivate,
       'airlineName': airlineName,
       'flightNumber': flightNumber,
-      'departureDate': departureDate?.toIso8601String(),
-      'arrivalDate': arrivalDate?.toIso8601String(),
+      'departureDate': TravelTime.serialize(
+        departureDate,
+        timeOffsets['departureDate'],
+      ),
+      'arrivalDate': TravelTime.serialize(
+        arrivalDate,
+        timeOffsets['arrivalDate'],
+      ),
       'departureAirport': departureAirport,
       'arrivalAirport': arrivalAirport,
       'lodgingType': lodgingType,
       'hotelName': hotelName,
       'hotelAddress': hotelAddress,
-      'checkInDate': checkInDate?.toIso8601String(),
-      'checkOutDate': checkOutDate?.toIso8601String(),
+      'checkInDate': TravelTime.serialize(
+        checkInDate,
+        timeOffsets['checkInDate'],
+      ),
+      'checkOutDate': TravelTime.serialize(
+        checkOutDate,
+        timeOffsets['checkOutDate'],
+      ),
       'expensePerNight': expensePerNight,
       'activities': activities?.map((x) => x.toMap()).toList(),
       'expenses': expenses?.map((x) => x.toMap()).toList(),
@@ -318,6 +341,7 @@ class TripModel {
     if (identical(this, other)) return true;
 
     return other is TripModel &&
+        mapEquals(other.timeOffsets, timeOffsets) &&
         other.id == id &&
         other.destination == destination &&
         other.title == title &&
@@ -352,7 +376,11 @@ class TripModel {
 
   @override
   int get hashCode {
-    return id.hashCode ^
+    return timeOffsets['departureDate'].hashCode ^
+        timeOffsets['arrivalDate'].hashCode ^
+        timeOffsets['checkInDate'].hashCode ^
+        timeOffsets['checkOutDate'].hashCode ^
+        id.hashCode ^
         destination.hashCode ^
         title.hashCode ^
         createdBy.hashCode ^

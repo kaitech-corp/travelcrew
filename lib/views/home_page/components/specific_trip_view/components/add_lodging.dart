@@ -1,7 +1,9 @@
+import 'package:travel_crew/utils/travel_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/models/lodging_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_styles.dart';
@@ -34,14 +36,15 @@ class _AddLodgingScreenState extends State<AddLodgingScreen> {
     if (args is TripModel) {
       controller.tripModel.value = args;
     }
-    controller.initLodgingFromTrip();
+    controller.initLodgingForm(args is LodgingModel ? args : null);
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       className: runtimeType.toString(),
-      screenName: 'Lodging',
+      screenName:
+          controller.editingLodging == null ? 'Add Lodging' : 'Edit Lodging',
       centerTitle: true,
       scaffoldKey: _scaffoldKey,
       body: SingleChildScrollView(
@@ -175,23 +178,29 @@ class _AddLodgingScreenState extends State<AddLodgingScreen> {
                         title: 'Select Check-In Time',
                         selectedTime: (time) async {
                           final d = controller.lodgingCheckIn.value!;
-                          controller.lodgingCheckIn.value = DateTime(
-                            d.year,
-                            d.month,
-                            d.day,
+                          controller
+                              .lodgingCheckIn
+                              .value = TravelTime.withClock(
+                            d,
                             time.hour,
                             time.minute,
+                            controller
+                                .editingLodging
+                                ?.timeOffsets['checkInDate'],
                           );
                           await pickTime(
                             title: 'Select Check-Out Time',
                             selectedTime: (time) async {
                               final d2 = controller.lodgingCheckOut.value!;
-                              controller.lodgingCheckOut.value = DateTime(
-                                d2.year,
-                                d2.month,
-                                d2.day,
+                              controller
+                                  .lodgingCheckOut
+                                  .value = TravelTime.withClock(
+                                d2,
                                 time.hour,
                                 time.minute,
+                                controller
+                                    .editingLodging
+                                    ?.timeOffsets['checkOutDate'],
                               );
                             },
                           );
@@ -241,6 +250,19 @@ class _AddLodgingScreenState extends State<AddLodgingScreen> {
                     ],
                   ),
                 ),
+              ),
+            ),
+            SizedBox(height: 27.h),
+            Text(
+              'Cost per night (optional)',
+              style: AppStyles.labelTextStyle(),
+            ),
+            SizedBox(height: 12.h),
+            CustomTextField(
+              controller: controller.lodgingCostController,
+              hintText: 'Cost per night',
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
               ),
             ),
             SizedBox(height: 30.h),

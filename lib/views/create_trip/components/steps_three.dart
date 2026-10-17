@@ -1,3 +1,4 @@
+import 'package:travel_crew/utils/travel_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -96,12 +97,11 @@ class StepsThree extends StatelessWidget {
                     await pickTime(
                       title: 'Select Departure Time',
                       selectedTime: (time) async {
-                        controller.departureDate.value = DateTime(
-                          controller.departureDate.value!.year,
-                          controller.departureDate.value!.month,
-                          controller.departureDate.value!.day,
+                        controller.departureDate.value = TravelTime.withClock(
+                          controller.departureDate.value!,
                           time.hour,
                           time.minute,
+                          controller.timeOffsetFor('departureDate'),
                         );
                       },
                     );
@@ -185,12 +185,11 @@ class StepsThree extends StatelessWidget {
                     await pickTime(
                       title: 'Select Arrival Time',
                       selectedTime: (time) async {
-                        controller.arrivalDate.value = DateTime(
-                          controller.arrivalDate.value!.year,
-                          controller.arrivalDate.value!.month,
-                          controller.arrivalDate.value!.day,
+                        controller.arrivalDate.value = TravelTime.withClock(
+                          controller.arrivalDate.value!,
                           time.hour,
                           time.minute,
+                          controller.timeOffsetFor('arrivalDate'),
                         );
                       },
                     );

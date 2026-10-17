@@ -1,3 +1,4 @@
+import 'package:travel_crew/models/transportation_model.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -26,8 +27,10 @@ Required fields (always include these):
 Optional sections — include a section ONLY if you have real information for it, otherwise OMIT the whole key. Do not output empty objects, empty arrays, null, or placeholder values.
 
 Field rules:
-- Trip, flight, lodging, and expense dates use "YYYY-MM-DD". Activity times use "YYYY-MM-DDTHH:MM:SS" (24-hour clock).
+- Trip and expense dates use "YYYY-MM-DD". Flights and lodging may use a calendar date when the time is unknown, or an ISO 8601 local timestamp with its UTC offset when known (for example "2027-04-10T10:00:00+09:00").
+- Flight departure uses the departure airport's local time and offset; arrival uses the arrival airport's local time and offset. Lodging uses the property's local time. Activity times use the activity location's local time with its offset on that date. Account for daylight saving on the event date. Use Z only when the time is actually specified in UTC; never attach Z to a local clock time. Do not invent an offset when the location or timezone is unknown; omit the time or ask for clarification.
 - Every activity must have a "title". "description", "location", "address", "start_datetime", and "end_datetime" are each optional. Prefer a full street "address" when you can confidently supply it; otherwise use "location" for the venue/place name.
+- Optional "transportation" is an array of up to 50 entries. Each needs "mode": "flight", "driving", "rideshare", "taxi", "train", "bus", "scooter", "bicycle", "walking", "ferry", "boat", or "other". Optional fields: "departure", "arrival", "notes". Put route, provider, driver, service/flight number, traveler names, and other details in "notes". Departure/arrival are calendar dates or local timestamps with the correct origin/destination UTC offsets. Omit unknown times. Use multiple entries for trip legs; do not repeat a flight in both "airline" and "transportation". Traveler names do not invite or grant access.
 - Every expense must have a non-empty "name" and a positive "amount". "split_type" must be exactly "equally" (the only value supported on import).
 - A cover image is optional. Never invent an image URL, use a placeholder, generate artwork, or supply a webpage/local file link. Only include image_url when the cover choice below requests a photo. Supported suggestions are direct Wikimedia Commons JPEG, PNG, or WebP URLs whose source page identifies the license as Public domain or CC0.\n- Numbers ("amount", "cost_per_night") must be plain JSON numbers with no currency symbol or quotes.
 
@@ -136,6 +139,36 @@ Strict JSON formatting requirements:
       if (startDate == null || endDate == null || endDate.isBefore(startDate)) {
         showCustomSnackBar(content: 'Trip dates are invalid');
         return;
+      }
+      final transportation = data['transportation'];
+      if (transportation != null) {
+        if (transportation is! List || transportation.length > 50) {
+          showCustomSnackBar(
+            content: 'Use a list of up to 50 transportation entries.',
+          );
+          return;
+        }
+        for (final raw in transportation) {
+          if (raw is! Map ||
+              !TransportationMode.values.any(
+                (mode) => mode.name == raw['mode'],
+              )) {
+            showCustomSnackBar(
+              content: 'Each transportation entry needs a supported mode.',
+            );
+            return;
+          }
+          final entry = TransportationModel.fromImport(
+            Map<String, dynamic>.from(raw),
+            id: '',
+            tripId: '',
+            userId: '',
+          );
+          if (entry.issue != null) {
+            showCustomSnackBar(content: entry.issue!);
+            return;
+          }
+        }
       }
       final activities = data['activities'];
       if (activities is List && activities.length > 50) {

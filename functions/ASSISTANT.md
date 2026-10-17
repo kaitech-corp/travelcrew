@@ -8,13 +8,15 @@ in My Trips and generate a server-owned inbox notification.
 
 ## Endpoints
 
-All service routes use `ASSISTANT_BASE_URL`, normally
-`https://universal-code-135522.web.app/assistant`.
+The canonical MCP URL is **https://travelcrew.app/mcp**, configured by
+`ASSISTANT_MCP_URL`. Other routes below are relative to `ASSISTANT_BASE_URL`,
+**https://travelcrew.app/assistant**. The Cloud Run website proxies these routes
+to `assistantV1`; Firebase Hosting does not serve the custom domain.
 
 | Route | Purpose |
 | --- | --- |
 | `POST /v1/trips` | Create a private trip; accepts an OAuth access token or a Firebase ID token |
-| `POST /mcp` | Stateless Streamable HTTP MCP; OAuth access token required |
+| `POST https://travelcrew.app/mcp` | Stateless Streamable HTTP MCP; OAuth access token required |
 | `GET /openapi.json` | OpenAPI 3.1 contract generated from the validated itinerary schema |
 | `GET /connect` | Sign in to list and disconnect assistants |
 | `GET /trips/:id` | Privacy-preserving app-opening page; exposes no itinerary details |
@@ -25,9 +27,9 @@ All service routes use `ASSISTANT_BASE_URL`, normally
 
 Discovery is served at
 `/.well-known/oauth-authorization-server/assistant` and
-`/.well-known/oauth-protected-resource/assistant/mcp` on the Hosting origin.
+`/.well-known/oauth-protected-resource/mcp` on `https://travelcrew.app`.
 The 401 challenge supplies the protected-resource metadata URL. The resource
-indicator is the full MCP URL, including `/assistant/mcp`; the only scope is
+indicator is exactly `https://travelcrew.app/mcp`; the only scope is
 `trips:create`. Use a fresh S256 PKCE verifier for each authorization request.
 Clients must support public-client authorization-code OAuth, dynamic registration,
 and Streamable HTTP. This does not automatically publish TravelCrew in any
@@ -65,17 +67,66 @@ travel and should not invent bookings or treat estimated costs as paid expenses.
 The existing manual JSON importer also accepts local activity timestamps; the
 external API deliberately requires their timezone to avoid ambiguous imports.
 
+Travel clocks are local to the venue: departure uses the departure airport's
+offset, arrival uses the arrival airport's offset, and lodging and activities use
+their own location's offset on the event date. Flight and lodging fields accept
+either a calendar date or an offset-bearing timestamp. Mobile and web displays
+retain those wall times without UTC offset labels; saving and calendar exports
+retain the instant. Date-only and legacy unzoned values stay unzoned. A `Z` value
+is displayed as UTC because its original venue timezone cannot be recovered
+without additional information. Offsets are not IANA timezone rules: changing an
+event to another date across a daylight-saving boundary requires the correct new
+offset from the itinerary source. Never guess the venue timezone from the phone.
+
 Send `Authorization: Bearer <token>` and `Idempotency-Key: <unique-request-id>`.
 Keys must contain 16–128 letters, digits, underscores or hyphens. Retries must use
 the same key and itinerary; different content with an existing key returns 409.
 For MCP, use `{ "idempotency_key": "...", "trip": { ... } }`.
+
+### Transportation
+
+An optional `transportation` array accepts up to 50 entries. Only `mode` is
+required on each entry; omit unknown fields, including dates and times. Modes are
+`flight`, `driving`, `rideshare`, `taxi`, `train`, `bus`, `scooter`, `bicycle`,
+`walking`, `ferry`, `boat`, and `other`. The app uses mode, optional `departure`
+and `arrival`, and `notes`. Put routes, provider, driver, service/flight numbers,
+and traveler names in notes. Older optional structured fields are still accepted
+by the API for compatibility, but are no longer separate app inputs or card fields.
+
+```json
+{
+  "transportation": [
+    {
+      "mode": "flight",
+      "departure": "2027-04-10T10:00:00-07:00",
+      "arrival": "2027-04-11T14:00:00+09:00",
+      "notes": "Example Air TC123, Los Angeles to Tokyo Narita. Randy and Alex."
+    },
+    {"mode": "rideshare", "notes": "Uber airport transfer"},
+    {"mode": "scooter", "notes": "Scooter rental"}
+  ]
+}
+```
+
+This is a fragment to add to the required itinerary fields above. Each endpoint
+uses its own location's offset on the travel date, or a date without a time.
+The server derives ownership; traveler names do not grant trip membership.
+
+The existing optional `airline` input still works. Use either that input or a
+transportation entry for the same flight, to avoid creating it twice. Flights
+continue to use the existing flight storage shape, so older clients retain their
+flight view. Other modes are additive and require the updated app to display.
+The updated mobile app and shared trip page label this section Transportation;
+the manual JSON importer accepts the same optional array. No bulk migration is
+required. Source changes require coordinated Firestore rules, backend, web, and
+mobile releases; these documentation changes do not deploy them.
 
 Creation returns 201, or 200 for a replay:
 
 ```json
 {
   "trip_id": "<uuid>",
-  "url": "https://universal-code-135522.web.app/assistant/trips/<uuid>",
+  "url": "https://travelcrew.app/assistant/trips/<uuid>",
   "app_url": "travelcrew://trips/<uuid>",
   "is_private": true,
   "replayed": false
@@ -120,60 +171,64 @@ operations must include assistant receipts and grant records.
 
 ## Configuration and release
 
-Implementation and local tests do not deploy the feature. Release the backend,
-Hosting configuration, indexes and updated mobile app together. Before using the
-Hosting deployment below, review the project's existing Hosting site: deploying
-this configuration replaces its currently deployed routes and static files.
-If that site already hosts another product, use a dedicated Hosting site/custom
-domain and set the same base URL in the backend and Flutter build.
+The deployment has two components: `assistantV1` for OAuth/MCP and the existing
+`travel-crew-web` Cloud Run service for `travelcrew.app` routing. Do not replace
+this website with a Firebase Hosting deployment.
 
-1. Use Node 22 and run `npm --prefix functions ci`.
-2. Put these settings in your environment-specific Functions dotenv file, such
-   as `functions/.env.universal-code-135522`. This is browser Firebase configuration,
-   never a service-account key. Copy the web app values from Firebase project settings
-   or `lib/firebase_options.dart`:
+1. Use Node 22 and install dependencies with `npm --prefix functions ci`.
+2. Set these values in the ignored Functions environment file. Firebase browser
+   configuration comes from `lib/firebase_options.dart`; never use an Admin key.
 
    ```dotenv
-   ASSISTANT_BASE_URL=https://universal-code-135522.web.app/assistant
+   ASSISTANT_BASE_URL=https://travelcrew.app/assistant
+   ASSISTANT_MCP_URL=https://travelcrew.app/mcp
    ASSISTANT_FIREBASE_CONFIG={"apiKey":"<web-api-key>","authDomain":"universal-code-135522.firebaseapp.com","projectId":"universal-code-135522","appId":"<web-app-id>"}
    ```
 
-3. Add the Hosting origin to Firebase Authentication's authorized domains. Enable
-   the sign-in providers used by your accounts. Email/password works with the
-   existing account credentials; Google and Apple buttons use Firebase web popup
-   sign-in and need those providers' web configuration. Complete new profiles in
-   the mobile app before connecting an assistant. OAuth client consent never
-   receives the user's password or Firebase token.
-4. Confirm the named database is `travel-crew-db-2` (or set
-   `FIRESTORE_DATABASE_ID`). Deploy the new function, Hosting routes and indexes:
+3. Ensure `travelcrew.app` is an authorized Firebase Authentication domain. Enable
+   the providers your travelers use. The browser uses existing accounts; new
+   profiles must first be completed in the app. OAuth clients never receive a
+   Firebase token or the user's password. Inspect/configure the domain with:
 
    ```sh
-   firebase deploy --only functions:assistantV1,hosting,firestore:indexes
+   node functions/test-browser/assistant-auth-config.cjs --configure
    ```
 
-   Deploy the repository's coordinated Firestore rules and notification lifecycle
-   separately if not already released. `sendPushNotificationV3` must be deployed
-   for mobile push notifications; creation and the inbox record do not depend on
-   successful push delivery. Wait for the `tripMemberships` index to finish building
-   before releasing the app's new membership query.
-5. Build and release the mobile app with the same base URL:
+4. Verify the database is `travel-crew-db-2`. Deploy the assistant function and
+   website separately, after their tests pass:
 
    ```sh
-   flutter build appbundle --dart-define=ASSISTANT_BASE_URL=https://universal-code-135522.web.app/assistant
-   flutter build ipa --dart-define=ASSISTANT_BASE_URL=https://universal-code-135522.web.app/assistant
+   firebase deploy --only functions:assistantV1 --project universal-code-135522
+   gcloud builds submit travel_crew_web --config=travel_crew_web/cloudbuild.yaml --project=universal-code-135522 --region=us-central1 --gcs-source-staging-dir=gs://universal-code-135522_cloudbuild/source
    ```
 
-   The app registers `travelcrew://trips/<uuid>` on Android and iOS, waits for the
-   authenticated session, and checks normal Firestore access before opening the
-   trip. The HTTPS landing page works without universal-link domain association.
-6. Add `<base>/mcp` to a compatible assistant; sign in, approve, create a trip,
-   retry once, open the trip on a device, then disconnect and verify further
-   creation fails. Also verify Google/Apple sign-in for whichever providers are
-   enabled in production. Their external login pages are not exercised locally.
+   The website's `ASSISTANT_UPSTREAM_URL` is the fixed HTTPS origin of
+   `assistantV1`. Its public settings are `VITE_ASSISTANT_BASE_URL` and
+   `VITE_ASSISTANT_MCP_URL`. Preserve the website's other settings and secrets.
+   Current source includes optional suggested-photo preparation: follow the
+   [photo rollout prerequisites](../resources/trip_editor_suggested_photos_review.md)
+   before deploying that version. Existing deployed MCP functionality and pending
+   source changes must be evaluated separately.
 
-If configuration is absent, `assistantV1` returns 503 instead of exposing an
-unauthenticated fallback. Disable the function/Hosting route to stop new external
-requests; existing private trips remain normal app records.
+5. Confirm the `tripMemberships` index and the six OAuth/quota `expiresAt` TTL
+   policies in `firestore.indexes.json` are active. Coordinate Firestore rules and
+   notification releases independently. `sendPushNotificationV3` delivers mobile
+   pushes; creating the private trip and inbox record does not depend on a push.
+6. The Flutter defaults now use the canonical URLs. For a custom environment,
+   override both `ASSISTANT_BASE_URL` and `ASSISTANT_MCP_URL`. Build and release the
+   mobile app through its normal release process; changing source does not update
+   an installed app. The app recognizes `travelcrew://trips/<uuid>`, waits for
+   sign-in, and checks normal Firestore access before opening the trip.
+7. Follow the [client setup and submission guide](../integrations/README.md),
+   connect an account, create and retry a trip, open it in the app, disconnect,
+   and verify further creation fails. Google/Apple provider configuration and
+   interactive sign-in need separate verification from email/password.
+
+OAuth uses DCR, S256 PKCE, exact redirect URIs, and RFC 9207 `iss` callbacks. The
+canonical resource metadata URL is supplied in the 401 challenge. `/MCP` is
+accepted by the website without redirecting the POST. `/assistant/mcp` remains
+an alias, but all new clients must use the canonical `/mcp` resource indicator.
+Missing backend/proxy configuration fails closed with 503.
 
 ## Verification
 
@@ -202,6 +257,17 @@ consent, callback, trip creation, the app-opening page and disconnect. It saves 
 consent screenshot to `/private/tmp/travelcrew-assistant-consent.png` (override with
 `ASSISTANT_SCREENSHOT`). Flutter tests cover app-link parsing, model compatibility,
 and copying the connection URL at phone/tablet widths with large text.
+
+Production qualification is explicitly opt-in:
+
+```sh
+node functions/test-browser/assistant.live.cjs --live
+```
+
+It uses the active gcloud identity to create a uniquely named temporary account,
+performs real browser email sign-in and MCP calls through `travelcrew.app`, then
+removes its test records. It does not exercise a ChatGPT model, Gemini model, or
+native device UI. See the integration guide for the current verification status.
 
 Protocol references: [official MCP SDK](https://ts.sdk.modelcontextprotocol.io/server),
 [MCP authorization](https://apps.extensions.modelcontextprotocol.io/api/documents/authorization.html),

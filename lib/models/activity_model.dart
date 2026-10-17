@@ -1,7 +1,11 @@
 import 'dart:convert';
 
+import 'package:travel_crew/utils/travel_time.dart';
+
 class ActivityModel {
+  final Map<String, String> timeOffsets;
   ActivityModel({
+    this.timeOffsets = const {},
     required this.likesCount,
     required this.title,
     this.id,
@@ -15,6 +19,7 @@ class ActivityModel {
 
   factory ActivityModel.fromMap(Map<String, dynamic> map) {
     return ActivityModel(
+      timeOffsets: TravelTime.offsets(map, ['startDateTime', 'endDateTime']),
       likesCount: (map['likesCount'] as int?) ?? 0,
       likedBy: List<String>.from(
         (map['likedBy'] as List<dynamic>?) ?? <dynamic>[],
@@ -25,11 +30,11 @@ class ActivityModel {
       description: (map['description'] as String?) ?? '',
       startDateTime:
           map['startDateTime'] != null
-              ? DateTime.parse(map['startDateTime'] as String)
+              ? TravelTime.parse(map['startDateTime'] as String)
               : null,
       endDateTime:
           map['endDateTime'] != null
-              ? DateTime.parse(map['endDateTime'] as String)
+              ? TravelTime.parse(map['endDateTime'] as String)
               : null,
       location: map['location'] as String?,
     );
@@ -37,6 +42,11 @@ class ActivityModel {
 
   factory ActivityModel.fromJson(String source) =>
       ActivityModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  DateTime? get startInstant =>
+      TravelTime.instant(startDateTime, timeOffsets['startDateTime']);
+  DateTime? get endInstant =>
+      TravelTime.instant(endDateTime, timeOffsets['endDateTime']);
+
   String title;
   String? id;
   String tripId;
@@ -57,6 +67,7 @@ class ActivityModel {
     String? location,
   }) {
     return ActivityModel(
+      timeOffsets: timeOffsets,
       title: title ?? this.title,
       id: id ?? this.id,
       likedBy: likedBy,
@@ -79,10 +90,21 @@ class ActivityModel {
     result.addAll({'tripId': tripId});
     result.addAll({'description': description});
     if (startDateTime != null) {
-      result.addAll({'startDateTime': startDateTime!.toIso8601String()});
+      // Preserve the venue clock and its original UTC offset.
+      result.addAll({
+        'startDateTime': TravelTime.serialize(
+          startDateTime,
+          timeOffsets['startDateTime'],
+        ),
+      });
     }
     if (endDateTime != null) {
-      result.addAll({'endDateTime': endDateTime!.toIso8601String()});
+      result.addAll({
+        'endDateTime': TravelTime.serialize(
+          endDateTime,
+          timeOffsets['endDateTime'],
+        ),
+      });
     }
     if (location != null) {
       result.addAll({'location': location});
@@ -109,6 +131,8 @@ class ActivityModel {
         other.description == description &&
         other.startDateTime == startDateTime &&
         other.endDateTime == endDateTime &&
+        other.timeOffsets['startDateTime'] == timeOffsets['startDateTime'] &&
+        other.timeOffsets['endDateTime'] == timeOffsets['endDateTime'] &&
         other.location == location;
   }
 
@@ -120,6 +144,8 @@ class ActivityModel {
         description.hashCode ^
         startDateTime.hashCode ^
         endDateTime.hashCode ^
+        timeOffsets['startDateTime'].hashCode ^
+        timeOffsets['endDateTime'].hashCode ^
         location.hashCode;
   }
 }

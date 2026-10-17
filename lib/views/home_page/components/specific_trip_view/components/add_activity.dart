@@ -1,3 +1,4 @@
+import 'package:travel_crew/utils/travel_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -143,24 +144,26 @@ class _AddActivityState extends State<AddActivity> {
                     await pickTime(
                       title: 'Select Start Time',
                       selectedTime: (time) async {
-                        controller.activityStartTime.value = DateTime(
-                          controller.activityStartTime.value!.year,
-                          controller.activityStartTime.value!.month,
-                          controller.activityStartTime.value!.day,
+                        controller
+                            .activityStartTime
+                            .value = TravelTime.withClock(
+                          controller.activityStartTime.value!,
                           time.hour,
                           time.minute,
+                          (args['activity'] as ActivityModel?)
+                              ?.timeOffsets['startDateTime'],
                         );
                       },
                     );
                     await pickTime(
                       title: 'Select End Time',
                       selectedTime: (time) async {
-                        controller.activityEndTime.value = DateTime(
-                          controller.activityEndTime.value!.year,
-                          controller.activityEndTime.value!.month,
-                          controller.activityEndTime.value!.day,
+                        controller.activityEndTime.value = TravelTime.withClock(
+                          controller.activityEndTime.value!,
                           time.hour,
                           time.minute,
+                          (args['activity'] as ActivityModel?)
+                              ?.timeOffsets['endDateTime'],
                         );
                       },
                     );

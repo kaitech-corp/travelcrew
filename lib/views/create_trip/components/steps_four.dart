@@ -1,3 +1,4 @@
+import 'package:travel_crew/utils/travel_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -147,22 +148,24 @@ class StepsFour extends StatelessWidget {
                       await pickTime(
                         title: 'Select Check-In Time',
                         selectedTime: (time) async {
-                          controller.checkInStartTime.value = DateTime(
-                            controller.checkInStartTime.value!.year,
-                            controller.checkInStartTime.value!.month,
-                            controller.checkInStartTime.value!.day,
+                          controller
+                              .checkInStartTime
+                              .value = TravelTime.withClock(
+                            controller.checkInStartTime.value!,
                             time.hour,
                             time.minute,
+                            controller.timeOffsetFor('checkInDate'),
                           );
                           await pickTime(
                             title: 'Select Check-Out Time',
                             selectedTime: (time) async {
-                              controller.checkInEndTime.value = DateTime(
-                                controller.checkInEndTime.value!.year,
-                                controller.checkInEndTime.value!.month,
-                                controller.checkInEndTime.value!.day,
+                              controller
+                                  .checkInEndTime
+                                  .value = TravelTime.withClock(
+                                controller.checkInEndTime.value!,
                                 time.hour,
                                 time.minute,
+                                controller.timeOffsetFor('checkOutDate'),
                               );
                             },
                           );

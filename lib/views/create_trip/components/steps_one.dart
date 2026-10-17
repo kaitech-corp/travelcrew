@@ -1,3 +1,7 @@
+import 'package:travel_crew/models/transportation_model.dart';
+import 'package:travel_crew/views/home_page/components/specific_trip_view/components/transportation_editor.dart';
+import 'package:travel_crew/views/home_page/components/specific_trip_view/components/transport_tab.dart';
+import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/transportation_editor_controller.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +28,39 @@ class StepsOne extends StatelessWidget {
   const StepsOne({super.key, required this.controller, this.formKey});
   final CreateTripController controller;
   final GlobalKey<FormState>? formKey;
+
+  Future<void> _editTransportation(
+    BuildContext context, [
+    TransportationModel? entry,
+  ]) async {
+    final editor = TransportationEditorController(
+      existing: entry,
+      tripId: '',
+      userId: GlobalVariables.currentUid,
+      displayName: GlobalVariables.loggedInUser.value?.displayName ?? '',
+    );
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder:
+          (_) => TransportationEditor(
+            controller: editor,
+            onSave: (saved) async {
+              final index = controller.importedTransportation.indexWhere(
+                (value) => value.id == saved.id,
+              );
+              if (index < 0) {
+                controller.importedTransportation.add(saved);
+              } else {
+                controller.importedTransportation[index] = saved;
+              }
+            },
+          ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -418,6 +455,29 @@ class StepsOne extends StatelessWidget {
               if (controller.photoNotice.isNotEmpty)
                 Text(controller.photoNotice.value),
               SizedBox(height: 16.h),
+              if (controller.tripModel.value == null) ...[
+                Text(
+                  'Transportation',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const Text(
+                  'Optional. Add how you will get there or get around.',
+                ),
+                for (final entry in controller.importedTransportation)
+                  TransportationCard(
+                    entry: entry,
+                    canManage: true,
+                    onEdit: () => _editTransportation(context, entry),
+                    onDelete:
+                        () => controller.importedTransportation.remove(entry),
+                  ),
+                TextButton.icon(
+                  onPressed: () => _editTransportation(context),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add Transportation'),
+                ),
+                const SizedBox(height: 16),
+              ],
             ],
           ),
         ),
