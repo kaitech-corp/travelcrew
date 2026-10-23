@@ -9,8 +9,8 @@ import '../../my_trips/my_trips_screen.dart';
 class MainViewController extends GetxController {
   var selectedIndex = 0.obs;
   List<Widget> pages = [
-    const HomePageScreen(),
     const MyTripsScreen(),
+    const HomePageScreen(),
     const SizedBox(), // placeholder for create-trip plus button (index 2)
     const InboxScreen(),
     const ProfileScreen(),

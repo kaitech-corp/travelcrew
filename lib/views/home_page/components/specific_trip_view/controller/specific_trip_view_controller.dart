@@ -26,6 +26,39 @@ import '../../../../../models/search_model.dart';
 
 class SpecificTripViewController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  SpecificTripViewController({
+    Future<bool> Function({required String id, String? tripId})? deleteActivity,
+  }) : _deleteActivity = deleteActivity ?? FirebaseTripService.deleteActivity;
+
+  final Future<bool> Function({required String id, String? tripId})
+  _deleteActivity;
+  final Set<String> _deletingActivities = {};
+
+  Future<bool> removeActivity(ActivityModel activity) async {
+    final trip = tripModel.value;
+    final id = activity.id;
+    if (trip == null ||
+        id == null ||
+        id.isEmpty ||
+        !GlobalVariables.isLoggedInUser(trip.createdBy) ||
+        !_deletingActivities.add(id)) {
+      return false;
+    }
+    try {
+      final success = await _deleteActivity(id: id, tripId: trip.id);
+      if (success) {
+        trip.activities?.removeWhere((item) => item.id == id);
+        tripModel.refresh();
+        updateTripOverAll(trip);
+      }
+      return success;
+    } catch (_) {
+      return false;
+    } finally {
+      _deletingActivities.remove(id);
+    }
+  }
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();

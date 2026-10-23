@@ -57,17 +57,68 @@ class GeoServices {
     return placemarks[0];
   }
 
-  static Future<LatLng> getLatLngFromPlace(String place) async {
-    final String request =
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$place&key=$kGoogleMapKey';
-    final response = await http.get(Uri.parse(request));
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      final location = json['results'][0]['geometry']['location'];
-      return LatLng(location['lat'] as double, location['lng'] as double);
-    } else {
-      throw Exception('Failed to fetch location');
+  static Future<LatLng> getLatLngFromPlace(
+    String place, {
+    String? placeId,
+    http.Client? client,
+  }) async {
+    final selectedId = placeId?.trim() ?? '';
+    final usePlaceId =
+        selectedId.isNotEmpty && selectedId != 'existing_location';
+    if (!usePlaceId && place.trim().isEmpty) {
+      throw const FormatException('Please select a destination.');
     }
+    final uri =
+        usePlaceId
+            ? Uri.https('places.googleapis.com', '/v1/places/$selectedId')
+            : Uri.https('maps.googleapis.com', '/maps/api/geocode/json', {
+              'address': place.trim(),
+              'key': kGoogleMapKey,
+            });
+    final response = await (client?.get ?? http.get)(
+      uri,
+      headers: usePlaceId ? _getHeaders(fieldMask: 'location') : null,
+    );
+    if (response.statusCode != 200) {
+      throw const FormatException(
+        'Could not look up this destination. Please try again.',
+      );
+    }
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    Map<String, dynamic>? location;
+    if (usePlaceId) {
+      location = data['location'] as Map<String, dynamic>?;
+    } else {
+      final results = data['results'] as List? ?? [];
+      if (data['status'] == 'ZERO_RESULTS' ||
+          (data['status'] == 'OK' && results.isEmpty)) {
+        throw const FormatException(
+          'Destination not found. Please choose a location from the suggestions.',
+        );
+      }
+      if (data['status'] != 'OK') {
+        throw const FormatException(
+          'Could not look up this destination. Please try again.',
+        );
+      }
+      location =
+          results.first['geometry']?['location'] as Map<String, dynamic>?;
+    }
+    final latitude = location?[usePlaceId ? 'latitude' : 'lat'];
+    final longitude = location?[usePlaceId ? 'longitude' : 'lng'];
+    if (latitude is! num ||
+        longitude is! num ||
+        !latitude.isFinite ||
+        !longitude.isFinite ||
+        latitude < -90 ||
+        latitude > 90 ||
+        longitude < -180 ||
+        longitude > 180) {
+      throw const FormatException(
+        'This destination has no valid coordinates. Please choose another location.',
+      );
+    }
+    return LatLng(latitude.toDouble(), longitude.toDouble());
   }
 
   static Future<List<Map<String, String>>> fetchSuggestions(

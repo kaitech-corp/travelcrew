@@ -22,40 +22,47 @@ class ActivitiesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListView.separated(
-          padding: EdgeInsets.zero,
-          itemBuilder:
-              (c, index) => Obx(() {
-                final activity = controller.tripModel.value?.activities?[index];
-                if (activity == null) return const SizedBox.shrink();
-                return ActivityWidget(
-                  calendarAction: ActivityCalendarButton(activity: activity),
-                  controller: controller,
-                  isLiked: activity.likedBy.contains(
-                    GlobalVariables.loggedInUser.value?.uid,
-                  ),
-                  onLiked: () {
-                    controller.likeActivity(
-                      isLiked: activity.likedBy.contains(
-                        GlobalVariables.loggedInUser.value?.uid,
-                      ),
-                      activityId: activity.id ?? '',
-                    );
-                  },
-                  likesCount: activity.likesCount,
-                  timing: _formatTimeRange(activity),
-                  index: index,
-                  title: activity.title,
-                  description: activity.description,
-                  location: activity.location,
-                  onTap: () => _showActivityDetails(context, activity),
-                );
-              }),
-          separatorBuilder: (c, index) => SizedBox(height: 10.h),
-          itemCount: controller.tripModel.value?.activities?.length ?? 0,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-        ),
+        Obx(() {
+          final activities = controller.tripModel.value?.activities ?? [];
+          return ListView.separated(
+            padding: EdgeInsets.zero,
+            itemBuilder: (c, index) {
+              final activity = activities[index];
+              return ActivityWidget(
+                onDelete:
+                    GlobalVariables.isLoggedInUser(
+                          controller.tripModel.value?.createdBy ?? '',
+                        )
+                        ? () => _confirmDelete(context, activity)
+                        : null,
+                calendarAction: ActivityCalendarButton(activity: activity),
+                controller: controller,
+                isLiked: activity.likedBy.contains(
+                  GlobalVariables.loggedInUser.value?.uid,
+                ),
+                onLiked: () {
+                  controller.likeActivity(
+                    isLiked: activity.likedBy.contains(
+                      GlobalVariables.loggedInUser.value?.uid,
+                    ),
+                    activityId: activity.id ?? '',
+                  );
+                },
+                likesCount: activity.likesCount,
+                timing: _formatTimeRange(activity),
+                index: index,
+                title: activity.title,
+                description: activity.description,
+                location: activity.location,
+                onTap: () => _showActivityDetails(context, activity),
+              );
+            },
+            separatorBuilder: (c, index) => SizedBox(height: 10.h),
+            itemCount: activities.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+          );
+        }),
         SizedBox(height: 20.h),
         GestureDetector(
           onTap: () {
@@ -72,7 +79,6 @@ class ActivitiesTab extends StatelessWidget {
             );
           },
           child: Container(
-            width: 155.23.w,
             padding: EdgeInsets.symmetric(
               horizontal: 17.44.w,
               vertical: 15.70.h,
@@ -106,6 +112,37 @@ class ActivitiesTab extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    ActivityModel activity,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Delete activity?'),
+            content: Text('Remove "${activity.title}" from this trip?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    final deleted = await controller.removeActivity(activity);
+    if (!deleted && context.mounted) {
+      showCustomSnackBar(
+        content: 'Could not delete activity. Please try again.',
+      );
+    }
   }
 
   String _formatTimeRange(ActivityModel activity) {
@@ -491,62 +528,76 @@ class ActivityWidget extends StatelessWidget {
                   ),
                 ),
                 if (controller != null)
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        '$likesCount',
-                        textAlign: TextAlign.right,
-                        style: AppStyles.labelTextStyle().copyWith(
-                          color: Colors.black,
-                          fontSize: AppStyles.fontSize14,
+                      Row(
+                        children: [
+                          Text(
+                            '$likesCount',
+                            textAlign: TextAlign.right,
+                            style: AppStyles.labelTextStyle().copyWith(
+                              color: Colors.black,
+                              fontSize: AppStyles.fontSize14,
 
-                          fontWeight: FontWeight.w500,
-                        ),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          if (onTap != null)
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.w),
+                              child: Icon(
+                                Icons.chevron_right_rounded,
+                                color: AppColors.kGreyTextColor,
+                                size: 22,
+                              ),
+                            ),
+                          HeartToggleWidget(onLiked: onLiked, isLiked: isLiked),
+                          SizedBox(width: 8.w),
+                          if (GlobalVariables.isLoggedInUser(
+                            controller?.tripModel.value?.createdBy ?? '',
+                          ))
+                            GestureDetector(
+                              onTap: () {
+                                if (controller != null) {
+                                  Get.toNamed(
+                                    kAddActivityScreenRoute,
+                                    arguments: {
+                                      'toAdd': false,
+                                      'activity':
+                                          controller
+                                              ?.tripModel
+                                              .value
+                                              ?.activities?[index],
+                                      'tripId': controller?.tripModel.value?.id,
+                                      'onAdded': (ActivityModel activityId) {
+                                        controller!
+                                                .tripModel
+                                                .value
+                                                ?.activities?[index] =
+                                            activityId;
+                                        controller!.tripModel.refresh();
+                                      },
+                                    },
+                                  );
+                                }
+                              },
+                              child: Image.asset(
+                                AppImages.kEditClipboardIcon,
+                                scale: 4,
+                              ),
+                            ),
+                        ],
                       ),
-                      SizedBox(width: 8.w),
-                      if (onTap != null)
-                        Padding(
-                          padding: EdgeInsets.only(right: 8.w),
-                          child: Icon(
-                            Icons.chevron_right_rounded,
-                            color: AppColors.kGreyTextColor,
-                            size: 22,
-                          ),
-                        ),
-                      HeartToggleWidget(onLiked: onLiked, isLiked: isLiked),
-                      SizedBox(width: 8.w),
-                      if (GlobalVariables.isLoggedInUser(
-                        controller?.tripModel.value?.createdBy ?? '',
-                      ))
-                        GestureDetector(
-                          onTap: () {
-                            if (controller != null) {
-                              Get.toNamed(
-                                kAddActivityScreenRoute,
-                                arguments: {
-                                  'toAdd': false,
-                                  'activity':
-                                      controller
-                                          ?.tripModel
-                                          .value
-                                          ?.activities?[index],
-                                  'tripId': controller?.tripModel.value?.id,
-                                  'onAdded': (ActivityModel activityId) {
-                                    controller!
-                                            .tripModel
-                                            .value
-                                            ?.activities?[index] =
-                                        activityId;
-                                    controller!.tripModel.refresh();
-                                  },
-                                },
-                              );
-                            }
-                          },
-                          child: Image.asset(
-                            AppImages.kEditClipboardIcon,
-                            scale: 4,
-                          ),
+                      if (onDelete != null &&
+                          GlobalVariables.isLoggedInUser(
+                            controller?.tripModel.value?.createdBy ?? '',
+                          ))
+                        IconButton(
+                          tooltip: 'Delete activity',
+                          onPressed: onDelete,
+                          icon: const Icon(Icons.delete_outline),
                         ),
                     ],
                   ),
@@ -554,10 +605,7 @@ class ActivityWidget extends StatelessWidget {
             ),
           ),
         ),
-        if (controller == null ||
-            (GlobalVariables.isLoggedInUser(
-              controller?.tripModel.value?.createdBy ?? '',
-            )))
+        if (controller == null)
           if (onDelete != null)
             Positioned(
               top: 0,

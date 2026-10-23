@@ -579,6 +579,7 @@ class CreateTripController extends GetxController {
       if (patch.containsKey('tripLocation')) {
         final location = await GeoServices.getLatLngFromPlace(
           destinationController.text,
+          placeId: selectedPlaceId.value,
         );
         patch['latitude'] = location.latitude;
         patch['longitude'] = location.longitude;

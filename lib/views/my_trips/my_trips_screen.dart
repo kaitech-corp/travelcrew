@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
-import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
@@ -36,9 +35,6 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return CustomScaffold(
-      onWillPop: () {
-        mainViewController?.selectedIndex.value = 0;
-      },
       screenName: l10n.myTrips,
       scaffoldKey: _scaffoldKey,
       centerTitle: true,

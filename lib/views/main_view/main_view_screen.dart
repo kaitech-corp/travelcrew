@@ -69,21 +69,21 @@ class _MainViewScreenState extends State<MainViewScreen> {
                         icon: ImageIcon(
                           AssetImage(
                             controller.selectedIndex.value == 0
-                                ? AppImages.kHomeFilledIcon
-                                : AppImages.kHomeIcon,
-                          ),
-                        ),
-                        label: 'Explore',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: ImageIcon(
-                          AssetImage(
-                            controller.selectedIndex.value == 1
                                 ? AppImages.kTripsFilledIcon
                                 : AppImages.kTripIcon,
                           ),
                         ),
                         label: 'My Trips',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: ImageIcon(
+                          AssetImage(
+                            controller.selectedIndex.value == 1
+                                ? AppImages.kHomeFilledIcon
+                                : AppImages.kHomeIcon,
+                          ),
+                        ),
+                        label: 'Explore',
                       ),
                       // Index 2: plus button — rendered as circle by CustomBottomBar
                       const BottomNavigationBarItem(

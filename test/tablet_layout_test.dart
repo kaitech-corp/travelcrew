@@ -42,12 +42,12 @@ void main() {
                           onTap: (index) => selected = index,
                           navItems: const [
                             BottomNavigationBarItem(
-                              icon: Icon(Icons.home),
-                              label: 'Explore',
-                            ),
-                            BottomNavigationBarItem(
                               icon: Icon(Icons.luggage),
                               label: 'My Trips',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.home),
+                              label: 'Explore',
                             ),
                             BottomNavigationBarItem(
                               icon: SizedBox.shrink(),
@@ -72,7 +72,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
         await tester.tap(find.text('My Trips'));
-        expect(selected, 1);
+        expect(selected, 0);
         if (size.width >= 600) expect(AppStyles.fontSize28, 28);
       });
     }

@@ -96,6 +96,17 @@ class MyTripsController extends GetxController {
           return false;
         }).toList();
 
+    if (selectedTabIndex.value == 2) {
+      filteredTrips.sort((a, b) {
+        final aEnd = a.tripEndDate ?? a.tripStartDate ?? a.startDate;
+        final bEnd = b.tripEndDate ?? b.tripStartDate ?? b.startDate;
+        final byEnd = bEnd.compareTo(aEnd);
+        if (byEnd != 0) return byEnd;
+        return (b.tripStartDate ?? b.startDate).compareTo(
+          a.tripStartDate ?? a.startDate,
+        );
+      });
+    }
     applyFilter();
   }
 
