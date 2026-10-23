@@ -1,4 +1,5 @@
 import 'package:travel_crew/services/safety_service.dart';
+import 'package:travel_crew/services/recommendation_runtime.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -33,6 +34,7 @@ void main() async {
   await TripLinkService.initialize();
   await initializeFirebase();
   SafetyService.initialize();
+  RecommendationRuntime.initialize();
   await initializeGoogleSignIn();
   await dotenv.load(isOptional: true);
 

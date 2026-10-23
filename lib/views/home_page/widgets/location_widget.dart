@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
+import 'package:travel_crew/services/recommendation_runtime.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
@@ -22,6 +23,7 @@ class LocationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        RecommendationRuntime.service.observe(tripModel, 'open');
         Get.toNamed(kSpecificTripViewScreenRoute, arguments: tripModel);
       },
       child: Stack(
@@ -164,11 +166,17 @@ class LocationWidget extends StatelessWidget {
                           .contains(tripModel.id) ??
                       false;
 
-                  await FirebaseTripService.toggleTripFavorite(
+                  final saved = await FirebaseTripService.toggleTripFavorite(
                     tripId: tripModel.id,
                     userId: userId,
                     isFavorite: isCurrentlyFavorite,
                   );
+                  if (saved) {
+                    RecommendationRuntime.service.observe(
+                      tripModel,
+                      isCurrentlyFavorite ? 'unfavorite' : 'favorite',
+                    );
+                  }
 
                   GlobalVariables.addingToFavourites.value = '';
                 } catch (e) {

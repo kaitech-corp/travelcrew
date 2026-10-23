@@ -56,6 +56,7 @@ function fixture() {
     if (name === "./notification-data") return require("../notification-data");
     if (name === "./safety") return safetyModule;
     if (name === "./validation") return require("../validation");
+    if (name === "./recommendations/events") return require("../recommendations/events");
     return require(name);
   }, Date};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, "../safety.js"), "utf8"), context);

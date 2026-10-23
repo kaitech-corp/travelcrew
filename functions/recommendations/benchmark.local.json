@@ -1,0 +1,281 @@
+{
+  "environment": "local Auth/Firestore emulators; in-process handlers; not production billing or Cloud Functions cold starts",
+  "report": [
+    {
+      "mode": "fallback",
+      "fixtureTrips": 240,
+      "fixtureCreators": 20,
+      "samples": [
+        {
+          "elapsedMs": 756,
+          "reads": 736,
+          "authReads": 21,
+          "candidates": 125,
+          "eligible": 125,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 494,
+          "reads": 736,
+          "authReads": 21,
+          "candidates": 125,
+          "eligible": 125,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 408,
+          "reads": 736,
+          "authReads": 21,
+          "candidates": 125,
+          "eligible": 125,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 394,
+          "reads": 736,
+          "authReads": 21,
+          "candidates": 125,
+          "eligible": 125,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 388,
+          "reads": 736,
+          "authReads": 21,
+          "candidates": 125,
+          "eligible": 125,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 329,
+          "reads": 736,
+          "authReads": 21,
+          "candidates": 125,
+          "eligible": 125,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        }
+      ],
+      "p50Ms": 394,
+      "p95Ms": 756
+    },
+    {
+      "mode": "control",
+      "fixtureTrips": 240,
+      "fixtureCreators": 20,
+      "samples": [
+        {
+          "elapsedMs": 325,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 295,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 257,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 259,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 261,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 244,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        }
+      ],
+      "p50Ms": 259,
+      "p95Ms": 325
+    },
+    {
+      "mode": "weighted",
+      "fixtureTrips": 240,
+      "fixtureCreators": 20,
+      "samples": [
+        {
+          "elapsedMs": 350,
+          "reads": 883,
+          "authReads": 21,
+          "candidates": 140,
+          "eligible": 140,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 351,
+          "reads": 883,
+          "authReads": 21,
+          "candidates": 140,
+          "eligible": 140,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 362,
+          "reads": 883,
+          "authReads": 21,
+          "candidates": 140,
+          "eligible": 140,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 332,
+          "reads": 883,
+          "authReads": 21,
+          "candidates": 140,
+          "eligible": 140,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 310,
+          "reads": 883,
+          "authReads": 21,
+          "candidates": 140,
+          "eligible": 140,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        },
+        {
+          "elapsedMs": 313,
+          "reads": 883,
+          "authReads": 21,
+          "candidates": 140,
+          "eligible": 140,
+          "results": 20,
+          "shadowReads": 0,
+          "shadowAuthReads": 0
+        }
+      ],
+      "p50Ms": 332,
+      "p95Ms": 362
+    },
+    {
+      "mode": "shadow",
+      "fixtureTrips": 240,
+      "fixtureCreators": 20,
+      "samples": [
+        {
+          "elapsedMs": 490,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 877,
+          "shadowAuthReads": 20
+        },
+        {
+          "elapsedMs": 498,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 877,
+          "shadowAuthReads": 20
+        },
+        {
+          "elapsedMs": 500,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 877,
+          "shadowAuthReads": 20
+        },
+        {
+          "elapsedMs": 510,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 877,
+          "shadowAuthReads": 20
+        },
+        {
+          "elapsedMs": 502,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 877,
+          "shadowAuthReads": 20
+        },
+        {
+          "elapsedMs": 519,
+          "reads": 656,
+          "authReads": 11,
+          "candidates": 120,
+          "eligible": 120,
+          "results": 20,
+          "shadowReads": 877,
+          "shadowAuthReads": 20
+        }
+      ],
+      "p50Ms": 500,
+      "p95Ms": 519
+    }
+  ]
+}

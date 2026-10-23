@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
+import 'package:travel_crew/services/recommendation_runtime.dart';
+import 'package:travel_crew/services/recommendation_service.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/utils/error_handler.dart';
 import 'package:travel_crew/utils/logger.dart';
@@ -12,6 +14,7 @@ import '../../../services/geo_services.dart';
 
 class HomePageController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  RecommendationService get recommendations => RecommendationRuntime.service;
   // Initialize with a default value to avoid late initialization error
   TabController? _tabController;
   VoidCallback? _tabListener;
@@ -30,6 +33,11 @@ class HomePageController extends GetxController
       _tabController = TabController(length: tabs.length, vsync: this);
       _tabListener = () {
         selectedTabIndex.value = _tabController?.index ?? 0;
+        if (selectedTabIndex.value == 3 &&
+            !recommendations.loaded &&
+            !recommendations.loading) {
+          getRecommendedTrips();
+        }
       };
       _tabController?.addListener(_tabListener!);
       isTabsReady.value = true;
@@ -80,7 +88,6 @@ class HomePageController extends GetxController
   RxList<TripDiscoveryModel> otherTrips = <TripDiscoveryModel>[].obs;
   RxList<TripDiscoveryModel> otherFilteredTrips = <TripDiscoveryModel>[].obs;
   RxList<TripDiscoveryModel> nearbyTrips = <TripDiscoveryModel>[].obs;
-  RxList<TripDiscoveryModel> recommendedTrips = <TripDiscoveryModel>[].obs;
   Future<void> getTrips() async {
     try {
       AppLogger.debug('Starting to fetch trips');
@@ -199,22 +206,6 @@ class HomePageController extends GetxController
   }
 
   Future<void> getRecommendedTrips({bool loadMore = false}) async {
-    try {
-      recommendedTrips.clear();
-      isLoadingOtherTrips.value = true;
-      final trips = await FirebaseTripService.getRecommendedTrips(
-        loadMore: loadMore,
-      );
-      trips.sort(
-        (a, b) => a.effectiveStartDate.compareTo(b.effectiveStartDate),
-      );
-      recommendedTrips.value = trips;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error getting recommended trips: $e');
-      }
-    } finally {
-      isLoadingOtherTrips.value = false;
-    }
+    await recommendations.load(refresh: !loadMore);
   }
 }

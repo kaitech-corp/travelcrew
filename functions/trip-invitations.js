@@ -1,4 +1,5 @@
 const {FieldValue} = require("firebase-admin/firestore");
+const {attributionRef, writeOutcome} = require("./recommendations/events");
 const {HttpsError} = require("firebase-functions/v2/https");
 const {validId} = require("./validation");
 const {isBlocked} = require("./safety");
@@ -149,6 +150,11 @@ function createTripInvitations(db, auth) {
         const ownerJoinRef = inboxRef(db, trip.createdBy, eventKey("join_request", tripId, uid, join.data()?.attemptId || "legacy"));
         const [note, ownerJoin] = await Promise.all([tx.get(noteRef), tx.get(ownerJoinRef)]);
         const alreadyMember = memberOf(trip, uid, member.data());
+        const attributed = accept && join.data()?.status === "pending" ? attributionRef(db, uid, tripId, join.data().attemptId || "legacy") : null;
+        const attribution = attributed ? (await tx.get(attributed)).data() : null;
+        // An invitation acceptance closes a pending request, but is not an
+        // owner-reviewed recommendation conversion. Preserve its distinct cause.
+        if (attribution) writeOutcome(db, tx, attributed, {...attribution, outcomeReason: "invitation"}, "superseded");
         tx.update(inviteRef, {status, updatedAt: stamp()});
         if (note.exists) tx.update(noteRef, {invitationStatus: status, pushEnabled: false, notificationStatus: "read", updateAt: Date.now(),
           notificationMessage: `You ${status} the invitation to ${trip.title || trip.destination || "the trip"}.`});

@@ -1,6 +1,30 @@
 {
   "indexes": [
     {
+      "collectionGroup": "recommendationTripFeatures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "continentKey", "order": "ASCENDING"},
+        {"fieldPath": "startDay", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "recommendationTripFeatures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "destinationKeys", "arrayConfig": "CONTAINS"},
+        {"fieldPath": "startDay", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "recommendationTripFeatures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "createdBy", "order": "ASCENDING"},
+        {"fieldPath": "startDay", "order": "ASCENDING"}
+      ]
+    },
+    {
       "collectionGroup": "tripMemberships",
       "queryScope": "COLLECTION",
       "fields": [
@@ -42,6 +66,14 @@
     }
   ],
   "fieldOverrides": [
+    {"collectionGroup": "recommendationSessions", "fieldPath": "expiresAt", "ttl": true, "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION"}]},
+    {"collectionGroup": "recommendationEvents", "fieldPath": "expiresAt", "ttl": true, "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION"}]},
+    {"collectionGroup": "recommendationAttributions", "fieldPath": "expiresAt", "ttl": true, "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION"}]},
+    {"collectionGroup": "recommendationLastImpressions", "fieldPath": "expiresAt", "ttl": true, "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION"}]},
+    {"collectionGroup": "recommendationQuotas", "fieldPath": "expiresAt", "ttl": true, "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION"}]},
+    {"collectionGroup": "recommendationSessions", "fieldPath": "ranked", "indexes": []},
+    {"collectionGroup": "recommendationSessions", "fieldPath": "cursorSecret", "indexes": []},
+    {"collectionGroup": "recommendationEvents", "fieldPath": "featureSnapshot", "indexes": []},
     {"collectionGroup": "assistantOAuthRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "assistantOAuthCodes", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "assistantOAuthTokens", "fieldPath": "expiresAt", "ttl": true, "indexes": []},

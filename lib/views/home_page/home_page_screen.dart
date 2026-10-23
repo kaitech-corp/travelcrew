@@ -11,6 +11,7 @@ import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
 import 'package:travel_crew/views/home_page/controller/home_page_controller.dart';
 import 'package:travel_crew/views/home_page/widgets/location_widget.dart';
+import 'package:travel_crew/views/home_page/widgets/recommendation_feed.dart';
 import '../../services/session_services.dart';
 import '../../utils/app_strings.dart';
 import '../../utils/app_styles.dart';
@@ -166,7 +167,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                       controller.getPopularTrips();
                                     } else if (index == 2) {
                                       controller.getByLocation();
-                                    } else {
+                                    } else if (!controller
+                                            .recommendations
+                                            .loading &&
+                                        !controller.recommendations.loaded) {
                                       controller.getRecommendedTrips();
                                     }
                                   },
@@ -224,7 +228,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
             Expanded(
               child: Obx(
                 () =>
-                    controller.isLoadingOtherTrips.isTrue
+                    controller.isLoadingOtherTrips.isTrue &&
+                            controller.selectedTabIndex.value != 3
                         ? const Center(child: CircularProgressIndicator())
                         : controller.isTabsReady.value
                         ? TabBarView(
@@ -239,9 +244,28 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               controller.otherFilteredTrips,
                             ),
                             _buildTripsTab(l10n.nearby, controller.nearbyTrips),
-                            _buildTripsTab(
-                              l10n.recommended,
-                              controller.recommendedTrips,
+                            AnimatedBuilder(
+                              animation: Listenable.merge([
+                                controller.tabController,
+                                controller.tabController.animation!,
+                              ]),
+                              builder:
+                                  (_, _) => RecommendationFeed(
+                                    service: controller.recommendations,
+                                    active:
+                                        controller.selectedTabIndex.value ==
+                                            3 &&
+                                        !controller
+                                            .tabController
+                                            .indexIsChanging &&
+                                        (controller
+                                                        .tabController
+                                                        .animation!
+                                                        .value -
+                                                    3)
+                                                .abs() <
+                                            0.01,
+                                  ),
                             ),
                           ],
                         )

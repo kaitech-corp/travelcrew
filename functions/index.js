@@ -32,6 +32,23 @@ exports.assistantV1 = onRequest({maxInstances: 10, timeoutSeconds: 120, memory: 
 
 const {getAuth} = require("firebase-admin/auth");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
+const {createRecommendationHandlers} = require("./recommendations");
+const {maintainTripFeature} = require("./recommendations/features");
+const {cleanRecommendationData, expireRecommendations} = require("./recommendations/maintenance");
+const recommendations = createRecommendationHandlers(getDb(), getAuth(), {log: (name, data) => logger.info(name, data)});
+const recommendationOptions = {maxInstances: 10, timeoutSeconds: 60, memory: "512MiB"};
+exports.getRecommendedTripsV3 = onCall(recommendationOptions, recommendations.feed);
+exports.recordRecommendationEventsV3 = onCall(recommendationOptions, recommendations.events);
+exports.setRecommendationDismissalV3 = onCall(recommendationOptions, recommendations.dismiss);
+exports.setRecommendationPreferencesV3 = onCall(recommendationOptions, recommendations.preferences);
+exports.maintainRecommendationTripV3 = onDocumentWritten(
+    {database: DATABASE_ID, document: "trips/{tripId}", retry: true},
+    (event) => maintainTripFeature(getDb(), event.params.tripId, {
+      newPublication: event.data?.after.data()?.isPrivate === false && event.data?.before.data()?.isPrivate !== false,
+      now: event.data?.after.updateTime?.toMillis() ?? Date.now(),
+    }),
+);
+exports.expireRecommendationsV3 = onSchedule("every 60 minutes", () => expireRecommendations(getDb()));
 const {createSafetyHandlers, isBlocked, assertActive} = require("./safety");
 const {cleanBlockedPair, queueReportAlert, maintainReports, cleanSafetyData} = require("./safety-triggers");
 const safety = createSafetyHandlers(getDb());
@@ -81,6 +98,7 @@ exports.cleanDeletedUserSafetyV3 = onDocumentWritten(
     async (event) => {
       if (!event.data.after.exists || event.data.after.data().isDeleted === true) {
         await cleanSafetyData(getDb(), event.params.uid);
+        await cleanRecommendationData(getDb(), event.params.uid);
       }
     },
 );

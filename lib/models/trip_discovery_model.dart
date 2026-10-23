@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/models/recommendation_context.dart';
 
 class TripDiscoveryModel {
   TripDiscoveryModel({
@@ -25,9 +26,15 @@ class TripDiscoveryModel {
     this.tripStatus,
     this.isDiscoverable = true,
     this.updatedAt,
+    this.recommendation,
+    this.recommendationExplanation,
   });
 
-  factory TripDiscoveryModel.fromMap(Map<String, dynamic> map) {
+  factory TripDiscoveryModel.fromMap(
+    Map<String, dynamic> map, {
+    String? recommendationViewerUid,
+  }) {
+    final context = map['recommendation'];
     return TripDiscoveryModel(
       id: map['id'] as String? ?? '',
       destination: map['destination'] as String? ?? '',
@@ -51,6 +58,18 @@ class TripDiscoveryModel {
       tripStatus: map['tripStatus'] as String?,
       isDiscoverable: map['isDiscoverable'] as bool? ?? true,
       updatedAt: _dateFromValue(map['updatedAt']),
+      recommendation:
+          recommendationViewerUid != null &&
+                  context is Map &&
+                  context['sessionId'] is String &&
+                  context['position'] is int
+              ? RecommendationContext(
+                sessionId: context['sessionId'] as String,
+                position: context['position'] as int,
+                viewerUid: recommendationViewerUid,
+              )
+              : null,
+      recommendationExplanation: map['explanation'] as String?,
     );
   }
 
@@ -107,6 +126,8 @@ class TripDiscoveryModel {
   final String? tripStatus;
   final bool isDiscoverable;
   final DateTime? updatedAt;
+  final RecommendationContext? recommendation;
+  final String? recommendationExplanation;
 
   DateTime get effectiveStartDate => tripStartDate ?? startDate;
 

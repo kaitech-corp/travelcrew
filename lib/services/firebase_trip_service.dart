@@ -1,5 +1,6 @@
 import 'package:travel_crew/models/transportation_model.dart';
 import 'package:uuid/uuid.dart';
+import 'package:travel_crew/models/recommendation_context.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -561,6 +562,7 @@ class FirebaseTripService {
     String tripId, {
     required String userId,
     String? message,
+    RecommendationContext? recommendation,
   }) async {
     if (userId != GlobalVariables.currentUid) return false;
     final key = '$userId:$tripId';
@@ -568,7 +570,13 @@ class FirebaseTripService {
     try {
       final response = await FirebaseFunctions.instance
           .httpsCallable('requestToJoinTripV3')
-          .call({'tripId': tripId, 'attemptId': attemptId, 'message': message});
+          .call({
+            'tripId': tripId,
+            'attemptId': attemptId,
+            'message': message,
+            if (recommendation?.viewerUid == userId)
+              'recommendation': recommendation!.toMap(),
+          });
       _joinAttempts.remove(key);
       return (response.data as Map)['status'] == 'pending';
     } catch (e) {
@@ -967,37 +975,50 @@ class FirebaseTripService {
       // Gather continents from trips the user has joined and favourited
       final Set<String> continents = {};
 
+      Future<void> addHistoryContinent(
+        DocumentReference<Map<String, dynamic>> reference,
+      ) async {
+        try {
+          final snapshot = await reference.get();
+          final continent = snapshot.data()?['continent'] as String?;
+          if (continent != null && continent.isNotEmpty) {
+            continents.add(continent);
+          }
+        } on FirebaseException catch (error) {
+          // A favorite or membership can outlive a trip or its access grant.
+          // Skip only unavailable entries; network and other failures still surface.
+          if (error.code != 'permission-denied' && error.code != 'not-found') {
+            rethrow;
+          }
+        }
+      }
+
       final joinedSnap =
           await firestore
               .collection(kUsersCollection)
               .doc(uid)
               .collection(kUserTripMembershipsSubCollection)
+              .where('status', isEqualTo: 'active')
               .limit(50)
               .get();
       for (final doc in joinedSnap.docs) {
         final tripId = doc.data()['tripId'] as String? ?? doc.id;
-        final tripDoc =
-            await firestore.collection(kTripTable).doc(tripId).get();
-        final c = tripDoc.data()?['continent'] as String?;
-        if (c != null && c.isNotEmpty) continents.add(c);
+        await addHistoryContinent(firestore.collection(kTripTable).doc(tripId));
       }
 
       final favouriteIds =
           GlobalVariables.loggedInUser.value?.favouriteTrips ?? [];
-      if (favouriteIds.isNotEmpty) {
-        final favSnap =
-            await firestore
-                .collection(kTripDiscoveryTable)
-                .where(
-                  FieldPath.documentId,
-                  whereIn: favouriteIds.take(10).toList(),
-                )
-                .get();
-        for (final doc in favSnap.docs) {
-          final c = doc.data()['continent'] as String?;
-          if (c != null && c.isNotEmpty) continents.add(c);
-        }
-      }
+      // Read individually: a document-ID batch is denied in full when any
+      // favorite has been hidden or deleted, even with a discovery filter.
+      await Future.wait(
+        favouriteIds
+            .take(10)
+            .map(
+              (tripId) => addHistoryContinent(
+                firestore.collection(kTripDiscoveryTable).doc(tripId),
+              ),
+            ),
+      );
 
       // No history — fall back to popular trips
       if (continents.isEmpty) {
@@ -1029,7 +1050,7 @@ class FirebaseTripService {
           .toList();
     } catch (e) {
       kLogging('error $e');
-      _handleTripError(e);
+      _handleTripError(e, operation: 'getRecommendedTrips');
     }
     return [];
   }

@@ -1,5 +1,6 @@
 const {FieldValue} = require("firebase-admin/firestore");
 const {isBlocked} = require("./safety");
+const {attributionRef, writeOutcome} = require("./recommendations/events");
 
 async function cleanBlockedPair(db, uid, target) {
   // The block is already durable. This retryable cleanup never changes memberships.
@@ -10,6 +11,9 @@ async function cleanBlockedPair(db, uid, target) {
       await db.runTransaction(async (tx) => {
         const req = await tx.get(ref);
         if (await isBlocked(db, uid, target, tx) && req.data()?.status === "pending") {
+          const attributed = attributionRef(db, other, trip.id, req.data().attemptId || "legacy");
+          const attribution = (await tx.get(attributed)).data();
+          if (attribution) writeOutcome(db, tx, attributed, {...attribution, outcomeReason: "blocked"}, "cancelled");
           tx.update(ref, {status: "cancelled", updatedAt: FieldValue.serverTimestamp()});
         }
       });

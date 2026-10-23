@@ -6,6 +6,7 @@ import 'package:travel_crew/services/trip_invitation_service.dart';
 import '../invite_travelers_dialog.dart';
 import 'package:travel_crew/models/join_request_model.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_crew/services/recommendation_runtime.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/trip_discovery_model.dart';
@@ -179,9 +180,14 @@ class SpecificTripViewController extends GetxController
     }
     try {
       GlobalVariables.showLoader.value = true;
+      await RecommendationRuntime.service.flush().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
       final success = await FirebaseTripService.requestToJoinTrip(
         trip.id,
         userId: uid,
+        recommendation: trip.recommendation,
       );
       if (success) {
         final request = await FirebaseTripService.getJoinRequest(

@@ -6,7 +6,7 @@
 
 ## What is Travel Crew
 
-Travel Crew is a mobile app for friends to plan, organize, and experience trips together. Create full itineraries, coordinate with your crew, vote on lodging and activities, split expenses, and stay connected through group chat — all in one place.
+Travel Crew helps friends plan trips together, organize transportation, lodging and activities, split expenses, and chat. Connect ChatGPT through MCP to plan and save itineraries, then share trip details with anyone through a link—no app required to view them.
 
 ## Features
 

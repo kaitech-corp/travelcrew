@@ -3,6 +3,7 @@ const {HttpsError} = require("firebase-functions/v2/https");
 const {validId} = require("./validation");
 const {isBlocked} = require("./safety");
 const {eventKey, inboxRef, notification} = require("./notification-data");
+const {readAttribution, attributionRef, writeOutcome} = require("./recommendations/events");
 
 const stamp = () => FieldValue.serverTimestamp();
 function identity(request) {
@@ -51,6 +52,8 @@ function createTripActions(db) {
           tx.create(receipt, {tripId, userId: uid, attemptId, canonicalAttemptId, createdAt: stamp()});
           return {ok: true, attemptId: canonicalAttemptId, status: "pending"};
         }
+        const attribution = await readAttribution(db, tx, uid, tripId, request.data.recommendation);
+        if (attribution) writeOutcome(db, tx, attributionRef(db, uid, tripId, attemptId), {...attribution, attemptId}, "requested");
         tx.create(receipt, {tripId, userId: uid, attemptId, createdAt: stamp()});
         tx.set(req, {tripId, userId: uid, attemptId, status: "pending", message,
           createdAt: joinDoc.data()?.createdAt || stamp(), updatedAt: stamp(), requestedAt: stamp(), reviewedAt: null, reviewedBy: null});
@@ -80,6 +83,9 @@ function createTripActions(db) {
         }
         const ownerNote = inboxRef(db, trip.createdBy, eventKey("join_request", tripId, target, attemptId));
         const existingNote = await tx.get(ownerNote);
+        const attributed = attributionRef(db, target, tripId, attemptId);
+        const attribution = (await tx.get(attributed)).data();
+        if (attribution) writeOutcome(db, tx, attributed, attribution, status);
         tx.update(req, {status, updatedAt: stamp(), reviewedAt: status === "cancelled" ? null : stamp(), reviewedBy: status === "cancelled" ? null : uid});
         if (existingNote.exists) tx.update(ownerNote, {requestStatus: status, pushEnabled: false, updateAt: Date.now(),
           notificationTitle: status === "cancelled" ? "Join request cancelled" : `Join request ${status}`,
@@ -115,6 +121,9 @@ function createTripActions(db) {
         const blocked = await isBlocked(db, uid, trip.createdBy, tx);
         const id = eventKey("member_left", tripId, uid, member.data()?.attemptId || member.data()?.joinedAt || "legacy");
         const note = inboxRef(db, trip.createdBy, id); const existing = await tx.get(note);
+        const attributed = attributionRef(db, uid, tripId, membershipAttemptId);
+        const attribution = (await tx.get(attributed)).data();
+        if (attribution) writeOutcome(db, tx, attributed, attribution, "left");
         tx.update(tripRef, {joinedUsers: FieldValue.arrayRemove(uid)});
         tx.set(memberRef, {userId: uid, role: "member", status: "left", attemptId: membershipAttemptId, removedAt: stamp()});
         tx.delete(db.collection("users").doc(uid).collection("tripMemberships").doc(tripId));
