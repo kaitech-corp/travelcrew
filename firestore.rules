@@ -52,6 +52,11 @@ service cloud.firestore {
       return /databases/$(database)/documents/trips/$(tripId);
     }
 
+    function creatingTripAsOwner(tripId) {
+      return signedIn() && !exists(tripRef(tripId)) &&
+        getAfter(tripRef(tripId)).data.createdBy == uid();
+    }
+
     function tripMemberRef(tripId, userId) {
       return /databases/$(database)/documents/trips/$(tripId)/members/$(userId);
     }
@@ -85,6 +90,13 @@ service cloud.firestore {
       return signedIn() &&
         exists(tripRef(tripId)) &&
         tripData(tripId).createdBy == uid();
+    }
+
+    function activeTripTraveler(tripId) {
+      return isTripMember(tripId) && notRemoved(tripData(tripId)) &&
+        tripData(tripId).get('tripStatus', '') != 'deleted' &&
+        (isTripOwner(tripId) || !exists(tripMemberRef(tripId, uid())) ||
+         tripMemberData(tripId, uid()).status == 'active');
     }
 
     function isSharedTrip(tripId) {
@@ -179,6 +191,20 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, update, delete: if belongsTo(userId) || isAdmin();
       allow create: if belongsTo(userId) || isAdmin();
+
+      // Preferences and suppression are private. Validated callables own writes;
+      // clients cannot mutate feature provenance or forge recommendation events.
+      match /recommendationPreferences/{id} {
+        allow read: if belongsTo(userId);
+        allow write: if false;
+      }
+      match /recommendationDismissals/{tripId} {
+        allow read: if belongsTo(userId);
+        allow write: if false;
+      }
+      match /recommendationProfile/{id} {
+        allow read, write: if false;
+      }
 
       match /chatActivity/{roomId} {
         allow read: if belongsTo(userId);
@@ -292,6 +318,49 @@ service cloud.firestore {
         allow delete: if isAdmin() || isTripOwner(tripId) || resource.data.createdBy == uid();
       }
 
+      match /lodgings/{lodgingId} {
+        function activeTraveler() {
+          return isTripMember(tripId) && notRemoved(tripData(tripId)) &&
+            tripData(tripId).get('tripStatus', '') != 'deleted' &&
+            (isTripOwner(tripId) || !exists(tripMemberRef(tripId, uid())) ||
+             tripMemberData(tripId, uid()).status == 'active');
+        }
+        function validLodging() {
+          let data = request.resource.data;
+          return data.keys().hasOnly(['createdBy', 'lodgingType', 'hotelName',
+            'hotelAddress', 'checkInDate', 'checkOutDate', 'expensePerNight']) &&
+            data.createdBy is string && data.lodgingType is string &&
+            data.hotelName is string && data.hotelAddress is string &&
+            data.hotelName.size() <= 500 && data.hotelAddress.size() <= 2000 &&
+            data.lodgingType.size() <= 100 &&
+            (data.hotelName.size() > 0 || data.hotelAddress.size() > 0) &&
+            (data.checkInDate == null || data.checkInDate is string) &&
+            (data.checkOutDate == null || data.checkOutDate is string) &&
+            (data.expensePerNight == null ||
+             (data.expensePerNight is number && data.expensePerNight >= 0));
+        }
+        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+        allow create: if activeTraveler() && lodgingId != 'legacy' &&
+          request.resource.data.createdBy == uid() && validLodging();
+        allow update: if activeTraveler() && notRemoved(resource.data) &&
+          (isTripOwner(tripId) || resource.data.createdBy == uid()) &&
+          request.resource.data.createdBy == resource.data.createdBy && validLodging();
+        allow delete: if activeTraveler() &&
+          (isTripOwner(tripId) || resource.data.createdBy == uid());
+
+        match /likes/{userId} {
+          function existingOption() {
+            return lodgingId == 'legacy' ||
+              (exists(/databases/$(database)/documents/trips/$(tripId)/lodgings/$(lodgingId)) &&
+               notRemoved(get(/databases/$(database)/documents/trips/$(tripId)/lodgings/$(lodgingId)).data));
+          }
+          allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+          allow create, update: if activeTraveler() && belongsTo(userId) && existingOption() &&
+            request.resource.data.keys().hasOnly(['userId']) && request.resource.data.userId == uid();
+          allow delete: if activeTraveler() && belongsTo(userId);
+        }
+      }
+
       match /expenses/{expenseId} {
         allow read: if isAdmin() || isTripMember(tripId);
         allow create: if signedIn() &&
@@ -300,12 +369,47 @@ service cloud.firestore {
         allow update, delete: if isAdmin() || isTripOwner(tripId) || resource.data.createdBy == uid();
       }
 
+      match /transportation/{entryId} {
+        function activeTraveler() {
+          return isTripMember(tripId) && notRemoved(tripData(tripId)) &&
+            tripData(tripId).get('tripStatus', '') != 'deleted' &&
+            (!exists(tripMemberRef(tripId, uid())) || tripMemberData(tripId, uid()).status == 'active');
+        }
+        function validEntry() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['id', 'tripId', 'userId', 'displayName', 'mode', 'title', 'origin', 'destination', 'departure', 'arrival', 'provider', 'serviceNumber', 'driver', 'travelerNames', 'notes']) &&
+            d.id == entryId && d.tripId == tripId && d.userId is string &&
+            d.mode in ['driving', 'rideshare', 'taxi', 'train', 'bus', 'scooter', 'bicycle', 'walking', 'ferry', 'boat', 'other'] &&
+            d.displayName is string && d.displayName.size() <= 200 &&
+            d.title is string && d.title.size() <= 200 &&
+            d.origin is string && d.origin.size() <= 500 &&
+            d.destination is string && d.destination.size() <= 500 &&
+            (d.departure == null || (d.departure is string && d.departure.size() <= 40)) &&
+            (d.arrival == null || (d.arrival is string && d.arrival.size() <= 40)) &&
+            d.provider is string && d.provider.size() <= 200 &&
+            d.serviceNumber is string && d.serviceNumber.size() <= 100 &&
+            d.driver is string && d.driver.size() <= 200 &&
+            d.travelerNames is list && d.travelerNames.size() <= 50 &&
+            d.notes is string && d.notes.size() <= 4000;
+        }
+        allow read: if isAdmin() || isSharedTrip(tripId) || activeTripTraveler(tripId);
+        allow create: if (activeTraveler() || creatingTripAsOwner(tripId)) && request.resource.data.userId == uid() && validEntry();
+        allow update: if activeTraveler() && notRemoved(resource.data) &&
+          (resource.data.userId == uid() || isTripOwner(tripId)) &&
+          request.resource.data.userId == resource.data.userId && validEntry();
+        allow delete: if activeTraveler() && (resource.data.userId == uid() || isTripOwner(tripId));
+      }
+
       match /flights/{flightId} {
-        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+        allow read: if isAdmin() || isSharedTrip(tripId) || activeTripTraveler(tripId);
         allow create: if signedIn() &&
           request.resource.data.userId == uid() &&
-          isTripMember(tripId);
-        allow update, delete: if isAdmin() || isTripOwner(tripId) || resource.data.userId == uid();
+          request.resource.data.tripId == tripId &&
+          (activeTripTraveler(tripId) || creatingTripAsOwner(tripId));
+        allow update: if (isAdmin() || activeTripTraveler(tripId)) && (isAdmin() || isTripOwner(tripId) || resource.data.userId == uid()) &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.tripId == resource.data.tripId && unchangedModeration();
+        allow delete: if (isAdmin() || activeTripTraveler(tripId)) && (isAdmin() || isTripOwner(tripId) || resource.data.userId == uid());
       }
     }
 
@@ -329,9 +433,13 @@ service cloud.firestore {
     }
 
     match /flights/{flightId} {
-      allow read: if isAdmin() || isSharedTrip(resource.data.tripId) || isTripMember(resource.data.tripId);
-      allow create: if signedIn() && isTripMember(request.resource.data.tripId);
-      allow update, delete: if signedIn() &&
+      allow read: if isAdmin() || isSharedTrip(resource.data.tripId) || activeTripTraveler(resource.data.tripId);
+      allow create: if activeTripTraveler(request.resource.data.tripId) && request.resource.data.userId == uid();
+      allow update: if activeTripTraveler(resource.data.tripId) &&
+        (resource.data.userId == uid() || isTripOwner(resource.data.tripId)) &&
+        request.resource.data.userId == resource.data.userId &&
+        request.resource.data.tripId == resource.data.tripId && unchangedModeration();
+      allow delete: if activeTripTraveler(resource.data.tripId) &&
         (resource.data.userId == uid() || isTripOwner(resource.data.tripId));
     }
 
