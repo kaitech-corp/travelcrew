@@ -3,6 +3,7 @@ const {attributionRef, writeOutcome} = require("./recommendations/events");
 const {HttpsError} = require("firebase-functions/v2/https");
 const {validId} = require("./validation");
 const {isBlocked} = require("./safety");
+const {isTripMember} = require("./trip-membership");
 const {eventKey, inboxRef, notification} = require("./notification-data");
 
 const stamp = () => FieldValue.serverTimestamp();
@@ -25,7 +26,7 @@ async function active(db, reader, uid) {
   }
   return profile.data();
 }
-const memberOf = (trip, uid, member) => trip.createdBy === uid || (trip.joinedUsers || []).includes(uid) || member?.status === "active";
+const memberOf = isTripMember;
 const invitationNoteId = (tripId, uid, invitationId) => eventKey("trip_invited", tripId, uid, invitationId);
 
 function createTripInvitations(db, auth) {

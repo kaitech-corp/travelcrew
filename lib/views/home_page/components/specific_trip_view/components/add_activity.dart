@@ -42,6 +42,12 @@ class _AddActivityState extends State<AddActivity> {
       controller.activityNoteController.text = activity.description;
       controller.activityStartTime.value = activity.startDateTime;
       controller.activityEndTime.value = activity.endDateTime;
+    } else {
+      controller.activityNameController.clear();
+      controller.locationController.clear();
+      controller.activityNoteController.clear();
+      controller.activityStartTime.value = null;
+      controller.activityEndTime.value = null;
     }
   }
 
@@ -120,6 +126,7 @@ class _AddActivityState extends State<AddActivity> {
             GestureDetector(
               onTap: () {
                 CommonCode().removeTextFieldFocus();
+                var pickedDates = false;
                 showDialog(
                   context: context,
                   builder:
@@ -134,13 +141,15 @@ class _AddActivityState extends State<AddActivity> {
                             controller.activityEndTime.value ?? DateTime.now(),
                         onRangeSelected: (startDate, endDate) {
                           if (startDate != null && endDate != null) {
+                            pickedDates = true;
                             controller.activityStartTime.value = startDate;
                             controller.activityEndTime.value = endDate;
                           }
                         },
                       ),
                 ).then((_) async {
-                  if (controller.activityStartTime.value != null) {
+                  if (pickedDates &&
+                      controller.activityStartTime.value != null) {
                     await pickTime(
                       title: 'Select Start Time',
                       selectedTime: (time) async {
@@ -209,6 +218,22 @@ class _AddActivityState extends State<AddActivity> {
                   ),
                 ),
               ),
+            ),
+            Obx(
+              () =>
+                  controller.activityStartTime.value == null &&
+                          controller.activityEndTime.value == null
+                      ? const SizedBox.shrink()
+                      : Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            controller.activityStartTime.value = null;
+                            controller.activityEndTime.value = null;
+                          },
+                          child: const Text('Clear schedule'),
+                        ),
+                      ),
             ),
             SizedBox(height: 27.h),
             Text(

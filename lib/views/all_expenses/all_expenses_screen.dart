@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
@@ -62,6 +63,28 @@ class _AllExpensesScreenState extends State<AllExpensesScreen> {
       itemCount: controller.trips.length,
       itemBuilder: (context, index) {
         final trip = controller.trips[index];
+        final financeExpenses = trip.financeExpenses ?? [];
+        final precision = trip.financePrecision ?? 2;
+        final scale = List<int>.generate(
+          precision,
+          (_) => 10,
+        ).fold<int>(1, (value, factor) => value * factor);
+        final totalLabel =
+            trip.financeSchemaVersion == 2
+                ? NumberFormat.currency(
+                  name: trip.financeCurrency ?? '',
+                  decimalDigits: precision,
+                ).format(
+                  financeExpenses.fold<int>(
+                        0,
+                        (total, expense) => total + expense.amountMinor,
+                      ) /
+                      scale,
+                )
+                : trip.hasLegacyExpenseRecords ||
+                    trip.financeMigrationStatus == 'reviewing'
+                ? 'Review required'
+                : 'No expenses yet';
 
         return Container(
           width: double.infinity,
@@ -105,8 +128,7 @@ class _AllExpensesScreenState extends State<AllExpensesScreen> {
                       ),
                       SizedBox(height: 4.5.h),
                       TextWidget(
-                        labelText:
-                            '\$${trip.expenses!.fold(0.0, (previousValue, element) => previousValue + element.amount)}',
+                        labelText: totalLabel,
                         style: AppStyles.labelTextStyle().copyWith(
                           fontSize: AppStyles.fontSize20,
                           fontWeight: FontWeight.w600,
@@ -122,7 +144,7 @@ class _AllExpensesScreenState extends State<AllExpensesScreen> {
               // Participants Row
               Row(
                 children:
-                    (trip.joindUsersList?.isEmpty ?? false)
+                    (trip.joindUsersList?.isEmpty ?? true)
                         ? [
                           TextWidget(
                             labelText: 'No participants',

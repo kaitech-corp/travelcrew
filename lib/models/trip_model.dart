@@ -5,8 +5,8 @@ import 'package:travel_crew/utils/travel_time.dart';
 import 'package:flutter/foundation.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/expense_model.dart';
+import 'package:travel_crew/models/finance_expense_model.dart';
 import 'package:travel_crew/models/public_user_model.dart';
-import 'package:travel_crew/models/user_flight_model.dart';
 
 class TripModel {
   final Map<String, String> timeOffsets;
@@ -32,20 +32,22 @@ class TripModel {
     this.invitedUsers,
     this.isShared = false,
     this.isPrivate,
-    this.airlineName,
-    this.flightNumber,
-    this.departureDate,
-    this.arrivalDate,
-    this.departureAirport,
-    this.arrivalAirport,
     this.lodgingType,
     this.hotelName,
     this.hotelAddress,
     this.checkInDate,
     this.checkOutDate,
     this.expensePerNight,
+    this.lodgingCurrencyCode,
+    this.lodgingRevision = 0,
     this.activities,
     this.expenses,
+    this.financeCurrency,
+    this.financePrecision,
+    this.financeSchemaVersion,
+    this.financeMigrationStatus,
+    this.hasLegacyExpenseRecords = false,
+    this.financeExpenses,
     required this.endDate,
     required this.daysToGo,
     required this.images,
@@ -55,12 +57,7 @@ class TripModel {
 
   factory TripModel.fromMap(Map<String, dynamic> map) {
     return TripModel(
-      timeOffsets: TravelTime.offsets(map, [
-        'departureDate',
-        'arrivalDate',
-        'checkInDate',
-        'checkOutDate',
-      ]),
+      timeOffsets: TravelTime.offsets(map, ['checkInDate', 'checkOutDate']),
       id: map['id'] as String? ?? '',
       destination: map['destination'] as String? ?? '',
       latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
@@ -94,18 +91,6 @@ class TripModel {
               .toList(),
       isShared: map['isShared'] as bool? ?? false,
       isPrivate: map['isPrivate'] as bool?,
-      airlineName: map['airlineName'] as String?,
-      flightNumber: map['flightNumber'] as String?,
-      departureDate:
-          map['departureDate'] != null
-              ? TravelTime.parse(map['departureDate'] as String)
-              : null,
-      arrivalDate:
-          map['arrivalDate'] != null
-              ? TravelTime.parse(map['arrivalDate'] as String)
-              : null,
-      departureAirport: map['departureAirport'] as String?,
-      arrivalAirport: map['arrivalAirport'] as String?,
       lodgingType: map['lodgingType'] as String?,
       hotelName: map['hotelName'] as String?,
       hotelAddress: map['hotelAddress'] as String?,
@@ -118,14 +103,21 @@ class TripModel {
               ? TravelTime.parse(map['checkOutDate'] as String)
               : null,
       expensePerNight: (map['expensePerNight'] as num?)?.toDouble(),
+      lodgingCurrencyCode: map['lodgingCurrencyCode'] as String?,
+      lodgingRevision: map['lodgingRevision'] as int? ?? 0,
       activities:
           (map['activities'] as List<dynamic>?)
               ?.map((e) => ActivityModel.fromMap(e as Map<String, dynamic>))
               .toList(),
-      expenses:
-          (map['expenses'] as List<dynamic>?)
-              ?.map((e) => ExpenseModel.fromMap(e as Map<String, dynamic>))
-              .toList(),
+      expenses: _readLegacyExpenses(map['expenses']),
+      hasLegacyExpenseRecords:
+          map['expenses'] is List
+              ? (map['expenses'] as List).isNotEmpty
+              : map['expenses'] != null,
+      financeCurrency: map['financeCurrency'] as String?,
+      financePrecision: (map['financePrecision'] as num?)?.toInt(),
+      financeSchemaVersion: (map['financeSchemaVersion'] as num?)?.toInt(),
+      financeMigrationStatus: map['financeMigrationStatus'] as String?,
       endDate: map['endDate'] as String? ?? '',
       daysToGo: (map['daysToGo'] as num?)?.toInt() ?? 0,
       images:
@@ -161,21 +153,22 @@ class TripModel {
   List<String>? invitedUsers;
   bool isShared;
   final bool? isPrivate;
-  final String? airlineName;
-  final String? flightNumber;
-  final DateTime? departureDate;
-  final DateTime? arrivalDate;
-  final String? departureAirport;
-  final String? arrivalAirport;
   final String? lodgingType;
   final String? hotelName;
   final String? hotelAddress;
   final DateTime? checkInDate;
   final DateTime? checkOutDate;
   final double? expensePerNight;
+  final String? lodgingCurrencyCode;
+  final int lodgingRevision;
   List<ActivityModel>? activities;
   List<ExpenseModel>? expenses;
-  List<UserFlightModel>? flights;
+  final String? financeCurrency;
+  final int? financePrecision;
+  final int? financeSchemaVersion;
+  final String? financeMigrationStatus;
+  bool hasLegacyExpenseRecords;
+  List<FinanceExpenseModel>? financeExpenses;
 
   final String endDate;
   final int daysToGo;
@@ -215,20 +208,22 @@ class TripModel {
     List<String>? invitedUsers,
     bool? isShared,
     bool? isPrivate,
-    String? airlineName,
-    String? flightNumber,
-    DateTime? departureDate,
-    DateTime? arrivalDate,
-    String? departureAirport,
-    String? arrivalAirport,
     String? lodgingType,
     String? hotelName,
     String? hotelAddress,
     DateTime? checkInDate,
     DateTime? checkOutDate,
     double? expensePerNight,
+    String? lodgingCurrencyCode,
+    int? lodgingRevision,
     List<ActivityModel>? activities,
     List<ExpenseModel>? expenses,
+    String? financeCurrency,
+    int? financePrecision,
+    int? financeSchemaVersion,
+    String? financeMigrationStatus,
+    bool? hasLegacyExpenseRecords,
+    List<FinanceExpenseModel>? financeExpenses,
     String? endDate,
     int? daysToGo,
     List<String>? images,
@@ -254,20 +249,24 @@ class TripModel {
       invitedUsers: invitedUsers ?? this.invitedUsers,
       isShared: isShared ?? this.isShared,
       isPrivate: isPrivate ?? this.isPrivate,
-      airlineName: airlineName ?? this.airlineName,
-      flightNumber: flightNumber ?? this.flightNumber,
-      departureDate: departureDate ?? this.departureDate,
-      arrivalDate: arrivalDate ?? this.arrivalDate,
-      departureAirport: departureAirport ?? this.departureAirport,
-      arrivalAirport: arrivalAirport ?? this.arrivalAirport,
       lodgingType: lodgingType ?? this.lodgingType,
       hotelName: hotelName ?? this.hotelName,
       hotelAddress: hotelAddress ?? this.hotelAddress,
       checkInDate: checkInDate ?? this.checkInDate,
       checkOutDate: checkOutDate ?? this.checkOutDate,
       expensePerNight: expensePerNight ?? this.expensePerNight,
+      lodgingCurrencyCode: lodgingCurrencyCode ?? this.lodgingCurrencyCode,
+      lodgingRevision: lodgingRevision ?? this.lodgingRevision,
       activities: activities ?? this.activities,
       expenses: expenses ?? this.expenses,
+      financeCurrency: financeCurrency ?? this.financeCurrency,
+      financePrecision: financePrecision ?? this.financePrecision,
+      financeSchemaVersion: financeSchemaVersion ?? this.financeSchemaVersion,
+      financeMigrationStatus:
+          financeMigrationStatus ?? this.financeMigrationStatus,
+      hasLegacyExpenseRecords:
+          hasLegacyExpenseRecords ?? this.hasLegacyExpenseRecords,
+      financeExpenses: financeExpenses ?? this.financeExpenses,
       endDate: endDate ?? this.endDate,
       daysToGo: daysToGo ?? this.daysToGo,
       images: images ?? this.images,
@@ -295,18 +294,6 @@ class TripModel {
       'invitedUsers': invitedUsers,
       'isShared': isShared,
       'isPrivate': isPrivate,
-      'airlineName': airlineName,
-      'flightNumber': flightNumber,
-      'departureDate': TravelTime.serialize(
-        departureDate,
-        timeOffsets['departureDate'],
-      ),
-      'arrivalDate': TravelTime.serialize(
-        arrivalDate,
-        timeOffsets['arrivalDate'],
-      ),
-      'departureAirport': departureAirport,
-      'arrivalAirport': arrivalAirport,
       'lodgingType': lodgingType,
       'hotelName': hotelName,
       'hotelAddress': hotelAddress,
@@ -319,8 +306,15 @@ class TripModel {
         timeOffsets['checkOutDate'],
       ),
       'expensePerNight': expensePerNight,
+      if (lodgingCurrencyCode != null)
+        'lodgingCurrencyCode': lodgingCurrencyCode,
+      if (lodgingRevision > 0) 'lodgingRevision': lodgingRevision,
       'activities': activities?.map((x) => x.toMap()).toList(),
       'expenses': expenses?.map((x) => x.toMap()).toList(),
+      if (financeCurrency != null) 'financeCurrency': financeCurrency,
+      if (financePrecision != null) 'financePrecision': financePrecision,
+      if (financeSchemaVersion != null)
+        'financeSchemaVersion': financeSchemaVersion,
       'endDate': endDate,
       'daysToGo': daysToGo,
       'images': images,
@@ -329,11 +323,27 @@ class TripModel {
     };
   }
 
+  static List<ExpenseModel> _readLegacyExpenses(dynamic raw) {
+    if (raw is! List) return [];
+    final parsed = <ExpenseModel>[];
+    for (final value in raw) {
+      if (value is! Map<String, dynamic>) continue;
+      try {
+        parsed.add(ExpenseModel.fromMap(value));
+      } on FormatException {
+        // Original records remain in Firestore for owner review.
+      } on TypeError {
+        // Historical entries can have nonnumeric amounts or invalid dates.
+      }
+    }
+    return parsed;
+  }
+
   String toJson() => json.encode(toMap());
 
   @override
   String toString() {
-    return 'TripModel(id: $id, destination: $destination, title: $title, createdBy: $createdBy, tripStartDate: $tripStartDate, tripEndDate: $tripEndDate, tripLocation: $tripLocation, country: $country, startDate: $startDate, joinedUsers: $joinedUsers, invitedUsers: $invitedUsers, isShared: $isShared, isPrivate: $isPrivate, airlineName: $airlineName, flightNumber: $flightNumber, departureDate: $departureDate, arrivalDate: $arrivalDate, departureAirport: $departureAirport, arrivalAirport: $arrivalAirport, lodgingType: $lodgingType, hotelName: $hotelName, hotelAddress: $hotelAddress, checkInDate: $checkInDate, checkOutDate: $checkOutDate, expensePerNight: $expensePerNight, activities: $activities, expenses: $expenses, endDate: $endDate, daysToGo: $daysToGo, images: $images)';
+    return 'TripModel(id: $id, destination: $destination, title: $title, createdBy: $createdBy, tripStartDate: $tripStartDate, tripEndDate: $tripEndDate, tripLocation: $tripLocation, country: $country, startDate: $startDate, joinedUsers: $joinedUsers, invitedUsers: $invitedUsers, isShared: $isShared, isPrivate: $isPrivate, lodgingType: $lodgingType, hotelName: $hotelName, hotelAddress: $hotelAddress, checkInDate: $checkInDate, checkOutDate: $checkOutDate, expensePerNight: $expensePerNight, activities: $activities, expenses: $expenses, endDate: $endDate, daysToGo: $daysToGo, images: $images)';
   }
 
   @override
@@ -355,18 +365,14 @@ class TripModel {
         listEquals(other.invitedUsers, invitedUsers) &&
         other.isShared == isShared &&
         other.isPrivate == isPrivate &&
-        other.airlineName == airlineName &&
-        other.flightNumber == flightNumber &&
-        other.departureDate == departureDate &&
-        other.arrivalDate == arrivalDate &&
-        other.departureAirport == departureAirport &&
-        other.arrivalAirport == arrivalAirport &&
         other.lodgingType == lodgingType &&
         other.hotelName == hotelName &&
         other.hotelAddress == hotelAddress &&
         other.checkInDate == checkInDate &&
         other.checkOutDate == checkOutDate &&
         other.expensePerNight == expensePerNight &&
+        other.lodgingCurrencyCode == lodgingCurrencyCode &&
+        other.lodgingRevision == lodgingRevision &&
         listEquals(other.activities, activities) &&
         listEquals(other.expenses, expenses) &&
         other.endDate == endDate &&
@@ -376,9 +382,7 @@ class TripModel {
 
   @override
   int get hashCode {
-    return timeOffsets['departureDate'].hashCode ^
-        timeOffsets['arrivalDate'].hashCode ^
-        timeOffsets['checkInDate'].hashCode ^
+    return timeOffsets['checkInDate'].hashCode ^
         timeOffsets['checkOutDate'].hashCode ^
         id.hashCode ^
         destination.hashCode ^
@@ -393,18 +397,14 @@ class TripModel {
         invitedUsers.hashCode ^
         isShared.hashCode ^
         isPrivate.hashCode ^
-        airlineName.hashCode ^
-        flightNumber.hashCode ^
-        departureDate.hashCode ^
-        arrivalDate.hashCode ^
-        departureAirport.hashCode ^
-        arrivalAirport.hashCode ^
         lodgingType.hashCode ^
         hotelName.hashCode ^
         hotelAddress.hashCode ^
         checkInDate.hashCode ^
         checkOutDate.hashCode ^
         expensePerNight.hashCode ^
+        lodgingCurrencyCode.hashCode ^
+        lodgingRevision.hashCode ^
         activities.hashCode ^
         expenses.hashCode ^
         endDate.hashCode ^

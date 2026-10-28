@@ -1,6 +1,23 @@
 {
   "indexes": [
     {
+      "collectionGroup": "chat",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "usersIds", "arrayConfig": "CONTAINS"},
+        {"fieldPath": "updatedAt", "order": "DESCENDING"},
+        {"fieldPath": "__name__", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "activity",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "tripId", "order": "ASCENDING"},
+        {"fieldPath": "__name__", "order": "ASCENDING"}
+      ]
+    },
+    {
       "collectionGroup": "recommendationTripFeatures",
       "queryScope": "COLLECTION",
       "fields": [

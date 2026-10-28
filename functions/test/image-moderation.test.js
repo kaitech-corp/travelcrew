@@ -18,6 +18,7 @@ function fixture(data, options = {}) {
   const handler = createImageModerator({
     db, fields: ["profileImage", "creatorProfileImage"], arrays: ["images"],
     bucket: () => "app.appspot.com",
+    emulator: options.emulator === true,
     scan: async (uri) => {
       state.scans.push(uri);
       if (options.duringScan) options.duringScan(state);
@@ -25,6 +26,7 @@ function fixture(data, options = {}) {
       return options.flagged ?? uri.includes("bad.jpg");
     },
     logger: {
+      info: (...args) => state.logs.push(args),
       warn: (...args) => state.logs.push(args),
       error: (...args) => state.logs.push(args),
     },
@@ -34,6 +36,15 @@ function fixture(data, options = {}) {
   });
   return state;
 }
+
+test("local emulator never calls live Vision credentials or changes photos", async () => {
+  const f = fixture({images: [bad]}, {emulator: true});
+  await f.run();
+  assert.deepEqual(f.data.images, [bad]);
+  assert.equal(f.scans.length, 0);
+  assert.equal(f.updates.length, 0);
+  assert.equal(f.logs[0][0], "image_moderation_skipped_local_emulator");
+});
 
 test("explicit registrations cover profile documents, trips, and discovery copies", () => {
   assert.deepEqual(Object.values(imageTargets), [

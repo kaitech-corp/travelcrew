@@ -8,10 +8,7 @@ import 'package:travel_crew/views/my_trips/controller/my_trips_controller.dart';
 void removeTripOverAll(TripModel trip) {
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
-    controller.otherTrips.removeWhere((element) => element.id == trip.id);
-    controller.otherFilteredTrips.removeWhere(
-      (element) => element.id == trip.id,
-    );
+    controller.removeCachedDiscoveryTrip(trip.id);
   }
   if (Get.isRegistered<MyTripsController>()) {
     final MyTripsController controller = Get.find<MyTripsController>();
@@ -46,28 +43,7 @@ void updateTripOverAll(TripModel trip) {
   }
   if (Get.isRegistered<HomePageController>()) {
     final HomePageController controller = Get.find<HomePageController>();
-    final int index = controller.otherTrips.indexWhere(
-      (element) => element.id == trip.id,
-    );
-    if (index != -1) {
-      if (trip.createdBy == GlobalVariables.currentUid ||
-          trip.isPrivate == true ||
-          trip.tripStatus == TripStatus.deleted.name) {
-        controller.otherTrips.removeAt(index);
-        controller.otherFilteredTrips.removeWhere(
-          (element) => element.id == trip.id,
-        );
-      } else {
-        final discovery = TripDiscoveryModel.fromTrip(trip);
-        controller.otherTrips[index] = discovery;
-        final filteredIndex = controller.otherFilteredTrips.indexWhere(
-          (element) => element.id == trip.id,
-        );
-        if (filteredIndex != -1) {
-          controller.otherFilteredTrips[filteredIndex] = discovery;
-        }
-      }
-    }
+    controller.updateCachedDiscoveryTrip(trip);
   }
   if (Get.isRegistered<MyTripsController>()) {
     final MyTripsController controller = Get.find<MyTripsController>();

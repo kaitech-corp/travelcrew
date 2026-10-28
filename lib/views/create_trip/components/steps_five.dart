@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
+import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_utils.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/views/create_trip/controller/create_trip_controller.dart';
@@ -123,6 +124,7 @@ class StepsFive extends StatelessWidget {
           GestureDetector(
             onTap: () {
               CommonCode().removeTextFieldFocus();
+              var pickedDates = false;
               showDialog(
                 context: context,
                 builder:
@@ -136,13 +138,14 @@ class StepsFive extends StatelessWidget {
                           controller.activityEndTime.value ?? DateTime.now(),
                       onRangeSelected: (startDate, endDate) {
                         if (startDate != null && endDate != null) {
+                          pickedDates = true;
                           controller.activityStartTime.value = startDate;
                           controller.activityEndTime.value = endDate;
                         }
                       },
                     ),
               ).then((_) async {
-                if (controller.activityStartTime.value != null) {
+                if (pickedDates && controller.activityStartTime.value != null) {
                   await pickTime(
                     title: 'Select Start Time',
                     selectedTime: (time) async {
@@ -217,6 +220,23 @@ class StepsFive extends StatelessWidget {
             ),
           ),
 
+          Obx(
+            () =>
+                controller.activityStartTime.value == null &&
+                        controller.activityEndTime.value == null
+                    ? const SizedBox.shrink()
+                    : Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          controller.activityStartTime.value = null;
+                          controller.activityEndTime.value = null;
+                        },
+                        child: const Text('Clear schedule'),
+                      ),
+                    ),
+          ),
+
           SizedBox(height: 27.h),
           Text(
             'Activity Notes',
@@ -242,20 +262,28 @@ class StepsFive extends StatelessWidget {
                 if (controller.formStep5.currentState?.validate() == false) {
                   return;
                 }
-                if (controller.activityStartTime.value == null ||
-                    controller.activityEndTime.value == null) {
-                  showCustomSnackBar(content: 'Please select date');
+                final scheduleError = ActivityModel.scheduleError(
+                  controller.activityStartTime.value,
+                  controller.activityEndTime.value,
+                );
+                if (scheduleError != null) {
+                  showCustomSnackBar(content: scheduleError);
+                  return;
+                }
+                if (controller.activityNameController.text.trim().isEmpty) {
+                  showCustomSnackBar(content: 'Enter an activity name');
                   return;
                 }
                 controller.activityList.add(
                   ActivityModel(
+                    createdBy: GlobalVariables.currentUid,
                     likesCount: 0,
                     location: controller.locationController.text,
                     tripId: '',
                     id: '',
-                    startDateTime: controller.activityStartTime.value!,
-                    endDateTime: controller.activityEndTime.value!,
-                    title: controller.activityNameController.text,
+                    startDateTime: controller.activityStartTime.value,
+                    endDateTime: controller.activityEndTime.value,
+                    title: controller.activityNameController.text.trim(),
                     description: controller.activityNoteController.text,
                   ),
                 );

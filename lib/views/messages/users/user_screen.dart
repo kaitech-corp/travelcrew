@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/views/messages/users/widget/users_widget.dart';
+import 'package:travel_crew/views/messages/users/widget/chat_room_load_error.dart';
 
 import '../../../utils/app_styles.dart';
 import '../../custom_widgets/custom_scaffold.dart';
@@ -17,18 +18,15 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  final UsersController controller = Get.find<UsersController>();
+  final UsersController controller =
+      Get.isRegistered<UsersController>()
+          ? Get.find<UsersController>()
+          : Get.put(UsersController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (!Get.isRegistered<UsersController>()) {
-      Get.put(UsersController());
-    }
-    // Future.microtask(() {
-    //   controller.getChatRooms();
-    // });
     return CustomScaffold(
       screenName: l10n.messages,
       scaffoldKey: _scaffoldKey,
@@ -38,9 +36,8 @@ class _UsersScreenState extends State<UsersScreen> {
         children: [
           SizedBox(height: 20.h),
           TextField(
-            onChanged: (value) {
-              // your logic here
-            },
+            controller: controller.messagesSearchController,
+            onChanged: (value) => controller.messagesSearch.value = value,
             style: AppStyles.labelTextStyle().copyWith(
               fontSize: AppStyles.fontSize14,
               fontWeight: FontWeight.w400,
@@ -90,51 +87,81 @@ class _UsersScreenState extends State<UsersScreen> {
           SizedBox(height: 10.h),
 
           Expanded(
-            child: Obx(
-              () =>
-                  controller.isLoadingChats.isTrue
-                      ? const Center(child: CircularProgressIndicator())
-                      : controller.chatRooms.isEmpty
-                      ? Center(child: Text(l10n.noChatsFound))
-                      : ListView.separated(
-                        itemCount: controller.chatRooms.length,
-                        shrinkWrap: true,
-                        separatorBuilder: (context, index) => const Divider(),
-                        itemBuilder: (context, index) {
-                          final trip = controller.chatRooms[index].trip;
-                          if (trip == null || trip.tripStatus == 'deleted') {
-                            return const SizedBox.shrink();
-                          }
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: index == 9 ? 120.h : 0,
-                            ),
-                            child: UsersWidget(
-                              imageUrl:
-                                  controller
-                                      .chatRooms[index]
-                                      .trip
-                                      ?.images
-                                      .firstOrNull ??
-                                  '',
-                              tripModel: trip,
-                              title:
-                                  controller.chatRooms[index].trip?.title ?? '',
-                              subtitle:
-                                  '${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(controller.chatRooms[index].trip?.tripEndDate ?? DateTime.now())}',
-                              timestamp: DateFormat('dd MMM, hh:mma').format(
-                                controller.chatRooms[index].updatedAt.toDate(),
-                              ),
-                              memberImages:
-                                  controller.chatRooms[index].users
-                                      .map((e) => e.profileImage)
-                                      .toList(),
-                              extraMembers: 4,
-                            ),
-                          );
-                        },
+            child: Obx(() {
+              final error = controller.chatRoomsError.value;
+              final rooms = controller.visibleChatRooms(
+                controller.messagesSearch.value,
+              );
+              if (controller.isLoadingChats.isTrue &&
+                  controller.chatRooms.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (controller.chatRooms.isEmpty) {
+                return error == null
+                    ? Center(child: Text(l10n.noChatsFound))
+                    : Center(
+                      child: ChatRoomLoadError(
+                        message: error,
+                        onRetry: controller.loadChatRooms,
                       ),
-            ),
+                    );
+              }
+              if (rooms.isEmpty) {
+                return Column(
+                  children: [
+                    if (error != null)
+                      ChatRoomLoadError(
+                        message: error,
+                        onRetry: controller.loadChatRooms,
+                      ),
+                    Expanded(child: Center(child: Text(l10n.noChatsFound))),
+                  ],
+                );
+              }
+              return Column(
+                children: [
+                  if (error != null)
+                    ChatRoomLoadError(
+                      message: error,
+                      onRetry: controller.loadChatRooms,
+                    ),
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: rooms.length,
+                      shrinkWrap: true,
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemBuilder: (context, index) {
+                        final trip = rooms[index].trip;
+                        if (trip == null || trip.tripStatus == 'deleted') {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == 9 ? 120.h : 0,
+                          ),
+                          child: UsersWidget(
+                            imageUrl:
+                                rooms[index].trip?.images.firstOrNull ?? '',
+                            tripModel: trip,
+                            title: rooms[index].trip?.title ?? '',
+                            subtitle:
+                                '${DateFormat('dd MMM').format(rooms[index].trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(rooms[index].trip?.tripEndDate ?? DateTime.now())}',
+                            timestamp: DateFormat(
+                              'dd MMM, hh:mma',
+                            ).format(rooms[index].updatedAt.toDate()),
+                            memberImages:
+                                rooms[index].users
+                                    .map((e) => e.profileImage)
+                                    .toList(),
+                            extraMembers: 4,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
         ],
       ),

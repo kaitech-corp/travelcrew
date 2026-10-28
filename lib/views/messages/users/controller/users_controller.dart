@@ -6,31 +6,75 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/chat_module/chat_message.dart';
-import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/models/chat_module/chatroom.dart';
 import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/services/auth_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/session_services.dart';
+import 'package:travel_crew/services/pending_chat_message_store.dart';
 import 'package:travel_crew/services/trips_changes.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/utils/error_handler.dart';
 import 'package:travel_crew/utils/logger.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../services/chat_firebase_service.dart';
 
 class UsersController extends GetxController {
+  UsersController({Future<List<ChatRoom>> Function(String uid)? fetchRooms})
+    : _fetchRooms =
+          fetchRooms ??
+          ((uid) => ChatFirebaseService.getChatRoomsByUserId(userId: uid));
+
+  final Future<List<ChatRoom>> Function(String) _fetchRooms;
+  Worker? _roomSessionWorker;
+  String _roomAccountUid = '';
+  int _roomLoadVersion = 0;
+  int _chatOpenVersion = 0;
+  final RxnString chatRoomsError = RxnString();
+  final RxnString chatOpenError = RxnString();
+  final RxnString earlierMessagesError = RxnString();
+  final RxString messagesSearch = ''.obs;
+  final RxString inboxSearch = ''.obs;
+  final TextEditingController messagesSearchController =
+      TextEditingController();
+  final TextEditingController inboxSearchController = TextEditingController();
+
+  List<ChatRoom> visibleChatRooms(String search) {
+    final query = search.trim().toLowerCase();
+    return chatRooms.where((room) {
+      final trip = room.trip;
+      return trip != null &&
+          trip.tripStatus != 'deleted' &&
+          (query.isEmpty ||
+              (trip.title?.toLowerCase().contains(query) ?? false) ||
+              trip.destination.toLowerCase().contains(query));
+    }).toList();
+  }
+
+  static final PendingChatMessageStore _pendingChatStore =
+      PendingChatMessageStore();
   Rxn<TripModel?> currentTrip = Rxn<TripModel>();
   RxList<ChatRoom> chatRooms = <ChatRoom>[].obs;
   RxBool isLoadingChats = false.obs;
+  RxBool isOpeningChat = false.obs;
   String? roomId;
   Rxn<ChatRoom> chatRoom = Rxn<ChatRoom>();
   Rxn<Map<String, dynamic>> aiModel = Rxn<Map<String, dynamic>>();
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? roomListner;
-  DocumentSnapshot? lastVisible;
-  bool isFetchingMore = false;
+  DocumentSnapshot<Map<String, dynamic>>? lastVisible;
+  final RxBool isFetchingMore = false.obs;
+  final RxBool hasEarlierMessages = false.obs;
+  final Map<String, ChatMessage> _loadedMessages = {};
+  Timestamp? _lastObservedMessageAt;
+  Timestamp? _lastReadRequestAt;
+  ChatMessage? _retryMessage;
+  bool _sendingDraft = false;
+  final RxList<PendingChatMessage> pendingMessages = <PendingChatMessage>[].obs;
+  final RxString pendingChatStatus = ''.obs;
+  final RxBool isRecoveringPending = false.obs;
 
   RxBool isLoading = false.obs;
   RxList<PublicUserModel> tripUsers = <PublicUserModel>[].obs;
@@ -39,28 +83,68 @@ class UsersController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load chat rooms when controller is initialized
-    loadChatRooms();
+    _roomAccountUid = GlobalVariables.currentUid;
+    _roomSessionWorker = ever(GlobalVariables.loggedInUser, (_) {
+      final nextUid = GlobalVariables.currentUid;
+      if (nextUid == _roomAccountUid) return;
+      _roomAccountUid = nextUid;
+      _roomLoadVersion++;
+      _chatOpenVersion++;
+      isLoadingChats.value = false;
+      isOpeningChat.value = false;
+      chatRooms.clear();
+      messagesSearch.value = '';
+      inboxSearch.value = '';
+      messagesSearchController.clear();
+      inboxSearchController.clear();
+      chatRoomsError.value = null;
+      chatOpenError.value = null;
+      earlierMessagesError.value = null;
+      currentTrip.value = null;
+      chatRoom.value = null;
+      roomId = null;
+      tripUsers.clear();
+      isLoadingUsers.value = false;
+      messages.clear();
+      _loadedMessages.clear();
+      _lastObservedMessageAt = null;
+      _lastReadRequestAt = null;
+      pendingMessages.clear();
+      _retryMessage = null;
+      pendingChatStatus.value = '';
+      tecMessage.clear();
+      unawaited(_cleanupListeners());
+      if (nextUid.isNotEmpty) unawaited(loadChatRooms());
+    });
+    unawaited(loadChatRooms());
   }
 
   Future<void> getUsersDetail() async {
+    final uid = GlobalVariables.currentUid;
+    final trip = currentTrip.value;
+    final version = _chatOpenVersion;
     try {
       tripUsers.value = [];
-      if (currentTrip.value == null ||
-          (currentTrip.value!.joinedUsers?.toList() ?? []).isEmpty) {
+      if (trip == null || (trip.joinedUsers?.toList() ?? []).isEmpty) {
         AppLogger.info('No trip or joined users found for getUsersDetail');
         return;
       }
 
       isLoadingUsers.value = true;
       AppLogger.debug(
-        'Getting user details for ${currentTrip.value!.joinedUsers?.length} users',
+        'Getting user details for ${trip.joinedUsers?.length} users',
       );
 
       final res = await AuthService.getTripUsers(
-        userIds: currentTrip.value!.joinedUsers?.toList() ?? [],
+        userIds: trip.joinedUsers?.toList() ?? [],
       );
 
+      if (isClosed ||
+          uid != GlobalVariables.currentUid ||
+          trip.id != currentTrip.value?.id ||
+          version != _chatOpenVersion) {
+        return;
+      }
       tripUsers.value = res;
       AppLogger.info('Successfully loaded ${res.length} trip users');
     } catch (error, stackTrace) {
@@ -70,95 +154,205 @@ class UsersController extends GetxController {
         context: 'getUsersDetail',
       );
     } finally {
-      isLoadingUsers.value = false;
+      if (!isClosed && version == _chatOpenVersion) {
+        isLoadingUsers.value = false;
+      }
     }
   }
 
   /// Load chat rooms for the current user
   Future<void> loadChatRooms() async {
+    final uid = GlobalVariables.currentUid;
+    final version = ++_roomLoadVersion;
     try {
-      final currentUser = GlobalVariables.loggedInUser.value;
-      if (currentUser == null) {
-        AppLogger.warning('Cannot load chat rooms: user not logged in');
+      if (uid.isEmpty) {
+        chatRooms.clear();
+        chatRoomsError.value = null;
+        isLoadingChats.value = false;
         return;
       }
 
       isLoadingChats.value = true;
-      AppLogger.debug('Loading chat rooms for user: ${currentUser.uid}');
+      AppLogger.debug('Loading chat rooms for user: $uid');
 
-      final rooms = await ChatFirebaseService.getChatRoomsByUserId(
-        userId: currentUser.uid,
-      );
+      final rooms = await _fetchRooms(uid);
+      if (version != _roomLoadVersion || uid != GlobalVariables.currentUid) {
+        return;
+      }
 
       chatRooms.value = rooms;
+      chatRoomsError.value = null;
       AppLogger.info('Successfully loaded ${rooms.length} chat rooms');
     } catch (error, stackTrace) {
-      ErrorHandler.handleFirebaseError(
+      if (version == _roomLoadVersion && uid == GlobalVariables.currentUid) {
+        chatRoomsError.value =
+            'Unable to load trip chats. Check your connection and retry.';
+      }
+      ErrorHandler.handleError(
         error,
         stackTrace: stackTrace,
-        operation: 'loadChatRooms',
+        context: 'loadChatRooms',
       );
     } finally {
-      isLoadingChats.value = false;
+      if (version == _roomLoadVersion) isLoadingChats.value = false;
     }
   }
 
   Future<void> listenToChat() async {
+    final uid = GlobalVariables.currentUid;
+    final destination = currentTrip.value?.id;
+    final version = ++_chatOpenVersion;
+    bool current() =>
+        !isClosed &&
+        uid.isNotEmpty &&
+        uid == GlobalVariables.currentUid &&
+        destination != null &&
+        roomId == destination &&
+        currentTrip.value?.id == destination &&
+        version == _chatOpenVersion;
     try {
       // Clean up existing listeners to prevent memory leaks
       await _cleanupListeners();
+      if (version != _chatOpenVersion || uid != GlobalVariables.currentUid) {
+        return;
+      }
 
-      isLoadingChats.value = true;
-      roomId = currentTrip.value?.id;
+      isOpeningChat.value = true;
+      chatOpenError.value = null;
+      earlierMessagesError.value = null;
+      final sameRoom = roomId == destination;
+      roomId = destination;
+      if (!sameRoom) {
+        messages.clear();
+        _loadedMessages.clear();
+        _lastObservedMessageAt = null;
+        _lastReadRequestAt = null;
+        lastVisible = null;
+        hasEarlierMessages.value = false;
+        chatRoom.value = null;
+      }
+      isFetchingMore.value = false;
+      pendingMessages.clear();
+      pendingChatStatus.value = '';
 
       if (roomId == null) {
         AppLogger.warning('Cannot listen to chat: roomId is null');
+        chatOpenError.value = 'This trip chat is unavailable.';
         return;
       }
+
+      await _restorePendingDraft(roomId!);
+      if (!current()) return;
 
       AppLogger.debug('Starting to listen to chat room: $roomId');
 
       final res = await ChatFirebaseService.checkIfRoomExists(roomId: roomId!);
+      if (!current()) return;
       chatRoom.value = res;
 
       if (res == null) {
         AppLogger.info('Chat room does not exist, creating new room');
         final bool created = await createChatRoom();
+        if (!current()) return;
         if (!created) {
           AppLogger.error('Failed to create chat room');
+          chatOpenError.value =
+              'Unable to open trip chat. Retry when connected.';
           return;
         }
       } else {
         chatRoom.value = res;
         await _ensureCurrentUserInChatRoom();
+        if (!current()) return;
       }
 
-      await ChatActivityService.markRead(roomId!);
       listenToMessages(roomId!);
       listenToCollection(roomId: roomId!);
+      unawaited(_recoverPendingMessages(roomId!));
       AppLogger.info('Successfully started listening to chat room: $roomId');
     } catch (error, stackTrace) {
+      if (current()) {
+        final denied =
+            error is FirebaseException && error.code == 'permission-denied';
+        if (denied) {
+          _clearOpenChatContent();
+        }
+        chatOpenError.value =
+            denied
+                ? 'Trip chat is no longer available. Retry to check access.'
+                : 'Unable to open trip chat. Retry when connected.';
+      }
       ErrorHandler.handleFirebaseError(
         error,
         stackTrace: stackTrace,
         operation: 'listenToChat',
       );
     } finally {
-      isLoadingChats.value = false;
+      if (version == _chatOpenVersion) isOpeningChat.value = false;
     }
   }
 
   /// Clean up existing listeners to prevent memory leaks
   Future<void> _cleanupListeners() async {
-    await roomListner?.cancel();
-    await messageListener?.cancel();
+    final room = roomListner;
+    final messages = messageListener;
     roomListner = null;
     messageListener = null;
+    await Future.wait([
+      if (room != null) room.cancel(),
+      if (messages != null) messages.cancel(),
+    ]);
     AppLogger.debug('Cleaned up existing chat listeners');
   }
 
   Future<void> stopListeningToChat() async {
+    _chatOpenVersion++;
+    _lastObservedMessageAt = null;
+    _lastReadRequestAt = null;
     await _cleanupListeners();
+  }
+
+  void _clearOpenChatContent() {
+    _loadedMessages.clear();
+    _lastObservedMessageAt = null;
+    _lastReadRequestAt = null;
+    messages.clear();
+    lastVisible = null;
+    hasEarlierMessages.value = false;
+    chatRoom.value = null;
+  }
+
+  void markLoadedMessagesRead() {
+    final destination = roomId;
+    final observed = _lastObservedMessageAt;
+    if (destination == null || observed == null || chatRoom.value == null) {
+      return;
+    }
+    final scroll = _messageScrollController;
+    if (scroll != null &&
+        scroll.hasClients &&
+        scroll.position.maxScrollExtent - scroll.position.pixels >= 160) {
+      return;
+    }
+    if (_lastReadRequestAt != null &&
+        observed.compareTo(_lastReadRequestAt!) <= 0) {
+      return;
+    }
+    _lastReadRequestAt = observed;
+    final uid = GlobalVariables.currentUid;
+    final version = _chatOpenVersion;
+    unawaited(
+      ChatActivityService.markRead(destination, observed).then((saved) {
+        if (!saved &&
+            !isClosed &&
+            uid == GlobalVariables.currentUid &&
+            roomId == destination &&
+            version == _chatOpenVersion &&
+            _lastReadRequestAt == observed) {
+          _lastReadRequestAt = null;
+        }
+      }),
+    );
   }
 
   Future<void> joinRoom() async {
@@ -200,23 +394,19 @@ class UsersController extends GetxController {
         return;
       }
 
-      final currentChatUser = await _buildCurrentChatUser();
-      // Safely add user to chatroom using the helper method
-      final userAddedToChat = chatRoom.value!.addUserSafely(currentChatUser);
-
-      if (userAddedToChat) {
-        AppLogger.debug('Added user to chat room successfully');
-      } else {
-        AppLogger.debug('User was already in chat room');
-      }
-
-      if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
-      chatRoom.refresh();
-
-      await ChatFirebaseService.updateChatRoom(
-        roomId: roomId!,
-        chatToSave: chatRoom.value!,
+      final destination = roomId!;
+      final uid = currentUser.uid;
+      final version = _chatOpenVersion;
+      final joined = await ChatFirebaseService.ensureChatRoom(
+        roomId: destination,
       );
+      if (uid != GlobalVariables.currentUid ||
+          roomId != destination ||
+          version != _chatOpenVersion) {
+        return;
+      }
+      chatRoom.value = joined;
+      if (currentTrip.value != null) updateTripOverAll(currentTrip.value!);
 
       AppLogger.info('Successfully joined room: $roomId');
     } catch (error, stackTrace) {
@@ -233,17 +423,25 @@ class UsersController extends GetxController {
   Future<void> listenToCollection({required String roomId}) async {
     try {
       if (roomListner == null) {
+        final uid = GlobalVariables.currentUid;
         AppLogger.debug('Setting up room listener for: $roomId');
         final res = firestore.collection(kTripChatCollection).doc(roomId);
 
         roomListner = res.snapshots().listen(
           (event) {
+            if (isClosed ||
+                this.roomId != roomId ||
+                uid != GlobalVariables.currentUid) {
+              return;
+            }
             try {
               if (event.exists && event.data() != null) {
                 chatRoom.value = ChatRoom.fromMap(event.data()!);
                 AppLogger.debug('Updated chat room data from listener');
               }
             } catch (error, stackTrace) {
+              chatOpenError.value =
+                  'Trip chat details could not be displayed. Retry to reload.';
               ErrorHandler.handleError(
                 error,
                 stackTrace: stackTrace,
@@ -252,6 +450,20 @@ class UsersController extends GetxController {
             }
           },
           onError: (error) {
+            if (isClosed ||
+                this.roomId != roomId ||
+                uid != GlobalVariables.currentUid) {
+              return;
+            }
+            final denied =
+                error is FirebaseException && error.code == 'permission-denied';
+            if (denied) {
+              _clearOpenChatContent();
+            }
+            chatOpenError.value =
+                denied
+                    ? 'Trip chat is no longer available. Retry to check access.'
+                    : 'Trip chat stopped updating. Retry to reconnect.';
             ErrorHandler.handleFirebaseError(
               error as Object,
               operation: 'listenToCollection - stream',
@@ -260,6 +472,9 @@ class UsersController extends GetxController {
         );
       }
     } catch (error, stackTrace) {
+      if (!isClosed && this.roomId == roomId) {
+        chatOpenError.value = 'Unable to watch trip chat. Retry.';
+      }
       ErrorHandler.handleFirebaseError(
         error,
         stackTrace: stackTrace,
@@ -284,33 +499,17 @@ class UsersController extends GetxController {
 
       AppLogger.info('Creating new chat room: $roomId');
 
-      // Seed with every current trip member so later joiners (and other
-      // existing members) pass the `uid() in usersIds` rule. Whoever opens
-      // the chat first MUST NOT lock everyone else out by only listing
-      // themselves.
-      final trip = currentTrip.value;
-      final memberIds =
-          <String>{
-            currentUser.uid,
-            if (trip?.createdBy != null && trip!.createdBy.isNotEmpty)
-              trip.createdBy,
-            ...?trip?.joinedUsers,
-          }.where((id) => id.isNotEmpty).toList();
-
-      final users = await _buildChatUsersForTrip(
-        trip: trip,
-        currentUserId: currentUser.uid,
+      final destination = roomId!;
+      final version = _chatOpenVersion;
+      final created = await ChatFirebaseService.ensureChatRoom(
+        roomId: destination,
       );
-
-      chatRoom.value = ChatRoom(
-        usersIds: memberIds,
-        updatedAt: Timestamp.now(),
-        roomId: roomId!,
-        users: users,
-      );
-
-      await ChatFirebaseService.createChatRoom(chatroom: chatRoom.value!);
-      await _ensureCurrentUserInChatRoom();
+      if (currentUser.uid != GlobalVariables.currentUid ||
+          roomId != destination ||
+          version != _chatOpenVersion) {
+        return false;
+      }
+      chatRoom.value = created;
       AppLogger.info('Successfully created chat room: $roomId');
       return true;
     } catch (error, stackTrace) {
@@ -323,19 +522,195 @@ class UsersController extends GetxController {
     }
   }
 
-  Future<void> saveMessage({required ChatMessage chatToSave}) async {
+  Future<void> sendDraftMessage() async {
+    if (_sendingDraft) return;
+    final draft = tecMessage.text.trim();
+    final uid = GlobalVariables.currentUid;
+    final destination = roomId;
+    if (draft.isEmpty || uid.isEmpty || destination == null) return;
+    final pending = _retryMessage;
+    final message =
+        pending != null &&
+                pending.data == draft &&
+                pending.createdBy == uid &&
+                pending.sentTo == destination
+            ? pending
+            : ChatMessage(
+              chateId: const Uuid().v6(),
+              messageStatus: MessageStatus.sent.status,
+              createdAt: Timestamp.now(),
+              createdBy: uid,
+              sentTo: destination,
+              messageType: MessageType.Text.name,
+              data: draft,
+            );
+    _retryMessage = message;
+    _sendingDraft = true;
+    try {
+      await _pendingChatStore.enqueue(
+        PendingChatMessage(
+          ownerId: uid,
+          roomId: destination,
+          messageId: message.chateId,
+          text: message.data,
+          createdAtMillis: message.createdAt.millisecondsSinceEpoch,
+        ),
+      );
+      await _refreshPendingMessages(uid, destination);
+      if (isClosed ||
+          roomId != destination ||
+          GlobalVariables.currentUid != uid) {
+        return;
+      }
+      tecMessage.clear();
+      if (await saveMessage(chatToSave: message)) {
+        await _pendingChatStore.remove(uid, destination, message.chateId);
+        _retryMessage = null;
+        await _refreshPendingMessages(uid, destination);
+      } else if (!isClosed) {
+        pendingChatStatus.value =
+            'Message saved on this device. Retry when connected.';
+      }
+    } catch (error, stackTrace) {
+      ErrorHandler.handleError(
+        error,
+        stackTrace: stackTrace,
+        context: 'sendDraftMessage checkpoint',
+      );
+      if (!isClosed &&
+          roomId == destination &&
+          GlobalVariables.currentUid == uid) {
+        pendingChatStatus.value =
+            'Unable to save or sync the message. Check your connection and retry.';
+      }
+    } finally {
+      _sendingDraft = false;
+    }
+  }
+
+  ChatMessage _chatMessageFromPending(PendingChatMessage pending) =>
+      ChatMessage(
+        chateId: pending.messageId,
+        messageStatus: MessageStatus.sent.status,
+        createdAt: Timestamp.fromMillisecondsSinceEpoch(
+          pending.createdAtMillis,
+        ),
+        createdBy: pending.ownerId,
+        sentTo: pending.roomId,
+        messageType: MessageType.Text.name,
+        data: pending.text,
+      );
+
+  Future<void> _refreshPendingMessages(String uid, String destination) async {
+    final pending = await _pendingChatStore.load(uid, destination);
+    if (!isClosed &&
+        roomId == destination &&
+        GlobalVariables.currentUid == uid) {
+      pendingMessages.assignAll(pending);
+      if (pending.isEmpty) pendingChatStatus.value = '';
+    }
+  }
+
+  Future<void> retryPendingMessages() async {
+    final destination = roomId;
+    if (destination != null) await _recoverPendingMessages(destination);
+  }
+
+  Future<void> _restorePendingDraft(String destination) async {
+    final uid = GlobalVariables.currentUid;
+    if (uid.isEmpty) return;
+    try {
+      final pending = await _pendingChatStore.load(uid, destination);
+      if (isClosed ||
+          roomId != destination ||
+          GlobalVariables.currentUid != uid) {
+        return;
+      }
+      pendingMessages.assignAll(pending);
+      if (pending.isEmpty) return;
+      _retryMessage = _chatMessageFromPending(pending.first);
+      if (tecMessage.text.isEmpty) tecMessage.text = pending.first.text;
+    } catch (error, stackTrace) {
+      if (!isClosed) {
+        pendingChatStatus.value =
+            'Saved messages could not be loaded on this device.';
+      }
+      ErrorHandler.handleError(
+        error,
+        stackTrace: stackTrace,
+        context: 'restorePendingChatDraft',
+      );
+    }
+  }
+
+  Future<void> _recoverPendingMessages(String destination) async {
+    if (_sendingDraft) return;
+    final uid = GlobalVariables.currentUid;
+    if (uid.isEmpty) return;
+    _sendingDraft = true;
+    isRecoveringPending.value = true;
+    try {
+      final pending = await _pendingChatStore.load(uid, destination);
+      await _refreshPendingMessages(uid, destination);
+      for (final entry in pending) {
+        if (isClosed ||
+            roomId != destination ||
+            GlobalVariables.currentUid != uid) {
+          break;
+        }
+        await ChatFirebaseService.sendMessage(
+          roomId: destination,
+          chatToSave: _chatMessageFromPending(entry),
+        );
+        await _pendingChatStore.remove(uid, destination, entry.messageId);
+        await _refreshPendingMessages(uid, destination);
+        if (_retryMessage?.chateId == entry.messageId) {
+          _retryMessage = null;
+          if (!isClosed && tecMessage.text == entry.text) tecMessage.clear();
+        }
+      }
+    } catch (error, stackTrace) {
+      if (!isClosed &&
+          roomId == destination &&
+          GlobalVariables.currentUid == uid) {
+        pendingChatStatus.value =
+            'Some messages are still saved on this device. Retry when connected.';
+      }
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'recoverPendingChatMessages',
+      );
+    } finally {
+      _sendingDraft = false;
+      if (!isClosed) isRecoveringPending.value = false;
+    }
+  }
+
+  Future<bool> saveMessage({required ChatMessage chatToSave}) async {
+    var addedOptimistic = false;
     try {
       if (roomId == null) {
         AppLogger.error('Cannot save message: roomId is null');
-        return;
+        return false;
       }
 
       AppLogger.debug('Saving message in room: $roomId');
 
-      await _ensureCurrentUserInChatRoom();
+      if (chatRoom.value == null ||
+          !chatRoom.value!.usersIds.contains(GlobalVariables.currentUid)) {
+        await _ensureCurrentUserInChatRoom();
+      }
+      if (chatToSave.createdBy != GlobalVariables.currentUid ||
+          chatToSave.sentTo != roomId) {
+        return false;
+      }
 
       // Add message to local list for immediate UI update
-      messages.add(chatToSave);
+      if (!messages.any((message) => message.chateId == chatToSave.chateId)) {
+        messages.add(chatToSave);
+        addedOptimistic = true;
+      }
       scrollToEnd();
 
       // Send message to Firebase
@@ -345,136 +720,41 @@ class UsersController extends GetxController {
       );
 
       AppLogger.info('Successfully saved message to room: $roomId');
+      return true;
     } catch (error, stackTrace) {
       // Remove message from local list if sending failed
-      messages.removeWhere((msg) => msg.chateId == chatToSave.chateId);
-      if (tecMessage.text.isEmpty) tecMessage.text = chatToSave.data;
+      if (addedOptimistic) {
+        messages.removeWhere((msg) => msg.chateId == chatToSave.chateId);
+      }
+      if (!isClosed &&
+          chatToSave.createdBy == GlobalVariables.currentUid &&
+          chatToSave.sentTo == roomId &&
+          tecMessage.text.isEmpty) {
+        tecMessage.text = chatToSave.data;
+      }
 
       ErrorHandler.handleFirebaseError(
         error,
         stackTrace: stackTrace,
         operation: 'saveMessage',
       );
+      return false;
     }
-  }
-
-  ChatUser _buildChatUserFromPublicProfile({
-    required PublicUserModel profile,
-    required Timestamp lastActive,
-    bool isOnline = false,
-    bool isTyping = false,
-  }) {
-    return ChatUser(
-      id: profile.uid,
-      unreadedMessages: 0,
-      lastActive: lastActive,
-      name: profile.displayName,
-      profileImage: profile.profileImage ?? '',
-      isOnline: isOnline,
-      isTyping: isTyping,
-    );
-  }
-
-  Future<ChatUser> _buildCurrentChatUser() async {
-    final currentUser = GlobalVariables.loggedInUser.value;
-    if (currentUser == null) {
-      throw StateError('Cannot resolve current chat user without a session');
-    }
-
-    final publicProfile =
-        GlobalVariables.userProfile.value ??
-        await AuthService.getUserPublicProfile(userId: currentUser.uid);
-    if (publicProfile != null) {
-      GlobalVariables.userProfile.value = publicProfile;
-      return _buildChatUserFromPublicProfile(
-        profile: publicProfile,
-        lastActive: Timestamp.now(),
-        isOnline: true,
-        isTyping: false,
-      );
-    }
-
-    return ChatUser(
-      id: currentUser.uid,
-      unreadedMessages: 0,
-      lastActive: Timestamp.now(),
-      name: currentUser.displayName ?? 'You',
-      profileImage: '',
-      isOnline: true,
-      isTyping: false,
-    );
-  }
-
-  Future<List<ChatUser>> _buildChatUsersForTrip({
-    required TripModel? trip,
-    required String currentUserId,
-  }) async {
-    final resolvedUsers = <String, ChatUser>{};
-    final currentChatUser = await _buildCurrentChatUser();
-    resolvedUsers[currentChatUser.id] = currentChatUser;
-
-    if (trip == null) {
-      return resolvedUsers.values.toList();
-    }
-
-    if (trip.createdByUser != null && trip.createdByUser!.uid.isNotEmpty) {
-      resolvedUsers[trip.createdByUser!.uid] = _buildChatUserFromPublicProfile(
-        profile: trip.createdByUser!,
-        lastActive: Timestamp.now(),
-        isOnline: currentUserId == trip.createdByUser!.uid,
-      );
-    } else if (trip.createdBy.isNotEmpty) {
-      final creator = await AuthService.getUserPublicProfile(
-        userId: trip.createdBy,
-      );
-      if (creator != null) {
-        resolvedUsers[creator.uid] = _buildChatUserFromPublicProfile(
-          profile: creator,
-          lastActive: Timestamp.now(),
-          isOnline: currentUserId == creator.uid,
-        );
-      }
-    }
-
-    final joinedUsers = await AuthService.getTripUsers(
-      userIds: trip.joinedUsers?.toList() ?? const <String>[],
-    );
-    for (final profile in joinedUsers) {
-      if (profile.uid.isEmpty) continue;
-      resolvedUsers[profile.uid] = _buildChatUserFromPublicProfile(
-        profile: profile,
-        lastActive: Timestamp.now(),
-        isOnline: currentUserId == profile.uid,
-      );
-    }
-
-    return resolvedUsers.values.toList();
   }
 
   Future<void> _ensureCurrentUserInChatRoom() async {
-    if (roomId == null || chatRoom.value == null) return;
-
-    final currentUser = await _buildCurrentChatUser();
-    final existingUsers = [...chatRoom.value!.users];
-    final index = existingUsers.indexWhere((user) => user.id == currentUser.id);
-    if (index >= 0) {
-      existingUsers[index] = currentUser;
-    } else {
-      existingUsers.add(currentUser);
+    if (roomId == null) return;
+    final destination = roomId!;
+    final uid = GlobalVariables.currentUid;
+    final version = _chatOpenVersion;
+    final current = await ChatFirebaseService.ensureChatRoom(
+      roomId: destination,
+    );
+    if (uid == GlobalVariables.currentUid &&
+        roomId == destination &&
+        version == _chatOpenVersion) {
+      chatRoom.value = current;
     }
-
-    final existingIds = {...chatRoom.value!.usersIds, currentUser.id}.toList();
-    final updatedRoom = chatRoom.value!.copyWith(
-      users: existingUsers,
-      usersIds: existingIds,
-      updatedAt: Timestamp.now(),
-    );
-
-    chatRoom.value = updatedRoom;
-    await ChatFirebaseService.updateChatRoom(
-      roomId: roomId!,
-      chatToSave: updatedRoom,
-    );
   }
 
   TextEditingController tecMessage = TextEditingController();
@@ -508,6 +788,11 @@ class UsersController extends GetxController {
 
   @override
   void onClose() {
+    _roomLoadVersion++;
+    _chatOpenVersion++;
+    _roomSessionWorker?.dispose();
+    messagesSearchController.dispose();
+    inboxSearchController.dispose();
     roomListner?.cancel();
     messageListener?.cancel();
     tecMessage.dispose();
@@ -518,36 +803,71 @@ class UsersController extends GetxController {
   void listenToMessages(String roomId) {
     try {
       AppLogger.debug('Setting up message listener for room: $roomId');
+      final uid = GlobalVariables.currentUid;
+      final version = _chatOpenVersion;
 
       messageListener = firestore
           .collection(kTripChatCollection)
           .doc(roomId)
           .collection(kTripChatMessagesCollection)
           .orderBy('createdAt', descending: true)
+          .limit(50)
           .snapshots()
           .listen(
             (event) {
+              if (isClosed ||
+                  this.roomId != roomId ||
+                  uid != GlobalVariables.currentUid ||
+                  version != _chatOpenVersion) {
+                return;
+              }
               try {
-                {
-                  final newMessages =
-                      event.docs
-                          .map((e) => ChatMessage.fromMap(e.data()))
-                          .toList()
-                          .reversed
-                          .toList();
-
-                  messages.value = newMessages;
-                  if (Get.currentRoute == kMessagesScreenRoute &&
-                      WidgetsBinding.instance.lifecycleState ==
-                          AppLifecycleState.resumed) {
-                    unawaited(ChatActivityService.markRead(roomId));
+                final controller = _messageScrollController;
+                final wasNearEnd =
+                    controller == null ||
+                    !controller.hasClients ||
+                    controller.position.maxScrollExtent -
+                            controller.position.pixels <
+                        160;
+                for (final doc in event.docs) {
+                  _loadedMessages[doc.id] = ChatMessage.fromMap(doc.data());
+                  if (!doc.metadata.hasPendingWrites) {
+                    final createdAt = doc.data()['createdAt'];
+                    if (createdAt is Timestamp &&
+                        (_lastObservedMessageAt == null ||
+                            createdAt.compareTo(_lastObservedMessageAt!) > 0)) {
+                      _lastObservedMessageAt = createdAt;
+                    }
                   }
-                  scrollToEnd();
-                  AppLogger.debug(
-                    'Updated ${newMessages.length} messages from listener',
-                  );
                 }
+                lastVisible ??= event.docs.lastOrNull;
+                if (event.docs.length < 50 && _loadedMessages.length <= 50) {
+                  hasEarlierMessages.value = false;
+                } else if (_loadedMessages.length <= 50) {
+                  hasEarlierMessages.value = true;
+                }
+                _publishLoadedMessages();
+                if (Get.currentRoute == kMessagesScreenRoute &&
+                    WidgetsBinding.instance.lifecycleState ==
+                        AppLifecycleState.resumed) {
+                  markLoadedMessagesRead();
+                }
+                if (wasNearEnd) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!isClosed &&
+                        this.roomId == roomId &&
+                        uid == GlobalVariables.currentUid &&
+                        version == _chatOpenVersion) {
+                      scrollToEnd();
+                    }
+                  });
+                }
+                AppLogger.debug(
+                  'Updated ${event.docs.length} recent messages from listener',
+                );
               } catch (error, stackTrace) {
+                chatOpenError.value =
+                    'Some messages could not be displayed. Retry to reload.';
                 ErrorHandler.handleError(
                   error,
                   stackTrace: stackTrace,
@@ -556,6 +876,21 @@ class UsersController extends GetxController {
               }
             },
             onError: (error) {
+              if (!isClosed &&
+                  this.roomId == roomId &&
+                  uid == GlobalVariables.currentUid &&
+                  version == _chatOpenVersion) {
+                final denied =
+                    error is FirebaseException &&
+                    error.code == 'permission-denied';
+                if (denied) {
+                  _clearOpenChatContent();
+                }
+                chatOpenError.value =
+                    denied
+                        ? 'Trip chat is no longer available. Retry to check access.'
+                        : 'Trip chat stopped updating. Retry to reconnect.';
+              }
               ErrorHandler.handleFirebaseError(
                 error as Object,
                 operation: 'listenToMessages - stream',
@@ -563,11 +898,88 @@ class UsersController extends GetxController {
             },
           );
     } catch (error, stackTrace) {
+      if (!isClosed && this.roomId == roomId) {
+        chatOpenError.value = 'Unable to load trip messages. Retry.';
+      }
       ErrorHandler.handleFirebaseError(
         error,
         stackTrace: stackTrace,
         operation: 'listenToMessages',
       );
+    }
+  }
+
+  void _publishLoadedMessages() {
+    final sorted =
+        _loadedMessages.values.toList()..sort((a, b) {
+          final byTime = a.createdAt.compareTo(b.createdAt);
+          return byTime != 0 ? byTime : a.chateId.compareTo(b.chateId);
+        });
+    messages.value = sorted;
+  }
+
+  Future<void> loadEarlierMessages() async {
+    final destination = roomId;
+    final cursor = lastVisible;
+    final uid = GlobalVariables.currentUid;
+    final version = _chatOpenVersion;
+    if (destination == null ||
+        cursor == null ||
+        uid.isEmpty ||
+        isFetchingMore.value ||
+        !hasEarlierMessages.value) {
+      return;
+    }
+    isFetchingMore.value = true;
+    earlierMessagesError.value = null;
+    try {
+      final snapshot =
+          await firestore
+              .collection(kTripChatCollection)
+              .doc(destination)
+              .collection(kTripChatMessagesCollection)
+              .orderBy('createdAt', descending: true)
+              .startAfterDocument(cursor)
+              .limit(50)
+              .get();
+      if (isClosed ||
+          roomId != destination ||
+          GlobalVariables.currentUid != uid ||
+          version != _chatOpenVersion) {
+        return;
+      }
+      for (final doc in snapshot.docs) {
+        _loadedMessages[doc.id] = ChatMessage.fromMap(doc.data());
+      }
+      if (snapshot.docs.isNotEmpty) lastVisible = snapshot.docs.last;
+      hasEarlierMessages.value = snapshot.docs.length == 50;
+      _publishLoadedMessages();
+    } catch (error, stackTrace) {
+      if (!isClosed &&
+          roomId == destination &&
+          GlobalVariables.currentUid == uid &&
+          version == _chatOpenVersion) {
+        if (error is FirebaseException && error.code == 'permission-denied') {
+          _clearOpenChatContent();
+          chatOpenError.value =
+              'Trip chat is no longer available. Retry to check access.';
+        } else {
+          earlierMessagesError.value =
+              'Unable to load earlier messages. Retry.';
+        }
+      }
+      ErrorHandler.handleFirebaseError(
+        error,
+        stackTrace: stackTrace,
+        operation: 'loadEarlierMessages',
+      );
+    } finally {
+      if (!isClosed &&
+          roomId == destination &&
+          GlobalVariables.currentUid == uid &&
+          version == _chatOpenVersion) {
+        isFetchingMore.value = false;
+      }
     }
   }
 

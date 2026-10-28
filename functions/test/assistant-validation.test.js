@@ -12,22 +12,35 @@ test("itinerary validation rejects invented dates, privilege fields and invalid 
     {expenses: [{name: "Hotel", amount: -1, date: "2027-04-10"}]},
     {expenses: [{name: "Hotel", amount: Infinity, date: "2027-04-10"}]},
     {expenses: [{name: "Hotel", amount: 2, date: "2027-04-10", paidByUsers: ["other"]}]},
+    {expenses: [{name: "Hotel", amount: 2, date: "2027-04-10"}]},
+    {expense_currency: "JPY", expenses: [{name: "Train", amount: 2.5, date: "2027-04-10"}]},
+    {expense_currency: "ZZZ", expenses: [{name: "Train", amount: 2, date: "2027-04-10"}]},
+    {expense_currency: "USD", expenses: [{name: "Train", amount: 2, date: "2027-04-10", local_datetime: "2027-04-10T10:00:00Z"}]},
+    {expense_currency: "USD", expenses: [{name: "Train", amount: 2, date: "2027-04-10", local_datetime: "2027-04-10T10:00:00+09:00"}]},
+    {expense_currency: "USD", expenses: [{name: "Train", amount: 2, date: "2027-04-10", local_datetime: "2027-04-11T10:00:00"}]},
     {lodging: {name: "Hotel", check_in: "2027-04-12", check_out: "2027-04-10"}},
+    {lodging: {name: "Hotel", cost_per_night: 60}},
+    {lodging: {name: "Hotel", cost_per_night: 60, cost_currency: "ZZZ"}},
+    {lodging: {name: "Hotel", cost_per_night: 60.5, cost_currency: "JPY"}},
     {airline: {departure_date: "2027-04-12", arrival_date: "2027-04-10"}},
   ];
   for (const patch of invalid) assert.equal(tripSchema.safeParse({...valid, ...patch}).success, false, JSON.stringify(patch));
   assert.equal(tripSchema.parse(valid).is_private, true);
   assert.equal(tripSchema.safeParse({...valid, activities: [{title: "Museum", start_datetime: "2027-04-10T11:00:00+09:00"}]}).success, true);
+  assert.equal(tripSchema.safeParse({...valid, expense_currency: "USD", expenses: [{name: "Hotel", amount: 0.29, date: "2027-04-10"}]}).success, true);
+  assert.equal(tripSchema.safeParse({...valid, expense_currency: "USD", expenses: [{name: "Train", amount: 2, date: "2027-04-10", local_datetime: "2027-04-10T10:00:00"}]}).success, true);
+  assert.equal(tripSchema.safeParse({...valid, lodging: {name: "Hotel", cost_per_night: 6000, cost_currency: "JPY"}}).success, true);
 });
 
-test("travel timestamps preserve supplied offsets and compare actual instants", () => {
+test("lodging retains offsets while transportation keeps each endpoint local", () => {
   const trip = {...valid,
-    transportation: [{mode: "flight", departure: "2027-04-10T10:00:00+09:00", arrival: "2027-04-10T04:00:00-07:00"}],
+    transportation: [{mode: "flight", departure: "2027-04-10T10:00:00", arrival: "2027-04-10T04:00:00"}],
     lodging: {name: "Hotel", check_in: "2027-04-10T15:00:00+09:00", check_out: "2027-04-12T11:00:00+09:00"},
   };
   assert.equal(tripSchema.safeParse(trip).success, true);
   assert.equal(tripSchema.safeParse({...trip, lodging: {name: "Hotel", check_in: "2027-04-10T15:00:00-07:00", check_out: "2027-04-10"}}).success, true);
-  assert.equal(tripSchema.safeParse({...trip, transportation: [{mode: "flight", departure: "2027-04-10T10:00:00+09:00", arrival: "2027-04-10T09:00:00+09:00"}]}).success, false);
+  assert.equal(tripSchema.safeParse({...trip, transportation: [{mode: "flight", departure: "2027-04-10T10:00:00+09:00"}]}).success, false);
+  assert.equal(tripSchema.safeParse({...trip, transportation: [{mode: "flight", arrival: "2027-04-10T04:00:00Z"}]}).success, false);
   assert.equal(tripSchema.safeParse({...trip, lodging: {name: "Hotel", check_in: "2027-04-10T15:00:00"}}).success, false);
 });
 
@@ -44,13 +57,15 @@ test("creation stores supplied travel offsets unchanged and keeps all-day dates 
     set: (ref, data) => records.set(ref.path, data),
   })};
   const input = {...valid,
-    transportation: [{mode: "flight", departure: "2027-04-10T10:00:00+09:00", arrival: "2027-04-10T04:00:00-07:00"}],
-    lodging: {name: "Hotel", check_in: "2027-04-10T15:00:00+09:00", check_out: "2027-04-12"},
+    transportation: [{mode: "flight", departure: "2027-04-10T10:00:00", arrival: "2027-04-10T04:00:00"}],
+    lodging: {name: "Hotel", check_in: "2027-04-10T15:00:00+09:00", check_out: "2027-04-12",
+      cost_per_night: 12000, cost_currency: "JPY"},
   };
   const result = await createTripService(db, "https://travelcrew.app")("owner", input, "timezone-regression-test");
   const saved = records.get(`trips/${result.trip_id}`);
   assert.equal(saved.checkInDate, input.lodging.check_in);
   assert.equal(saved.checkOutDate, "2027-04-12T00:00:00.000");
+  assert.equal(saved.lodgingCurrencyCode, "JPY");
   assert.equal(saved.tripStartDate, "2027-04-10T00:00:00.000");
   const flight = records.get(`trips/${result.trip_id}/transportation/transport_0`);
   assert.equal(flight.departure, input.transportation[0].departure);
@@ -87,7 +102,8 @@ test("MCP saves every mode with notes, local clocks and authenticated author wit
   for (const [index, item] of input.transportation.entries()) {
     assert.deepEqual(records.get(`${prefix}/transportation/transport_${index}`), {
       id: `transport_${index}`, tripId: result.trip_id, userId: "owner", displayName: "Randy",
-      mode: item.mode, departure: item.departure || null, arrival: item.arrival || null, notes: item.notes,
+      mode: item.mode, departure: item.departure || null, arrival: item.arrival || null,
+      notes: item.notes, revision: 1, isDeleted: false,
     });
   }
   assert.equal([...records.keys()].some((path) => path.startsWith(`${prefix}/flights/`)), false);

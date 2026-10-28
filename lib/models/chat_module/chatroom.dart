@@ -91,24 +91,4 @@ class ChatRoom {
   bool containsUser(String userId) {
     return usersIds.contains(userId) || users.any((user) => user.id == userId);
   }
-
-  /// Safely add a user to the chatroom if not already present
-  bool addUserSafely(ChatUser user) {
-    if (containsUser(user.id)) {
-      return false; // User already exists
-    }
-
-    users.add(user);
-    usersIds.add(user.id);
-    return true; // User was added successfully
-  }
-
-  /// Remove a user from the chatroom
-  bool removeUser(String userId) {
-    final initialUserCount = users.length;
-    users.removeWhere((user) => user.id == userId);
-    final userRemoved = users.length < initialUserCount;
-    final userIdRemoved = usersIds.remove(userId);
-    return userRemoved || userIdRemoved;
-  }
 }

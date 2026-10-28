@@ -19,8 +19,9 @@ const trip = {title: "Tokyo weekend", destination: "Tokyo", country: "Japan", st
     {mode: "flight", notes: "Airline AB456", departure: "2027-04-12T10:00:00", arrival: "2027-04-12T04:00:00"},
   ],
   activities: [{title: "Museum", description: "Exhibits", location: "Museum", address: "Tokyo", start_datetime: "2027-04-10T10:00:00+09:00", end_datetime: "2027-04-10T11:00:00+09:00"}],
-  expenses: [{name: "Booked hotel", amount: 120, date: "2027-04-10"}],
-  lodging: {name: "Hotel", check_in: "2027-04-10", check_out: "2027-04-12", cost_per_night: 60}};
+  expense_currency: "USD", expenses: [{name: "Booked hotel", amount: 120, date: "2027-04-10", local_datetime: "2027-04-10T15:00:00"}],
+  lodging: {name: "Hotel", check_in: "2027-04-10", check_out: "2027-04-12",
+    cost_per_night: 60, cost_currency: "USD"}};
 async function request(path, {method = "GET", body, token, headers = {}} = {}) {
   const response = await fetch(`${base}${path}`, {method, headers: {...(body ? {"Content-Type": "application/json"} : {}), ...(token ? {Authorization: `Bearer ${token}`} : {}), ...headers}, body: body ? JSON.stringify(body) : undefined, redirect: "manual"});
   const text = await response.text();
@@ -51,7 +52,7 @@ async function signIn(email, password) {
   const response = await fetch(`http://${process.env.FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake-key`, {
     method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({email, password, returnSecureToken: true}),
   });
-  const result = await response.json(); assert.ok(result.idToken); return result.idToken;
+  const result = await response.json(); assert.ok(result.idToken, result.error?.message); return result.idToken;
 }
 before(async () => {
   if (!process.env.FIRESTORE_EMULATOR_HOST || !process.env.FIREBASE_AUTH_EMULATOR_HOST) throw new Error("Firestore AND Auth emulators required");
@@ -100,14 +101,25 @@ test("API atomically persists Flutter-compatible private itinerary, memberships 
   assert.equal((await db.doc(`tripDiscovery/${id}`).get()).exists, false);
   assert.equal((await db.doc(`users/${owner}/tripMemberships/${id}`).get()).data().role, "creator");
   assert.equal((await db.doc(`trips/${id}/members/${owner}`).get()).data().status, "active");
-  assert.equal((await db.doc(`trips/${id}/activities/activity_0`).get()).data().startDateTime, trip.activities[0].start_datetime);
-  assert.deepEqual((await db.doc(`trips/${id}/expenses/expense_0`).get()).data().owners, {[owner]: 120});
+  const activity = (await db.doc(`trips/${id}/activities/activity_0`).get()).data();
+  assert.equal(activity.startDateTime, trip.activities[0].start_datetime);
+  assert.equal(activity.createdBy, owner);
+  assert.equal(activity.isDeleted, false);
+  assert.equal(activity.contentRevision, 1);
+  const expense = (await db.doc(`trips/${id}/financeExpenses/expense_0`).get()).data();
+  assert.equal(expense.amountMinor, 12000);
+  assert.equal(expense.localDateTime, "2027-04-10T15:00:00");
+  assert.deepEqual(expense.payerAmountsMinor, {[owner]: 12000});
+  assert.deepEqual(expense.sharesMinor, {[owner]: 12000});
+  assert.equal(saved.financeCurrency, "USD");
+  assert.equal((await db.collection(`trips/${id}/expenses`).get()).empty, true);
   const transports = await db.collection(`trips/${id}/transportation`).get();
   assert.equal(transports.size, trip.transportation.length);
   for (const [index, item] of trip.transportation.entries()) {
     assert.deepEqual((await db.doc(`trips/${id}/transportation/transport_${index}`).get()).data(), {
       id: `transport_${index}`, tripId: id, userId: owner, displayName: "Test traveler",
-      mode: item.mode, notes: item.notes, departure: item.departure || null, arrival: item.arrival || null,
+      mode: item.mode, notes: item.notes, departure: item.departure || null,
+      arrival: item.arrival || null, revision: 1, isDeleted: false,
     });
   }
   assert.equal((await db.collection(`trips/${id}/flights`).get()).empty, true);

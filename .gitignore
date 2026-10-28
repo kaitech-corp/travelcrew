@@ -65,6 +65,8 @@ ios/GoogleService-Info.plist
 android/app/google-services.json
 android/key.properties
 .clinerules
+.codex/
+.agents/
 
 # Firebase related
 !firebase.json
@@ -86,3 +88,5 @@ functions/scripts/*.js
 
 # Security rules must ship with the notification lifecycle.
 !firestore.rules
+
+AGENTS.md

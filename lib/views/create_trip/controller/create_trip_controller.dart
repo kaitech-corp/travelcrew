@@ -5,12 +5,12 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_crew/models/activity_model.dart';
-import 'package:travel_crew/models/aeroplanes_model.dart';
 import 'package:travel_crew/models/search_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/services/aviation_stack_service/aviation_stack_service.dart';
+import 'package:travel_crew/models/imported_finance_expense.dart';
+import 'package:travel_crew/services/finance_service.dart';
+import 'package:travel_crew/services/pending_trip_import_store.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
 import 'package:travel_crew/services/session_services.dart';
@@ -21,7 +21,6 @@ import 'package:travel_crew/utils/custom_snackbar.dart';
 import 'package:travel_crew/utils/debugging.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../models/expense_model.dart';
 import '../../../utils/app_strings.dart';
 import '../../../utils/app_utils.dart';
 
@@ -137,14 +136,10 @@ class CreateTripController extends GetxController {
   Rxn<DateTime> endDate = Rxn<DateTime>();
   Rxn<DateTime> checkInStartTime = Rxn<DateTime>();
   Rxn<DateTime> checkInEndTime = Rxn<DateTime>();
-  Rxn<DateTime> departureDate = Rxn<DateTime>();
-  Rxn<DateTime> arrivalDate = Rxn<DateTime>();
 
   // Trip data
   final tripNameController = TextEditingController();
   final destinationController = TextEditingController(),
-      airLineNameController = TextEditingController(),
-      flightNumberController = TextEditingController(),
       hotelNameController = TextEditingController(),
       addressController = TextEditingController(),
       expensePerNightController = TextEditingController(),
@@ -155,14 +150,11 @@ class CreateTripController extends GetxController {
       sendInviteEmailController = TextEditingController(),
       expenseNameController = TextEditingController(),
       amountPaidController = TextEditingController(),
-      lodgingTypeController = TextEditingController(),
-      airportArrivalController = TextEditingController(),
-      airportDepartureController = TextEditingController();
+      lodgingTypeController = TextEditingController();
+  String? lodgingCurrencyCode;
 
   FocusNode destinationFocusNode = FocusNode(),
       lodgingTypeFocusNode = FocusNode(),
-      airLineNameFocusNode = FocusNode(),
-      flightNumberFocusNode = FocusNode(),
       hotelNameFocusNode = FocusNode(),
       addressFocusNode = FocusNode(),
       expensePerNightFocusNode = FocusNode(),
@@ -173,24 +165,101 @@ class CreateTripController extends GetxController {
       sendInviteEmailFocusNode = FocusNode(),
       expenseNameFocusNode = FocusNode(),
       amountPaidFocusNode = FocusNode(),
-      tripNameFocusNode = FocusNode(),
-      airportArrivalFocusNode = FocusNode(),
-      airportDepartureFocusNode = FocusNode();
-  RxString flightNumer = ''.obs;
+      tripNameFocusNode = FocusNode();
 
   Rxn<DateTime> activityStartTime = Rxn<DateTime>();
   Rxn<DateTime> activityEndTime = Rxn<DateTime>();
   Rxn<TripModel> tripModel = Rxn<TripModel>();
   final importedTransportation = <TransportationModel>[].obs;
 
-  RxList<ExpenseModel> importedExpenses = <ExpenseModel>[].obs;
+  final List<Map<String, dynamic>> importedExpenseData = [];
+  final List<String> _importedExpenseRequestIds = [];
+  final Set<String> _savedExpenseRequestIds = {};
+  String? importedExpenseCurrency;
+  TripModel? _createdTrip;
+  TripModel? _creationAttempt;
+  final hasPendingCreatedTrip = false.obs;
+  PendingTripImportStore pendingImportStore = PendingTripImportStore();
+  Map<String, int>? _currencyOptionsCache;
 
   Map<String, String> _importedTimeOffsets = {};
 
   String? timeOffsetFor(String field) =>
       tripModel.value?.timeOffsets[field] ?? _importedTimeOffsets[field];
 
+  Future<bool> restorePendingTrip() async {
+    final ownerId = GlobalVariables.currentUid;
+    if (ownerId.isEmpty) {
+      throw StateError('Sign in before creating a trip.');
+    }
+    if (_creationAttempt != null) {
+      if (_creationAttempt!.createdBy == ownerId) return true;
+      _creationAttempt = null;
+      _createdTrip = null;
+      hasPendingCreatedTrip.value = false;
+      importedTransportation.clear();
+      activityList.clear();
+      importedExpenseData.clear();
+      _importedExpenseRequestIds.clear();
+      _savedExpenseRequestIds.clear();
+      importedExpenseCurrency = null;
+      tripNameController.clear();
+      destinationController.clear();
+    }
+    final pending = await pendingImportStore.load(ownerId);
+    if (ownerId != GlobalVariables.currentUid) return false;
+    if (pending == null) return false;
+    _creationAttempt = pending.trip;
+    _createdTrip = null;
+    importedTransportation.assignAll(pending.transportation);
+    activityList.assignAll(pending.activities);
+    importedExpenseData
+      ..clear()
+      ..addAll(pending.expenses);
+    _importedExpenseRequestIds
+      ..clear()
+      ..addAll(pending.expenseRequestIds);
+    _savedExpenseRequestIds
+      ..clear()
+      ..addAll(pending.savedExpenseRequestIds);
+    importedExpenseCurrency = pending.expenseCurrency;
+    invitedUsersList.assignAll(pending.trip.invitedUsers ?? []);
+    tripNameController.text = pending.trip.title ?? '';
+    destinationController.text = pending.trip.destination;
+    startDate.value = pending.trip.effectiveStartDate;
+    endDate.value = pending.trip.tripEndDate;
+    hasPendingCreatedTrip.value = true;
+    return true;
+  }
+
+  Future<void> _persistPendingTrip() async {
+    final trip = _creationAttempt;
+    if (trip == null) return;
+    if (trip.createdBy != GlobalVariables.currentUid) {
+      throw const FormatException(
+        'Sign in to the trip owner account to retry.',
+      );
+    }
+    await pendingImportStore.save(
+      PendingTripImport(
+        trip: trip,
+        transportation: importedTransportation.toList(),
+        activities: activityList.toList(),
+        expenses: importedExpenseData.toList(),
+        expenseRequestIds: _importedExpenseRequestIds.toList(),
+        savedExpenseRequestIds: _savedExpenseRequestIds.toSet(),
+        expenseCurrency: importedExpenseCurrency,
+      ),
+    );
+  }
+
   void setFromImport(Map<String, dynamic> data) {
+    if (_createdTrip != null || _creationAttempt != null) {
+      showCustomSnackBar(
+        content: 'Finish saving this trip before importing another itinerary.',
+      );
+      return;
+    }
     _importedTimeOffsets = {};
     _allowDefaultPlacePhoto = false;
     try {
@@ -242,10 +311,9 @@ class CreateTripController extends GetxController {
           return entry;
         }),
       );
-      _applyAirlineImport(data['airline']);
       _applyLodgingImport(data['lodging']);
       _applyActivitiesImport(data['activities']);
-      _applyExpensesImport(data['expenses']);
+      _applyExpensesImport(data['expenses'], data['expense_currency']);
     } catch (e, stack) {
       kLogging('setFromImport error: $e\n$stack');
       showCustomSnackBar(
@@ -255,29 +323,9 @@ class CreateTripController extends GetxController {
     }
   }
 
-  void _applyAirlineImport(dynamic raw) {
-    if (raw is! Map<String, dynamic>) return;
-    airLineNameController.text = (raw['name'] as String?) ?? '';
-    flightNumberController.text = (raw['flight_number'] as String?) ?? '';
-    airportDepartureController.text =
-        (raw['departure_airport'] as String?) ?? '';
-    airportArrivalController.text = (raw['arrival_airport'] as String?) ?? '';
-    if (raw['departure_date'] != null) {
-      final zone = TravelTime.offset(raw['departure_date'] as String);
-      if (zone != null) _importedTimeOffsets['departureDate'] = zone;
-      departureDate.value = TravelTime.tryParse(
-        raw['departure_date'] as String,
-      );
-    }
-    if (raw['arrival_date'] != null) {
-      final zone = TravelTime.offset(raw['arrival_date'] as String);
-      if (zone != null) _importedTimeOffsets['arrivalDate'] = zone;
-      arrivalDate.value = TravelTime.tryParse(raw['arrival_date'] as String);
-    }
-  }
-
   void _applyLodgingImport(dynamic raw) {
     if (raw is! Map<String, dynamic>) return;
+    lodgingCurrencyCode = null;
     lodgingTypeController.text = (raw['type'] as String?) ?? '';
     hotelNameController.text = (raw['name'] as String?) ?? '';
     addressController.text = (raw['address'] as String?) ?? '';
@@ -292,8 +340,15 @@ class CreateTripController extends GetxController {
       checkInEndTime.value = TravelTime.tryParse(raw['check_out'] as String);
     }
     if (raw['cost_per_night'] != null) {
+      final currency = raw['cost_currency'];
+      if (currency is! String || !RegExp(r'^[A-Z]{3}$').hasMatch(currency)) {
+        throw const FormatException(
+          'A lodging nightly cost needs cost_currency.',
+        );
+      }
       expensePerNightController.text =
           (raw['cost_per_night'] as num).toString();
+      lodgingCurrencyCode = currency;
     }
   }
 
@@ -304,6 +359,7 @@ class CreateTripController extends GetxController {
             .whereType<Map<String, dynamic>>()
             .map(
               (act) => ActivityModel(
+                createdBy: GlobalVariables.currentUid,
                 timeOffsets: TravelTime.offsets(
                   {
                     'startDateTime': act['start_datetime'],
@@ -332,61 +388,144 @@ class CreateTripController extends GetxController {
             .toList();
   }
 
-  void _applyExpensesImport(dynamic raw) {
-    importedExpenses.clear();
-    if (raw is! List) return;
-
-    importedExpenses.value =
-        raw
-            .whereType<Map<String, dynamic>>()
-            .map((expense) {
-              final amount = expense['amount'];
-              final date = expense['date'];
-              return ExpenseModel(
-                dateHasOffset:
-                    date is String && TravelTime.offset(date) != null,
-                paidByUsers: [],
-                createdBy: GlobalVariables.currentUid,
-                tripId: '',
-                name: (expense['name'] as String?) ?? '',
-                amount: amount is num ? amount.toDouble() : 0.0,
-                date:
-                    date is String
-                        ? DateTime.tryParse(date)?.toLocal() ?? DateTime.now()
-                        : DateTime.now(),
-                splitType: (expense['split_type'] as String?) ?? 'equally',
-              );
-            })
-            .where((expense) => expense.name.trim().isNotEmpty)
-            .where((expense) => expense.amount > 0)
-            .toList();
-
-    if (importedExpenses.isNotEmpty) {
-      final firstExpense = importedExpenses.first;
-      expenseNameController.text = firstExpense.name;
-      amountPaidController.text = firstExpense.amount.toString();
-      expanseDate.value = firstExpense.date;
+  void _applyExpensesImport(dynamic raw, dynamic currency) {
+    importedExpenseData.clear();
+    _importedExpenseRequestIds.clear();
+    _savedExpenseRequestIds.clear();
+    _currencyOptionsCache = null;
+    importedExpenseCurrency = null;
+    if (raw == null) return;
+    if (raw is! List ||
+        raw.length > 50 ||
+        raw.any((item) => item is! Map<String, dynamic>)) {
+      throw const FormatException('Import is limited to 50 valid expenses.');
     }
+    if (raw.isEmpty) return;
+    if (currency is! String || !RegExp(r'^[A-Z]{3}$').hasMatch(currency)) {
+      throw const FormatException('Choose one currency for imported expenses.');
+    }
+    importedExpenseCurrency = currency;
+    for (final item in raw) {
+      importedExpenseData.add(Map<String, dynamic>.from(item as Map));
+      _importedExpenseRequestIds.add(const Uuid().v4());
+    }
+  }
+
+  Future<List<ImportedFinanceExpense>> buildImportedFinanceExpenses({
+    Map<String, int>? currencyOptions,
+  }) async {
+    if (importedExpenseData.isEmpty) return [];
+    final options =
+        currencyOptions ??
+        (_currencyOptionsCache ??= await FinanceService.getCurrencyOptions());
+    final currency = importedExpenseCurrency;
+    final precision = options[currency];
+    if (currency == null || precision == null) {
+      throw const FormatException(
+        'Choose a supported currency for imported expenses.',
+      );
+    }
+    return [
+      for (var index = 0; index < importedExpenseData.length; index++)
+        ImportedFinanceExpense.fromMap(
+          importedExpenseData[index],
+          currencyCode: currency,
+          precision: precision,
+          requestId: _importedExpenseRequestIds[index],
+        ),
+    ];
+  }
+
+  Future<void> saveImportedFinanceExpenses(
+    List<ImportedFinanceExpense> drafts, {
+    required String tripId,
+    required String ownerId,
+    Future<Map<String, dynamic>> Function(Map<String, dynamic>)? save,
+  }) async {
+    final saveExpense = save ?? FinanceService.saveExpense;
+    for (final draft in drafts) {
+      if (_savedExpenseRequestIds.contains(draft.requestId)) continue;
+      await saveExpense(draft.requestFor(tripId, ownerId));
+      _savedExpenseRequestIds.add(draft.requestId);
+      await _persistPendingTrip();
+    }
+  }
+
+  void prepareImportedActivityIds(String tripId) {
+    for (final activity in activityList) {
+      activity.tripId = tripId;
+      if (activity.createdBy.isEmpty) {
+        activity.createdBy = GlobalVariables.currentUid;
+      }
+      if (activity.id == null || activity.id!.isEmpty) {
+        activity.id = const Uuid().v6();
+      }
+    }
+  }
+
+  Future<void> saveImportedActivities({
+    Future<bool> Function(ActivityModel)? save,
+  }) async {
+    final write =
+        save ??
+        (activity) => FirebaseTripService.addActivity(activity: activity);
+    for (final activity in activityList) {
+      if (activity.id == null ||
+          activity.id!.isEmpty ||
+          activity.tripId.isEmpty) {
+        throw const FormatException('Activity retry identity is missing.');
+      }
+      if (!await write(activity)) {
+        throw StateError(
+          'An activity could not be saved. Tap Finish Trip to retry.',
+        );
+      }
+    }
+  }
+
+  Future<void> ensureCreatedTrip(
+    TripModel draft, {
+    bool checkBeforeCreate = true,
+    Future<bool> Function(String tripId, String ownerId)? exists,
+    Future<bool> Function(TripModel trip)? create,
+  }) async {
+    final check =
+        exists ??
+        (tripId, ownerId) => FirebaseTripService.createdTripExists(
+          tripId: tripId,
+          ownerId: ownerId,
+        );
+    final write =
+        create ??
+        (trip) => FirebaseTripService.addTrip(
+          tripModel: trip,
+          transportation: importedTransportation.toList(),
+        );
+    if (!checkBeforeCreate || !await check(draft.id, draft.createdBy)) {
+      final saved = await write(draft);
+      if (!saved && !await check(draft.id, draft.createdBy)) {
+        throw const FormatException(
+          'Could not create trip. Your itinerary is still here; retry.',
+        );
+      }
+    }
+    _createdTrip = draft;
+    hasPendingCreatedTrip.value = true;
   }
 
   void setAllValuesToEdit() {
     tripNameController.text = tripModel.value!.title ?? '';
     country.value = tripModel.value!.country;
     destinationController.text = tripModel.value!.tripLocation ?? '';
-    airLineNameController.text = tripModel.value!.airlineName ?? '';
-    airportArrivalController.text = tripModel.value!.arrivalAirport ?? '';
-    airportDepartureController.text = tripModel.value!.departureAirport ?? '';
-    flightNumberController.text = tripModel.value!.flightNumber ?? '';
     hotelNameController.text = tripModel.value!.hotelName ?? '';
     addressController.text = tripModel.value!.hotelAddress ?? '';
     invitedUsersList.value = tripModel.value!.invitedUsers ?? [];
     selectedLocation.value = tripModel.value!.tripLocation ?? '';
     // Set selectedPlaceId to a non-empty value when editing to bypass location validation
     selectedPlaceId.value = 'existing_location';
-    arrivalDate.value = tripModel.value?.arrivalDate;
-    departureDate.value = tripModel.value?.departureDate;
     expensePerNightController.text =
         tripModel.value!.expensePerNight?.toString() ?? '';
+    lodgingCurrencyCode = tripModel.value!.lodgingCurrencyCode;
     startDate.value = tripModel.value!.effectiveStartDate;
     endDate.value =
         tripModel.value!.tripEndDate ??
@@ -475,6 +614,16 @@ class CreateTripController extends GetxController {
         'Enter a valid non-negative lodging price, or leave it blank.',
       );
     }
+    if (lodgingCurrencyCode == null &&
+        tripModel.value?.expensePerNight != value) {
+      throw const FormatException(
+        'Set cost_currency for the lodging nightly rate.',
+      );
+    }
+    if (lodgingCurrencyCode != null &&
+        !RegExp(r'^[A-Z]{3}$').hasMatch(lodgingCurrencyCode!)) {
+      throw const FormatException('Use a three-letter lodging currency code.');
+    }
     return value;
   }
 
@@ -493,18 +642,6 @@ class CreateTripController extends GetxController {
       'tripStartDate': startDate.value!.toIso8601String(),
       'tripEndDate': endDate.value!.toIso8601String(),
       'isPrivate': isLocked.value,
-      'airlineName': optionalText(airLineNameController.text),
-      'flightNumber': optionalText(flightNumberController.text),
-      'arrivalAirport': optionalText(airportArrivalController.text),
-      'departureAirport': optionalText(airportDepartureController.text),
-      'departureDate': TravelTime.serialize(
-        departureDate.value,
-        original.timeOffsets['departureDate'],
-      ),
-      'arrivalDate': TravelTime.serialize(
-        arrivalDate.value,
-        original.timeOffsets['arrivalDate'],
-      ),
       'checkInDate': TravelTime.serialize(
         checkInStartTime.value,
         original.timeOffsets['checkInDate'],
@@ -517,6 +654,8 @@ class CreateTripController extends GetxController {
       'hotelAddress': optionalText(addressController.text),
       'lodgingType': optionalText(lodgingTypeController.text),
       'expensePerNight': optionalNightlyCost,
+      'lodgingCurrencyCode':
+          optionalNightlyCost == null ? null : lodgingCurrencyCode,
     };
     final patch = <String, dynamic>{};
     for (final entry in candidate.entries) {
@@ -551,6 +690,7 @@ class CreateTripController extends GetxController {
         final url = await uploadImageToFirebaseStorage(
           imagePath: image.imageUrl,
           folderName: 'trip_images',
+          tripId: tripId,
           title: 'Uploading trip image',
           subtitle: 'Uploading trip image',
           imageName: '${tripId}_${const Uuid().v4()}_trip_image',
@@ -565,6 +705,25 @@ class CreateTripController extends GetxController {
     return uploaded;
   }
 
+  /// Assistant/MCP-created trips are saved without coordinates. Treat the
+  /// 0,0 placeholder as unknown rather than as a real location.
+  bool get hasKnownCoordinates {
+    final trip = tripModel.value;
+    return trip != null && !(trip.latitude == 0 && trip.longitude == 0);
+  }
+
+  bool get _hasSelectedPlace =>
+      selectedPlaceId.value.isNotEmpty &&
+      selectedPlaceId.value != 'existing_location';
+
+  /// A public trip is listed in discovery and Nearby by its coordinates, so a
+  /// trip without a known location must not be published until the owner
+  /// selects one. Private trips may keep an unknown location.
+  String? publicLocationIssue() {
+    if (isLocked.value || hasKnownCoordinates || _hasSelectedPlace) return null;
+    return 'Select the trip location before making this trip public.';
+  }
+
   Future<void> updateTrip() async {
     if (isSaving.value) return;
     isSaving.value = true;
@@ -572,11 +731,19 @@ class CreateTripController extends GetxController {
     try {
       // Validate before uploads or other network requests.
       buildTripUpdate(selectedImages.map((image) => image.imageUrl).toList());
+      final locationIssue = publicLocationIssue();
+      if (locationIssue != null) {
+        showCustomSnackBar(content: locationIssue);
+        return;
+      }
       final original = tripModel.value!;
       await prepareSuggestedPhoto();
       final images = await _uploadSelectedImages(original.id);
       final patch = buildTripUpdate(images);
-      if (patch.containsKey('tripLocation')) {
+      // Re-selecting the same destination text still needs a coordinate
+      // lookup when the trip has none.
+      if (patch.containsKey('tripLocation') ||
+          (_hasSelectedPlace && !hasKnownCoordinates)) {
         final location = await GeoServices.getLatLngFromPlace(
           destinationController.text,
           placeId: selectedPlaceId.value,
@@ -591,7 +758,22 @@ class CreateTripController extends GetxController {
       final saved = await FirebaseTripService.updateTrip(
         tripId: original.id,
         data: patch,
+        expectedEditedFields: original.toMap(),
         expectedImages: patch.containsKey('images') ? original.images : null,
+        expectedLodging:
+            patch.keys.any(
+                  const {
+                    'lodgingType',
+                    'hotelName',
+                    'hotelAddress',
+                    'checkInDate',
+                    'checkOutDate',
+                    'expensePerNight',
+                    'lodgingCurrencyCode',
+                  }.contains,
+                )
+                ? original
+                : null,
       );
       if (!saved) {
         showCustomSnackBar(
@@ -627,13 +809,22 @@ class CreateTripController extends GetxController {
           }
         }
       }
-      final updated =
-          await FirebaseTripService.getTripById(tripId: original.id) ??
-          TripModel.fromMap({
-            ...original.toMap(),
-            'tripBudget': original.tripBudget,
-            ...patch,
-          });
+      TripModel? updated;
+      try {
+        updated = await FirebaseTripService.getTripById(tripId: original.id);
+      } catch (error) {
+        if (kDebugMode) print('Trip saved but refresh failed: $error');
+        showCustomSnackBar(
+          content: 'Trip saved, but details could not refresh. Reopen it.',
+        );
+        return;
+      }
+      if (updated == null) {
+        showCustomSnackBar(
+          content: 'Trip saved, but it is no longer available.',
+        );
+        return;
+      }
       updated.activities = activityList.toList();
       updated.expenses ??= original.expenses;
       updated.joindUsersList ??= original.joindUsersList;
@@ -668,6 +859,31 @@ class CreateTripController extends GetxController {
 
   // Move to the previous step
   void previousStep() {
+    if (isSaving.value) {
+      showCustomSnackBar(content: 'Please wait for this trip save to finish.');
+      return;
+    }
+    if (_createdTrip != null || _creationAttempt != null) {
+      Get.dialog<void>(
+        AlertDialog(
+          title: const Text('Leave unfinished trip save?'),
+          content: const Text(
+            'The trip may have been created, but some imported details have not all saved. Retry now to finish, or review it later in My Trips.',
+          ),
+          actions: [
+            TextButton(onPressed: Get.back, child: const Text('Stay')),
+            TextButton(
+              onPressed: () {
+                Get.back();
+                Get.back();
+              },
+              child: const Text('Leave'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     if (currentStep.value > 1) {
       currentStep.value--;
     } else {
@@ -681,147 +897,139 @@ class CreateTripController extends GetxController {
     if (isSaving.value) return;
     isSaving.value = true;
     try {
-      final nightlyCost = optionalNightlyCost;
-      final String id = const Uuid().v4();
-      final TripModel tripModel = TripModel(
-        timeOffsets: Map.of(_importedTimeOffsets),
-        tripStatus: TripStatus.upcoming.name,
-        id: id,
-        tripLocation: destinationController.text,
-        invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
-        joinedUsers: [],
-        isPrivate: isLocked.value,
-        arrivalAirport: airportArrivalController.text,
-        departureAirport: airportDepartureController.text,
-        departureDate: departureDate.value,
-        arrivalDate: arrivalDate.value,
-        checkInDate: checkInStartTime.value,
-        checkOutDate: checkInEndTime.value,
-        country: country.value,
-        startDate: startDate.value!,
-        daysToGo: _calendarDaysUntil(startDate.value!),
-        createdBy: GlobalVariables.currentUid,
-        title: tripNameController.text,
-        destination: destinationController.text,
-        tripStartDate: startDate.value!,
-        tripEndDate: endDate.value!,
-        endDate: '',
-        airlineName: airLineNameController.text,
-        flightNumber: flightNumberController.text,
-        hotelName: hotelNameController.text,
-        hotelAddress: addressController.text,
-        expensePerNight: nightlyCost,
-        lodgingType: lodgingTypeController.text,
-        images: [],
-      );
+      final expensesToSave = await buildImportedFinanceExpenses();
       GlobalVariables.showLoader.value = true;
-      await prepareSuggestedPhoto();
-      await usePlacePhotoAsCoverIfNeeded();
-      tripModel.images = await _uploadSelectedImages(id);
-      tripModel.imageCredits.addAll(imageCredits);
-      final expensesToSave = _buildExpensesForTrip(tripModel.id);
-      final LatLng latln = await GeoServices.getLatLngFromPlace(
-        tripModel.tripLocation ?? '',
-      );
-      tripModel.latitude = latln.latitude;
-      tripModel.longitude = latln.longitude;
-      tripModel.continent = CommonCode.getContinentFromLatLng(
-        tripModel.latitude,
-        tripModel.longitude,
-      );
-      await FirebaseTripService.addTrip(
-        tripModel: tripModel,
-        transportation: importedTransportation.toList(),
-      ).then((isSuccess) async {
-        if (isSuccess) {
-          // showCustomSnackBar(content: 'Trip created successfully');
+      TripModel created;
+      var firstCreateAttempt = false;
+      if (_createdTrip == null && _creationAttempt == null) {
+        final nightlyCost = optionalNightlyCost;
+        final id = const Uuid().v4();
+        created = TripModel(
+          timeOffsets: Map.of(_importedTimeOffsets),
+          tripStatus: TripStatus.upcoming.name,
+          id: id,
+          tripLocation: destinationController.text,
+          invitedUsers: invitedUsersList.isEmpty ? [] : invitedUsersList,
+          joinedUsers: [],
+          isPrivate: isLocked.value,
+          checkInDate: checkInStartTime.value,
+          checkOutDate: checkInEndTime.value,
+          country: country.value,
+          startDate: startDate.value!,
+          daysToGo: _calendarDaysUntil(startDate.value!),
+          createdBy: GlobalVariables.currentUid,
+          title: tripNameController.text,
+          destination: destinationController.text,
+          tripStartDate: startDate.value!,
+          tripEndDate: endDate.value!,
+          endDate: '',
+          hotelName: hotelNameController.text,
+          hotelAddress: addressController.text,
+          expensePerNight: nightlyCost,
+          lodgingCurrencyCode: nightlyCost == null ? null : lodgingCurrencyCode,
+          lodgingType: lodgingTypeController.text,
+          images: [],
+        );
+        await prepareSuggestedPhoto();
+        await usePlacePhotoAsCoverIfNeeded();
+        created.images = await _uploadSelectedImages(id);
+        created.imageCredits.addAll(imageCredits);
+        final location = await GeoServices.getLatLngFromPlace(
+          created.tripLocation ?? '',
+        );
+        created.latitude = location.latitude;
+        created.longitude = location.longitude;
+        created.continent = CommonCode.getContinentFromLatLng(
+          created.latitude,
+          created.longitude,
+        );
+        _creationAttempt = created;
+        hasPendingCreatedTrip.value = true;
+        firstCreateAttempt = true;
+      }
+      if (_createdTrip == null) {
+        created = _creationAttempt!;
+        prepareImportedActivityIds(created.id);
+        await _persistPendingTrip();
+        await ensureCreatedTrip(
+          created,
+          checkBeforeCreate: !firstCreateAttempt,
+        );
+      } else {
+        created = _createdTrip!;
+        prepareImportedActivityIds(created.id);
+        await _persistPendingTrip();
+      }
 
-          // The trip itself is ready to display now. Do not make the user wait
-          // for invites, expenses, and activity writes before navigating.
-          for (final activity in activityList) {
-            activity.tripId = tripModel.id;
-            if (activity.id == null || activity.id!.isEmpty) {
-              activity.id = const Uuid().v6();
-            }
-          }
-          tripModel.activities = activityList.toList();
-          tripModel.expenses = expensesToSave;
-          addTripOverAll(tripModel);
-          GlobalVariables.showLoader.value = false;
-          Get.offNamed(kSpecificTripViewScreenRoute, arguments: tripModel);
-          if (photoNotice.isNotEmpty) {
-            showCustomSnackBar(content: photoNotice.value);
-          }
+      await saveImportedFinanceExpenses(
+        expensesToSave,
+        tripId: created.id,
+        ownerId: created.createdBy,
+      );
 
-          await FirebaseTripService.sendTripInvites(
-            tripId: tripModel.id,
-            tripTitle: tripModel.title ?? tripModel.destination,
-            emails: invitedUsersList,
+      await saveImportedActivities();
+      TripModel? hydrated;
+      try {
+        hydrated = await FirebaseTripService.getTripById(tripId: created.id);
+      } catch (error) {
+        if (kDebugMode) print('Created trip refresh failed: $error');
+        showCustomSnackBar(
+          content:
+              'Trip saved, but details could not load. Retry to finish opening it.',
+        );
+        return;
+      }
+      if (hydrated == null) {
+        showCustomSnackBar(
+          content: 'Trip saved, but it is no longer available.',
+        );
+        return;
+      }
+      final shown = hydrated;
+      shown.activities = activityList.toList();
+      await pendingImportStore.delete(created.createdBy);
+      addTripOverAll(shown);
+      GlobalVariables.showLoader.value = false;
+      Get.offNamed(kSpecificTripViewScreenRoute, arguments: shown);
+      if (photoNotice.isNotEmpty) {
+        showCustomSnackBar(content: photoNotice.value);
+      }
+
+      try {
+        final sent = await FirebaseTripService.sendTripInvites(
+          tripId: created.id,
+          tripTitle: created.title ?? created.destination,
+          emails: created.invitedUsers ?? const [],
+          requestId: 'initial_${created.id}',
+        );
+        if (!sent) {
+          showCustomSnackBar(
+            content:
+                'Trip saved, but invitations could not be sent. Retry from the trip.',
           );
-          var expensesSaved = true;
-          for (final expense in expensesToSave) {
-            expensesSaved =
-                await FirebaseTripService.addExpenses(expense: expense) &&
-                expensesSaved;
-          }
-          if (expensesSaved) {
-            for (final activity in activityList) {
-              await FirebaseTripService.addActivity(activity: activity);
-            }
-          } else {
-            showCustomSnackBar(content: 'Failed to add expense');
-          }
-        } else {
-          showCustomSnackBar(content: 'Failed to create trip');
         }
-      });
+      } catch (error) {
+        showCustomSnackBar(
+          content:
+              'Trip saved, but invitations could not be sent. Retry from the trip.',
+        );
+        if (kDebugMode) print('Trip invitation failure: $error');
+      }
     } catch (e) {
       if (kDebugMode) {
         print('Error in submitTrip: $e');
       }
       showCustomSnackBar(
-        content: e.toString(),
+        content:
+            _creationAttempt == null
+                ? e.toString()
+                : 'Trip save is unfinished. Retry to check the original trip and save pending expenses. $e',
         contentType: ContentType.failure,
       );
     } finally {
       isSaving.value = false;
       GlobalVariables.showLoader.value = false;
     }
-    // Get.offAndToNamed(
-    //   kSpecificTripViewScreenRoute,
-    //   arguments: {'isOpenChat': true},
-    // );
-  }
-
-  List<ExpenseModel> _buildExpensesForTrip(String tripId) {
-    if (importedExpenses.isNotEmpty) {
-      return importedExpenses
-          .map(
-            (expense) => expense.copyWith(
-              id: expense.id ?? const Uuid().v6(),
-              tripId: tripId,
-              createdBy: GlobalVariables.currentUid,
-            ),
-          )
-          .toList();
-    }
-
-    final amount = double.tryParse(amountPaidController.text) ?? 0.0;
-    if (expenseNameController.text.trim().isEmpty && amount <= 0) {
-      return [];
-    }
-
-    return [
-      ExpenseModel(
-        paidByUsers: [],
-        date: expanseDate.value ?? DateTime.now(),
-        id: const Uuid().v6(),
-        createdBy: GlobalVariables.currentUid,
-        tripId: tripId,
-        name: expenseNameController.text.trim(),
-        amount: amount,
-      ),
-    ];
   }
 
   // Get button text based on current step
@@ -844,7 +1052,6 @@ class CreateTripController extends GetxController {
 
   RxInt isLoadingSuggestions = (-1).obs;
 
-  RxList<AeroplanesModel> airlineList = RxList();
   Future<void> fetchLocation(String? value, {int id = -1, String? type}) async {
     if (value == null || value.isEmpty) {
       locations.clear();
@@ -917,35 +1124,6 @@ class CreateTripController extends GetxController {
     return null;
   }
 
-  Future<void> fetchAeroPlanes(String? value) async {
-    try {
-      if (value == null || value.isEmpty) {
-        airlineList.clear();
-        return;
-      }
-      await AviationStackService.fetchAirportSuggestions(query: value).then((
-        suggestions,
-      ) {
-        airlineList.clear();
-        // for (var e in suggestions) {
-        //   airlineList.add(
-        //     AeroplanesModel(
-        //       iataCode: e['iata_code'] ?? '',
-        //       name: e['airport_name'] ?? '',
-        //       city: e['city'] ?? '',
-        //       countryName: e['country_name'] ?? '',
-        //     ),
-        //   );
-        // }
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error in fetchAeroPlanes: $e');
-      }
-      showCustomSnackBar(content: 'Failed to fetch aeroplanes');
-    }
-  }
-
   Future<void> removeActivity(String? id, int index) async {
     try {
       if (id == null || id.isEmpty) {
@@ -954,7 +1132,8 @@ class CreateTripController extends GetxController {
       } else {
         await FirebaseTripService.deleteActivity(
           id: id,
-          tripId: tripModel.value?.id,
+          tripId: activityList[index].isLegacy ? null : tripModel.value?.id,
+          expectedRevision: activityList[index].contentRevision,
         ).then((isSuccess) {
           if (isSuccess) {
             activityList.removeAt(index);
@@ -1004,8 +1183,6 @@ class CreateTripController extends GetxController {
   void onClose() {
     tripNameController.dispose();
     destinationController.dispose();
-    airLineNameController.dispose();
-    flightNumberController.dispose();
     hotelNameController.dispose();
     addressController.dispose();
     expensePerNightController.dispose();
@@ -1017,13 +1194,9 @@ class CreateTripController extends GetxController {
     expenseNameController.dispose();
     amountPaidController.dispose();
     lodgingTypeController.dispose();
-    airportArrivalController.dispose();
-    airportDepartureController.dispose();
 
     destinationFocusNode.dispose();
     lodgingTypeFocusNode.dispose();
-    airLineNameFocusNode.dispose();
-    flightNumberFocusNode.dispose();
     hotelNameFocusNode.dispose();
     addressFocusNode.dispose();
     expensePerNightFocusNode.dispose();
@@ -1035,8 +1208,6 @@ class CreateTripController extends GetxController {
     expenseNameFocusNode.dispose();
     amountPaidFocusNode.dispose();
     tripNameFocusNode.dispose();
-    airportArrivalFocusNode.dispose();
-    airportDepartureFocusNode.dispose();
     super.onClose();
   }
 }

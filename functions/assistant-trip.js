@@ -2,6 +2,7 @@ const {z} = require("zod");
 const {createHash, randomUUID} = require("node:crypto");
 const {FieldValue} = require("firebase-admin/firestore");
 const {notification, inboxRef} = require("./notification-data");
+const {currencyPrecision, toMinorUnits, equalShares} = require("./finance/money");
 
 class ApiError extends Error {
   constructor(status, code, message) { super(message); this.status = status; this.code = code; }
@@ -13,12 +14,13 @@ const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((v) => {
 }, "Use a real calendar date in YYYY-MM-DD format");
 const datetime = z.iso.datetime({offset: true}).describe("ISO 8601 timestamp in the event location's local time with its UTC offset on that date. Use Z only for a time actually specified in UTC; never label local time as UTC.");
 const travelDate = z.union([date, datetime]);
-const transportationDate = z.union([date, z.iso.datetime({local: true, offset: true})]);
+const transportationDate = z.union([date,
+  z.iso.datetime({local: true}).refine((value) => !value.endsWith("Z"))]);
 const orderedTransportation = (v) => {
   if (!v.departure || !v.arrival) return true;
   if (v.departure.length === 10 && v.arrival.length === 10) return v.arrival >= v.departure;
-  const zoned = (value) => /T.*(?:Z|[+-]\d{2}:\d{2})$/.test(value);
-  return !zoned(v.departure) || !zoned(v.arrival) || +new Date(v.arrival) >= +new Date(v.departure);
+  // Different endpoints can have an arrival clock earlier than departure.
+  return true;
 };
 const amount = z.number().finite().positive().max(10000000);
 const ordered = (start, end) => (v) => !v[start] || !v[end] || +new Date(v[end]) >= +new Date(v[start]);
@@ -44,17 +46,59 @@ const tripSchema = z.object({
   lodging: z.object({
     type: text(80).optional(), name: text(), address: text(500).optional(),
     check_in: travelDate.optional().describe("Calendar date, or property-local timestamp with its offset on the check-in date"),
-    check_out: travelDate.optional().describe("Calendar date, or property-local timestamp with its offset on the check-out date"), cost_per_night: z.number().finite().min(0).max(10000000).optional(),
-  }).strict().refine(orderedTravel("check_in", "check_out"), "Check-out must follow check-in").optional(),
+    check_out: travelDate.optional().describe("Calendar date, or property-local timestamp with its offset on the check-out date"),
+    cost_per_night: z.number().finite().min(0).max(10000000).optional(),
+    cost_currency: z.string().regex(/^[A-Z]{3}$/).refine((code) => {
+      try { currencyPrecision(code); return true; } catch { return false; }
+    }, "Use a supported ISO currency code").optional()
+      .describe("Property currency for the nightly quote; required when cost_per_night is supplied. This can differ from the trip expense currency"),
+  }).strict().refine(orderedTravel("check_in", "check_out"), "Check-out must follow check-in")
+      .superRefine((lodging, context) => {
+        if (lodging.cost_per_night === undefined) return;
+        if (!lodging.cost_currency) {
+          context.addIssue({code: "custom", path: ["cost_currency"], message: "Choose the nightly quote currency"});
+          return;
+        }
+        let precision;
+        try { precision = currencyPrecision(lodging.cost_currency); } catch { return; }
+        const value = String(lodging.cost_per_night);
+        const amount = /^(0|[1-9][0-9]*)(?:\.([0-9]+))?$/.exec(value);
+        if (!amount || (amount[2]?.length || 0) > precision) {
+          context.addIssue({code: "custom", path: ["cost_per_night"],
+            message: "Nightly quote exceeds currency precision"});
+        }
+      }).optional(),
   activities: z.array(z.object({
     title: text(), description: z.string().trim().max(4000).default(""),
     location: text(500).optional(), address: text(500).optional(),
     start_datetime: datetime.optional(), end_datetime: datetime.optional(),
   }).strict().refine(ordered("start_datetime", "end_datetime"), "Activity end must follow start")).max(50).default([]),
+  expense_currency: z.string().regex(/^[A-Z]{3}$/).refine((code) => {
+    try { currencyPrecision(code); return true; } catch { return false; }
+  }, "Use a supported ISO currency code").optional(),
   expenses: z.array(z.object({
-    name: text(), amount, date, split_type: z.literal("equally").default("equally"),
-  }).strict()).max(50).default([]).describe("Only expenses the user explicitly wants recorded, not speculative estimates"),
-}).strict().refine(ordered("start_date", "end_date"), "Trip end must follow start");
+    name: text(), amount, date,
+    local_datetime: z.iso.datetime({local: true}).refine((value) => !value.endsWith("Z"))
+        .optional().describe("Optional clock at the expense location, without a UTC offset"),
+    split_type: z.literal("equally").default("equally"),
+  }).strict().refine((expense) => !expense.local_datetime ||
+    expense.local_datetime.slice(0, 10) === expense.date,
+  "Expense local clock must be on its calendar date")).max(50).default([])
+      .describe("Only expenses the user explicitly wants recorded, not speculative estimates"),
+}).strict().superRefine((trip, context) => {
+  if (!trip.expenses.length) return;
+  if (!trip.expense_currency) {
+    context.addIssue({code: "custom", path: ["expense_currency"],
+      message: "Choose one currency for all trip expenses"});
+    return;
+  }
+  for (const [index, expense] of trip.expenses.entries()) {
+    try { toMinorUnits(expense.amount, trip.expense_currency); } catch {
+      context.addIssue({code: "custom", path: ["expenses", index, "amount"],
+        message: "Amount must use the currency's exact minor-unit precision"});
+    }
+  }
+}).refine(ordered("start_date", "end_date"), "Trip end must follow start");
 const idempotencySchema = z.string().regex(/^[A-Za-z0-9_-]{16,128}$/);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const canonical = (value) => JSON.stringify(value, function(key, item) {
@@ -93,7 +137,7 @@ function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
       }
       if ((quota.data()?.count || 0) >= 30) throw new ApiError(429, "quota_exceeded", "Daily assistant trip limit reached; try again tomorrow");
       const l = data.lodging || {};
-      const displayName = typeof account.data().displayName === "string" ? account.data().displayName.trim().slice(0, 200) : "";
+      const displayName = typeof account.data().displayName === "string" ? account.data().displayName : "";
       const trip = {
         id: tripId, createdBy: uid, title: data.title || data.destination, destination: data.destination, country: data.country,
         tripStartDate: isoDate(data.start_date), tripEndDate: isoDate(data.end_date), startDate: isoDate(data.start_date), endDate: data.end_date,
@@ -101,9 +145,16 @@ function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
         isPrivate: true, isShared: false, joinedUsers: [], invitedUsers: [], images: photo?.status === "ready" ? [photo.url] : [],
         latitude: 0, longitude: 0, continent: "", favouriteCount: 0, tripBudget: 0, tripLocation: data.destination,
         lodgingType: l.type || null, hotelName: l.name || null, hotelAddress: l.address || null,
-        checkInDate: isoDate(l.check_in), checkOutDate: isoDate(l.check_out), expensePerNight: l.cost_per_night ?? null,
+        checkInDate: isoDate(l.check_in), checkOutDate: isoDate(l.check_out),
+        expensePerNight: l.cost_per_night ?? null,
+        lodgingCurrencyCode: l.cost_per_night === undefined ? null : l.cost_currency,
         source: "assistant", createdAt: FieldValue.serverTimestamp(),
       };
+      if (data.expenses.length) {
+        trip.financeCurrency = data.expense_currency;
+        trip.financePrecision = currencyPrecision(data.expense_currency);
+        trip.financeSchemaVersion = 2;
+      }
       if (photo?.status === "ready") trip.imageCredits = {[photo.url]: photo.credit};
       tx.create(tripRef, trip);
       tx.create(tripRef.collection("members").doc(uid), {userId: uid, role: "creator", status: "active", joinedAt: FieldValue.serverTimestamp()});
@@ -111,20 +162,29 @@ function createTripService(db, baseUrl, now = () => Date.now(), preparePhoto) {
       for (const [index, item] of data.activities.entries()) {
         const id = `activity_${index}`;
         tx.create(tripRef.collection("activities").doc(id), {
-          id, tripId, title: item.title, description: item.description, location: [item.location, item.address].filter(Boolean).join(" — "),
-          startDateTime: item.start_datetime || null, endDateTime: item.end_datetime || null, likesCount: 0, likedBy: [],
+          id, tripId, createdBy: uid, title: item.title, description: item.description, location: [item.location, item.address].filter(Boolean).join(" — "),
+          startDateTime: item.start_datetime || null, endDateTime: item.end_datetime || null, likesCount: 0, likedBy: [], isDeleted: false, contentRevision: 1,
         });
       }
       for (const [index, item] of data.expenses.entries()) {
         const id = `expense_${index}`;
-        tx.create(tripRef.collection("expenses").doc(id), {id, tripId, createdBy: uid, name: item.name,
-          amount: item.amount, date: isoDate(item.date), splitType: "equally", paidByUsers: [uid], owners: {[uid]: item.amount}, owedTo: {}});
+        const amountMinor = toMinorUnits(item.amount, data.expense_currency);
+        tx.create(tripRef.collection("financeExpenses").doc(id), {
+          id, tripId, createdBy: uid, name: item.name, date: item.date,
+          localDateTime: item.local_datetime || null,
+          amountMinor, currencyCode: data.expense_currency,
+          currencyPrecision: trip.financePrecision, splitType: "equally",
+          payerAmountsMinor: {[uid]: amountMinor}, sharesMinor: equalShares(amountMinor, [uid]),
+          financeSchemaVersion: 2, revision: 1, isDeleted: false,
+          createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(),
+        });
       }
       for (const [index, item] of (data.transportation || []).entries()) {
         const id = `transport_${index}`;
         tx.create(tripRef.collection("transportation").doc(id), {
           id, tripId, userId: uid, displayName, mode: item.mode,
-          departure: item.departure || null, arrival: item.arrival || null, notes: item.notes,
+          departure: item.departure || null, arrival: item.arrival || null,
+          notes: item.notes, revision: 1, isDeleted: false,
         });
       }
       const noteId = `assistant_${tripId}`;

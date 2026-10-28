@@ -1,8 +1,11 @@
 import 'package:travel_crew/models/transportation_model.dart';
+import 'package:travel_crew/models/imported_finance_expense.dart';
+import 'package:travel_crew/services/finance_service.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
@@ -27,11 +30,11 @@ Required fields (always include these):
 Optional sections — include a section ONLY if you have real information for it, otherwise OMIT the whole key. Do not output empty objects, empty arrays, null, or placeholder values.
 
 Field rules:
-- Trip and expense dates use "YYYY-MM-DD". Flights and lodging may use a calendar date when the time is unknown, or an ISO 8601 local timestamp with its UTC offset when known (for example "2027-04-10T10:00:00+09:00").
-- Flight departure uses the departure airport's local time and offset; arrival uses the arrival airport's local time and offset. Lodging uses the property's local time. Activity times use the activity location's local time with its offset on that date. Account for daylight saving on the event date. Use Z only when the time is actually specified in UTC; never attach Z to a local clock time. Do not invent an offset when the location or timezone is unknown; omit the time or ask for clarification.
+- Trip and expense dates use "YYYY-MM-DD". Lodging may use a calendar date when the time is unknown, or an ISO 8601 local timestamp with its UTC offset when known (for example "2027-04-10T10:00:00+09:00").
+- Lodging uses the property's local time. Activity times use the activity location's local time with its offset on that date. Account for daylight saving on the event date. Use Z only when the time is actually specified in UTC; never attach Z to a local clock time. Do not invent an offset when the location or timezone is unknown; omit the time or ask for clarification.
 - Every activity must have a "title". "description", "location", "address", "start_datetime", and "end_datetime" are each optional. Prefer a full street "address" when you can confidently supply it; otherwise use "location" for the venue/place name.
-- Optional "transportation" is an array of up to 50 entries. Each needs "mode": "flight", "driving", "rideshare", "taxi", "train", "bus", "scooter", "bicycle", "walking", "ferry", "boat", or "other". Optional fields: "departure", "arrival", "notes". Put route, provider, driver, service/flight number, traveler names, and other details in "notes". Transportation departure/arrival are calendar dates or local clock timestamps (YYYY-MM-DDTHH:MM:SS) exactly as used at each location, without a timezone suffix. Never convert them to the phone timezone. Omit unknown times. Use multiple entries for trip legs; do not repeat a flight in both "airline" and "transportation". Traveler names do not invite or grant access.
-- Every expense must have a non-empty "name" and a positive "amount". "split_type" must be exactly "equally" (the only value supported on import).
+- Optional "transportation" is an array of up to 50 entries. Each needs "mode": "flight", "driving", "rideshare", "taxi", "train", "bus", "scooter", "bicycle", "walking", "ferry", "boat", or "other". Optional fields: "departure", "arrival", "notes". Put route, provider, driver, service/flight number, traveler names, and other details in "notes". Transportation departure/arrival are calendar dates or local clock timestamps (YYYY-MM-DDTHH:MM:SS) exactly as used at each location, without a timezone suffix. Never convert them to the phone timezone. Omit unknown times. Use multiple entries for trip legs. Flight departure uses the origin local clock; arrival uses the destination local clock. Traveler names do not invite or grant access.
+- If expenses are included, include one "expense_currency" for the whole trip using a supported uppercase ISO currency code, such as "USD" or "JPY". Never guess a currency; ask for it if unknown. Every expense must have a non-empty "name" and a positive exact "amount" in that currency. "split_type" must be exactly "equally" (the only value supported on import). Expense dates are calendar dates; if a local clock is supplied, keep the expense location's local clock with its offset and do not convert it to UTC.
 - A cover image is optional. Never invent an image URL, use a placeholder, generate artwork, or supply a webpage/local file link. Only include image_url when the cover choice below requests a photo. Supported suggestions are direct Wikimedia Commons JPEG, PNG, or WebP URLs whose source page identifies the license as Public domain or CC0.\n- Numbers ("amount", "cost_per_night") must be plain JSON numbers with no currency symbol or quotes.
 
 Strict JSON formatting requirements:
@@ -49,14 +52,9 @@ Strict JSON formatting requirements:
   "start_date": "YYYY-MM-DD",
   "end_date": "YYYY-MM-DD",
   "is_private": false,
-  "airline": {
-    "name": "Airline name",
-    "flight_number": "XX123",
-    "departure_airport": "IATA code (e.g. LAX)",
-    "arrival_airport": "IATA code (e.g. NRT)",
-    "departure_date": "YYYY-MM-DD",
-    "arrival_date": "YYYY-MM-DD"
-  },
+  "transportation": [
+    {"mode": "flight", "departure": "YYYY-MM-DDTHH:MM:SS", "arrival": "YYYY-MM-DDTHH:MM:SS", "notes": "Route and flight details"}
+  ],
   "lodging": {
     "type": "Hotel",
     "name": "Property name",
@@ -82,7 +80,8 @@ Strict JSON formatting requirements:
       "date": "YYYY-MM-DD",
       "split_type": "equally"
     }
-  ]
+  ],
+  "expense_currency": "USD"
 }''';
 
   Future<void> copyPrompt() async {
@@ -101,7 +100,7 @@ Strict JSON formatting requirements:
     }
   }
 
-  void importTrip() {
+  Future<void> importTrip() async {
     final raw = pasteController.text.trim();
     if (raw.isEmpty) {
       // showCustomSnackBar(content: 'Paste your AI response first');
@@ -176,23 +175,35 @@ Strict JSON formatting requirements:
         return;
       }
       final expenses = data['expenses'];
+      if (expenses != null && expenses is! List) {
+        throw const FormatException('Expenses must be a list.');
+      }
       if (expenses is List && expenses.length > 50) {
         showCustomSnackBar(content: 'Import is limited to 50 expenses');
         return;
       }
-      if (expenses is List) {
+      if (expenses is List && expenses.isNotEmpty) {
+        final currency = data['expense_currency'];
+        if (currency is! String || !RegExp(r'^[A-Z]{3}$').hasMatch(currency)) {
+          throw const FormatException(
+            'Choose one ISO currency for all imported expenses.',
+          );
+        }
+        final options = await FinanceService.getCurrencyOptions();
+        if (isClosed) return;
+        final precision = options[currency];
+        if (precision == null) {
+          throw const FormatException('Choose a supported expense currency.');
+        }
         for (final expense in expenses) {
-          if (expense is! Map) continue;
-          final amount = expense['amount'];
-          if (amount == null || amount is! num || amount <= 0) {
-            showCustomSnackBar(content: 'Expense amounts must be positive');
-            return;
+          if (expense is! Map) {
+            throw const FormatException('Invalid imported expense.');
           }
-          final date = expense['date'];
-          if (date is String && DateTime.tryParse(date) == null) {
-            showCustomSnackBar(content: 'Expense dates are invalid');
-            return;
-          }
+          ImportedFinanceExpense.fromMap(
+            Map<String, dynamic>.from(expense),
+            currencyCode: currency,
+            precision: precision,
+          );
         }
       }
       final lodging = data['lodging'];
@@ -218,9 +229,16 @@ Strict JSON formatting requirements:
         stackTrace: stack,
         context: 'ImportTrip.parse',
       );
+      showCustomSnackBar(content: e.message);
+    } on FirebaseFunctionsException catch (e, stack) {
+      ErrorHandler.handleError(
+        e,
+        stackTrace: stack,
+        context: 'ImportTrip.currency',
+      );
       showCustomSnackBar(
         content:
-            'Could not parse the response — make sure you copied the full JSON output',
+            'Could not verify the expense currency. Check your connection and retry.',
       );
     } catch (e, stack) {
       ErrorHandler.handleError(

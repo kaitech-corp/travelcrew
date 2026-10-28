@@ -3,12 +3,26 @@ import 'dart:convert';
 import 'package:travel_crew/utils/travel_time.dart';
 
 class ActivityModel {
+  static String? scheduleError(DateTime? start, DateTime? end) {
+    if ((start == null) != (end == null)) {
+      return 'Select both activity times or clear the schedule';
+    }
+    if (start != null && end!.isBefore(start)) {
+      return 'End time must follow start time';
+    }
+    return null;
+  }
+
   final Map<String, String> timeOffsets;
   ActivityModel({
     this.timeOffsets = const {},
     required this.likesCount,
     required this.title,
     this.id,
+    this.createdBy = '',
+    this.isDeleted = false,
+    this.isLegacy = false,
+    this.contentRevision = 1,
     this.likedBy = const [],
     required this.tripId,
     required this.description,
@@ -26,6 +40,9 @@ class ActivityModel {
       ),
       title: (map['title'] as String?) ?? '',
       id: map['id'] as String?,
+      createdBy: map['createdBy'] as String? ?? '',
+      isDeleted: map['isDeleted'] == true,
+      contentRevision: (map['contentRevision'] as num?)?.toInt() ?? 0,
       tripId: (map['tripId'] as String?) ?? '',
       description: (map['description'] as String?) ?? '',
       startDateTime:
@@ -49,6 +66,10 @@ class ActivityModel {
 
   String title;
   String? id;
+  String createdBy;
+  bool isDeleted;
+  bool isLegacy;
+  int contentRevision;
   String tripId;
   String description;
   List<String> likedBy;
@@ -60,6 +81,10 @@ class ActivityModel {
   ActivityModel copyWith({
     String? title,
     String? id,
+    String? createdBy,
+    bool? isDeleted,
+    bool? isLegacy,
+    int? contentRevision,
     String? tripId,
     String? description,
     DateTime? startDateTime,
@@ -70,6 +95,10 @@ class ActivityModel {
       timeOffsets: timeOffsets,
       title: title ?? this.title,
       id: id ?? this.id,
+      createdBy: createdBy ?? this.createdBy,
+      isDeleted: isDeleted ?? this.isDeleted,
+      isLegacy: isLegacy ?? this.isLegacy,
+      contentRevision: contentRevision ?? this.contentRevision,
       likedBy: likedBy,
       likesCount: likesCount,
       tripId: tripId ?? this.tripId,
@@ -85,6 +114,9 @@ class ActivityModel {
 
     result.addAll({'title': title});
     result.addAll({'id': id});
+    if (createdBy.isNotEmpty) result['createdBy'] = createdBy;
+    result['isDeleted'] = isDeleted;
+    result['contentRevision'] = contentRevision;
     result.addAll({'likedBy': likedBy});
     result.addAll({'likesCount': likesCount});
     result.addAll({'tripId': tripId});
@@ -127,6 +159,10 @@ class ActivityModel {
     return other is ActivityModel &&
         other.title == title &&
         other.id == id &&
+        other.createdBy == createdBy &&
+        other.isDeleted == isDeleted &&
+        other.isLegacy == isLegacy &&
+        other.contentRevision == contentRevision &&
         other.tripId == tripId &&
         other.description == description &&
         other.startDateTime == startDateTime &&
@@ -140,6 +176,10 @@ class ActivityModel {
   int get hashCode {
     return title.hashCode ^
         id.hashCode ^
+        createdBy.hashCode ^
+        isDeleted.hashCode ^
+        isLegacy.hashCode ^
+        contentRevision.hashCode ^
         tripId.hashCode ^
         description.hashCode ^
         startDateTime.hashCode ^

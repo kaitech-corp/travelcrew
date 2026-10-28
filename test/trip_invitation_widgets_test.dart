@@ -41,7 +41,7 @@ void main() {
             return pending.future;
           },
           send: (_, _) async {},
-          sendEmail: (_) async => true,
+          sendEmail: (_, _) async => true,
         ),
       );
       await tester.showKeyboard(find.byType(TextField));
@@ -100,7 +100,7 @@ void main() {
             return [];
           },
           send: (_, _) async {},
-          sendEmail: (_) async => true,
+          sendEmail: (_, _) async => true,
         ),
       );
       await tester.enterText(find.byType(TextField), 'Alice');
@@ -123,7 +123,7 @@ void main() {
       InviteTravelersDialog(
         search: (_) async => throw Exception('offline'),
         send: (_, _) async {},
-        sendEmail: (_) async => true,
+        sendEmail: (_, _) async => true,
       ),
     );
     await tester.enterText(find.byType(TextField), 'Alice');
@@ -166,7 +166,7 @@ void main() {
       InviteTravelersDialog(
         search: (_) async => [],
         send: (_, _) async {},
-        sendEmail: (_) async => true,
+        sendEmail: (_, _) async => true,
       ),
     );
     await tester.enterText(find.byType(TextField), 'Al');
@@ -231,7 +231,7 @@ void main() {
                         ),
                       ],
           send: (_, _) async {},
-          sendEmail: (_) async => true,
+          sendEmail: (_, _) async => true,
         ),
       );
       await tester.enterText(find.byType(TextField), 'Al');
@@ -276,7 +276,7 @@ void main() {
             attempts.add(requestId);
             if (attempts.length == 1) throw Exception('offline');
           },
-          sendEmail: (_) async => true,
+          sendEmail: (_, _) async => true,
         ),
       );
       await tester.enterText(find.byType(TextField), 'Al');
@@ -306,14 +306,16 @@ void main() {
     tester,
   ) async {
     final emails = <String>[];
+    final requestIds = <String>[];
     await openDialog(
       tester,
       InviteTravelersDialog(
         search: (_) async => [],
         send: (_, _) async {},
-        sendEmail: (email) async {
+        sendEmail: (email, requestId) async {
           emails.add(email);
-          return true;
+          requestIds.add(requestId);
+          return emails.length > 1;
         },
       ),
     );
@@ -327,7 +329,14 @@ void main() {
     await tester.enterText(find.byType(TextField), ' friend@example.com ');
     await tester.tap(find.text('Send email invite'));
     await tester.pumpAndSettle();
-    expect(emails, ['friend@example.com']);
+    expect(
+      find.text('Could not send the email invitation. Please try again.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Send email invite'));
+    await tester.pumpAndSettle();
+    expect(emails, ['friend@example.com', 'friend@example.com']);
+    expect(requestIds[0], requestIds[1]);
     expect(
       find.text('Email invitation queued for friend@example.com.'),
       findsOneWidget,
@@ -343,7 +352,7 @@ void main() {
         InviteTravelersDialog(
           search: (_) => result.future,
           send: (_, _) async {},
-          sendEmail: (_) async => true,
+          sendEmail: (_, _) async => true,
         ),
       );
       await tester.enterText(find.byType(TextField), 'Al');

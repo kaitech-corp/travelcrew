@@ -104,110 +104,104 @@ class MemoryTransaction extends Fake implements Transaction {
   }
 }
 
-TransportationModel flight({
-  TransportationSource source = TransportationSource.flight,
-  bool mirror = false,
-}) => TransportationModel.fromMap(
-  'one',
-  'trip',
-  {
-    'userId': 'owner',
-    'createdBy': 'owner',
-    'flightNumber': 'AB123',
-    'departureDate': '2027-04-10T10:00:00+09:00',
-  },
-  source: source,
-  hasLegacyMirror: mirror,
+TransportationModel entry({
+  String id = 'one',
+  TransportationMode mode = TransportationMode.flight,
+  int revision = 1,
+  String notes = 'Flight details',
+}) => TransportationModel(
+  id: id,
+  tripId: 'trip',
+  userId: 'owner',
+  displayName: 'Owner',
+  mode: mode,
+  notes: notes,
+  revision: revision,
 );
 
 void main() {
+  test('flights and other modes use one transportation collection', () async {
+    final db = MemoryDatabase();
+    await TransportationService.save(entry(), isNew: true, database: db);
+    await TransportationService.save(
+      entry(id: 'ride', mode: TransportationMode.rideshare),
+      isNew: true,
+      database: db,
+    );
+    expect(db.records['trips/trip/transportation/one']!['mode'], 'flight');
+    expect(db.records['trips/trip/transportation/ride']!['mode'], 'rideshare');
+    expect(
+      db.records.keys.where((path) => path.contains('/flights/')),
+      isEmpty,
+    );
+  });
+
   test(
-    'new flights use compatible storage while nonflight records use transportation',
+    'edits increment revision and reject stale or removed records',
     () async {
       final db = MemoryDatabase();
-      final item = TransportationModel(
-        id: 'ride',
-        tripId: 'trip',
-        userId: 'owner',
-        mode: TransportationMode.rideshare,
+      final original = entry();
+      await TransportationService.save(original, isNew: true, database: db);
+      await TransportationService.save(
+        entry(mode: TransportationMode.train, notes: 'Train instead'),
+        isNew: false,
+        database: db,
       );
-      await TransportationService.save(item, isNew: true, database: db);
-      expect(
-        db.records['trips/trip/transportation/ride']!['mode'],
-        'rideshare',
-      );
-      await TransportationService.save(flight(), isNew: true, database: db);
-      expect(db.records['trips/trip/flights/one']!['flightNumber'], 'AB123');
-      expect(db.records.containsKey('trips/trip/transportation/one'), isFalse);
-    },
-  );
-  test(
-    'editing and deleting mirrored flights cannot resurrect old summary or top-level copies',
-    () async {
-      final db = MemoryDatabase();
-      final original = flight(mirror: true);
-      db.records['trips/trip']!.addAll(original.toTripFlightMap());
-      db.records['trips/trip/flights/one'] = original.toFlightMap();
-      db.records['flights/one'] = original.toFlightMap();
-      final updated = TransportationModel.fromMap(
-        'one',
-        'trip',
-        {...original.toFlightMap(), 'flightNumber': 'AB456'},
-        source: TransportationSource.flight,
-        hasLegacyMirror: true,
-      );
-      await TransportationService.save(updated, isNew: false, database: db);
-      expect(db.records['trips/trip/flights/one']!['flightNumber'], 'AB456');
-      expect(db.records['flights/one']!['flightNumber'], 'AB456');
-      expect(db.records['trips/trip']!['flightNumber'], isNull);
-      await TransportationService.delete(updated, database: db);
-      expect(db.records.containsKey('trips/trip/flights/one'), isFalse);
-      expect(db.records.containsKey('flights/one'), isFalse);
-    },
-  );
-  test(
-    'legacy summary becomes a compatible flight on edit and preserves additional details',
-    () async {
-      final db = MemoryDatabase();
-      final original = flight(source: TransportationSource.trip);
-      db.records['trips/trip']!.addAll(original.toTripFlightMap());
-      final updated = TransportationModel(
-        id: 'one',
-        tripId: 'trip',
-        userId: 'owner',
-        mode: TransportationMode.flight,
-        source: TransportationSource.trip,
-        notes: 'Bring passport',
-        serviceNumber: 'AB123',
-      );
-      await TransportationService.save(updated, isNew: false, database: db);
-      expect(db.records['trips/trip/flights/one']!['notes'], 'Bring passport');
-      expect(db.records['trips/trip']!['flightNumber'], isNull);
-    },
-  );
-  test(
-    'changing modes moves the entry atomically and deleted records cannot be recreated by edit',
-    () async {
-      final db = MemoryDatabase();
-      db.records['trips/trip/flights/one'] = flight().toFlightMap();
-      final changed = TransportationModel(
-        id: 'one',
-        tripId: 'trip',
-        userId: 'owner',
-        mode: TransportationMode.train,
-        source: TransportationSource.flight,
-        title: 'Train instead',
-      );
-      await TransportationService.save(changed, isNew: false, database: db);
-      expect(db.records.containsKey('trips/trip/flights/one'), isFalse);
-      expect(db.records['trips/trip/transportation/one']!['mode'], 'train');
+      final saved = db.records['trips/trip/transportation/one']!;
+      expect(saved['revision'], 2);
+      expect(saved['mode'], 'train');
       await expectLater(
-        TransportationService.save(changed, isNew: false, database: db),
+        TransportationService.save(original, isNew: false, database: db),
         throwsStateError,
       );
-      expect(
-        db.records['trips/trip/transportation/one']!['title'],
-        'Train instead',
+      await TransportationService.delete(
+        entry(revision: 2, mode: TransportationMode.train),
+        database: db,
+      );
+      expect(db.records['trips/trip/transportation/one']!['isDeleted'], isTrue);
+      expect(db.records['trips/trip/transportation/one']!['revision'], 3);
+      await expectLater(
+        TransportationService.delete(entry(revision: 2), database: db),
+        throwsStateError,
+      );
+      await expectLater(
+        TransportationService.save(
+          entry(revision: 2),
+          isNew: false,
+          database: db,
+        ),
+        throwsStateError,
+      );
+    },
+  );
+
+  test(
+    'duplicate IDs, changed identity and unavailable trips are rejected',
+    () async {
+      final db = MemoryDatabase();
+      await TransportationService.save(entry(), isNew: true, database: db);
+      await expectLater(
+        TransportationService.save(entry(), isNew: true, database: db),
+        throwsStateError,
+      );
+      await expectLater(
+        TransportationService.save(
+          const TransportationModel(
+            id: 'one',
+            tripId: 'trip',
+            userId: 'other',
+            mode: TransportationMode.flight,
+            displayName: 'Other',
+          ),
+          isNew: false,
+          database: db,
+        ),
+        throwsStateError,
+      );
+      db.records['trips/trip']!['tripStatus'] = 'deleted';
+      await expectLater(
+        TransportationService.save(entry(id: 'new'), isNew: true, database: db),
+        throwsStateError,
       );
     },
   );

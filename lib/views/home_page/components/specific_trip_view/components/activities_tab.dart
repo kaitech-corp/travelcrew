@@ -29,10 +29,9 @@ class ActivitiesTab extends StatelessWidget {
             itemBuilder: (c, index) {
               final activity = activities[index];
               return ActivityWidget(
+                activity: activity,
                 onDelete:
-                    GlobalVariables.isLoggedInUser(
-                          controller.tripModel.value?.createdBy ?? '',
-                        )
+                    controller.canManageActivity(activity)
                         ? () => _confirmDelete(context, activity)
                         : null,
                 calendarAction: ActivityCalendarButton(activity: activity),
@@ -390,6 +389,7 @@ class ActivityWidget extends StatelessWidget {
     this.likesCount = 20,
     this.onDelete,
     this.controller,
+    this.activity,
     this.title,
     this.description,
     this.location,
@@ -398,6 +398,7 @@ class ActivityWidget extends StatelessWidget {
   });
   final Function()? onLiked;
   final SpecificTripViewController? controller;
+  final ActivityModel? activity;
   final String? title;
   final bool isLiked;
   final int index;
@@ -555,9 +556,8 @@ class ActivityWidget extends StatelessWidget {
                             ),
                           HeartToggleWidget(onLiked: onLiked, isLiked: isLiked),
                           SizedBox(width: 8.w),
-                          if (GlobalVariables.isLoggedInUser(
-                            controller?.tripModel.value?.createdBy ?? '',
-                          ))
+                          if (activity != null &&
+                              controller?.canManageActivity(activity!) == true)
                             GestureDetector(
                               onTap: () {
                                 if (controller != null) {
@@ -591,9 +591,8 @@ class ActivityWidget extends StatelessWidget {
                         ],
                       ),
                       if (onDelete != null &&
-                          GlobalVariables.isLoggedInUser(
-                            controller?.tripModel.value?.createdBy ?? '',
-                          ))
+                          activity != null &&
+                          controller?.canManageActivity(activity!) == true)
                         IconButton(
                           tooltip: 'Delete activity',
                           onPressed: onDelete,

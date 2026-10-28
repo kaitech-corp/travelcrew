@@ -1,8 +1,11 @@
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:travel_crew/services/recommendation_runtime.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -29,13 +32,38 @@ MainViewController? mainViewController;
 String userDeviceToken = '';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+const bool useLocalFirebaseEmulators = bool.fromEnvironment(
+  'TRAVEL_CREW_FIREBASE_EMULATORS',
+);
+const String _localFirebaseHost = String.fromEnvironment(
+  'TRAVEL_CREW_FIREBASE_EMULATOR_HOST',
+  defaultValue: 'localhost',
+);
+// Ports are overridable so device verification can run beside another
+// emulator set. They only apply in the debug-only emulator mode.
+const int _localFirestorePort = int.fromEnvironment(
+  'TRAVEL_CREW_FIRESTORE_EMULATOR_PORT',
+  defaultValue: 8080,
+);
+const int _localAuthPort = int.fromEnvironment(
+  'TRAVEL_CREW_AUTH_EMULATOR_PORT',
+  defaultValue: 9099,
+);
+const int _localFunctionsPort = int.fromEnvironment(
+  'TRAVEL_CREW_FUNCTIONS_EMULATOR_PORT',
+  defaultValue: 5001,
+);
+const int _localStoragePort = int.fromEnvironment(
+  'TRAVEL_CREW_STORAGE_EMULATOR_PORT',
+  defaultValue: 9199,
+);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await TripLinkService.initialize();
   await initializeFirebase();
   SafetyService.initialize();
   RecommendationRuntime.initialize();
-  await initializeGoogleSignIn();
+  if (!useLocalFirebaseEmulators) await initializeGoogleSignIn();
   await dotenv.load(isOptional: true);
 
   if (!kDebugMode) {
@@ -47,7 +75,9 @@ void main() async {
   }
 
   // initAppsflyer();
-  userDeviceToken = await FirebasePushNotificationApi().initNotifications();
+  if (!useLocalFirebaseEmulators) {
+    userDeviceToken = await FirebasePushNotificationApi().initNotifications();
+  }
 
   runApp(const MyApp());
 }
@@ -62,6 +92,15 @@ Future<void> initializeGoogleSignIn() async {
 }
 
 Future<void> initializeFirebase() async {
+  if (useLocalFirebaseEmulators && !kDebugMode) {
+    throw StateError('Local Firebase emulators require a debug build.');
+  }
+  if (useLocalFirebaseEmulators &&
+      _localFirebaseHost != 'localhost' &&
+      _localFirebaseHost != '127.0.0.1' &&
+      _localFirebaseHost != '10.0.2.2') {
+    throw StateError('Use a loopback Firebase emulator host.');
+  }
   FirebaseApp app;
   if (Firebase.apps.isEmpty) {
     app = await Firebase.initializeApp(
@@ -70,12 +109,32 @@ Future<void> initializeFirebase() async {
   } else {
     app = Firebase.app();
   }
+  if (useLocalFirebaseEmulators &&
+      app.options.projectId !=
+          DefaultFirebaseOptions.currentPlatform.projectId) {
+    throw StateError('The bundled Firebase project does not match this build.');
+  }
 
   firestore = FirebaseFirestore.instanceFor(
     app: app,
     databaseId: 'travel-crew-db-2',
   );
-  firestore.settings = const Settings(persistenceEnabled: true);
+  firestore.settings = Settings(persistenceEnabled: !useLocalFirebaseEmulators);
+  if (useLocalFirebaseEmulators) {
+    firestore.useFirestoreEmulator(_localFirebaseHost, _localFirestorePort);
+    await FirebaseAuth.instance.useAuthEmulator(
+      _localFirebaseHost,
+      _localAuthPort,
+    );
+    FirebaseFunctions.instance.useFunctionsEmulator(
+      _localFirebaseHost,
+      _localFunctionsPort,
+    );
+    await FirebaseStorage.instance.useStorageEmulator(
+      _localFirebaseHost,
+      _localStoragePort,
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

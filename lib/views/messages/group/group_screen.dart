@@ -7,6 +7,7 @@ import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/messages/group/controller/group_controller.dart';
 import 'package:travel_crew/views/messages/users/widget/users_widget.dart';
+import 'package:travel_crew/views/messages/users/widget/chat_room_load_error.dart';
 
 import '../../custom_widgets/custom_scaffold.dart';
 
@@ -19,10 +20,13 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GroupController controller =
+      Get.isRegistered<GroupController>()
+          ? Get.find<GroupController>()
+          : Get.put(GroupController());
 
   @override
   Widget build(BuildContext context) {
-    final GroupController controller = Get.put(GroupController());
     return CustomScaffold(
       screenName: 'Messages',
       isBackIcon: false,
@@ -57,24 +61,41 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
           SizedBox(height: 14.h),
           Expanded(
-            child: Obx(
-              () {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (controller.chatRooms.isEmpty) {
-                  return _EmptyGroupsState();
-                }
-                return ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: controller.chatRooms.length,
-                  itemBuilder: (context, index) {
-                    final chatRoom = controller.chatRooms[index];
-                    return _GroupTile(chatRoom: chatRoom);
-                  },
-                );
-              },
-            ),
+            child: Obx(() {
+              if (controller.isLoading.value && controller.chatRooms.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final error = controller.loadError.value;
+              if (controller.chatRooms.isEmpty) {
+                return error == null
+                    ? _EmptyGroupsState()
+                    : Center(
+                      child: ChatRoomLoadError(
+                        message: error,
+                        onRetry: controller.getChatRooms,
+                      ),
+                    );
+              }
+              return Column(
+                children: [
+                  if (error != null)
+                    ChatRoomLoadError(
+                      message: error,
+                      onRetry: controller.getChatRooms,
+                    ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: controller.chatRooms.length,
+                      itemBuilder: (context, index) {
+                        final chatRoom = controller.chatRooms[index];
+                        return _GroupTile(chatRoom: chatRoom);
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
         ],
       ),
@@ -105,7 +126,9 @@ class _GroupTile extends StatelessWidget {
         tripModel: trip,
         title: trip.title ?? '',
         subtitle: subtitle,
-        timestamp: DateFormat('dd MMM, hh:mma').format(chatRoom.updatedAt.toDate()),
+        timestamp: DateFormat(
+          'dd MMM, hh:mma',
+        ).format(chatRoom.updatedAt.toDate()),
         memberImages: chatRoom.users.map((e) => e.profileImage).toList(),
         extraMembers: extraMembers,
       ),

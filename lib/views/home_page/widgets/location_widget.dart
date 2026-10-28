@@ -150,6 +150,9 @@ class LocationWidget extends StatelessWidget {
             right: 20.w,
             child: GestureDetector(
               onTap: () async {
+                if (GlobalVariables.addingToFavourites.value == tripModel.id) {
+                  return;
+                }
                 try {
                   final userId = GlobalVariables.loggedInUser.value?.uid;
                   if (userId == null) {
@@ -166,15 +169,15 @@ class LocationWidget extends StatelessWidget {
                           .contains(tripModel.id) ??
                       false;
 
-                  final saved = await FirebaseTripService.toggleTripFavorite(
+                  final saved = await FirebaseTripService.setTripFavorite(
                     tripId: tripModel.id,
                     userId: userId,
-                    isFavorite: isCurrentlyFavorite,
+                    shouldFavorite: !isCurrentlyFavorite,
                   );
-                  if (saved) {
+                  if (saved?.changed == true) {
                     RecommendationRuntime.service.observe(
                       tripModel,
-                      isCurrentlyFavorite ? 'unfavorite' : 'favorite',
+                      saved!.favorite ? 'favorite' : 'unfavorite',
                     );
                   }
 

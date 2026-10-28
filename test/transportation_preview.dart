@@ -27,25 +27,18 @@ class _PreviewState extends State<Preview> {
   final entries = <TransportationModel>[
     TransportationModel.fromMap('flight', 'preview', {
       'userId': 'owner',
-      'transportTitle': 'Flight to Tokyo',
-      'airlineName': 'Example Air',
-      'flightNumber': 'TC123',
-      'departureAirport': 'Los Angeles',
-      'arrivalAirport': 'Tokyo Narita',
-      'departureDate': '2027-04-10T10:00:00-07:00',
-      'arrivalDate': '2027-04-11T14:00:00+09:00',
-      'notes':
-          'Example Air TC123 — Los Angeles to Tokyo Narita. Randy and Alex.',
-    }, source: TransportationSource.flight),
+      'displayName': 'Randy',
+      'mode': 'flight',
+      'departure': '2027-04-10T10:00:00-07:00',
+      'arrival': '2027-04-11T14:00:00+09:00',
+      'notes': 'Example Air TC123 — Los Angeles to Tokyo. Randy and Alex.',
+      'revision': 1,
+    }),
     const TransportationModel(
       id: 'ride',
       tripId: 'preview',
       userId: 'owner',
       mode: TransportationMode.rideshare,
-      title: 'Airport transfer',
-      provider: 'Uber',
-      origin: 'Narita Airport',
-      destination: 'Hotel',
       notes: 'Uber from Narita Airport to hotel. Meet at arrivals',
     ),
     const TransportationModel(

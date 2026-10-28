@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/main.dart';
@@ -160,10 +161,16 @@ class NotificationNavigation {
       } else {
         unawaited(Get.toNamed(kNotificationScreenRoute));
       }
-    } catch (_) {
+    } catch (error) {
+      final unavailable =
+          error is StateError ||
+          (error is FirebaseException &&
+              (error.code == 'permission-denied' || error.code == 'not-found'));
       showCustomSnackBar(
         content:
-            'This content is no longer available or you no longer have access.',
+            unavailable
+                ? 'This content is no longer available or you no longer have access.'
+                : 'Unable to open this content. Check your connection and retry.',
       );
     } finally {
       _opening = false;

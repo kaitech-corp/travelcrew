@@ -1,6 +1,7 @@
 import 'package:travel_crew/utils/travel_time.dart';
 import 'dart:async';
 import 'package:travel_crew/models/lodging_model.dart';
+import 'package:travel_crew/models/finance_amount.dart';
 import 'package:travel_crew/services/lodging_service.dart';
 import 'package:travel_crew/services/trip_invitation_service.dart';
 import '../invite_travelers_dialog.dart';
@@ -11,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:travel_crew/models/activity_model.dart';
 import 'package:travel_crew/models/trip_discovery_model.dart';
 import 'package:travel_crew/models/trip_model.dart';
-import 'package:travel_crew/models/user_flight_model.dart';
 import 'package:travel_crew/services/expense_service.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/services/geo_services.dart';
@@ -27,12 +27,35 @@ import '../../../../../models/search_model.dart';
 class SpecificTripViewController extends GetxController
     with GetSingleTickerProviderStateMixin {
   SpecificTripViewController({
-    Future<bool> Function({required String id, String? tripId})? deleteActivity,
-  }) : _deleteActivity = deleteActivity ?? FirebaseTripService.deleteActivity;
+    Future<bool> Function({
+      required String id,
+      String? tripId,
+      required int expectedRevision,
+    })?
+    deleteActivity,
+    Future<TripModel?> Function({required String tripId})? loadTrip,
+    Future<bool> Function({required String tripId, required String userId})?
+    checkTripMember,
+  }) : _deleteActivity = deleteActivity ?? FirebaseTripService.deleteActivity,
+       _loadTrip = loadTrip ?? FirebaseTripService.getTripById,
+       _checkTripMember = checkTripMember ?? FirebaseTripService.isTripMember;
 
-  final Future<bool> Function({required String id, String? tripId})
+  final Future<bool> Function({
+    required String id,
+    String? tripId,
+    required int expectedRevision,
+  })
   _deleteActivity;
+  final Future<TripModel?> Function({required String tripId}) _loadTrip;
+  final Future<bool> Function({required String tripId, required String userId})
+  _checkTripMember;
   final Set<String> _deletingActivities = {};
+
+  bool canManageActivity(ActivityModel activity) {
+    final uid = GlobalVariables.currentUid;
+    return uid.isNotEmpty &&
+        (uid == tripModel.value?.createdBy || uid == activity.createdBy);
+  }
 
   Future<bool> removeActivity(ActivityModel activity) async {
     final trip = tripModel.value;
@@ -40,12 +63,16 @@ class SpecificTripViewController extends GetxController
     if (trip == null ||
         id == null ||
         id.isEmpty ||
-        !GlobalVariables.isLoggedInUser(trip.createdBy) ||
+        !canManageActivity(activity) ||
         !_deletingActivities.add(id)) {
       return false;
     }
     try {
-      final success = await _deleteActivity(id: id, tripId: trip.id);
+      final success = await _deleteActivity(
+        id: id,
+        tripId: activity.isLegacy ? null : trip.id,
+        expectedRevision: activity.contentRevision,
+      );
       if (success) {
         trip.activities?.removeWhere((item) => item.id == id);
         tripModel.refresh();
@@ -66,6 +93,9 @@ class SpecificTripViewController extends GetxController
   RxBool isLiked = false.obs;
   Rxn<TripModel> tripModel = Rxn<TripModel>();
   Rxn<TripDiscoveryModel> discoveryModel = Rxn<TripDiscoveryModel>();
+  final RxBool isLoadingTrip = false.obs;
+  final RxnString tripLoadError = RxnString();
+  int _initializationVersion = 0;
   RxString joinRequestStatus = ''.obs;
   String joinAttemptId = 'legacy';
   StreamSubscription<JoinRequestModel?>? _joinRequestSubscription;
@@ -78,16 +108,6 @@ class SpecificTripViewController extends GetxController
     'Activities',
   ];
   final selectedTabIndex = 0.obs;
-
-  // Flight form state
-  final TextEditingController flightAirlineController = TextEditingController();
-  final TextEditingController flightNumberController = TextEditingController();
-  final TextEditingController flightDepartureAirportController =
-      TextEditingController();
-  final TextEditingController flightArrivalAirportController =
-      TextEditingController();
-  final Rxn<DateTime> flightDepartureDate = Rxn<DateTime>();
-  final Rxn<DateTime> flightArrivalDate = Rxn<DateTime>();
 
   List<Settlement> get optimalSettlements =>
       tripModel.value != null
@@ -113,26 +133,44 @@ class SpecificTripViewController extends GetxController
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    ever(tripModel, (TripModel? trip) {
-      if (trip != null && trip.flights == null) {
-        loadFlights();
+  Future<void> initializeFromArgument(dynamic argument) async {
+    final version = ++_initializationVersion;
+    final accountUid = GlobalVariables.currentUid;
+    isLoadingTrip.value = true;
+    tripLoadError.value = null;
+    try {
+      await _initializeFromArgument(argument, version);
+    } catch (error) {
+      AppLogger.warning('Unable to load trip details: ${error.runtimeType}');
+      if (version == _initializationVersion &&
+          accountUid == GlobalVariables.currentUid) {
+        tripLoadError.value =
+            'Unable to load trip. Check your connection and retry.';
       }
-    });
+    } finally {
+      if (version == _initializationVersion) isLoadingTrip.value = false;
+    }
   }
 
-  Future<void> initializeFromArgument(dynamic argument) async {
+  Future<void> _initializeFromArgument(dynamic argument, int version) async {
     final argumentKey = _argumentKey(argument);
     _initializedArgumentKey = argumentKey;
     await _joinRequestSubscription?.cancel();
+    if (version != _initializationVersion) return;
     _joinRequestSubscription = null;
     tripModel.value = null;
     discoveryModel.value = null;
     joinRequestStatus.value = '';
     if (argument is TripModel) {
-      tripModel.value = argument;
+      final uid = GlobalVariables.currentUid;
+      if (uid.isEmpty) return;
+      final loaded = await _loadTrip(tripId: argument.id);
+      if (version != _initializationVersion ||
+          uid != GlobalVariables.currentUid) {
+        return;
+      }
+      tripModel.value = loaded;
+      if (loaded == null) tripLoadError.value = 'Trip unavailable.';
       return;
     }
     if (argument is TripDiscoveryModel) {
@@ -140,19 +178,30 @@ class SpecificTripViewController extends GetxController
       final uid = GlobalVariables.loggedInUser.value?.uid;
       if (uid == null) return;
       final isCreator = argument.createdBy == uid;
-      final isMember = await FirebaseTripService.isTripMember(
-        tripId: argument.id,
-        userId: uid,
-      );
+      final isMember =
+          !isCreator &&
+          await _checkTripMember(tripId: argument.id, userId: uid);
+      if (version != _initializationVersion ||
+          uid != GlobalVariables.currentUid) {
+        return;
+      }
       if (isCreator || isMember) {
-        tripModel.value = await FirebaseTripService.getTripById(
-          tripId: argument.id,
-        );
+        final loaded = await _loadTrip(tripId: argument.id);
+        if (version != _initializationVersion ||
+            uid != GlobalVariables.currentUid) {
+          return;
+        }
+        tripModel.value = loaded;
+        if (loaded == null) tripLoadError.value = 'Trip unavailable.';
       } else {
         final request = await FirebaseTripService.getJoinRequest(
           tripId: argument.id,
           userId: uid,
         );
+        if (version != _initializationVersion ||
+            uid != GlobalVariables.currentUid) {
+          return;
+        }
         joinRequestStatus.value = request?.status ?? '';
         joinAttemptId = request?.attemptId ?? 'legacy';
         _joinRequestSubscription = FirebaseTripService.watchJoinRequest(
@@ -164,24 +213,39 @@ class SpecificTripViewController extends GetxController
                 GlobalVariables.currentUid != uid) {
               return;
             }
-            joinRequestStatus.value = current?.status ?? '';
-            joinAttemptId = current?.attemptId ?? 'legacy';
-            if (current?.status == 'accepted' &&
-                await FirebaseTripService.isTripMember(
-                  tripId: argument.id,
-                  userId: uid,
-                )) {
-              final joined = await FirebaseTripService.getTripById(
-                tripId: argument.id,
+            try {
+              joinRequestStatus.value = current?.status ?? '';
+              joinAttemptId = current?.attemptId ?? 'legacy';
+              if (current?.status == 'accepted' &&
+                  await _checkTripMember(tripId: argument.id, userId: uid)) {
+                final joined = await _loadTrip(tripId: argument.id);
+                if (_initializedArgumentKey == argumentKey &&
+                    GlobalVariables.currentUid == uid) {
+                  tripModel.value = joined;
+                  tripLoadError.value =
+                      joined == null ? 'Trip unavailable.' : null;
+                }
+              }
+            } catch (error) {
+              AppLogger.warning(
+                'Unable to refresh accepted trip: ${error.runtimeType}',
               );
               if (_initializedArgumentKey == argumentKey &&
                   GlobalVariables.currentUid == uid) {
-                tripModel.value = joined;
+                tripLoadError.value =
+                    'Unable to load trip. Check your connection and retry.';
               }
             }
           },
           onError: (Object error) {
-            AppLogger.warning('Unable to refresh join request: $error');
+            AppLogger.warning(
+              'Unable to refresh join request: ${error.runtimeType}',
+            );
+            if (_initializedArgumentKey == argumentKey &&
+                GlobalVariables.currentUid == uid) {
+              tripLoadError.value =
+                  'Unable to load trip. Check your connection and retry.';
+            }
           },
         );
       }
@@ -223,13 +287,23 @@ class SpecificTripViewController extends GetxController
         recommendation: trip.recommendation,
       );
       if (success) {
-        final request = await FirebaseTripService.getJoinRequest(
-          tripId: trip.id,
-          userId: uid,
-        );
-        joinRequestStatus.value = request?.status ?? '';
-        joinAttemptId = request?.attemptId ?? 'legacy';
-        showCustomSnackBar(content: 'Request sent to the trip creator');
+        try {
+          final request = await FirebaseTripService.getJoinRequest(
+            tripId: trip.id,
+            userId: uid,
+          );
+          joinRequestStatus.value = request?.status ?? '';
+          joinAttemptId = request?.attemptId ?? 'legacy';
+          showCustomSnackBar(content: 'Request sent to the trip creator');
+        } catch (error) {
+          AppLogger.warning(
+            'Join request sent but status unavailable: ${error.runtimeType}',
+          );
+          showCustomSnackBar(
+            content:
+                'Request sent, but status could not load. Reopen the trip.',
+          );
+        }
       } else {
         showCustomSnackBar(content: 'Failed to send request');
       }
@@ -284,6 +358,14 @@ class SpecificTripViewController extends GetxController
       } else {
         showCustomSnackBar(content: 'Failed to accept request');
       }
+    } catch (error) {
+      AppLogger.warning(
+        'Unable to refresh accepted trip: ${error.runtimeType}',
+      );
+      showCustomSnackBar(
+        content:
+            'Request may be accepted, but the trip could not refresh. Reopen it.',
+      );
     } finally {
       GlobalVariables.showLoader.value = false;
     }
@@ -311,11 +393,8 @@ class SpecificTripViewController extends GetxController
 
   @override
   void onClose() {
+    _initializationVersion++;
     _joinRequestSubscription?.cancel();
-    flightAirlineController.dispose();
-    flightNumberController.dispose();
-    flightDepartureAirportController.dispose();
-    flightArrivalAirportController.dispose();
     lodgingCostController.dispose();
     lodgingTypeController.dispose();
     lodgingHotelNameController.dispose();
@@ -329,88 +408,6 @@ class SpecificTripViewController extends GetxController
     activityNoteFocusNode.dispose();
     locationFocusNode.dispose();
     super.onClose();
-  }
-
-  void clearFlightForm() {
-    flightAirlineController.clear();
-    flightNumberController.clear();
-    flightDepartureAirportController.clear();
-    flightArrivalAirportController.clear();
-    flightDepartureDate.value = null;
-    flightArrivalDate.value = null;
-  }
-
-  Future<void> loadFlights() async {
-    final tripId = tripModel.value?.id;
-    if (tripId == null) return;
-    final flights = await FirebaseTripService.getTripFlights(tripId: tripId);
-    tripModel.value?.flights = flights;
-    tripModel.refresh();
-  }
-
-  Future<void> addFlight() async {
-    final tripId = tripModel.value?.id;
-    if (tripId == null) {
-      showCustomSnackBar(content: 'Trip not found');
-      return;
-    }
-    try {
-      GlobalVariables.showLoader.value = true;
-      final flight = UserFlightModel(
-        id: const Uuid().v6(),
-        tripId: tripId,
-        userId: GlobalVariables.currentUid,
-        displayName: GlobalVariables.loggedInUser.value?.displayName,
-        airlineName:
-            flightAirlineController.text.trim().isEmpty
-                ? null
-                : flightAirlineController.text.trim(),
-        flightNumber:
-            flightNumberController.text.trim().isEmpty
-                ? null
-                : flightNumberController.text.trim(),
-        departureAirport:
-            flightDepartureAirportController.text.trim().isEmpty
-                ? null
-                : flightDepartureAirportController.text.trim(),
-        arrivalAirport:
-            flightArrivalAirportController.text.trim().isEmpty
-                ? null
-                : flightArrivalAirportController.text.trim(),
-        departureDate: flightDepartureDate.value,
-        arrivalDate: flightArrivalDate.value,
-      );
-      final success = await FirebaseTripService.addFlight(flight: flight);
-      if (success) {
-        tripModel.value?.flights ??= [];
-        tripModel.value?.flights?.add(flight);
-        tripModel.refresh();
-        Get.back();
-        // showCustomSnackBar(content: 'Flight added');
-      }
-    } catch (e) {
-      showCustomSnackBar(content: 'Failed to add flight');
-    } finally {
-      GlobalVariables.showLoader.value = false;
-    }
-  }
-
-  Future<void> deleteFlight(String id) async {
-    try {
-      GlobalVariables.showLoader.value = true;
-      final success = await FirebaseTripService.deleteFlight(
-        id: id,
-        tripId: tripModel.value?.id,
-      );
-      if (success) {
-        tripModel.value?.flights?.removeWhere((f) => f.id == id);
-        tripModel.refresh();
-      }
-    } catch (e) {
-      showCustomSnackBar(content: 'Failed to delete flight');
-    } finally {
-      GlobalVariables.showLoader.value = false;
-    }
   }
 
   TextEditingController activityNoteController = TextEditingController(),
@@ -438,6 +435,7 @@ class SpecificTripViewController extends GetxController
 
   LodgingModel? editingLodging;
   final lodgingCostController = TextEditingController();
+  final RxnString lodgingCurrencyCode = RxnString();
 
   void initLodgingForm([LodgingModel? option]) {
     editingLodging = option;
@@ -446,7 +444,14 @@ class SpecificTripViewController extends GetxController
     lodgingAddressController.text = option?.hotelAddress ?? '';
     lodgingCheckIn.value = option?.checkInDate;
     lodgingCheckOut.value = option?.checkOutDate;
-    lodgingCostController.text = option?.expensePerNight?.toString() ?? '';
+    final nightlyCost = option?.expensePerNight;
+    lodgingCostController.text =
+        nightlyCost == null
+            ? ''
+            : nightlyCost == nightlyCost.truncateToDouble()
+            ? nightlyCost.toInt().toString()
+            : nightlyCost.toString();
+    lodgingCurrencyCode.value = option?.currencyCode;
     searchText.value = option?.hotelAddress ?? '';
     locations.clear();
   }
@@ -489,13 +494,36 @@ class SpecificTripViewController extends GetxController
     });
   }
 
-  Future<void> saveLodging() async {
+  Future<void> saveLodging(Map<String, int>? supportedCurrencies) async {
     final trip = tripModel.value;
     if (trip == null || GlobalVariables.showLoader.value) return;
     final costText = lodgingCostController.text.trim();
     final cost = double.tryParse(costText);
-    if (costText.isNotEmpty && (cost == null || !cost.isFinite || cost < 0)) {
+    if (costText.isNotEmpty &&
+        (cost == null || !cost.isFinite || cost < 0 || cost >= 1000000000)) {
       showCustomSnackBar(content: 'Enter a valid nightly cost');
+      return;
+    }
+    final currency = cost == null ? null : lodgingCurrencyCode.value;
+    final precision = supportedCurrencies?[currency];
+    if (cost != null) {
+      if (currency == null || precision == null) {
+        showCustomSnackBar(content: 'Choose a currency for the nightly cost');
+        return;
+      }
+      try {
+        FinanceAmount.parseShareMinor(costText, precision);
+      } on FormatException {
+        showCustomSnackBar(
+          content: 'Use the selected currency’s decimal precision',
+        );
+        return;
+      }
+    }
+    if (lodgingHotelNameController.text.trim().length > 500 ||
+        lodgingAddressController.text.trim().length > 2000 ||
+        lodgingTypeController.text.trim().length > 100) {
+      showCustomSnackBar(content: 'Lodging details are too long');
       return;
     }
     if (lodgingHotelNameController.text.trim().isEmpty &&
@@ -503,17 +531,24 @@ class SpecificTripViewController extends GetxController
       showCustomSnackBar(content: 'Enter a lodging name or address');
       return;
     }
+    if ((lodgingCheckIn.value == null) != (lodgingCheckOut.value == null)) {
+      showCustomSnackBar(content: 'Set both check-in and check-out');
+      return;
+    }
     if (lodgingCheckIn.value != null &&
         lodgingCheckOut.value != null &&
-        !TravelTime.instant(
-          lodgingCheckOut.value,
-          editingLodging?.timeOffsets['checkOutDate'],
-        )!.isAfter(
-          TravelTime.instant(
-            lodgingCheckIn.value,
-            editingLodging?.timeOffsets['checkInDate'],
-          )!,
-        )) {
+        TravelTime.serialize(
+                  lodgingCheckOut.value,
+                  editingLodging?.timeOffsets['checkOutDate'],
+                )!
+                .substring(0, 16)
+                .compareTo(
+                  TravelTime.serialize(
+                    lodgingCheckIn.value,
+                    editingLodging?.timeOffsets['checkInDate'],
+                  )!.substring(0, 16),
+                ) <=
+            0) {
       showCustomSnackBar(content: 'Check-out must be after check-in');
       return;
     }
@@ -527,21 +562,22 @@ class SpecificTripViewController extends GetxController
       checkInDate: lodgingCheckIn.value,
       checkOutDate: lodgingCheckOut.value,
       expensePerNight: cost,
+      currencyCode: currency,
+      revision: editingLodging?.revision ?? 0,
     );
     try {
       GlobalVariables.showLoader.value = true;
       if (option.id == 'legacy') {
-        final data = option.toMap()..remove('createdBy');
-        if (!await FirebaseTripService.updateTrip(
-          tripId: trip.id,
-          data: data,
-        )) {
-          throw StateError('Save failed');
-        }
+        await LodgingService.saveLegacy(trip.id, editingLodging!, option);
+        final data =
+            option.toMap()
+              ..remove('createdBy')
+              ..remove('revision')
+              ..remove('isDeleted');
+        data['lodgingCurrencyCode'] = data.remove('currencyCode');
         final updated = TripModel.fromMap({...trip.toMap(), ...data});
         updated.createdByUser = trip.createdByUser;
         updated.joindUsersList = trip.joindUsersList;
-        updated.flights = trip.flights;
         tripModel.value = updated;
         updateTripOverAll(updated);
       } else {
@@ -552,10 +588,29 @@ class SpecificTripViewController extends GetxController
         );
       }
       Get.back();
-    } catch (_) {
-      showCustomSnackBar(content: 'Unable to save lodging. Please try again.');
+    } catch (error) {
+      showCustomSnackBar(
+        content:
+            error is StateError && error.message.contains('changed')
+                ? 'Lodging changed on another device. Reopen it before saving.'
+                : 'Unable to save lodging. Please try again.',
+      );
     } finally {
       GlobalVariables.showLoader.value = false;
+    }
+  }
+
+  Future<bool> refreshLegacyLodgingAfterDelete() async {
+    final trip = tripModel.value;
+    if (trip == null) return false;
+    try {
+      final refreshed = await FirebaseTripService.getTripById(tripId: trip.id);
+      if (refreshed == null) return false;
+      tripModel.value = refreshed;
+      updateTripOverAll(refreshed);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -613,36 +668,32 @@ class SpecificTripViewController extends GetxController
     bool isLiked = false,
   }) async {
     try {
-      await FirebaseTripService.likeActivity(
+      final activityIndex =
+          tripModel.value?.activities?.indexWhere(
+            (item) => item.id == activityId,
+          ) ??
+          -1;
+      if (activityIndex < 0) return;
+      final activity = tripModel.value!.activities![activityIndex];
+      final vote = await FirebaseTripService.likeActivity(
         activityId: activityId,
         isLiked: isLiked,
         userId: GlobalVariables.loggedInUser.value?.uid ?? '',
-        tripId: tripModel.value?.id,
-      ).then((value) {
-        if (value) {
-          if (isLiked) {
-            tripModel.value?.activities
-                ?.firstWhere((element) => element.id == activityId)
-                .likedBy
-                .remove(GlobalVariables.currentUid);
-            tripModel.value?.activities
-                ?.firstWhere((element) => element.id == activityId)
-                .likesCount--;
-          } else {
-            tripModel.value?.activities
-                ?.firstWhere((element) => element.id == activityId)
-                .likedBy
-                .add(GlobalVariables.currentUid);
-            tripModel.value?.activities
-                ?.firstWhere((element) => element.id == activityId)
-                .likesCount++;
-          }
-        } else {
-          showCustomSnackBar(content: 'Failed to like activity');
-        }
-        tripModel.refresh();
-        updateTripOverAll(tripModel.value!);
-      });
+        tripId: activity.isLegacy ? null : tripModel.value?.id,
+      );
+      if (vote == null) {
+        showCustomSnackBar(content: 'Failed to like activity');
+        return;
+      }
+      final trip = tripModel.value;
+      if (trip == null) return;
+      final index =
+          trip.activities?.indexWhere((item) => item.id == activityId) ?? -1;
+      if (index < 0) return;
+      trip.activities![index].likedBy = vote.likedBy;
+      trip.activities![index].likesCount = vote.likesCount;
+      tripModel.refresh();
+      updateTripOverAll(trip);
     } catch (e) {
       debugPrint('Failed to like activity: $e');
     }
@@ -650,10 +701,16 @@ class SpecificTripViewController extends GetxController
 
   Future<void> addActivity() async {
     try {
-      if (activityEndTime.value == null || activityStartTime.value == null) {
-        showCustomSnackBar(
-          content: 'Please select start and end date and time',
-        );
+      final scheduleError = ActivityModel.scheduleError(
+        activityStartTime.value,
+        activityEndTime.value,
+      );
+      if (scheduleError != null) {
+        showCustomSnackBar(content: scheduleError);
+        return;
+      }
+      if (activityNameController.text.trim().isEmpty) {
+        showCustomSnackBar(content: 'Enter an activity name');
         return;
       }
       final args = Get.arguments as Map<String, dynamic>? ?? {};
@@ -668,6 +725,12 @@ class SpecificTripViewController extends GetxController
           args['activity'] as ActivityModel?;
       GlobalVariables.showLoader.value = true;
       final ActivityModel activityModel = ActivityModel(
+        isLegacy: !toAdd && existingActivity?.isLegacy == true,
+        contentRevision: toAdd ? 1 : (existingActivity?.contentRevision ?? 0),
+        createdBy:
+            toAdd
+                ? GlobalVariables.currentUid
+                : (existingActivity?.createdBy ?? ''),
         timeOffsets:
             toAdd ? const {} : (existingActivity?.timeOffsets ?? const {}),
         id:
@@ -675,10 +738,10 @@ class SpecificTripViewController extends GetxController
                 ? const Uuid().v6()
                 : (existingActivity?.id ?? const Uuid().v6()),
         tripId: tripId,
-        title: activityNameController.text,
+        title: activityNameController.text.trim(),
         location: locationController.text,
-        startDateTime: activityStartTime.value ?? DateTime.now(),
-        endDateTime: activityEndTime.value ?? DateTime.now(),
+        startDateTime: activityStartTime.value,
+        endDateTime: activityEndTime.value,
         description: activityNoteController.text,
         likedBy: toAdd ? [] : (existingActivity?.likedBy ?? []),
         likesCount: toAdd ? 0 : (existingActivity?.likesCount ?? 0),
@@ -831,10 +894,11 @@ class SpecificTripViewController extends GetxController
             (userId, requestId) =>
                 TripInvitationService.send(trip.id, userId, requestId),
         sendEmail:
-            (email) => FirebaseTripService.sendTripInvites(
+            (email, requestId) => FirebaseTripService.sendTripInvites(
               tripId: trip.id,
               tripTitle: trip.title ?? trip.destination,
               emails: [email],
+              requestId: requestId,
             ),
       ),
       barrierDismissible: false,

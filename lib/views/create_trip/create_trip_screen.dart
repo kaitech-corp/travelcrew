@@ -24,6 +24,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formStep1Key = GlobalKey<FormState>();
   late final Object? _routeArguments;
+  bool _restoring = true;
 
   bool get _isEditing => _routeArguments is TripModel;
 
@@ -31,14 +32,40 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   void initState() {
     super.initState();
     _routeArguments = Get.arguments;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final arguments = _routeArguments;
       if (arguments is TripModel) {
         controller.tripModel.value = arguments;
         controller.setAllValuesToEdit();
-      } else if (arguments is Map<String, dynamic>) {
+        if (mounted) setState(() => _restoring = false);
+        return;
+      }
+      try {
+        final recovered = await controller.restorePendingTrip();
+        if (!mounted) return;
+        if (recovered) {
+          showCustomSnackBar(
+            content:
+                arguments is Map<String, dynamic>
+                    ? 'Finish the earlier trip save first. The new import was not loaded.'
+                    : 'An unfinished trip save was recovered. Tap Finish Trip to retry.',
+          );
+          setState(() => _restoring = false);
+          return;
+        }
+      } catch (_) {
+        if (!mounted) return;
+        showCustomSnackBar(
+          content:
+              'Could not read the unfinished trip save. Reopen this screen to retry recovery.',
+        );
+        Get.back();
+        return;
+      }
+      if (arguments is Map<String, dynamic>) {
         controller.setFromImport(arguments);
       }
+      if (mounted) setState(() => _restoring = false);
     });
   }
 
@@ -60,6 +87,14 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       actions: [
         GestureDetector(
           onTap: () async {
+            if (_restoring) return;
+            if (controller.hasPendingCreatedTrip.value) {
+              showCustomSnackBar(
+                content:
+                    'Finish saving this trip before importing another itinerary.',
+              );
+              return;
+            }
             final importedData = await Get.toNamed(
               kImportTripScreenRoute,
               arguments: {'returnToCreate': true},
@@ -84,35 +119,67 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
           children: [
             // SizedBox(height: 30.h),
             SizedBox(height: 10.h),
-            _buildCurrentStep(),
+            Obx(
+              () =>
+                  controller.hasPendingCreatedTrip.value
+                      ? const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          'Trip save is unfinished. Tap Finish Trip to check and retry pending expenses.',
+                        ),
+                      )
+                      : const SizedBox.shrink(),
+            ),
+            Obx(
+              () => IgnorePointer(
+                ignoring: controller.hasPendingCreatedTrip.value,
+                child: Opacity(
+                  opacity: controller.hasPendingCreatedTrip.value ? 0.55 : 1,
+                  child: _buildCurrentStep(),
+                ),
+              ),
+            ),
           ],
         ),
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(20.r),
-        child: CustomElevatedButton(
-          width: Get.width,
-          title: _isEditing ? l10n.updateTrip : l10n.createTrip,
-          onPressed: () async {
-            if (_formStep1Key.currentState!.validate()) {
-              if (controller.selectedPlaceId.isEmpty) {
-                showCustomSnackBar(content: 'Please select a location');
-                return;
-              }
-              if (controller.startDate.value == null ||
-                  controller.endDate.value == null) {
-                showCustomSnackBar(content: 'Please select a date');
-                return;
-              }
-              if (!_isEditing) {
+        child: Obx(() {
+          final pending = controller.hasPendingCreatedTrip.value;
+          return CustomElevatedButton(
+            isDisabled: _restoring,
+            width: Get.width,
+            title:
+                _isEditing
+                    ? l10n.updateTrip
+                    : pending
+                    ? 'Finish Trip'
+                    : l10n.createTrip,
+            onPressed: () async {
+              if (!_isEditing && pending) {
                 await controller.submitTrip();
-              } else {
-                await controller.updateTrip();
+                return;
               }
-            }
-          },
-          height: 52.02.h,
-        ),
+              if (_formStep1Key.currentState!.validate()) {
+                if (controller.selectedPlaceId.isEmpty) {
+                  showCustomSnackBar(content: 'Please select a location');
+                  return;
+                }
+                if (controller.startDate.value == null ||
+                    controller.endDate.value == null) {
+                  showCustomSnackBar(content: 'Please select a date');
+                  return;
+                }
+                if (!_isEditing) {
+                  await controller.submitTrip();
+                } else {
+                  await controller.updateTrip();
+                }
+              }
+            },
+            height: 52.02.h,
+          );
+        }),
       ),
     );
   }

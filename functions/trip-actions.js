@@ -2,6 +2,7 @@ const {FieldValue} = require("firebase-admin/firestore");
 const {HttpsError} = require("firebase-functions/v2/https");
 const {validId} = require("./validation");
 const {isBlocked} = require("./safety");
+const {isTripMember} = require("./trip-membership");
 const {eventKey, inboxRef, notification} = require("./notification-data");
 const {readAttribution, attributionRef, writeOutcome} = require("./recommendations/events");
 
@@ -43,7 +44,7 @@ function createTripActions(db) {
         if (await isBlocked(db, uid, trip.createdBy, tx)) throw new HttpsError("permission-denied", "This interaction is unavailable.");
         await active(db, tx, trip.createdBy);
         if (prior.exists) return {ok: true, attemptId: joinDoc.data()?.attemptId || attemptId, status: joinDoc.data()?.status || "cancelled"};
-        if (trip.createdBy === uid || (trip.joinedUsers || []).includes(uid) || member.data()?.status === "active") throw new HttpsError("failed-precondition", "Already a trip member.");
+        if (isTripMember(trip, uid, member.data())) throw new HttpsError("failed-precondition", "Already a trip member.");
         if (!trip.isShared && !card.data()?.isDiscoverable) throw new HttpsError("permission-denied", "This trip is unavailable.");
         if (joinDoc.data()?.status === "pending") {
           // Remember an alias too: a retry of this concurrent request must not
@@ -117,7 +118,7 @@ function createTripActions(db) {
         if (!trip || trip.createdBy === uid) throw new HttpsError("failed-precondition", "The trip creator cannot leave.");
         await active(db, tx, uid);
         if ((member.data()?.attemptId || "legacy") !== membershipAttemptId) throw new HttpsError("failed-precondition", "Membership changed. Refresh before leaving.");
-        if (!(trip.joinedUsers || []).includes(uid) && member.data()?.status !== "active") return {ok: true};
+        if (!isTripMember(trip, uid, member.data())) return {ok: true};
         const blocked = await isBlocked(db, uid, trip.createdBy, tx);
         const id = eventKey("member_left", tripId, uid, member.data()?.attemptId || member.data()?.joinedAt || "legacy");
         const note = inboxRef(db, trip.createdBy, id); const existing = await tx.get(note);

@@ -17,6 +17,7 @@ import 'package:travel_crew/views/custom_widgets/custom_scaffold.dart';
 import 'package:travel_crew/views/custom_widgets/read_more_text.dart';
 import 'package:travel_crew/views/messages/users/controller/users_controller.dart';
 import 'package:travel_crew/views/messages/users/widget/users_widget.dart';
+import 'package:travel_crew/views/messages/users/widget/chat_room_load_error.dart';
 import 'package:travel_crew/views/notification/controller/notification_controller.dart';
 
 class InboxScreen extends StatefulWidget {
@@ -74,6 +75,8 @@ class _MessagesTab extends StatelessWidget {
       children: [
         SizedBox(height: 12.h),
         TextField(
+          controller: controller.inboxSearchController,
+          onChanged: (value) => controller.inboxSearch.value = value,
           style: AppStyles.labelTextStyle().copyWith(
             fontSize: AppStyles.fontSize14,
             color: const Color(0xFF333333),
@@ -109,73 +112,99 @@ class _MessagesTab extends StatelessWidget {
         SizedBox(height: 10.h),
         Expanded(
           child: Obx(() {
-            final rooms =
-                controller.chatRooms
-                    .where(
-                      (room) =>
-                          room.trip != null &&
-                          room.trip?.tripStatus != 'deleted',
-                    )
-                    .toList();
-            return controller.isLoadingChats.isTrue
-                ? const Center(child: CircularProgressIndicator())
-                : rooms.isEmpty
-                ? Center(child: Text(l10n.noChatsFound))
-                : ListView.separated(
-                  itemCount: rooms.length,
-                  separatorBuilder: (_, _) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final room = rooms[index];
-                    final trip = room.trip;
-                    if (trip == null) return const SizedBox.shrink();
-                    return StreamBuilder<
-                      DocumentSnapshot<Map<String, dynamic>>
-                    >(
-                      stream: ChatActivityService.watch(room.roomId),
-                      builder: (context, snapshot) {
-                        final data = snapshot.data?.data();
-                        final unread =
-                            (data?['lastMessageAt'] as num? ?? 0) >
-                            ((data?['readAt'] as Timestamp?)
-                                    ?.millisecondsSinceEpoch ??
-                                0);
-                        final sender = data?['lastSenderId'] as String? ?? '';
-                        return Stack(
-                          children: [
-                            UsersWidget(
-                              imageUrl: trip.images.firstOrNull ?? '',
-                              tripModel: trip,
-                              title: room.trip?.title ?? '',
-                              subtitle:
-                                  '${DateFormat('dd MMM').format(room.trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(room.trip?.tripEndDate ?? DateTime.now())}',
-                              timestamp: DateFormat(
-                                'dd MMM, hh:mma',
-                              ).format(room.updatedAt.toDate()),
-                              memberImages:
-                                  room.users
-                                      .map((e) => e.profileImage.toString())
-                                      .toList(),
-                              extraMembers:
-                                  room.users.length > 3
-                                      ? room.users.length - 3
-                                      : 0,
-                            ),
-                            if (unread && !SafetyService.hides(sender))
-                              const Positioned(
-                                right: 4,
-                                top: 4,
-                                child: Icon(
-                                  Icons.circle,
-                                  size: 10,
-                                  color: AppColors.kPrimaryColor,
-                                ),
-                              ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+            final rooms = controller.visibleChatRooms(
+              controller.inboxSearch.value,
+            );
+            final error = controller.chatRoomsError.value;
+            if (controller.isLoadingChats.isTrue && rooms.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (rooms.isEmpty) {
+              if (controller.chatRooms.isNotEmpty) {
+                return Column(
+                  children: [
+                    if (error != null)
+                      ChatRoomLoadError(
+                        message: error,
+                        onRetry: controller.loadChatRooms,
+                      ),
+                    Expanded(child: Center(child: Text(l10n.noChatsFound))),
+                  ],
                 );
+              }
+              return error == null
+                  ? Center(child: Text(l10n.noChatsFound))
+                  : Center(
+                    child: ChatRoomLoadError(
+                      message: error,
+                      onRetry: controller.loadChatRooms,
+                    ),
+                  );
+            }
+            return Column(
+              children: [
+                if (error != null)
+                  ChatRoomLoadError(
+                    message: error,
+                    onRetry: controller.loadChatRooms,
+                  ),
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: rooms.length,
+                    separatorBuilder: (_, _) => const Divider(),
+                    itemBuilder: (context, index) {
+                      final room = rooms[index];
+                      final trip = room.trip;
+                      if (trip == null) return const SizedBox.shrink();
+                      return StreamBuilder<
+                        DocumentSnapshot<Map<String, dynamic>>
+                      >(
+                        stream: ChatActivityService.watch(room.roomId),
+                        builder: (context, snapshot) {
+                          final data = snapshot.data?.data();
+                          final unread = ChatActivityService.hasUnreadMessage(
+                            data,
+                          );
+                          final sender = data?['lastSenderId'] as String? ?? '';
+                          return Stack(
+                            children: [
+                              UsersWidget(
+                                imageUrl: trip.images.firstOrNull ?? '',
+                                tripModel: trip,
+                                title: room.trip?.title ?? '',
+                                subtitle:
+                                    '${DateFormat('dd MMM').format(room.trip?.tripStartDate ?? DateTime.now())} - ${DateFormat('dd MMM').format(room.trip?.tripEndDate ?? DateTime.now())}',
+                                timestamp: DateFormat(
+                                  'dd MMM, hh:mma',
+                                ).format(room.updatedAt.toDate()),
+                                memberImages:
+                                    room.users
+                                        .map((e) => e.profileImage.toString())
+                                        .toList(),
+                                extraMembers:
+                                    room.users.length > 3
+                                        ? room.users.length - 3
+                                        : 0,
+                              ),
+                              if (unread && !SafetyService.hides(sender))
+                                const Positioned(
+                                  right: 4,
+                                  top: 4,
+                                  child: Icon(
+                                    Icons.circle,
+                                    size: 10,
+                                    color: AppColors.kPrimaryColor,
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
           }),
         ),
       ],

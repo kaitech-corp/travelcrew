@@ -1,19 +1,15 @@
-import 'package:travel_crew/services/notifications/chat_activity_service.dart';
 import 'package:travel_crew/services/safety_service.dart';
 import 'package:travel_crew/views/safety/safety_actions.dart';
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:travel_crew/models/chat_module/chat_message.dart';
 import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/services/session_services.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/custom_text_button.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_images.dart';
@@ -23,6 +19,7 @@ import '../../custom_widgets/custom_scaffold.dart';
 import '../../custom_widgets/text_widget.dart';
 import 'controller/users_controller.dart';
 import 'message_widget.dart';
+import 'widget/chat_room_load_error.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -41,24 +38,25 @@ class _MessagesScreenState extends State<MessagesScreen>
   void initState() {
     super.initState();
     controller.attachMessageScrollController(_scrollController);
+    _scrollController.addListener(controller.markLoadedMessagesRead);
     WidgetsBinding.instance.addObserver(this);
-    if (controller.roomId != null) {
-      unawaited(ChatActivityService.markRead(controller.roomId!));
-    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
         controller.roomId != null &&
+        controller.messages.isNotEmpty &&
+        controller.chatRoom.value != null &&
         mounted) {
-      unawaited(ChatActivityService.markRead(controller.roomId!));
+      controller.markLoadedMessagesRead();
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scrollController.removeListener(controller.markLoadedMessagesRead);
     controller.detachMessageScrollController(_scrollController);
     unawaited(controller.stopListeningToChat());
     _scrollController.dispose();
@@ -101,78 +99,147 @@ class _MessagesScreenState extends State<MessagesScreen>
                                 !SafetyService.hides(m.createdBy),
                           )
                           .toList();
-                  if (controller.isLoadingChats.isTrue &&
+                  final loadError = controller.chatOpenError.value;
+                  final pageError = controller.earlierMessagesError.value;
+                  final hasEarlierMessages =
+                      controller.hasEarlierMessages.value;
+                  final isFetchingMore = controller.isFetchingMore.value;
+                  Widget showError(Widget content) => Column(
+                    children: [
+                      if (loadError != null)
+                        ChatRoomLoadError(
+                          message: loadError,
+                          onRetry: controller.listenToChat,
+                        ),
+                      Expanded(child: content),
+                    ],
+                  );
+                  if (controller.isOpeningChat.isTrue &&
                       (controller.chatRoom.value == null ||
                           visibleMessages.isEmpty)) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
                   if (controller.chatRoom.value == null) {
-                    return _EmptyChatState(
-                      title: 'No chat available yet',
-                      subtitle:
-                          'Open the trip chat to start coordinating with your group.',
+                    return showError(
+                      _EmptyChatState(
+                        title: 'No chat available yet',
+                        subtitle:
+                            'Open the trip chat to start coordinating with your group.',
+                      ),
                     );
                   }
 
-                  if (visibleMessages.isEmpty) {
-                    return _EmptyChatState(
-                      title: 'No messages yet',
-                      subtitle:
-                          'Be the first to share an update, plan, or question.',
+                  if (visibleMessages.isEmpty && !hasEarlierMessages) {
+                    return showError(
+                      _EmptyChatState(
+                        title: 'No messages yet',
+                        subtitle:
+                            'Be the first to share an update, plan, or question.',
+                      ),
                     );
                   }
 
-                  return ListView.builder(
-                    controller: _scrollController,
-                    padding: EdgeInsets.only(top: 8.h, bottom: 150.h),
-                    itemCount: visibleMessages.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == visibleMessages.length) {
-                        return controller.isFetchingMore
-                            ? const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(child: CircularProgressIndicator()),
-                            )
-                            : const SizedBox.shrink();
-                      }
-
-                      final message = visibleMessages[index];
-                      final previousMessage =
-                          index > 0 ? visibleMessages[index - 1] : null;
-                      final showDateSeparator =
-                          previousMessage == null ||
-                          !_isSameDay(
-                            previousMessage.createdAt.toDate(),
-                            message.createdAt.toDate(),
+                  return showError(
+                    ListView.builder(
+                      controller: _scrollController,
+                      padding: EdgeInsets.only(top: 8.h, bottom: 150.h),
+                      itemCount: visibleMessages.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          if (pageError != null) {
+                            return ChatRoomLoadError(
+                              message: pageError,
+                              onRetry: controller.loadEarlierMessages,
+                            );
+                          }
+                          if (!hasEarlierMessages) {
+                            return const SizedBox.shrink();
+                          }
+                          return Center(
+                            child: TextButton(
+                              onPressed:
+                                  isFetchingMore
+                                      ? null
+                                      : () async {
+                                        final previousMax =
+                                            _scrollController.hasClients
+                                                ? _scrollController
+                                                    .position
+                                                    .maxScrollExtent
+                                                : 0.0;
+                                        final previousOffset =
+                                            _scrollController.hasClients
+                                                ? _scrollController.offset
+                                                : 0.0;
+                                        await controller.loadEarlierMessages();
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                              if (!mounted ||
+                                                  !_scrollController
+                                                      .hasClients) {
+                                                return;
+                                              }
+                                              final position =
+                                                  _scrollController.position;
+                                              final offset =
+                                                  previousOffset +
+                                                  position.maxScrollExtent -
+                                                  previousMax;
+                                              _scrollController.jumpTo(
+                                                offset.clamp(
+                                                  position.minScrollExtent,
+                                                  position.maxScrollExtent,
+                                                ),
+                                              );
+                                            });
+                                      },
+                              child: Text(
+                                isFetchingMore
+                                    ? 'Loading earlier messages…'
+                                    : 'Load earlier messages',
+                              ),
+                            ),
                           );
+                        }
 
-                      final sender = controller.chatRoom.value!.users
-                          .firstWhere(
-                            (u) => u.id == message.createdBy,
-                            orElse:
-                                () => ChatUser(
-                                  id: message.createdBy,
-                                  unreadedMessages: 0,
-                                  name: 'Unknown',
-                                  profileImage: '',
-                                  isOnline: false,
-                                  isTyping: false,
-                                ),
-                          );
+                        final message = visibleMessages[index - 1];
+                        final previousMessage =
+                            index > 1 ? visibleMessages[index - 2] : null;
+                        final showDateSeparator =
+                            previousMessage == null ||
+                            !_isSameDay(
+                              previousMessage.createdAt.toDate(),
+                              message.createdAt.toDate(),
+                            );
 
-                      return Column(
-                        children: [
-                          if (showDateSeparator)
-                            _DateSeparator(date: message.createdAt.toDate()),
-                          MessageWidget(
-                            userModel: sender,
-                            message: message,
-                            roomId: controller.chatRoom.value!.roomId,
-                          ),
-                        ],
-                      );
-                    },
+                        final sender = controller.chatRoom.value!.users
+                            .firstWhere(
+                              (u) => u.id == message.createdBy,
+                              orElse:
+                                  () => ChatUser(
+                                    id: message.createdBy,
+                                    unreadedMessages: 0,
+                                    name: 'Unknown',
+                                    profileImage: '',
+                                    isOnline: false,
+                                    isTyping: false,
+                                  ),
+                            );
+
+                        return Column(
+                          children: [
+                            if (showDateSeparator)
+                              _DateSeparator(date: message.createdAt.toDate()),
+                            MessageWidget(
+                              userModel: sender,
+                              message: message,
+                              roomId: controller.chatRoom.value!.roomId,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   );
                 }),
               ),
@@ -193,7 +260,7 @@ class _MessagesScreenState extends State<MessagesScreen>
                               ) ??
                               false));
 
-                  if (controller.isLoadingChats.isTrue) {
+                  if (controller.isOpeningChat.isTrue) {
                     return const SizedBox.shrink();
                   }
 
@@ -205,26 +272,22 @@ class _MessagesScreenState extends State<MessagesScreen>
                     return _JoinPanel(onJoin: controller.joinRoom);
                   }
 
-                  return _ComposerBar(
-                    controller: controller,
-                    onSend: () {
-                      final text = controller.tecMessage.text.trim();
-                      if (text.isEmpty) return;
-                      CommonCode().removeTextFieldFocus();
-                      controller.saveMessage(
-                        chatToSave: ChatMessage(
-                          chateId: const Uuid().v6(),
-                          messageStatus: MessageStatus.sent.status,
-                          createdAt: Timestamp.now(),
-                          createdBy: GlobalVariables.loggedInUser.value!.uid,
-                          sentTo: controller.currentTrip.value!.id,
-                          messageType: MessageType.Text.name,
-                          data: text,
-                        ),
-                      );
+                  if (controller.chatRoom.value == null) {
+                    return const SizedBox.shrink();
+                  }
 
-                      controller.tecMessage.clear();
-                    },
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _PendingMessagesPanel(controller: controller),
+                      _ComposerBar(
+                        controller: controller,
+                        onSend: () {
+                          CommonCode().removeTextFieldFocus();
+                          unawaited(controller.sendDraftMessage());
+                        },
+                      ),
+                    ],
                   );
                 }),
               ),
@@ -473,12 +536,14 @@ class _ComposerBar extends StatelessWidget {
             child: TextField(
               onTapOutside: (event) => CommonCode().removeTextFieldFocus(),
               controller: controller.tecMessage,
+              maxLength: 4000,
               focusNode: controller.fnMessage,
               textCapitalization: TextCapitalization.sentences,
               minLines: 1,
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: 'Write a message',
+                counterText: '',
                 hintStyle: AppStyles.labelTextStyle().copyWith(
                   color: AppColors.kGreyyColor,
                   fontSize: AppStyles.fontSize14,
@@ -516,6 +581,85 @@ class _ComposerBar extends StatelessWidget {
   }
 }
 
+class _PendingMessagesPanel extends StatelessWidget {
+  const _PendingMessagesPanel({required this.controller});
+
+  final UsersController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final pending = controller.pendingMessages;
+    final status = controller.pendingChatStatus.value;
+    if (pending.isEmpty && status.isEmpty) return const SizedBox.shrink();
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(bottom: 8.h),
+        padding: EdgeInsets.all(12.r),
+        decoration: BoxDecoration(
+          color: AppColors.kWhiteColor,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: AppColors.kLightGreyColor),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              pending.isEmpty
+                  ? status
+                  : '${pending.length} message${pending.length == 1 ? '' : 's'} saved on this device',
+              style: AppStyles.labelTextStyle().copyWith(
+                fontSize: AppStyles.fontSize13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (pending.isNotEmpty) ...[
+              if (status.isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.only(top: 4.h),
+                  child: Text(status),
+                ),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 120.h),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: pending.length,
+                  itemBuilder:
+                      (context, index) => Padding(
+                        padding: EdgeInsets.only(top: 4.h),
+                        child: Text(
+                          pending[index].text,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed:
+                      controller.isRecoveringPending.value
+                          ? null
+                          : () => unawaited(controller.retryPendingMessages()),
+                  icon: const Icon(Icons.refresh),
+                  label: Text(
+                    controller.isRecoveringPending.value
+                        ? 'Retrying…'
+                        : 'Retry saved messages',
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptyChatState extends StatelessWidget {
   const _EmptyChatState({required this.title, required this.subtitle});
 
@@ -524,9 +668,11 @@ class _EmptyChatState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Scroll instead of overflowing when large text or a load error above
+    // leaves less vertical room than the illustration and copy need.
     return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 28.w),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

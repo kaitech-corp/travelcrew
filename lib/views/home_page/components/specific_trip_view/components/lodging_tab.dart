@@ -10,6 +10,20 @@ import 'package:travel_crew/utils/app_strings.dart';
 import 'package:travel_crew/utils/custom_snackbar.dart';
 import '../controller/specific_trip_view_controller.dart';
 
+String lodgingNightlyCostLabel(LodgingModel option) {
+  final amount = option.expensePerNight;
+  if (amount == null) return '';
+  final code = option.currencyCode;
+  if (code != null && RegExp(r'^[A-Z]{3}$').hasMatch(code)) {
+    try {
+      return '${NumberFormat.currency(name: code, symbol: '$code ').format(amount)} / night';
+    } on ArgumentError {
+      // Historical records may contain a code unsupported by this device.
+    }
+  }
+  return 'Cost: ${amount.toStringAsFixed(2)} / night (currency unspecified)';
+}
+
 class LodgingTab extends StatefulWidget {
   const LodgingTab({super.key, required this.controller});
   final SpecificTripViewController controller;
@@ -79,6 +93,7 @@ class _LodgingTabState extends State<LodgingTab> {
                 key: ValueKey('${trip.id}:${option.id}'),
                 tripId: trip.id,
                 option: option,
+                controller: widget.controller,
                 canEdit:
                     GlobalVariables.currentUid == trip.createdBy ||
                     GlobalVariables.currentUid == option.createdBy,
@@ -95,10 +110,12 @@ class _LodgingCard extends StatefulWidget {
     super.key,
     required this.tripId,
     required this.option,
+    required this.controller,
     required this.canEdit,
   });
   final String tripId;
   final LodgingModel option;
+  final SpecificTripViewController controller;
   final bool canEdit;
 
   @override
@@ -111,6 +128,56 @@ class _LodgingCardState extends State<_LodgingCard> {
     widget.option.id,
   );
   bool _savingLike = false;
+  bool _deleting = false;
+
+  Future<void> _delete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Delete lodging option?'),
+            content: const Text(
+              'This removes the place and its details from the trip.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Keep'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _deleting = true);
+    try {
+      if (widget.option.id == 'legacy') {
+        await LodgingService.deleteLegacy(widget.tripId, widget.option);
+        final refreshed =
+            await widget.controller.refreshLegacyLodgingAfterDelete();
+        if (!refreshed) {
+          showCustomSnackBar(
+            content: 'Lodging removed. Reopen the trip to refresh.',
+          );
+        }
+      } else {
+        await LodgingService.delete(
+          widget.tripId,
+          widget.option,
+          GlobalVariables.currentUid,
+        );
+      }
+    } catch (_) {
+      showCustomSnackBar(
+        content: 'Unable to delete lodging. Reopen the trip and try again.',
+      );
+    } finally {
+      if (mounted) setState(() => _deleting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +218,12 @@ class _LodgingCardState extends State<_LodgingCard> {
                         arguments: option,
                       ),
                 ),
+              if (widget.canEdit)
+                IconButton(
+                  tooltip: 'Delete lodging',
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: _deleting ? null : _delete,
+                ),
             ],
           ),
           if (option.lodgingType.trim().isNotEmpty) Text(option.lodgingType),
@@ -170,12 +243,11 @@ class _LodgingCardState extends State<_LodgingCard> {
             Text(
               'Check-out: ${DateFormat('MMM d, yyyy · h:mm a').format(option.checkOutDate!)}',
             ),
-          if (option.expensePerNight != null)
+          if (option.expensePerNight != null &&
+              (option.expensePerNight! > 0 || option.currencyCode != null))
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                '\$${option.expensePerNight!.toStringAsFixed(2)} / night',
-              ),
+              child: Text(lodgingNightlyCostLabel(option)),
             ),
           StreamBuilder<Set<String>>(
             stream: _likes,

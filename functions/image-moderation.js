@@ -66,8 +66,13 @@ function createVisionScanner(getAccessToken, request = fetch) {
   };
 }
 
-function createImageModerator({db, fields, arrays, scan, bucket, logger}) {
+function createImageModerator({db, fields, arrays, scan, bucket, logger,
+  emulator = false}) {
   return async (event) => {
+    if (emulator) {
+      logger.info("image_moderation_skipped_local_emulator", {eventId: event.id});
+      return;
+    }
     const after = event.data?.after;
     if (!after?.exists || after.data().tripStatus === "deleted") return;
     const previous = imageUrls(event.data.before?.data() || {}, fields, arrays);

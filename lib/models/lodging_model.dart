@@ -13,6 +13,9 @@ class LodgingModel {
     this.checkInDate,
     this.checkOutDate,
     this.expensePerNight,
+    this.currencyCode,
+    this.revision = 0,
+    this.isDeleted = false,
   });
 
   factory LodgingModel.fromMap(String id, Map<String, dynamic> data) =>
@@ -26,6 +29,9 @@ class LodgingModel {
         checkInDate: TravelTime.tryParse(data['checkInDate'] as String?),
         checkOutDate: TravelTime.tryParse(data['checkOutDate'] as String?),
         expensePerNight: (data['expensePerNight'] as num?)?.toDouble(),
+        currencyCode: data['currencyCode'] as String?,
+        revision: data['revision'] as int? ?? 0,
+        isDeleted: data['isDeleted'] as bool? ?? false,
       );
 
   factory LodgingModel.fromTrip(TripModel trip) => LodgingModel(
@@ -38,6 +44,7 @@ class LodgingModel {
     checkInDate: trip.checkInDate,
     checkOutDate: trip.checkOutDate,
     expensePerNight: trip.expensePerNight,
+    currencyCode: trip.lodgingCurrencyCode,
   );
 
   final String id;
@@ -48,6 +55,9 @@ class LodgingModel {
   final DateTime? checkInDate;
   final DateTime? checkOutDate;
   final double? expensePerNight;
+  final String? currencyCode;
+  final int revision;
+  final bool isDeleted;
 
   bool get hasDetails =>
       [lodgingType, hotelName, hotelAddress].any((s) => s.trim().isNotEmpty) ||
@@ -69,5 +79,8 @@ class LodgingModel {
       timeOffsets['checkOutDate'],
     ),
     'expensePerNight': expensePerNight,
+    'currencyCode': currencyCode,
+    'revision': revision,
+    'isDeleted': isDeleted,
   };
 }

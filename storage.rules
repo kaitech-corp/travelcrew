@@ -1,47 +1,50 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Preserve the deployed legacy paths. Exclude validated covers from this
-    // broad legacy grant: overlapping Storage matches are ORed, not denied.
+    function owns(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    function validImage() {
+      return request.resource.size > 0 && request.resource.size <= 20 * 1024 * 1024 &&
+        request.resource.contentType in [
+          'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'
+        ];
+    }
+
+    // Every new manual upload has an authenticated owner and a unique filename.
+    // Replacements get a new URL so image moderation observes the changed field.
+    match /uploads/{userId}/{folder}/{fileName} {
+      allow get: if folder in ['trip_images', 'users_profile'];
+      allow create: if resource == null && owns(userId) && folder in ['trip_images', 'users_profile'] && validImage();
+      allow delete: if owns(userId) && folder in ['trip_images', 'users_profile'];
+      allow update, list: if false;
+    }
+
+    // New private photos are served by an authenticated backend that checks
+    // the named Firestore database. Storage rules cannot perform that lookup.
+    match /private_uploads/{userId}/trip_images/{tripId}/{fileName} {
+      allow get, list, update: if false;
+      allow create: if resource == null && owns(userId) && validImage() &&
+        tripId.matches('[A-Za-z0-9_-]{1,128}') &&
+        fileName.matches('[A-Za-z0-9._-]{1,255}');
+      allow delete: if owns(userId);
+    }
+
+    match /private_uploads/{userId}/users_profile/{fileName} {
+      allow get, list, update: if false;
+      allow create: if resource == null && owns(userId) && validImage() &&
+        fileName.matches('[A-Za-z0-9._-]{1,255}');
+      allow delete: if owns(userId);
+    }
+
+    // Existing URLs remain readable. Unowned legacy paths are read-only; no
+    // overlapping broad grant may bypass the owner policy above.
     match /{folder}/{allPaths=**} {
-      allow read;
-      allow write: if request.auth != null && folder != 'suggested_trip_photos';
-    }
-    // Only the backend's IAM-authorized Admin SDK may create/replace these.
-    // The source photos are public-domain/CC0; no private uploads go here.
-    match /suggested_trip_photos/{allPaths=**} {
-      allow read;
-      allow write: if false;
-    }
-    match /activity/{docs}/{allPaths=**} {
-      allow read, write: if request.auth != null;
-    }
-    match /lodging/{docs}/{allPaths=**} {
-      allow read, write: if request.auth != null;
-    }
-    match /trips/{docs}/{allPaths=**} {
-      allow read, write;
-    }
-    match /users/{docs}/{allPaths=**} {
-      allow read, write: if request.auth != null;
-    }
-    match /web_images/{docs}/{allPaths=**} {
-      allow read;
-    }
-    match /apis/{docs}/{allPaths=**} {
-      allow read: if request.auth != null;
-    }
-    match /travelcrew/{folderName}/{userId}/{allPaths=**} {
-      allow read;
-      allow write: if request.auth != null && request.auth.uid == userId;
-    }
-    match /travelcrew/{allPaths=**} {
-      allow read;
-      allow write: if request.auth != null;
-    }
-    match /travelcrew/trips/{allPaths=**} {
-      allow read;
-      allow write: if request.auth != null;
+      allow get: if folder in [
+        'trip_images', 'users_profile', 'activity', 'lodging', 'trips',
+        'users', 'web_images', 'travelcrew', 'suggested_trip_photos'
+      ];
+      allow write, list: if false;
     }
   }
 }

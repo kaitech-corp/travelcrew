@@ -79,6 +79,18 @@ test("safe previews exclude private itinerary, identity and expense fields", () 
   assert.deepEqual(result.images, ["https://example.invalid/photo"]);
 });
 
+test("recommendation previews retain only scoped private photo references", () => {
+  const cover = "gs://app.appspot.com/private_uploads/owner/trip_images/trip/cover.jpg";
+  const avatar = "gs://app.appspot.com/private_uploads/owner/users_profile/avatar.jpg";
+  const result = preview("trip", trip({images: [cover,
+    cover.replace("/owner/", "/other/"),
+    cover.replace("/trip/", "/another/"),
+    "gs://app.appspot.com/private_uploads/owner/trip_images/trip/../secret.jpg",
+  ]}), {displayName: "Owner", profileImage: avatar});
+  assert.deepEqual(result.images, [cover]);
+  assert.equal(result.creatorProfileImage, avatar);
+});
+
 test("contracts reject arbitrary fields, bad ranges and oversized pages", () => {
   assert.deepEqual(parse(preferencesSchema, {destinations: [" Paris ", "PARIS"]}), {destinations: ["paris"], filters: {}});
   for (const input of [{pageSize: 21}, {userId: "other"}, {filters: {from: "2026-02-30"}},

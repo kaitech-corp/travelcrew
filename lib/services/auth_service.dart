@@ -68,7 +68,9 @@ class AuthService {
         return;
       }
 
-      await FirebasePushNotificationApi().saveTokenForCurrentUser();
+      if (!useLocalFirebaseEmulators) {
+        await FirebasePushNotificationApi().saveTokenForCurrentUser();
+      }
 
       // User is verified and logged in successfully
       Get.offAllNamed(kMainViewScreenRoute);

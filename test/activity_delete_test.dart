@@ -45,8 +45,12 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       final calls = <String>[];
       final controller = SpecificTripViewController(
-        deleteActivity: ({required id, tripId}) async {
-          calls.add('$tripId/$id');
+        deleteActivity: ({
+          required id,
+          tripId,
+          required expectedRevision,
+        }) async {
+          calls.add('$tripId/$id/$expectedRevision');
           return true;
         },
       );
@@ -77,7 +81,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
-      expect(calls, ['trip/museum']);
+      expect(calls, ['trip/museum/0']);
       expect(find.text('Museum'), findsNothing);
       expect(find.text('Park'), findsOneWidget);
       expect(find.byTooltip('Delete activity'), findsOneWidget);
@@ -95,7 +99,8 @@ void main() {
   test('failed deletion retains the activity and allows retry', () async {
     var success = false;
     final controller = SpecificTripViewController(
-      deleteActivity: ({required id, tripId}) async => success,
+      deleteActivity:
+          ({required id, tripId, required expectedRevision}) async => success,
     );
     addTearDown(controller.onClose);
     controller.tripModel.value = savedTrip();
@@ -110,12 +115,53 @@ void main() {
   });
 
   test(
+    'activity author can manage their own record but not a legacy record',
+    () async {
+      final controller = SpecificTripViewController(
+        deleteActivity:
+            ({required id, tripId, required expectedRevision}) async => true,
+      );
+      addTearDown(controller.onClose);
+      controller.tripModel.value = savedTrip();
+      controller.tripModel.value!.activities!.first.createdBy = 'member';
+      GlobalVariables.loggedInUser.value = UserModel(
+        uid: 'member',
+        email: 'member@example.com',
+      );
+      final authored = controller.tripModel.value!.activities!.first;
+      final legacy = controller.tripModel.value!.activities!.last;
+      expect(controller.canManageActivity(authored), isTrue);
+      expect(controller.canManageActivity(legacy), isFalse);
+      expect(await controller.removeActivity(authored), isTrue);
+      expect(controller.tripModel.value!.activities!.map((item) => item.id), [
+        'park',
+      ]);
+    },
+  );
+
+  test('legacy activity deletion targets its top-level document', () async {
+    String? targetedTripId = 'unset';
+    final controller = SpecificTripViewController(
+      deleteActivity: ({required id, tripId, required expectedRevision}) async {
+        targetedTripId = tripId;
+        return true;
+      },
+    );
+    addTearDown(controller.onClose);
+    controller.tripModel.value = savedTrip();
+    final legacy =
+        controller.tripModel.value!.activities!.first..isLegacy = true;
+    expect(await controller.removeActivity(legacy), isTrue);
+    expect(targetedTripId, isNull);
+  });
+
+  test(
     'non-owner cannot delete and concurrent duplicate deletes are ignored',
     () async {
       final pending = Completer<bool>();
       var calls = 0;
       final controller = SpecificTripViewController(
-        deleteActivity: ({required id, tripId}) {
+        deleteActivity: ({required id, tripId, required expectedRevision}) {
           calls++;
           return pending.future;
         },

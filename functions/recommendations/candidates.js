@@ -1,6 +1,7 @@
 const {HttpsError} = require("firebase-functions/v2/https");
 const {Timestamp} = require("firebase-admin/firestore");
 const {validId, chunks} = require("../validation");
+const {isTripMember} = require("../trip-membership");
 const {tripFeatures, fitsDates, travelDay, normalize, preview} = require("./features");
 
 async function mapLimit(items, fn, limit = 8) {
@@ -76,7 +77,7 @@ async function loadProfile(ctx, uid) {
     const trip = source.data();
     if (!trip || trip.moderationRemoved || trip.tripStatus === "deleted" || !validId(trip.createdBy)) return null;
     if (!await ctx.active(trip.createdBy) || await ctx.blocked(uid, trip.createdBy)) return null;
-    const own = trip.createdBy === uid || (Array.isArray(trip.joinedUsers) && trip.joinedUsers.includes(uid)) || member.data()?.status === "active";
+    const own = isTripMember(trip, uid, member.data());
     // Favorites may outlive private access. A stale user membership index is
     // never sufficient proof that the viewer can still read the source trip.
     if (!own && !(trip.isPrivate === false && card.data()?.isDiscoverable === true) && trip.isShared !== true) return null;
@@ -133,7 +134,7 @@ async function eligibleTrip(ctx, uid, id, filters = {}) {
     ctx.doc(`users/${uid}/recommendationDismissals/${id}`), ctx.doc(`recommendationTripFeatures/${id}`),
   ]);
   const trip = source.data();
-  if (!trip || trip.createdBy === uid || (Array.isArray(trip.joinedUsers) && trip.joinedUsers.includes(uid)) || member.data()?.status === "active" ||
+  if (!trip || isTripMember(trip, uid, member.data()) ||
       dismissal.data()?.dismissed === true || card.data()?.isDiscoverable !== true || card.data()?.moderationRemoved === true) return null;
   const feature = tripFeatures(id, trip, projected.data()?.publishedAt);
   if (!feature || !fitsDates(feature, filters, ctx.now)) return null;

@@ -4,7 +4,9 @@ import 'package:travel_crew/views/home_page/components/specific_trip_view/compon
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:travel_crew/models/lodging_model.dart';
+import 'package:travel_crew/views/home_page/components/specific_trip_view/components/lodging_tab.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/lodging_service.dart';
 import 'package:travel_crew/services/trip_calendar_service.dart';
 import 'package:travel_crew/views/home_page/components/specific_trip_view/controller/specific_trip_view_controller.dart';
 
@@ -181,6 +183,29 @@ void main() {
         LodgingModel.fromMap('second', legacy.toMap()).expensePerNight,
         125,
       );
+      expect(LodgingModel.fromMap('second', legacy.toMap()).revision, 0);
+      expect(lodgingNightlyCostLabel(legacy), contains('currency unspecified'));
+      final priced = LodgingModel.fromTrip(
+        trip({
+          'hotelName': 'Tokyo hotel',
+          'expensePerNight': 12000,
+          'lodgingCurrencyCode': 'JPY',
+        }),
+      );
+      expect(priced.currencyCode, 'JPY');
+      expect(
+        LodgingModel.fromMap('priced', priced.toMap()).currencyCode,
+        'JPY',
+      );
+      expect(lodgingNightlyCostLabel(priced), contains('JPY'));
+      expect(lodgingNightlyCostLabel(priced), isNot(contains('.00')));
+      final saved = LodgingModel.fromMap('second', {
+        ...legacy.toMap(),
+        'revision': 3,
+        'isDeleted': true,
+      });
+      expect(saved.revision, 3);
+      expect(saved.isDeleted, true);
     },
   );
   test(
@@ -195,17 +220,69 @@ void main() {
         hotelName: 'Second hotel',
         checkInDate: DateTime(2027, 3, 14),
         expensePerNight: 80,
+        currencyCode: 'JPY',
       );
       controller.initLodgingForm(second);
       expect(controller.editingLodging!.id, 'second');
       expect(controller.lodgingHotelNameController.text, 'Second hotel');
-      expect(controller.lodgingCostController.text, '80.0');
+      expect(controller.lodgingCostController.text, '80');
+      expect(controller.lodgingCurrencyCode.value, 'JPY');
       controller.initLodgingForm();
       expect(controller.editingLodging, isNull);
       expect(controller.lodgingHotelNameController.text, isEmpty);
       expect(controller.lodgingCheckIn.value, isNull);
       expect(controller.lodgingCostController.text, isEmpty);
+      expect(controller.lodgingCurrencyCode.value, isNull);
       expect(controller.tripModel.value!.hotelName, 'Original hotel');
+    },
+  );
+  test(
+    'legacy lodging comparison ignores unrelated trip changes and normalizes empty fields',
+    () {
+      final original = trip({
+        'hotelName': 'First hotel',
+        'checkInDate': '2027-04-10T15:00:00.000+09:00',
+        'checkOutDate': '2027-04-12T11:00:00.000+09:00',
+      });
+      final current = {...original.toMap(), 'title': 'New title'};
+      current.remove('hotelAddress');
+      expect(
+        LodgingService.legacyMatches(current, original.id, original),
+        true,
+      );
+      expect(
+        LodgingService.legacyMatches(
+          {...current, 'hotelName': 'Different hotel'},
+          original.id,
+          original,
+        ),
+        false,
+      );
+      expect(
+        LodgingService.legacyMatches(
+          {...current, 'lodgingCurrencyCode': 'EUR'},
+          original.id,
+          original,
+        ),
+        false,
+      );
+      expect(
+        LodgingService.legacyMatches(
+          {...current, 'checkOutDate': '2027-04-13T11:00:00.000+09:00'},
+          original.id,
+          original,
+        ),
+        false,
+      );
+      final revisioned = TripModel.fromMap({
+        ...original.toMap(),
+        'lodgingRevision': 2,
+      });
+      expect(revisioned.lodgingRevision, 2);
+      expect(
+        revisioned.copyWith(title: 'Edited').toMap()['lodgingRevision'],
+        2,
+      );
     },
   );
 }

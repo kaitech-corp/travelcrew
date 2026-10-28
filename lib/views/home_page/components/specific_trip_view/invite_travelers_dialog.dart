@@ -13,7 +13,7 @@ class InviteTravelersDialog extends StatefulWidget {
   });
   final Future<List<TripInviteUser>> Function(String query) search;
   final Future<void> Function(String userId, String requestId) send;
-  final Future<bool> Function(String email) sendEmail;
+  final Future<bool> Function(String email, String requestId) sendEmail;
 
   @override
   State<InviteTravelersDialog> createState() => _InviteTravelersDialogState();
@@ -24,6 +24,7 @@ class _InviteTravelersDialogState extends State<InviteTravelersDialog> {
   final _searchFocus = FocusNode();
   final _email = TextEditingController();
   final _attempts = <String, String>{};
+  final _emailAttempts = <String, String>{};
   final _sent = <String>{};
   Timer? _debounce;
   int _generation = 0;
@@ -132,10 +133,16 @@ class _InviteTravelersDialogState extends State<InviteTravelersDialog> {
       _message = null;
     });
     try {
-      final sent = await widget.sendEmail(email);
+      final key = email.toLowerCase();
+      final requestId = _emailAttempts.putIfAbsent(
+        key,
+        () => const Uuid().v4(),
+      );
+      final sent = await widget.sendEmail(email, requestId);
       if (mounted) {
         setState(() {
           if (sent) {
+            _emailAttempts.remove(key);
             _message = 'Email invitation queued for $email.';
             _email.clear();
           } else {

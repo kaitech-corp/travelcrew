@@ -12,96 +12,93 @@ TransportationModel entry(
   String mode = 'driving',
   String? departure,
   String? arrival,
+  int revision = 1,
 }) => TransportationModel.fromMap(id, 'trip', {
   'userId': 'owner',
+  'displayName': 'Owner',
   'mode': mode,
   'departure': departure,
   'arrival': arrival,
+  'notes': '',
+  'revision': revision,
 });
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets(
-    'saving and closing the modal keeps text controllers alive through dismissal',
-    (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: preview.Preview()));
-      await tester.tap(find.text('Add Transportation'));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Notes (optional)'),
-        'Hotel shuttle',
-      );
-      await tester.ensureVisible(find.text('Save Transportation'));
-      await tester.tap(find.text('Save Transportation'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-      expect(tester.takeException(), isNull);
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-      expect(find.byType(TransportationEditor), findsNothing);
-      await tester.scrollUntilVisible(find.text('Hotel shuttle'), 200);
-      expect(find.text('Hotel shuttle'), findsOneWidget);
 
-      await tester.scrollUntilVisible(find.text('Add Transportation'), -200);
-      await tester.tap(find.text('Add Transportation'));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Notes (optional)'),
-        'Unsaved note',
-      );
-      await tester.tap(find.byTooltip('Close'));
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-      expect(find.text('Unsaved note'), findsNothing);
-    },
-  );
-  test(
-    'manual trip imports retain mixed modes, travelers, and venue offsets',
-    () {
-      final controller = CreateTripController();
-      addTearDown(controller.onClose);
-      controller.setFromImport({
-        'title': 'Tokyo trip',
-        'destination': 'Tokyo',
-        'country': 'Japan',
-        'start_date': '2027-04-10',
-        'end_date': '2027-04-12',
-        'transportation': [
-          {
-            'mode': 'flight',
-            'service_number': 'TC123',
-            'departure': '2027-04-10T10:00:00-07:00',
-            'arrival': '2027-04-11T14:00:00+09:00',
-            'travelers': ['Randy', 'Alex'],
-          },
-          {'mode': 'scooter', 'title': 'Scooter rental'},
-          {'mode': 'train', 'departure': '2027-04-12'},
-        ],
-      });
-      final imported = controller.importedTransportation;
-      expect(imported.length, 3);
-      expect(imported.first.serviceNumber, 'TC123');
-      expect(imported.first.travelerNames, ['Randy', 'Alex']);
-      expect(imported.first.departure, '2027-04-10T10:00:00-07:00');
-      expect(imported.first.arrival, '2027-04-11T14:00:00+09:00');
-      expect(imported[1].mode, TransportationMode.scooter);
-      expect(imported[1].departure, isNull);
-      expect(imported[2].departure, '2027-04-12');
-    },
-  );
-  test('MCP flight records reopen with local clocks, notes and saver name', () {
+  testWidgets('saving and closing the modal keeps controllers alive', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: preview.Preview()));
+    await tester.tap(find.text('Add Transportation'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Notes (optional)'),
+      'Hotel shuttle',
+    );
+    await tester.ensureVisible(find.text('Save Transportation'));
+    await tester.tap(find.text('Save Transportation'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(TransportationEditor), findsNothing);
+    await tester.scrollUntilVisible(find.text('Hotel shuttle'), 200);
+    expect(find.text('Hotel shuttle'), findsOneWidget);
+
+    await tester.scrollUntilVisible(find.text('Add Transportation'), -200);
+    await tester.tap(find.text('Add Transportation'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Notes (optional)'),
+      'Unsaved note',
+    );
+    await tester.tap(find.byTooltip('Close'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text('Unsaved note'), findsNothing);
+  });
+
+  test('manual imports keep notes and each location’s clock', () {
+    final controller = CreateTripController();
+    addTearDown(controller.onClose);
+    controller.setFromImport({
+      'title': 'Tokyo trip',
+      'destination': 'Tokyo',
+      'country': 'Japan',
+      'start_date': '2027-04-10',
+      'end_date': '2027-04-12',
+      'transportation': [
+        {
+          'mode': 'flight',
+          'notes': 'Example Air TC123, Randy and Alex',
+          'departure': '2027-04-10T10:00:00',
+          'arrival': '2027-04-11T14:00:00',
+        },
+        {'mode': 'scooter', 'notes': 'Rental'},
+        {'mode': 'train', 'departure': '2027-04-12'},
+      ],
+    });
+    final imported = controller.importedTransportation;
+    expect(imported.length, 3);
+    expect(imported.first.notes, contains('TC123'));
+    expect(imported.first.departure, '2027-04-10T10:00:00');
+    expect(imported.first.arrival, '2027-04-11T14:00:00');
+    expect(imported[1].mode, TransportationMode.scooter);
+    expect(imported[2].departure, '2027-04-12');
+  });
+
+  test('MCP flight reopens with minimal fields, local clocks and saver', () {
     final record = TransportationModel.fromMap('transport_0', 'trip', {
       'id': 'transport_0',
       'tripId': 'trip',
       'userId': 'owner',
       'displayName': 'Randy',
       'mode': 'flight',
+      'revision': 1,
       'departure': '2027-03-14T02:30:00',
       'arrival': '2027-03-14T01:30:00',
       'notes': 'Example Air TC123, Tokyo to Los Angeles',
     });
     expect(record.mode, TransportationMode.flight);
-    expect(record.heading, 'Flight');
     expect(record.issue, isNull);
     final editor = TransportationEditorController(
       tripId: 'trip',
@@ -110,170 +107,83 @@ void main() {
     );
     addTearDown(editor.onClose);
     final saved = editor.buildEntry();
+    expect(saved.toMap().keys, {
+      'id',
+      'tripId',
+      'userId',
+      'displayName',
+      'mode',
+      'departure',
+      'arrival',
+      'notes',
+      'revision',
+      'isDeleted',
+    });
     expect(saved.departure, record.departure);
     expect(saved.arrival, record.arrival);
     expect(saved.notes, record.notes);
     expect(saved.displayName, 'Randy');
-    expect(saved.issue, isNull);
+    expect(saved.revision, 1);
   });
-  test('notes hold transportation details across mode changes and reloads', () {
-    final editor = TransportationEditorController(
-      tripId: 'trip',
-      userId: 'owner',
-      displayName: 'Randy',
+
+  test('all modes reload and sort without converting local clocks', () {
+    for (final mode in TransportationMode.values) {
+      final item = entry(mode.name, mode: mode.name);
+      expect(item.issue, isNull);
+      expect(
+        TransportationModel.fromMap(item.id, item.tripId, item.toMap()).mode,
+        mode,
+      );
+    }
+    final local = entry('local', departure: '2027-04-10T10:00:00');
+    final later = entry('later', departure: '2027-04-11T10:00:00');
+    expect(TransportationModel.sort([later, local]).map((item) => item.id), [
+      'local',
+      'later',
+    ]);
+    expect(
+      TransportationModel.formatDate(local.departure),
+      'Apr 10, 2027 · 10:00 AM',
     );
-    addTearDown(editor.onClose);
-    editor.notes.text = 'Airport to hotel. Uber with Randy.';
-    editor.mode.value = TransportationMode.rideshare;
-    final saved = editor.buildEntry();
-    expect(saved.notes, editor.notes.text);
-    expect(saved.displayName, 'Randy');
-    expect(saved.title, isEmpty);
-    expect(saved.origin, isEmpty);
-    expect(saved.destination, isEmpty);
-    expect(saved.provider, isEmpty);
-    expect(saved.driver, isEmpty);
-    expect(saved.serviceNumber, isEmpty);
-    expect(saved.travelerNames, isEmpty);
-    final reopened = TransportationEditorController(
-      tripId: 'trip',
-      userId: 'owner',
-      existing: TransportationModel.fromMap(
-        saved.id,
-        saved.tripId,
-        saved.toMap(),
-      ),
-    );
-    addTearDown(reopened.onClose);
-    reopened.mode.value = TransportationMode.taxi;
-    expect(reopened.buildEntry().displayName, 'Randy');
-    expect(reopened.buildEntry().notes, saved.notes);
   });
-  test(
-    'hidden flight records cannot reappear through the old trip summary',
-    () {
-      final fields = {
-        'userId': 'owner',
-        'createdBy': 'owner',
-        'flightNumber': 'TC123',
-      };
-      final summary = TransportationModel.fromMap(
-        'trip',
-        'trip',
-        fields,
-        source: TransportationSource.trip,
-      );
-      final hidden = TransportationModel.fromMap(
-        'flight',
-        'trip',
-        fields,
-        source: TransportationSource.flight,
-      );
+
+  test('location clocks display directly and offsets are rejected', () {
+    final flight = entry(
+      'flight',
+      mode: 'flight',
+      departure: '2027-04-10T10:00:00',
+      arrival: '2027-04-10T04:00:00',
+    );
+    expect(flight.issue, isNull);
+    expect(flight.toMap()['departure'], '2027-04-10T10:00:00');
+    expect(
+      TransportationModel.formatDate(flight.arrival),
+      'Apr 10, 2027 · 4:00 AM',
+    );
+    for (final invalid in [
+      '2027-02-30',
+      '2027-04-10T10:00:00Z',
+      '2027-04-10T25:00:00+09:00',
+      '2027-04-10T10:00:00+25:00',
+    ]) {
       expect(
-        TransportationModel.combine(
-          summary,
-          [],
-          [],
-          [],
-          hiddenFlights: [hidden],
-        ),
-        isEmpty,
-      );
-    },
-  );
-  test(
-    'all modes allow a simple unscheduled entry and preserve mode on reload',
-    () {
-      for (final mode in TransportationMode.values) {
-        final item = entry(mode.name, mode: mode.name);
-        expect(item.issue, isNull);
-        expect(
-          TransportationModel.fromMap(item.id, item.tripId, item.toMap()).mode,
-          mode,
-        );
-      }
-    },
-  );
-  test(
-    'legacy flights merge with new modes without hiding distinct old flights',
-    () {
-      final fields = {
-        'userId': 'owner',
-        'flightNumber': 'AB123',
-        'departureDate': '2027-04-10',
-      };
-      final nested = TransportationModel.fromMap(
-        'one',
-        'trip',
-        fields,
-        source: TransportationSource.flight,
-      );
-      final legacy = TransportationModel.fromMap(
-        'one',
-        'trip',
-        fields,
-        source: TransportationSource.legacyFlight,
-      );
-      final otherLegacy = TransportationModel.fromMap('two', 'trip', {
-        ...fields,
-        'flightNumber': 'AB124',
-      }, source: TransportationSource.legacyFlight);
-      final summary = TransportationModel.fromMap('summary', 'trip', {
-        ...fields,
-        'createdBy': 'owner',
-      }, source: TransportationSource.trip);
-      final result = TransportationModel.combine(
-        summary,
-        [nested],
-        [legacy, otherLegacy],
-        [entry('car')],
-      );
-      expect(result.length, 3);
-      expect(result.first.source, TransportationSource.flight);
-      expect(result.map((item) => item.id), containsAll(['one', 'two', 'car']));
-    },
-  );
-  test(
-    'venue offsets retain cross-zone chronology and reject invalid schedules',
-    () {
-      final flight = entry(
-        'flight',
-        mode: 'flight',
-        departure: '2027-04-10T10:00:00+09:00',
-        arrival: '2027-04-10T04:00:00-07:00',
-      );
-      expect(flight.issue, isNull);
-      expect(
-        flight.toFlightMap()['departureDate'],
-        '2027-04-10T10:00:00+09:00',
-      );
-      expect(
-        TransportationModel.formatDate(flight.arrival),
-        equals('Apr 10, 2027 · 4:00 AM'),
-      );
-      for (final invalid in [
-        '2027-02-30',
-        '2027-04-10T25:00:00+09:00',
-        '2027-04-10T10:00:00+25:00',
-      ]) {
-        expect(
-          entry('bad', departure: invalid).issue,
-          isNotNull,
-          reason: invalid,
-        );
-      }
-      expect(
-        entry('bad', departure: '2027-04-12', arrival: '2027-04-11').issue,
+        entry('bad', departure: invalid).issue,
         isNotNull,
+        reason: invalid,
       );
-      expect(
-        entry('day', departure: '2027-04-10').toMap()['departure'],
-        '2027-04-10',
-      );
-    },
-  );
+    }
+    expect(
+      entry('bad', departure: '2027-04-12', arrival: '2027-04-11').issue,
+      isNotNull,
+    );
+    expect(
+      entry('day', departure: '2027-04-10').toMap()['departure'],
+      '2027-04-10',
+    );
+  });
+
   test(
-    'local times save exactly as entered and survive editing without a timezone',
+    'editing preserves local clocks and revision without a timezone prompt',
     () {
       final editor = TransportationEditorController(
         tripId: 'trip',
@@ -287,10 +197,6 @@ void main() {
       final saved = editor.buildEntry();
       expect(saved.departure, '2027-03-14T02:30:00');
       expect(saved.arrival, '2027-03-14T01:30:00');
-      expect(
-        TransportationModel.formatDate(saved.departure),
-        'Mar 14, 2027 · 2:30 AM',
-      );
       final reopened = TransportationEditorController(
         existing: saved,
         tripId: 'trip',
@@ -299,11 +205,12 @@ void main() {
       addTearDown(reopened.onClose);
       reopened.notes.text = 'Airport transfer';
       expect(reopened.buildEntry().departure, saved.departure);
-      expect(reopened.buildEntry().arrival, saved.arrival);
+      expect(reopened.buildEntry().revision, saved.revision);
       reopened.departure.time.clear();
       expect(reopened.buildEntry().departure, '2027-03-14');
     },
   );
+
   testWidgets('all mode cards fit narrow screens with large text', (
     tester,
   ) async {
@@ -318,12 +225,8 @@ void main() {
         userId: 'owner',
         mode: mode,
         displayName: 'Randy and a long display name',
-        title: 'A long transportation title for the trip',
-        origin: 'Tokyo Narita International Airport',
-        destination: 'Los Angeles International Airport',
-        departure: '2027-04-10T10:00:00+09:00',
-        arrival: '2027-04-10T04:00:00-07:00',
-        travelerNames: ['Randy', 'Travel companion'],
+        departure: '2027-04-10T10:00:00',
+        arrival: '2027-04-10T04:00:00',
         notes: 'Bring tickets.',
       );
       await tester.pumpWidget(
@@ -346,8 +249,9 @@ void main() {
       );
     }
   });
+
   testWidgets(
-    'local-time fields never prompt for offsets; save failures retain input',
+    'local time fields avoid offsets and a failed save retains input',
     (tester) async {
       final controller = TransportationEditorController(
         tripId: 'trip',
@@ -377,7 +281,6 @@ void main() {
       );
       expect(find.byType(TextFormField), findsNWidgets(5));
       expect(find.textContaining('UTC'), findsNothing);
-      expect(find.text('Notes (optional)'), findsOneWidget);
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Notes (optional)'),
         'Uber from airport to hotel',
@@ -390,8 +293,7 @@ void main() {
         find.textContaining('Could not save transportation'),
         findsOneWidget,
       );
-      expect(find.text('Save Transportation'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      expect(find.text('Uber from airport to hotel'), findsOneWidget);
     },
   );
 }

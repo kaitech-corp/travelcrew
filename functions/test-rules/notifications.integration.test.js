@@ -1,7 +1,7 @@
 const {before, after, test} = require("node:test");
 const assert = require("node:assert/strict");
 const {initializeApp, deleteApp} = require("firebase-admin/app");
-const {getFirestore, Timestamp} = require("firebase-admin/firestore");
+const {getFirestore, FieldValue, Timestamp} = require("firebase-admin/firestore");
 const {createTripActions} = require("../trip-actions");
 const {sendInboxPush, sendChatPush} = require("../notification-delivery");
 const {eventKey} = require("../notification-data");
@@ -64,15 +64,60 @@ test("chat uses private activity and push, skips sender/blocked/read recipients,
   const messaging = {sendEachForMulticast: async () => { pushes++; return {responses: [{success: true}]}; }};
   async function message(id) {
     const ref = db.doc(`chat/${tripId}/messages/${id}`);
-    await ref.set({createdBy: uid, createdAt: Timestamp.now(), data: "Private chat text", messageType: "Text"});
+    await ref.set({createdBy: uid, createdAt: FieldValue.serverTimestamp(), data: "Private chat text", messageType: "Text"});
     await sendChatPush(db, messaging, {params: {roomId: tripId, messageId: id}, data: await ref.get()});
+    return ref;
   }
-  await message("one"); const sent = pushes; assert.ok(sent > 0);
+  const first = await message("one"); const sent = pushes; assert.ok(sent > 0);
   assert.equal((await db.doc(`users/${owner}/chatActivity/${tripId}`).get()).data().lastSenderId, uid);
   assert.equal((await db.collection(`notifications/${owner}/notification`).get()).size, before);
-  await db.doc(`users/${owner}/chatActivity/${tripId}`).set({readAt: Timestamp.fromMillis(Date.now() + 60000)}, {merge: true});
-  await message("two"); assert.equal(pushes, sent);
+  await db.doc(`users/${owner}/chatActivity/${tripId}`).set({readAt: (await first.get()).data().createdAt}, {merge: true});
+  await message("two"); assert.ok(pushes > sent);
+  const afterSecond = pushes;
+  const alreadyRead = db.doc(`chat/${tripId}/messages/already-read`);
+  await alreadyRead.set({createdBy: uid, createdAt: FieldValue.serverTimestamp(), data: "Seen in chat", messageType: "Text"});
+  await db.doc(`users/${owner}/chatActivity/${tripId}`).set({readAt: (await alreadyRead.get()).data().createdAt}, {merge: true});
+  await sendChatPush(db, messaging, {params: {roomId: tripId, messageId: "already-read"}, data: await alreadyRead.get()});
+  assert.equal(pushes, afterSecond);
   await db.doc(`users/${owner}/blockedUsers/${uid}`).set({});
-  await message("three"); assert.equal(pushes, sent);
+  await message("three"); assert.equal(pushes, afterSecond);
   await db.doc(`users/${owner}/blockedUsers/${uid}`).delete();
+
+  const baseMs = Date.now() + 10;
+  const seconds = Math.floor(baseMs / 1000);
+  const nanos = (baseMs % 1000) * 1000000;
+  const firstAt = new Timestamp(seconds, nanos + 1000);
+  const secondAt = new Timestamp(seconds, nanos + 2000);
+  await db.doc(`users/${owner}/chatActivity/${tripId}`).set({readAt: Timestamp.fromMillis(0)}, {merge: true});
+  const firstFine = db.doc(`chat/${tripId}/messages/first-fine`);
+  await firstFine.set({createdBy: uid, createdAt: firstAt, data: "First", messageType: "Text"});
+  await sendChatPush(db, messaging, {params: {roomId: tripId, messageId: "first-fine"}, data: await firstFine.get()});
+  const beforeFineSecond = pushes;
+  await db.doc(`users/${owner}/chatActivity/${tripId}`).set({readAt: firstAt}, {merge: true});
+  const secondFine = db.doc(`chat/${tripId}/messages/second-fine`);
+  await secondFine.set({createdBy: uid, createdAt: secondAt, data: "Second", messageType: "Text"});
+  await sendChatPush(db, messaging, {params: {roomId: tripId, messageId: "second-fine"}, data: await secondFine.get()});
+  assert.ok(pushes > beforeFineSecond);
+  const activity = (await db.doc(`users/${owner}/chatActivity/${tripId}`).get()).data();
+  assert.equal(activity.lastMessageAt, firstAt.toMillis());
+  assert.equal(activity.lastMessageAtTime.nanoseconds, secondAt.nanoseconds);
+});
+
+test("stale rosters do not send trip or chat pushes to a departed traveler", async () => {
+  await actions.leave(request({membershipAttemptId: "chat"}));
+  await db.doc(`trips/${tripId}`).update({joinedUsers: [uid]});
+  await db.doc(`chat/${tripId}`).update({usersIds: [owner, uid]});
+  await db.doc(`tokens/${uid}/tokens/stale`).set({});
+  const id = "stale-trip-event";
+  await note(uid, id).set({schemaVersion: 2, pushEnabled: true, isActive: true,
+    notificationStatus: "unread", sentTo: [uid], createdBy: owner,
+    notificationType: "Trip", notificationForId: tripId, eventType: "trip_accepted",
+    notificationTitle: "Trip update", notificationMessage: "Private itinerary update"});
+  let pushes = 0;
+  const messaging = {sendEachForMulticast: async () => { pushes++; return {responses: [{success: true}]}; }};
+  await sendInboxPush(db, messaging, {params: {userId: uid, notificationId: id}});
+  const ref = db.doc(`chat/${tripId}/messages/after-leave`);
+  await ref.set({createdBy: owner, createdAt: Timestamp.now(), data: "Private chat text", messageType: "Text"});
+  await sendChatPush(db, messaging, {params: {roomId: tripId, messageId: "after-leave"}, data: await ref.get()});
+  assert.equal(pushes, 0);
 });

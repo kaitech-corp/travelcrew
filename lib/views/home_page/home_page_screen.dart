@@ -229,6 +229,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
               child: Obx(
                 () =>
                     controller.isLoadingOtherTrips.isTrue &&
+                            controller.currentDiscoveryTrips.isEmpty &&
                             controller.selectedTabIndex.value != 3
                         ? const Center(child: CircularProgressIndicator())
                         : controller.isTabsReady.value
@@ -238,12 +239,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             _buildTripsTab(
                               l10n.all,
                               controller.otherFilteredTrips,
+                              key: controller.allDiscoveryKey,
                             ),
                             _buildTripsTab(
                               l10n.popular,
-                              controller.otherFilteredTrips,
+                              controller.popularFilteredTrips,
+                              key: 'popular',
                             ),
-                            _buildTripsTab(l10n.nearby, controller.nearbyTrips),
+                            _buildTripsTab(
+                              l10n.nearby,
+                              controller.nearbyTrips,
+                              key: 'nearby',
+                            ),
                             AnimatedBuilder(
                               animation: Listenable.merge([
                                 controller.tabController,
@@ -278,34 +285,68 @@ class _HomePageScreenState extends State<HomePageScreen> {
     );
   }
 
-  Widget _buildTripsTab(String tabName, List<TripDiscoveryModel> trips) =>
-      Obx(() {
-        if (!SafetyService.ready.value) return const SafetyLoadingView();
-        return Column(
-          children: [
-            Expanded(
-              child: _buildVisibleTripsTab(
-                tabName,
-                trips
-                    .where((trip) => !SafetyService.hides(trip.createdBy))
-                    .toList(),
-              ),
-            ),
-            if (FirebaseTripService.discoveryHasMore[controller.discoveryKey] ==
-                true)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 90),
-                child: TextButton(
-                  onPressed:
-                      controller.isLoadingOtherTrips.value
-                          ? null
-                          : controller.loadMoreTrips,
-                  child: Text(AppLocalizations.of(context)!.safetyLoadMore),
+  Widget _buildTripsTab(
+    String tabName,
+    List<TripDiscoveryModel> trips, {
+    required String key,
+  }) => Obx(() {
+    if (!SafetyService.ready.value) return const SafetyLoadingView();
+    final error = controller.discoveryErrors[key];
+    final visibleTrips =
+        trips.where((trip) => !SafetyService.hides(trip.createdBy)).toList();
+    return Column(
+      children: [
+        if (error != null && visibleTrips.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(right: 18),
+            child: Row(
+              children: [
+                Expanded(child: Text(error)),
+                TextButton(
+                  onPressed: controller.retryDiscovery,
+                  child: const Text('Retry'),
                 ),
-              ),
-          ],
-        );
-      });
+              ],
+            ),
+          ),
+        Expanded(
+          child:
+              error != null && visibleTrips.isEmpty
+                  ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(error),
+                        TextButton(
+                          onPressed: controller.retryDiscovery,
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  )
+                  : visibleTrips.isEmpty &&
+                      FirebaseTripService.discoveryHasMore[key] == true
+                  ? const Center(
+                    child: Text(
+                      'No matching trips in these results. Load more to keep looking.',
+                    ),
+                  )
+                  : _buildVisibleTripsTab(tabName, visibleTrips),
+        ),
+        if (error == null && FirebaseTripService.discoveryHasMore[key] == true)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 90),
+            child: TextButton(
+              onPressed:
+                  controller.isLoadingOtherTrips.value
+                      ? null
+                      : controller.loadMoreTrips,
+              child: Text(AppLocalizations.of(context)!.safetyLoadMore),
+            ),
+          ),
+      ],
+    );
+  });
 
   Widget _buildVisibleTripsTab(
     String tabName,

@@ -1,4 +1,5 @@
 const {Timestamp} = require("firebase-admin/firestore");
+const {parsePrivatePhoto} = require("../private-photos");
 
 const DAY = 86400000;
 const FEATURE_VERSION = 1;
@@ -65,17 +66,29 @@ function fitsDates(feature, filters, now) {
   return !(filters.minDays && days < filters.minDays) && !(filters.maxDays && days > filters.maxDays);
 }
 
+function privateImage(value, ownerId, tripId) {
+  if (typeof value !== "string" || value.length > 1200) return "";
+  const bucket = /^gs:\/\/([A-Za-z0-9._-]{3,255})\//.exec(value)?.[1];
+  if (!bucket) return "";
+  const photo = parsePrivatePhoto(value, bucket);
+  if (photo?.ownerId !== ownerId) return "";
+  return tripId ? photo.kind === "trip" && photo.tripId === tripId ? value : "" :
+    photo.kind === "profile" ? value : "";
+}
+
 function preview(id, trip, creator) {
   const feature = tripFeatures(id, trip);
   if (!feature) return null;
   const start = feature.startDay.toDate().toISOString(); const end = feature.endDay.toDate().toISOString();
   const text = (v, limit = 200) => typeof v === "string" ? v.slice(0, limit) : "";
-  const url = (v) => typeof v === "string" && /^https:\/\//.test(v) && v.length <= 4096 ? v : "";
+  const url = (v, ownerId, tripId) => typeof v === "string" && /^https:\/\//.test(v) &&
+    v.length <= 4096 ? v : privateImage(v, ownerId, tripId);
   return {id, destination: text(trip.destination), country: text(trip.country), continent: text(trip.continent),
     title: text(trip.title), createdBy: trip.createdBy, startDate: start, endDate: end,
     tripStartDate: start, tripEndDate: end, tripStatus: text(trip.tripStatus), isDiscoverable: true,
-    images: (Array.isArray(trip.images) ? trip.images : []).map(url).filter(Boolean).slice(0, 5),
-    creatorDisplayName: text(creator.displayName), creatorProfileImage: url(creator.profileImage),
+    images: (Array.isArray(trip.images) ? trip.images : []).map((image) =>
+      url(image, trip.createdBy, id)).filter(Boolean).slice(0, 5),
+    creatorDisplayName: text(creator.displayName), creatorProfileImage: url(creator.profileImage, trip.createdBy),
     memberCount: new Set([trip.createdBy, ...(Array.isArray(trip.joinedUsers) ? trip.joinedUsers.filter((x) => typeof x === "string") : [])]).size,
     favouriteCount: feature.popularity};
 }

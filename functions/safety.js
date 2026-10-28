@@ -3,6 +3,7 @@ const {HttpsError} = require("firebase-functions/v2/https");
 const {FieldValue} = require("firebase-admin/firestore");
 const {notification, inboxRef} = require("./notification-data");
 const {validId} = require("./validation");
+const {isTripMember} = require("./trip-membership");
 
 const reasons = new Set(["harassment", "hate", "sexual", "violence", "spam", "other"]);
 const hash = (...parts) => createHash("sha256").update(JSON.stringify(parts)).digest("hex");
@@ -38,8 +39,8 @@ async function readableTrip(db, uid, id) {
   const [doc, member, discovery] = await Promise.all([ref.get(), ref.collection("members").doc(uid).get(),
     db.collection("tripDiscovery").doc(id).get()]);
   const trip = doc.data();
-  if (!trip || trip.tripStatus === "deleted") throw new HttpsError("not-found", "Content is no longer available.");
-  const privateAccess = trip.createdBy === uid || (trip.joinedUsers || []).includes(uid) || member.data()?.status === "active";
+  if (!trip || trip.tripStatus === "deleted" || trip.moderationRemoved) throw new HttpsError("not-found", "Content is no longer available.");
+  const privateAccess = isTripMember(trip, uid, member.data());
   if (!privateAccess && !trip.isShared && !discovery.data()?.isDiscoverable) {
     throw new HttpsError("permission-denied", "Content is unavailable.");
   }
@@ -74,7 +75,15 @@ function createSafetyHandlers(db) {
       } else {
         requireId(roomId);
         const room = await db.collection("chat").doc(roomId).get();
-        if (!(room.data()?.usersIds || []).includes(uid)) throw new HttpsError("permission-denied", "Chat access required.");
+        const [trip, member] = await Promise.all([
+          db.collection("trips").doc(roomId).get(),
+          db.collection("trips").doc(roomId).collection("members").doc(uid).get(),
+        ]);
+        if (!trip.exists || trip.data().tripStatus === "deleted" ||
+            trip.data().moderationRemoved || !isTripMember(trip.data(), uid, member.data()) ||
+            !(room.data()?.usersIds || []).includes(uid)) {
+          throw new HttpsError("permission-denied", "Chat access required.");
+        }
         const doc = await db.collection("chat").doc(roomId).collection("messages").doc(targetId).get();
         if (!doc.exists) throw new HttpsError("not-found", "Message no longer available.");
         source = doc.data(); author = source.createdBy; version = doc.updateTime?.toMillis() || 0;

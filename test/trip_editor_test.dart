@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_crew/l10n/app_localizations.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/services/firebase_trip_service.dart';
 import 'package:travel_crew/views/create_trip/create_trip_screen.dart';
 import 'package:travel_crew/views/create_trip/controller/create_trip_controller.dart';
 import 'package:travel_crew/views/custom_widgets/custom_elevated_button.dart';
@@ -23,7 +24,12 @@ class SaveProbeController extends CreateTripController {
   }
 }
 
-CreateTripController editor({List<String> images = const [], double? price}) {
+CreateTripController editor({
+  List<String> images = const [],
+  double? price,
+  double latitude = 35.6,
+  double longitude = 139.7,
+}) {
   final controller = CreateTripController();
   controller.tripModel.value = TripModel.fromMap({
     'id': '09e04f90-1acd-4f38-828f-32a359cc25e1',
@@ -42,8 +48,8 @@ CreateTripController editor({List<String> images = const [], double? price}) {
     'invitedUsers': ['friend@example.com'],
     'images': images,
     'expensePerNight': price,
-    'latitude': 35.6,
-    'longitude': 139.7,
+    'latitude': latitude,
+    'longitude': longitude,
     'continent': 'Asia',
     'tripBudget': 500,
     'favouriteCount': 8,
@@ -65,6 +71,74 @@ void main() {
     () => dotenv.loadFromString(
       envString: 'TRAVEL_CREW_WEB_BASE_URL=https://travelcrew.app',
     ),
+  );
+  test(
+    'trip edit conflict check sees changed fields and preserves unrelated edits',
+    () {
+      final trip = editor().tripModel.value!;
+      final expected = trip.toMap();
+      final current = {...expected, 'favouriteCount': 9, 'title': 'Other edit'};
+      expect(
+        changedTripUpdateFields(
+          current: current,
+          expected: expected,
+          fields: ['destination'],
+          tripId: trip.id,
+        ),
+        isEmpty,
+      );
+      expect(
+        changedTripUpdateFields(
+          current: current,
+          expected: expected,
+          fields: ['title'],
+          tripId: trip.id,
+        ),
+        ['title'],
+      );
+      expect(
+        changedTripUpdateFields(
+          current: {...current, 'futureEditorField': 'changed'},
+          expected: {...expected, 'futureEditorField': 'original'},
+          fields: ['futureEditorField'],
+          tripId: trip.id,
+        ),
+        ['futureEditorField'],
+      );
+    },
+  );
+  test(
+    'trip edit conflict check handles old optional fields and nested cover credits',
+    () {
+      final trip =
+          editor(images: ['https://example.com/cover.jpg']).tripModel.value!;
+      final expected = trip.toMap();
+      final withoutOptional = {...expected}..remove('lodgingCurrencyCode');
+      expect(
+        changedTripUpdateFields(
+          current: withoutOptional,
+          expected: expected,
+          fields: ['lodgingCurrencyCode'],
+          tripId: trip.id,
+        ),
+        isEmpty,
+      );
+      final changedCredit = {
+        ...expected,
+        'imageCredits': {
+          'https://example.com/cover.jpg': {'license': 'CC BY'},
+        },
+      };
+      expect(
+        changedTripUpdateFields(
+          current: changedCredit,
+          expected: expected,
+          fields: ['imageCredits'],
+          tripId: trip.id,
+        ),
+        ['imageCredits'],
+      );
+    },
   );
   testWidgets('the edit screen lets an image-free MCP trip reach save', (
     tester,
@@ -166,7 +240,6 @@ void main() {
         ...patch,
       });
       expect(merged.expensePerNight, isNull);
-      expect(merged.departureDate, isNull);
       expect(merged.checkInDate, isNull);
       expect(merged.country, 'Japan');
       expect(merged.latitude, 35.6);
@@ -188,6 +261,7 @@ void main() {
         isTrue,
       );
       controller.expensePerNightController.text = '0';
+      controller.lodgingCurrencyCode = 'USD';
       expect(controller.optionalNightlyCost, 0);
       for (final bad in ['null', 'NaN', 'Infinity', '-1', 'abc']) {
         controller.expensePerNightController.text = bad;
@@ -299,6 +373,27 @@ void main() {
       );
       expect(controller.selectedPrompt, contains('Otherwise omit image_url'));
       expect(controller.selectedPrompt, contains('Never invent an image URL'));
+    },
+  );
+
+  test(
+    'publishing a trip without coordinates requires a selected location',
+    () {
+      final located = editor();
+      located.isLocked.value = false;
+      expect(located.publicLocationIssue(), isNull);
+
+      final imported = editor(latitude: 0, longitude: 0);
+      expect(imported.hasKnownCoordinates, isFalse);
+      expect(
+        imported.publicLocationIssue(),
+        isNull,
+        reason: 'A private trip may keep an unknown location',
+      );
+      imported.isLocked.value = false;
+      expect(imported.publicLocationIssue(), isNotNull);
+      imported.selectedPlaceId.value = 'real-place';
+      expect(imported.publicLocationIssue(), isNull);
     },
   );
 }

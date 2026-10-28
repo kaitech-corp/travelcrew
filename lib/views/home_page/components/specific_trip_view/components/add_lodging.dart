@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_crew/models/trip_model.dart';
 import 'package:travel_crew/models/lodging_model.dart';
+import 'package:travel_crew/services/finance_service.dart';
 import 'package:travel_crew/utils/app_colors.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_styles.dart';
@@ -28,6 +29,8 @@ class AddLodgingScreen extends StatefulWidget {
 class _AddLodgingScreenState extends State<AddLodgingScreen> {
   final controller = Get.find<SpecificTripViewController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map<String, int>? _currencies;
+  String? _currencyError;
 
   @override
   void initState() {
@@ -37,6 +40,19 @@ class _AddLodgingScreenState extends State<AddLodgingScreen> {
       controller.tripModel.value = args;
     }
     controller.initLodgingForm(args is LodgingModel ? args : null);
+    FinanceService.getCurrencyOptions()
+        .then((options) {
+          if (mounted) setState(() => _currencies = options);
+        })
+        .catchError((Object error) {
+          if (mounted) {
+            setState(
+              () =>
+                  _currencyError =
+                      'Unable to load currencies. Reopen and retry.',
+            );
+          }
+        });
   }
 
   @override
@@ -265,11 +281,40 @@ class _AddLodgingScreenState extends State<AddLodgingScreen> {
                 decimal: true,
               ),
             ),
+            SizedBox(height: 12.h),
+            if (_currencies == null && _currencyError == null)
+              const LinearProgressIndicator(),
+            if (_currencyError != null) Text(_currencyError!),
+            if (_currencies != null)
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  initialValue:
+                      _currencies!.containsKey(
+                            controller.lodgingCurrencyCode.value,
+                          )
+                          ? controller.lodgingCurrencyCode.value
+                          : null,
+                  decoration: const InputDecoration(
+                    labelText: 'Nightly cost currency',
+                  ),
+                  items:
+                      _currencies!.keys
+                          .map(
+                            (code) => DropdownMenuItem(
+                              value: code,
+                              child: Text(code),
+                            ),
+                          )
+                          .toList(),
+                  onChanged:
+                      (code) => controller.lodgingCurrencyCode.value = code,
+                ),
+              ),
             SizedBox(height: 30.h),
             CustomElevatedButton(
               width: context.width,
               title: 'Save',
-              onPressed: () => controller.saveLodging(),
+              onPressed: () => controller.saveLodging(_currencies),
             ),
           ],
         ),

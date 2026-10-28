@@ -90,7 +90,6 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                             controller.applyFilter();
                           },
 
-                          focusNode: FocusNode(),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.r),
@@ -147,52 +146,129 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                     : const SizedBox.shrink(),
           ),
           SizedBox(height: 20.h),
+          Obx(
+            () =>
+                controller.loadError.value != null &&
+                        controller.filteredTrips.isNotEmpty
+                    ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(controller.loadError.value!)),
+                          TextButton(
+                            onPressed: controller.getTrips,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    )
+                    : const SizedBox.shrink(),
+          ),
           Expanded(
             child: Obx(
               () =>
-                  controller.isLoading.isTrue
+                  controller.isLoading.isTrue && controller.trips.isEmpty
                       ? const Center(child: CircularProgressIndicator())
+                      : controller.loadError.value != null &&
+                          controller.filteredTrips.isEmpty
+                      ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(controller.loadError.value!),
+                            TextButton(
+                              onPressed: controller.getTrips,
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      )
                       : controller.filteredTrips.isEmpty
                       ? Center(child: Text(l10n.noTripsFound))
                       : ListView.builder(
                         padding: EdgeInsets.only(bottom: 140.h),
                         shrinkWrap: true,
-                        itemCount: controller.filteredTrips.length,
-                        itemBuilder:
-                            (context, index) => Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: TripsWidget(
-                                tripModel: controller.filteredTrips[index],
-                                onTap: () {
-                                  Get.toNamed(
-                                    kSpecificTripViewScreenRoute,
-                                    arguments: controller.filteredTrips[index],
-                                  );
-                                },
-                                images: controller.filteredTrips[index].images,
-                                daysToGo:
-                                    controller
-                                        .filteredTrips[index]
-                                        .computedDaysToGo,
-                                tripTimingLabel: _tripTimingLabel(
-                                  controller.filteredTrips[index],
+                        itemCount:
+                            controller.filteredTrips.length +
+                            (controller.hasMore.value ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == controller.filteredTrips.length) {
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
                                 ),
-                                destination:
-                                    controller.filteredTrips[index].destination,
-                                country:
-                                    controller.filteredTrips[index].country,
-                                startDate: DateFormat('dd MMM').format(
-                                  controller
-                                          .filteredTrips[index]
-                                          .tripStartDate ??
-                                      DateTime.now(),
-                                ),
-                                endDate: DateFormat('dd MMM').format(
-                                  controller.filteredTrips[index].tripEndDate ??
-                                      DateTime.now(),
-                                ),
+                                child:
+                                    controller.isLoadingMore.value
+                                        ? const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                        : TextButton(
+                                          onPressed: controller.loadMoreTrips,
+                                          style: TextButton.styleFrom(
+                                            minimumSize: const Size(44, 44),
+                                          ),
+                                          child: const Text('Show more trips'),
+                                        ),
                               ),
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: FutureBuilder(
+                              future: controller.cardMembers(
+                                controller.filteredTrips[index],
+                              ),
+                              builder:
+                                  (context, snapshot) => TripsWidget(
+                                    tripModel: controller.filteredTrips[index],
+                                    members:
+                                        snapshot.connectionState ==
+                                                ConnectionState.done
+                                            ? snapshot.data
+                                            : const [],
+                                    onTap: () {
+                                      Get.toNamed(
+                                        kSpecificTripViewScreenRoute,
+                                        arguments:
+                                            controller.filteredTrips[index],
+                                      );
+                                    },
+                                    images:
+                                        controller.filteredTrips[index].images,
+                                    daysToGo:
+                                        controller
+                                            .filteredTrips[index]
+                                            .computedDaysToGo,
+                                    tripTimingLabel: _tripTimingLabel(
+                                      controller.filteredTrips[index],
+                                    ),
+                                    destination:
+                                        controller
+                                            .filteredTrips[index]
+                                            .destination,
+                                    country:
+                                        controller.filteredTrips[index].country,
+                                    startDate: DateFormat('dd MMM').format(
+                                      controller
+                                              .filteredTrips[index]
+                                              .tripStartDate ??
+                                          DateTime.now(),
+                                    ),
+                                    endDate: DateFormat('dd MMM').format(
+                                      controller
+                                              .filteredTrips[index]
+                                              .tripEndDate ??
+                                          DateTime.now(),
+                                    ),
+                                  ),
                             ),
+                          );
+                        },
                       ),
             ),
           ),

@@ -30,12 +30,6 @@ service cloud.firestore {
         .difference(joinedIds(resource.data).toSet()).size() == 0;
     }
 
-    function validChatMembership(roomId) {
-      return request.resource.data.usersIds.toSet().difference(
-        joinedIds(tripData(roomId)).toSet().union([tripData(roomId).createdBy].toSet())
-      ).size() == 0 && isTripMember(roomId);
-    }
-
     function uid() {
       return request.auth.uid;
     }
@@ -73,17 +67,22 @@ service cloud.firestore {
       return signedIn() && data.createdBy == uid();
     }
 
-    function isTripMemberForData(data) {
+    function tripActive(data) {
+      return notRemoved(data) && data.get('tripStatus', '') != 'deleted';
+    }
+
+    function isTripMemberForData(data, tripId) {
       return signedIn() &&
         (data.createdBy == uid() ||
-         uid() in (data.joinedUsers == null ? [] : data.joinedUsers));
+         (exists(tripMemberRef(tripId, uid()))
+           ? tripMemberData(tripId, uid()).status == 'active'
+           : uid() in (data.joinedUsers == null ? [] : data.joinedUsers)));
     }
 
     function isTripMember(tripId) {
-      return signedIn() &&
-        ((exists(tripMemberRef(tripId, uid())) &&
-          tripMemberData(tripId, uid()).status == 'active') ||
-         (exists(tripRef(tripId)) && isTripMemberForData(tripData(tripId))));
+      return signedIn() && exists(tripRef(tripId)) &&
+        tripActive(tripData(tripId)) &&
+        isTripMemberForData(tripData(tripId), tripId);
     }
 
     function isTripOwner(tripId) {
@@ -93,28 +92,60 @@ service cloud.firestore {
     }
 
     function activeTripTraveler(tripId) {
-      return isTripMember(tripId) && notRemoved(tripData(tripId)) &&
-        tripData(tripId).get('tripStatus', '') != 'deleted' &&
-        (isTripOwner(tripId) || !exists(tripMemberRef(tripId, uid())) ||
-         tripMemberData(tripId, uid()).status == 'active');
+      return isTripMember(tripId);
+    }
+
+    function activeChatTraveler(tripId) {
+      return activeTripTraveler(tripId) &&
+        exists(/databases/$(database)/documents/users/$(uid())) &&
+        get(/databases/$(database)/documents/users/$(uid())).data.get('isDeleted', false) != true &&
+        exists(/databases/$(database)/documents/users/$(tripData(tripId).createdBy)) &&
+        get(/databases/$(database)/documents/users/$(tripData(tripId).createdBy)).data.get('isDeleted', false) != true &&
+        (!exists(/databases/$(database)/documents/safetyAccounts/$(tripData(tripId).createdBy)) ||
+         get(/databases/$(database)/documents/safetyAccounts/$(tripData(tripId).createdBy)).data.get('restricted', false) != true);
     }
 
     function isSharedTrip(tripId) {
       return exists(tripRef(tripId)) &&
-        tripData(tripId).isShared == true;
+        tripActive(tripData(tripId)) && tripData(tripId).isShared == true;
     }
 
-    function canReadTripData(data) {
-      return isAdmin() || data.isShared == true || isTripMemberForData(data);
+    function canReadTripData(data, tripId) {
+      return isAdmin() ||
+        (tripActive(data) &&
+          (data.isShared == true || isTripMemberForData(data, tripId)));
     }
 
     function canWriteTripData(data) {
-      return isAdmin() || (isTripOwnerForData(data) && notRemoved(data));
+      return isAdmin() || (isTripOwnerForData(data) && tripActive(data));
     }
 
-    function onlyFavouriteCountChanged() {
-      return signedIn() &&
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['favouriteCount']);
+    function tripUsesFinanceV2(tripId) {
+      return exists(tripRef(tripId)) &&
+        tripData(tripId).get('financeSchemaVersion', 0) == 2;
+    }
+
+    function legacyFinanceWritesOpen(tripId) {
+      return exists(tripRef(tripId)) &&
+        tripData(tripId).get('financeSchemaVersion', 0) != 2 &&
+        tripData(tripId).get('financeMigrationStatus', null) == null;
+    }
+
+    function financeLedgerReadable(tripId) {
+      return exists(tripRef(tripId)) &&
+        (tripData(tripId).get('financeMigrationStatus', null) == null ||
+          tripData(tripId).get('financeMigrationStatus', null) == 'completed');
+    }
+
+    function financeMetadataUnchanged() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+        'financeCurrency', 'financePrecision', 'financeSchemaVersion',
+        'financeMigrationStatus', 'financeMigrationRevision',
+        'financeMigrationStartedBy', 'financeMigrationStartedAt',
+        'financeMigrationCompletedBy', 'financeMigrationCompletedAt',
+        'financeMigrationCommitId', 'financeMigrationCommitFingerprint',
+        'financeMigrationMigratedCount', 'financeMigrationPlanId'
+      ]);
     }
 
     function onlyDiscoveryMemberCountDecremented() {
@@ -181,7 +212,7 @@ service cloud.firestore {
     }
 
     function canReadTripId(tripId) {
-      return exists(tripRef(tripId)) && canReadTripData(tripData(tripId));
+      return exists(tripRef(tripId)) && canReadTripData(tripData(tripId), tripId);
     }
 
     function canWriteTripId(tripId) {
@@ -189,8 +220,12 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow read, update, delete: if belongsTo(userId) || isAdmin();
-      allow create: if belongsTo(userId) || isAdmin();
+      allow read: if belongsTo(userId) || isAdmin();
+      allow update: if isAdmin() || (belongsTo(userId) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['favouriteTrips']));
+      allow delete: if isAdmin();
+      allow create: if isAdmin() || (belongsTo(userId) &&
+        request.resource.data.get('favouriteTrips', []).size() == 0);
 
       // Preferences and suppression are private. Validated callables own writes;
       // clients cannot mutate feature provenance or forge recommendation events.
@@ -208,12 +243,16 @@ service cloud.firestore {
 
       match /chatActivity/{roomId} {
         allow read: if belongsTo(userId);
-        allow create: if belongsTo(userId) && isTripMember(roomId) &&
+        allow create: if belongsTo(userId) && activeChatTraveler(roomId) &&
           request.resource.data.keys().hasOnly(['readAt']) &&
-          request.resource.data.readAt == request.time;
-        allow update: if belongsTo(userId) && isTripMember(roomId) &&
+          request.resource.data.readAt is timestamp &&
+          request.resource.data.readAt <= request.time;
+        allow update: if belongsTo(userId) && activeChatTraveler(roomId) &&
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']) &&
-          request.resource.data.readAt == request.time;
+          request.resource.data.readAt is timestamp &&
+          request.resource.data.readAt <= request.time &&
+          (!resource.data.keys().hasAny(['readAt']) ||
+            request.resource.data.readAt >= resource.data.readAt);
         allow delete: if false;
       }
 
@@ -243,10 +282,26 @@ service cloud.firestore {
     }
 
     match /tripDiscovery/{tripId} {
+      function validDiscoverySource() {
+        let trip = getAfter(tripRef(tripId)).data;
+        let latitude = request.resource.data.get('latitude', null);
+        let longitude = request.resource.data.get('longitude', null);
+        return trip.get('createdBy', '') == uid() &&
+          trip.get('isPrivate', false) != true &&
+          trip.get('tripStatus', '') != 'deleted' &&
+          request.resource.data.get('isDiscoverable', false) == true &&
+          latitude is number && latitude >= -90 && latitude <= 90 &&
+          longitude is number && longitude >= -180 && longitude <= 180 &&
+          latitude == trip.get('latitude', 0) &&
+          longitude == trip.get('longitude', 0) &&
+          request.resource.data.get('favouriteCount', 0) ==
+            trip.get('favouriteCount', 0);
+      }
       allow read: if signedIn() && resource.data.isDiscoverable == true;
       allow create, update: if signedIn() &&
         request.resource.data.createdBy == uid() &&
         notRemoved(getAfter(tripRef(tripId)).data) &&
+        validDiscoverySource() &&
         request.resource.data.id == tripId &&
         request.resource.data.keys().hasOnly([
           'id',
@@ -270,24 +325,87 @@ service cloud.firestore {
           'isDiscoverable',
           'updatedAt'
         ]);
-      allow update: if onlyFavouriteCountChanged();
       allow update: if isTripMember(tripId) && onlyDiscoveryMemberCountDecremented();
       // Authorize cleanup even when the discovery document is already absent.
       allow delete: if isTripOwner(tripId);
     }
 
     match /trips/{tripId} {
-      allow read: if canReadTripData(resource.data);
+      function actualLegacyLodgingDate(value) {
+        let day = timestamp.date(int(value[0:4]), int(value[5:7]),
+          int(value[8:10]));
+        return day.year() == int(value[0:4]) &&
+          day.month() == int(value[5:7]) &&
+          day.day() == int(value[8:10]);
+      }
+      function validLegacyLodgingDate(value) {
+        return value == null || (value is string && value.size() <= 40 &&
+          value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-' +
+            '(0[1-9]|[12][0-9]|3[01])' +
+            '(T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]' +
+            '(\\.[0-9]{1,6})?(Z|[+-]([01][0-9]|2[0-3]):?[0-5][0-9])?)?$') &&
+          actualLegacyLodgingDate(value));
+      }
+      function validLegacyLodging(data) {
+        let lodgingType = data.get('lodgingType', null);
+        let name = data.get('hotelName', null);
+        let address = data.get('hotelAddress', null);
+        let checkIn = data.get('checkInDate', null);
+        let checkOut = data.get('checkOutDate', null);
+        let cost = data.get('expensePerNight', null);
+        let currency = data.get('lodgingCurrencyCode', null);
+        return (lodgingType == null ||
+            (lodgingType is string && lodgingType.size() <= 100)) &&
+          (name == null || (name is string && name.size() <= 500)) &&
+          (address == null || (address is string && address.size() <= 2000)) &&
+          validLegacyLodgingDate(checkIn) &&
+          validLegacyLodgingDate(checkOut) &&
+          (checkIn == null || checkOut == null ||
+            checkOut[0:16] > checkIn[0:16]) &&
+          (cost == null || (cost is number && cost >= 0 && cost < 1000000000)) &&
+          (currency == null || (currency is string &&
+            currency.matches('^[A-Z]{3}$')));
+      }
+      function validLegacyLodgingUpdate() {
+        let changed = request.resource.data.diff(resource.data).affectedKeys();
+        let fields = ['lodgingType', 'hotelName', 'hotelAddress',
+          'checkInDate', 'checkOutDate', 'expensePerNight', 'lodgingCurrencyCode'];
+        return (changed.hasAny(fields) &&
+            request.resource.data.get('lodgingRevision', -1) ==
+              resource.data.get('lodgingRevision', 0) + 1 &&
+            validLegacyLodging(request.resource.data) &&
+            (!changed.hasAny(['expensePerNight']) ||
+              request.resource.data.get('expensePerNight', null) == null ||
+              request.resource.data.get('lodgingCurrencyCode', null) != null)) ||
+          (!changed.hasAny(fields) && !changed.hasAny(['lodgingRevision']));
+      }
+      allow read: if canReadTripData(resource.data, tripId);
       allow create: if signedIn() &&
         request.resource.data.createdBy == uid() &&
         request.resource.data.id == tripId &&
+        !request.resource.data.keys().hasAny([
+          'financeCurrency', 'financePrecision', 'financeSchemaVersion',
+          'financeMigrationStatus', 'financeMigrationRevision',
+          'financeMigrationStartedBy', 'financeMigrationStartedAt',
+          'financeMigrationCompletedBy', 'financeMigrationCompletedAt',
+          'financeMigrationCommitId', 'financeMigrationCommitFingerprint',
+          'financeMigrationMigratedCount', 'financeMigrationPlanId'
+        ]) &&
+        request.resource.data.get('lodgingRevision', 0) == 0 &&
+        validLegacyLodging(request.resource.data) &&
         !request.resource.data.keys().hasAny(['moderationRemoved']) &&
+        request.resource.data.get('favouriteCount', 0) == 0 &&
         joinedIds(request.resource.data).toSet().difference([uid()].toSet()).size() == 0;
       allow update: if canWriteTripData(resource.data) &&
         request.resource.data.createdBy == resource.data.createdBy &&
-        unchangedModeration() && noNewMembers();
+        (resource.data.get('financeMigrationStatus', null) == null ||
+          request.resource.data.get('expenses', []) ==
+            resource.data.get('expenses', [])) &&
+        request.resource.data.get('favouriteCount', 0) ==
+          resource.data.get('favouriteCount', 0) &&
+        unchangedModeration() && financeMetadataUnchanged() && noNewMembers() &&
+        validLegacyLodgingUpdate();
       allow update: if onlySelfRemovedFromJoinedUsers();
-      allow update: if onlyFavouriteCountChanged();
       allow delete: if canWriteTripData(resource.data);
 
       match /Members/{memberId} {
@@ -296,14 +414,16 @@ service cloud.firestore {
       }
 
       match /members/{memberId} {
-        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+        // A signed-in traveler may always read their own membership record so
+        // the detail screen can distinguish nonmember from unavailable.
+        allow read: if isAdmin() || belongsTo(memberId) || isSharedTrip(tripId) || isTripMember(tripId);
         allow create: if isAdmin() || (belongsTo(memberId) &&
           getAfter(tripRef(tripId)).data.createdBy == memberId &&
           request.resource.data.userId == memberId && request.resource.data.role == 'creator');
         allow update: if isAdmin() || ((isTripOwner(tripId) || belongsTo(memberId)) &&
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'removedAt']) &&
           request.resource.data.status == 'left');
-        allow delete: if isAdmin() || isTripOwner(tripId) || belongsTo(memberId);
+        allow delete: if false;
       }
 
       match /joinRequests/{userId} {
@@ -313,48 +433,181 @@ service cloud.firestore {
       }
 
       match /activities/{activityId} {
-        allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
-        allow create, update: if isAdmin() || isTripMember(tripId);
-        allow delete: if isAdmin() || isTripOwner(tripId) || resource.data.createdBy == uid();
+        function validActivityTime(value) {
+          return value == null || (value is string && value.size() <= 40 &&
+            value.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T' +
+              '([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]' +
+              '(\\.[0-9]{1,6})?(Z|[+-]([01][0-9]|2[0-3]):?[0-5][0-9])?$'));
+        }
+        function validActivityContent(data) {
+          return data.title is string && data.title.size() > 0 &&
+            data.title.size() <= 200 &&
+            data.description is string && data.description.size() <= 4000 &&
+            (data.get('location', null) == null ||
+              (data.location is string && data.location.size() <= 1000)) &&
+            validActivityTime(data.get('startDateTime', null)) &&
+            validActivityTime(data.get('endDateTime', null));
+        }
+        function validNewActivity() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['id', 'tripId', 'createdBy', 'title',
+              'description', 'location', 'startDateTime', 'endDateTime',
+              'likedBy', 'likesCount', 'isDeleted', 'contentRevision']) &&
+            d.keys().hasAll(['id', 'tripId', 'title', 'description',
+              'likedBy', 'likesCount', 'contentRevision']) &&
+            d.id == activityId && d.tripId == tripId &&
+            (d.get('createdBy', '') == uid() ||
+              (isTripOwner(tripId) && !d.keys().hasAny(['createdBy']))) &&
+            d.likedBy == [] && d.likesCount == 0 &&
+            d.contentRevision == 1 &&
+            d.get('isDeleted', false) == false &&
+            validActivityContent(d);
+        }
+        function validVoteUpdate() {
+          let oldVotes = resource.data.get('likedBy', []);
+          let newVotes = request.resource.data.get('likedBy', []);
+          return oldVotes is list && newVotes is list &&
+            newVotes.size() <= 500 &&
+            newVotes.toSet().size() == newVotes.size() &&
+            request.resource.data.likesCount == newVotes.size() &&
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(
+              ['likedBy', 'likesCount']) &&
+            newVotes.toSet().difference(oldVotes.toSet()).hasOnly([uid()]) &&
+            oldVotes.toSet().difference(newVotes.toSet()).hasOnly([uid()]);
+        }
+        function validContentUpdate() {
+          return (isTripOwner(tripId) ||
+              resource.data.get('createdBy', '') == uid()) &&
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(
+              ['title', 'description', 'location', 'startDateTime',
+                'endDateTime', 'contentRevision']) &&
+            request.resource.data.contentRevision ==
+              resource.data.get('contentRevision', 0) + 1 &&
+            validActivityContent(request.resource.data);
+        }
+        function validTombstoneUpdate() {
+          let d = request.resource.data;
+          return (isTripOwner(tripId) ||
+              resource.data.get('createdBy', '') == uid()) &&
+            d.isDeleted == true && d.deletedBy == uid() &&
+            d.deletedAt == request.time &&
+            d.title == '' && d.description == '' &&
+            d.get('location', null) == null &&
+            d.get('startDateTime', null) == null &&
+            d.get('endDateTime', null) == null &&
+            d.likedBy == [] && d.likesCount == 0 &&
+            d.diff(resource.data).affectedKeys().hasOnly([
+              'isDeleted', 'deletedBy', 'deletedAt', 'title', 'description',
+              'location', 'startDateTime', 'endDateTime', 'likedBy',
+              'likesCount', 'contentRevision']) &&
+            d.contentRevision == resource.data.get('contentRevision', 0) + 1 &&
+            d.diff(resource.data).affectedKeys().hasAny(['isDeleted']);
+        }
+        // Lists use an authenticated server reader that filters moderation.
+        allow get: if isAdmin() || ((resource == null || notRemoved(resource.data)) &&
+          (isSharedTrip(tripId) || isTripMember(tripId)));
+        allow list: if isAdmin();
+        allow create: if isAdmin() ||
+          ((activeTripTraveler(tripId) || creatingTripAsOwner(tripId)) &&
+            validNewActivity());
+        allow update: if isAdmin() || (activeTripTraveler(tripId) &&
+          notRemoved(resource.data) &&
+          (resource.data.get('isDeleted', false) == true
+            ? false
+            : (validContentUpdate() || validVoteUpdate() ||
+                validTombstoneUpdate())));
+        allow delete: if isAdmin();
       }
 
       match /lodgings/{lodgingId} {
         function activeTraveler() {
-          return isTripMember(tripId) && notRemoved(tripData(tripId)) &&
-            tripData(tripId).get('tripStatus', '') != 'deleted' &&
-            (isTripOwner(tripId) || !exists(tripMemberRef(tripId, uid())) ||
-             tripMemberData(tripId, uid()).status == 'active');
+          return activeTripTraveler(tripId);
+        }
+        function actualCalendarDate(value) {
+          let day = timestamp.date(int(value[0:4]), int(value[5:7]),
+            int(value[8:10]));
+          return day.year() == int(value[0:4]) &&
+            day.month() == int(value[5:7]) &&
+            day.day() == int(value[8:10]);
+        }
+        function validLodgingTime(value) {
+          return value == null || (value is string && value.size() <= 40 &&
+            value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-' +
+              '(0[1-9]|[12][0-9]|3[01])T' +
+              '([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]' +
+              '(\\.[0-9]{1,6})?(Z|[+-]([01][0-9]|2[0-3]):?[0-5][0-9])?$') &&
+            actualCalendarDate(value));
+        }
+        function validLodgingRange(data) {
+          return (data.checkInDate == null && data.checkOutDate == null) ||
+            (data.checkInDate != null && data.checkOutDate != null &&
+              data.checkOutDate[0:16] > data.checkInDate[0:16]);
         }
         function validLodging() {
           let data = request.resource.data;
           return data.keys().hasOnly(['createdBy', 'lodgingType', 'hotelName',
-            'hotelAddress', 'checkInDate', 'checkOutDate', 'expensePerNight']) &&
+            'hotelAddress', 'checkInDate', 'checkOutDate', 'expensePerNight',
+            'currencyCode', 'revision', 'isDeleted']) &&
             data.createdBy is string && data.lodgingType is string &&
             data.hotelName is string && data.hotelAddress is string &&
             data.hotelName.size() <= 500 && data.hotelAddress.size() <= 2000 &&
             data.lodgingType.size() <= 100 &&
             (data.hotelName.size() > 0 || data.hotelAddress.size() > 0) &&
-            (data.checkInDate == null || data.checkInDate is string) &&
-            (data.checkOutDate == null || data.checkOutDate is string) &&
+            validLodgingTime(data.checkInDate) &&
+            validLodgingTime(data.checkOutDate) &&
+            validLodgingRange(data) &&
             (data.expensePerNight == null ||
-             (data.expensePerNight is number && data.expensePerNight >= 0));
+             (data.expensePerNight is number && data.expensePerNight >= 0 &&
+               data.expensePerNight < 1000000000)) &&
+            (data.get('currencyCode', null) == null ||
+              (data.currencyCode is string &&
+                data.currencyCode.matches('^[A-Z]{3}$'))) &&
+            data.revision is int && data.revision >= 1 &&
+            data.isDeleted == false;
+        }
+        function validLodgingTombstone() {
+          let data = request.resource.data;
+          return data.keys().hasOnly(['createdBy', 'lodgingType', 'hotelName',
+            'hotelAddress', 'checkInDate', 'checkOutDate', 'expensePerNight',
+            'currencyCode', 'revision', 'isDeleted', 'deletedBy', 'deletedAt']) &&
+            data.createdBy == resource.data.createdBy &&
+            data.lodgingType == '' && data.hotelName == '' &&
+            data.hotelAddress == '' && data.checkInDate == null &&
+            data.checkOutDate == null && data.expensePerNight == null &&
+            data.get('currencyCode', null) == null &&
+            data.isDeleted == true && data.deletedBy == uid() &&
+            data.deletedAt == request.time &&
+            data.revision == resource.data.get('revision', 0) + 1;
         }
         allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
         allow create: if activeTraveler() && lodgingId != 'legacy' &&
-          request.resource.data.createdBy == uid() && validLodging();
+          request.resource.data.createdBy == uid() &&
+          request.resource.data.revision == 1 &&
+          request.resource.data.isDeleted == false && validLodging() &&
+          (request.resource.data.expensePerNight == null ||
+            request.resource.data.get('currencyCode', null) != null);
         allow update: if activeTraveler() && notRemoved(resource.data) &&
+          resource.data.get('isDeleted', false) == false &&
           (isTripOwner(tripId) || resource.data.createdBy == uid()) &&
-          request.resource.data.createdBy == resource.data.createdBy && validLodging();
-        allow delete: if activeTraveler() &&
-          (isTripOwner(tripId) || resource.data.createdBy == uid());
+          request.resource.data.createdBy == resource.data.createdBy &&
+          request.resource.data.revision == resource.data.get('revision', 0) + 1 &&
+          ((validLodging() &&
+            (request.resource.data.expensePerNight == null ||
+              request.resource.data.get('currencyCode', null) != null ||
+              (resource.data.get('currencyCode', null) == null &&
+                request.resource.data.expensePerNight ==
+                  resource.data.get('expensePerNight', null)))) ||
+            validLodgingTombstone());
+        allow delete: if false;
 
         match /likes/{userId} {
           function existingOption() {
             return lodgingId == 'legacy' ||
               (exists(/databases/$(database)/documents/trips/$(tripId)/lodgings/$(lodgingId)) &&
-               notRemoved(get(/databases/$(database)/documents/trips/$(tripId)/lodgings/$(lodgingId)).data));
+               notRemoved(get(/databases/$(database)/documents/trips/$(tripId)/lodgings/$(lodgingId)).data) &&
+               get(/databases/$(database)/documents/trips/$(tripId)/lodgings/$(lodgingId)).data.get('isDeleted', false) == false);
           }
-          allow read: if isAdmin() || isSharedTrip(tripId) || isTripMember(tripId);
+          allow read: if isAdmin() || ((isSharedTrip(tripId) || isTripMember(tripId)) && existingOption());
           allow create, update: if activeTraveler() && belongsTo(userId) && existingOption() &&
             request.resource.data.keys().hasOnly(['userId']) && request.resource.data.userId == uid();
           allow delete: if activeTraveler() && belongsTo(userId);
@@ -365,100 +618,190 @@ service cloud.firestore {
         allow read: if isAdmin() || isTripMember(tripId);
         allow create: if signedIn() &&
           request.resource.data.createdBy == uid() &&
-          isTripMember(tripId);
-        allow update, delete: if isAdmin() || isTripOwner(tripId) || resource.data.createdBy == uid();
+          legacyFinanceWritesOpen(tripId) && isTripMember(tripId);
+        allow update, delete: if legacyFinanceWritesOpen(tripId) && (isAdmin() || (activeTripTraveler(tripId) &&
+          (isTripOwner(tripId) || resource.data.createdBy == uid())));
+      }
+
+      match /financeExpenses/{expenseId} {
+        allow read: if isAdmin() ||
+          (activeTripTraveler(tripId) && financeLedgerReadable(tripId));
+        allow write: if false;
+      }
+
+      match /financeTransfers/{transferId} {
+        allow read: if isAdmin() ||
+          (activeTripTraveler(tripId) && financeLedgerReadable(tripId));
+        allow write: if false;
+      }
+
+      match /financeMigrationSources/{sourceId} {
+        allow read: if isAdmin() || isTripOwner(tripId);
+        allow write: if false;
       }
 
       match /transportation/{entryId} {
-        function activeTraveler() {
-          return isTripMember(tripId) && notRemoved(tripData(tripId)) &&
-            tripData(tripId).get('tripStatus', '') != 'deleted' &&
-            (!exists(tripMemberRef(tripId, uid())) || tripMemberData(tripId, uid()).status == 'active');
+        function actualCalendarDate(value) {
+          let day = timestamp.date(int(value[0:4]), int(value[5:7]),
+            int(value[8:10]));
+          return day.year() == int(value[0:4]) &&
+            day.month() == int(value[5:7]) &&
+            day.day() == int(value[8:10]);
+        }
+        function validLocalDate(value) {
+          return value == null || (value is string && value.size() <= 40 &&
+            value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])' +
+              '(T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])?$') &&
+            actualCalendarDate(value));
         }
         function validEntry() {
           let d = request.resource.data;
-          return d.keys().hasOnly(['id', 'tripId', 'userId', 'displayName', 'mode', 'title', 'origin', 'destination', 'departure', 'arrival', 'provider', 'serviceNumber', 'driver', 'travelerNames', 'notes']) &&
-            d.id == entryId && d.tripId == tripId && d.userId is string &&
-            d.mode in ['driving', 'rideshare', 'taxi', 'train', 'bus', 'scooter', 'bicycle', 'walking', 'ferry', 'boat', 'other'] &&
+          return d.keys().hasOnly(['id', 'tripId', 'userId', 'displayName',
+            'mode', 'departure', 'arrival', 'notes', 'revision', 'isDeleted']) &&
+            d.keys().hasAll(['id', 'tripId', 'userId', 'displayName',
+              'mode', 'departure', 'arrival', 'notes', 'revision', 'isDeleted']) &&
+            d.id == entryId && d.tripId == tripId &&
+            d.userId is string && d.userId.size() > 0 &&
             d.displayName is string && d.displayName.size() <= 200 &&
-            d.title is string && d.title.size() <= 200 &&
-            d.origin is string && d.origin.size() <= 500 &&
-            d.destination is string && d.destination.size() <= 500 &&
-            (d.departure == null || (d.departure is string && d.departure.size() <= 40)) &&
-            (d.arrival == null || (d.arrival is string && d.arrival.size() <= 40)) &&
-            d.provider is string && d.provider.size() <= 200 &&
-            d.serviceNumber is string && d.serviceNumber.size() <= 100 &&
-            d.driver is string && d.driver.size() <= 200 &&
-            d.travelerNames is list && d.travelerNames.size() <= 50 &&
-            d.notes is string && d.notes.size() <= 4000;
+            d.mode in ['flight', 'driving', 'rideshare', 'taxi', 'train', 'bus',
+              'scooter', 'bicycle', 'walking', 'ferry', 'boat', 'other'] &&
+            validLocalDate(d.departure) && validLocalDate(d.arrival) &&
+            d.notes is string && d.notes.size() <= 4000 &&
+            d.revision is int && d.revision >= 1 && d.isDeleted is bool;
         }
         allow read: if isAdmin() || isSharedTrip(tripId) || activeTripTraveler(tripId);
-        allow create: if (activeTraveler() || creatingTripAsOwner(tripId)) && request.resource.data.userId == uid() && validEntry();
-        allow update: if activeTraveler() && notRemoved(resource.data) &&
+        allow create: if (activeTripTraveler(tripId) || creatingTripAsOwner(tripId)) &&
+          request.resource.data.userId == uid() &&
+          request.resource.data.displayName ==
+            get(/databases/$(database)/documents/users/$(uid())).data.displayName &&
+          request.resource.data.isDeleted == false &&
+          request.resource.data.revision == 1 && validEntry();
+        allow update: if activeTripTraveler(tripId) && notRemoved(resource.data) &&
+          resource.data.isDeleted == false &&
           (resource.data.userId == uid() || isTripOwner(tripId)) &&
-          request.resource.data.userId == resource.data.userId && validEntry();
-        allow delete: if activeTraveler() && (resource.data.userId == uid() || isTripOwner(tripId));
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.displayName == resource.data.displayName &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(
+            ['mode', 'departure', 'arrival', 'notes', 'revision', 'isDeleted']) &&
+          request.resource.data.revision == resource.data.revision + 1 &&
+          validEntry();
+        allow delete: if false;
       }
 
-      match /flights/{flightId} {
-        allow read: if isAdmin() || isSharedTrip(tripId) || activeTripTraveler(tripId);
-        allow create: if signedIn() &&
-          request.resource.data.userId == uid() &&
-          request.resource.data.tripId == tripId &&
-          (activeTripTraveler(tripId) || creatingTripAsOwner(tripId));
-        allow update: if (isAdmin() || activeTripTraveler(tripId)) && (isAdmin() || isTripOwner(tripId) || resource.data.userId == uid()) &&
-          request.resource.data.userId == resource.data.userId &&
-          request.resource.data.tripId == resource.data.tripId && unchangedModeration();
-        allow delete: if (isAdmin() || activeTripTraveler(tripId)) && (isAdmin() || isTripOwner(tripId) || resource.data.userId == uid());
-      }
     }
 
     match /expense/{expenseId} {
       allow read: if isAdmin() || isTripMember(resource.data.tripId);
       allow create: if signedIn() &&
         request.resource.data.createdBy == uid() &&
+        legacyFinanceWritesOpen(request.resource.data.tripId) &&
         isTripMember(request.resource.data.tripId);
-      allow update, delete: if signedIn() &&
+      allow update, delete: if legacyFinanceWritesOpen(resource.data.tripId) &&
+        activeTripTraveler(resource.data.tripId) &&
         (resource.data.createdBy == uid() || isTripOwner(resource.data.tripId));
     }
 
     match /activity/{activityId} {
-      allow read: if isAdmin() || isSharedTrip(resource.data.tripId) || isTripMember(resource.data.tripId);
-      allow create: if signedIn() &&
-        request.resource.data.tripId is string &&
-        isTripMember(request.resource.data.tripId);
-      allow update: if signedIn() && isTripMember(resource.data.tripId);
-      allow delete: if signedIn() &&
-        (isTripOwner(resource.data.tripId) || resource.data.createdBy == uid());
-    }
-
-    match /flights/{flightId} {
-      allow read: if isAdmin() || isSharedTrip(resource.data.tripId) || activeTripTraveler(resource.data.tripId);
-      allow create: if activeTripTraveler(request.resource.data.tripId) && request.resource.data.userId == uid();
-      allow update: if activeTripTraveler(resource.data.tripId) &&
-        (resource.data.userId == uid() || isTripOwner(resource.data.tripId)) &&
-        request.resource.data.userId == resource.data.userId &&
-        request.resource.data.tripId == resource.data.tripId && unchangedModeration();
-      allow delete: if activeTripTraveler(resource.data.tripId) &&
-        (resource.data.userId == uid() || isTripOwner(resource.data.tripId));
+      function validLegacyActivityTime(value) {
+        return value == null || (value is string && value.size() <= 40 &&
+          value.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T' +
+            '([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]' +
+            '(\\.[0-9]{1,6})?(Z|[+-]([01][0-9]|2[0-3]):?[0-5][0-9])?$'));
+      }
+      function validLegacyVote() {
+        let oldVotes = resource.data.get('likedBy', []);
+        let newVotes = request.resource.data.get('likedBy', []);
+        return oldVotes is list && newVotes is list &&
+          newVotes.size() <= 500 &&
+          newVotes.toSet().size() == newVotes.size() &&
+          request.resource.data.likesCount == newVotes.size() &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(
+            ['likedBy', 'likesCount']) &&
+          newVotes.toSet().difference(oldVotes.toSet()).hasOnly([uid()]) &&
+          oldVotes.toSet().difference(newVotes.toSet()).hasOnly([uid()]);
+      }
+      function validLegacyContentUpdate() {
+        let d = request.resource.data;
+        return (isTripOwner(resource.data.tripId) ||
+            resource.data.get('createdBy', '') == uid()) &&
+          d.diff(resource.data).affectedKeys().hasOnly([
+            'title', 'description', 'location', 'startDateTime',
+            'endDateTime', 'contentRevision']) &&
+          d.contentRevision == resource.data.get('contentRevision', 0) + 1 &&
+          d.title is string && d.title.size() > 0 && d.title.size() <= 200 &&
+          d.description is string && d.description.size() <= 4000 &&
+          (d.get('location', null) == null ||
+            (d.location is string && d.location.size() <= 1000)) &&
+          validLegacyActivityTime(d.get('startDateTime', null)) &&
+          validLegacyActivityTime(d.get('endDateTime', null));
+      }
+      function validLegacyTombstone() {
+        let d = request.resource.data;
+        return (isTripOwner(resource.data.tripId) ||
+            resource.data.get('createdBy', '') == uid()) &&
+          d.isDeleted == true && d.deletedBy == uid() &&
+          d.deletedAt == request.time &&
+          d.title == '' && d.description == '' &&
+          d.get('location', null) == null &&
+          d.get('startDateTime', null) == null &&
+          d.get('endDateTime', null) == null &&
+          d.likedBy == [] && d.likesCount == 0 &&
+          d.diff(resource.data).affectedKeys().hasOnly([
+            'isDeleted', 'deletedBy', 'deletedAt', 'title', 'description',
+            'location', 'startDateTime', 'endDateTime', 'likedBy',
+            'likesCount', 'contentRevision']) &&
+          d.contentRevision == resource.data.get('contentRevision', 0) + 1 &&
+          d.diff(resource.data).affectedKeys().hasAny(['isDeleted']);
+      }
+      allow get: if isAdmin() || (notRemoved(resource.data) &&
+        (isSharedTrip(resource.data.tripId) || isTripMember(resource.data.tripId)));
+      allow list: if isAdmin();
+      // New activities use trips/{tripId}/activities; old records stay readable.
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (activeTripTraveler(resource.data.tripId) &&
+        notRemoved(resource.data) &&
+        resource.data.get('isDeleted', false) != true &&
+        (validLegacyContentUpdate() || validLegacyVote() ||
+          validLegacyTombstone()));
+      allow delete: if isAdmin();
     }
 
     match /chat/{roomId} {
-      allow read: if signedIn() && uid() in resource.data.usersIds;
-      allow create: if signedIn() && validChatMembership(roomId);
-      allow update: if signedIn() && validChatMembership(roomId) &&
-        (uid() in resource.data.usersIds || isTripOwner(roomId));
-      allow delete: if isAdmin() || isTripOwner(roomId);
+      function validMessageTimeUpdate() {
+        let d = request.resource.data;
+        let changed = d.diff(resource.data).affectedKeys();
+        let message = getAfter(/databases/$(database)/documents/chat/$(roomId)/messages/$(d.lastMessageId)).data;
+        return changed.hasOnly(['updatedAt', 'lastMessageId']) &&
+          changed.hasAll(['updatedAt', 'lastMessageId']) &&
+          d.lastMessageId is string &&
+          d.lastMessageId.matches('^[A-Za-z0-9_-]{1,128}$') &&
+          d.updatedAt == request.time &&
+          message.createdBy == uid() && message.sentTo == roomId &&
+          message.createdAt == request.time;
+      }
+      allow read: if activeChatTraveler(roomId);
+      allow create: if isAdmin();
+      allow update: if isAdmin() ||
+        (activeChatTraveler(roomId) && validMessageTimeUpdate());
+      allow delete: if isAdmin();
 
       match /messages/{messageId} {
-        allow read: if signedIn() && uid() in get(/databases/$(database)/documents/chat/$(roomId)).data.usersIds;
-        allow create: if signedIn() && isTripMember(roomId) &&
-          uid() in get(/databases/$(database)/documents/chat/$(roomId)).data.usersIds &&
-          request.resource.data.createdBy == uid() && !request.resource.data.keys().hasAny(['moderationRemoved']);
-        allow update: if signedIn() && resource.data.createdBy == uid() &&
-          notRemoved(resource.data) && unchangedModeration() &&
-          request.resource.data.createdBy == resource.data.createdBy;
-        allow delete: if signedIn() && resource.data.createdBy == uid() && notRemoved(resource.data);
+        function validNewMessage() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['chateId', 'messageStatus', 'createdAt',
+              'createdBy', 'sentTo', 'messageType', 'data']) &&
+            d.keys().hasAll(['chateId', 'messageStatus', 'createdAt',
+              'createdBy', 'sentTo', 'messageType', 'data']) &&
+            d.chateId == messageId && d.createdBy == uid() &&
+            d.sentTo == roomId && d.messageType == 'Text' &&
+            d.messageStatus == 'Sent' && d.createdAt == request.time &&
+            d.data is string && d.data.size() > 0 && d.data.size() <= 4000;
+        }
+        allow read: if activeChatTraveler(roomId);
+        allow create: if activeChatTraveler(roomId) &&
+          validNewMessage();
+        // Sent messages are immutable; moderation uses the server SDK.
+        allow update, delete: if isAdmin();
       }
     }
 

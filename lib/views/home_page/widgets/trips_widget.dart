@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:travel_crew/models/trip_model.dart';
+import 'package:travel_crew/models/public_user_model.dart';
 import 'package:travel_crew/utils/app_images.dart';
 import 'package:travel_crew/utils/app_styles.dart';
 import 'package:travel_crew/views/custom_widgets/any_image_view.dart';
@@ -9,6 +10,7 @@ class TripsWidget extends StatelessWidget {
   const TripsWidget({
     super.key,
     this.tripModel,
+    this.members,
     this.destination = 'Bali',
     required this.images,
     this.country = 'Indonesia',
@@ -26,6 +28,7 @@ class TripsWidget extends StatelessWidget {
   final String country;
   final String imageUrl;
   final TripModel? tripModel;
+  final List<PublicUserModel>? members;
   final String startDate;
   final String endDate;
   final List<String> memberAvatars;
@@ -94,7 +97,7 @@ class TripsWidget extends StatelessWidget {
   }
 
   Widget _buildTripDetails() {
-    final members = tripModel?.joindUsersList ?? [];
+    final members = this.members ?? tripModel?.joindUsersList ?? [];
     final visibleAvatars =
         members.take(3).map((member) => member.profileImage ?? '').toList();
     final metadataStyle = AppStyles.labelTextStyle().copyWith(

@@ -1,12 +1,12 @@
 const {onDocumentCreated, onDocumentWritten} = require("firebase-functions/v2/firestore");
 const {onRequest, HttpsError, onCall} = require("firebase-functions/v2/https");
 const {initializeApp, getApp} = require("firebase-admin/app");
-const {getFirestore, FieldValue} = require("firebase-admin/firestore");
+const {getFirestore} = require("firebase-admin/firestore");
 const {getMessaging} = require("firebase-admin/messaging");
 const {getStorage} = require("firebase-admin/storage");
 const {GoogleAuth} = require("google-auth-library");
 const logger = require("firebase-functions/logger");
-const {validId, normalizeEmails, validPhoto} = require("./validation");
+const {validPhoto} = require("./validation");
 
 initializeApp();
 
@@ -49,8 +49,9 @@ exports.maintainRecommendationTripV3 = onDocumentWritten(
     }),
 );
 exports.expireRecommendationsV3 = onSchedule("every 60 minutes", () => expireRecommendations(getDb()));
-const {createSafetyHandlers, isBlocked, assertActive} = require("./safety");
+const {createSafetyHandlers} = require("./safety");
 const {cleanBlockedPair, queueReportAlert, maintainReports, cleanSafetyData} = require("./safety-triggers");
+const {cleanDeletedUserFavorites} = require("./favorite-cleanup");
 const safety = createSafetyHandlers(getDb());
 exports.submitReportV3 = onCall(safety.submitReport);
 exports.blockUserV3 = onCall(safety.blockUser);
@@ -72,6 +73,68 @@ exports.inviteTripUserV3 = onCall(tripInvitations.send);
 exports.getTripInvitationV3 = onCall(tripInvitations.preview);
 exports.respondToTripInvitationV3 = onCall(tripInvitations.respond);
 exports.reviewReportV3 = onCall(safety.reviewReport);
+const {createExpenseHandlers} = require("./finance/expense-actions");
+const financeExpenses = createExpenseHandlers(getDb(), (event, fields) => logger.info(event, fields));
+exports.saveFinanceExpenseV3 = onCall(financeExpenses.save);
+exports.deleteFinanceExpenseV3 = onCall(financeExpenses.remove);
+const {createTransferHandlers} = require("./finance/transfer-actions");
+const financeTransfers = createTransferHandlers(getDb(), (event, fields) => logger.info(event, fields));
+exports.recordFinanceTransferV3 = onCall(financeTransfers.record);
+exports.answerFinanceTransferV3 = onCall(financeTransfers.answer);
+const {createMigrationHandlers} = require("./finance/migration-actions");
+const financeMigration = createMigrationHandlers(getDb(), (event, fields) => logger.info(event, fields));
+exports.beginFinanceMigrationReviewV3 = onCall(financeMigration.begin);
+exports.previewFinanceMigrationReviewV3 = onCall(financeMigration.preview);
+exports.commitFinanceMigrationReviewV3 = onCall({timeoutSeconds: 120, memory: "512MiB"},
+    financeMigration.commit);
+const {createBatchMigrationHandlers} = require("./finance/migration-batch-actions");
+const financeMigrationBatches = createBatchMigrationHandlers(getDb(),
+    (event, fields) => logger.info(event, fields));
+exports.stageFinanceMigrationBatchV3 = onCall({timeoutSeconds: 120, memory: "512MiB"},
+    financeMigrationBatches.stage);
+exports.finishFinanceMigrationBatchV3 = onCall({timeoutSeconds: 300, memory: "1GiB"},
+    financeMigrationBatches.finish);
+exports.abortFinanceMigrationBatchV3 = onCall({timeoutSeconds: 120, memory: "512MiB"},
+    financeMigrationBatches.abort);
+const {currencyOptions} = require("./finance/money");
+exports.getFinanceCurrenciesV3 = onCall((request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Sign in required.");
+  return {currencies: currencyOptions()};
+});
+const {createTripStatusHandler} = require("./trip-create-status");
+exports.checkTripCreateV3 = onCall(createTripStatusHandler(getDb()));
+const {createFavoriteHandler} = require("./favorite-actions");
+exports.setTripFavoriteV3 = onCall(createFavoriteHandler(getDb(),
+    (event, fields) => logger.info(event, fields)));
+const {createActivityListHandler} = require("./trip-activities");
+exports.listTripActivitiesV3 = onCall({timeoutSeconds: 60, memory: "256MiB"},
+    createActivityListHandler(getDb()));
+const {createChatRoomHandler, createChatRoomListHandler, removeInactiveChatUser} = require("./chat-rooms");
+exports.ensureChatRoomV3 = onCall({timeoutSeconds: 60, memory: "256MiB"},
+    createChatRoomHandler(getDb(), (event, fields) => logger.info(event, fields)));
+exports.listChatRoomsV3 = onCall({timeoutSeconds: 60, memory: "256MiB"},
+    createChatRoomListHandler(getDb()));
+exports.cleanInactiveChatAccountV3 = onDocumentWritten(
+    {database: DATABASE_ID, document: "users/{uid}", retry: true, timeoutSeconds: 540},
+    async (event) => {
+      const before = event.data?.before;
+      const after = event.data?.after;
+      if (!before || !after ||
+          (after.exists && after.data()?.isDeleted !== true) ||
+          (before.exists && before.data()?.isDeleted === true)) return;
+      await removeInactiveChatUser(getDb(), event.params.uid,
+          (name, fields) => logger.info(name, fields));
+    },
+);
+exports.cleanRestrictedChatAccountV3 = onDocumentWritten(
+    {database: DATABASE_ID, document: "safetyAccounts/{uid}", retry: true, timeoutSeconds: 540},
+    async (event) => {
+      if (event.data?.after.data()?.restricted !== true ||
+          event.data?.before.data()?.restricted === true) return;
+      await removeInactiveChatUser(getDb(), event.params.uid,
+          (name, fields) => logger.info(name, fields));
+    },
+);
 exports.cleanBlockedPairV3 = onDocumentCreated(
     {database: DATABASE_ID, document: "users/{uid}/blockedUsers/{target}", retry: true},
     (event) => cleanBlockedPair(getDb(), event.params.uid, event.params.target),
@@ -94,9 +157,16 @@ exports.maintainNotificationReceiptsV3 = onSchedule("every 24 hours", async () =
   if (stale.size) await batch.commit();
 });
 exports.cleanDeletedUserSafetyV3 = onDocumentWritten(
-    {database: DATABASE_ID, document: "users/{uid}", retry: true},
+    {database: DATABASE_ID, document: "users/{uid}", retry: true, timeoutSeconds: 540},
     async (event) => {
-      if (!event.data.after.exists || event.data.after.data().isDeleted === true) {
+      const becameDeleted = event.data.after.exists && event.data.after.data().isDeleted === true &&
+        event.data.before.data()?.isDeleted !== true;
+      if (!event.data.after.exists || becameDeleted) {
+        const deletedDocument = !event.data.after.exists;
+        const favorites = deletedDocument ? event.data.before.data()?.favouriteTrips :
+          event.data.after.data()?.favouriteTrips;
+        await cleanDeletedUserFavorites(getDb(), event.params.uid, favorites,
+            deletedDocument ? event.id : null);
         await cleanSafetyData(getDb(), event.params.uid);
         await cleanRecommendationData(getDb(), event.params.uid);
       }
@@ -146,6 +216,17 @@ const getBucketName = () => {
       `${process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT}.appspot.com`;
   }
 };
+const {createPrivatePhotoHandler} = require("./private-photos");
+let privatePhotoHandler;
+exports.privatePhotoV3 = onRequest(
+    {cors: true, maxInstances: 10, concurrency: 4, timeoutSeconds: 60,
+      memory: "512MiB", invoker: "public"},
+    (req, res) => {
+      privatePhotoHandler ||= createPrivatePhotoHandler({db: getDb(), auth: getAuth(),
+        bucket: getStorage().bucket(), log: (event, fields) => logger.error(event, fields)});
+      return privatePhotoHandler(req, res);
+    },
+);
 
 for (const [name, [document, fields, arrays]] of Object.entries(imageTargets)) {
   exports[name] = onDocumentWritten(
@@ -157,6 +238,7 @@ for (const [name, [document, fields, arrays]] of Object.entries(imageTargets)) {
         scan,
         bucket: getBucketName,
         logger,
+        emulator: process.env.FUNCTIONS_EMULATOR === "true",
       }),
   );
 }
@@ -186,55 +268,10 @@ exports.sendChatPushV3 = onDocumentCreated(
     (event) => sendChatPush(getDb(), getMessaging(), event),
 );
 
-exports.sendTripInvitesV3 = onCall(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Sign in required.");
-  }
-  const {tripId, emails} = request.data || {};
-  if (!validId(tripId) || !Array.isArray(emails) || emails.length > 100) {
-    throw new HttpsError("invalid-argument", "Invalid invite payload.");
-  }
-  const uniqueEmails = normalizeEmails(emails);
-  if (!uniqueEmails.length || uniqueEmails.length > 20) {
-    throw new HttpsError("invalid-argument", "Supply 1 to 20 valid emails.");
-  }
-  const db = getDb();
-  await assertActive(db, request.auth.uid);
-  const tripDoc = await db.collection("trips").doc(tripId).get();
-  if (!tripDoc.exists || tripDoc.data().createdBy !== request.auth.uid) {
-    throw new HttpsError("permission-denied", "Trip owner access required.");
-  }
-  const trip = tripDoc.data();
-  if (trip.tripStatus === "deleted") {
-    throw new HttpsError("failed-precondition", "This trip was deleted.");
-  }
-  const title = trip.title || trip.destination || "your trip";
-  const batch = db.batch();
-  for (const email of uniqueEmails) {
-    try {
-      const recipient = await getAuth().getUserByEmail(email);
-      if (await isBlocked(db, request.auth.uid, recipient.uid)) continue;
-    } catch (error) {
-      if (error.code !== "auth/user-not-found") throw error;
-    }
-    batch.set(db.collection("mail").doc(), {
-      to: [email],
-      message: {
-        subject: "You have been invited to a trip!",
-        text: `You have been invited to join the trip: ${title}. ` +
-          "Open the Travel Crew app to request to join.",
-      },
-      createdBy: request.auth.uid,
-      tripId,
-      createdAt: new Date(),
-    });
-  }
-  batch.update(tripDoc.ref, {invitedUsers: FieldValue.arrayUnion(...uniqueEmails)});
-  await batch.commit();
-  // Acknowledge submitted addresses without revealing registered or blocked recipients.
-  // Delivery needs the mail extension.
-  return {sent: uniqueEmails.length, queued: uniqueEmails.length};
-});
+const {createTripEmailInvitationHandler} = require("./trip-email-invitations");
+exports.sendTripInvitesV3 = onCall(createTripEmailInvitationHandler(
+    getDb(), getAuth(), (event, fields) => logger.info(event, fields),
+));
 
 // Remains public for image consumers that cannot attach auth headers.
 exports.placePhotoV3 = onRequest({cors: true, maxInstances: 10}, async (req, res) => {

@@ -1,14 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:travel_crew/main.dart';
 import 'package:travel_crew/models/chat_module/chat_message.dart';
-import 'package:travel_crew/models/chat_module/chat_user.dart';
 import 'package:travel_crew/services/firebase_trip_service.dart';
+import 'package:travel_crew/services/session_services.dart';
 
 import '../models/chat_module/chatroom.dart';
 import '../utils/app_strings.dart';
 
 class ChatFirebaseService {
+  static Future<ChatRoom> ensureChatRoom({required String roomId}) async {
+    await FirebaseFunctions.instance.httpsCallable('ensureChatRoomV3').call({
+      'tripId': roomId,
+    });
+    final snapshot =
+        await firestore.collection(kTripChatCollection).doc(roomId).get();
+    final data = snapshot.data();
+    if (data == null) throw StateError('Chat room unavailable.');
+    return ChatRoom.fromMap(data);
+  }
+
   static Future<ChatRoom?> getChatsByRoomId({required String roomId}) async {
     try {
       final result =
@@ -20,6 +32,7 @@ class ChatFirebaseService {
       if (kDebugMode) {
         print('Error in getChatsByRoomId for roomId: $roomId. Error: $e');
       }
+      rethrow;
     }
     return null;
   }
@@ -28,28 +41,49 @@ class ChatFirebaseService {
     required String userId,
   }) async {
     try {
-      final result =
-          await firestore
-              .collection(kTripChatCollection)
-              .where('usersIds', arrayContains: userId)
-              .get();
-      if (result.docs.isNotEmpty) {
-        final futures = result.docs.map((e) async {
-          final chatRoom = ChatRoom.fromMap(e.data());
-          chatRoom.trip = await FirebaseTripService.getTripById(
-            tripId: chatRoom.roomId,
-          );
-          return chatRoom;
-        });
-        final rooms = await Future.wait(futures);
-        return rooms.where((room) => room.trip != null).toList();
+      if (userId != GlobalVariables.currentUid) {
+        throw StateError('Cannot load another traveler’s chat rooms.');
       }
+      final rooms = <ChatRoom>[];
+      Map<String, dynamic>? cursor;
+      for (var page = 0; page < 20; page++) {
+        final response = await FirebaseFunctions.instance
+            .httpsCallable('listChatRoomsV3')
+            .call({if (cursor != null) 'cursor': cursor});
+        if (userId != GlobalVariables.currentUid) return [];
+        final data = Map<String, dynamic>.from(response.data as Map);
+        final ids = List<String>.from(data['roomIds'] as List<dynamic>);
+        final batch = await Future.wait(
+          ids.map((id) async {
+            try {
+              final snapshot =
+                  await firestore.collection(kTripChatCollection).doc(id).get();
+              final roomData = snapshot.data();
+              if (roomData == null) return null;
+              final room = ChatRoom.fromMap(roomData);
+              room.trip = await FirebaseTripService.getTripById(tripId: id);
+              return room.trip == null ? null : room;
+            } on FirebaseException catch (error) {
+              if (error.code == 'permission-denied') return null;
+              rethrow;
+            }
+          }),
+        );
+        if (userId != GlobalVariables.currentUid) return [];
+        rooms.addAll(batch.whereType<ChatRoom>());
+        cursor =
+            data['nextCursor'] == null
+                ? null
+                : Map<String, dynamic>.from(data['nextCursor'] as Map);
+        if (cursor == null) return rooms;
+      }
+      throw StateError('Chat room list is too large to load.');
     } catch (e) {
       if (kDebugMode) {
         print('Error in getChatRoomsByUserId for userId: $userId. Error: $e');
       }
+      rethrow;
     }
-    return [];
   }
 
   static Future<ChatRoom?> checkIfRoomExists({required String roomId}) async {
@@ -63,79 +97,9 @@ class ChatFirebaseService {
       if (kDebugMode) {
         print('Error in checkIfRoomExists for roomId: $roomId. Error: $e');
       }
-      return null;
+      rethrow;
     }
     return null;
-  }
-
-  // // fn to get all active users
-
-  //   static Future<List<String>> getAllActiveUsers() async {
-  //     List<String> users = [];
-  //     try {
-  //       var res = await firestore
-  //           .collection(kActiveUsersCollection)
-  //           .doc(kActiveUsersDocumentId)
-  //           .get();
-  //       if (res.exists) {
-  //         for (var element in res.data()!['users']) {
-  //           users.add(element);
-  //         }
-  //         return users;
-  //       }
-  //     } catch (e) {
-  //       print(e);
-  //     }
-  //     return [];
-  //   }
-
-  // // fn to set user to Active or in-active
-  // static updateUserActiveStatus(
-  //     {required List<String> users, bool isToAdd = true}) async {
-  //   try {
-  //     if (isToAdd) {
-  //       await firestore
-  //           .collection(kActiveUsersCollection)
-  //           .doc(kActiveUsersDocumentId)
-  //           .update({'users': FieldValue.arrayUnion(users)});
-  //     } else {
-  //       await firestore
-  //           .collection(kActiveUsersCollection)
-  //           .doc(kActiveUsersDocumentId)
-  //           .update({'users': users});
-  //     }
-  //   } catch (e) {}
-  // }
-  static Future<void> updateChatRoom({
-    required String roomId,
-    required ChatRoom chatToSave,
-  }) async {
-    try {
-      await firestore
-          .collection(kTripChatCollection)
-          .doc(roomId)
-          .update(chatToSave.toMap());
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error in updateChatRoom for roomId: $roomId. Error: $e');
-      }
-    }
-  }
-
-  // creating chat room if not exists
-  static Future<void> createChatRoom({required ChatRoom chatroom}) async {
-    try {
-      await firestore
-          .collection(kTripChatCollection)
-          .doc(chatroom.roomId)
-          .set(chatroom.toMap());
-    } catch (e) {
-      if (kDebugMode) {
-        print(
-          'Error in createChatRoom for roomId: ${chatroom.roomId}. Error: $e',
-        );
-      }
-    }
   }
 
   // to save message in firebase
@@ -144,18 +108,45 @@ class ChatFirebaseService {
     required String roomId,
     required ChatMessage chatToSave,
   }) async {
+    if (chatToSave.chateId.isEmpty ||
+        chatToSave.createdBy != GlobalVariables.currentUid ||
+        chatToSave.sentTo != roomId ||
+        chatToSave.messageType != MessageType.Text.name ||
+        chatToSave.messageStatus != MessageStatus.sent.status ||
+        chatToSave.data.trim().isEmpty ||
+        chatToSave.data.length > 4000 ||
+        chatToSave.callTimeTaken != null) {
+      throw const FormatException('Invalid chat message.');
+    }
     if (kDebugMode) {
       print('Saving message in room: $roomId');
     }
     try {
       final room = firestore.collection(kTripChatCollection).doc(roomId);
-      final batch = firestore.batch();
-      batch.set(
-        room.collection(kTripChatMessagesCollection).doc(chatToSave.chateId),
-        chatToSave.copyWith(createdAt: Timestamp.now()).toMap(),
-      );
-      batch.update(room, {'updatedAt': Timestamp.now()});
-      await batch.commit();
+      final messageRef = room
+          .collection(kTripChatMessagesCollection)
+          .doc(chatToSave.chateId);
+      await firestore.runTransaction((transaction) async {
+        final existing = (await transaction.get(messageRef)).data();
+        if (existing != null) {
+          if (existing['chateId'] == chatToSave.chateId &&
+              existing['createdBy'] == chatToSave.createdBy &&
+              existing['sentTo'] == roomId &&
+              existing['messageType'] == MessageType.Text.name &&
+              existing['data'] == chatToSave.data) {
+            return;
+          }
+          throw StateError('A different message already uses this ID.');
+        }
+        transaction.set(messageRef, {
+          ...chatToSave.toMap(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        transaction.update(room, {
+          'updatedAt': FieldValue.serverTimestamp(),
+          'lastMessageId': chatToSave.chateId,
+        });
+      });
     } catch (e) {
       if (kDebugMode) {
         print('Error in sendMessage for roomId: $roomId. Error: $e');
@@ -164,26 +155,14 @@ class ChatFirebaseService {
     }
   }
 
-  static Future<void> updateIsTyping({
-    required List<ChatUser> users,
-    required String roomId,
-  }) async {
-    try {
-      await firestore.collection(kTripChatCollection).doc(roomId).update({
-        'users': users.map((e) => e.toMap()).toList(),
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error in updateIsTyping for roomId: $roomId. Error: $e');
-      }
-    }
-  }
-
   static Future<List<ChatMessage>> getPaginatedChats(
     String roomId,
     DocumentSnapshot? lastVisible,
     int limit,
   ) async {
+    if (limit < 1 || limit > 100) {
+      throw RangeError.range(limit, 1, 100, 'limit');
+    }
     try {
       Query query = firestore
           .collection(kTripChatCollection)
@@ -206,81 +185,7 @@ class ChatFirebaseService {
       if (kDebugMode) {
         print('Error in getPaginatedChats for roomId: $roomId. Error: $e');
       }
-      return [];
-    }
-  }
-
-  /// Safely add a user to a chatroom, preventing duplicates
-  static Future<bool> addUserToChatRoom({
-    required String roomId,
-    required ChatUser user,
-  }) async {
-    try {
-      final chatRoom = await getChatsByRoomId(roomId: roomId);
-      if (chatRoom == null) {
-        if (kDebugMode) {
-          print('Cannot add user to non-existent chatroom: $roomId');
-        }
-        return false;
-      }
-
-      final userAdded = chatRoom.addUserSafely(user);
-      if (!userAdded) {
-        if (kDebugMode) {
-          print('User ${user.id} is already in chatroom: $roomId');
-        }
-        return false; // User was already in the chatroom
-      }
-
-      await updateChatRoom(roomId: roomId, chatToSave: chatRoom);
-      if (kDebugMode) {
-        print('Successfully added user ${user.id} to chatroom: $roomId');
-      }
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        print(
-          'Error in addUserToChatRoom for roomId: $roomId, userId: ${user.id}. Error: $e',
-        );
-      }
-      return false;
-    }
-  }
-
-  /// Remove a user from a chatroom
-  static Future<bool> removeUserFromChatRoom({
-    required String roomId,
-    required String userId,
-  }) async {
-    try {
-      final chatRoom = await getChatsByRoomId(roomId: roomId);
-      if (chatRoom == null) {
-        if (kDebugMode) {
-          print('Cannot remove user from non-existent chatroom: $roomId');
-        }
-        return false;
-      }
-
-      final userRemoved = chatRoom.removeUser(userId);
-      if (!userRemoved) {
-        if (kDebugMode) {
-          print('User $userId was not found in chatroom: $roomId');
-        }
-        return false;
-      }
-
-      await updateChatRoom(roomId: roomId, chatToSave: chatRoom);
-      if (kDebugMode) {
-        print('Successfully removed user $userId from chatroom: $roomId');
-      }
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        print(
-          'Error in removeUserFromChatRoom for roomId: $roomId, userId: $userId. Error: $e',
-        );
-      }
-      return false;
+      rethrow;
     }
   }
 }

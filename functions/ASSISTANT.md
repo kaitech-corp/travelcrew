@@ -60,7 +60,13 @@ assistant's directory. It can be added as a custom connection by compatible host
 
 Destination, country and calendar dates are required. Activity timestamps require
 an explicit UTC offset or `Z`. Up to 50 activities and 50 expenses are accepted;
-each expense requires a positive amount and date. Unknown fields are rejected,
+each expense requires a positive amount and date. Trips with expenses also
+require `expense_currency`, one supported uppercase ISO currency code for all
+expenses. Amounts must use the currency's minor-unit precision. The server
+stores exact integer minor units and no paid settlement status. An expense may
+also include `local_datetime` (for example `2027-04-10T15:00:00`) when its
+location's local clock is known; it must match the expense date and must not
+include a UTC offset or `Z`. Unknown fields are rejected,
 including caller-supplied owner IDs, members and permissions. `is_private: false`
 is rejected. Record only expenses the user wants entered; the tool does not book
 travel and should not invent bookings or treat estimated costs as paid expenses.
@@ -69,8 +75,11 @@ external API deliberately requires their timezone to avoid ambiguous imports.
 
 Activity and lodging clocks use their location's offset on the event date.
 Lodging accepts a calendar date or an offset-bearing timestamp. Displays retain
-those wall times without UTC offset labels. Transportation, including flights,
-uses each endpoint's local clock as supplied without requiring an offset (see
+those wall times without UTC offset labels. If lodging includes
+`cost_per_night`, it must also include `cost_currency`, the supported ISO code
+for the property's nightly quote. That quote is separate from the trip's
+expense currency and is never treated as a paid expense. Transportation, including flights,
+uses each endpoint's local clock as supplied and rejects timezone suffixes (see
 below). Never guess the venue timezone from the phone.
 
 Send `Authorization: Bearer <token>` and `Idempotency-Key: <unique-request-id>`.

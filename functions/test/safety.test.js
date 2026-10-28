@@ -55,6 +55,7 @@ function fixture() {
     if (name === "firebase-functions/v2/https") return {HttpsError};
     if (name === "./notification-data") return require("../notification-data");
     if (name === "./safety") return safetyModule;
+    if (name === "./trip-membership") return require("../trip-membership");
     if (name === "./validation") return require("../validation");
     if (name === "./recommendations/events") return require("../recommendations/events");
     return require(name);
@@ -71,6 +72,17 @@ function fixture() {
 const request = (data, uid = "alice", admin = false) => ({auth: {uid, token: {admin}}, data});
 const report = (extra = {}) => request({targetType: "message", targetId: "message", roomId: "trip", reason: "harassment", details: "Please review", requestId: "request1", ...extra});
 const rejectsCode = (promise, code) => assert.rejects(promise, (e) => e.code === code);
+
+test("recorded departure overrides stale joinedUsers for reports and rejoining", async () => {
+  const f = fixture();
+  f.records.set("trips/trip/members/alice", {userId: "alice", status: "left"});
+  await rejectsCode(f.submitReport(report()), "permission-denied");
+  await rejectsCode(f.submitReport(request({targetType: "trip", targetId: "trip", reason: "other", requestId: "stale"})), "permission-denied");
+  // A former member can request to rejoin if the trip is discoverable.
+  f.records.get("trips/trip").isShared = true;
+  const result = await f.requestJoin(request({tripId: "trip", attemptId: "rejoin"}));
+  assert.equal(result.status, "pending");
+});
 
 test("reports derive identity, author and bounded evidence; retries survive deletion", async () => {
   const f = fixture();

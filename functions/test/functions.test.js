@@ -12,6 +12,7 @@ function fixture() {
     ["publicProfile/member", {displayName: "Sam"}],
   ]);
   const sends = [];
+  const favoriteCleanups = [];
   let nextId = 0;
   const ref = (key) => ({
     path: key,
@@ -34,6 +35,12 @@ function fixture() {
   const mail = [];
   const db = {collection, runTransaction: async (fn) => fn({
     get: (r) => r.get(), set: (r, data) => r.set(data),
+    create: (r, data) => {
+      if (records.has(r.path)) throw new Error("document exists");
+      records.set(r.path, data);
+      if (r.path.startsWith("mail/")) mail.push(data);
+    },
+    update: (r, data) => records.set(r.path, {...records.get(r.path), ...data}),
   }), batch: () => ({
     set: (ref, data) => mail.push(data), update: () => {}, commit: async () => {},
   })};
@@ -65,20 +72,36 @@ function fixture() {
     "./trip-actions": require("../trip-actions"),
     "./recommendations": require("../recommendations"),
     "./recommendations/features": require("../recommendations/features"),
-    "./recommendations/maintenance": require("../recommendations/maintenance"),
+    "./recommendations/maintenance": {...require("../recommendations/maintenance"),
+      cleanRecommendationData: async () => {}},
     "./trip-invitations": require("../trip-invitations"),
+    "./trip-email-invitations": require("../trip-email-invitations"),
+    "./finance/expense-actions": {createExpenseHandlers: () => ({save: () => {}, remove: () => {}})},
+    "./finance/transfer-actions": {createTransferHandlers: () => ({record: () => {}, answer: () => {}})},
+    "./finance/migration-actions": {createMigrationHandlers: () => ({begin: () => {},
+      preview: () => {}, commit: () => {}})},
+    "./finance/migration-batch-actions": {createBatchMigrationHandlers: () => ({
+      stage: () => {}, finish: () => {}, abort: () => {}})},
+    "./finance/money": {currencyOptions: () => []},
+    "./trip-create-status": {createTripStatusHandler: () => () => ({exists: false})},
+    "./favorite-actions": {createFavoriteHandler: () => () => ({favorite: true, changed: true})},
+    "./favorite-cleanup": {cleanDeletedUserFavorites: async (...args) => favoriteCleanups.push(args)},
+    "./trip-activities": {createActivityListHandler: () => () => ({source: "canonical", activities: [], nextCursor: null})},
+    "./chat-rooms": {createChatRoomHandler: () => () => ({ok: true}),
+      createChatRoomListHandler: () => () => ({roomIds: [], nextCursor: null})},
     "./safety": require("../safety"),
-    "./safety-triggers": require("../safety-triggers"),
+    "./safety-triggers": {...require("../safety-triggers"), cleanSafetyData: async () => {}},
     "./validation": validation,
     "./moderation": require("../moderation"),
     "./image-moderation": require("../image-moderation"),
     "./trip-photos": require("../trip-photos"),
-    "firebase-functions/logger": {warn: () => {}, error: () => {}},
+    "./private-photos": require("../private-photos"),
+    "firebase-functions/logger": {warn: () => {}, error: () => {}, info: () => {}},
   };
   const context = {exports: {}, require: (name) => modules[name], console,
     process: {env: {}}, URL, AbortSignal, Buffer};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, "../index.js"), "utf8"), context);
-  return {handlers: context.exports, records, sends, mail};
+  return {handlers: context.exports, records, sends, mail, favoriteCleanups};
 }
 const event = (data, userId = "member", notificationId = "event") => ({
   data: {data: () => data}, params: {userId, notificationId},
@@ -87,6 +110,19 @@ const joined = {createdBy: "member", notificationType: "Trip", schemaVersion: 2,
   eventType: "join_accepted", pushEnabled: true, notificationStatus: "unread",
   notificationForId: "trip", sentTo: ["owner"], notificationTitle: "Accepted", notificationMessage: "Accepted"};
 function seed(f) { f.records.set("notifications/owner/notification/event", {...joined}); }
+test("favorite cleanup starts on deletion transition, not its own list updates", async () => {
+  const f = fixture();
+  const snapshot = (data) => ({exists: true, data: () => data});
+  const deleted = (before, after) => ({params: {uid: "member"}, id: "event-id",
+    data: {before: snapshot(before), after: snapshot(after)}});
+  await f.handlers.cleanDeletedUserSafetyV3(deleted({isDeleted: true, favouriteTrips: ["trip"]},
+      {isDeleted: true, favouriteTrips: []}));
+  assert.equal(f.favoriteCleanups.length, 0);
+  await f.handlers.cleanDeletedUserSafetyV3(deleted({isDeleted: false, favouriteTrips: ["trip"]},
+      {isDeleted: true, favouriteTrips: ["trip"]}));
+  assert.equal(f.favoriteCleanups.length, 1);
+  assert.deepEqual(Array.from(f.favoriteCleanups[0][2]), ["trip"]);
+});
 test("legacy client source events no longer forward into inboxes", async () => {
   const f = fixture();
   await f.handlers.sendPushNotificationV3(event({notificationType: "Trip", createdBy: "member"}));
@@ -109,6 +145,16 @@ test("invites normalize before deduplication and use the stored title", async ()
   assert.equal(result.queued, 1);
   assert.equal(f.mail.length, 1);
   assert.match(f.mail[0].message.text, /Real title/);
+  await f.handlers.sendTripInvitesV3({auth: {uid: "owner"}, data: {
+    tripId: "trip", requestId: "same-attempt", emails: ["sam@example.com"],
+  }});
+  await f.handlers.sendTripInvitesV3({auth: {uid: "owner"}, data: {
+    tripId: "trip", requestId: "same-attempt", emails: ["sam@example.com"],
+  }});
+  assert.equal(f.mail.length, 2, "a replay with one request ID queues one additional email");
+  await assert.rejects(f.handlers.sendTripInvitesV3({auth: {uid: "owner"}, data: {
+    tripId: "trip", requestId: "same-attempt", emails: ["another@example.com"],
+  }}));
 });
 test("invites reject unauthenticated, non-owner, deleted and invalid trip requests", async () => {
   const f = fixture();
@@ -187,7 +233,9 @@ test("index exports all required text moderation, image moderation, and service 
     "inviteTripUserV3",
     "getTripInvitationV3",
     "respondToTripInvitationV3",
+    "setTripFavoriteV3",
     "placePhotoV3",
+    "privatePhotoV3",
   ];
   for (const fn of expected) {
     assert.equal(typeof handlers[fn], "function", `Expected ${fn} to be exported`);

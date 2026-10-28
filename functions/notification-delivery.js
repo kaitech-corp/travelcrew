@@ -1,5 +1,20 @@
 const {isBlocked} = require("./safety");
 const {eventKey} = require("./notification-data");
+const {Timestamp} = require("firebase-admin/firestore");
+
+function timestampAfter(left, right) {
+  if (!right) return true;
+  return left.seconds > right.seconds ||
+    (left.seconds === right.seconds && left.nanoseconds > right.nanoseconds);
+}
+const {isTripMember} = require("./trip-membership");
+
+async function activeMember(db, tripId, trip, uid) {
+  if (!trip || trip.tripStatus === "deleted" || trip.moderationRemoved) return false;
+  const member = (await db.collection("trips").doc(tripId)
+      .collection("members").doc(uid).get()).data();
+  return isTripMember(trip, uid, member);
+}
 
 async function eligible(db, actor, recipient) {
   if (actor === recipient || await isBlocked(db, actor, recipient)) return false;
@@ -57,7 +72,7 @@ async function sendInboxPush(db, messaging, event) {
       } else if (n.eventType === "join_requested") {
         const join = (await db.collection("trips").doc(n.notificationForId).collection("joinRequests").doc(n.requestUserId).get()).data();
         if (join?.status !== "pending" || join.attemptId !== n.attemptId || trip.createdBy !== userId) return null;
-      } else if (trip.createdBy !== userId && !(trip.joinedUsers || []).includes(userId)) return null;
+      } else if (!await activeMember(db, n.notificationForId, trip, userId)) return null;
     }
     return n;
   };
@@ -79,16 +94,20 @@ async function sendChatPush(db, messaging, event) {
   const room = (await roomRef.get()).data();
   const trip = (await db.collection("trips").doc(roomId).get()).data();
   if (!trip || trip.tripStatus === "deleted" || trip.moderationRemoved || !room?.usersIds?.includes(msg.createdBy)) return;
-  const members = new Set([trip.createdBy, ...(trip.joinedUsers || [])]);
-  if (!members.has(msg.createdBy)) return;
-  for (const uid of [...new Set(room.usersIds)].filter((id) => members.has(id) && id !== msg.createdBy)) {
-    if (!await eligible(db, msg.createdBy, uid)) continue;
+  if (!await activeMember(db, roomId, trip, msg.createdBy)) return;
+  for (const uid of new Set(room.usersIds)) {
+    if (uid === msg.createdBy || !await activeMember(db, roomId, trip, uid) ||
+        !await eligible(db, msg.createdBy, uid)) continue;
     const activity = db.collection("users").doc(uid).collection("chatActivity").doc(roomId);
-    const sentAt = snapshot.createTime.toMillis();
+    const sentAt = typeof msg.createdAt?.toMillis === "function" ?
+      msg.createdAt : snapshot.createTime;
     await db.runTransaction(async (tx) => {
       const old = (await tx.get(activity)).data();
-      if ((old?.lastMessageAt || 0) >= sentAt) return;
-      tx.set(activity, {lastMessageAt: sentAt, lastSenderId: msg.createdBy, roomId}, {merge: true});
+      const previous = old?.lastMessageAtTime ||
+        (old?.lastMessageAt ? Timestamp.fromMillis(old.lastMessageAt) : null);
+      if (previous && !timestampAfter(sentAt, previous)) return;
+      tx.set(activity, {lastMessageAt: sentAt.toMillis(), lastMessageAtTime: sentAt,
+        lastSenderId: msg.createdBy, roomId}, {merge: true});
     });
     await deliver(db, messaging, uid, eventKey("chat", roomId, messageId), {
       notification: {title: "New trip message", body: "You have a new message in your trip chat."},
@@ -98,9 +117,9 @@ async function sendChatPush(db, messaging, event) {
       const t = latestTrip.data();
       return latestRoom.data()?.usersIds?.includes(uid) && latestRoom.data()?.usersIds?.includes(msg.createdBy) &&
         t && t.tripStatus !== "deleted" && !t.moderationRemoved &&
-        [t.createdBy, ...(t.joinedUsers || [])].includes(uid) && [t.createdBy, ...(t.joinedUsers || [])].includes(msg.createdBy) &&
+        await activeMember(db, roomId, t, uid) && await activeMember(db, roomId, t, msg.createdBy) &&
         latestMsg.exists && !latestMsg.data().moderationRemoved &&
-        (state.data()?.readAt?.toMillis?.() || 0) < sentAt && await eligible(db, msg.createdBy, uid);
+        timestampAfter(sentAt, state.data()?.readAt) && await eligible(db, msg.createdBy, uid);
     });
   }
 }

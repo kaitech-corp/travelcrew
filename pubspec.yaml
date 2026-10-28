@@ -82,6 +82,7 @@ dependencies:
 
 
   uuid: ^4.5.3
+  mime: ^2.0.0
   http: ^1.6.0
   collection: ^1.19.1
   flutter_app_badge: ^2.0.2
@@ -89,6 +90,8 @@ dependencies:
   app_links: ^7.0.0
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to

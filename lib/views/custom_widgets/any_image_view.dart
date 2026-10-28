@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:travel_crew/utils/app_images.dart';
+import 'package:travel_crew/services/private_photo_service.dart';
 
 class AnyImageView extends StatelessWidget {
   const AnyImageView({
@@ -76,6 +78,17 @@ class AnyImageView extends StatelessWidget {
     // Get.log('user token: ${supabase.auth.currentSession?.accessToken}');
     switch (fileType) {
       case SourceType.network:
+        if (PrivatePhotoService.isPrivateReference(url)) {
+          return _PrivatePhotoImage(
+            url: url,
+            fit: fit,
+            height: height,
+            width: width,
+            color: imageColor,
+            loading: (context) => laodingShimmer(context),
+            error: getErrorWidget,
+          );
+        }
         return useCache
             ? CachedNetworkImage(
               filterQuality: FilterQuality.high,
@@ -161,6 +174,64 @@ class AnyImageView extends StatelessWidget {
           fit: errorFit,
         );
   }
+}
+
+class _PrivatePhotoImage extends StatefulWidget {
+  const _PrivatePhotoImage({
+    required this.url,
+    required this.fit,
+    required this.height,
+    required this.width,
+    required this.color,
+    required this.loading,
+    required this.error,
+  });
+
+  final String url;
+  final BoxFit fit;
+  final double? height;
+  final double? width;
+  final Color? color;
+  final Widget Function(BuildContext) loading;
+  final Widget Function() error;
+
+  @override
+  State<_PrivatePhotoImage> createState() => _PrivatePhotoImageState();
+}
+
+class _PrivatePhotoImageState extends State<_PrivatePhotoImage> {
+  late Future<Uint8List> bytes;
+
+  @override
+  void initState() {
+    super.initState();
+    bytes = PrivatePhotoService.load(widget.url);
+  }
+
+  @override
+  void didUpdateWidget(covariant _PrivatePhotoImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      bytes = PrivatePhotoService.load(widget.url);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<Uint8List>(
+    future: bytes,
+    builder: (context, snapshot) {
+      if (snapshot.hasError) return widget.error();
+      if (!snapshot.hasData) return widget.loading(context);
+      return Image.memory(
+        snapshot.data!,
+        fit: widget.fit,
+        height: widget.height,
+        width: widget.width,
+        color: widget.color,
+        errorBuilder: (context, error, stackTrace) => widget.error(),
+      );
+    },
+  );
 }
 
 enum SourceType { network, file, asset }

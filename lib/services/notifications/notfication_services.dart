@@ -58,12 +58,12 @@ class FirebasePushNotificationApi {
     }
   }
 
-  void showProgressNotification(
+  Future<void> showProgressNotification(
     int progress,
     int id, {
     String? title,
     String? subTitle,
-  }) {
+  }) async {
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'upload_channel',
       'Upload Channel',
@@ -78,7 +78,7 @@ class FirebasePushNotificationApi {
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    flutterLocalNotificationsPlugin.show(
+    await flutterLocalNotificationsPlugin.show(
       id: id,
       title: title ?? 'Uploading File',
       body: '${subTitle ?? ''} progress:$progress%',
@@ -86,7 +86,7 @@ class FirebasePushNotificationApi {
     );
   }
 
-  void showCompletionNotification({int id = 0}) {
+  Future<void> showCompletionNotification({int id = 0}) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'upload_channel',
       'Upload Channel',
@@ -98,17 +98,25 @@ class FirebasePushNotificationApi {
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    flutterLocalNotificationsPlugin.show(
+    await flutterLocalNotificationsPlugin.show(
       id: id,
       title: 'Upload complete',
       body: 'Your file has been uploaded successfully.',
       notificationDetails: platformChannelSpecifics,
     );
 
-    // Auto hide notification after 3 seconds
+    // Auto hide notification after 5 seconds
     Future.delayed(const Duration(seconds: 5), () async {
-      await flutterLocalNotificationsPlugin.cancel(id: id);
+      try {
+        await flutterLocalNotificationsPlugin.cancel(id: id);
+      } catch (_) {
+        // Expiring a local notification must not fail a completed upload.
+      }
     });
+  }
+
+  Future<void> cancelUploadNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel(id: id);
   }
 
   Future<void> initPushNotifications() async {
@@ -231,6 +239,7 @@ class FirebasePushNotificationApi {
   }
 
   Future<void> removeTokenForCurrentUser() async {
+    if (useLocalFirebaseEmulators) return;
     final uid = GlobalVariables.currentUid;
     if (uid.isEmpty) return;
     try {
@@ -250,6 +259,7 @@ class FirebasePushNotificationApi {
   }
 
   Future<void> saveTokenForCurrentUser([String? token]) async {
+    if (useLocalFirebaseEmulators) return;
     final uid = GlobalVariables.loggedInUser.value?.uid;
     if (uid == null || uid.isEmpty) return;
     final currentToken = token ?? await _firebaseMessaging.getToken();

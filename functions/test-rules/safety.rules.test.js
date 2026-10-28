@@ -14,6 +14,7 @@ const {
   writeBatch,
   arrayUnion,
   serverTimestamp,
+  Timestamp,
 } = require("firebase/firestore");
 let env;
 before(async () => {
@@ -32,6 +33,10 @@ beforeEach(async () => {
   await env.withSecurityRulesDisabled(async (context) => {
     const db = context.firestore();
     const data = {
+      "users/alice": {uid: "alice"},
+      "users/bob": {uid: "bob"},
+      "users/carol": {uid: "carol"},
+      "users/dave": {uid: "dave"},
       "publicProfile/alice": {
         uid: "alice",
         displayName: "Alice",
@@ -74,6 +79,10 @@ beforeEach(async () => {
   });
 });
 const dbFor = (uid) => env.authenticatedContext(uid).firestore();
+const sentMessage = (id, uid, data = "Group update") => ({
+  chateId: id, messageStatus: "Sent", createdAt: serverTimestamp(),
+  createdBy: uid, sentTo: "trip", messageType: "Text", data,
+});
 
 test("invitations and attempt receipts are server-owned and do not grant private trip access", async () => {
   await env.withSecurityRulesDisabled(async (context) => {
@@ -221,6 +230,37 @@ test("legacy, member, trip-array and chat paths cannot bypass server admission",
     updateDoc(doc(bob, "chat/trip"), { usersIds: ["alice", "bob", "dave"] }),
   );
 });
+test("chat roster is server-owned and room time requires a new message", async () => {
+  await env.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), "chat/trip"), {
+      roomId: "trip", usersIds: ["alice", "bob"], users: [], updatedAt: Timestamp.now(),
+    });
+  });
+  const alice = dbFor("alice");
+  const carol = dbFor("carol");
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {usersIds: ["alice"]}));
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {usersIds: ["alice", "bob", "dave"]}));
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {roomId: "other"}));
+  await assertFails(updateDoc(doc(carol, "chat/trip"), {
+    usersIds: ["alice", "bob", "carol"], updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {updatedAt: serverTimestamp()}));
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {users: [{id: "bob", name: "Forged"}]}));
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {usersIds: ["alice", "bob"]}));
+  await assertFails(setDoc(doc(alice, "chat/new-room"), {
+    roomId: "new-room", usersIds: ["alice"], users: [], updatedAt: serverTimestamp(),
+  }));
+  const batch = writeBatch(alice);
+  batch.set(doc(alice, "chat/trip/messages/room-linked"), sentMessage("room-linked", "alice"));
+  batch.update(doc(alice, "chat/trip"), {
+    updatedAt: serverTimestamp(), lastMessageId: "room-linked",
+  });
+  await assertSucceeds(batch.commit());
+  await assertFails(updateDoc(doc(alice, "chat/trip"), {
+    updatedAt: serverTimestamp(), lastMessageId: "room-linked",
+  }));
+});
+
 test("existing shared trips, group messages and expense settlement remain available", async () => {
   const alice = dbFor("alice");
   const carol = dbFor("carol");
@@ -230,10 +270,7 @@ test("existing shared trips, group messages and expense settlement remain availa
     [carol, "carol"],
   ]) {
     await assertSucceeds(
-      setDoc(doc(db, `chat/trip/messages/${uid}`), {
-        createdBy: uid,
-        data: "Group update",
-      }),
+      setDoc(doc(db, `chat/trip/messages/${uid}`), sentMessage(uid, uid)),
     );
   }
   await assertSucceeds(
@@ -252,6 +289,30 @@ test("existing shared trips, group messages and expense settlement remain availa
       removedAt: new Date(),
     }),
   );
+});
+
+test("sent chat messages have immutable identity, content and server time", async () => {
+  const alice = dbFor("alice");
+  const ref = doc(alice, "chat/trip/messages/new-message");
+  await assertSucceeds(setDoc(ref, sentMessage("new-message", "alice")));
+  await assertFails(setDoc(ref, sentMessage("new-message", "alice", "Replaced")));
+  await assertFails(updateDoc(ref, {data: "Edited"}));
+  await assertFails(deleteDoc(ref));
+  const invalid = [
+    {...sentMessage("bad", "alice"), chateId: "other"},
+    {...sentMessage("bad", "alice"), createdBy: "bob"},
+    {...sentMessage("bad", "alice"), sentTo: "other"},
+    {...sentMessage("bad", "alice"), messageType: "Image"},
+    {...sentMessage("bad", "alice"), messageStatus: "Pending"},
+    {...sentMessage("bad", "alice"), createdAt: Timestamp.now()},
+    {...sentMessage("bad", "alice"), data: ""},
+    {...sentMessage("bad", "alice"), data: "x".repeat(4001)},
+    {...sentMessage("bad", "alice"), moderationRemoved: false},
+    {...sentMessage("bad", "alice"), callTimeTaken: 1},
+  ];
+  for (const forged of invalid) {
+    await assertFails(setDoc(doc(alice, "chat/trip/messages/bad"), forged));
+  }
 });
 test("removed content cannot be restored and restrictions affect existing sessions", async () => {
   const bob = dbFor("bob");
@@ -355,21 +416,30 @@ test("inbox content is server-owned; only the recipient can read, mark read or d
   await assertFails(setDoc(doc(alice, "joinAttempts/fake"), {}));
   await assertFails(setDoc(doc(alice, "pushDeliveries/fake"), { done: true }));
 });
-test("chat read cursor is private, server-timed and cannot forge unread activity", async () => {
+test("chat read cursor is private, bounded and cannot forge unread activity", async () => {
   const alice = dbFor("alice");
   const ref = doc(alice, "users/alice/chatActivity/trip");
-  await assertSucceeds(setDoc(ref, { readAt: serverTimestamp() }));
+  const observed = Timestamp.fromMillis(Date.now() - 60000);
+  await assertSucceeds(setDoc(ref, { readAt: observed }));
+  await assertSucceeds(updateDoc(ref, { readAt: Timestamp.fromMillis(Date.now() - 30000) }));
   await assertSucceeds(updateDoc(ref, { readAt: serverTimestamp() }));
   await assertFails(updateDoc(ref, { readAt: new Date(0) }));
+  await assertFails(updateDoc(ref, { readAt: Timestamp.fromMillis(Date.now() + 60000) }));
+  await assertFails(updateDoc(ref, { readAt: "tomorrow" }));
   await assertFails(
     updateDoc(ref, { lastMessageAt: 123, lastSenderId: "bob" }),
   );
+  await assertFails(updateDoc(ref, {lastMessageAtTime: Timestamp.now()}));
   await assertFails(getDoc(doc(dbFor("bob"), ref.path)));
   await assertFails(
     setDoc(doc(dbFor("dave"), "users/dave/chatActivity/trip"), {
       readAt: serverTimestamp(),
     }),
   );
+  await env.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), ref.path), {lastMessageAt: 123});
+  });
+  await assertSucceeds(updateDoc(ref, {readAt: observed}));
 });
 
 test("lodging options preserve authorship and allow only owners or contributors to edit", async () => {
@@ -381,9 +451,15 @@ test("lodging options preserve authorship and allow only owners or contributors 
     checkInDate: null,
     checkOutDate: null,
     expensePerNight: 80,
+    currencyCode: "USD",
+    revision: 1,
+    isDeleted: false,
   };
   const path = "trips/trip/lodgings/one";
   await assertSucceeds(setDoc(doc(dbFor("alice"), path), option));
+  await assertFails(setDoc(doc(dbFor("alice"), "trips/trip/lodgings/no-currency"), {
+    ...option, currencyCode: null,
+  }));
   await assertSucceeds(
     setDoc(doc(dbFor("alice"), "trips/trip/lodgings/two"), {
       ...option,
@@ -391,10 +467,10 @@ test("lodging options preserve authorship and allow only owners or contributors 
     }),
   );
   await assertSucceeds(
-    updateDoc(doc(dbFor("alice"), path), { hotelName: "Updated" }),
+    updateDoc(doc(dbFor("alice"), path), { hotelName: "Updated", revision: 2 }),
   );
   await assertSucceeds(
-    updateDoc(doc(dbFor("bob"), path), { hotelAddress: "Owner correction" }),
+    updateDoc(doc(dbFor("bob"), path), { hotelAddress: "Owner correction", revision: 3 }),
   );
   await assertFails(
     updateDoc(doc(dbFor("carol"), path), { hotelName: "Wrong editor" }),
@@ -414,6 +490,100 @@ test("lodging options preserve authorship and allow only owners or contributors 
   await assertFails(
     updateDoc(doc(dbFor("alice"), path), { expensePerNight: -1 }),
   );
+  await assertFails(updateDoc(doc(dbFor("alice"), path), {
+    hotelName: "Stale edit", revision: 2,
+  }));
+  await assertFails(setDoc(doc(dbFor("alice"), "trips/trip/lodgings/invalid-date"), {
+    ...option, checkInDate: "2027-02-30T15:00:00+09:00",
+    checkOutDate: "2027-03-02T11:00:00+09:00",
+  }));
+  await assertFails(setDoc(doc(dbFor("alice"), "trips/trip/lodgings/backwards"), {
+    ...option, checkInDate: "2027-04-10T15:00:00+09:00",
+    checkOutDate: "2027-04-10T11:00:00+09:00",
+  }));
+  await assertFails(setDoc(doc(dbFor("alice"), "trips/trip/lodgings/no-checkout"), {
+    ...option, checkInDate: "2027-04-10T15:00:00+09:00",
+  }));
+  await assertFails(setDoc(doc(dbFor("alice"), "trips/trip/lodgings/huge-cost"), {
+    ...option, expensePerNight: 1000000000,
+  }));
+  await assertSucceeds(setDoc(doc(dbFor("alice"), "trips/trip/lodgings/dates"), {
+    ...option, checkInDate: "2027-04-10T15:00:00.000+09:00",
+    checkOutDate: "2027-04-12T11:00:00.000+09:00",
+  }));
+  await env.withSecurityRulesDisabled(async (context) => {
+    const oldOption = {...option, hotelName: "Old option"};
+    delete oldOption.currencyCode;
+    delete oldOption.revision;
+    delete oldOption.isDeleted;
+    await setDoc(doc(context.firestore(), "trips/trip/lodgings/old"), oldOption);
+  });
+  await assertSucceeds(updateDoc(doc(dbFor("alice"), "trips/trip/lodgings/old"), {
+    hotelName: "Edited old option", revision: 1, isDeleted: false,
+  }));
+  await assertFails(deleteDoc(doc(dbFor("alice"), path)));
+  await assertFails(updateDoc(doc(dbFor("carol"), path), {
+    lodgingType: "", hotelName: "", hotelAddress: "", checkInDate: null,
+    checkOutDate: null, expensePerNight: null, revision: 4,
+    currencyCode: null,
+    isDeleted: true, deletedBy: "carol", deletedAt: serverTimestamp(),
+  }));
+  await assertSucceeds(updateDoc(doc(dbFor("alice"), path), {
+    lodgingType: "", hotelName: "", hotelAddress: "", checkInDate: null,
+    checkOutDate: null, expensePerNight: null, revision: 4,
+    currencyCode: null,
+    isDeleted: true, deletedBy: "alice", deletedAt: serverTimestamp(),
+  }));
+  const tombstone = (await getDoc(doc(dbFor("alice"), path))).data();
+  if (tombstone.hotelName !== "" || tombstone.hotelAddress !== "" ||
+      tombstone.expensePerNight !== null) {
+    throw new Error("Lodging tombstone retained private content");
+  }
+  await assertFails(updateDoc(doc(dbFor("alice"), path), {
+    hotelName: "Resurrected", revision: 5,
+  }));
+  await assertFails(setDoc(doc(dbFor("alice"), path), option));
+  await assertFails(setDoc(doc(dbFor("alice"), `${path}/likes/alice`), {
+    userId: "alice",
+  }));
+});
+
+test("trip-level lodging requires valid fields and a monotonic revision", async () => {
+  const trip = doc(dbFor("bob"), "trips/trip");
+  await assertFails(updateDoc(trip, {hotelName: "Hotel"}));
+  await assertSucceeds(updateDoc(trip, {hotelName: "Hotel", lodgingRevision: 1}));
+  await assertSucceeds(updateDoc(trip, {title: "Unrelated trip edit"}));
+  await assertFails(updateDoc(trip, {hotelName: "Stale", lodgingRevision: 1}));
+  await assertFails(updateDoc(trip, {
+    hotelName: "Invalid date", checkInDate: "2027-02-30T15:00:00+09:00",
+    lodgingRevision: 2,
+  }));
+  await assertFails(updateDoc(trip, {
+    checkInDate: "2027-04-12T15:00:00+09:00",
+    checkOutDate: "2027-04-10T11:00:00+09:00", lodgingRevision: 2,
+  }));
+  await assertFails(updateDoc(trip, {expensePerNight: 1000000000, lodgingRevision: 2}));
+  await assertFails(updateDoc(trip, {expensePerNight: 125, lodgingRevision: 2}));
+  await assertSucceeds(updateDoc(trip, {
+    expensePerNight: 125, lodgingCurrencyCode: "JPY", lodgingRevision: 2,
+  }));
+  await assertSucceeds(updateDoc(trip, {
+    checkInDate: "2027-04-10T15:00:00+09:00",
+    checkOutDate: "2027-04-12T11:00:00+09:00", lodgingRevision: 3,
+  }));
+  await assertFails(updateDoc(doc(dbFor("alice"), "trips/trip"), {
+    hotelName: "Non-owner", lodgingRevision: 4,
+  }));
+  await assertSucceeds(updateDoc(trip, {
+    lodgingType: null, hotelName: null, hotelAddress: null,
+    checkInDate: null, checkOutDate: null, expensePerNight: null,
+    lodgingCurrencyCode: null, lodgingRevision: 4,
+  }));
+  await assertFails(updateDoc(trip, {hotelName: "Stale restoration", lodgingRevision: 3}));
+  await assertFails(setDoc(doc(dbFor("bob"), "trips/new-invalid-lodging"), {
+    id: "new-invalid-lodging", createdBy: "bob", joinedUsers: [],
+    checkInDate: "2027-02-30T15:00:00+09:00",
+  }));
 });
 
 test("lodging likes are per traveler, cannot impersonate others, and reject departed or restricted members", async () => {
