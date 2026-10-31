@@ -150,6 +150,9 @@ class _MessagesTab extends StatelessWidget {
                   ),
                 Expanded(
                   child: ListView.separated(
+                    padding: EdgeInsets.only(
+                      bottom: AppStyles.bottomNavClearance,
+                    ),
                     itemCount: rooms.length,
                     separatorBuilder: (_, _) => const Divider(),
                     itemBuilder: (context, index) {
@@ -238,7 +241,7 @@ class _NotificationsTab extends StatelessWidget {
         return Center(child: Text(l10n.noNotificationsFound));
       }
       return ListView.builder(
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.only(bottom: AppStyles.bottomNavClearance),
         itemCount: controller.notifications.length,
         itemBuilder: (context, i) {
           final NotificationModel group = controller.notifications[i];

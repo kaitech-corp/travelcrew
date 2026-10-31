@@ -153,7 +153,9 @@ class _FinanceExpenseEditorState extends State<_FinanceExpenseEditor> {
   late String _payer;
   late Set<String> _participants;
   late bool _custom;
+  static const _defaultCurrency = 'USD';
   String? _currency;
+  bool _editingCurrency = false;
   Map<String, int>? _currencies;
   String? _error;
   String? _requestId;
@@ -194,7 +196,8 @@ class _FinanceExpenseEditorState extends State<_FinanceExpenseEditor> {
     _currency =
         widget.selectedCurrency ??
         trip.financeCurrency ??
-        expense?.currencyCode;
+        expense?.currencyCode ??
+        _defaultCurrency;
     _payer = expense?.payerAmountsMinor.keys.firstOrNull ?? currentUid;
     _participants = expense?.sharesMinor.keys.toSet() ?? _names.keys.toSet();
     _custom = expense?.splitType == 'custom';
@@ -422,28 +425,64 @@ class _FinanceExpenseEditorState extends State<_FinanceExpenseEditor> {
                   hintText: '10:30',
                 ),
               ),
-              if (_currencies == null)
-                const LinearProgressIndicator()
+              if (_editingCurrency && !fixedCurrency && canEdit)
+                if (_currencies == null)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: LinearProgressIndicator(),
+                  )
+                else
+                  DropdownButtonFormField<String>(
+                    initialValue:
+                        _currencies!.containsKey(_currency) ? _currency : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Trip currency',
+                    ),
+                    items:
+                        _currencies!.keys
+                            .map(
+                              (code) => DropdownMenuItem(
+                                value: code,
+                                child: Text(code),
+                              ),
+                            )
+                            .toList(),
+                    onChanged:
+                        (value) => setState(() {
+                          _currency = value;
+                          _requestId = null;
+                        }),
+                  )
               else
-                DropdownButtonFormField<String>(
-                  initialValue: _currency,
-                  decoration: const InputDecoration(labelText: 'Trip currency'),
-                  items:
-                      _currencies!.keys
-                          .map(
-                            (code) => DropdownMenuItem(
-                              value: code,
-                              child: Text(code),
-                            ),
-                          )
-                          .toList(),
-                  onChanged:
-                      fixedCurrency || !canEdit
-                          ? null
-                          : (value) => setState(() {
-                            _currency = value;
-                            _requestId = null;
-                          }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            text: 'Currency: ',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            children: [
+                              TextSpan(
+                                text: _currency ?? _defaultCurrency,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (!fixedCurrency && canEdit)
+                        TextButton.icon(
+                          onPressed:
+                              () => setState(() => _editingCurrency = true),
+                          icon: const Icon(Icons.edit_outlined, size: 18),
+                          label: const Text('Edit'),
+                        ),
+                    ],
+                  ),
                 ),
               TextButton.icon(
                 onPressed:

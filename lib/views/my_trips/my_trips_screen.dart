@@ -186,7 +186,9 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                       : controller.filteredTrips.isEmpty
                       ? Center(child: Text(l10n.noTripsFound))
                       : ListView.builder(
-                        padding: EdgeInsets.only(bottom: 140.h),
+                        padding: EdgeInsets.only(
+                          bottom: AppStyles.bottomNavClearance,
+                        ),
                         shrinkWrap: true,
                         itemCount:
                             controller.filteredTrips.length +

@@ -200,6 +200,21 @@ void main() {
       }
     },
   );
+  test('new trips default to private; imports only go public explicitly', () {
+    final fresh = CreateTripController();
+    addTearDown(fresh.onClose);
+    expect(fresh.isLocked.value, isTrue);
+
+    final imported = CreateTripController();
+    addTearDown(imported.onClose);
+    imported.setFromImport({'destination': 'Tokyo'});
+    expect(imported.isLocked.value, isTrue);
+
+    final public = CreateTripController();
+    addTearDown(public.onClose);
+    public.setFromImport({'destination': 'Tokyo', 'is_private': false});
+    expect(public.isLocked.value, isFalse);
+  });
   test('a late Places response cannot override explicit No image', () async {
     final controller = CreateTripController();
     addTearDown(controller.onClose);

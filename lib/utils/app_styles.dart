@@ -6,6 +6,10 @@ import 'app_colors.dart';
 
 class AppStyles {
   // Font Sizes — minimum size is 12.sp
+  /// Bottom padding for scrollables on main tabs, so the last row clears the
+  /// floating bottom navigation bar.
+  static double get bottomNavClearance => 140.h;
+
   static double get fontSize12 => 12.sp;
   static double get fontSize13 => 13.sp;
   static double get fontSize14 => 14.sp;

@@ -25,7 +25,7 @@ import '../../../utils/app_strings.dart';
 import '../../../utils/app_utils.dart';
 
 class CreateTripController extends GetxController {
-  RxBool isLocked = false.obs;
+  RxBool isLocked = true.obs;
   RxString country = ''.obs;
   RxString selectedPlaceId = ''.obs;
   RxList<String> invitedUsersList = <String>[].obs;
@@ -224,6 +224,7 @@ class CreateTripController extends GetxController {
       ..addAll(pending.savedExpenseRequestIds);
     importedExpenseCurrency = pending.expenseCurrency;
     invitedUsersList.assignAll(pending.trip.invitedUsers ?? []);
+    isLocked.value = pending.trip.isPrivate ?? true;
     tripNameController.text = pending.trip.title ?? '';
     destinationController.text = pending.trip.destination;
     startDate.value = pending.trip.effectiveStartDate;
@@ -268,7 +269,8 @@ class CreateTripController extends GetxController {
       country.value = (data['country'] as String?) ?? '';
       selectedLocation.value = destinationController.text;
       selectedPlaceId.value = 'existing_location';
-      isLocked.value = (data['is_private'] as bool?) ?? false;
+      // Trips default to private unless the import explicitly opts out.
+      isLocked.value = (data['is_private'] as bool?) ?? true;
 
       if (data['start_date'] != null) {
         startDate.value = DateTime.tryParse(data['start_date'] as String);
